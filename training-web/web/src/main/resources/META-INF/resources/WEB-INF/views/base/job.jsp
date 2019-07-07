@@ -346,6 +346,7 @@
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record, true)) {
             jobMethod = "PUT";
+            DF_Job_job.clearValues();
             DF_Job_job.editRecord(record);
             Win_Job_job.show();
         }
@@ -432,7 +433,7 @@
             return;
         }
         jobId = DF_JobInfo_job.getValue('id');
-        eJobCompetenceTypeId = DF_JobCompetenceType_job.getValue('ejobCompetenceType.id');
+        eJobCompetenceTypeId = DF_JobCompetenceType_job.getValue('ejobCompetenceTypeId');
         if (jobCompetenceMethod_job.localeCompare("POST") == 0) {
             let competenceRecords = LG_Competence_job.getSelectedRecords();
             if (checkRecord(competenceRecords, true, 'حداقل يک شايستگي شغلي را انتخاب نمائيد.')) {

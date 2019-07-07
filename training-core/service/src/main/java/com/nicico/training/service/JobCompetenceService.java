@@ -70,7 +70,7 @@ public class JobCompetenceService implements IJobCompetenceService {
 
             JobCompetence jobCompetence = new JobCompetence();
             jobCompetence.setId(jobCompetenceKey);
-            jobCompetence.setEJobCompetenceType(eJobCompetenceTypeConverter.convertToEntityAttribute(request.getEJobCompetenceTypeId()));
+            jobCompetence.setEJobCompetenceTypeId(request.getEJobCompetenceTypeId());
             jobCompetenceDAO.saveAndFlush(jobCompetence);
         }
     }
@@ -90,7 +90,7 @@ public class JobCompetenceService implements IJobCompetenceService {
 
             JobCompetence jobCompetence = new JobCompetence();
             jobCompetence.setId(jobCompetenceKey);
-            jobCompetence.setEJobCompetenceType(eJobCompetenceTypeConverter.convertToEntityAttribute(request.getEJobCompetenceTypeId()));
+            jobCompetence.setEJobCompetenceTypeId(request.getEJobCompetenceTypeId());
             jobCompetenceDAO.saveAndFlush(jobCompetence);
         }
     }
@@ -105,12 +105,9 @@ public class JobCompetenceService implements IJobCompetenceService {
         Optional<Competence> optionalCompetence = competenceDAO.findById(request.getCompetenceId());
         Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
 
-
         Optional<JobCompetence> optionalJobCompetence = jobCompetenceDAO.findById(new JobCompetenceKey(job.getId(), competence.getId()));
         JobCompetence jobCompetence = optionalJobCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobCompetenceNotFound));
-
-        jobCompetence.setEJobCompetenceType(eJobCompetenceTypeConverter.convertToEntityAttribute(request.getEJobCompetenceTypeId()));
-
+        jobCompetence.setEJobCompetenceTypeId(request.getEJobCompetenceTypeId());
         jobCompetenceDAO.saveAndFlush(jobCompetence);
     }
 

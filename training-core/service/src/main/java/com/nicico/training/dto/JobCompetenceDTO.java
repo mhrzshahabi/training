@@ -29,6 +29,7 @@ import java.util.Set;
 public class JobCompetenceDTO implements Serializable {
 
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -62,9 +63,9 @@ public class JobCompetenceDTO implements Serializable {
         @ApiModelProperty(required = true)
         private Set<Long> jobIds;
 
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer eJobCompetenceTypeId;
+         @NotNull
+         @ApiModelProperty(required = true)
+         private Integer eJobCompetenceTypeId;
     }
 
     @Getter
@@ -110,6 +111,7 @@ public class JobCompetenceDTO implements Serializable {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private Integer version;
+
         private CompetenceDTO.Info competence;
         private JobDTO.Info job;
         private EJobCompetenceType eJobCompetenceType;
