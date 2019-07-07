@@ -69,7 +69,7 @@ public class Skill extends Auditable{
     private EDomainType eDomainType;
 
     @Column(name = "e_domain_type")
-    private EDomainType eDomainTypeId;
+    private Integer eDomainTypeId;
 
     //-------------------------------------------------
     @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
