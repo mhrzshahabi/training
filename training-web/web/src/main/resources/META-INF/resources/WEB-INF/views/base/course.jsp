@@ -1,36 +1,45 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-// <script>
+
+//<script>
+
+    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var courseId = "";
+    var runV = "";
+    var eLevelTypeV = "";
+    var etechnicalTypeV = "";
+    var etheoTypeV = "";
     var course_method = "";
-    var course_url = "http://localhost:9090/api/course";
+    var count="";
+    var x;
+    var course_url = "${restApiUrl}/api/course";
     var RestDataSource_category = isc.RestDataSource.create({
-        ID:"categoryDS",
-        fields: [{name: "id", primaryKey:true}, {name: "titleFa"}
+        ID: "categoryDS",
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/category/spec-list",
-        autoFetchData:true,
+        fetchDataURL: "${restApiUrl}/api/category/spec-list",
+        autoFetchData: true,
     });
     var RestDataSource_course = isc.RestDataSource.create({
-        ID:"courseDS",
-        fields: [{name: "id", type:"Integer",primaryKey:true},
+        ID: "courseDS",
+        fields: [{name: "id", type: "Integer", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "category.id"},
             {name: "subCategory.id"},
-            {name: "categoryId", foreignKey:"categoryDS.id"},
-            {name: "categoryTitleFa", includeFrom:"categoryDS.titleFa", includeVia:"categoryId"},
+            {name: "categoryId", foreignKey: "categoryDS.id"},
+            {name: "categoryTitleFa", includeFrom: "categoryDS.titleFa", includeVia: "categoryId"},
             {name: "subCategoryId", foreignKey: "id"},
             {name: "erunType.titleFa"},
             {name: "elevelType.titleFa"},
@@ -48,11 +57,11 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/course/spec-list",
+        fetchDataURL: "${restApiUrl}/api/course/spec-list",
     });
     var RestDataSource_eTechnicalType = isc.RestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
@@ -63,11 +72,11 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/enum/eTechnicalType/spec-list"
+        fetchDataURL: "${restApiUrl}/api/enum/eTechnicalType/spec-list"
 
     });
     var RestDataSource_e_level_type = isc.RestDataSource.create({
@@ -78,11 +87,11 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/enum/eLevelType"
+        fetchDataURL: "${restApiUrl}/api/enum/eLevelType"
 
     });
     var RestDataSource_e_run_type = isc.RestDataSource.create({
@@ -93,26 +102,26 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/enum/eRunType/spec-list"
+        fetchDataURL: "${restApiUrl}/api/enum/eRunType/spec-list"
 
     });
     var RestDataSourceETheoType = isc.RestDataSource.create({
-        fields: [{name: "id", primaryKey:true}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/enum/eTheoType"
+        fetchDataURL: "${restApiUrl}/api/enum/eTheoType"
 
     });
     var RestDataSourceSubCategory = isc.RestDataSource.create({
@@ -124,11 +133,11 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/sub-category/spec-list"
+        fetchDataURL: "${restApiUrl}/api/sub-category/spec-list"
 
     });
     var RestDataSource_CourseGoal = isc.RestDataSource.create({
@@ -141,11 +150,11 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/goal/spec-list"
+        fetchDataURL: "${restApiUrl}/api/goal/spec-list"
     });
     var RestDataSource_CourseSkill = isc.RestDataSource.create({
         fields: [
@@ -160,7 +169,7 @@
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/course/skill/"+courseId.id
+        fetchDataURL: "http://localhost:9090/api/course/skill/" + courseId.id
     });
     var RestDataSource_CourseJob = isc.RestDataSource.create({
         fields: [
@@ -175,9 +184,8 @@
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/course/job/"+courseId.id
+        fetchDataURL: "http://localhost:9090/api/course/job/" + courseId.id
     });
-
     var RestDataSource_Syllabus = isc.RestDataSource.create({
         fields: [
             {name: "id"},
@@ -191,13 +199,27 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
+                "Access-Control-Allow-Origin": "${restApiUrl}"
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "http://localhost:9090/api/syllabus/spec-list"
+        fetchDataURL: "${restApiUrl}/api/syllabus/spec-list"
     });
+    var RestDataSourse_getMaxCourse = isc.RestDataSource.create({
+        fields: [
+            {name: "id"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+                "Access-Control-Allow-Origin": "${restApiUrl}"
+            };
+            return this.Super("transformRequest", arguments);
+        },
 
+    });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
@@ -244,33 +266,34 @@
             openTabGoal();
         },
         selectionChanged: function (record, state) {
-
             courseId = record;
             RestDataSource_CourseGoal.fetchDataURL = "http://localhost:9090/api/course/" + courseId.id + "/goal";
             ListGrid_CourseGoal.fetchData();
             ListGrid_CourseGoal.invalidateCache();
-            RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/syllabus/course/"+courseId.id;
+            RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/syllabus/course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = "http://localhost:9090/api/course/skill/"+courseId.id;
+            RestDataSource_CourseSkill.fetchDataURL = "http://localhost:9090/api/course/skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = "http://localhost:9090/api/course/job/"+courseId.id;
+            RestDataSource_CourseJob.fetchDataURL = "http://localhost:9090/api/course/job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
 
             for (i = 0; i < mainTabSet.tabs.length; i++) {
-                if ("اهداف" == (mainTabSet.getTab(i).title).substr(0,5)) {
+                if ("اهداف" == (mainTabSet.getTab(i).title).substr(0, 5)) {
 
-                    mainTabSet.getTab(i).setTitle("اهداف دوره "+courseId.titleFa);
+                    mainTabSet.getTab(i).setTitle("اهداف دوره " + courseId.titleFa);
 
                 }
 
             }
 
+
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد دوره", align: "center"},
             {name: "titleFa", title: "نام فارسی", align: "center"},
             {name: "titleEn", title: "نام لاتین", align: "center"},
             {name: "category.titleFa", title: "گروه", align: "center"},
@@ -315,7 +338,7 @@
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
-        recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue){
+        recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
@@ -346,7 +369,7 @@
         selectionType: "none",
         sortField: 1,
         sortDirection: "descending",
-        autoFetchData: false,
+        autoFetchData: false
     });
     var ListGrid_CourseJob = isc.ListGrid.create({
         width: "100%",
@@ -450,9 +473,11 @@
         fields: [
             {name: "id", hidden: true},
             {
-                colSpan:2,
+                colSpan: 2,
                 name: "titleFa",
                 title: "نام فارسی",
+                hint: "Persian/فارسی",
+                showHintInField: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 required: true,
                 type: 'text',
@@ -462,23 +487,27 @@
             {
                 name: "titleEn",
                 title: "نام لاتین ",
-                colSpan:2,
+                colSpan: 2,
+                hint: "English/انگليسي",
+                showHintInField: true,
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z]",
-                colspan:3,
+                colspan: 3,
                 width: "245",
             },
             {
                 name: "code",
                 title: "كد دوره",
-                type: 'text',
-                required: true,
+                type: 'staticText',
                 length: "100",
-                width: "*"
+                width: "*",
+                disabel:false,
+                hidden:true
             },
             {
                 name: "category.id",
-                // dataPath: "categoryId",
+                hint: "Category/گروه",
+                showHintInField: true,
                 title: "گروه",
                 autoFetchData: true,
                 required: true,
@@ -497,8 +526,7 @@
                 pickListProperties: {showFilterEditor: true},
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                changed: function (form, item, value)
-                {
+                changed: function (form, item, value) {
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
                     RestDataSourceSubCategory.fetchDataURL = "http://localhost:9090/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
@@ -508,7 +536,9 @@
             {
                 name: "subCategory.id",
                 title: "زير گروه",
-                prompt:"ابتدا گروه را انتخاب کنید",
+                hint: "SubCategory/زير گروه",
+                showHintInField: true,
+                prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -537,6 +567,8 @@
                 name: "erunType.id",
                 value: "erunTypeId",
                 title: "نوع اجرا",
+                hint: "نوع اجرا/RunType",
+                showHintInField: true,
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -553,12 +585,30 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: true,
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
 
                 changed: function (form, item, value) {
+                    switch (value) {
+                        case 1:
+                            runV = "C";
+                            break;
+                        case 2:
+                            runV = "D";
+                            break;
+                        case 3:
+                            runV = "S";
+                            break;
+                        case 4:
+                            runV = "H";
+                            break;
+                        case 5:
+                            runV = "J";
+                            break;
+                    }
+
                 }
             },
             {
@@ -581,12 +631,24 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                    showFilterEditor: true,
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
-                }
+                    switch (value) {
+                        case 1:
+                            eLevelTypeV = "1";
+                            break;
+                        case 2:
+                            eLevelTypeV = "2";
+                            break;
+                        case 3:
+                            eLevelTypeV = "3";
+                            break;
+                    }
+
+                },
             },
             {
                 name: "etheoType.id",
@@ -613,6 +675,18 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
+                    switch (value) {
+                        case 1:
+                            etheoTypeV = "T";
+                            break;
+                        case 2:
+                            etheoTypeV = "P";
+                            break;
+                        case 3:
+                            etheoTypeV = "M";
+                            break;
+                    }
+
                 },
 
             },
@@ -641,7 +715,21 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
+
+                    switch (value) {
+                        case 1:
+                            etechnicalTypeV = "4";
+                            break;
+                        case 2:
+                            etechnicalTypeV = "1";
+                            break;
+                        case 3:
+                            etechnicalTypeV = "3";
+                            break;
+                    }
+
                 },
+
             },
             {
                 name: "theoryDuration",
@@ -668,9 +756,11 @@
                 length: 2,
                 required: true,
                 keyPressFilter: "[0-9]",
-                validators:[
-                    {type:"integerRange", min:0, max:30,
-                        errorMessage:"لطفا سابقه تدریس را صحیح وارد کنید",}
+                validators: [
+                    {
+                        type: "integerRange", min: 0, max: 30,
+                        errorMessage: "لطفا سابقه تدریس را صحیح وارد کنید",
+                    }
                 ]
             },
             {
@@ -681,15 +771,17 @@
                 width: "*",
                 length: 2,
                 keyPressFilter: "[0-9]",
-                validators:[
-                    {type:"integerRange", min:0, max:20,
-                    errorMessage:"لطفا نمره را صحیح وارد کنید",}
+                validators: [
+                    {
+                        type: "integerRange", min: 0, max: 20,
+                        errorMessage: "لطفا نمره را صحیح وارد کنید",
+                    }
                 ]
-                },
+            },
             {
                 name: "description",
-                type:"textArea",
-                colSpan:6,
+                type: "textArea",
+                colSpan: 6,
                 height: 40,
                 title: "توضيحات",
                 width: "650",
@@ -700,11 +792,12 @@
                 title: "هدف كلي",
                 colSpan: "6",
                 readonly: true,
-                type:"textArea",
+                type: "textArea",
                 height: 60,
                 width: "650",
 
-             },
+            },
+
         ]
     });
     var IButton_course_Save = isc.IButton.create({
@@ -713,44 +806,65 @@
             if (DynamicForm_course.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_course.getValues();
-            console.log(DynamicForm_course.getValues());
+            //-----
             isc.RPCManager.sendRequest({
+                actionURL: "http://localhost:9090/api/course/getmaxcourseid",
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                count = parseInt(resp.data);
+                count=count+1;
+                x = runV + eLevelTypeV + etheoTypeV + count;
+                DynamicForm_course.getItem('code').setValue(x);
+                ///////////////////////////////////////////
+                var data1 = DynamicForm_course.getValues();
+                isc.RPCManager.sendRequest({
                 actionURL: course_url,
                 httpMethod: course_method,
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
-                data: JSON.stringify(data),
+                data: JSON.stringify(data1),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var OK = isc.Dialog.create({
-                            message: "عملیات با موفقیت انجام شد.",
-                            icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                        }, 3000);
-                        Window_course.close();
-                        ListGrid_Course_refresh();
-                    } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                            icon: "[SKIN]stop.png",
-                            title: "پیغام"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
-                    }
+
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                var OK = isc.Dialog.create({
+                message: "عملیات با موفقیت انجام شد.",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+                });
+
+                setTimeout(function () {
+                OK.close();
+                }, 3000);
+                Window_course.close();
+                ListGrid_Course_refresh();
+                } else {
+                var ERROR = isc.Dialog.create({
+                message: ("اجرای عملیات با مشکل مواجه شده است!"),
+                icon: "[SKIN]stop.png",
+                title: "پیغام"
+                });
+                setTimeout(function () {
+                ERROR.close();
+                }, 3000);
+                }
 
                 }
+                });
+                ///////////////////////////////////////////
+            }
             });
         }
     });
+
     var courseSaveOrExitHlayout = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
@@ -783,9 +897,9 @@
         dismissOnEscape: false,
         border: "1px solid gray",
         closeClick: function () {
-        this.Super("closeClick", arguments);
+            this.Super("closeClick", arguments);
         },
-            items: [isc.VLayout.create({
+        items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
             members: [DynamicForm_course, courseSaveOrExitHlayout]
@@ -812,13 +926,12 @@
         showResizeBar: true,
         members: [ListGrid_Course]
     });
-
     var HLayout_Tab_Course_Goal = isc.HLayout.create({
         width: "100%",
         height: "100%",
         <%--border: "2px solid blue",--%>
         members: [
-            VLayout_Grid_Goal,VLayout_Grid_Syllabus
+            VLayout_Grid_Goal, VLayout_Grid_Syllabus
         ]
     });
     var HLayout_Tab_Course_Skill = isc.HLayout.create({
@@ -837,7 +950,6 @@
             ListGrid_CourseJob
         ]
     });
-
     var Detail_Tab_Course = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
@@ -872,9 +984,11 @@
         height: "100%",
         members: [HLayout_Actions_Course, HLayout_Grid_Course, HLayout_Tab_Course]
     });
+
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
     };
+
     function ListGrid_Course_add() {
         course_method = "POST";
         course_url = "http://localhost:9090/api/course";
@@ -882,6 +996,7 @@
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         Window_course.show();
     };
+
     function ListGrid_Course_remove() {
 
 
@@ -910,7 +1025,7 @@
 
                     if (index == 0) {
                         isc.RPCManager.sendRequest({
-                            actionURL: "http://localhost:9090/api/course/" + record.id,
+                            actionURL: "${restApiUrl}/api/course/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -946,6 +1061,7 @@
             });
         }
     };
+
     function ListGrid_Course_Edit() {
 
         var sRecord = ListGrid_Course.getSelectedRecord();
@@ -962,7 +1078,7 @@
             });
         } else {
             course_method = "PUT";
-            course_url = "http://localhost:9090/api/course/"+sRecord.id;
+            course_url = "http://localhost:9090/api/course/" + sRecord.id;
             DynamicForm_course.clearValues();
             DynamicForm_course.getItem("subCategory.id").setDisabled(false);
             RestDataSourceSubCategory.fetchDataURL = "http://localhost:9090/api/category/" + sRecord.category.id + "/sub-categories"
@@ -971,6 +1087,7 @@
             Window_course.show();
         }
     };
+
     function openTabGoal() {
         if (ListGrid_Course.getSelectedRecord() == null) {
             isc.Dialog.create({
@@ -982,8 +1099,7 @@
                     this.close();
                 }
             });
-            }
-        else {
-            createTab("اهداف دوره "+courseId.titleFa, "/goal/show-form?courseId="+courseId.id, false);
-            }
+        } else {
+            createTab("اهداف دوره " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
+        }
     };

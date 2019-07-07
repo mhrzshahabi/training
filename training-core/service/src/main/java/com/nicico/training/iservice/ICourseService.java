@@ -5,6 +5,7 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -33,7 +34,5 @@ public interface ICourseService {
 
 	void removeCourseSGoal(Long courseId, List<Long> goalIdList);
 
-
-
-
+    long getMaxCourseId();
 }

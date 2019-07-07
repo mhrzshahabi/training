@@ -224,6 +224,12 @@ public class CourseService implements ICourseService {
         return jobInfo;
     }
 
+    @Transactional
+    @Override
+    public long getMaxCourseId()
+    {
+        return courseDAO.getMaxCourseId();
+    }
 
 
 }

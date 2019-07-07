@@ -7,6 +7,7 @@ import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.service.CourseService;
+import com.sun.xml.internal.bind.v2.model.core.Ref;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -186,5 +187,11 @@ public class CourseRestController {
 
 //-------------------------------------------------------------------------------------
 
+    @Loggable
+    @GetMapping(value = "/getmaxcourseid")
+    public ResponseEntity<Long> getMaxCourseId()
+    {
+        return new ResponseEntity<>(courseService.getMaxCourseId(),HttpStatus.OK);
+    }
 
 }
