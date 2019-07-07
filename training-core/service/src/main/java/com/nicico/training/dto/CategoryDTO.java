@@ -35,6 +35,10 @@ public class CategoryDTO {
     @ApiModelProperty(required = true)
     private String titleEn;
 
+    @ApiModelProperty
+    private String description;
+
+
       //---------------------
 
     @Getter

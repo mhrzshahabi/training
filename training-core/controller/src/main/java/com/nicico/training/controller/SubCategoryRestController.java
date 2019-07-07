@@ -62,16 +62,28 @@ public class SubCategoryRestController {
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('d_sub_Category')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        subCategoryService.delete(id);
+
+        try {
+            subCategoryService.delete(id);
+        }catch(Exception ex){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity(HttpStatus.OK);
+
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
     @PreAuthorize("hasAuthority('d_sub_Category')")
     public ResponseEntity<Void> delete(@Validated @RequestBody SubCategoryDTO.Delete request) {
-        subCategoryService.delete(request);
+
+        try {
+            subCategoryService.delete(request);
+        }catch(Exception ex){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity(HttpStatus.OK);
+
     }
 
     @Loggable

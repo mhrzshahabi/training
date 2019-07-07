@@ -62,7 +62,11 @@ public class CategoryRestController {
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        categoryService.delete(id);
+        try {
+            categoryService.delete(id);
+        }catch(Exception ex){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -70,7 +74,11 @@ public class CategoryRestController {
     @DeleteMapping(value = "/list")
     @PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Void> delete(@Validated @RequestBody CategoryDTO.Delete request) {
-        categoryService.delete(request);
+        try {
+            categoryService.delete(request);
+        }catch(Exception ex){
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
+        }
         return new ResponseEntity(HttpStatus.OK);
     }
 

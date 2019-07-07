@@ -70,7 +70,11 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(skill, updating);
         modelMapper.map(request, updating);
-        updating.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEDomainTypeId()));
+        updating.setEDomainTypeId(request.getEDomainTypeId());
+        updating.setSubCategoryId(request.getSubCategoryId());
+        updating.setCategoryId(request.getCategoryId());
+        updating.setSkillLevelId(request.getSkillLevelId());
+
 //        return save(updating, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
         return modelMapper.map(skillDAO.saveAndFlush(updating), SkillDTO.Info.class);
     }
