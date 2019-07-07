@@ -303,6 +303,7 @@
                 if (title == mainTabSet.getTab(i).title) {
                     if (!canRefresh) {
                         mainTabSet.selectTab(i);
+                        mainTabSet.setTabPane(i, localViewLoder);
                         flagTabExist = true;
                         break;
 
