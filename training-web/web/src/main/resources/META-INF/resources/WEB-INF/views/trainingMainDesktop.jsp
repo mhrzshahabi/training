@@ -39,11 +39,7 @@
 
 <script type="application/javascript">
 
-    <%--<script>--%>
-
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-
-    const rootUrl = "${restApiUrl}/api";
+    const rootUrl = "http://localhost:9090/api";
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
@@ -72,7 +68,7 @@
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
                 "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
+                "Access-Control-Allow-Origin": "http://localhost:9090"
             };
             return this.Super("transformRequest", arguments);
         },
@@ -259,6 +255,9 @@
     });
 
 
+
+
+
     isc.RPCManager.allowCrossDomainCalls = true;
     isc.FileLoader.loadLocale("fa");
     isc.FileLoader.cacheLocale("fa");
@@ -299,25 +298,20 @@
         if (mainTabSet.tabs != null) {
             //alert(mainTabSet.tabs.length);
             for (i = 0; i < mainTabSet.tabs.length; i++) {
-
                 if (title == mainTabSet.getTab(i).title) {
-                    if (!canRefresh) {
+                    if (canRefresh) {
                         mainTabSet.selectTab(i);
                         flagTabExist = true;
                         break;
-
                     } else {
                         //mainTabSet.setTabPane(i,"");
                         mainTabSet.setTabPane(i, localViewLoder);
+                        mainTabSet.selectTab(i);
                         flagTabExist = true;
                         break;
-
                     }
-
                 }
-
             }
-
         }
         if (!flagTabExist)
             mainTabSet.selectTab(mainTabSet.addTab({
@@ -372,7 +366,6 @@
                     } else {
                         //newUrl = newUrl.replace("#", "?lang=" + selLocale )
                         newUrl = newUrl + "?lang=" + selLocale;
-
                     }
                 }
                 window.location.href = newUrl;
@@ -394,7 +387,7 @@
             isc.RPCManager.sendRequest({
                 /*willHandleError: true,
                 timeout: 500,*/
-                actionURL: "${restApiUrl}/api/workflow/userTask/count/" + "${username}",
+                actionURL: "http://localhost:9090/api/workflow/userTask/count/" + "${username}",
                 httpMethod: "GET",
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
@@ -418,9 +411,7 @@
                     }
                 }
             });
-
         }
-
     });
 
     var groupCartableButton = isc.IconButton.create({
@@ -431,7 +422,6 @@
         click: function () {
             createTab("گروهی", "<spring:url value="/web/workflow/groupCartable/showForm"/>", true)
         }
-
     });
 
     var Menu_Workflow_Util = {
@@ -443,7 +433,6 @@
             {
                 title: "تعریف فرایندها", icon: "pieces/512/processDefinition.png", click: function () {
                     createTab("تعریف فرایندها", "<spring:url value="/web/workflow/processDefinition/showForm"/>", true);
-
                 }
             },
             {
@@ -453,7 +442,6 @@
             }
         ]
     };
-
 
     var workflowUtilMenuButton = isc.IconMenuButton.create({
         title: "فرآیند",
@@ -483,7 +471,6 @@
             createTab("دانشجو", "/student/show-form", false)
         }
     });
-
 
     var courseButton = isc.IconButton.create({
         title: "دوره",
@@ -762,9 +749,9 @@
                 setTimeout(function () {
                     ListGrid_Goal.fetchData();
                     ListGrid_Goal.invalidateCache();
-                    RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
-                    ListGrid_Syllabus.fetchData();
-                    ListGrid_Syllabus.invalidateCache();
+                    RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/syllabus/course/"+courseId.id;
+                    ListGrid_Syllabus_Goal.fetchData();
+                    ListGrid_Syllabus_Goal.invalidateCache();
                 }, 100);
             }
             if(tabTitle.substr(0,4) == "دوره"){
@@ -772,9 +759,15 @@
                     ListGrid_CourseGoal.invalidateCache();
                     ListGrid_GoalAll.invalidateCache();
                     if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
+                        RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/syllabus/course/"+courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();}
+                    for (var i = 0; i < mainTabSet.tabs.length ; i++) {
+                        if(mainTabSet.tab[i].title.substr(0,5) == "اهداف"){
+                            alert(mainTabSet.tab[i].title.substr(0,5))
+                            mainTabSet.removeTab(i);
+                        }
+                    }
                 }, 100);
             }
         },
