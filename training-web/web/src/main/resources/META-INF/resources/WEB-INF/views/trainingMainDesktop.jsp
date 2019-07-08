@@ -93,7 +93,7 @@
         sortFieldDescendingText: "مرتب سازي نزولي",
         autoDraw: true,
         showResizeBar: true,
-        sortField: 0,
+        sortField: 0
     });
 
     isc.defineClass("MyToolStrip", ToolStrip);
@@ -301,6 +301,16 @@
             for (i = 0; i < mainTabSet.tabs.length; i++) {
 
                 if (title == mainTabSet.getTab(i).title) {
+                    if(title == "دوره")
+                    {
+                        for (j = 0; j < mainTabSet.tabs.length; j++)
+                        {
+                            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
+                            {
+                                mainTabSet.removeTab(j);
+                            }
+                        }
+                    }
                     if (!canRefresh) {
                         mainTabSet.selectTab(i);
                         mainTabSet.setTabPane(i, localViewLoder);
@@ -764,14 +774,13 @@
                     ListGrid_Goal.fetchData();
                     ListGrid_Goal.invalidateCache();
                     RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
-                    ListGrid_Syllabus.fetchData();
-                    ListGrid_Syllabus.invalidateCache();
+                    ListGrid_Syllabus_Goal.fetchData();
+                    ListGrid_Syllabus_Goal.invalidateCache();
                 }, 100);
             }
             if(tabTitle.substr(0,4) == "دوره"){
                 setTimeout(function () {
                     ListGrid_CourseGoal.invalidateCache();
-                    ListGrid_GoalAll.invalidateCache();
                     if(courseId != ""){
                         RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
                         ListGrid_CourseSyllabus.fetchData();

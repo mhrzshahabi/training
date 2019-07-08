@@ -59,21 +59,7 @@
         },
     });
 
-    var DynamicForm_Goal = isc.DynamicForm.create({
-        width: "70%",
-        height: "10%",
-        setMethod: methodGoal,
-        align: "center",
-        canSubmit: true,
-        showInlineErrors: true,
-        showErrorText: true,
-        showErrorStyle: true,
-        errorOrientation: "right",
-        titleAlign: "right",
-        requiredMessage: "فیلد اجباری است.",
-        numCols: 4,
-        margin: 10,
-        newPadding: 5,
+    var DynamicForm_Goal = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -95,21 +81,7 @@
             }
         ]
     });
-    var DynamicForm_Syllabus = isc.DynamicForm.create({
-        width: "70%",
-        height: "10%",
-        setMethod: methodSyllabus,
-        align: "center",
-        canSubmit: true,
-        showInlineErrors: true,
-        showErrorText: true,
-        showErrorStyle: true,
-        errorOrientation: "right",
-        titleAlign: "right",
-        requiredMessage: "فیلد اجباری است.",
-        numCols: 2,
-        margin: 10,
-        newPadding: 5,
+    var DynamicForm_Syllabus = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -134,6 +106,7 @@
                 title: "کد",
                 type: 'text',
                 required: true,
+                hidden: true,
                 length: "7"
             },
             {
@@ -143,6 +116,7 @@
                 type: 'text',
                 readonly: true,
                 hint: "Persian/فارسی",
+                showHintInField: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
                 length: "200",
                 validators: [{
@@ -187,6 +161,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "200",
                 hint: "Latin",
+                showHintInField: true,
                 validators: [{
                     type: "isString",
                     validateOnExit: true,
@@ -197,8 +172,7 @@
                     errorMessage: "نام مجاز بين سه تا دویست کاراکتر است"
                 }]
             },
-            {name: "practicalDuration", title: "ساعت عملي", type: "text", keyPressFilter: "[0-9]", length: "3"},
-            {name: "theoreticalDuration", title: "ساعت نظري", type: "text", keyPressFilter: "[0-9]", length: "3"}]
+            {name: "practicalDuration", title: "مدت زمان اجرا", type: "text", keyPressFilter: "[0-9]", length: "3"}]
     });
 
     var IButton_Goal_Save = isc.IButton.create({
@@ -264,6 +238,7 @@
             icon: "pieces/16/icon_delete.png",
             orientation: "vertical",
             click: function () {
+                DynamicForm_Goal.clearValues();
                 Window_Goal.close();
             }
         })]
@@ -501,12 +476,11 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد سرفصل", align: "center"},
+            {name: "code", title: "کد سرفصل", align: "center", hidden: true},
             {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
             {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
-            {name: "theoreticalDuration", title: "ساعت نظري سرفصل", align: "center"},
-            {name: "practicalDuration", title: "ساعت عملي سرفصل", align: "center"},
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         sortField: "goalId",
@@ -871,7 +845,6 @@
         ]
     });
 
-
     var HLayout_Action_Goal = isc.HLayout.create({
         width: "100%",
         <%--border: "2px solid blue",--%>
@@ -992,9 +965,11 @@
                     this.close();
                 }
             });
-        } else {
+        }
+        else {
             methodGoal = "PUT";
             urlGoal = "http://localhost:9090/api/goal/" + record.id;
+            DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
             Window_Goal.show();
         }
@@ -1133,6 +1108,7 @@
         } else {
             methodSyllabus = "PUT";
             urlSyllabus = "http://localhost:9090/api/syllabus/" + sRecord.id;
+            DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
             Window_Syllabus.show();
         }
