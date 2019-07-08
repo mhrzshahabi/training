@@ -165,6 +165,16 @@
             type: "regexp",
             errorMessage: "فيلد اجباري است.",
             expression: /^(?!\s*$).+/
+        },
+    NotStartWithNumber:{
+        type:"regexp",
+        errorMessage:"این فیلد نباید با عدد شروع شود.",
+        expression:"^(?!([0-9]))[/*/]*",
+    },
+        NotStartWithSpecialChar:{
+            type:"regexp",
+            errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
+            expression:"^(?!([!?';:. ]))[/*/]*",
         }
     };
 

@@ -8,17 +8,52 @@ function getFormulaMessage( message, font_size, font_color,font_type){
 
 
 
-function simpleMessage(title,message){
+function simpleDialog(title,message,timeout,dialogType){
 
 
-var x= isc.Dialog.create({
-    message:message,
-    icon: "[SKIN]ask.png",
-    title:title,
-    buttons: [isc.Button.create({title: "تائید"})],
-    buttonClick: function (button, index) {
-        this.close();
+    var di=isc.Dialog.create({
+        message:message,
+        icon: "[SKIN]"+dialogType+".png",
+        title:title,
+        buttons: [isc.Button.create({title: "تائید"})],
+        buttonClick: function (button, index) {
+            di.close();
+        }
+
+    });
+    if(timeout>0){
+        setTimeout(function () {
+            di.close();
+        }, timeout);
+
+
     }
-});
 
 }
+
+
+
+function errorDialog(title,message,timeout){
+
+
+    var di=isc.Dialog.create({
+        message:message,
+        icon: "[SKIN]stop.png",
+        title:title,
+        buttons: [isc.Button.create({title: "تائید"})],
+        buttonClick: function (button, index) {
+            di.close();
+        }
+
+    });
+    if(timeout>0){
+        setTimeout(function () {
+            di.close();
+        }, timeout);
+
+
+    }
+
+}
+
+

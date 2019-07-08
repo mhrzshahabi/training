@@ -637,15 +637,17 @@
 	function ListGrid_Skill_Group_edit() {
 		var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 		if (record == null || record.id == null) {
-			isc.Dialog.create({
-				message: "گروه مهارتی انتخاب نشده است.",
-				icon: "[SKIN]ask.png",
-				title: "پیغام",
-				buttons: [isc.Button.create({title: "تائید"})],
-				buttonClick: function (button, index) {
-					this.close();
-				}
-			});
+
+simpleDialog("تایید","گروه مهارتی انتخاب نشحده است.",0,"ask");
+			// isc.Dialog.create({
+			// 	message: "گروه مهارتی انتخاب نشده است.",
+			// 	icon: "[SKIN]ask.png",
+			// 	title: "پیغام",
+			// 	buttons: [isc.Button.create({title: "تائید"})],
+			// 	buttonClick: function (button, index) {
+			// 		this.close();
+			// 	}
+			// });
 		} else {
 			method = "PUT";
 			url = "${restApiUrl}/api/skill-group/" + record.id;
@@ -658,16 +660,21 @@
 	function ListGrid_Skill_Group_remove() {
 		var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 		if (record == null) {
-			isc.Dialog.create({
+		//	isc.Dialog.create({
 
-				message: "گروه مهارتی انتخاب نشده است",
-				icon: "[SKIN]ask.png",
-				title: "پیام",
-				buttons: [isc.Button.create({title: "تائید"})],
-				buttonClick: function (button, index) {
-					this.close();
-				}
-			});
+simpleDialog("تایید","گروه مهارتی انتخاب نشده است.",0,"ask");
+
+		//	simpleDialog("تایید","گروه مهارتی انتخاب نشده است--","confirm",2000);
+
+            //
+			// 	message: "گروه مهارتی انتخاب نشده است",
+			// 	icon: "[SKIN]ask.png",
+			// 	title: "پیام",
+			// 	buttons: [isc.Button.create({title: "تائید"})],
+			// 	buttonClick: function (button, index) {
+			// 		this.close();
+			// 	}
+			// });
 		} else {
 			var Dialog_Delete = isc.Dialog.create({
 				message: getFormulaMessage("آیا از حذف گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
@@ -758,13 +765,8 @@
 				type: "text",
 
 				title: "نام گروه مهارت",
-				keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-				// validators: [{
-				//     type: "isString",
-				//     validateOnExit: true,
-				//     stopOnError: true,
-				//     errorMessage: "نام مجاز بین چهار تا پانصد کاراکتر است"
-				// }],
+				//keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+				validators: [MyValidators.NotEmpty,MyValidators.NotStartWithNumber,MyValidators.NotStartWithSpecialCharacter],
 				length: "500",
 				width: "*",
 				height: "40",
