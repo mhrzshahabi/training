@@ -89,7 +89,7 @@ public class SkillRestController {
         try {
             skillService.delete(id);
         } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.FAILED_DEPENDENCY);
         }
 		return new ResponseEntity(HttpStatus.OK);
 	}

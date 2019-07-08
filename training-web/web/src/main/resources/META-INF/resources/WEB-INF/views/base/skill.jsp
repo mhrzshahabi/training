@@ -341,7 +341,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Skill_Level,
-                autoFetchData: true,
+                autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -372,7 +372,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Category,
-                autoFetchData: true,
+                autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -455,7 +455,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_EDomainType,
-                autoFetchData: true,
+                autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -800,6 +800,7 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
+                                console.log(resp.httpResponseCode);
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Skill_Skill.invalidateCache();
                                     var OK = isc.Dialog.create({
