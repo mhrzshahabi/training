@@ -57,25 +57,28 @@ public class SkillService implements ISkillService {
     @Override
     public SkillDTO.Info create(SkillDTO.Create request) {
         final Skill skill = modelMapper.map(request, Skill.class);
-        skill.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEDomainTypeId()));
+        skill.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEdomainTypeId()));
         return save(skill, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
     }
 
     @Transactional
     @Override
-    public SkillDTO.Info update(Long id, SkillDTO.Update request) {
-        final Optional<Skill> ssById = skillDAO.findById(id);
-        final Skill skill = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+    public SkillDTO.Info update(Long id, Object request) {
+
+        final Optional<Skill> optionalSkill = skillDAO.findById(id);
+        final Skill currentSkill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+
+        SkillDTO.Update requestSkill = modelMapper.map(request, SkillDTO.Update.class);
+
 
         Skill updating = new Skill();
-        modelMapper.map(skill, updating);
-        modelMapper.map(request, updating);
-        updating.setEDomainTypeId(request.getEDomainTypeId());
+        modelMapper.map(currentSkill, updating);
+        modelMapper.map(requestSkill, updating);
+     /*
+        updating.setEdomainTypeId(request.getEdomainTypeId());
         updating.setSubCategoryId(request.getSubCategoryId());
         updating.setCategoryId(request.getCategoryId());
-        updating.setSkillLevelId(request.getSkillLevelId());
-
-//        return save(updating, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
+        updating.setSkillLevelId(request.getSkillLevelId());*/
         return modelMapper.map(skillDAO.saveAndFlush(updating), SkillDTO.Info.class);
     }
 

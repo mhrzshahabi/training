@@ -18,7 +18,7 @@ public interface ISkillService {
 
     SkillDTO.Info create(SkillDTO.Create request);
 
-    SkillDTO.Info update(Long id, SkillDTO.Update request);
+    SkillDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 

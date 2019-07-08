@@ -76,8 +76,10 @@ public class SkillRestController {
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('u_skill')")
 	public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id,@RequestBody Object request) {
-		SkillDTO.Update update = (new ModelMapper()).map(request, SkillDTO.Update.class);
-		return new ResponseEntity<>(skillService.update(id, update), HttpStatus.OK);
+//		SkillDTO.Update u=new SkillDTO.Update();
+//        ModelMapper m=new ModelMapper();
+//	    SkillDTO.Update update = m.map(request, SkillDTO.Update.class);
+		return new ResponseEntity<>(skillService.update(id, request), HttpStatus.OK);
 	}
 
 	@Loggable
@@ -87,7 +89,7 @@ public class SkillRestController {
         try {
             skillService.delete(id);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 		return new ResponseEntity(HttpStatus.OK);
 	}
@@ -99,7 +101,7 @@ public class SkillRestController {
         try {
             skillService.delete(request);
         } catch (Exception e) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.NO_CONTENT);
         }
 		return new ResponseEntity(HttpStatus.OK);
 	}

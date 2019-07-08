@@ -51,7 +51,7 @@ public class SkillDTO {
 
     @NotNull
     @ApiModelProperty(required = true)
-    private Integer eDomainTypeId;
+    private Integer edomainTypeId;
 
     @ApiModelProperty()
     private String description;
@@ -93,7 +93,11 @@ public class SkillDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillUpdateRq")
-    public static class Update extends SkillDTO.Create {
+    public static class Update extends SkillDTO {
+
+        Set<Long> courseIds;
+        Set<Long> competenceIds;
+        Set<Long> skillGroupIds;
 
         // ------------------------------
 
