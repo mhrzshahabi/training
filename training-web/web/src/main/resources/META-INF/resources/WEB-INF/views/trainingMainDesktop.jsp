@@ -172,9 +172,8 @@
         expression:"^(?!([0-9]))[/*/]*",
     },
         NotStartWithSpecialChar:{
-            type:"regexp",
             errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression:"^(?!([!?';:. ]))[/*/]*",
+            expression:"^(?!([!@#$%^&*?';؟:. ]))[/*/]*",
         }
     };
 
