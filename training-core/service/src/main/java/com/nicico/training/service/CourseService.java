@@ -19,6 +19,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.sql.Array;
 import java.util.*;
 
 @Service
@@ -224,12 +225,23 @@ public class CourseService implements ICourseService {
         return jobInfo;
     }
 
+
     @Transactional
     @Override
-    public long getMaxCourseId()
+    public String getMaxCourseCode(String str)
     {
-        return courseDAO.getMaxCourseId();
-    }
+        List<Course> courseList=courseDAO.findByCodeStartingWith(str);
+        int max=0;
+        if (courseList.size()==0)
+        return "0";
+        for(Course course:courseList)
+        {
+          if(max<Integer.parseInt(course.getCode().substring(6,10)))
 
+              max=Integer.parseInt(course.getCode().substring(6,10));
+
+        }
+       return String.valueOf(max);
+    }
 
 }

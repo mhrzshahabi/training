@@ -12,26 +12,17 @@
     var etechnicalTypeV = "";
     var etheoTypeV = "";
     var course_method = "";
-    var count="";
+    var count = "";
     var x;
     var course_url = "${restApiUrl}/api/course";
-    var RestDataSource_category = isc.RestDataSource.create({
+    var RestDataSource_category = isc.MyRestDataSource.create({
         ID: "categoryDS",
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
         fetchDataURL: "${restApiUrl}/api/category/spec-list",
         autoFetchData: true,
     });
-    var RestDataSource_course = isc.RestDataSource.create({
+    var RestDataSource_course = isc.MyRestDataSource.create({
         ID: "courseDS",
         fields: [{name: "id", type: "Integer", primaryKey: true},
             {name: "titleFa"},
@@ -51,82 +42,33 @@
             {name: "minTeacherEvalScore"},
             {name: "version"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
         fetchDataURL: "${restApiUrl}/api/course/spec-list",
     });
-    var RestDataSource_eTechnicalType = isc.RestDataSource.create({
+    var RestDataSource_eTechnicalType = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ]
-        , dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: "${restApiUrl}/api/enum/eTechnicalType/spec-list"
-
     });
-    var RestDataSource_e_level_type = isc.RestDataSource.create({
+    var RestDataSource_e_level_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: "${restApiUrl}/api/enum/eLevelType"
-
     });
-    var RestDataSource_e_run_type = isc.RestDataSource.create({
+    var RestDataSource_e_run_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: "${restApiUrl}/api/enum/eRunType/spec-list"
 
     });
-    var RestDataSourceETheoType = isc.RestDataSource.create({
+    var RestDataSourceETheoType = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: "${restApiUrl}/api/enum/eTheoType"
 
     });
-    var RestDataSourceSubCategory = isc.RestDataSource.create({
+    var RestDataSourceSubCategory = isc.MyRestDataSource.create({
 
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id"}, {name: "titleFa"}, {name: "code"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -140,85 +82,38 @@
         fetchDataURL: "${restApiUrl}/api/sub-category/spec-list"
 
     });
-    var RestDataSource_CourseGoal = isc.RestDataSource.create({
+    var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}, {name: "description"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
+
         fetchDataURL: "${restApiUrl}/api/goal/spec-list"
     });
-    var RestDataSource_CourseSkill = isc.RestDataSource.create({
+    var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+
         fetchDataURL: "http://localhost:9090/api/course/skill/" + courseId.id
     });
-    var RestDataSource_CourseJob = isc.RestDataSource.create({
+    var RestDataSource_CourseJob = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "http://localhost:9090"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
+
         fetchDataURL: "http://localhost:9090/api/course/job/" + courseId.id
     });
-    var RestDataSource_Syllabus = isc.RestDataSource.create({
+    var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
             {name: "code"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/syllabus/spec-list"
-    });
-    var RestDataSourse_getMaxCourse = isc.RestDataSource.create({
-        fields: [
-            {name: "id"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
 
+        fetchDataURL: "${restApiUrl}/api/syllabus/spec-list"
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -232,6 +127,7 @@
             }
         }, {
             title: "ویرایش دوره", icon: "pieces/16/icon_edit.png", click: function () {
+                DynamicForm_course.clearValues();
                 ListGrid_Course_Edit();
             }
         }, {
@@ -256,7 +152,6 @@
             }
         }]
     });
-
     var ListGrid_Course = isc.ListGrid.create({
         width: "100%",
         height: "100%",
@@ -422,6 +317,7 @@
         icon: "[SKIN]/actions/edit.png",
         title: "ویرایش دوره",
         click: function () {
+            DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         }
     });
@@ -452,63 +348,58 @@
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Refresh, ToolStripButton_Print]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print]
     });
-    var DynamicForm_course = isc.DynamicForm.create({
-        width: "100%",
-        margin: 10,
-        cellPadding: 3,
+    var DynamicForm_course = isc.MyDynamicForm.create({
         align: "center",
         titleAlign: "center",
-        height: "100%",
-        setMethod: "GET",
-        canSubmit: true,
         showInlineErrors: true,
         numCols: "6",
-        showErrorText: true,
-        showErrorStyle: true,
-        errorOrientation: "right",
-        requiredMessage: "فیلد اجباری است.",
-        wrapItemTitles: false,
         fields: [
             {name: "id", hidden: true},
             {
                 colSpan: 2,
                 name: "titleFa",
                 title: "نام فارسی",
-                hint: "Persian/فارسی",
+                hint: " نام فارسی",
                 showHintInField: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+               // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "250",
                 required: true,
                 type: 'text',
-                length: "200",
-                width: "280",
+                               width: "280",
+                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
             {
                 name: "titleEn",
                 title: "نام لاتین ",
                 colSpan: 2,
-                hint: "English/انگليسي",
+                hint: "English Name",
+                keyPressFilter: "[a-z|A-Z |]",
+                length: "250",
                 showHintInField: true,
                 type: 'text',
-                keyPressFilter: "[a-z|A-Z]",
+                keyPressFilter: "[a-z|A-Z|0-9]",
                 colspan: 3,
-                width: "245",
+                width: "292",
+                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
             {
                 name: "code",
                 title: "كد دوره",
-                type: 'staticText',
+                type: 'text',
                 length: "100",
                 width: "*",
-                disabel:false,
-                hidden:true
+                hidden: true,
+// disabel: false,
+// hidden: true
             },
             {
                 name: "category.id",
-                hint: "Category/گروه",
-                showHintInField: true,
                 title: "گروه",
+                hint: "گروه",
+                showHintInField: true,
+                textAlign: "center",
                 autoFetchData: true,
                 required: true,
                 width: "*",
@@ -536,7 +427,7 @@
             {
                 name: "subCategory.id",
                 title: "زير گروه",
-                hint: "SubCategory/زير گروه",
+                hint: "زير گروه",
                 showHintInField: true,
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
@@ -550,7 +441,7 @@
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
-                filterFields: ["titleFa"],
+                filterFields: ["titleFa", "code"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
@@ -561,13 +452,15 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
 
                 changed: function (form, item, value) {
+
                 },
             },
             {
                 name: "erunType.id",
                 value: "erunTypeId",
                 title: "نوع اجرا",
-                hint: "نوع اجرا/RunType",
+                hint: "نوع اجرا",
+                wrapHintText: true,
                 showHintInField: true,
                 textAlign: "center",
                 required: true,
@@ -615,6 +508,8 @@
                 name: "elevelType.id",
                 value: "eLevelTypeId",
                 title: "سطح دوره",
+                hint: "سطح دوره",
+                showHintInField: true,
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -654,6 +549,8 @@
                 name: "etheoType.id",
                 value: "etheoTypeId",
                 title: "نوع دوره",
+                hint: "نوع دوره",
+                showHintInField: true,
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -694,6 +591,8 @@
                 name: "etechnicalType.id",
                 value: "etechnicalTypeId",
                 title: "نوع تخصصي",
+                hint: "نوع تخصصی",
+                showHintInField: true,
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -734,46 +633,52 @@
             {
                 name: "theoryDuration",
                 title: "طول دوره",
+                hint: "طول دوره",
+                showHintInField: true,
                 required: true,
                 type: 'text',
+                textAlign: "center",
                 width: "*",
                 length: 3,
                 keyPressFilter: "[0-9]"
             },
             {
-                name: "minTeacherDegree",
-                title: "حداقل مدرك مدرس",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                required: true,
-                type: 'text',
-                width: "*",
+                name: "minTeacherDegree", title: "حداقل مدرك مدرس", hint: "حداقل مدرك مدرس", showHintInField: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", required: true,
+                type: 'text', width: "*", validators: [MyValidators.NotEmpty]
             },
             {
                 name: "minTeacherExpYears",
                 title: "حداقل سابقه تدريس مدرس",
+                hint: "حداقل سابقه تدريس مدرس",
                 type: 'text',
+                showHintInField: true,
                 width: "*",
+                textAlign: "center",
                 length: 2,
                 required: true,
                 keyPressFilter: "[0-9]",
                 validators: [
                     {
                         type: "integerRange", min: 0, max: 30,
-                        errorMessage: "لطفا سابقه تدریس را صحیح وارد کنید",
+                        errorMessage: "لطفا سابقه تدریس را زیر 30 سال وارد کنید",
                     }
                 ]
             },
             {
                 name: "minTeacherEvalScore",
                 title: "حداقل نمره ارزيابي مدرس",
+                hint: "حداقل نمره ارزيابي",
+                showHintInField: true,
                 required: true,
+                textAlign: "center",
                 type: 'text',
                 width: "*",
                 length: 2,
                 keyPressFilter: "[0-9]",
                 validators: [
                     {
-                        type: "integerRange", min: 0, max: 20,
+                        type: "integerRange", min: 0, max: 100,
                         errorMessage: "لطفا نمره را صحیح وارد کنید",
                     }
                 ]
@@ -785,6 +690,7 @@
                 height: 40,
                 title: "توضيحات",
                 width: "650",
+                length: "250",
 
             },
             {
@@ -795,9 +701,10 @@
                 type: "textArea",
                 height: 60,
                 width: "650",
+                length: "500",
+                required: true,
 
             },
-
         ]
     });
     var IButton_course_Save = isc.IButton.create({
@@ -806,9 +713,12 @@
             if (DynamicForm_course.hasErrors()) {
                 return;
             }
-            //-----
+            var y = (DynamicForm_course.getItem('subCategory.id').getSelectedRecord().code);
+            x = y + runV + eLevelTypeV + etheoTypeV;
+
+//------------------------------------
             isc.RPCManager.sendRequest({
-                actionURL: "http://localhost:9090/api/course/getmaxcourseid",
+                actionURL: "http://localhost:9090/api/course/getmaxcourse/" + x,
                 httpMethod: "GET",
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
@@ -816,52 +726,45 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                count = parseInt(resp.data);
-                count=count+1;
-                x = runV + eLevelTypeV + etheoTypeV + count;
-                DynamicForm_course.getItem('code').setValue(x);
-                ///////////////////////////////////////////
-                var data1 = DynamicForm_course.getValues();
-                isc.RPCManager.sendRequest({
-                actionURL: course_url,
-                httpMethod: course_method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data1),
-                serverOutputAsString: false,
-                callback: function (resp) {
+                    var newCourseCounter = courseCounterCode(resp.data);
+                    x = x + newCourseCounter;
+                    DynamicForm_course.getItem('code').setValue(x);
+                    var data1 = DynamicForm_course.getValues();
+                    isc.RPCManager.sendRequest({
+                        actionURL: course_url,
+                        httpMethod: course_method,
+                        httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        data: JSON.stringify(data1),
+                        serverOutputAsString: false,
+                        callback: function (resp) {
 
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                    var OK = isc.Dialog.create({
+                                    message: "ایجاد دوره با موفقیت انجام شد.",
+                                    icon: "[SKIN]say.png",
+                                    title: " ذخیره"
+                                });
 
-                var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد.",
-                icon: "[SKIN]say.png",
-                title: "انجام فرمان"
-                });
+                                setTimeout(function () {
+                                    OK.close();
+                                }, 3000);
+                                Window_course.close();
+                                ListGrid_Course_refresh();
+                            } else {
 
-                setTimeout(function () {
-                OK.close();
-                }, 3000);
-                Window_course.close();
-                ListGrid_Course_refresh();
-                } else {
-                var ERROR = isc.Dialog.create({
-                message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                icon: "[SKIN]stop.png",
-                title: "پیغام"
-                });
-                setTimeout(function () {
-                ERROR.close();
-                }, 3000);
+                                simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
+
+                            }
+
+                        }
+                    });
                 }
-
-                }
-                });
-                ///////////////////////////////////////////
-            }
             });
+//-----------------------------------------------
+
         }
     });
 
@@ -1067,15 +970,7 @@
         var sRecord = ListGrid_Course.getSelectedRecord();
 
         if (sRecord == null || sRecord.id == null) {
-            isc.Dialog.create({
-                message: "دوره اي انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            simpleDialog("پیغام", "دوره اي انتخاب نشده است.", 2000, "say");
         } else {
             course_method = "PUT";
             course_url = "http://localhost:9090/api/course/" + sRecord.id;

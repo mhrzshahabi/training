@@ -29,10 +29,15 @@ public interface ICourseService {
 	List<GoalDTO.Info> getGoalWithOut(Long courseId);
 	List<SkillDTO.Info> getSkill(Long courseId);
 	List<JobDTO.Info> getJob(Long courseId);
+	 String getMaxCourseCode(String str);
+
+
 
 	void  getCourseIdvGoalsId(Long courseId,List<Long> goalIdList);
 
 	void removeCourseSGoal(Long courseId, List<Long> goalIdList);
 
-    long getMaxCourseId();
+
+
+
 }

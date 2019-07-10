@@ -188,10 +188,9 @@ public class CourseRestController {
 //-------------------------------------------------------------------------------------
 
     @Loggable
-    @GetMapping(value = "/getmaxcourseid")
-    public ResponseEntity<Long> getMaxCourseId()
+    @GetMapping(value = "/getmaxcourse/{str}")
+    public ResponseEntity<String> getMaxCourseCode(@PathVariable String str)
     {
-        return new ResponseEntity<>(courseService.getMaxCourseId(),HttpStatus.OK);
+       return new ResponseEntity<>(courseService.getMaxCourseCode(str),HttpStatus.OK);
     }
-
 }
