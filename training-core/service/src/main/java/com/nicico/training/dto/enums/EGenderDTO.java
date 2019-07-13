@@ -2,7 +2,7 @@ package com.nicico.training.dto.enums;/* com.nicico.training.dto*/
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.enums.EInstituteType;
+import com.nicico.training.model.enums.EGender;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -13,15 +13,15 @@ import lombok.experimental.Accessors;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class EInstituteTypeDTO {
+public class EGenderDTO {
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("EInstituteTypeSpecRs")
-    public static class EInstituteTypeSpecRs {
-        private EInstituteTypeDTO.SpecRs response = new EInstituteTypeDTO.SpecRs();
+    @ApiModel("EGenderSpecRs")
+    public static class EGenderSpecRs {
+        private EGenderDTO.SpecRs response = new EGenderDTO.SpecRs();
     }
 
     @Getter
@@ -29,10 +29,10 @@ public class EInstituteTypeDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private EInstituteType[] data = EInstituteType.values();
+        private EGender[] data = EGender.values();
         private Integer startRow=0;
-        private Integer endRow= EInstituteType.values().length;
-        private Integer totalRows = EInstituteType.values().length;
+        private Integer endRow= EGender.values().length;
+        private Integer totalRows = EGender.values().length;
     }
 
 }

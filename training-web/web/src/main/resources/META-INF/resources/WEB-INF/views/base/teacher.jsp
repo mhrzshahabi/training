@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%--<script>--%>
+// <script>
 
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -114,7 +114,9 @@
 	/*DynamicForm Add Or Edit*/
 	//--------------------------------------------------------------------------------------------------------------------//
 
-	var DynamicForm_Teacher_JspTeacher = isc.DynamicForm.create({
+	var vm = isc.ValuesManager.create({});
+
+	var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
 		width: "100%",
 		height: "100%",
 		align: "center",
@@ -124,6 +126,32 @@
 		showErrorText: false,
 		showErrorStyle: false,
 		errorOrientation: "right",
+		valuesManager: "vm",
+		numCols: 2,
+		titleAlign: "right",
+		requiredMessage: "<spring:message code='msg.field.is.required'/>",
+		margin: 10,
+		newPadding: 5,
+		fields: [
+			{name: "id", hidden: true},
+			{name: "fullNameFa",
+			title: "<spring:message code='firstName.lastName'/>",
+			type: 'text',
+			required: true},
+		]
+	});
+
+		var DynamicForm_JobInfo_JspTeacher = isc.DynamicForm.create({
+		width: "100%",
+		height: "100%",
+		align: "center",
+		canSubmit: true,
+		titleWidth: 250,
+		showInlineErrors: true,
+		showErrorText: false,
+		showErrorStyle: false,
+		errorOrientation: "right",
+		valuesManager: "vm",
 		numCols: 2,
 		titleAlign: "right",
 		requiredMessage: "<spring:message code='msg.field.is.required'/>",
@@ -135,99 +163,72 @@
 			type: 'text',
 			required: true
 
-		}, {
-			name: "fullNameEn",
-			title: "<spring:message code='firstName.lastName.latin'/>",
-			type: 'text',
-			keyPressFilter: "[a-z|A-Z|0-9 ]",
-			validators: [{
-				type: "isString",
-				validateOnExit: true,
-				type: "lengthRange",
-				min: 0,
-				max: 200,
-				stopOnError: true,
-				errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-			}]
-		}, {
-			name: "homeAddress",
-			title: "<spring:message code='home.address'/>",
-			type: 'text',
-			validators: [{
-				type: "isString",
-				validateOnExit: true,
-				min: 0,
-				max: 200,
-				stopOnError: true,
-				errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-			}]
-		}, {
-			name: "workAddress",
-			title: "<spring:message code='work.address'/>",
-			type: 'text',
-			validators: [{
-				type: "isString",
-				validateOnExit: true,
-				min: 0,
-				max: 200,
-				stopOnError: true,
-				errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-			}]
-		},
-			{
-				name: "mobile",
-				title: "<spring:message code='mobile'/>",
-				type: 'text',
-				keyPressFilter: "[0-9+]",
-				validators: [{
-					type: "isString",
-					validateOnExit: true,
-					type: "lengthRange",
-					min: 0,
-					max: 200,
-					stopOnError: true,
-					errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-				}]
-			},
-			{
-				name: "phone",
-				title: "<spring:message code='telephone'/>",
-				type: 'text',
-				keyPressFilter: "[0-9+]",
-				validators: [{
-					type: "isString",
-					validateOnExit: true,
-					type: "lengthRange",
-					min: 0,
-					max: 200,
-					stopOnError: true,
-					errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-				}]
-			},
-			{
-				name: "nationalCode",
-				title: "<spring:message code='national.code'/>",
-				type: 'text',
-				keyPressFilter: "[0-9+]",
-				validators: [{
-					type: "isString",
-					validateOnExit: true,
-					min: 0,
-					max: 200,
-					stopOnError: true,
-					errorMessage: "<spring:message code='msg.limit.name.lenght'/>"
-				}]
-			}]
+		}
+		]
 	});
+
+		var DynamicForm_AccountInfo_JspTeacher = isc.DynamicForm.create({
+		width: "100%",
+		height: "100%",
+		align: "center",
+		canSubmit: true,
+		titleWidth: 250,
+		showInlineErrors: true,
+		showErrorText: false,
+		showErrorStyle: false,
+		errorOrientation: "right",
+		valuesManager: "vm",
+		numCols: 2,
+		titleAlign: "right",
+		requiredMessage: "<spring:message code='msg.field.is.required'/>",
+		margin: 10,
+		newPadding: 5,
+		fields: [{name: "id", hidden: true}, {
+			name: "fullNameFa",
+			title: "<spring:message code='firstName.lastName'/>",
+			type: 'text',
+			required: true
+
+		}
+		]
+	});
+
+		var DynamicForm_AddressInfo_JspTeacher = isc.DynamicForm.create({
+		width: "100%",
+		height: "100%",
+		align: "center",
+		canSubmit: true,
+		titleWidth: 250,
+		showInlineErrors: true,
+		showErrorText: false,
+		showErrorStyle: false,
+		errorOrientation: "right",
+		valuesManager: "vm",
+		numCols: 2,
+		titleAlign: "right",
+		requiredMessage: "<spring:message code='msg.field.is.required'/>",
+		margin: 10,
+		newPadding: 5,
+		fields: [{name: "id", hidden: true}, {
+			name: "fullNameFa",
+			title: "<spring:message code='firstName.lastName'/>",
+			type: 'text',
+			required: true
+
+		}
+		]
+	});
+
+
 
 	var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
 		top: 260, title: "<spring:message code='save'/>", click: function () {
 
-			DynamicForm_Teacher_JspTeacher.validate();
-			if (DynamicForm_Teacher_JspTeacher.hasErrors()) {
+			vm.validate();
+			if (vm.hasErrors()) {
 				return;
 			}
-			var data = DynamicForm_Teacher_JspTeacher.getValues();
+			var data = vm.getValues();
 
 			isc.RPCManager.sendRequest({
 				actionURL: url,
@@ -292,28 +293,74 @@
 		members: [IButton_Teacher_Save_JspTeacher, IButton_Teacher_Exit_JspTeacher]
 	});
 
-	var Window_Teacher_JspTeacher = isc.Window.create({
-		title: "<spring:message code='teacher'/>",
-		width: 550,
-		autoSize: true,
-		align: "center",
-		autoCenter: true,
-		isModal: true,
-		showModalMask: true,
-		align: "center",
-		autoDraw: false,
-		dismissOnEscape: false,
-		border: "1px solid gray",
-		closeClick: function () {
-			this.Super("closeClick", arguments);
-		},
-		items: [isc.VLayout.create({
-			width: "100%",
-			height: "100%",
-			members: [DynamicForm_Teacher_JspTeacher, HLayOut_TeacherSaveOrExit_JspTeacher]
-		})]
+	var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
+		tabBarPosition: "top",
+		canEditTabTitles: true,
+		titleEditEvent: "doubleClick",
+		titleEditorTopOffset: 2,
+		tabs: [
+			{title: "اطلاعات پایه", canClose: false,
+			 pane: DynamicForm_BasicInfo_JspTeacher}
+		]
 	});
 
+	var TabSet_JobInfo_JspTeacher = isc.TabSet.create({
+		tabBarPosition: "top",
+		canEditTabTitles: true,
+		titleEditEvent: "doubleClick",
+		titleEditorTopOffset: 2,
+		tabs: [
+			{title: "محل کار", canClose: false,
+			pane: DynamicForm_JobInfo_JspTeacher}
+		]
+	});
+
+		var TabSet_AccountInfo_JspTeacher = isc.TabSet.create({
+		tabBarPosition: "top",
+		canEditTabTitles: true,
+		titleEditEvent: "doubleClick",
+		titleEditorTopOffset: 2,
+		tabs: [
+			{title: "اطلاعات حساب", canClose: false,
+			pane: DynamicForm_AccountInfo_JspTeacher}
+		]
+	});
+
+		var TabSet_AddressInfo_JspTeacher = isc.TabSet.create({
+		tabBarPosition: "top",
+		canEditTabTitles: true,
+		titleEditEvent: "doubleClick",
+		titleEditorTopOffset: 2,
+		tabs: [
+			{title: "محل سکونت", canClose: false,
+			pane: DynamicForm_AddressInfo_JspTeacher}
+		]
+	});
+
+
+	 var Window_Teacher_JspTeacher = isc.Window.create({
+            	    placement: "fillScreen",
+					title: "<spring:message code='teacher'/>",
+					canDragReposition: true,
+            	    canDragResize: true,
+					autoSize: true,
+					align: "center",
+					autoCenter: true,
+					isModal: true,
+					showModalMask: true,
+					autoDraw: false,
+					dismissOnEscape: false,
+					border: "1px solid gray",
+					items: [isc.VLayout.create({
+						width: "100%",
+						height: "100%",
+						members: [TabSet_BasicInfo_JspTeacher,
+									TabSet_JobInfo_JspTeacher,
+									TabSet_AccountInfo_JspTeacher,
+									TabSet_AddressInfo_JspTeacher,
+									 HLayOut_TeacherSaveOrExit_JspTeacher]
+					})]
+            	});
 	//--------------------------------------------------------------------------------------------------------------------//
 	/*ToolStrips and Layout*/
 	//--------------------------------------------------------------------------------------------------------------------//
@@ -399,7 +446,7 @@
 	};
 
 	function ListGrid_teacher_edit() {
-		DynamicForm_Teacher_JspTeacher.clearValues();
+		vm.clearValues();
 		var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
 		if (record == null || record.id == null) {
 			isc.Dialog.create({
@@ -414,16 +461,18 @@
 		} else {
 			method = "PUT";
 			url = "${restApiUrl}/api/teacher/" + record.id;
-			DynamicForm_Teacher_JspTeacher.editRecord(record);
+			vm.editRecord(record);
 			Window_Teacher_JspTeacher.show();
+			Window_Teacher_JspTeacher.bringToFront();
 		}
 	};
 
 	function ListGrid_teacher_add() {
 		method = "POST";
 		url = "${restApiUrl}/api/teacher";
-		DynamicForm_Teacher_JspTeacher.clearValues();
+		vm.clearValues();
 		Window_Teacher_JspTeacher.show();
+		Window_Teacher_JspTeacher.bringToFront();
 	};
 
 	function ListGrid_teacher_remove() {

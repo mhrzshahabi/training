@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_teacher", schema = "TRAINING")
-public class Teacher extends Auditable {
+public class Teacher extends Person {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_seq")
@@ -22,24 +23,49 @@ public class Teacher extends Auditable {
 	@Column(name = "id", precision = 10)
 	private Long id;
 
-	@Column(name = "c_full_name_fa", length = 255, nullable = false)
-	private String fullNameFa;
 
-	@Column(name = "c_full_name_en", length = 255)
-	private String fullNameEn;
+    @Column(name = "c_teacher_code", nullable = false, unique = true)
+	private String teacherCode;
 
-	@Column(name = "c_national_code", length = 10, nullable = false, unique = true)
-	private String nationalCode;
+	@Column(name = "b_enabled")
+	private Boolean enabled;
 
-	@Column(name = "c_mobile")
-	private String mobile;
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
+			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
+			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
+	private List<Category> categories;
 
-	@Column(name = "c_phone")
-	private String phone;
+	@Column(name = "c_economical_code")
+	private String economicalCode;
 
-	@Column(name = "c_home_address")
-	private String homeAddress;
+	@Column(name = "c_economical_record_number")
+	private String economicalRecordNumber;
 
-	@Column(name = "c_work_address")
-	private String workAddress;
+	///////////////////////////////////////////
+	@Column(name = "c_edu_level")
+	private String eduLevel;
+
+	@Column(name = "c_edu_major")
+	private String eduMajor;
+
+	@Column(name = "c_edu_orientation")
+	private String eduOrientation;
+	/////////////////////////////////////////
+
+    @Column(name = "c_account_number")
+	private String accountNember;
+
+    @Column(name = "c_bank")
+	private String bank;
+
+    @Column(name = "c_bank_branch")
+	private String bankBranch;
+
+    @Column(name = "c_cart_number")
+	private String cartNumber;
+
+    @Column(name = "c_shaba_number")
+	private String shabaNumber;
+
 }
