@@ -20,6 +20,7 @@ import java.util.Set;
 @Table(name = "tbl_state")
 @AttributeOverride(name="createdDate", column=@Column(name="d_created_date",nullable = true, updatable = false))
 @AttributeOverride(name="createdBy", column=@Column(name="c_created_by",nullable = true, updatable = false))
+@AttributeOverride(name="version", column=@Column(name="n_version",nullable = true, updatable = false))
 //@Subselect("senlect * from tbl_state")
 public class State extends Auditable{
 	@Id
