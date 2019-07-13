@@ -127,6 +127,7 @@
             }
         }, {
             title: "ویرایش دوره", icon: "pieces/16/icon_edit.png", click: function () {
+
                 DynamicForm_course.clearValues();
                 ListGrid_Course_Edit();
             }
@@ -303,7 +304,7 @@
 
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
-        title: "بازخوانی اطلاعات دوره",
+        title: "بازخوانی اطلاعات ",
 
         click: function () {
             ListGrid_Course_refresh();
@@ -315,7 +316,7 @@
     });
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش دوره",
+        title: "ویرایش ",
         click: function () {
             DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
@@ -323,8 +324,9 @@
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد دوره",
+        title: "ایجاد ",
         click: function () {
+
             ListGrid_Course_add();
         }
     });
@@ -337,7 +339,7 @@
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف دوره",
+        title: "حذف ",
         click: function () {
             ListGrid_Course_remove()
         }
@@ -355,7 +357,7 @@
         titleAlign: "center",
         showInlineErrors: true,
         numCols: "6",
-        isGroup:true,
+        isGroup: true,
         fields: [
             {name: "id", hidden: true},
             {
@@ -364,11 +366,11 @@
                 title: "نام فارسی",
                 hint: " نام فارسی",
                 showHintInField: true,
-               // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "250",
                 required: true,
                 type: 'text',
-                               width: "280",
+                width: "280",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
             {
@@ -392,8 +394,7 @@
                 length: "100",
                 width: "*",
                 hidden: true,
-// disabel: false,
-// hidden: true
+
             },
             {
                 name: "category.id",
@@ -649,9 +650,19 @@
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", required: true,
                 type: 'text', width: "*", validators: [MyValidators.NotEmpty]
             },
-            {name: "minTeacherExpYears", showHintInField: true,  hint: "حداقل نمره ارزيابي", title: "حداقل سابقه تدريس مدرس",shouldSaveValue: true,
-             editorType: "SpinnerItem", writeStackedIcons: true,
-             required: true, min: 1, max: 15,width: "*"},
+            {
+                name: "minTeacherExpYears",
+                showHintInField: true,
+                hint: "حداقل نمره ارزيابي",
+                title: "حداقل سابقه تدريس مدرس",
+                shouldSaveValue: true,
+                editorType: "SpinnerItem",
+                writeStackedIcons: true,
+                required: true,
+                min: 1,
+                max: 15,
+                width: "*"
+            },
             {
                 name: "minTeacherEvalScore",
                 title: "حداقل نمره ارزيابي مدرس",
@@ -704,52 +715,76 @@
             x = y + runV + eLevelTypeV + etheoTypeV;
 
 //------------------------------------
-            isc.RPCManager.sendRequest({
-                actionURL: "http://localhost:9090/api/course/getmaxcourse/" + x,
-                httpMethod: "GET",
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    var newCourseCounter = courseCounterCode(resp.data);
-                    x = x + newCourseCounter;
-                    DynamicForm_course.getItem('code').setValue(x);
-                    var data1 = DynamicForm_course.getValues();
-                    isc.RPCManager.sendRequest({
-                        actionURL: course_url,
-                        httpMethod: course_method,
-                        httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        data: JSON.stringify(data1),
-                        serverOutputAsString: false,
-                        callback: function (resp) {
+            if (course_method == "POST") {
+                isc.RPCManager.sendRequest({
+                    actionURL: "http://localhost:9090/api/course/getmaxcourse/" + x,
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        var newCourseCounter = courseCounterCode(resp.data);
+                        x = x + newCourseCounter;
+                        DynamicForm_course.getItem('code').setValue(x);
+                        var data1 = DynamicForm_course.getValues();
+                        isc.RPCManager.sendRequest({
+                            actionURL: course_url,
+                            httpMethod: course_method,
+                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            showPrompt: false,
+                            data: JSON.stringify(data1),
+                            serverOutputAsString: false,
+                            callback: function (resp) {
 
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    var OK = isc.Dialog.create({
-                                    message: "ایجاد دوره با موفقیت انجام شد.",
-                                    icon: "[SKIN]say.png",
-                                    title: " ذخیره"
-                                });
+                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                                setTimeout(function () {
-                                    OK.close();
-                                }, 3000);
-                                Window_course.close();
-                                ListGrid_Course_refresh();
-                            } else {
+                                    simpleDialog("ایجاد","ایجاد دوره با موفقیت انجام شد",2000,"say");
+                                    Window_course.close();
+                                    ListGrid_Course_refresh();
+                                } else {
 
-                                simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
+                                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
+
+                                }
 
                             }
+                        });
+                    }
+                });
+            }//end if
+
+            else {
+                var data1 = DynamicForm_course.getValues();
+                isc.RPCManager.sendRequest({
+                    actionURL: course_url,
+                    httpMethod: course_method,
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    data: JSON.stringify(data1),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+
+                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            simpleDialog("ویرایش","ویرایش دوره با موفقیت انجام شد",3000,"say");
+                             Window_course.close();
+                            ListGrid_Course_refresh();
+                        } else {
+
+                            simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
 
                         }
-                    });
-                }
-            });
+
+                    }
+                });
+
+
+            }//end else
 //-----------------------------------------------
 
         }
@@ -776,7 +811,6 @@
         })]
     });
     var Window_course = isc.Window.create({
-        title: "ایجاد دوره",
         width: "700",
         autoSize: true,
         autoCenter: true,
@@ -884,6 +918,7 @@
         course_url = "http://localhost:9090/api/course";
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
+        Window_course.setTitle("ایجاد");
         Window_course.show();
     };
 
@@ -906,7 +941,7 @@
 
             var Dialog_Delete = isc.Dialog.create({
 
-            message:" آیا از حذف دوره "+getFormulaMessage( record.titleFa,3,"red","I")+"  "+" مطمئن هستید؟ ",
+                message: " آیا از حذف دوره " + getFormulaMessage(record.titleFa, 3, "red", "I") + "  " + " مطمئن هستید؟ ",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -968,6 +1003,7 @@
             RestDataSourceSubCategory.fetchDataURL = "http://localhost:9090/api/category/" + sRecord.category.id + "/sub-categories"
             DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
+            Window_course.setTitle("ویرایش");
             Window_course.show();
         }
     };
