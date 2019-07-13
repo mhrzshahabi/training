@@ -2,6 +2,7 @@ package com.nicico.training;
 
 import com.nicico.copper.core.domain.NICICOException;
 import com.nicico.copper.core.util.IErrorCode;
+import com.nicico.training.model.EducationLicense;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -30,7 +31,8 @@ public class TrainingException extends NICICOException {
 		StudentNotFound(404),
 		SkillGroupNotFound(404),
 		JobCompetenceNotFound(404),
-		InstituteNotFound(404);
+		InstituteNotFound(404),
+		EducationLicenseNotFound(404);
 
 
 		private final Integer httpStatusCode;

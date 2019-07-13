@@ -239,7 +239,7 @@
             {name: "competence.id", hidden: true},
             {name: "competence.titleFa", title: "عنوان شايستگي", type: "staticText",},
             {name: "competence.titleEn", title: "عنوان انگليسي", type: "staticText", showIf: "form.getValue('competence.titleEn') != null",},
-            {name: "competence.etechnicalType.titleFa", title: "نوع تخصص", type: "staticText",},
+            {name: "competence.etechnicalType.titleFa", title: "نوع تخصص", type: "staticText"},
             {name: "competence.ecompetenceInputType.titleFa", title: "نوع ورودي", type: "staticText",},
             {name: "competence.description", title: "توضيحات", type: "staticText", showIf: "form.getValue('competence.description') != null",},
         ],

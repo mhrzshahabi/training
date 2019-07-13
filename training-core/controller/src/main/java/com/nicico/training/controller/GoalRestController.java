@@ -22,7 +22,6 @@ import java.util.List;
 public class GoalRestController {
     
     private final IGoalService goalService;
-    private final ISyllabusService syllabusService;
 
     // ------------------------------
 
