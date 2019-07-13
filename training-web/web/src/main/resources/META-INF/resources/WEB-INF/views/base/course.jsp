@@ -355,6 +355,7 @@
         titleAlign: "center",
         showInlineErrors: true,
         numCols: "6",
+        isGroup:true,
         fields: [
             {name: "id", hidden: true},
             {
@@ -427,6 +428,7 @@
             {
                 name: "subCategory.id",
                 title: "زير گروه",
+
                 hint: "زير گروه",
                 showHintInField: true,
                 prompt: "ابتدا گروه را انتخاب کنید",
@@ -647,24 +649,9 @@
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", required: true,
                 type: 'text', width: "*", validators: [MyValidators.NotEmpty]
             },
-            {
-                name: "minTeacherExpYears",
-                title: "حداقل سابقه تدريس مدرس",
-                hint: "حداقل سابقه تدريس مدرس",
-                type: 'text',
-                showHintInField: true,
-                width: "*",
-                textAlign: "center",
-                length: 2,
-                required: true,
-                keyPressFilter: "[0-9]",
-                validators: [
-                    {
-                        type: "integerRange", min: 0, max: 30,
-                        errorMessage: "لطفا سابقه تدریس را زیر 30 سال وارد کنید",
-                    }
-                ]
-            },
+            {name: "minTeacherExpYears", showHintInField: true,  hint: "حداقل نمره ارزيابي", title: "حداقل سابقه تدريس مدرس",shouldSaveValue: true,
+             editorType: "SpinnerItem", writeStackedIcons: true,
+             required: true, min: 1, max: 15,width: "*"},
             {
                 name: "minTeacherEvalScore",
                 title: "حداقل نمره ارزيابي مدرس",
@@ -916,8 +903,10 @@
                 }
             });
         } else {
+
             var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين ركورد حذف گردد؟",
+
+            message:" آیا از حذف دوره "+getFormulaMessage( record.titleFa,3,"red","I")+"  "+" مطمئن هستید؟ ",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
