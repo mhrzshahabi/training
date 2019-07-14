@@ -2,10 +2,8 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.GoalDTO;
-import com.nicico.training.dto.JobDTO;
-import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.*;
+import com.nicico.training.model.Competence;
 import com.nicico.training.service.CourseService;
 import com.sun.xml.internal.bind.v2.model.core.Ref;
 import lombok.RequiredArgsConstructor;
@@ -13,6 +11,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -192,5 +191,35 @@ public class CourseRestController {
     public ResponseEntity<String> getMaxCourseCode(@PathVariable String str)
     {
        return new ResponseEntity<>(courseService.getMaxCourseCode(str),HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/getcompetence/{courseId}")
+    public  ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId)
+    {
+        List <CompetenceDTO.Info> comList=courseService.getCompetence(courseId);
+        final  CompetenceDTO.SpecRs specResponse=new CompetenceDTO.SpecRs();
+        specResponse.setData(comList)
+                .setStartRow(0)
+                .setEndRow(comList.size())
+                .setTotalRows(comList.size());
+        final CompetenceDTO.CompetenceSpecRs competenceSpecRs=new CompetenceDTO.CompetenceSpecRs();
+        competenceSpecRs.setResponse(specResponse);
+        return  new ResponseEntity(competenceSpecRs,HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value ="/getcompetencequery/{courseId}")
+    public  ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId)
+    {
+        List <CompetenceDTO.Info> comList=courseService.getCompetenceQuery(courseId);
+        final  CompetenceDTO.SpecRs specResponse=new CompetenceDTO.SpecRs();
+        specResponse.setData(comList)
+                .setStartRow(0)
+                .setEndRow(comList.size())
+                .setTotalRows(comList.size());
+        final CompetenceDTO.CompetenceSpecRs competenceSpecRs=new CompetenceDTO.CompetenceSpecRs();
+        competenceSpecRs.setResponse(specResponse);
+        return  new ResponseEntity(comList,HttpStatus.OK);
     }
 }

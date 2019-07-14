@@ -27,11 +27,8 @@
         fields: [{name: "id", type: "Integer", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
-            {name: "category.id"},
-            {name: "subCategory.id"},
-            {name: "categoryId", foreignKey: "categoryDS.id"},
-            {name: "categoryTitleFa", includeFrom: "categoryDS.titleFa", includeVia: "categoryId"},
-            {name: "subCategoryId", foreignKey: "id"},
+            {name: "category.titleFa"},
+            {name: "subCategory.titleFa"},
             {name: "erunType.titleFa"},
             {name: "elevelType.titleFa"},
             {name: "etheoType.titleFa"},
@@ -189,19 +186,19 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد دوره", align: "center"},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
-            {name: "category.titleFa", title: "گروه", align: "center"},
-            {name: "subCategory.titleFa", title: "زير گروه", align: "center"},
-            {name: "erunType.titleFa", title: "نوع اجرا", align: "center"},
-            {name: "elevelType.titleFa", title: "سطح دوره", align: "center"},
-            {name: "etheoType.titleFa", title: "نوع دوره", align: "center"},
-            {name: "theoryDuration", title: "طول دوره(ساعت)", align: "center"},
-            {name: "etechnicalType.titleFa", title: "نوع تخصصي", align: "center"},
-            {name: "minTeacherDegree", title: "حداقل مدرك استاد", align: "center"},
-            {name: "minTeacherExpYears", title: "حداقل سابقه تدريس", align: "center"},
-            {name: "minTeacherEvalScore", title: "حداقل نمره ارزيابي", align: "center"},
+            {name: "code", title: "کد دوره", align: "center",filterOperator: "contains"},
+            {name: "titleFa", title: "نام فارسی", align: "center",filterOperator: "contains"},
+            {name: "titleEn", title: "نام لاتین", align: "center",filterOperator: "contains"},
+            {name: "category.titleFa", title: "گروه", align: "center",filterOperator: "contains"},
+            {name: "subCategory.titleFa", title: "زير گروه", align: "center",filterOperator: "contains"},
+            {name: "erunType.titleFa", title: "نوع اجرا", align: "center",filterOperator: "contains"},
+            {name: "elevelType.titleFa", title: "سطح دوره", align: "center",filterOperator: "contains"},
+            {name: "etheoType.titleFa", title: "نوع دوره", align: "center",filterOperator: "contains"},
+            {name: "theoryDuration", title: "طول دوره(ساعت)", align: "center",filterOperator: "contains"},
+            {name: "etechnicalType.titleFa", title: "نوع تخصصي", align: "center",filterOperator: "contains"},
+            {name: "minTeacherDegree", title: "حداقل مدرك استاد", align: "center",filterOperator: "contains"},
+            {name: "minTeacherExpYears", title: "حداقل سابقه تدريس", align: "center",filterOperator: "contains"},
+            {name: "minTeacherEvalScore", title: "حداقل نمره ارزيابي", align: "center",filterOperator: "contains"},
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
         ],
@@ -211,7 +208,11 @@
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-        filterOnKeypress: true,
+//----------
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+//-----------
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -406,6 +407,7 @@
                 required: true,
                 width: "*",
                 changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
@@ -436,7 +438,9 @@
                 textAlign: "center",
                 required: true,
                 width: "*",
-                changeOnKeypress: true,
+
+changeOnKeypress: true,
+filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
@@ -468,7 +472,9 @@
                 textAlign: "center",
                 required: true,
                 width: "*",
-                changeOnKeypress: true,
+
+changeOnKeypress: true,
+filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_run_type,
@@ -516,7 +522,9 @@
                 textAlign: "center",
                 required: true,
                 width: "*",
-                changeOnKeypress: true,
+
+changeOnKeypress: true,
+filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_level_type,
@@ -557,7 +565,9 @@
                 textAlign: "center",
                 required: true,
                 width: "*",
-                changeOnKeypress: true,
+
+changeOnKeypress: true,
+filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceETheoType,
@@ -599,7 +609,8 @@
                 textAlign: "center",
                 required: true,
                 width: "*",
-                changeOnKeypress: true,
+changeOnKeypress: true,
+filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_eTechnicalType,
@@ -706,7 +717,8 @@
         ]
     });
     var IButton_course_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
+            title: "ذخیره", icon: "pieces/16/save.png",
+            click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
                 return;
@@ -789,15 +801,13 @@
 
         }
     });
-
     var courseSaveOrExitHlayout = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
+//-------------
+        align: "center",
+         width: "100%",
+         padding: 5,
+      //  membersMargin:230,
+
         members: [IButton_course_Save, isc.IButton.create({
             ID: "EditExitIButton",
             title: "لغو",

@@ -1,5 +1,6 @@
 package com.nicico.training.repository;
 
+import com.nicico.training.model.Competence;
 import com.nicico.training.model.Course;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
@@ -14,5 +15,7 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
     List<Course> findCoursesBySkillId(Long skillId);
 
     List<Course> findByCodeStartingWith(String code);
+
+
 }
 

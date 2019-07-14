@@ -1,10 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.core.dto.search.SearchDTO;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.GoalDTO;
-import com.nicico.training.dto.JobDTO;
-import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -28,8 +25,14 @@ public interface ICourseService {
 	List<GoalDTO.Info> getgoal(Long courseId);
 	List<GoalDTO.Info> getGoalWithOut(Long courseId);
 	List<SkillDTO.Info> getSkill(Long courseId);
-	List<JobDTO.Info> getJob(Long courseId);
-	 String getMaxCourseCode(String str);
+
+
+    List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
+
+    List<CompetenceDTO.Info> getCompetence(Long courseId);
+    List<JobDTO.Info> getJob(Long courseId);
+
+    String getMaxCourseCode(String str);
 
 
 

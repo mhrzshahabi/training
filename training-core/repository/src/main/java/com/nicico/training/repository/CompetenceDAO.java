@@ -24,4 +24,7 @@ public interface CompetenceDAO extends JpaRepository<Competence, Long>, JpaSpeci
     @Query(value = "select c.* from training.TBL_COMPETENCE c  where Not EXISTS(select F_COMPETENCE_ID from training.TBL_COMPETENCE_SKILL cs where  cs.F_COMPETENCE_ID=c.ID and cs.F_SKILL_ID = ?)", nativeQuery = true)
     List<Competence> findCompetencesBySkillId(Long skillId);
 
+    @Query(value = "select * from training.TBL_COMPETENCE  where  exists(select cs.F_SKILL_ID from training.TBL_COMPETENCE_SKILL cs where  EXISTS (select F_SKILL_ID from training.TBL_SKILL_COURSE sc where sc.F_COURSE_ID = ?))",nativeQuery = true)
+    List<Competence> findCompetenceByCourseId(Long id);
+
 }

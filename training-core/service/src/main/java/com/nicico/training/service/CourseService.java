@@ -3,13 +3,11 @@ package com.nicico.training.service;
 import com.nicico.copper.core.domain.criteria.SearchUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.GoalDTO;
-import com.nicico.training.dto.JobDTO;
-import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
+import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.repository.GoalDAO;
 import com.nicico.training.repository.SyllabusDAO;
@@ -29,6 +27,7 @@ public class CourseService implements ICourseService {
     private final ModelMapper modelMapper;
     private final GoalDAO goalDAO;
     private final CourseDAO courseDAO;
+    private final CompetenceDAO competenceDAO;
     private final SyllabusDAO syllabusDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
@@ -94,7 +93,7 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void delete(Long id) {
-       courseDAO.deleteById(id);
+        courseDAO.deleteById(id);
     }
 
     @Transactional
@@ -109,7 +108,6 @@ public class CourseService implements ICourseService {
     public SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
     }
-
 
 
     // ------------------------------
@@ -142,7 +140,7 @@ public class CourseService implements ICourseService {
                         goals.forEach(goal ->
                                 goalInfo.add(modelMapper.map(goal, GoalDTO.Info.class))
                         ));
-        return  goalInfo;
+        return goalInfo;
     }
 
     @Transactional
@@ -173,6 +171,7 @@ public class CourseService implements ICourseService {
         }
         one.setGoalSet(goalSet);
     }
+
     @Transactional
     @Override
     public void removeCourseSGoal(Long courseId, List<Long> goalIdList) {
@@ -228,20 +227,48 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public String getMaxCourseCode(String str)
-    {
-        List<Course> courseList=courseDAO.findByCodeStartingWith(str);
-        int max=0;
-        if (courseList.size()==0)
-        return "0";
-        for(Course course:courseList)
-        {
-          if(max<Integer.parseInt(course.getCode().substring(6,10)))
+    public String getMaxCourseCode(String str) {
+        List<Course> courseList = courseDAO.findByCodeStartingWith(str);
+        int max = 0;
+        if (courseList.size() == 0)
+            return "0";
+        for (Course course : courseList) {
+            if (max < Integer.parseInt(course.getCode().substring(6, 10)))
 
-              max=Integer.parseInt(course.getCode().substring(6,10));
+                max = Integer.parseInt(course.getCode().substring(6, 10));
 
         }
-       return String.valueOf(max);
+        return String.valueOf(max);
     }
 
+    @Transactional
+    @Override
+    public List<CompetenceDTO.Info> getCompetenceQuery(Long courseId) {
+        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
+        List<Competence> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
+        Optional.ofNullable(competenceList)
+             .ifPresent(competence ->
+                       competence.forEach(comp ->
+                       compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+                        ));
+        return compeInfoList;
+    }
+
+    //-------------------------------
+    @Transactional
+    @Override
+    public List<CompetenceDTO.Info> getCompetence(Long courseId) {
+        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
+        Set<Competence> competenceSet = new HashSet<>();
+        Course one = courseDAO.getOne(courseId);
+        Set<Skill> skillSet = one.getSkillSet();
+        for (Skill skill : skillSet)
+            competenceSet = skill.getCompetenceSet();
+        Optional.ofNullable(competenceSet)
+                .ifPresent(competence ->
+                        competence.forEach(comp ->
+                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+                        ));
+        return compeInfoList;
+    }
 }
