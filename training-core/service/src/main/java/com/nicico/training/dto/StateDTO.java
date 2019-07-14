@@ -1,8 +1,4 @@
-package com.nicico.training.dto;/* com.nicico.training.dto
-@Author:jafari-h
-@Date:5/28/2019
-@Time:2:39 PM
-*/
+package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -22,21 +18,17 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class GoalDTO {
+public class StateDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
-    private String titleFa;
-    @NotNull
-    @ApiModelProperty(required = true)
-    private String titleEn;
+    private String name;
 
-    // ------------------------------
-
+    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GoalInfo")
-    public static class Info extends GoalDTO {
+    @ApiModel("StateInfo")
+    public static class Info extends StateDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -44,14 +36,13 @@ public class GoalDTO {
         private String lastModifiedBy;
         private Integer version;
     }
-
     // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GoalCreateRq")
-    public static class Create extends GoalDTO {
+    @ApiModel("StateCreateRq")
+    public static class Create extends StateDTO {
     }
 
     // ------------------------------
@@ -59,8 +50,8 @@ public class GoalDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GoalUpdateRq")
-    public static class Update extends GoalDTO {
+    @ApiModel("StateUpdateRq")
+    public static class Update extends StateDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer version;
@@ -71,7 +62,7 @@ public class GoalDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("GoalDeleteRq")
+    @ApiModel("StateDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -84,9 +75,9 @@ public class GoalDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("GoalSpecRs")
-    public static class GoalSpecRs {
-        private SpecRs response;
+    @ApiModel("StateSpecRs")
+    public static class StateSpecRs {
+        private StateDTO.SpecRs response;
     }
 
     // ---------------
@@ -96,7 +87,7 @@ public class GoalDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<GoalDTO.Info> data;
+        private List<StateDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -104,3 +95,4 @@ public class GoalDTO {
     }
 
 }
+
