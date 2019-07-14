@@ -14,8 +14,8 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"})
 @Entity
 @Table(name = "tbl_syllabus", schema = "TRAINING")
-public class Syllabus extends Auditable {
-
+public class Syllabus extends Auditable
+{
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "syllabus_seq")
 	@SequenceGenerator(name = "syllabus_seq", sequenceName = "seq_syllabus_id", allocationSize = 1)
@@ -34,7 +34,7 @@ public class Syllabus extends Auditable {
 	@Column(name = "c_description")
 	private String description;
 
-	@Column(name = "n_theoretical_duration", length = 10, nullable = false)
+	@Column(name = "n_theoretical_duration", length = 10)
 	private Long theoreticalDuration;
 
 	@Column(name = "n_practical_duration", length = 10, nullable = false)

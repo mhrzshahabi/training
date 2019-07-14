@@ -1,5 +1,8 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.training.dto.GoalDTO;
@@ -8,11 +11,13 @@ import com.nicico.training.iservice.IGoalService;
 import com.nicico.training.iservice.ISyllabusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -22,6 +27,7 @@ import java.util.List;
 public class GoalRestController {
     
     private final IGoalService goalService;
+    private final ObjectMapper objectMapper;
 
     // ------------------------------
 
@@ -72,8 +78,27 @@ public class GoalRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_goal')")
-    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<GoalDTO.GoalSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                   @RequestParam("_endRow") Integer endRow,
+                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException
+    {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            if (StringUtils.isNotEmpty(sortBy)) {
+                criteriaRq.set_sortBy(sortBy);
+            }
+
+            request.setCriteria(criteriaRq);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
