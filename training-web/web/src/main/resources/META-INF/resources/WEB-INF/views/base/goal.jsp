@@ -529,7 +529,9 @@
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-        filterOnKeypress: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -1087,7 +1089,7 @@
             selectedGoalId = gRecord.id;
             methodSyllabus = "POST";
             urlSyllabus = "http://localhost:9090/api/syllabus";
-            DynamicForm_Syllabus.clearValues();
+            // DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.show();
         }

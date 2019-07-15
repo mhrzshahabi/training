@@ -21,19 +21,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class SyllabusDTO {
 
-    @ApiModelProperty(required = true)
-	private String code;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
 
     @ApiModelProperty(required = true)
 	private String titleEn;
-
-    @NotNull
-    @ApiModelProperty(required = true)
-	private Long theoreticalDuration;
 
     @NotNull
     @ApiModelProperty(required = true)
