@@ -149,10 +149,10 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                    showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
             {
                 name: "titleEn",
@@ -221,30 +221,6 @@
 
         }
     });
-
-    var Hlayout_Goal_SaveOrExit = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
-        members: [IButton_Goal_Save, isc.IButton.create({
-            ID: "IButton_Goal_Exit",
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "pieces/16/icon_delete.png",
-            orientation: "vertical",
-            click: function () {
-                DynamicForm_Goal.clearValues();
-                Window_Goal.close();
-            }
-        })]
-    });
-
-
     var IButton_Syllabus_Save = isc.IButton.create({
         top: 260, title: "ذخیره",
         icon: "pieces/16/save.png",
@@ -292,12 +268,35 @@
         }
     });
 
+    var Hlayout_Goal_SaveOrExit = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        align:"center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Goal_Save, isc.IButton.create({
+            ID: "IButton_Goal_Exit",
+            title: "لغو",
+            prompt: "",
+            width: 100,
+            icon: "pieces/16/icon_delete.png",
+            orientation: "vertical",
+            click: function () {
+                DynamicForm_Goal.clearValues();
+                Window_Goal.close();
+            }
+        })]
+    });
+
     var Hlayout_Syllabus_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
         alignLayout: "center",
+        align:"center",
         padding: 10,
         membersMargin: 10,
         members: [IButton_Syllabus_Save, isc.IButton.create({
@@ -315,7 +314,6 @@
 
     var Window_Syllabus = isc.Window.create({
         title: "سرفصل",
-        width: "600",
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -328,15 +326,14 @@
             this.Super("closeClick", arguments);
         },
         items: [isc.VLayout.create({
-            width: "100%",
-            height: "100%",
+            width: "350",
+            height: "150",
             members: [DynamicForm_Syllabus, Hlayout_Syllabus_SaveOrExit]
         })]
     });
 
     var Window_Goal = isc.Window.create({
         title: "هدف",
-        width: "500",
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -349,8 +346,8 @@
             this.Super("closeClick", arguments);
         },
         items: [isc.VLayout.create({
-            width: "900",
-            height: "200",
+            width: "300",
+            height: "120",
             members: [DynamicForm_Goal, Hlayout_Goal_SaveOrExit]
         })]
     });
@@ -381,7 +378,7 @@
             }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/syllabus/print/exel"/>");
+                window.open("<spring:url value="/syllabus/print/excel"/>");
             }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
@@ -601,7 +598,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-            window.open("<spring:url value="/goal/print/pdf"/>");
+            window.open("<spring:url value="/syllabus/print/pdf"/>");
         }
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
@@ -630,8 +627,8 @@
     var ToolStripButton_Goal_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد هدف",
-        prompt: "به منظور تعریف هدف جدید کلیک نمایید.",
-        hoverWidth: 180,
+        prompt: "تعریف هدف جدید برای دوره مذکور",
+        hoverWidth: 160,
         click: function () {
             ListGrid_Goal_Add();
         }
@@ -647,6 +644,8 @@
     });
     var ToolStripButton_Goal_Print = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/plus.png",
+        prompt: "تخصیص هدف موجود به دوره مذکور",
+        hoverWidth: 160,
         title: "افزودن هدف",
         click: function () {
             Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
@@ -1022,7 +1021,7 @@
             var Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code='msg.record.remove.ask'/>",
+                title: "هشدار",
                 buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
                     title: "<spring:message
 		code='global.no'/>"

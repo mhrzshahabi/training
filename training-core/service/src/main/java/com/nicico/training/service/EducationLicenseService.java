@@ -18,7 +18,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EducationLicenseServiceService implements IEducationLicenseService {
+public class EducationLicenseService implements IEducationLicenseService {
 
     private final ModelMapper modelMapper;
     private final EducationLicenseDAO educationLicenseDAO;

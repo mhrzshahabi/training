@@ -1,11 +1,14 @@
 package com.nicico.training.controller;
 
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.SyllabusDTO;
 import com.nicico.training.iservice.ISyllabusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,7 +16,12 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -22,6 +30,8 @@ import java.util.List;
 public class SyllabusRestController {
 
 	private final ISyllabusService syllabusService;
+	private final ReportUtil reportUtil;
+
 
 	// ------------------------------
 
@@ -113,6 +123,16 @@ public class SyllabusRestController {
 	@PreAuthorize("hasAuthority('r_syllabus')")
 	public ResponseEntity<SearchDTO.SearchRs<SyllabusDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
 		return new ResponseEntity<>(syllabusService.search(request), HttpStatus.OK);
+	}
+
+	// -----------------
+
+	@Loggable
+	@GetMapping(value = {"/print/{type}"})
+	public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+		Map<String, Object> params = new HashMap<>();
+		params.put(ConstantVARs.REPORT_TYPE, type);
+		reportUtil.export("/reports/Syllabus.jasper", params, response);
 	}
 
 }

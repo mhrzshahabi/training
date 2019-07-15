@@ -32,8 +32,9 @@ public class TrainingException extends NICICOException {
 		SkillGroupNotFound(404),
 		JobCompetenceNotFound(404),
 		InstituteNotFound(404),
-		EducationLicenseNotFound(404);
-
+		EducationLicenseNotFound(404),
+		CityNotFound(404),
+		StateNotFound(404);
 
 		private final Integer httpStatusCode;
 
