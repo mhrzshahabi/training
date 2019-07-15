@@ -319,6 +319,11 @@
         icon: "[SKIN]/actions/edit.png",
         title: "ویرایش ",
         click: function () {
+
+            DynamicForm_course.getItem("subCategory.id").setDisabled(true);
+            DynamicForm_course.getItem("erunType.id").setDisabled(true);
+            DynamicForm_course.getItem("elevelType.id").setDisabled(true);
+            DynamicForm_course.getItem("etheoType.id").setDisabled(true);
             DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         }
