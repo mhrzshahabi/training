@@ -32,4 +32,8 @@ public class State extends Auditable
 
 	@OneToMany(mappedBy = "state", fetch = FetchType.LAZY)
 	private Set<City> citySet;
+
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "f_country")
+	private Country country;
 }

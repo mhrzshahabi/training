@@ -25,11 +25,11 @@ import java.util.Date;
 public abstract class Auditable {
     @CreatedDate
     @Column(name = "d_created_date", nullable = false, updatable = false)
-    private Date createdDate;
+    protected Date createdDate;
 
     @CreatedBy
     @Column(name = "c_created_by", nullable = false, updatable = false)
-    private String createdBy;
+    protected String createdBy;
 
     @LastModifiedDate
     @Column(name = "d_last_modified_date")
