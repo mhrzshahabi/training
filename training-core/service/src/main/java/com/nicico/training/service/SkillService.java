@@ -30,6 +30,7 @@ public class SkillService implements ISkillService {
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
+    private final JobDAO jobDAO;
     private final SkillGroupDAO skillGroupDAO;
     private final CompetenceDAO competenceDAO;
     private final SkillLevelDAO skillLevelDAO;
@@ -99,6 +100,12 @@ public class SkillService implements ISkillService {
     @Override
     public SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(skillDAO, request, skill -> modelMapper.map(skill, SkillDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public String getMaxSkillCode(String skillCodeStart) {
+        return skillDAO.findMaxSkillCode(skillCodeStart);
     }
 
     // ---------------
@@ -181,6 +188,16 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<JobDTO.Info> getJobs(Long skillID) {
+        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        List<Job> jobs=jobDAO.getJobsBySkillId(skillID);
+        return modelMapper.map( jobs,new TypeToken<List<JobDTO.Info>>(){}.getType());
+    }
+
+
+    @Transactional(readOnly = true)
+    @Override
     public List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID) {
         final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
         final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
@@ -204,7 +221,6 @@ public class SkillService implements ISkillService {
     public List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID) {
         final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
         final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-
 
         return modelMapper.map( skillGroupDAO.findSkillGroupsBySkillId(skillID),new TypeToken<List<SkillGroupDTO.Info>>(){}.getType());
     }

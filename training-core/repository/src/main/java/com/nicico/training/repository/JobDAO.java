@@ -20,4 +20,8 @@ public interface JobDAO extends JpaRepository<Job, Long>, JpaSpecificationExecut
     @Query(value = "select j.* from training.tbl_job j " +
             " where j.id not in (select jc.f_job_id from training.tbl_job_competence jc where jc.f_competence_id = ?)", nativeQuery = true)
     List<Job> findOtherJobsForCompetence(Long competenceId);
+
+    @Query(value = "SELECT tj.* FROM tbl_job tj where Exists(select * from tbl_job_competence tjc where tj.id = tjc.f_job_id and exists(select * from tbl_competence_skill tcs where tjc.f_competence_id= tcs.f_competence_id and tcs.f_skill_id = ?) )", nativeQuery = true)
+    List<Job> getJobsBySkillId(Long skillId);
+
 }

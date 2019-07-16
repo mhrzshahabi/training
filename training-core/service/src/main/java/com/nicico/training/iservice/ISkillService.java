@@ -27,6 +27,7 @@ public interface ISkillService {
     SearchDTO.SearchRs<SkillDTO.Info> search(SearchDTO.SearchRq request);
 
     // ---------------
+    String getMaxSkillCode(String skillCodeStart);
 
     List<CourseDTO.Info> getCourses(Long skillID);
     List<CourseDTO.Info> getUnAttachedCourses(Long skillID);
@@ -34,6 +35,8 @@ public interface ISkillService {
     List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID);
     List<SkillGroupDTO.Info> getSkillGroups(Long skillID);
     List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID);
+    List<JobDTO.Info> getJobs(Long skillID);
+
     CategoryDTO.Info getCategory(Long skillID);
     SubCategoryDTO.Info getSubCategory(Long skillID);
     SkillLevelDTO.Info getSkillLevel(Long skillID);
