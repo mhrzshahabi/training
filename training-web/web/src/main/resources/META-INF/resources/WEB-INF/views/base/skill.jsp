@@ -5,7 +5,7 @@
 //<script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-
+    var skill_Level_Symbol = ""
     var skill_Method = "GET";
     var skill_MainUrl = "${restApiUrl}/api/";
     var skill_ActionUrl = skill_MainUrl + "skill";
@@ -268,25 +268,51 @@
         fetchDataURL: "${restApiUrl}/api/skill/course-dummy"
     });
 
+    var RestDataSource_Skill_Attached_Jobs = isc.RestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد شغل", align: "center"},
+            {name: "costCenter", title: "مرکز هزينه", align: "center"},
+            {name: "titleFa", title: "عنوان شغل", align: "center"},
+            {name: "titleEn", title: "عنوان انگليسي", align: "center"},
+            {name: "description", title: "توضيحات", align: "center"}
+        ],
+        dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+                "Access-Control-Allow-Origin": "${restApiUrl}"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fetchDataURL: "${restApiUrl}/api/skill/job-dummy"
+    });
+
+
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
 
 
-    var DynamicForm_Skill_Skill = isc.DynamicForm.create({
+    var DynamicForm_Skill_Skill = isc.MyDynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
         showInlineErrors: true,
-        numCols: "2",
+        numCols: "4",
         showErrorText: true,
         showErrorStyle: true,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "فیلد اجباری است.",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد",
+                hint: " کد مهارت",
+                showHintInField: true,
+                colSpan: 2,
+                title: "کد مهارت",
                 length: 10,
                 type: 'text',
                 required: false,
@@ -296,8 +322,10 @@
             },
             {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "عنوان فارسی",
                 required: true,
+                hint: " عنوان فارسی",
+                showHintInField: true,
                 type: 'text',
                 default: "125",
                 readonly: true,
@@ -313,9 +341,11 @@
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "عنوان لاتین ",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
+                hint: " عنوان لاتین",
+                showHintInField: true,
                 length: "255",
                 width: "300",
                 validators: [{
@@ -332,16 +362,18 @@
                 name: "skillLevelId",
                 type: "IntegerItem",
                 title: "سطح مهارت",
+                hint: "سطح مهارت",
+                showHintInField: true,
                 width: "300",
                 required: true,
-                textAlign: "center",
+                textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Skill_Level,
-                autoFetchData: false,
+                autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -360,19 +392,35 @@
                         filterOperator: "iContains"
                     }
                 ],
+                changed: function (form, item, value) {
+                    switch (value) {
+                        case 1:
+                            skill_Level_Symbol = "1";
+                            break;
+                        case 2:
+                            skill_Level_Symbol = "2";
+                            break;
+                        case 3:
+                            skill_Level_Symbol = "3";
+                            break;
+                    }
+
+                }
             },
             {
                 name: "categoryId",
-                title: "گروه",
+                title: "گروه مهارت",
+                hint: "گروه مهارت",
+                showHintInField: true,
                 width: "300",
                 required: true,
-                textAlign: "center",
+                textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Category,
-                autoFetchData: false,
+                autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -403,10 +451,12 @@
             },
             {
                 name: "subCategoryId",
-                title: " زیر گروه",
+                title: " زیر گروه مهارت",
+                hint: "زیرگروه مهارت",
+                showHintInField: true,
                 width: "300",
                 required: true,
-                textAlign: "center",
+                textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 displayField: "titleFa",
@@ -436,19 +486,16 @@
                         filterOperator: "iContains"
                     }
                 ],
-// changed: function (form, item, value) {
-// alert(form.getItem("subCategory.id").getRecord());
-// //form.getItem("subCategory.id").fetchData();
-// }
-
             },
             {
                 name: "edomainTypeId",
                 type: "IntegerItem",
                 title: "نوع مهارت",
+                hint: " نوع مهارت",
+                showHintInField: true,
                 width: "300",
                 required: true,
-                textAlign: "center",
+                textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 changeOnKeypress: true,
@@ -476,10 +523,13 @@
             },
             {
                 name: "description",
+                colSpan: 4,
+                hint: " توضیحات",
+                showHintInField: true,
                 title: "توضيحات",
                 length: "500",
-                width: "300",
-                type: 'text'
+                width: "700",
+                type: 'areaText'
             }
         ]
     });
@@ -487,6 +537,10 @@
     var IButton_Skill_Skill_Save = isc.IButton.create({
         top: 260, title: "ذخیره",
         click: function () {
+            if (skill_Method == "POST") {
+                var sub_cat_code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
+                DynamicForm_Skill_Skill.getItem('code').setValue(sub_cat_code + skill_Level_Symbol);
+            }
             DynamicForm_Skill_Skill.validate();
             if (DynamicForm_Skill_Skill.hasErrors()) {
                 return;
@@ -659,6 +713,35 @@
         autoFetchData: true,
         showFilterEditor: true,
         filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
+
+    var ListGrid_Skill_Attached_Jobs = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Skill_Attached_Jobs,
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد شغل", align: "center"},
+            {name: "costCenter", title: "مرکز هزينه", align: "center"},
+            {name: "titleFa", title: "عنوان فارسی", align: "center"},
+            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
+            {name: "description", title: "توضيحات", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        filterOnKeypress: false,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -919,6 +1002,10 @@
         height: "100%",
         dataSource: RestDataSource_Skill_Skill,
         contextMenu: Menu_ListGrid_Skill_Skill,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+
         doubleClick: function () {
             ListGrid_Skill_Skill_Edit();
         },
@@ -940,10 +1027,12 @@
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
                 RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/job-dummy";
             } else {
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
                 RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/jobs";
                 selectedSkillId = record.id;
 // // RestDataSource_Skill_Attached_SkillGroup.fetchData();
 
@@ -951,6 +1040,7 @@
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
             ListGrid_Skill_Attached_Competences.invalidateCache();
             ListGrid_Skill_Attached_Courses.invalidateCache();
+            ListGrid_Skill_Attached_Jobs.invalidateCache();
 // ListGrid_Skill_Attached_Competences.fetchData();
 // ListGrid_Skill_Attached_Courses.fetchData();
         },
@@ -959,7 +1049,6 @@
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-        filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -2156,6 +2245,14 @@
     });
 
 
+    var HLayout_Skill_SkillJobs_Grid = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [
+            ListGrid_Skill_Attached_Jobs
+        ]
+    });
     var HLayout_Skill_SkillCourses_Grid = isc.HLayout.create({
         width: "100%",
         height: "100%",
@@ -2205,6 +2302,15 @@
             HLayout_Skill_SkillCourses_Grid, VLayout_Action_Skill_SkillCourses
         ]
     });
+    var HLayout_Tab_Skill_Jobs = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [
+            HLayout_Skill_SkillJobs_Grid
+        ]
+    });
+
 
     var Detail_Tab_Skill = isc.TabSet.create({
         tabBarPosition: "top",
@@ -2226,6 +2332,11 @@
                 id: "TabPane_Skill_Course",
                 title: "دوره",
                 pane: HLayout_Tab_Skill_Courses
+            },
+            {
+                id: "TabPane_Skill_Job",
+                title: "مشاغل",
+                pane: HLayout_Tab_Skill_Jobs
             }
         ]
     });
