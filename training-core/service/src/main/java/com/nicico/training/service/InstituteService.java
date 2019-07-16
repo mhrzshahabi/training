@@ -66,8 +66,8 @@ public class InstituteService implements IInstituteService {
         modelMapper.map(request, updating);
         updating.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
         updating.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
-        institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
-        institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
+        updating.setELicenseTypeTitleFa(updating.getELicenseType().getTitleFa());
+        updating.setEInstituteTypeTitleFa(updating.getEInstituteType().getTitleFa());
         return modelMapper.map(instituteDAO.saveAndFlush(updating), InstituteDTO.Info.class);
     }
 

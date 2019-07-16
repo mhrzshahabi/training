@@ -41,6 +41,16 @@ public class EducationLevelDTO {
         private Integer version;
     }
 
+      //-------------------------------
+    @Getter
+    @Setter
+    @ApiModel("EducationLeveInfoTuple")
+    public static class EducationLeveInfoTuple {
+        private Long id;
+        private String titleFa;
+        private String titleEn;
+    }
+
     // ------------------------------
 
     @Getter

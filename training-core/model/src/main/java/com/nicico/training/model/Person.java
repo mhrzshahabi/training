@@ -26,9 +26,6 @@ public abstract class Person extends Auditable {
 	@Column(name = "c_father_name")
 	private String fatherName;
 
-	@Column(name = "e_gender")
-	private EGender gender;
-
 	@Column(name = "c_birth_date")
 	private String birthDate;
 
@@ -47,22 +44,14 @@ public abstract class Person extends Auditable {
 	@Column(name = "c_nationality")
 	private String nationality;
 
-	@Column(name = "e_married")
-	private EMarried married;
-
 	@Column(name = "c_email")
 	private String email;
-
-	@Column(name = "e_military")
-	private EMilitary military;
 
 	@Column(name = "c_mobile")
 	private String mobile;
 
 	@Column(name = "c_description",  length = 500)
 	private String description;
-
-	/////////////////////////////////////////////////////////////
 
 	@Column(name = "c_work_name")
 	private String workName;
@@ -85,8 +74,6 @@ public abstract class Person extends Auditable {
 	@Column(name = "c_work_webSite")
 	private String workWebSite;
 
-	////////////////////////////////////////////////////////////////
-
     @Column(name = "c_home_address")
 	private String homeAddress;
 
@@ -96,12 +83,28 @@ public abstract class Person extends Auditable {
     @Column(name = "c_home_postal_code")
 	private String homePostalCode;
 
-	//////////////////////////////////////////////////////////////////
-
     @Column(name = "c_attach_photo")
     private String attachPhoto;
 
     @Column(name = "c_attach_extension")
     private String attachExtension;
+
+    @Column(name = "e_married")
+	private EMarried eMarried;
+
+	@Column(name = "e_military")
+	private EMilitary eMilitary;
+
+	@Column(name = "e_gender")
+	private EGender eGender;
+
+	@Column(name = "c_married")
+	private String eMarriedTitleFa;
+
+	@Column(name = "c_military")
+	private String eMilitaryTitleFa;
+
+	@Column(name = "c_gender")
+	private String eGenderTitleFa;
 
 }

@@ -3,6 +3,11 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.dto.date.DateTimeDTO;
+import com.nicico.training.model.Category;
+import com.nicico.training.model.EducationOrientation;
+import com.nicico.training.model.enums.EGender;
+import com.nicico.training.model.enums.EMarried;
+import com.nicico.training.model.enums.EMilitary;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,14 +28,59 @@ public class TeacherDTO {
 	@NotEmpty
 	@ApiModelProperty(required = true)
 	private String fullNameFa;
+	@NotEmpty
+	@ApiModelProperty(required = true)
 	private String fullNameEn;
 	@NotEmpty
 	@ApiModelProperty(required = true)
 	private String nationalCode;
+	@NotEmpty
+	@ApiModelProperty(required = true)
+	private String teacherCode;
+
+	private String fatherName;
+	private String birthDate;
+	private String birthLocation;
+	private String birthCertificate;
+	private String birthCertificateLocation;
+	private String religion;
+	private String nationality;
+	private String email;
+
 	private String mobile;
-	private String phone;
-	private String homeAddress;
+	private String description;
+	private String workName;
 	private String workAddress;
+	private String workPhone;
+	private String workPostalCode;
+	private String workJob;
+	private String workTeleFax;
+	private String workWebSite;
+	private String homeAddress;
+	private String homePhone;
+	private String homePostalCode;
+    private String attachPhoto;
+    private String attachExtension;
+
+	private Boolean enableStatus;
+	private String economicalCode;
+	private String economicalRecordNumber;
+	private String eduLevel;
+	private String eduMajor;
+	private String eduOrientation;
+	private String accountNember;
+	private String bank;
+	private String bankBranch;
+	private String cartNumber;
+	private String shabaNumber;
+
+	private Integer eMilitaryId;
+	private Integer eMarriedId;
+	private Integer eGenderId;
+
+    private Long educationLevelId;
+    private Long educationMajorId;
+    private Long educationOrientationId;
 
 	// ------------------------------
 
@@ -45,6 +95,13 @@ public class TeacherDTO {
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
 		private Integer version;
+		private List<CategoryDTO.CategoryInfoTuple> categories;
+		private EMilitary eMilitary;
+		private EMarried eMarried;
+		private EGender eGender;
+		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
+		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
 	}
 
 	//-------------------------------

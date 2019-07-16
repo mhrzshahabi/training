@@ -228,6 +228,66 @@ public abstract class EnumsConverter {
         }
     }
 
+	@Converter(autoApply = true)
+    public static class EMilitaryConverter implements AttributeConverter<EMilitary, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EMilitary entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EMilitary convertToEntityAttribute(Integer id) {
+
+            for (EMilitary entry : EMilitary.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+     @Converter(autoApply = true)
+    public static class EMarriedConverter implements AttributeConverter<EMarried, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EMarried entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EMarried convertToEntityAttribute(Integer id) {
+
+            for (EMarried entry : EMarried.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+     @Converter(autoApply = true)
+    public static class EGenderConverter implements AttributeConverter<EGender, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EGender entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EGender convertToEntityAttribute(Integer id) {
+
+            for (EGender entry : EGender.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }
 
 

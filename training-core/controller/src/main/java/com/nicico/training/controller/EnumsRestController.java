@@ -65,4 +65,19 @@ public class EnumsRestController {
     public ResponseEntity<ELicenseTypeDTO.ELicenseTypeSpecRs> getELicenseType() {
         return  new ResponseEntity<>(new ELicenseTypeDTO.ELicenseTypeSpecRs(),HttpStatus.OK);
     }
+
+    @GetMapping("eGender/spec-list")
+    public ResponseEntity<EGenderDTO.EGenderSpecRs> getEGender() {
+        return  new ResponseEntity<>(new EGenderDTO.EGenderSpecRs(),HttpStatus.OK);
+    }
+
+    @GetMapping("eMilitary/spec-list")
+    public ResponseEntity<EMilitaryDTO.EMilitarySpecRs> getEMilitary() {
+        return  new ResponseEntity<>(new EMilitaryDTO.EMilitarySpecRs(),HttpStatus.OK);
+    }
+
+    @GetMapping("eMarried/spec-list")
+    public ResponseEntity<EMarriedDTO.EMarriedSpecRs> getEMarried() {
+        return  new ResponseEntity<>(new EMarriedDTO.EMarriedSpecRs(),HttpStatus.OK);
+    }
 }

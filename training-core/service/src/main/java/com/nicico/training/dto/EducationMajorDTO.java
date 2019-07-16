@@ -41,6 +41,16 @@ public class EducationMajorDTO {
         private Integer version;
     }
 
+      //-------------------------------
+    @Getter
+    @Setter
+    @ApiModel("EducationMajorInfoTuple")
+    public static class EducationMajorInfoTuple {
+        private Long id;
+        private String titleFa;
+        private String titleEn;
+    }
+
     // ------------------------------
 
     @Getter

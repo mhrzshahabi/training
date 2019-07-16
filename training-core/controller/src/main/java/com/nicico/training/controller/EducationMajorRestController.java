@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.training.dto.EducationMajorDTO;
+import com.nicico.training.dto.EducationOrientationDTO;
 import com.nicico.training.iservice.IEducationMajorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -96,4 +97,23 @@ public class EducationMajorRestController {
     }
 
     // ------------------------------
+
+           @Loggable
+    @GetMapping(value = "/spec-list-by-majorId/{id}")
+//    @PreAuthorize("hasAuthority('r_educationOrientation')")
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> listByMajorId(@RequestParam("_startRow") Integer startRow,
+                                                                                            @RequestParam("_endRow") Integer endRow,
+                                                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                            @PathVariable Long id) {
+        List<EducationOrientationDTO.Info> eduOrientation = educationMajorService.listByMajorId(id);
+        final EducationOrientationDTO.SpecRs specResponse = new EducationOrientationDTO.SpecRs();
+        specResponse.setData(eduOrientation)
+                .setStartRow(0)
+                .setEndRow(eduOrientation.size())
+                .setTotalRows(eduOrientation.size());
+        final EducationOrientationDTO.EducationOrientationSpecRs specRs = new EducationOrientationDTO.EducationOrientationSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs,HttpStatus.OK);
+    }
 }

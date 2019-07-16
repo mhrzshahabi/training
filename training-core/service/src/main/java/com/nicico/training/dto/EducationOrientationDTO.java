@@ -41,6 +41,16 @@ public class EducationOrientationDTO {
         private Integer version;
     }
 
+    //-------------------------------
+    @Getter
+    @Setter
+    @ApiModel("EducationOrientationInfoTuple")
+    public static class EducationOrientationInfoTuple {
+        private Long id;
+        private String titleFa;
+        private String titleEn;
+    }
+
     // ------------------------------
 
     @Getter

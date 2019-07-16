@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.dto.EducationMajorDTO;
+import com.nicico.training.dto.EducationOrientationDTO;
 
 import java.util.List;
 
@@ -18,8 +19,10 @@ public interface IEducationMajorService {
 
     void delete(EducationMajorDTO.Delete request);
 
-
     SearchDTO.SearchRs<EducationMajorDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<EducationOrientationDTO.Info> listByMajorId(Long majorId);
+
 
     //------------------------
 }

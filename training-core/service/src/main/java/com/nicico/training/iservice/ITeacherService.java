@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.core.dto.search.SearchDTO;
+import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 
 import java.util.List;
@@ -20,4 +21,6 @@ public interface ITeacherService {
 	void delete(TeacherDTO.Delete request);
 
 	SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
+
+	void addCategories(CategoryDTO.Delete  request, Long teacherId);
 }

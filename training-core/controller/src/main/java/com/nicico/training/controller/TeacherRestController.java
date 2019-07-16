@@ -1,24 +1,37 @@
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.file.FileInfo;
+import com.nicico.copper.core.util.file.FileUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import org.activiti.engine.RepositoryService;
+import org.activiti.engine.RuntimeService;
+import org.apache.commons.io.FilenameUtils;
+import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.core.env.Environment;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
+import java.io.*;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +44,12 @@ public class TeacherRestController {
 
 	private final ITeacherService teacherService;
 	private final ReportUtil reportUtil;
-	private final ObjectMapper objectMapper;
+
+    @Value("${nicico.teacher.upload.dir}")
+    private String teacherUploadDir;
+
+    private final RepositoryService repositoryService;
+    private final FileUtil fileUtil;
 
 	// ------------------------------
 
@@ -52,15 +70,17 @@ public class TeacherRestController {
 	@Loggable
 	@PostMapping
 	@PreAuthorize("hasAuthority('c_teacher')")
-	public ResponseEntity<TeacherDTO.Info> create(@Validated @RequestBody TeacherDTO.Create request) {
-		return new ResponseEntity<>(teacherService.create(request), HttpStatus.CREATED);
+	public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
+		TeacherDTO.Create create = (new ModelMapper()).map(request, TeacherDTO.Create.class);
+        return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
 	}
 
 	@Loggable
 	@PutMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('u_teacher')")
-	public ResponseEntity<TeacherDTO.Info> update(@PathVariable Long id, @Validated @RequestBody TeacherDTO.Update request) {
-		return new ResponseEntity<>(teacherService.update(id, request), HttpStatus.OK);
+	public ResponseEntity<TeacherDTO.Info> update(@PathVariable Long id,@RequestBody Object request) {
+		TeacherDTO.Update update = (new ModelMapper()).map(request, TeacherDTO.Update.class);
+        return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
 	}
 
 	@Loggable
@@ -117,4 +137,37 @@ public class TeacherRestController {
 		params.put(ConstantVARs.REPORT_TYPE, type);
 		reportUtil.export("/reports/Teacher.jasper", params, response);
 	}
+
+	@Loggable
+    @PostMapping(value = "/addCategories/{teacherId}")
+//    @PreAuthorize("hasAuthority('d_tclass')")
+    public ResponseEntity<Void> addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
+        teacherService.addCategories(request,teacherId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+	@Loggable
+    @PostMapping(value = "/addAttach/{Id}")
+    public ResponseEntity<Void> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
+        File uploadedFile = null;
+
+        if (!file.isEmpty()) {
+            String fileName = file.getOriginalFilename();
+            try {
+                if (!fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".png"))
+                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+                uploadedFile = fileUtil.upload(file, teacherUploadDir);
+                repositoryService.createDeployment().addInputStream(uploadedFile.getName(), new FileInputStream(uploadedFile)).deploy();
+                uploadedFile.delete();
+                return new ResponseEntity<>(HttpStatus.OK);
+            } catch (Exception e) {
+                uploadedFile.delete();
+                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+            }
+        } else {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+    }
+
+
 }

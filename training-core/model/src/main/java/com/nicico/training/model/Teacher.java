@@ -23,14 +23,13 @@ public class Teacher extends Person {
 	@Column(name = "id", precision = 10)
 	private Long id;
 
-
     @Column(name = "c_teacher_code", nullable = false, unique = true)
 	private String teacherCode;
 
 	@Column(name = "b_enabled")
-	private Boolean enabled;
+	private Boolean enableStatus;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
@@ -42,16 +41,26 @@ public class Teacher extends Person {
 	@Column(name = "c_economical_record_number")
 	private String economicalRecordNumber;
 
-	///////////////////////////////////////////
-	@Column(name = "c_edu_level")
-	private String eduLevel;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
+	private EducationLevel educationLevel;
 
-	@Column(name = "c_edu_major")
-	private String eduMajor;
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "f_edu_major", insertable = false, updatable = false)
+	private EducationMajor educationMajor;
 
-	@Column(name = "c_edu_orientation")
-	private String eduOrientation;
-	/////////////////////////////////////////
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@JoinColumn(name = "f_edu_orientation", insertable = false, updatable = false)
+	private EducationOrientation educationOrientation;
+
+	@Column(name = "f_edu_level")
+	private Long educationLevelId;
+
+	@Column(name = "f_edu_major")
+	private Long educationMajorId;
+
+	@Column(name = "f_edu_orientation")
+	private Long educationOrientationId;
 
     @Column(name = "c_account_number")
 	private String accountNember;
