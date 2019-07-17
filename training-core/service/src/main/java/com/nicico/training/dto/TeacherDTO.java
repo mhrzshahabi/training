@@ -60,7 +60,6 @@ public class TeacherDTO {
 	private String homePhone;
 	private String homePostalCode;
     private String attachPhoto;
-    private String attachExtension;
 
 	private Boolean enableStatus;
 	private String economicalCode;

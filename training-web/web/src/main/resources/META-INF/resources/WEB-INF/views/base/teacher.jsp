@@ -11,7 +11,8 @@
     var responseID;
     var categories;
     var gridState;
-
+    var attachName;
+ var dummy;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -230,6 +231,7 @@
         autoDraw: false,
         viewURL: "",
         overflow: "scroll",
+        height: 100,
         loadingMessage: "تصویری آپلود نشده است"
     });
 
@@ -605,8 +607,8 @@
                 }
             },
             {
-                ID: "attachFileName",
-                name: "attachFileName",
+                ID: "attachPhoto",
+                name: "attachPhoto",
                 title: "عکس پرسنلی",
                 type: "file",
                 titleWidth: "80",
@@ -811,6 +813,7 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
+                dummy = resp;
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         responseID = JSON.parse(resp.data).id;
                         gridState = "[{id:" + responseID + "}]";
@@ -825,9 +828,10 @@
                             ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                         }, 1000);
                         ListGrid_Teacher_JspTeacher.invalidateCache();
-                        Window_Teacher_JspTeacher.close();
+                        // Window_Teacher_JspTeacher.close();
                         addCategories(responseID, categories);
                         addAttach(responseID);
+
                     } else {
                         var ERROR = isc.Dialog.create({
                             message: ("<spring:message code='msg.operation.error'/>"),
@@ -851,7 +855,8 @@
         width: 100,
         orientation: "vertical",
         click: function () {
-            Window_Teacher_JspTeacher.close();
+                // Window_Teacher_JspTeacher.close();
+              showAttach();
         }
     });
 
@@ -1145,7 +1150,7 @@
 
     function addAttach(teacherId) {
         var formData1 = new FormData();
-        var fileBrowserId = document.getElementById(window.attachFileName.uploadItem.getElement().id);
+        var fileBrowserId = document.getElementById(window.attachPhoto.uploadItem.getElement().id);
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
         if (file !== undefined) {
@@ -1154,6 +1159,7 @@
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {
+                attachName = request.response;
                 if (request.readyState == XMLHttpRequest.DONE) {
                     if (request.responseText == "error")
                         isc.say("آپلود فایل با مشکل مواجه شده است.");
@@ -1169,9 +1175,9 @@
     };
 
     function showAttach() {
-            <spring:url value="/teacher/showAttach/" var="showUrl"/>
-            showAttachViewLoader.setViewURL("${showUrl}");
-            showAttachViewLoader.show();
+        <%--showAttachViewLoader.setViewURL("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer "+'${cookie['access_token'].getValue()}' );--%>
+        <%--showAttachViewLoader.show();--%>
+        window.open("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer "+'${cookie['access_token'].getValue()}')
     };
 
 
