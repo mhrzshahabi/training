@@ -37,7 +37,11 @@ import java.util.Map;
 @RequestMapping(value = "/api/course")
 public class CourseRestController {
 
-    //private final ICourseService courseService;
+    private final HttpServletRequest request;
+    private  final HttpServletResponse response;
+    //------------------------------------------
+    private final ReportUtil reportUtil;
+
     private final CourseService courseService;
     private final EducationLicenseService educationLicenseService;
     // ---------------------------------
@@ -76,10 +80,10 @@ public class CourseRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //	@PreAuthorize("hasAuthority('d_course')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        courseService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+    public ResponseEntity<Void> delete(@PathVariable Long id){
+    courseService.delete(id);
+    return new ResponseEntity<>(HttpStatus.OK);
+   }
 
     @Loggable
     @DeleteMapping(value = "/list")
