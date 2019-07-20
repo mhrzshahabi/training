@@ -37,7 +37,7 @@ public class SkillFormController {
         return "base/skill";
     }
 
-    @RequestMapping("/print/{type}")
+    @RequestMapping("/print-all/{type}")
     public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
         String token = "";
         if (authentication instanceof OAuth2AuthenticationToken) {
@@ -57,11 +57,11 @@ public class SkillFormController {
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/skill/print/pdf", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/tclass/print-all/pdf", HttpMethod.GET, entity, byte[].class);
         else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/skill/print/excel", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/tclass/print-all/excel", HttpMethod.GET, entity, byte[].class);
         else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/skill/print/html", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/tclass/print-all/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }

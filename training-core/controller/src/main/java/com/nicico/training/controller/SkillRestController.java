@@ -568,11 +568,11 @@ public class SkillRestController {
 
 
     @Loggable
-    @GetMapping(value = {"/print/{type}"})
+    @GetMapping(value = {"/print-all/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/Skill.jasper", params, response);
+        reportUtil.export("/reports/Print_All_Skill.jasper", params, response);
     }
 
 
