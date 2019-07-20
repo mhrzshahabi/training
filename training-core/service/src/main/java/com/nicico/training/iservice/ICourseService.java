@@ -40,7 +40,5 @@ public interface ICourseService {
 
 	void removeCourseSGoal(Long courseId, List<Long> goalIdList);
 
-
-
-
+	Boolean  checkForDelete(Long id);
 }

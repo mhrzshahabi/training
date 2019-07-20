@@ -1,13 +1,18 @@
 package com.nicico.training.controller;
 
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.model.Competence;
+import com.nicico.training.model.EducationLicense;
 import com.nicico.training.service.CourseService;
+import com.nicico.training.service.EducationLicenseService;
 import com.sun.xml.internal.bind.v2.model.core.Ref;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +20,16 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import javax.servlet.http.HttpSession;
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -25,7 +39,7 @@ public class CourseRestController {
 
     //private final ICourseService courseService;
     private final CourseService courseService;
-
+    private final EducationLicenseService educationLicenseService;
     // ---------------------------------
 
     @Loggable
@@ -221,5 +235,26 @@ public class CourseRestController {
         final CompetenceDTO.CompetenceSpecRs competenceSpecRs=new CompetenceDTO.CompetenceSpecRs();
         competenceSpecRs.setResponse(specResponse);
         return  new ResponseEntity(comList,HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value ="/getlistEducationLicense" )
+    public ResponseEntity<EducationLicenseDTO.SpecRs> getlistEducation()
+    {
+        List<EducationLicenseDTO.Info> educationInfo=educationLicenseService.list();
+        final EducationLicenseDTO.SpecRs specResponse = new EducationLicenseDTO.SpecRs();
+        specResponse.setData(educationInfo).setStartRow(0).setEndRow(educationInfo.size()).setTotalRows(educationInfo.size());
+        final EducationLicenseDTO.EducationLicenseSpecRs educationLicenseSpecRs=new EducationLicenseDTO.EducationLicenseSpecRs();
+        educationLicenseSpecRs.setResponse(specResponse);
+        return new ResponseEntity(educationLicenseSpecRs,HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = {"/print/{type}"})
+    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/Course.jasper", params, response);
     }
 }

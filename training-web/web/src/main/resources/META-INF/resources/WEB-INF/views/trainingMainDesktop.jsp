@@ -507,12 +507,12 @@
 
 
     var courseButton = isc.IconButton.create({
-        title: "دوره",
+        title: "<spring:message code="course"/>",
         icon: "pieces/512/course.png",
         largeIcon: "pieces/512/course.png",
         orientation: "vertical",
         click: function () {
-            createTab("دوره", "/course/show-form", false);
+            createTab("<spring:message code="course"/>", "/course/show-form", false);
         }
     });
 

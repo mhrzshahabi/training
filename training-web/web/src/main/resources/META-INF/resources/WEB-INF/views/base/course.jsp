@@ -1,6 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 //<script>
 
@@ -14,6 +15,8 @@
     var course_method = "";
     var count = "";
     var x;
+    var ChangeEtechnicalType = false;
+    var chang =false;
     var course_url = "${restApiUrl}/api/course";
     var RestDataSource_category = isc.MyRestDataSource.create({
         ID: "categoryDS",
@@ -81,11 +84,10 @@
     });
     var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
-            {name: "code"}, {name: "description"}
-        ],
-
-        fetchDataURL: "${restApiUrl}/api/goal/spec-list"
+            {name: "id"},
+            {name: "titleFa"},
+            {name: "titleEn"}],
+            fetchDataURL: "${restApiUrl}/api/goal/spec-list"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -112,51 +114,67 @@
 
         fetchDataURL: "${restApiUrl}/api/syllabus/spec-list"
     });
+    var RestDataSource_CourseCompetence=isc.MyRestDataSource.create({
+        fields: [
+        {name: "id"},
+        {name: "titleFa"},
+        {name:"titleEn"   },
+        ],
+
+        fetchDataURL: "http://localhost:9090/api/course/getcompetence/" + courseId.id
+        });
+    var RestDataSourceEducation=isc.MyRestDataSource.create({
+        fields: [
+        {name: "id"},
+        {name: "titleFa"}
+        ],
+
+        fetchDataURL: "http://localhost:9090/api/course/getlistEducationLicense",
+        });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "<spring:message code="refresh"/>", icon: "pieces/16/refresh.png", click: function () {
                 ListGrid_Course_refresh();
             }
         }, {
-            title: "ایجاد دوره", icon: "pieces/16/icon_add.png", click: function () {
+            title: "<spring:message code="create"/>", icon: "pieces/16/icon_add.png", click: function () {
                 ListGrid_Course_add();
             }
         }, {
-            title: "ویرایش دوره", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "<spring:message code="edit"/>", icon: "pieces/16/icon_edit.png", click: function () {
 
                 DynamicForm_course.clearValues();
                 ListGrid_Course_Edit();
             }
         }, {
-            title: "حذف دوره", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "<spring:message code="remove"/>", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Course_remove()
             }
         }, {
-            title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
-                openTabGoal();
-            }
+          //  title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+        //        openTabGoal();
+        //    }
         }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+            title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
 
             }
         }, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+            title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
 
             }
         }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+            title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
 
             }
         }]
     });
-    var ListGrid_Course = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
+    var ListGrid_Course = isc.MyListGrid.create({
         dataSource: "courseDS",
         contextMenu: Menu_ListGrid_course,
         doubleClick: function () {
-            openTabGoal();
+        DynamicForm_course.clearValues();
+        ListGrid_Course_Edit()
         },
         selectionChanged: function (record, state) {
             courseId = record;
@@ -172,7 +190,9 @@
             RestDataSource_CourseJob.fetchDataURL = "http://localhost:9090/api/course/job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
-
+            RestDataSource_CourseCompetence.fetchDataURL = "http://localhost:9090/api/course/getcompetence/" + courseId.id;
+            ListGrid_CourseCompetence.fetchData();
+            ListGrid_CourseCompetence.invalidateCache();
             for (i = 0; i < mainTabSet.tabs.length; i++) {
                 if ("اهداف" == (mainTabSet.getTab(i).title).substr(0, 5)) {
 
@@ -186,53 +206,38 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد دوره", align: "center",filterOperator: "contains"},
-            {name: "titleFa", title: "نام فارسی", align: "center",filterOperator: "contains"},
-            {name: "titleEn", title: "نام لاتین", align: "center",filterOperator: "contains"},
-            {name: "category.titleFa", title: "گروه", align: "center",filterOperator: "contains"},
-            {name: "subCategory.titleFa", title: "زير گروه", align: "center",filterOperator: "contains"},
-            {name: "erunType.titleFa", title: "نوع اجرا", align: "center",filterOperator: "contains"},
-            {name: "elevelType.titleFa", title: "سطح دوره", align: "center",filterOperator: "contains"},
-            {name: "etheoType.titleFa", title: "نوع دوره", align: "center",filterOperator: "contains"},
-            {name: "theoryDuration", title: "طول دوره(ساعت)", align: "center",filterOperator: "contains"},
-            {name: "etechnicalType.titleFa", title: "نوع تخصصي", align: "center",filterOperator: "contains"},
-            {name: "minTeacherDegree", title: "حداقل مدرك استاد", align: "center",filterOperator: "contains"},
-            {name: "minTeacherExpYears", title: "حداقل سابقه تدريس", align: "center",filterOperator: "contains"},
-            {name: "minTeacherEvalScore", title: "حداقل نمره ارزيابي", align: "center",filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="corse_code"/>", align: "center",filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center",filterOperator: "contains"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center",filterOperator: "contains"},
+            {name: "category.titleFa", title: "<spring:message code="course_category"/>", align: "center",filterOperator: "contains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="course_subcategory"/>", align: "center",filterOperator: "contains"},
+            {name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center",filterOperator: "contains"},
+            {name: "elevelType.titleFa", title: "<spring:message code="cousre_elevelType"/>", align: "center",filterOperator: "contains"},
+            {name: "etheoType.titleFa", title: "<spring:message code="course_etheoType"/>", align: "center",filterOperator: "contains"},
+            {name: "theoryDuration", title: "<spring:message code="course_theoryDuration"/>", align: "center",filterOperator: "contains"},
+            {name: "etechnicalType.titleFa", title: "<spring:message code="course_etechnicalType"/>", align: "center",filterOperator: "contains"},
+            {name: "minTeacherDegree", title: "<spring:message code="course_minTeacherDegree"/>", align: "center",filterOperator: "contains"},
+            {name: "minTeacherExpYears", title: "<spring:message code="course_minTeacherExpYears"/>", align: "center",filterOperator: "contains"},
+            {name: "minTeacherEvalScore", title: "<spring:message code="course_minTeacherEvalScore"/>", align: "center",filterOperator: "contains"},
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
         ],
-        canResizeFields: true,
-        sortField: 0,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-//----------
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-//-----------
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
-    var ListGrid_CourseGoal = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
+    var ListGrid_CourseGoal = isc.MyListGrid.create({
+
         dataSource: RestDataSource_CourseGoal,
         doubleClick: function () {
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "اهداف دوره انتخاب شده", align: "center"},
-            {name: "titleEn", title: "نام لاتین هدف ", align: "center", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
+             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
@@ -241,71 +246,58 @@
             ListGrid_CourseSyllabus.invalidateCache();
         },
         sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
         autoFetchData: false,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
-    var ListGrid_CourseSkill = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
+    var ListGrid_CourseSkill = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseSkill,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        selectionType: "none",
-        sortField: 1,
-        sortDirection: "descending",
         autoFetchData: false
     });
-    var ListGrid_CourseJob = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
+    var ListGrid_CourseJob = isc.MyListGrid.create({
+
         dataSource: RestDataSource_CourseJob,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>" , align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        selectionType: "none",
-        sortField: 1,
-        sortDirection: "descending",
+
         autoFetchData: false
     });
-    var ListGrid_CourseSyllabus = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
+    var ListGrid_CourseCompetence=isc.MyListGrid.create({
+                dataSource: RestDataSource_CourseCompetence,
+                fields: [
+                {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
+                {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+                {name:"titleEn",title: "<spring:message code="course_en_name"/>",align:"center"}
+                 ],
+                autoFetchData: false
+                });
+    var ListGrid_CourseSyllabus = isc.MyListGrid.create({
+
         dataSource: RestDataSource_Syllabus,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "کد سرفصل", align: "center", hidden: true},
-            {name: "titleFa", title: "سرفصل دوره انتخاب شده", align: "center"},
-            {name: "titleEn", title: "نام لاتین سرفصل", align: "center", hidden: true},
-            {name: "edomainType.titleFa", title: "حیطه", align: "center"},
+            {name: "titleFa", title: "<spring:message code="course_syllabusOfcourse_selected"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden: true},
+            {name: "edomainType.titleFa", title: "<spring:message code="course_domain"/>", align: "center"},
             {name: "theoreticalDuration", title: "ساعت نظري سرفصل", align: "center"},
             {name: "practicalDuration", title: "ساعت عملي سرفصل", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        sortField: 1,
-        selectionType: "none",
-        sortDirection: "descending",
+
         autoFetchData: false,
     });
-
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
-        title: "بازخوانی اطلاعات ",
+        title: "<spring:message code="refresh"/> ",
 
         click: function () {
             ListGrid_Course_refresh();
@@ -313,13 +305,14 @@
             ListGrid_CourseSkill.setData([]);
             ListGrid_CourseSyllabus.setData([]);
             ListGrid_CourseGoal.setData([]);
+            ListGrid_CourseCompetence.setData([]);
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش ",
+        title: "<spring:message code="edit"/> ",
         click: function () {
-
+            DynamicForm_course.getItem("category.id").setDisabled(true);
             DynamicForm_course.getItem("subCategory.id").setDisabled(true);
             DynamicForm_course.getItem("erunType.id").setDisabled(true);
             DynamicForm_course.getItem("elevelType.id").setDisabled(true);
@@ -330,30 +323,40 @@
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد ",
+        title: "<spring:message code="create"/>",
+
         click: function () {
+            DynamicForm_course.getItem("category.id").setDisabled(false);
+            DynamicForm_course.getItem("subCategory.id").setDisabled(false);
+            DynamicForm_course.getItem("erunType.id").setDisabled(false);
+            DynamicForm_course.getItem("elevelType.id").setDisabled(false);
+            DynamicForm_course.getItem("etheoType.id").setDisabled(false);
+            DynamicForm_course.clearValues();
 
             ListGrid_Course_add();
         }
     });
     var ToolStripButton_OpenTabGoal = isc.ToolStripButton.create({
         icon: "pieces/16/goal.png",
-        title: "تعریف هدف و سرفصل",
+        title: "<spring:message code="create_Goal_Syllabus"/>",
         click: function () {
             openTabGoal();
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف ",
+        title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
     var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png", title: "چاپ"
+        icon: "[SKIN]/RichTextEditor/print.png", title: "<spring:message code="print"/>",
+        click: function () {
+        "<spring:url value="/course/print/pdf" var="printUrl"/>"
+        window.open('${printUrl}');
+        }
     });
-
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print]
@@ -369,10 +372,7 @@
             {
                 colSpan: 2,
                 name: "titleFa",
-                title: "نام فارسی",
-                hint: " نام فارسی",
-                showHintInField: true,
-                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                title: "<spring:message code="course_fa_name"/>",
                 length: "250",
                 required: true,
                 type: 'text',
@@ -381,12 +381,12 @@
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "<spring:message code="course_en_name"/>",
                 colSpan: 2,
-                hint: "English Name",
+
                 keyPressFilter: "[a-z|A-Z |]",
                 length: "250",
-                showHintInField: true,
+
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9]",
                 colspan: 3,
@@ -395,7 +395,7 @@
             },
             {
                 name: "code",
-                title: "كد دوره",
+                title: "<spring:message code="corse_code"/>",
                 type: 'text',
                 length: "100",
                 width: "*",
@@ -404,9 +404,7 @@
             },
             {
                 name: "category.id",
-                title: "گروه",
-                hint: "گروه",
-                showHintInField: true,
+                title: "<spring:message code="course_category"/>",
                 textAlign: "center",
                 autoFetchData: true,
                 required: true,
@@ -435,17 +433,13 @@
             },
             {
                 name: "subCategory.id",
-                title: "زير گروه",
-
-                hint: "زير گروه",
-                showHintInField: true,
+                title: "<spring:message code="course_subcategory"/>",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
                 width: "*",
-
-changeOnKeypress: true,
-filterOnKeypress: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
@@ -458,7 +452,7 @@ filterOnKeypress: true,
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true
+                showFilterEditor: true
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
@@ -470,16 +464,12 @@ filterOnKeypress: true,
             {
                 name: "erunType.id",
                 value: "erunTypeId",
-                title: "نوع اجرا",
-                hint: "نوع اجرا",
-                wrapHintText: true,
-                showHintInField: true,
+                title: "<spring:message code="course_eruntype"/>",
                 textAlign: "center",
                 required: true,
                 width: "*",
-
-changeOnKeypress: true,
-filterOnKeypress: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_run_type,
@@ -496,8 +486,8 @@ filterOnKeypress: true,
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-
                 changed: function (form, item, value) {
+
                     switch (value) {
                         case 1:
                             runV = "C";
@@ -521,9 +511,9 @@ filterOnKeypress: true,
             {
                 name: "elevelType.id",
                 value: "eLevelTypeId",
-                title: "سطح دوره",
-                hint: "سطح دوره",
-                showHintInField: true,
+
+                title: "<spring:message code="cousre_elevelType"/>",
+
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -564,15 +554,12 @@ filterOnKeypress: true,
             {
                 name: "etheoType.id",
                 value: "etheoTypeId",
-                title: "نوع دوره",
-                hint: "نوع دوره",
-                showHintInField: true,
+                title: "<spring:message code="course_etheoType"/>",
                 textAlign: "center",
                 required: true,
                 width: "*",
-
-changeOnKeypress: true,
-filterOnKeypress: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceETheoType,
@@ -608,14 +595,13 @@ filterOnKeypress: true,
             {
                 name: "etechnicalType.id",
                 value: "etechnicalTypeId",
-                title: "نوع تخصصي",
-                hint: "نوع تخصصی",
-                showHintInField: true,
+                title: "<spring:message code="course_etechnicalType"/>",
                 textAlign: "center",
                 required: true,
                 width: "*",
-changeOnKeypress: true,
-filterOnKeypress: true,
+
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_eTechnicalType,
@@ -628,32 +614,30 @@ filterOnKeypress: true,
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
-
-                    switch (value) {
-                        case 1:
-                            etechnicalTypeV = "4";
-                            break;
-                        case 2:
-                            etechnicalTypeV = "1";
-                            break;
-                        case 3:
-                            etechnicalTypeV = "3";
-                            break;
-                    }
+                ChangeEtechnicalType=true;
+                switch (value) {
+                case 1:
+                eLevelTypeV = "1";
+                break;
+                case 2:
+                eLevelTypeV = "2";
+                break;
+                case 3:
+                eLevelTypeV = "3";
+                break;
+                }
 
                 },
-
-            },
+                },
             {
                 name: "theoryDuration",
-                title: "طول دوره",
-                hint: "طول دوره",
-                showHintInField: true,
+                title: "<spring:message code="course_theoryDuration"/>",
+
                 required: true,
                 type: 'text',
                 textAlign: "center",
@@ -662,28 +646,48 @@ filterOnKeypress: true,
                 keyPressFilter: "[0-9]"
             },
             {
-                name: "minTeacherDegree", title: "حداقل مدرك مدرس", hint: "حداقل مدرك مدرس", showHintInField: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", required: true,
-                type: 'text', width: "*", validators: [MyValidators.NotEmpty]
-            },
+                    name: "minTeacherDegree",
+                    title: "<spring:message code="course_minTeacherDegree"/>",
+                    autoFetchData: true,
+                    required: true,
+                    width: "*",
+                    changeOnKeypress: true,
+                    filterOnKeypress: true,
+                    displayField: "titleFa",
+                    valueField: "titleFa",
+                    optionDataSource:RestDataSourceEducation,
+                    addUnknownValues: false,
+                    cachePickListResults: false,
+                    useClientFiltering: false,
+                    filterFields: ["titleFa"],
+                    sortField: ["id"],
+                    textMatchStyle: "startsWith",
+                    generateExactMatchCriteria: true,
+                    pickListProperties: {showFilterEditor: true},
+                    pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    changed: function (form, item, value) {
+                    RestDataSourceEducation.fetchDataURL = "http://localhost:9090/api/course/getlistEducationLicense";
+                      },
+                    },
             {
                 name: "minTeacherExpYears",
-                showHintInField: true,
-                hint: "حداقل نمره ارزيابي",
-                title: "حداقل سابقه تدريس مدرس",
+
+                title: "<spring:message code="course_minTeacherExpYears"/>",
                 shouldSaveValue: true,
+                textAlign: "center",
                 editorType: "SpinnerItem",
                 writeStackedIcons: true,
                 required: true,
                 min: 1,
                 max: 15,
-                width: "*"
+                width: "*",
+                keyPressFilter: "[0-9]"
             },
             {
                 name: "minTeacherEvalScore",
-                title: "حداقل نمره ارزيابي مدرس",
-                hint: "حداقل نمره ارزيابي",
-                showHintInField: true,
+                title: "<spring:message code="course_minTeacherEvalScore"/>",
+
                 required: true,
                 textAlign: "center",
                 type: 'text',
@@ -702,14 +706,14 @@ filterOnKeypress: true,
                 type: "textArea",
                 colSpan: 6,
                 height: 40,
-                title: "توضيحات",
+                title: "<spring:message code="course_description"/>",
                 width: "650",
                 length: "250",
 
             },
             {
                 name: "mainObjective",
-                title: "هدف كلي",
+                title: "<spring:message code="course_mainObjective"/>",
                 colSpan: "6",
                 readonly: true,
                 type: "textArea",
@@ -722,7 +726,8 @@ filterOnKeypress: true,
         ]
     });
     var IButton_course_Save = isc.IButton.create({
-            title: "ذخیره", icon: "pieces/16/save.png",
+            align: "center",
+            title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
             click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
@@ -730,7 +735,6 @@ filterOnKeypress: true,
             }
             var y = (DynamicForm_course.getItem('subCategory.id').getSelectedRecord().code);
             x = y + runV + eLevelTypeV + etheoTypeV;
-
 //------------------------------------
             if (course_method == "POST") {
                 isc.RPCManager.sendRequest({
@@ -759,12 +763,12 @@ filterOnKeypress: true,
 
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                                    simpleDialog("ایجاد","ایجاد دوره با موفقیت انجام شد",2000,"say");
+                                    simpleDialog("<spring:message code="create"/>","<spring:message code="msg.operation.successful"/>",2000,"say");
                                     Window_course.close();
                                     ListGrid_Course_refresh();
                                 } else {
 
-                                    simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
+                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
                                 }
 
@@ -773,9 +777,9 @@ filterOnKeypress: true,
                     }
                 });
             }//end if
-
-            else {
+            else if((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT"  && ChangeEtechnicalType == true)) {
                 var data1 = DynamicForm_course.getValues();
+                    ChangeEtechnicalType=false;
                 isc.RPCManager.sendRequest({
                     actionURL: course_url,
                     httpMethod: course_method,
@@ -788,34 +792,39 @@ filterOnKeypress: true,
                     callback: function (resp) {
 
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            simpleDialog("ویرایش","ویرایش دوره با موفقیت انجام شد",3000,"say");
+
+                            simpleDialog("<spring:message code="edit"/>","<spring:message code="msg.operation.successful"/>",3000,"say");
+                              
                              Window_course.close();
                             ListGrid_Course_refresh();
                         } else {
 
-                            simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", 2000, "stop");
+                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
                         }
 
                     }
                 });
-
-
-            }//end else
+            }else {
+                simpleDialog("<spring:message code="edit"/>","<spring:message code="course_noEdit"/>",3000,"say");
+                Window_course.close();}//end else
 //-----------------------------------------------
 
         }
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
 //-------------
-        align: "center",
+         align: "center",
          width: "100%",
          padding: 5,
-      //  membersMargin:230,
+         membersMargin:50,
+
 
         members: [IButton_course_Save, isc.IButton.create({
+
+            align: "center",
             ID: "EditExitIButton",
-            title: "لغو",
+            title: "<spring:message code="cancel"/>",
             prompt: "",
             width: 100,
             icon: "pieces/16/icon_delete.png",
@@ -827,6 +836,7 @@ filterOnKeypress: true,
     });
     var Window_course = isc.Window.create({
         width: "700",
+
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -889,6 +899,12 @@ filterOnKeypress: true,
             ListGrid_CourseJob
         ]
     });
+
+    var HLayout_Tab_Course_Competence=isc.HLayout.create({
+    width:"100%",
+    height:"100%",
+members:[ ListGrid_CourseCompetence]
+});
     var Detail_Tab_Course = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
@@ -896,26 +912,29 @@ filterOnKeypress: true,
         tabs: [
             {
                 id: "TabPane_Goal_Syllabus",
-                title: "هدف و سرفصل",
+                title: "<spring:message code="course_syllabus_goal"/>",
                 pane: HLayout_Tab_Course_Goal
             },
             {
                 id: "TabPane_Skill",
-                title: "مهارت",
+                title: "<spring:message code="course_skill"/>",
                 pane: HLayout_Tab_Course_Skill
 
             },
             {
                 id: "TabPane_Job",
-                title: "شغل",
+                title: "<spring:message code="course_job"/>",
                 pane: HLayout_Tab_Course_Job
-            }
+            },
+            {id: "TabPane_Competence",
+            title: "<spring:message code="course_compatency"/>",
+            pane: HLayout_Tab_Course_Competence}
         ]
     });
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
         height: "50%",
-        <%--border: "2px solid blue",--%>
+
         members: [Detail_Tab_Course]
     });
     var VLayout_Body_Course = isc.VLayout.create({
@@ -929,11 +948,17 @@ filterOnKeypress: true,
     };
 
     function ListGrid_Course_add() {
+DynamicForm_course.getItem("category.id").setDisabled(false);
+DynamicForm_course.getItem("subCategory.id").setDisabled(false);
+DynamicForm_course.getItem("erunType.id").setDisabled(false);
+DynamicForm_course.getItem("elevelType.id").setDisabled(false);
+DynamicForm_course.getItem("etheoType.id").setDisabled(false);
         course_method = "POST";
         course_url = "http://localhost:9090/api/course";
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
-        Window_course.setTitle("ایجاد");
+        Window_course.setTitle("<spring:message code="create"/>");
+
         Window_course.show();
     };
 
@@ -941,13 +966,13 @@ filterOnKeypress: true,
 
 
         var record = ListGrid_Course.getSelectedRecord();
-        console.log(record);
+
         if (record == null) {
             isc.Dialog.create({
-                message: "ركوردي انتخاب نشده!",
+                message: "<spring:message code="msg.record.not.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تاييد"})],
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -956,11 +981,11 @@ filterOnKeypress: true,
 
             var Dialog_Delete = isc.Dialog.create({
 
-                message: " آیا از حذف دوره " + getFormulaMessage(record.titleFa, 3, "red", "I") + "  " + " مطمئن هستید؟ ",
+                message: "<spring:message code="course_delete"/>" + "   " + getFormulaMessage(record.titleFa, 3, "red", "I") + "   " + "<spring:message code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
-                title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خير"
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="yes"/>"}), isc.Button.create({
+                    title: "<spring:message code="no"/>"
                 })],
                 buttonClick: function (button, index) {
                     this.close();
@@ -975,22 +1000,23 @@ filterOnKeypress: true,
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                <%-- wait.close();--%>
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Course.invalidateCache();
+
+                               if (resp.httpResponseCode == 200) {
+                                   ListGrid_Course.invalidateCache();
                                     var OK = isc.Dialog.create({
-                                        message: "ركورد با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
+                                       message: "<spring:message code="msg.record.remove.successful"/>",
+
+                                       icon: "[SKIN]say.png",
+                                        title: "<spring:message code="msg.command.done"/>"
                                     });
                                     setTimeout(function () {
                                         OK.close();
                                     }, 3000);
                                 } else {
                                     var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        message: "<spring:message code="course_record.remove.failed"/>",
                                         icon: "[SKIN]stop.png",
-                                        title: "خطا"
+                                        title: "<spring:message code="error"/>"
                                     });
                                     setTimeout(function () {
                                         ERROR.close();
@@ -1009,16 +1035,25 @@ filterOnKeypress: true,
         var sRecord = ListGrid_Course.getSelectedRecord();
 
         if (sRecord == null || sRecord.id == null) {
-            simpleDialog("پیغام", "دوره اي انتخاب نشده است.", 2000, "say");
+
+          //  simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");
+                isc.Dialog.create({
+                message: "<spring:message code="msg.record.not.selected"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                this.close();
+                }
+                });
         } else {
             course_method = "PUT";
             course_url = "http://localhost:9090/api/course/" + sRecord.id;
             DynamicForm_course.clearValues();
-            DynamicForm_course.getItem("subCategory.id").setDisabled(false);
             RestDataSourceSubCategory.fetchDataURL = "http://localhost:9090/api/category/" + sRecord.category.id + "/sub-categories"
             DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
-            Window_course.setTitle("ویرایش");
+            Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
         }
     };
@@ -1026,15 +1061,15 @@ filterOnKeypress: true,
     function openTabGoal() {
         if (ListGrid_Course.getSelectedRecord() == null) {
             isc.Dialog.create({
-                message: "دوره ای انتخاب نشده!",
+                message: "<spring:message code="msg.record.not.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تاييد"})],
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
             });
         } else {
-            createTab("اهداف دوره " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
         }
-    };
+    }

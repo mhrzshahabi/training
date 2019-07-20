@@ -7,10 +7,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
-import com.nicico.training.repository.CompetenceDAO;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.GoalDAO;
-import com.nicico.training.repository.SyllabusDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -26,9 +23,9 @@ public class CourseService implements ICourseService {
 
     private final ModelMapper modelMapper;
     private final GoalDAO goalDAO;
+    private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
     private final CompetenceDAO competenceDAO;
-    private final SyllabusDAO syllabusDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -56,11 +53,7 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-//        for (Long goalId : request.getGoalIdList()){
-//            Goal goal = goalDAO.getOne(goalId);
-//            goalSet.add(goal);
-//        }
-//        course.setGoalSet(goalSet);
+
         course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
@@ -75,10 +68,7 @@ public class CourseService implements ICourseService {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
 
-//        Course updating = new Course();
-//        modelMapper.map(course, updating);
-//        modelMapper.map(request, updating);
-//        return save(updating);
+
 
         Course course = new Course();
         modelMapper.map(currentCourse, course);
@@ -93,7 +83,8 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void delete(Long id) {
-        courseDAO.deleteById(id);
+
+      courseDAO.deleteById(id);
     }
 
     @Transactional
@@ -108,26 +99,6 @@ public class CourseService implements ICourseService {
     public SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
     }
-
-
-    // ------------------------------
-
-//    private CourseDTO.Info save(Course course) {
-//        final Course saved = courseDAO.saveAndFlush(course);
-//        return modelMapper.map(saved, CourseDTO.Info.class);
-//    }
-
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<GoalDTO.Info> listGoal(Long id) {
-//        Optional<Course> optionalGoal = courseDAO.findById(id);
-//        Course course = optionalGoal.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-//        Set<Goal> goalSet = course.getGoalSet();
-//        final List<Course> cAll = courseDAO.findAll();
-//        return modelMapper.map(cAll, new TypeToken<List<CourseDTO.Info>>() {
-//        }.getType());
-//    }
-
 
     @Transactional
     @Override
@@ -270,5 +241,16 @@ public class CourseService implements ICourseService {
                                 compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
                         ));
         return compeInfoList;
+    }
+
+    @Transactional
+    @Override
+    public Boolean  checkForDelete(Long id) {
+        Optional<Course> one = courseDAO.findById(id);
+        final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        Set<Skill> skillSet = course.getSkillSet();
+        Set<Tclass> tclasses = course.getTclassSet();
+        List<Goal> goalSet = course.getGoalSet();
+        return (((skillSet != null &&   skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0 ) || (goalSet != null && goalSet.size() > 0)) ? true :false);
     }
 }
