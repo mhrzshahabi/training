@@ -6,35 +6,36 @@ import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.copper.core.util.file.FileUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import org.activiti.engine.RepositoryService;
-import org.activiti.engine.RuntimeService;
 import org.apache.commons.io.FilenameUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.core.env.Environment;
-
+import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
 import java.sql.SQLException;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -50,6 +51,10 @@ public class TeacherRestController {
 
     private final RepositoryService repositoryService;
     private final FileUtil fileUtil;
+
+    private final TeacherDAO teacherDAO;
+
+     private ServletContext servletContext;
 
 	// ------------------------------
 
@@ -146,28 +151,79 @@ public class TeacherRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+//	@Loggable
+//    @PostMapping(value = "/addAttach/{Id}")
+//    public ResponseEntity<Void> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
+//        File uploadedFile = null;
+//
+//        if (!file.isEmpty()) {
+//            String fileName = file.getOriginalFilename();
+//            try {
+//                if (!fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".png"))
+//                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//                uploadedFile = fileUtil.upload(file, teacherUploadDir);
+//                repositoryService.createDeployment().addInputStream(uploadedFile.getName(), new FileInputStream(uploadedFile)).deploy();
+//                teacherService.addAttach();
+//                uploadedFile.delete();
+//                return new ResponseEntity<>(HttpStatus.OK);
+//            } catch (Exception e) {
+//                uploadedFile.delete();
+//                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+//            }
+//        } else {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//    }
+
+
 	@Loggable
     @PostMapping(value = "/addAttach/{Id}")
-    public ResponseEntity<Void> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
-        File uploadedFile = null;
+    public ResponseEntity<String> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
+        FileInfo fileInfo = new FileInfo();
+        File destinationFile = null;
+        String changedFileName="";
+        try {
+            if (!file.isEmpty()) {
+                    final Optional<Teacher> cById = teacherDAO.findById(Id);
+        			final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        			String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
+        			changedFileName = file.getOriginalFilename().replace(file.getOriginalFilename(), Id.toString() + "_" +currentDate + "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
+        			destinationFile = new File(teacherUploadDir + File.separator + changedFileName);
+        			file.transferTo(destinationFile);
+        			fileInfo.setFileName(destinationFile.getPath());
+        			fileInfo.setFileSize(file.getSize());
+        			teacherDAO.addAttach(Id,changedFileName);
+                     }
+                     else
+                     	return new ResponseEntity<>(changedFileName,HttpStatus.NO_CONTENT);
 
-        if (!file.isEmpty()) {
-            String fileName = file.getOriginalFilename();
-            try {
-                if (!fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".png"))
-                    return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-                uploadedFile = fileUtil.upload(file, teacherUploadDir);
-                repositoryService.createDeployment().addInputStream(uploadedFile.getName(), new FileInputStream(uploadedFile)).deploy();
-                uploadedFile.delete();
-                return new ResponseEntity<>(HttpStatus.OK);
-            } catch (Exception e) {
-                uploadedFile.delete();
-                return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return new ResponseEntity<>(changedFileName,HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+        return new ResponseEntity<>(changedFileName,HttpStatus.OK);
+    }
+
+    @RequestMapping(value = { "/getAttach/{fileName}/{Id}"}, method = RequestMethod.GET)
+    public ResponseEntity<InputStreamResource> getAttachment(@PathVariable String fileName, ModelMap modelMap, @PathVariable Long Id) {
+        try {
+            final Optional<Teacher> cById = teacherDAO.findById(Id);
+            final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+            String attachFileName = teacher.getAttachPhoto();
+            if(attachFileName == null || attachFileName == "") {
+                return null;
             }
-        } else {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            else {
+                File file = new File(teacherUploadDir + fileName);
+               	return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)),HttpStatus.OK);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+            return null;
         }
     }
+
+
 
 
 }

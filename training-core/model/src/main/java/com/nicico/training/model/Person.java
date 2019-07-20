@@ -86,9 +86,6 @@ public abstract class Person extends Auditable {
     @Column(name = "c_attach_photo")
     private String attachPhoto;
 
-    @Column(name = "c_attach_extension")
-    private String attachExtension;
-
     @Column(name = "e_married")
 	private EMarried eMarried;
 

@@ -329,7 +329,7 @@
                 type: 'text',
                 default: "125",
                 readonly: true,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]",
                 length: "255",
                 width: "300",
                 validators: [{
@@ -395,13 +395,13 @@
                 changed: function (form, item, value) {
                     switch (value) {
                         case 1:
-                            skill_Level_Symbol = "1";
+                            skill_Level_Symbol = "A";
                             break;
                         case 2:
-                            skill_Level_Symbol = "2";
+                            skill_Level_Symbol = "B";
                             break;
                         case 3:
-                            skill_Level_Symbol = "3";
+                            skill_Level_Symbol = "C";
                             break;
                     }
 
@@ -535,7 +535,7 @@
     });
 
     var IButton_Skill_Skill_Save = isc.IButton.create({
-        top: 260, title: "ذخیره",
+        top: 260, title: "ذخیره", icon: "pieces/16/save.png",
         click: function () {
             if (skill_Method == "POST") {
                 var sub_cat_code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
@@ -589,6 +589,7 @@
     var Hlayout_Skill_Skill_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
+        align: "center",
         edgeImage: "",
         width: "100%",
         alignLayout: "center",
@@ -598,6 +599,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
+            icon: "pieces/16/icon_delete.png",
             orientation: "vertical",
             click: function () {
                 Window_Skill_Skill.close();
@@ -607,7 +609,7 @@
 
     var Window_Skill_Skill = isc.Window.create({
         title: "مهارت",
-        width: "450",
+        width: "830",
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -619,6 +621,7 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
+            align: "center",
             members: [DynamicForm_Skill_Skill, Hlayout_Skill_Skill_SaveOrExit]
         })]
     });
@@ -882,6 +885,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
+                                console.log(resp.httpResponseCode);
                                 wait.close();
                                 console.log(resp.httpResponseCode);
                                 if (resp.httpResponseCode == 200) {
@@ -935,9 +939,26 @@
             skill_Method = "PUT";
             skill_ActionUrl = skill_SkillUrl + record.id;
             DynamicForm_Skill_Skill.editRecord(record);
+            DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(true);
+            DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
+            DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
+            DynamicForm_Skill_Skill.getItem("code").visible = true;
+            Window_Skill_Skill.setTitle(" ویرایش مهارت  " + getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
             Window_Skill_Skill.show();
 
         }
+    };
+
+    function ListGrid_Skill_Skill_Add() {
+        skill_Method = "POST";
+        skill_ActionUrl = "${restApiUrl}/api/skill";
+        DynamicForm_Skill_Skill.clearValues();
+        DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(false);
+        DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(false);
+        DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
+        DynamicForm_Skill_Skill.getItem("code").visible = false;
+        Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
+        Window_Skill_Skill.show();
     };
 
     function ListGrid_Skill_Skill_refresh() {
@@ -964,10 +985,7 @@
             }
         }, {
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-                skill_Method = "POST";
-                skill_ActionUrl = "${restApiUrl}/api/skill";
-                DynamicForm_Skill_Skill.clearValues();
-                Window_Skill_Skill.show();
+                ListGrid_Skill_Skill_Add();
             }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
@@ -981,17 +999,17 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                "<spring:url value="/skill/print/pdf" var="printUrl"/>"
+                "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                "<spring:url value="/skill/print/excel" var="printUrl"/>"
+                "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                "<spring:url value="/skill/print/html" var="printUrl"/>"
+                "<spring:url value="/skill/print-all/html" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }]
@@ -1077,10 +1095,11 @@
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
-            skill_Method = "POST";
-            skill_ActionUrl = "${restApiUrl}/api/skill";
-            DynamicForm_Skill_Skill.clearValues();
-            Window_Skill_Skill.show();
+            <%--skill_Method = "POST";--%>
+            <%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
+            <%--DynamicForm_Skill_Skill.clearValues();--%>
+            <%--Window_Skill_Skill.show();--%>
+            ListGrid_Skill_Skill_Add();
         }
     });
     var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
@@ -1094,7 +1113,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-            "<spring:url value="/skill/print/pdf" var="printUrl"/>"
+            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
             window.open('${printUrl}');
         }
     });
@@ -1112,8 +1131,9 @@
 
     // Start Block Add Skill Groups To Skill ---------------------------------------------------------------
 
-    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.DynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.MyDynamicForm.create({
         titleWidth: 400,
+//        border:2,
         width: "100%",
         align: "right",
         numCols: "6",
@@ -1121,20 +1141,20 @@
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد",
+                title: "کد مهارت",
                 type: 'staticText',
                 width: "100"
             },
             {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "عنوان فارسی",
                 type: 'staticText',
                 length: "200",
                 width: "150"
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "عنوان لاتین ",
                 type: 'staticText',
                 length: "200",
                 width: "150"
@@ -1387,9 +1407,11 @@
     });
 
     var HLayOut_Skill_AddSkillGroup_Header = isc.HLayout.create({
-        width: 700,
+        width: "100%",
         height: 30,
         border: "0px solid yellow",
+        backgroundColor: "lightgray",
+
         layoutMargin: 5,
         align: "center",
         members: [
@@ -1404,13 +1426,22 @@
         border: "0px solid red", layoutMargin: 5,
         members: [
             HLayOut_Skill_AddSkillGroup_Header,
+            isc.HLayout.create({
+                width: "100%",
+                height: 10,
+                backgroundColor: "blue",
+                autoDraw: false,
+                border: "0px solid red", layoutMargin: 5,
+                members: []
+            }),
+
             HStack_Skill_AddSkillGroup
         ]
     });
 
     var Window_Skill_AddSkillGroup = isc.Window.create({
         title: "مرتبط کردن/حذف ارتباط گروه مهارت با مهارت",
-        width: 900,
+        width: 1000,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -1432,7 +1463,7 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است",
+                message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
                 title: "پیام",
                 buttons: [isc.Button.create({title: "تایید"})],
@@ -1464,18 +1495,14 @@
         } else {
             RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
             selectedSkillId = record.id;
-// // RestDataSource_Skill_Attached_SkillGroup.fetchData();
-
         }
         ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-
-
     };
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
     // Start Block Add Competences To Skill ---------------------------------------------------------------
 
     // Start Block Add Competence To Skill ---------------------------------------------------------------
-    var DynamicForm_Skill_SkillData_Add_Competence = isc.DynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_Competence = isc.MyDynamicForm.create({
         titleWidth: 400,
         width: 700,
         align: "right",
@@ -1753,6 +1780,7 @@
         width: 700,
         height: 30,
         border: "0px solid yellow",
+backgroundColor: "lightgray",
         layoutMargin: 5,
         align: "center",
         members: [
@@ -1767,6 +1795,14 @@
         border: "0px solid red", layoutMargin: 5,
         members: [
             HLayOut_Skill_AddCompetence_Header,
+isc.HLayout.create({
+width: "100%",
+height: 10,
+backgroundColor: "blue",
+autoDraw: false,
+border: "0px solid red", layoutMargin: 5,
+members: []
+}),
             HStack_Skill_AddCompetence
         ]
     });
@@ -1841,7 +1877,7 @@
     // Start Block Add Courses To Skill ---------------------------------------------------------------
     // Start Block Add Courses To Skill ---------------------------------------------------------------
     // Start Block Add Course To Skill ---------------------------------------------------------------
-    var DynamicForm_Skill_SkillData_Add_Course = isc.DynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_Course = isc.MyDynamicForm.create({
         titleWidth: 400,
         width: 700,
         align: "right",
@@ -2119,6 +2155,7 @@
         width: 700,
         height: 30,
         border: "0px solid yellow",
+backgroundColor: "lightgray",
         layoutMargin: 5,
         align: "center",
         members: [
@@ -2133,6 +2170,14 @@
         border: "0px solid red", layoutMargin: 5,
         members: [
             HLayOut_Skill_AddCourse_Header,
+isc.HLayout.create({
+width: "100%",
+height: 10,
+backgroundColor: "blue",
+autoDraw: false,
+border: "0px solid red", layoutMargin: 5,
+members: []
+}),
             HStack_Skill_AddCourse
         ]
     });
@@ -2319,23 +2364,23 @@
         tabs: [
             {
                 id: "TabPane_Skill_SkillGroup",
-                title: "گروه مهارت",
+                title: "گروه مهارتهای مرتبط",
                 pane: HLayout_Tab_Skill_SkillGroups
 
             },
             {
                 id: "TabPane_Skill_Competence",
-                title: "شایستگی",
+                title: "شایستگی های مرتبط",
                 pane: HLayout_Tab_Skill_Competences
             },
             {
                 id: "TabPane_Skill_Course",
-                title: "دوره",
+                title: "دوره های مرتبط",
                 pane: HLayout_Tab_Skill_Courses
             },
             {
                 id: "TabPane_Skill_Job",
-                title: "مشاغل",
+                title: "مشاغل مرتبط",
                 pane: HLayout_Tab_Skill_Jobs
             }
         ]
