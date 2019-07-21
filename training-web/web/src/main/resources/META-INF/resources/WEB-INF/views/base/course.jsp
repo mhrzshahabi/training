@@ -1070,6 +1070,6 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                 }
             });
         } else {
-            createTab("<spring:message code="course_goal_of_syllabus"/>" + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" +" " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
         }
     }
