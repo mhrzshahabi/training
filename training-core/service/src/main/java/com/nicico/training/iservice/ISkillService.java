@@ -41,6 +41,7 @@ public interface ISkillService {
     SubCategoryDTO.Info getSubCategory(Long skillID);
     SkillLevelDTO.Info getSkillLevel(Long skillID);
 
+    boolean isSkillDeletable(Long skillId);
     void removeSkillGroup(Long skillGroupId,Long skillId);
     void removeSkillGroups(List<Long> skillGroupIds,Long skillId);
     void addSkillGroup(Long skillGroupId,Long skillId);

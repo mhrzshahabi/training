@@ -98,25 +98,43 @@ public class SkillRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('d_skill')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
         try {
+        flag=skillService.isSkillDeletable(id);
+        if(flag)
             skillService.delete(id);
         } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            httpStatus=HttpStatus.NO_CONTENT;
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
     @PreAuthorize("hasAuthority('d_skill')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody SkillDTO.Delete request) {
+    public ResponseEntity<Boolean> delete(@Validated @RequestBody SkillDTO.Delete request) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
         try {
-            skillService.delete(request);
+            flag=true;
+            for (Long id : request.getIds() ) {
+                if(!skillService.isSkillDeletable(id)){
+                    flag=false;
+                    break;
+                }
+            }
+//            flag=skillService.isSkillDeletable(id);
+            if(flag)
+                skillService.delete(request);
         } catch (Exception e) {
-            return new ResponseEntity(HttpStatus.NO_CONTENT);
+            httpStatus=HttpStatus.NO_CONTENT;
         }
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
