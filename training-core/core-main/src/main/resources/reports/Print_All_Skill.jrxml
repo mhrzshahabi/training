@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Training"/>
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -47,8 +47,8 @@ WHERE
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="B Titr" size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[شناسه]]></text>
 				</staticText>
@@ -60,8 +60,8 @@ WHERE
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="B Titr" size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[کد مهارت]]></text>
 				</staticText>
@@ -73,8 +73,8 @@ WHERE
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="B Titr" size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[سطح مهارت]]></text>
 				</staticText>
@@ -86,8 +86,8 @@ WHERE
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="B Titr" size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[حوزه مهارت]]></text>
 				</staticText>
@@ -99,36 +99,36 @@ WHERE
 						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					</box>
-					<textElement textAlignment="Center">
-						<font fontName="Tahoma" size="12" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="B Titr" size="14" isBold="true"/>
 					</textElement>
 					<text><![CDATA[عنوان مهارت]]></text>
 				</staticText>
 				<textField>
 					<reportElement x="310" y="5" width="149" height="30" uuid="bd9bcc14-7639-443b-b3e0-c1838b4459a1"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="tahoma" size="14"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{Category}]]></textFieldExpression>
 				</textField>
 				<textField>
 					<reportElement x="80" y="3" width="140" height="30" uuid="4c3107fc-4e7f-44f6-a39e-97153a5e4d07"/>
-					<textElement textAlignment="Right" verticalAlignment="Middle">
-						<font fontName="tahoma" size="14"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
 					</textElement>
 					<textFieldExpression><![CDATA[$F{SubCategory}]]></textFieldExpression>
 				</textField>
 				<staticText>
 					<reportElement x="470" y="9" width="71" height="30" uuid="020491d4-7f99-4cba-a652-0b08d9fdfd90"/>
-					<textElement>
-						<font fontName="tahoma" size="14" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
 					</textElement>
 					<text><![CDATA[گروه :]]></text>
 				</staticText>
 				<staticText>
 					<reportElement x="220" y="9" width="71" height="30" uuid="3991862d-bc91-42ff-8031-e7fe4e20f553"/>
-					<textElement>
-						<font fontName="tahoma" size="14" isBold="true"/>
+					<textElement textAlignment="Center" verticalAlignment="Middle">
+						<font fontName="Shabnam-FD"/>
 					</textElement>
 					<text><![CDATA[زیر گروه :]]></text>
 				</staticText>
@@ -168,7 +168,7 @@ WHERE
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
 			<staticText>
-				<reportElement x="184" y="20" width="186" height="40" uuid="734a60dc-816a-4736-afcd-e086b0d00720"/>
+				<reportElement stretchType="ElementGroupBottom" x="184" y="20" width="186" height="40" uuid="734a60dc-816a-4736-afcd-e086b0d00720"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
@@ -186,7 +186,9 @@ WHERE
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{ID}]]></textFieldExpression>
 			</textField>
 			<textField>
@@ -197,8 +199,8 @@ WHERE
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{C_CODE}]]></textFieldExpression>
 			</textField>
@@ -210,8 +212,8 @@ WHERE
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{SkillLevel}]]></textFieldExpression>
 			</textField>
@@ -223,8 +225,8 @@ WHERE
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{DomainType}]]></textFieldExpression>
 			</textField>
@@ -236,8 +238,8 @@ WHERE
 					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 				</box>
-				<textElement textAlignment="Center">
-					<font fontName="Tahoma" size="12"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$F{TITLE_FA}]]></textFieldExpression>
 			</textField>

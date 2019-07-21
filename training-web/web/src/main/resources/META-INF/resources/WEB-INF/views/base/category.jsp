@@ -443,7 +443,7 @@
 							serverOutputAsString: false,
 							callback: function (resp) {
 								wait.close();
-								if (resp.httpResponseCode == 200) {
+								if (resp.data == "true") {
 									ListGrid_Sub_Category.invalidateCache();
 									var OK = isc.Dialog.create({
 										message: "ركورد با موفقيت حذف گرديد",
@@ -600,14 +600,14 @@
 		sortDirection: "descending",
 		dataPageSize: 50,
 		autoFetchData: true,
-		showFilterEditor: true,
-		filterOnKeypress: true,
+		// showFilterEditor: true,
+		// filterOnKeypress: true,
 		sortFieldAscendingText: "مرتب سازی صعودی ",
 		sortFieldDescendingText: "مرتب سازی نزولی",
 		configureSortText: "تنظیم مرتب سازی",
 		autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
 		autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-		filterUsingText: "فیلتر کردن",
+		// filterUsingText: "فیلتر کردن",
 		groupByText: "گروه بندی",
 		freezeFieldText: "ثابت نگه داشتن"
 	});
@@ -670,7 +670,7 @@
 							serverOutputAsString: false,
 							callback: function (resp) {
 								wait.close();
-								if (resp.httpResponseCode == 200) {
+								if (resp.data=="true") {
 									ListGrid_Category.invalidateCache();
 									var OK = isc.Dialog.create({
 										message: "ركورد با موفقيت حذف گرديد",
@@ -791,14 +791,14 @@
 		sortDirection: "descending",
 		dataPageSize: 50,
 		autoFetchData: true,
-		showFilterEditor: true,
-		filterOnKeypress: true,
+		// showFilterEditor: true,
+		// filterOnKeypress: true,
 		sortFieldAscendingText: "مرتب سازی صعودی ",
 		sortFieldDescendingText: "مرتب سازی نزولی",
 		configureSortText: "تنظیم مرتب سازی",
 		autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
 		autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-		filterUsingText: "فیلتر کردن",
+		// filterUsingText: "فیلتر کردن",
 		groupByText: "گروه بندی",
 		freezeFieldText: "ثابت نگه داشتن"
 	});

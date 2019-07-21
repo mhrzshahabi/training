@@ -888,7 +888,7 @@
                                 console.log(resp.httpResponseCode);
                                 wait.close();
                                 console.log(resp.httpResponseCode);
-                                if (resp.httpResponseCode == 200) {
+                                if (resp.data=="true") {
                                     ListGrid_Skill_Skill.invalidateCache();
                                     var OK = isc.Dialog.create({
                                         message: "مهارت با موفقيت حذف گرديد",

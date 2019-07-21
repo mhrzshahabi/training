@@ -249,6 +249,13 @@ public class SkillService implements ISkillService {
         return modelMapper.map(skill.getSkillLevel(),SkillLevelDTO.Info.class);
     }
 
+    @Override
+    public boolean isSkillDeletable(Long skillId) {
+       if(skillDAO.getSkillUsedInOther(skillId)!=null)
+            return true;
+       return false;
+    }
+
     @Transactional
     @Override
     public void removeSkillGroup (Long skillGroupId,Long skillId) {
