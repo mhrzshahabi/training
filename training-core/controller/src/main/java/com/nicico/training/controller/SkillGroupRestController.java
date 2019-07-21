@@ -1,6 +1,9 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
@@ -11,6 +14,8 @@ import com.nicico.training.service.SkillGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -29,6 +34,8 @@ import java.util.*;
 public class SkillGroupRestController {
     private final ReportUtil reportUtil;
     private final SkillGroupService skillGroupService;
+    private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -77,10 +84,47 @@ public class SkillGroupRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/{skillGroupId}/canDelete")
+//    @PreAuthorize("hasAuthority('d_skill_group')")
+    public ResponseEntity<Boolean> canDelete(@PathVariable Long skillGroupId) {
+        return new ResponseEntity<>(skillGroupService.canDelete(skillGroupId), HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/spec-list")
     @PreAuthorize("hasAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                               @RequestParam("_endRow") Integer endRow,
+                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+
+
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+            if (StringUtils.isNotEmpty(sortBy)) {
+                criteriaRq.set_sortBy(sortBy);
+            }
+
+            request.setCriteria(criteriaRq);
+        }
+
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+
+
+        //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
@@ -165,6 +209,20 @@ public class SkillGroupRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
+    @Loggable
+    @DeleteMapping(value = "/removeCompetence/{skillGroupId}/{competenceId}")
+    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long skillGroupId,@PathVariable Long competenceId){
+        skillGroupService.removeFromCompetency(skillGroupId,competenceId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/removeAllCompetence/{skillGroupId}/")
+    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long skillGroupId){
+        skillGroupService.removeFromAllCompetences(skillGroupId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
 
     @Loggable
     @GetMapping(value = "/{skillGroupId}/unAttachSkills")
@@ -224,19 +282,6 @@ public class SkillGroupRestController {
 
 
     }
-
-
-
-
-
-
-
-//    @Loggable
-//    @GetMapping(value = "/skills/{skillGroupId}")
-//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-//    public ResponseEntity<List<SkillDTO.Info>> getSkills(@PathVariable Long skillGroupId) {
-//        return new ResponseEntity<>(skillGroupService.getSkills(skillGroupId), HttpStatus.OK);
-//    }
 
 
 

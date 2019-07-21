@@ -44,6 +44,7 @@ public class SkillGroupService implements ISkillGroupService {
     @Transactional(readOnly = true)
     @Override
     public SkillGroupDTO.Info get(Long id) {
+
         final Optional<SkillGroup> cById = skillGroupDAO.findById(id);
         final SkillGroup skillGroup = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EquipmentNotFound));
 
@@ -168,6 +169,15 @@ public class SkillGroupService implements ISkillGroupService {
         }.getType());
     }
 
+    @Override
+    @Transactional
+    public boolean canDelete(Long skillGroupId) {
+        List<CompetenceDTO.Info> competences=getCompetence(skillGroupId);
+        if(competences.isEmpty() || competences.size()==0)
+        return true;
+        else
+            return false;
+    }
 
     @Override
     @Transactional
@@ -179,6 +189,26 @@ public class SkillGroupService implements ISkillGroupService {
         skillGroup.getSkillSet().remove(skill);
     }
 
+    @Override
+    @Transactional
+    public void removeFromCompetency(Long skillGroupId, Long competenceId) {
+
+        Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupId);
+        final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
+        final Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
+        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+        skillGroup.getCompetenceSet().remove(competence);
+    }
+
+    @Override
+    @Transactional
+    public void removeFromAllCompetences(Long skillGroupId) {
+
+        Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupId);
+        final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
+        skillGroup.getCompetenceSet().clear();
+
+    }
 
     @Override
     @Transactional

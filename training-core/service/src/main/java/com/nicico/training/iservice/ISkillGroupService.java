@@ -30,7 +30,10 @@ public interface ISkillGroupService {
     void addSkills(Long skillGroupId,Set<Long> skillIds);
     void removeSkill(Long skillGroupId,Long skillId);
     void removeSkills(Long skillGroupId,Set<Long> skillIds);
+    void removeFromCompetency(Long skillGroupId,Long competenceId);
+    void removeFromAllCompetences(Long skillGroupId);
     Set<SkillDTO.Info> unAttachSkills(Long skillGroupId);
+    boolean canDelete(Long skillGroupId);
 
     SearchDTO.SearchRs<SkillGroupDTO.Info> search(SearchDTO.SearchRq request);
 
