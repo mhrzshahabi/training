@@ -245,12 +245,22 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public Boolean  checkForDelete(Long id) {
+    public boolean  checkForDelete(Long id) {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         Set<Skill> skillSet = course.getSkillSet();
         Set<Tclass> tclasses = course.getTclassSet();
         List<Goal> goalSet = course.getGoalSet();
-        return (((skillSet != null &&   skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0 ) || (goalSet != null && goalSet.size() > 0)) ? true :false);
+        return (((skillSet != null &&   skillSet.size() > 0) || (tclasses != null && tclasses.size() > 0 )) ? false :true);
+    }
+
+    @Transactional
+    @Override
+    public void deletGoal(Long id)
+    {
+        Optional<Course> one = courseDAO.findById(id);
+        final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        course.getGoalSet().clear();
+
     }
 }

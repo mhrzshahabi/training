@@ -672,7 +672,6 @@ filterOnKeypress: true,
                     },
             {
                 name: "minTeacherExpYears",
-
                 title: "<spring:message code="course_minTeacherExpYears"/>",
                 shouldSaveValue: true,
                 textAlign: "center",
@@ -687,19 +686,18 @@ filterOnKeypress: true,
             {
                 name: "minTeacherEvalScore",
                 title: "<spring:message code="course_minTeacherEvalScore"/>",
-
-                required: true,
+                shouldSaveValue: true,
                 textAlign: "center",
-                type: 'text',
+                editorType: "SpinnerItem",
+                writeStackedIcons: true,
+                required: true,
+                min: 1,
+                max: 100,
                 width: "*",
-                length: 2,
                 keyPressFilter: "[0-9]",
-                validators: [
-                    {
-                        type: "integerRange", min: 0, max: 100,
-                        errorMessage: "لطفا نمره را صحیح وارد کنید",
-                    }
-                ]
+                // validators: [ { type: "integerRange", min: 0, max: 100,
+                //         errorMessage: "لطفا نمره را صحیح وارد کنید",
+                //     }]
             },
             {
                 name: "description",
@@ -946,7 +944,6 @@ members:[ ListGrid_CourseCompetence]
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
     };
-
     function ListGrid_Course_add() {
 DynamicForm_course.getItem("category.id").setDisabled(false);
 DynamicForm_course.getItem("subCategory.id").setDisabled(false);
@@ -961,12 +958,8 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
 
         Window_course.show();
     };
-
     function ListGrid_Course_remove() {
-
-
         var record = ListGrid_Course.getSelectedRecord();
-
         if (record == null) {
             isc.Dialog.create({
                 message: "<spring:message code="msg.record.not.selected"/>",
@@ -978,9 +971,7 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                 }
             });
         } else {
-
             var Dialog_Delete = isc.Dialog.create({
-
                 message: "<spring:message code="course_delete"/>" + "   " + getFormulaMessage(record.titleFa, 3, "red", "I") + "   " + "<spring:message code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
@@ -992,7 +983,7 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
 
                     if (index == 0) {
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/course/" + record.id,
+                            actionURL: "${restApiUrl}/api/course/deleteCourse/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1001,8 +992,13 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                             serverOutputAsString: false,
                             callback: function (resp) {
 
-                               if (resp.httpResponseCode == 200) {
-                                   ListGrid_Course.invalidateCache();
+                               if (resp.data=="true") {
+                                    ListGrid_Course_refresh();
+                                    ListGrid_CourseJob.setData([]);
+                                    ListGrid_CourseSkill.setData([]);
+                                    ListGrid_CourseSyllabus.setData([]);
+                                    ListGrid_CourseGoal.setData([]);
+                                    ListGrid_CourseCompetence.setData([]);
                                     var OK = isc.Dialog.create({
                                        message: "<spring:message code="msg.record.remove.successful"/>",
 
@@ -1031,6 +1027,11 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
     };
 
     function ListGrid_Course_Edit() {
+        DynamicForm_course.getItem("category.id").setDisabled(true);
+        DynamicForm_course.getItem("subCategory.id").setDisabled(true);
+        DynamicForm_course.getItem("erunType.id").setDisabled(true);
+        DynamicForm_course.getItem("elevelType.id").setDisabled(true);
+        DynamicForm_course.getItem("etheoType.id").setDisabled(true);
 
         var sRecord = ListGrid_Course.getSelectedRecord();
 
