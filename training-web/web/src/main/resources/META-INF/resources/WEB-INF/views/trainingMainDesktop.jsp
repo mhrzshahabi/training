@@ -5,7 +5,7 @@
 
 <html>
 <head>
-    <title>سیستم آموزش شرکت ملی صنایع مس ایران</title>
+    <title>سیستم آموزش     </title>
 
     <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
@@ -169,12 +169,17 @@
     NotStartWithNumber:{
         type:"regexp",
         errorMessage:"این فیلد نباید با عدد شروع شود.",
-        expression:"^(?!([0-9]))[/*/]*",
+        expression:/^(?!([0-9]))/,
     },
         NotStartWithSpecialChar:{
             type:"regexp",
             errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression:"^(?!([!@#$%^&*?';؟:. ]))[/*/]*",
+            expression:/^(?!([!@#$%^&*~';:.{}_]))/,
+        },
+        NotContainSpecialChar:{
+            type:"regexp",
+            errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
+            expression:/\w+(?![!@#$%^&*~';:.{}_]).*/,
         }
     };
 
@@ -694,7 +699,7 @@
         width: "20%",
         height: "100%",
         styleName: "mainHeaderStyleOnline",
-        contents: "سیستم آموزش شرکت ملی صنایع مس ایران"
+        contents: "سیستم آموزش"
 
     });
 
@@ -841,3 +846,6 @@
 
 </body>
 </html>
+
+
+

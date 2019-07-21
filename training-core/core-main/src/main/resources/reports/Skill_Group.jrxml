@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="logo_nicico" class="java.lang.Object"/>
+	<queryString language="SQL">
+		<![CDATA[select * from training.TBL_SKILL_GROUP]]>
+	</queryString>
+	<field name="C_TITLE_EN" class="java.lang.String"/>
+	<field name="C_TITLE_FA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="177" y="0" width="100" height="30" uuid="dccd3a64-4a7f-4db2-946a-7b458562a42b"/>
+				<text><![CDATA[C_TITLE_EN]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="377" y="0" width="100" height="30" uuid="2544f85a-f094-45d5-ae7f-bf91e93fdc76"/>
+				<text><![CDATA[C_TITLE_FA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="125" splitType="Stretch">
+			<textField>
+				<reportElement x="177" y="54" width="100" height="30" uuid="04c38280-21eb-4da9-959e-b5fe3e09c3b5"/>
+				<textFieldExpression><![CDATA[$F{C_TITLE_EN}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="377" y="57" width="100" height="30" uuid="53a597e6-7eeb-490e-acea-6c715ded7064"/>
+				<textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
