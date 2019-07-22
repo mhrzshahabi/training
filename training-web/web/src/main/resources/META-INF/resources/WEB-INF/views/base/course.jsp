@@ -52,7 +52,8 @@
     var RestDataSource_e_level_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: "${restApiUrl}/api/enum/eLevelType"
+        fetchDataURL: "${restApiUrl}/api/enum/eLevelType",
+        autoFetchData: false,
     });
     var RestDataSource_e_run_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
