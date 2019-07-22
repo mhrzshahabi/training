@@ -34,11 +34,11 @@ public interface ICourseService {
 
     String getMaxCourseCode(String str);
 
-
-
-	void  getCourseIdvGoalsId(Long courseId,List<Long> goalIdList);
+	void  getCourseIdvGoalsId(Long courseId, List<Long> goalIdList);
 
 	void removeCourseSGoal(Long courseId, List<Long> goalIdList);
 
-	Boolean  checkForDelete(Long id);
+	boolean  checkForDelete(Long id);
+
+	void deletGoal(Long id);
 }

@@ -41,7 +41,6 @@ public class CourseRestController {
     private  final HttpServletResponse response;
     //------------------------------------------
     private final ReportUtil reportUtil;
-
     private final CourseService courseService;
     private final EducationLicenseService educationLicenseService;
     // ---------------------------------
@@ -78,11 +77,19 @@ public class CourseRestController {
     }
 
     @Loggable
-    @DeleteMapping(value = "/{id}")
+    @DeleteMapping(value = "deleteCourse/{id}")
 //	@PreAuthorize("hasAuthority('d_course')")
-    public ResponseEntity<Void> delete(@PathVariable Long id){
-    courseService.delete(id);
-    return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id){
+      boolean check=courseService.checkForDelete(id);
+        if(check)
+        {
+            courseService.deletGoal(id);
+            courseService.delete(id);
+
+        }
+
+   // courseService.delete(id);
+    return new ResponseEntity<>(check,HttpStatus.OK);
    }
 
     @Loggable
