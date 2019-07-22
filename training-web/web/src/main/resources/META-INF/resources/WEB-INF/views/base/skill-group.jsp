@@ -98,6 +98,8 @@ deleteCompetenceFromSkillGroup(activeCompetence.id,activeSkillGroup.id);
 },
 {isSeparator: true}, {
 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+"<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
+window.open('${printUrl}');
 }
 }, {
 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
@@ -1099,17 +1101,17 @@ else
 			}
 		}, {isSeparator: true}, {
 			title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-				"<spring:url value="/tclass/print/pdf" var="printUrl"/>"
+				"<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
 				window.open('${printUrl}');
 			}
 		}, {
 			title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-				"<spring:url value="/tclass/print/excel" var="printUrl"/>"
+				"<spring:url value="/skill-group/print/excel" var="printUrl"/>"
 				window.open('${printUrl}');
 			}
 		}, {
 			title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-				"<spring:url value="/tclass/print/html" var="printUrl"/>"
+				"<spring:url value="/skill-group/print/html" var="printUrl"/>"
 				window.open('${printUrl}');
 			}
 		},{isSeparator: true},{	title: "حذف گروه مهارت از تمام شایستگی ها", icon: "pieces/16/icon_delete.png", click: function () {
