@@ -79,7 +79,7 @@ public class CourseDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
+//        private Integer version;
         private ERunType eRunType;
         private ELevelType eLevelType;
         private ETechnicalType eTechnicalType;
@@ -158,9 +158,9 @@ public class CourseDTO implements Serializable {
         @ApiModelProperty(required = true)
         private Integer eTechnicalTypeId;
 
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private Integer version;
 
         @ApiModelProperty(required = true)
         private Long categoryId;
