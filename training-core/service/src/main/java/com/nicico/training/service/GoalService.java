@@ -105,7 +105,7 @@ public class GoalService implements IGoalService {
         return SearchUtil.search(goalDAO, request, goal -> modelMapper.map(goal, GoalDTO.Info.class));
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     @Override
     public List<SyllabusDTO.Info> getSyllabusSet(Long goalId) {
         final Optional<Goal> ssById = goalDAO.findById(goalId);

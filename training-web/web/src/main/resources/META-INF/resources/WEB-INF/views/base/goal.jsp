@@ -2,14 +2,14 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+//  <script>
     var methodGoal = "GET";
     var urlGoal = "http://localhost:9090/api/goal";
     var methodSyllabus = "GET";
     var urlSyllabus = "http://localhost:9090/api/syllabus";
     var selectedRecord = 0;
 
-    var RestDataSourceGoalEDomainType = isc.RestDataSource.create({
+    var RestDataSourceGoalEDomainType = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
@@ -23,7 +23,7 @@
         },
         fetchDataURL: "http://localhost:9090/api/enum/eDomainType"
     });
-    var RestDataSource_GoalAll = isc.RestDataSource.create({
+    var RestDataSource_GoalAll = isc.MyRestDataSource.create({
         ID: "goalDS",
         fields: [
             {name: "id", primaryKey: "true", hidden: "true"}, {name: "titleFa"}, {name: "titleEn"},
@@ -40,9 +40,9 @@
         },
         fetchDataURL: "http://localhost:9090/api/course/goal/" + courseId.id
     });
-    var RestDataSource_Syllabus_JspGoal = isc.RestDataSource.create({
+    var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id", hidden: "true"},
+            {name: "id", primaryKey: true, hidden: "true"},
             {name: "titleFa", title: "سرفصل ها"},
             {name: "titleEn", title: "نام انگلیسی", hidden: "true"},
             {name: "edomainType.titleFa", title: "حیطه"},
@@ -79,7 +79,12 @@
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9 ]"
             }
-        ]
+        ],
+        keyPress : function () {
+            if(isc.EventHandler.getKey()== "Enter"){
+                this.focusInNextTabElement();
+            }
+        }
     });
     var DynamicForm_Syllabus = isc.MyDynamicForm.create({
         fields: [
@@ -127,15 +132,33 @@
                 }]
             },
             {
+                name: "titleEn",
+                title: "نام لاتین ",
+                type: 'text',
+                keyPressFilter: "[a-z|A-Z|0-9 ]",
+                length: "200",
+                hint: "Latin",
+                showHintInField: true,
+                validators: [{
+                    type: "isString",
+                    validateOnExit: true,
+                    type: "lengthRange",
+                    min: 3,
+                    max: 200,
+                    stopOnError: true,
+                    errorMessage: "نام مجاز بين سه تا دویست کاراکتر است"
+                }]
+            },
+            {
                 name: "edomainType.id",
                 value: "",
                 type: "IntegerItem",
                 title: "حیطه",
-                width: "95%",
+                width: 220,
                 required: true,
                 textAlign: "center",
-                editorType: "ComboBoxItem",
-                pickListWidth: 100,
+                editorType: "MyComboBoxItem",
+                pickListWidth: 210,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -155,24 +178,20 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
             {
-                name: "titleEn",
-                title: "نام لاتین ",
-                type: 'text',
-                keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "200",
-                hint: "Latin",
-                showHintInField: true,
-                validators: [{
-                    type: "isString",
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 3,
-                    max: 200,
-                    stopOnError: true,
-                    errorMessage: "نام مجاز بين سه تا دویست کاراکتر است"
-                }]
-            },
-            {name: "practicalDuration", title: "مدت زمان اجرا", type: "text", keyPressFilter: "[0-9]", length: "3"}]
+                name: "practicalDuration",
+                title: "مدت زمان اجرا",
+                editorType: "SpinnerItem",
+                writeStackedIcons: false,
+                defaultValue: 2,
+                min: 1,
+                max: 300,
+                step: 2
+            }],
+        keyPress : function () {
+            if(isc.EventHandler.getKey()== "Enter"){
+                DynamicForm_Syllabus.focusInNextTabElement();
+            }
+        }
     });
 
     var IButton_Goal_Save = isc.IButton.create({
@@ -195,25 +214,16 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var OK = isc.Dialog.create({
-                            message: "عملیات با موفقیت انجام شد.",
-                            icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                        }, 3000);
+                        var responseID = JSON.parse(resp.data).id;
+                        var gridState = "[{id:" + responseID + "}]";
+                        simpleDialog("انجام فرمان","عملیات با موفقیت انجام شد.", "3000","say");
                         ListGrid_Goal_refresh();
+                        setTimeout(function () {
+                            ListGrid_Goal.setSelectedState(gridState);
+                        }, 1000);
                         Window_Goal.close();
                     } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                            icon: "[SKIN]stop.png",
-                            title: "پیغام"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
+                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
                     }
 
                 }
@@ -241,25 +251,16 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var OK = isc.Dialog.create({
-                            message: "عملیات با موفقیت انجام شد.",
-                            icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                        }, 3000);
+                        var responseID = JSON.parse(resp.data).id;
+                        var gridState = "[{id:" + responseID + "}]";
+                        simpleDialog("انجام فرمان","عملیات با موفقیت انجام شد.","3000","say")
                         ListGrid_Syllabus_Goal.invalidateCache();
+                        setTimeout(function () {
+                            ListGrid_Syllabus_Goal.setSelectedState(gridState);
+                        }, 1000);
                         Window_Syllabus.close();
                     } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                            icon: "[SKIN]stop.png",
-                            title: "پیغام"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
+                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
                     }
 
                 }
@@ -268,12 +269,12 @@
         }
     });
 
-    var Hlayout_Goal_SaveOrExit = isc.HLayout.create({
+    var Hlayout_Goal_SaveOrExit = isc.MyHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        align:"center",
+        align: "center",
         padding: 10,
         membersMargin: 10,
         members: [IButton_Goal_Save, isc.IButton.create({
@@ -290,13 +291,13 @@
         })]
     });
 
-    var Hlayout_Syllabus_SaveOrExit = isc.HLayout.create({
+    var Hlayout_Syllabus_SaveOrExit = isc.MyHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
         alignLayout: "center",
-        align:"center",
+        align: "center",
         padding: 10,
         membersMargin: 10,
         members: [IButton_Syllabus_Save, isc.IButton.create({
@@ -312,7 +313,7 @@
         })]
     });
 
-    var Window_Syllabus = isc.Window.create({
+    var Window_Syllabus = isc.MyWindow.create({
         title: "سرفصل",
         autoSize: true,
         autoCenter: true,
@@ -332,7 +333,7 @@
         })]
     });
 
-    var Window_Goal = isc.Window.create({
+    var Window_Goal = isc.MyWindow.create({
         title: "هدف",
         autoSize: true,
         autoCenter: true,
@@ -468,7 +469,10 @@
         },
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.goalId == selectedRecord && ListGrid_Goal.getSelectedRecord() != null) {
-                return "color:red;";
+                return "color: brown;font-size: 14px;";
+            }
+            else{
+                return "color:gray;font-size: 10px;";
             }
         },
         fields: [
@@ -704,15 +708,9 @@
                                 ListGrid_Syllabus_Goal.invalidateCache();
 
 
-                            } else {
-                                var ERROR = isc.Dialog.create({
-                                    message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                                    icon: "[SKIN]stop.png",
-                                    title: "پیغام"
-                                });
-                                setTimeout(function () {
-                                    ERROR.close();
-                                }, 3000);
+                            }
+                            else{
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
                             }
 
                         }
@@ -773,14 +771,7 @@
                                 ListGrid_Syllabus_Goal.invalidateCache();
 
                             } else {
-                                var ERROR = isc.Dialog.create({
-                                    message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                                    icon: "[SKIN]stop.png",
-                                    title: "پیغام"
-                                });
-                                setTimeout(function () {
-                                    ERROR.close();
-                                }, 3000);
+                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                             }
 
                         }
@@ -926,23 +917,9 @@
                                 wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Goal.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='msg.operation.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='msg.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
+                                    simpleDialog("<spring:message code='msg.command.done'/>","<spring:message code="msg.operation.successful"/>",3000,"say");
                                 } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.cannot.deleted'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
+                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                                 }
                             }
                         });
@@ -966,8 +943,7 @@
                     this.close();
                 }
             });
-        }
-        else {
+        } else {
             methodGoal = "PUT";
             urlGoal = "http://localhost:9090/api/goal/" + record.id;
             DynamicForm_Goal.clearValues();
@@ -1055,14 +1031,7 @@
                                         OK.close();
                                     }, 3000);
                                 } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='global.grid.record.cannot.deleted'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='global.message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
+                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                                 }
                             }
                         });
@@ -1088,7 +1057,7 @@
             selectedGoalId = gRecord.id;
             methodSyllabus = "POST";
             urlSyllabus = "http://localhost:9090/api/syllabus";
-            // DynamicForm_Syllabus.clearValues();
+            DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.show();
         }
@@ -1123,3 +1092,4 @@
         }
         ListGrid_Syllabus_Goal.invalidateCache();
     };
+    //</script>

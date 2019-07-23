@@ -85,7 +85,7 @@
     });
     var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
             fetchDataURL: "${restApiUrl}/api/goal/spec-list"
@@ -106,7 +106,7 @@
     });
     var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey:true},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
