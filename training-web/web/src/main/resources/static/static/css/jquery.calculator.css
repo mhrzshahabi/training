@@ -156,7 +156,6 @@ img.calculator-trigger {
 }
 
 @-moz-document url-prefix() {
-/ /
 	Firefox
 	.calculator-trig, .calculator-base {
 		text-indent: -3px;

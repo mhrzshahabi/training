@@ -14,9 +14,11 @@ import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
@@ -31,6 +33,9 @@ public class TeacherService implements ITeacherService {
 	private final EnumsConverter.EGenderConverter eGenderConverter = new EnumsConverter.EGenderConverter();
     private final EnumsConverter.EMarriedConverter eMarriedConverter = new EnumsConverter.EMarriedConverter();
     private final EnumsConverter.EMilitaryConverter eMilitaryConverter = new EnumsConverter.EMilitaryConverter();
+
+    @Value("${nicico.teacher.upload.dir}")
+    private String teacherUploadDir;
 
 	@Transactional(readOnly = true)
 	@Override
@@ -96,7 +101,6 @@ public class TeacherService implements ITeacherService {
 	@Override
 	public void delete(TeacherDTO.Delete request) {
 		final List<Teacher> tAllById = teacherDAO.findAllById(request.getIds());
-
 		teacherDAO.deleteAll(tAllById);
 	}
 

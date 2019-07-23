@@ -9,10 +9,19 @@
     var url = "${restApiUrl}/api/teacher";
 
     var responseID;
-    var categories;
+    var categoryList;
     var gridState;
     var attachName;
- var dummy;
+    var attachNameTemp;
+
+    var codeMeliCheck = true;
+    var cellPhoneCheck = true;
+    var mailCheck = true;
+
+    var photoDescription = "* سایز عکس بین 5 تا 1000 KB" + "<br/>" + "<br/>" + "* اندازه ی عکس بین 300*100 تا 400*200 px" + "<br/>" + "<br/>" +  "* فرمت عکس jpg,png,gif";
+
+    var dummy = false;
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -95,58 +104,58 @@
     });
 
     var RestDataSource_Education_Level_JspTeacher = isc.RestDataSource.create({
-		fields: [
-			{name: "id"},
-			{name: "titleEn"},
-			{name: "titleFa"}
-		], dataFormat: "json",
-		jsonPrefix: "",
-		jsonSuffix: "",
-		transformRequest: function (dsRequest) {
-			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
-			};
-			return this.Super("transformRequest", arguments);
-		},
-		fetchDataURL: "${restApiUrl}/api/educationLevel/spec-list"
-	});
+        fields: [
+            {name: "id"},
+            {name: "titleEn"},
+            {name: "titleFa"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+                "Access-Control-Allow-Origin": "${restApiUrl}"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fetchDataURL: "${restApiUrl}/api/educationLevel/spec-list"
+    });
 
     var RestDataSource_Education_Major_JspTeacher = isc.RestDataSource.create({
-		fields: [
-			{name: "id"},
-			{name: "titleEn"},
-			{name: "titleFa"}
-		], dataFormat: "json",
-		jsonPrefix: "",
-		jsonSuffix: "",
-		transformRequest: function (dsRequest) {
-			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
-			};
-			return this.Super("transformRequest", arguments);
-		},
-		fetchDataURL: "${restApiUrl}/api/educationMajor/spec-list"
-	});
+        fields: [
+            {name: "id"},
+            {name: "titleEn"},
+            {name: "titleFa"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+                "Access-Control-Allow-Origin": "${restApiUrl}"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fetchDataURL: "${restApiUrl}/api/educationMajor/spec-list"
+    });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.RestDataSource.create({
-		fields: [
-			{name: "id"},
-			{name: "titleEn"},
-			{name: "titleFa"}
-		], dataFormat: "json",
-		jsonPrefix: "",
-		jsonSuffix: "",
-		transformRequest: function (dsRequest) {
-			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
-			};
-			return this.Super("transformRequest", arguments);
-		},
-		fetchDataURL: "${restApiUrl}/api/educationOrientation/spec-list"
-	});
+        fields: [
+            {name: "id"},
+            {name: "titleEn"},
+            {name: "titleFa"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+                "Access-Control-Allow-Origin": "${restApiUrl}"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fetchDataURL: "${restApiUrl}/api/educationOrientation/spec-list"
+    });
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -227,12 +236,35 @@
 
     var vm = isc.ValuesManager.create({});
 
-     var showAttachViewLoader = isc.ViewLoader.create({
+    var DynamicForm_ViewLoader_JspTeacher = isc.Label.create({
+        height: "140px",
+        width: "145px",
+        align: "center",
+        valign: "center",
+        contents: photoDescription
+    });
+
+    var showAttachViewLoader = isc.ViewLoader.create({
         autoDraw: false,
         viewURL: "",
         overflow: "scroll",
-        height: 100,
+        height: "140px",
+        width: "130px",
+        border: "1px solid red",
+        scrollbarSize: 0,
         loadingMessage: "تصویری آپلود نشده است"
+    });
+
+    var VLayOut_ViewLoader_JspTeacher = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [showAttachViewLoader,
+            DynamicForm_ViewLoader_JspTeacher]
     });
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
@@ -251,6 +283,7 @@
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
+        canTabToIcons: false,
         fields: [
             {name: "id", hidden: true},
 
@@ -265,27 +298,53 @@
                 name: "fullNameFa",
                 title: "نام و نام خانوادگی",
                 type: 'text',
-                required: true
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                hint: "Persian/فارسی",
+                showHintInField: true
             },
 
             {
                 name: "fullNameEn",
                 title: "نام لاتین",
                 type: 'text',
-                required: true
+                required: true,
+                keyPressFilter: "[a-z|A-Z |]",
+                hint: "English/انگليسي",
+                showHintInField: true
             },
 
             {
                 name: "nationalCode",
                 title: "کد ملی",
                 type: 'text',
-                required: true
+                required: true,
+                wrapTitle: false,
+                keyPressFilter: "[0-9]",
+                length : "10",
+                hint: "کد ملی ده رقمی را وارد کنید",
+                showHintInField: true
+                ,blur:function()
+                        {
+                            var codeCheck = false;
+                            codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("nationalCode"));
+                            codeMeliCheck = codeCheck;
+                            if(codeCheck == false)
+                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode","کد ملی اشتباهی را وارد کرده اید", true);
+
+                            if(codeCheck == true)
+                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
+                        }
             },
 
             {
                 name: "fatherName",
                 title: "نام پدر",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                hint: "Persian/فارسی",
+                showHintInField: true,
+                length: "30"
             },
 
             {
@@ -347,34 +406,44 @@
             {
                 name: "birthLocation",
                 title: "محل تولد",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
             },
 
 
             {
                 name: "birthCertificate",
                 title: "شماره شناسنامه",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[/|0-9]",
+                length: "15"
             },
 
             {
                 name: "birthCertificateLocation",
                 title: "محل صدور",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
             },
 
             {
                 name: "religion",
                 title: "دین/مذهب",
                 type: 'text',
-                defaultValue: "اسلام"
+                defaultValue: "اسلام",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
             },
 
             {
                 name: "nationality",
                 title: "ملیت",
                 type: 'text',
-                defaultValue: "ایرانی"
+                defaultValue: "ایرانی",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
             },
 
             {
@@ -404,98 +473,115 @@
             },
 
             {
-                name: "homePostalCode",
+                name: "email",
                 title: "پست الکترونیکی",
-                type: 'text'
+                type: 'text',
+                hint: "test@nicico.com",
+                showHintInField: true,
+                length: "30"
+                ,blur:function()
+                        {
+                            var emailCheck = false;
+                            emailCheck= checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("email"));
+                            mailCheck = emailCheck;
+                            if(emailCheck == false)
+                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email","پست الکترونیکی اشتباهی را وارد کرده اید", true);
+
+                            if(emailCheck == true)
+                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
+                        }
             },
 
-            {name: "educationLevelId",
-				title: "مقطع تحصیلی",
-				textAlign: "center",
-				editorType: "ComboBoxItem",
-				pickListWidth: 230,
-				changeOnKeypress: true,
-				displayField: "titleFa",
-				valueField: "id",
-				optionDataSource: RestDataSource_Education_Level_JspTeacher,
-				autoFetchData: true,
-				addUnknownValues: false,
-				cachePickListResults: false,
-				useClientFiltering: false,
-				filterFields: ["titleFa"],
-				sortField: ["id"],
-				textMatchStyle: "startsWith",
-				generateExactMatchCriteria: true,
-				pickListProperties: {
-					showFilterEditor: true,
-				},
-				pickListFields: [
-					{
-						name: "titleFa",
-						width: "70%",
-						filterOperator: "iContains"
-					}
-				]
-			    },
+            {
+                name: "educationLevelId",
+                title: "مقطع تحصیلی",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                pickListWidth: 230,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Education_Level_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: false,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
 
-            {name: "educationMajorId",
-				title: "رشته تحصیلی",
-				textAlign: "center",
-				editorType: "ComboBoxItem",
-				pickListWidth: 230,
-				changeOnKeypress: true,
-				displayField: "titleFa",
-				valueField: "id",
-				optionDataSource: RestDataSource_Education_Major_JspTeacher,
-				autoFetchData: true,
-				addUnknownValues: false,
-				cachePickListResults: false,
-				useClientFiltering: false,
-				filterFields: ["titleFa"],
-				sortField: ["id"],
-				textMatchStyle: "startsWith",
-				generateExactMatchCriteria: true,
-				pickListProperties: {
-					showFilterEditor: true,
-				},
-				pickListFields: [
-					{
-						name: "titleFa",
-						width: "70%",
-						filterOperator: "iContains"
-					}
-				]
-			    },
+            {
+                name: "educationMajorId",
+                title: "رشته تحصیلی",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                pickListWidth: 230,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Education_Major_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: false,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
 
-            {name: "educationOrientationId",
-				title: "گرایش تحصیلی",
-				textAlign: "center",
-				editorType: "ComboBoxItem",
-				pickListWidth: 230,
-				changeOnKeypress: true,
-				displayField: "titleFa",
-				valueField: "id",
-				optionDataSource: RestDataSource_Education_Orientation_JspTeacher,
-				autoFetchData: true,
-				addUnknownValues: false,
-				disabled: true,
-				cachePickListResults: false,
-				useClientFiltering: false,
-				filterFields: ["titleFa"],
-				sortField: ["id"],
-				textMatchStyle: "startsWith",
-				generateExactMatchCriteria: true,
-				pickListProperties: {
-					showFilterEditor: true,
-				},
-				pickListFields: [
-					{
-						name: "titleFa",
-						width: "70%",
-						filterOperator: "iContains"
-					}
-				]
-			    },
+            {
+                name: "educationOrientationId",
+                title: "گرایش تحصیلی",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                pickListWidth: 230,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Education_Orientation_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                disabled: true,
+                cachePickListResults: false,
+                useClientFiltering: false,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
             {
                 name: "emilitary.id",
                 type: "IntegerItem",
@@ -525,25 +611,49 @@
             {
                 name: "mobile",
                 title: "تلفن همراه",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[/|0-9]",
+                length: "11",
+                hint: "*********09",
+                showHintInField: true,
+                errorMessage: "شماره ی موبایل اشتباهی را وارد کرده اید"
+                ,blur:function()
+                        {
+                            var mobileCheck = false;
+                            mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("mobile"));
+                            cellPhoneCheck = mobileCheck;
+                            if(mobileCheck == false)
+                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile","شماره ی موبایل اشتباهی را وارد کرده اید", true);
+
+                            if(mobileCheck == true)
+                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
+                        }
             },
 
             {
                 name: "economicalCode",
                 title: "کد اقتصادی",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length : "15",
+                stopOnError: true
             },
 
             {
                 name: "economicalRecordNumber",
                 title: "شماره ثبت",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length : "15",
+                stopOnError: true
             },
 
             {
                 name: "description",
                 title: "توضیحات",
-                type: 'textBox'
+                type: 'textArea',
+                length: "500",
+                height: 30
             },
 
             {
@@ -556,7 +666,7 @@
             },
 
             {
-                name: "categories",
+                name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
                 title: "زمینه ی آموزش",
@@ -578,7 +688,7 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "انتخاب همه",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories"),
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
@@ -595,7 +705,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "حذف همه",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories");
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -605,31 +715,68 @@
                         "header", "body"
                     ]
                 }
-            },
-            {
-                ID: "attachPhoto",
-                name: "attachPhoto",
-                title: "عکس پرسنلی",
-                type: "file",
-                titleWidth: "80",
-                accept: ".png",
-                multiple: "",
-                width: "100%"
             }
         ],
         itemChanged: function (item, newValue) {
             if (item.name == "nationalCode")
                 this.getItem("teacherCode").setValue(item.getValue());
-            if(item.name == "educationMajorId"){
-                if(newValue == undefined){
+            if (item.name == "educationMajorId") {
+                if (newValue == undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
                 }
-                else{
-                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL= "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + newValue;
+                else {
+                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + newValue;
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
-                    }
+                }
+            }
+            if (item.name == "attachPic") {
+                showTempAttach();
+            }
+        }
+    });
+
+
+    var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 0,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleSuffix: "",
+        valuesManager: "vm",
+        numCols: 2,
+        titleAlign: "right",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 10,
+        newPadding: 5,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                ID: "attachPic",
+                name: "attachPic",
+                title: "",
+                type: "file",
+                titleWidth: "80",
+                accept: ".png,.gif,.jpg",
+                multiple: "",
+                width: "100%"
+            }
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name == "attachPic") {
+            showTempAttach();
+             setTimeout(function () {
+                 if(attachNameTemp == null || attachNameTemp == ""){
+                    DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
+                    showAttachViewLoader.setView();
+                 }
+             }, 300);
             }
         }
     });
@@ -656,43 +803,56 @@
             {
                 name: "workName",
                 title: "محل کار",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
             },
 
             {
                 name: "workPhone",
                 title: "تلفن",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "11"
             },
 
             {
                 name: "workPostalCode",
                 title: "کد پستی",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "15"
             },
 
             {
                 name: "workJob",
                 title: "شغل",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
             },
 
             {
                 name: "workTeleFax",
                 title: "دورنگار",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
             },
 
             {
                 name: "workAddress",
                 title: "آدرس",
-                type: 'text'
+                type: 'textArea',
+                height: 30,
+                length: "255"
             },
 
             {
                 name: "workWebSite",
                 title: "وبسایت",
-                type: 'text'
+                type: 'text',
+                length: "30"
             },
 
         ]
@@ -720,31 +880,41 @@
             {
                 name: "accountNember",
                 title: "شماره حساب",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
             },
 
             {
                 name: "bank",
                 title: "بانک",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
             },
 
             {
                 name: "bankBranch",
                 title: "شعبه بانک",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
             },
 
             {
                 name: "cartNumber",
                 title: "شماره کارت",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
             },
 
             {
                 name: "shabaNumber",
                 title: "شماره شبا",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
             },
 
         ]
@@ -772,19 +942,25 @@
             {
                 name: "homePhone",
                 title: "تلفن",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "11"
             },
 
             {
                 name: "homePostalCode",
                 title: "کد پستی",
-                type: 'text'
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "15"
             },
 
             {
                 name: "homeAddress",
                 title: "آدرس",
-                type: 'text'
+                type: 'textArea',
+                height: 30,
+                length: "255"
             },
 
         ]
@@ -792,6 +968,10 @@
 
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
         top: 260, title: "<spring:message code='save'/>", click: function () {
+
+
+            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false)
+                return;
 
             vm.validate();
             if (vm.hasErrors()) {
@@ -813,11 +993,10 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                dummy = resp;
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         responseID = JSON.parse(resp.data).id;
                         gridState = "[{id:" + responseID + "}]";
-                        categories = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+                        categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
                         var OK = isc.Dialog.create({
                             message: "<spring:message code='msg.operation.successful'/>",
                             icon: "[SKIN]say.png",
@@ -827,11 +1006,12 @@
                             OK.close();
                             ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                         }, 1000);
-                        ListGrid_Teacher_JspTeacher.invalidateCache();
-                        // Window_Teacher_JspTeacher.close();
-                        addCategories(responseID, categories);
-                        addAttach(responseID);
-
+                        if(categoryList != undefined)
+                            addCategories(responseID, categoryList);
+                            addAttach(responseID);
+                            showAttachViewLoader.hide();
+                            ListGrid_Teacher_JspTeacher.invalidateCache();
+                            Window_Teacher_JspTeacher.close();
                     } else {
                         var ERROR = isc.Dialog.create({
                             message: ("<spring:message code='msg.operation.error'/>"),
@@ -855,8 +1035,8 @@
         width: 100,
         orientation: "vertical",
         click: function () {
-                // Window_Teacher_JspTeacher.close();
-              showAttach();
+            showAttachViewLoader.hide();
+            Window_Teacher_JspTeacher.close();
         }
     });
 
@@ -875,7 +1055,6 @@
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        // height: "380",
         height: "300",
         tabs: [
             {
@@ -900,7 +1079,6 @@
     var TabSet_AccountInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "150",
         tabs: [
             {
                 title: "اطلاعات حساب", canClose: false,
@@ -912,7 +1090,7 @@
     var TabSet_AddressInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "160",
+        height: "150",
         tabs: [
             {
                 title: "محل سکونت", canClose: false,
@@ -920,6 +1098,58 @@
             }
         ]
     });
+
+	var VLayOut_Photo_JspTeacher = isc.VLayout.create({
+		layoutMargin: 5,
+		showEdges: false,
+		edgeImage: "",
+		alignLayout: "center",
+		align: "center",
+		padding: 10,
+		membersMargin: 10,
+        height: "180",
+		members: [VLayOut_ViewLoader_JspTeacher, DynamicForm_Photo_JspTeacher]
+	});
+
+    var TabSet_Photo_JspTeacher = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset: 2,
+        height: "340",
+        width: "25%",
+        alignLayout: "center",
+        align: "center",
+        tabs: [
+            {
+                title: "عکس پرسنلی", canClose: false,
+                pane: VLayOut_Photo_JspTeacher
+            }
+        ]
+    });
+
+    var VLayOut_Temp_JspTeacher = isc.VLayout.create({
+    	layoutMargin: 5,
+		showEdges: false,
+		edgeImage: "",
+		alignLayout: "center",
+		align: "center",
+		padding: 10,
+		height: "350",
+        width: "75%",
+		membersMargin: 10,
+		members: [TabSet_AddressInfo_JspTeacher, TabSet_JobInfo_JspTeacher]
+    });
+
+    var HLayOut_Temp_JspTeacher = isc.HLayout.create({
+        layoutMargin: 5,
+		showEdges: false,
+		edgeImage: "",
+		alignLayout: "center",
+		align: "center",
+		padding: 10,
+		membersMargin: 10,
+		members: [TabSet_Photo_JspTeacher,VLayOut_Temp_JspTeacher]
+    });
+
 
 
     var Window_Teacher_JspTeacher = isc.Window.create({
@@ -940,10 +1170,8 @@
             height: "100%",
             members: [
                 TabSet_BasicInfo_JspTeacher,
-                showAttachViewLoader,
-                TabSet_JobInfo_JspTeacher,
+                HLayOut_Temp_JspTeacher,
                 TabSet_AccountInfo_JspTeacher,
-                TabSet_AddressInfo_JspTeacher,
                 HLayOut_TeacherSaveOrExit_JspTeacher
             ]
         })]
@@ -1033,7 +1261,12 @@
     };
 
     function ListGrid_teacher_edit() {
+        showAttachViewLoader.show();
+        showAttachViewLoader.setView();
         vm.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
@@ -1055,6 +1288,12 @@
     };
 
     function ListGrid_teacher_add() {
+        showAttachViewLoader.show();
+        showAttachViewLoader.setView();
+        vm.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
         method = "POST";
         url = "${restApiUrl}/api/teacher";
         vm.clearValues();
@@ -1111,7 +1350,18 @@
                                     setTimeout(function () {
                                         OK.close();
                                     }, 3000);
-                                } else {
+                                }
+                                else if(resp.data==false){
+                                    var ERROR = isc.Dialog.create({
+                                        message: "این استاد دارای حداقل یک کلاس می باشد و قابل حذف نیست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                                 else {
                                     var ERROR = isc.Dialog.create({
                                         message: "<spring:message code='msg.record.remove.failed'/>",
                                         icon: "[SKIN]stop.png",
@@ -1150,10 +1400,10 @@
 
     function addAttach(teacherId) {
         var formData1 = new FormData();
-        var fileBrowserId = document.getElementById(window.attachPhoto.uploadItem.getElement().id);
+        var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
-        if (file !== undefined) {
+        if (file != undefined) {
             var request = new XMLHttpRequest();
             request.open("POST", "${restApiUrl}/api/teacher/addAttach/" + teacherId);
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
@@ -1169,15 +1419,67 @@
                         isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
                 }
             }
-        } else {
-            isc.say("فایلی برای آپلود انتخاب نشده است.");
         }
     };
 
-    function showAttach() {
-        <%--showAttachViewLoader.setViewURL("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer "+'${cookie['access_token'].getValue()}' );--%>
+    <%--function showAttach() {--%>
+        <%--showAttachViewLoader.setViewURL("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');--%>
         <%--showAttachViewLoader.show();--%>
-        window.open("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer "+'${cookie['access_token'].getValue()}')
+    <%--};--%>
+
+    function showTempAttach() {
+        var formData1 = new FormData();
+        var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
+        var file = fileBrowserId.files[0];
+        formData1.append("file", file);
+        if (file !== undefined) {
+            var request = new XMLHttpRequest();
+            request.open("POST", "${restApiUrl}/api/teacher/addTempAttach");
+            request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
+            request.send(formData1);
+            request.onreadystatechange = function () {
+                attachNameTemp = request.response;
+                showAttachViewLoader.setViewURL("/teacher/getTempAttach/" + attachNameTemp + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
+                showAttachViewLoader.show();
+        }
+        }
+
     };
+
+   function checkCodeMeli(code)
+   {
+            if(code=="undefined" && code==null && code=="")
+                return false;
+            var L=code.length;
+
+            if(L<8 || parseFloat(code,10)==0) return false;
+            code=('0000'+code).substr(L+4-10);
+            if(parseFloat(code.substr(3,6),10)==0) return false;
+            var c=parseFloat(code.substr(9,1),10);
+            var s=0;
+            for(var i=0;i<9;i++)
+            s+=parseFloat(code.substr(i,1),10)*(10-i);
+            s=s%11;
+            return (s<2 && c==s) || (s>=2 && c==(11-s));
+            return true;
+   };
+
+   function checkEmail(email)
+   {
+       if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
+            return false;
+       else
+            return true;
+   };
+
+
+   function checkMobile(mobile)
+   {
+       if (mobile[0] == "0" && mobile[1] == "9")
+            return true;
+       else
+            return false;
+   };
+
 
 
