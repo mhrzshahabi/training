@@ -517,6 +517,7 @@
         largeIcon: "pieces/512/course.png",
         orientation: "vertical",
         click: function () {
+
             createTab("<spring:message code="course"/>", "/course/show-form", false);
         }
     });
@@ -786,20 +787,24 @@
             var tabTitle = ID.title;
             if(tabTitle.substr(0,5) == "اهداف"){
                 setTimeout(function () {
-                    ListGrid_Goal.fetchData();
-                    ListGrid_Goal.invalidateCache();
-                    RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
-                    ListGrid_Syllabus_Goal.fetchData();
-                    ListGrid_Syllabus_Goal.invalidateCache();
+
+                   ListGrid_Goal.fetchData();
+                   ListGrid_Goal.invalidateCache();
+                   RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
+                   ListGrid_Syllabus_Goal.fetchData();
+                   ListGrid_Syllabus_Goal.invalidateCache();
+
                 }, 100);
             }
             if(tabTitle.substr(0,4) == "دوره"){
                 setTimeout(function () {
-                    ListGrid_CourseGoal.invalidateCache();
+
+                   ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
                         RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
-                        ListGrid_CourseSyllabus.invalidateCache();}
+                        ListGrid_CourseSyllabus.invalidateCache();
+                    }
                 }, 100);
             }
         },

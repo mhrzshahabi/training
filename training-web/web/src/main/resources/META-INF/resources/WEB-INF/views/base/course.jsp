@@ -722,7 +722,7 @@ filterOnKeypress: true,
                 required: true,
 
             },
-        ]
+        ],
     });
     var IButton_course_Save = isc.IButton.create({
             align: "center",
