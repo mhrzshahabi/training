@@ -103,9 +103,16 @@ window.open('${printUrl}');
 }
 }, {
 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+"<spring:url value="/skill-group/print/excel" var="printUrl"/>"
+window.open('${printUrl}');
+
 }
 }, {
 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+
+"<spring:url value="/skill-group/print/html" var="printUrl"/>"
+window.open('${printUrl}');
+
 
 }}
 ]
@@ -1362,9 +1369,10 @@ simpleDialog("خطا در حذف",msg,0,"stop");
 		icon: "[SKIN]/RichTextEditor/print.png",
 		title: "چاپ",
 		click: function () {
-			<%--"<spring:url value="/tclass/print/pdf" var="printUrl"/>"--%>
-			<%--window.open('${printUrl}');--%>
-		}
+"<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
+window.open('${printUrl}');
+
+}
 	});
 	var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
 		icon: "pieces/512/skill-standard.png",
