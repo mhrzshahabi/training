@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -29,7 +30,7 @@ public class Teacher extends Person {
 	@Column(name = "b_enabled")
 	private Boolean enableStatus;
 
-	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
@@ -41,15 +42,15 @@ public class Teacher extends Person {
 	@Column(name = "c_economical_record_number")
 	private String economicalRecordNumber;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
 	private EducationLevel educationLevel;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "f_edu_major", insertable = false, updatable = false)
 	private EducationMajor educationMajor;
 
-	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "f_edu_orientation", insertable = false, updatable = false)
 	private EducationOrientation educationOrientation;
 

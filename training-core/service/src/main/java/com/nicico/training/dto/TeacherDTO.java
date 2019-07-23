@@ -64,9 +64,6 @@ public class TeacherDTO {
 	private Boolean enableStatus;
 	private String economicalCode;
 	private String economicalRecordNumber;
-	private String eduLevel;
-	private String eduMajor;
-	private String eduOrientation;
 	private String accountNember;
 	private String bank;
 	private String bankBranch;
@@ -93,14 +90,14 @@ public class TeacherDTO {
 		private String createdBy;
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
-		private Integer version;
+//		private Integer version;
 		private List<CategoryDTO.CategoryInfoTuple> categories;
 		private EMilitary eMilitary;
 		private EMarried eMarried;
 		private EGender eGender;
-		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
-		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
-		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
+//		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
+//		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+//		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
 	}
 
 	//-------------------------------
@@ -127,9 +124,9 @@ public class TeacherDTO {
 	@Accessors(chain = true)
 	@ApiModel("TeacherUpdateRq")
 	public static class Update extends TeacherDTO {
-		@NotNull
-		@ApiModelProperty(required = true)
-		private Integer version;
+//		@NotNull
+//		@ApiModelProperty(required = true)
+//		private Integer version;
 	}
 
 	// ------------------------------

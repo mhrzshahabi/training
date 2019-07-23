@@ -60,6 +60,9 @@ nicico:
   teacher:
     upload:
       dir: c:/upload/teacher/
+  temp:
+    upload:
+      dir: c:/upload/temp
 
 ---
 
