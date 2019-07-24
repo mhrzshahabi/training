@@ -51,7 +51,7 @@ public class CategoryDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
+//        private Integer version;
     }
 
     // ------------------------------
@@ -82,9 +82,9 @@ public class CategoryDTO {
     @ApiModel("CategoryUpdateRq")
     public static class Update extends CategoryDTO {
         private Set<Long> subCategoryIds;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private Integer version;
     }
 
     // ------------------------------
