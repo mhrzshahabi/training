@@ -10,12 +10,10 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="521"/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<queryString language="SQL">
-		<![CDATA[select * from Training.tbl_syllabus]]>
+		<![CDATA[select * from Training.tbl_goal]]>
 	</queryString>
 	<field name="C_TITLE_FA" class="java.lang.String"/>
-	<field name="C_DESCRIPTION" class="java.lang.String"/>
-	<field name="E_DOMAIN_TYPE" class="java.math.BigDecimal"/>
-	<field name="N_PRACTICAL_DURATION" class="java.math.BigDecimal"/>
+	<field name="C_TITLE_EN" class="java.lang.String"/>
 	<background>
 		<band splitType="Stretch"/>
 	</background>
@@ -33,7 +31,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
-				<text><![CDATA[لیست سرفصل ها]]></text>
+				<text><![CDATA[لیست اهداف]]></text>
 			</staticText>
 		</band>
 	</title>
@@ -43,7 +41,7 @@
 	<columnHeader>
 		<band height="20" splitType="Stretch">
 			<staticText>
-				<reportElement x="450" y="0" width="100" height="20" uuid="82c3eefd-68d1-42f1-81ab-7dda1511a682"/>
+				<reportElement x="300" y="0" width="250" height="20" uuid="82c3eefd-68d1-42f1-81ab-7dda1511a682"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -54,7 +52,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
-				<text><![CDATA[نام سرفصل]]></text>
+				<text><![CDATA[نام فارسی]]></text>
 			</staticText>
 			<staticText>
 				<reportElement x="0" y="0" width="300" height="20" uuid="da3a9ca8-89a9-443e-b8f9-8266622cd305"/>
@@ -68,42 +66,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
-				<text><![CDATA[توضیحات]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="390" y="0" width="60" height="20" uuid="52f407ce-5181-45da-b1b9-4acc8e3e1d97"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[حیطه]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="300" y="0" width="90" height="20" uuid="b53db61e-a325-43b9-b3e9-024ced598a43"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[طول دوره]]></text>
+				<text><![CDATA[نام لاتین]]></text>
 			</staticText>
 		</band>
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<textField isBlankWhenNull="true">
-				<reportElement x="450" y="0" width="100" height="20" uuid="c4b24c8e-19e3-4ab1-a9ae-0018d4b26b83"/>
+			<textField>
+				<reportElement x="300" y="0" width="250" height="20" uuid="c4b24c8e-19e3-4ab1-a9ae-0018d4b26b83"/>
 				<box>
 					<pen lineWidth="0.5"/>
 					<topPen lineWidth="0.5"/>
@@ -116,7 +86,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
 			</textField>
-			<textField isBlankWhenNull="true">
+			<textField>
 				<reportElement x="2" y="0" width="298" height="20" uuid="e4b7e8c2-4ac3-4a32-8e5c-ae63ea5dd54f"/>
 				<box>
 					<pen lineWidth="0.5"/>
@@ -128,35 +98,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$F{C_DESCRIPTION}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="390" y="0" width="60" height="20" uuid="076dfff3-55d9-490c-83e3-a2809cd97379"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{E_DOMAIN_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField isBlankWhenNull="true">
-				<reportElement x="300" y="0" width="90" height="20" uuid="f23119b2-67be-418f-ae08-c236360050b9"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{N_PRACTICAL_DURATION}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$F{C_TITLE_EN}]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

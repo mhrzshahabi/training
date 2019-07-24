@@ -79,10 +79,6 @@ public class SyllabusDTO {
         @NotNull
         @ApiModelProperty
         private Integer eDomainTypeId;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

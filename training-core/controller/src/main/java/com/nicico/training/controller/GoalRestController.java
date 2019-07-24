@@ -2,23 +2,31 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
 import com.nicico.training.iservice.IGoalService;
 import com.nicico.training.iservice.ISyllabusService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang3.StringUtils;
+import org.ietf.jgss.GSSName;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.SQLException;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -28,6 +36,7 @@ public class GoalRestController {
     
     private final IGoalService goalService;
     private final ObjectMapper objectMapper;
+    private final ReportUtil reportUtil;
 
     // ------------------------------
 
@@ -154,5 +163,14 @@ public class GoalRestController {
         final SyllabusDTO.SyllabusSpecRs specRs = new SyllabusDTO.SyllabusSpecRs();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+    // -----------------
+
+    @Loggable
+    @GetMapping(value = {"/print/{type}"})
+    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/Goal.jasper", params, response);
     }
 }

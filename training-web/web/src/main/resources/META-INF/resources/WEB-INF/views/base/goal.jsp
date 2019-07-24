@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//  <script>
+//<script>
     var methodGoal = "GET";
     var urlGoal = "http://localhost:9090/api/goal";
     var methodSyllabus = "GET";
@@ -58,7 +58,6 @@
             return this.Super("transformRequest", arguments);
         },
     });
-
     var DynamicForm_Goal = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -70,23 +69,19 @@
                 length: "100",
                 readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                validators: [MyValidators.NotEmpty]
+                validators: [MyValidators.NotEmpty],
             },
             {
                 name: "titleEn",
                 title: "نام لاتین ",
                 type: 'text',
                 length: "100",
-                keyPressFilter: "[a-z|A-Z|0-9 ]"
+                keyPressFilter: "[a-z|A-Z|0-9 ]",
             }
         ],
-        keyPress : function () {
-            if(isc.EventHandler.getKey()== "Enter"){
-                this.focusInNextTabElement();
-            }
-        }
     });
     var DynamicForm_Syllabus = isc.MyDynamicForm.create({
+        ID: "formSyllabus",
         fields: [
             {name: "id", hidden: true},
             {
@@ -187,8 +182,8 @@
                 max: 300,
                 step: 2
             }],
-        keyPress : function () {
-            if(isc.EventHandler.getKey()== "Enter"){
+        keyPress: function () {
+            if (isc.EventHandler.getKey() == "Enter") {
                 DynamicForm_Syllabus.focusInNextTabElement();
             }
         }
@@ -216,7 +211,7 @@
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان","عملیات با موفقیت انجام شد.", "3000","say");
+                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Goal_refresh();
                         setTimeout(function () {
                             ListGrid_Goal.setSelectedState(gridState);
@@ -253,7 +248,7 @@
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان","عملیات با موفقیت انجام شد.","3000","say")
+                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say")
                         ListGrid_Syllabus_Goal.invalidateCache();
                         setTimeout(function () {
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
@@ -470,8 +465,7 @@
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.goalId == selectedRecord && ListGrid_Goal.getSelectedRecord() != null) {
                 return "color: brown;font-size: 14px;";
-            }
-            else{
+            } else {
                 return "color:gray;font-size: 10px;";
             }
         },
@@ -557,10 +551,10 @@
         ],
         selectionType: "multiple",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            // RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/goal/" + record.id + "/syllabus";
-            // ListGrid_CourseSyllabus.fetchData();
-            // ListGrid_CourseSyllabus.invalidateCache();
-            // ListGrid_GoalAll.deselectAllRecords();
+// RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/goal/" + record.id + "/syllabus";
+// ListGrid_CourseSyllabus.fetchData();
+// ListGrid_CourseSyllabus.invalidateCache();
+// ListGrid_GoalAll.deselectAllRecords();
         },
         sortField: 1,
         sortDirection: "descending",
@@ -598,18 +592,43 @@
             ListGrid_Syllabus_Goal_Remove();
         }
     });
-    var ToolStripButton_Syllabus_Print = isc.ToolStripButton.create({
+    var Menu_Print_GoalJsp = isc.Menu.create({
+        ID: "menuPalette",
+        autoDraw: false,
+        showShadow: true,
+        shadowDepth: 10
+    });
+    var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
+        menu: Menu_Print_GoalJsp,
         click: function () {
-            window.open("<spring:url value="/syllabus/print/pdf"/>");
+            if (ListGrid_Goal.getSelectedRecord() == null) {
+                Menu_Print_GoalJsp.setData([{
+                    title: "همه اهداف",
+                    click: 'window.open("<spring:url value="/goal/print/pdf"/>")'
+                }, {
+                    title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
+                    click: "alert('salam')"
+                }, {isSeparator: true}, {
+                    title: "همه سرفصل ها",
+                    click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
+                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}])
+            } else {
+                Menu_Print_GoalJsp.setData([{title: "همه اهداف"}, {
+                    title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
+                    click: "alert('salam')"
+                }, {isSeparator: true}, {
+                    title: "همه سرفصل ها",
+                    click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
+                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}, {title: "سرفصل هاي هدف " + ListGrid_Goal.getSelectedRecord().titleFa}])
+            }
         }
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove, ToolStripButton_Syllabus_Print]
+        members: [ToolStripButton_Syllabus_Print, "separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
     });
-
     var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی اطلاعات",
@@ -708,8 +727,7 @@
                                 ListGrid_Syllabus_Goal.invalidateCache();
 
 
-                            }
-                            else{
+                            } else {
                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
                             }
 
@@ -760,7 +778,7 @@
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
-                        // data: JSON.stringify(vsRecord,goalRecord),
+// data: JSON.stringify(vsRecord,goalRecord),
                         serverOutputAsString: false,
                         callback: function (resp) {
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -917,7 +935,8 @@
                                 wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Goal.invalidateCache();
-                                    simpleDialog("<spring:message code='msg.command.done'/>","<spring:message code="msg.operation.successful"/>",3000,"say");
+                                    simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message
+        code="msg.operation.successful"/>", 3000, "say");
                                 } else {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                                 }
@@ -1000,7 +1019,7 @@
                 title: "هشدار",
                 buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
                     title: "<spring:message
-		code='global.no'/>"
+        code='global.no'/>"
                 })],
                 buttonClick: function (button, index) {
                     this.close();
@@ -1092,4 +1111,5 @@
         }
         ListGrid_Syllabus_Goal.invalidateCache();
     };
-    //</script>
+
+//</script>

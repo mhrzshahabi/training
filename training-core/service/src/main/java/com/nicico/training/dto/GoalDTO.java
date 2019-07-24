@@ -26,8 +26,8 @@ public class GoalDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-    @NotNull
-    @ApiModelProperty(required = true)
+//    @NotNull
+//    @ApiModelProperty(required = true)
     private String titleEn;
 
     // ------------------------------
@@ -61,9 +61,7 @@ public class GoalDTO {
     @Accessors(chain = true)
     @ApiModel("GoalUpdateRq")
     public static class Update extends GoalDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
+
     }
 
     // ------------------------------
