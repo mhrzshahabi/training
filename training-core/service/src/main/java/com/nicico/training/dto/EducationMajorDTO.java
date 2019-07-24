@@ -46,7 +46,6 @@ public class EducationMajorDTO {
     @Setter
     @ApiModel("EducationMajorInfoTuple")
     public static class EducationMajorInfoTuple {
-        private Long id;
         private String titleFa;
         private String titleEn;
     }

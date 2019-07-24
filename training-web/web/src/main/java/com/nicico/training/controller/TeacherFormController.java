@@ -64,26 +64,6 @@ public class TeacherFormController {
 	}
 
 
-   @GetMapping(value = {"/getAttach/{fileName}/{Id}"})
-	public String getAttach(@PathVariable String Id,@PathVariable String fileName, ModelMap modelMap, Authentication authentication) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
-        HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-        HttpEntity<String> request = new HttpEntity<String>(headers);
-
-        RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getAttach/" + fileName+ "/" + Id + "", HttpMethod.GET, request, byte[].class);
-		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
-        return "base/teacherImage";
-    }
-
 
    	@GetMapping(value = {"/getTempAttach/{fileName}"})
 	public String getTempAttach(ModelMap modelMap, Authentication authentication,@PathVariable String fileName) {
@@ -105,6 +85,29 @@ public class TeacherFormController {
 
         return "base/teacherImage";
     }
+
+
+   	@GetMapping(value = {"/getAttach/{Id}"})
+	public String getAttach(ModelMap modelMap, Authentication authentication,@PathVariable Long Id) {
+		String token = "";
+		if (authentication instanceof OAuth2AuthenticationToken) {
+			OAuth2AuthorizedClient client = authorizedClientService
+					.loadAuthorizedClient(
+							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
+							authentication.getName());
+			token = client.getAccessToken().getTokenValue();
+		}
+        HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
+        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+        RestTemplate restTemplate = new RestTemplate();
+		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getAttach/"+Id , HttpMethod.GET, request, byte[].class);
+		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
+
+        return "base/teacherImage";
+    }
+
 
 
 

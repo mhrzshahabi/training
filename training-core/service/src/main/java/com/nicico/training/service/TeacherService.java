@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -122,9 +123,27 @@ public class TeacherService implements ITeacherService {
     public void addCategories(CategoryDTO.Delete request, Long teacherId) {
       	final Optional<Teacher> cById = teacherDAO.findById(teacherId);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+
+        Set<Category> currents = teacher.getCategories();
+        if(currents != null) {
+            Object[] currentsArr = currents.toArray();
+            for (Object o : currentsArr) {
+                teacher.getCategories().remove(o);
+            }
+        }
+
         List<Category> gAllById = categoryDAO.findAllById(request.getIds());
         for (Category category : gAllById) {
             teacher.getCategories().add(category);
         }
     }
+
+//    @Transactional
+//    @Override
+//    public Set<Category> getCategories(Long teacherId) {
+//      	final Optional<Teacher> cById = teacherDAO.findById(teacherId);
+//        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+//        Set<Category> currents = teacher.getCategories();
+//        return currents;
+//    }
 }

@@ -46,7 +46,6 @@ public class EducationOrientationDTO {
     @Setter
     @ApiModel("EducationOrientationInfoTuple")
     public static class EducationOrientationInfoTuple {
-        private Long id;
         private String titleFa;
         private String titleEn;
     }

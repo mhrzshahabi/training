@@ -30,11 +30,11 @@ public class Teacher extends Person {
 	@Column(name = "b_enabled")
 	private Boolean enableStatus;
 
-	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
+	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
-	private List<Category> categories;
+	private Set<Category> categories;
 
 	@Column(name = "c_economical_code")
 	private String economicalCode;

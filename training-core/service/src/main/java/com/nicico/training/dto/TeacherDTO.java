@@ -17,6 +17,7 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -91,13 +92,13 @@ public class TeacherDTO {
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
 //		private Integer version;
-		private List<CategoryDTO.CategoryInfoTuple> categories;
+		private Set<CategoryDTO.CategoryInfoTuple> categories;
 		private EMilitary eMilitary;
 		private EMarried eMarried;
 		private EGender eGender;
-//		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
-//		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
-//		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
+		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
+		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
 	}
 
 	//-------------------------------

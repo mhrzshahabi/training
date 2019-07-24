@@ -10,6 +10,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.Category;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
@@ -164,11 +165,23 @@ public class TeacherRestController {
 
 	@Loggable
     @PostMapping(value = "/addCategories/{teacherId}")
+    @Transactional
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity<Void> addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
         teacherService.addCategories(request,teacherId);
         return new ResponseEntity(HttpStatus.OK);
     }
+
+
+//	@Loggable
+//    @PostMapping(value = "/getCategories/{teacherId}")
+//    @Transactional
+////    @PreAuthorize("hasAuthority('d_tclass')")
+//    public ResponseEntity<CategoryDTO.Delete> getCategories(@PathVariable Long teacherId) {
+//	    Set<Category> categorySet = teacherService.getCategories(teacherId);
+//        ResponseEntity<CategoryDTO.CategoryInfoTuple> categories = modelMapper.map(categorySet, TeacherDTO.Info.class)
+//        return new ResponseEntity(categories,HttpStatus.OK);
+//    }
 
 
 	@Loggable
@@ -203,25 +216,6 @@ public class TeacherRestController {
             return new ResponseEntity<>(changedFileName,HttpStatus.INTERNAL_SERVER_ERROR);
         }
         return new ResponseEntity<>(changedFileName,HttpStatus.OK);
-    }
-
-    @RequestMapping(value = {"/getAttach/{fileName}/{Id}"}, method = RequestMethod.GET)
-    public ResponseEntity<InputStreamResource> getAttach(@PathVariable String fileName, ModelMap modelMap, @PathVariable Long Id) {
-        try {
-            final Optional<Teacher> cById = teacherDAO.findById(Id);
-            final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-            String attachFileName = teacher.getAttachPhoto();
-            if(attachFileName == null || attachFileName == "") {
-                return null;
-            }
-            else {
-                File file = new File(teacherUploadDir + fileName);
-               	return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)),HttpStatus.OK);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
     }
 
 
@@ -269,7 +263,7 @@ public class TeacherRestController {
     }
 
     @RequestMapping(value = {"/getTempAttach/{fileName}"}, method = RequestMethod.GET)
-    public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap,@PathVariable String fileName) {
+    public ResponseEntity<InputStreamResource> getTempAttach(ModelMap modelMap,@PathVariable String fileName) {
 	    File file = new File(tempUploadDir + "/" + fileName);
 		try {
 			return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)),HttpStatus.OK);
@@ -278,15 +272,24 @@ public class TeacherRestController {
 			e.printStackTrace();
 			return null;
 		}
-
-
-
 	}
 
 
+    @RequestMapping(value = {"/getAttach/{Id}"}, method = RequestMethod.GET)
+    @Transactional
+    public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap,@PathVariable Long Id) {
+        final Optional<Teacher> cById = teacherDAO.findById(Id);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        String fileName = teacher.getAttachPhoto();
+	    File file = new File(teacherUploadDir + "/" + fileName);
+		try {
+			return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)),HttpStatus.OK);
 
-
-
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
 
 
 }

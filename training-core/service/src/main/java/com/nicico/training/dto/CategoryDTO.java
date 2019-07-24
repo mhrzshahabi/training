@@ -61,8 +61,6 @@ public class CategoryDTO {
     @ApiModel("CategoryInfoTuple")
     public static class CategoryInfoTuple {
         private Long id;
-        private String titleFa;
-        private String titleEn;
     }
 
 

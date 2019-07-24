@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+//<script>
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var method = "POST";
@@ -18,17 +18,29 @@
     var cellPhoneCheck = true;
     var mailCheck = true;
 
-    var photoDescription = "* سایز عکس بین 5 تا 1000 KB" + "<br/>" + "<br/>" + "* اندازه ی عکس بین 300*100 تا 400*200 px" + "<br/>" + "<br/>" +  "* فرمت عکس jpg,png,gif";
+    var photoDescription = "* سایز عکس بین 5 تا 1000 KB" + "<br/>" + "<br/>" + "* اندازه ی عکس بین 300*100 تا 400*200 px" + "<br/>" + "<br/>" + "* فرمت عکس jpg,png,gif";
 
+    var teacherCategories;
+    var teacherCategoriesID = new Array();
     var dummy = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //--------------------
+    // ------------------------------------------------------------------------------------------------//
 
     var RestDataSource_Teacher_JspTeacher = isc.RestDataSource.create({
         fields: [
-            {name: "id", primaryKey: true}, {name: "fullNameFa"}, {name: "fullNameEn"}
+            {name: "id", primaryKey: true},
+            {name: "teacherCode"},
+            {name: "fullNameFa"},
+            {name: "educationLevel.titleFa"},
+            {name: "educationMajor.titleFa"},
+            {name: "educationMajorId"},
+            {name: "educationOrientationId"},
+            {name: "mobile"},
+            {name: "attachPhoto"},
+            {name: "categories"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -210,8 +222,11 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "fullNameFa", title: "<spring:message code='firstName'/>", align: "center"},
-            {name: "fullNameEn", title: "<spring:message code='firstName.latin'/>", align: "center"}
+            {name: "teacherCode", title: "کد", align: "center"},
+            {name: "fullNameFa", title: "نام", align: "center"},
+            {name: "educationLevel.titleFa", title: "مقطع تحصیلی", align: "center"},
+            {name: "educationMajor.titleFa", title: "رشته تحصیلی", align: "center"},
+            {name: "mobile", title: "تماس", align: "center"},
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -321,20 +336,19 @@
                 required: true,
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
-                length : "10",
+                length: "10",
                 hint: "کد ملی ده رقمی را وارد کنید",
                 showHintInField: true
-                ,blur:function()
-                        {
-                            var codeCheck = false;
-                            codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("nationalCode"));
-                            codeMeliCheck = codeCheck;
-                            if(codeCheck == false)
-                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode","کد ملی اشتباهی را وارد کرده اید", true);
+                , blur: function () {
+                    var codeCheck = false;
+                    codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("nationalCode"));
+                    codeMeliCheck = codeCheck;
+                    if (codeCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode", "کد ملی اشتباهی را وارد کرده اید", true);
 
-                            if(codeCheck == true)
-                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
-                        }
+                    if (codeCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
+                }
             },
 
             {
@@ -479,17 +493,16 @@
                 hint: "test@nicico.com",
                 showHintInField: true,
                 length: "30"
-                ,blur:function()
-                        {
-                            var emailCheck = false;
-                            emailCheck= checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("email"));
-                            mailCheck = emailCheck;
-                            if(emailCheck == false)
-                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email","پست الکترونیکی اشتباهی را وارد کرده اید", true);
+                , blur: function () {
+                    var emailCheck = false;
+                    emailCheck = checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("email"));
+                    mailCheck = emailCheck;
+                    if (emailCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email", "پست الکترونیکی اشتباهی را وارد کرده اید", true);
 
-                            if(emailCheck == true)
-                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
-                        }
+                    if (emailCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
+                }
             },
 
             {
@@ -617,17 +630,16 @@
                 hint: "*********09",
                 showHintInField: true,
                 errorMessage: "شماره ی موبایل اشتباهی را وارد کرده اید"
-                ,blur:function()
-                        {
-                            var mobileCheck = false;
-                            mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("mobile"));
-                            cellPhoneCheck = mobileCheck;
-                            if(mobileCheck == false)
-                                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile","شماره ی موبایل اشتباهی را وارد کرده اید", true);
+                , blur: function () {
+                    var mobileCheck = false;
+                    mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("mobile"));
+                    cellPhoneCheck = mobileCheck;
+                    if (mobileCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile", "شماره ی موبایل اشتباهی را وارد کرده اید", true);
 
-                            if(mobileCheck == true)
-                                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
-                        }
+                    if (mobileCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
+                }
             },
 
             {
@@ -635,7 +647,7 @@
                 title: "کد اقتصادی",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length : "15",
+                length: "15",
                 stopOnError: true
             },
 
@@ -644,7 +656,7 @@
                 title: "شماره ثبت",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length : "15",
+                length: "15",
                 stopOnError: true
             },
 
@@ -726,6 +738,7 @@
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
                 }
                 else {
+                    DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
                     RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + newValue;
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
@@ -770,13 +783,13 @@
         ],
         itemChanged: function (item, newValue) {
             if (item.name == "attachPic") {
-            showTempAttach();
-             setTimeout(function () {
-                 if(attachNameTemp == null || attachNameTemp == ""){
-                    DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
-                    showAttachViewLoader.setView();
-                 }
-             }, 300);
+                showTempAttach();
+                setTimeout(function () {
+                    if (attachNameTemp == null || attachNameTemp == "") {
+                        DynamicForm_Photo_JspTeacher.getField("attachPic").setValue(null);
+                        showAttachViewLoader.setView();
+                    }
+                }, 300);
             }
         }
     });
@@ -1006,12 +1019,16 @@
                             OK.close();
                             ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                         }, 1000);
-                        if(categoryList != undefined)
-                            addCategories(responseID, categoryList);
+                        if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
                             addAttach(responseID);
-                            showAttachViewLoader.hide();
-                            ListGrid_Teacher_JspTeacher.invalidateCache();
-                            Window_Teacher_JspTeacher.close();
+                        setTimeout(function () {
+                            if (categoryList != undefined)
+                                addCategories(responseID, categoryList);
+                        }, 300);
+                        showAttachViewLoader.hide();
+                        ListGrid_Teacher_JspTeacher.invalidateCache();
+                        ListGrid_Teacher_JspTeacher.fetchData();
+                        Window_Teacher_JspTeacher.close();
                     } else {
                         var ERROR = isc.Dialog.create({
                             message: ("<spring:message code='msg.operation.error'/>"),
@@ -1099,17 +1116,17 @@
         ]
     });
 
-	var VLayOut_Photo_JspTeacher = isc.VLayout.create({
-		layoutMargin: 5,
-		showEdges: false,
-		edgeImage: "",
-		alignLayout: "center",
-		align: "center",
-		padding: 10,
-		membersMargin: 10,
+    var VLayOut_Photo_JspTeacher = isc.VLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
         height: "180",
-		members: [VLayOut_ViewLoader_JspTeacher, DynamicForm_Photo_JspTeacher]
-	});
+        members: [VLayOut_ViewLoader_JspTeacher, DynamicForm_Photo_JspTeacher]
+    });
 
     var TabSet_Photo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
@@ -1127,29 +1144,28 @@
     });
 
     var VLayOut_Temp_JspTeacher = isc.VLayout.create({
-    	layoutMargin: 5,
-		showEdges: false,
-		edgeImage: "",
-		alignLayout: "center",
-		align: "center",
-		padding: 10,
-		height: "350",
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        height: "350",
         width: "75%",
-		membersMargin: 10,
-		members: [TabSet_AddressInfo_JspTeacher, TabSet_JobInfo_JspTeacher]
+        membersMargin: 10,
+        members: [TabSet_AddressInfo_JspTeacher, TabSet_JobInfo_JspTeacher]
     });
 
     var HLayOut_Temp_JspTeacher = isc.HLayout.create({
         layoutMargin: 5,
-		showEdges: false,
-		edgeImage: "",
-		alignLayout: "center",
-		align: "center",
-		padding: 10,
-		membersMargin: 10,
-		members: [TabSet_Photo_JspTeacher,VLayOut_Temp_JspTeacher]
+        showEdges: false,
+        edgeImage: "",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [TabSet_Photo_JspTeacher, VLayOut_Temp_JspTeacher]
     });
-
 
 
     var Window_Teacher_JspTeacher = isc.Window.create({
@@ -1260,9 +1276,12 @@
         ListGrid_Teacher_JspTeacher.invalidateCache();
     };
 
+    function showTeacherCategories(value) {
+        teacherCategoriesID.add(value.id);
+    };
+
     function ListGrid_teacher_edit() {
-        showAttachViewLoader.show();
-        showAttachViewLoader.setView();
+        showAttach();
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
@@ -1282,6 +1301,42 @@
             method = "PUT";
             url = "${restApiUrl}/api/teacher/" + record.id;
             vm.editRecord(record);
+
+            var eduMajorValue = record.educationMajorId;
+            var eduOrientationValue = record.educationOrientationId;
+            if (eduOrientationValue == undefined && eduMajorValue == undefined) {
+                DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
+                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
+            }
+            else if (eduMajorValue != undefined) {
+                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
+                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
+                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
+            }
+
+            teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+
+            <%--isc.RPCManager.sendRequest({--%>
+            <%--httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},--%>
+            <%--useSimpleHttp: true,--%>
+            <%--contentType: "application/json; charset=utf-8",--%>
+            <%--actionURL: "${restApiUrl}/api/teacher/getCategories/" + teacherId,--%>
+            <%--httpMethod: "POST",--%>
+            <%--serverOutputAsString: false,--%>
+            <%--callback: function (resp) {--%>
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--} else {--%>
+                    <%--isc.say("<spring:message code='error'/>");--%>
+                <%--}--%>
+            <%--}--%>
+            <%--});--%>
+
+            teacherCategories = ListGrid_Teacher_JspTeacher.getSelectedRecord().categories;
+            teacherCategoriesID = new Array();
+            teacherCategories.forEach(showTeacherCategories);
+            DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(teacherCategoriesID);
+            teacherCategoriesID = new Array();
+
             Window_Teacher_JspTeacher.show();
             Window_Teacher_JspTeacher.bringToFront();
         }
@@ -1297,6 +1352,8 @@
         method = "POST";
         url = "${restApiUrl}/api/teacher";
         vm.clearValues();
+        DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
+        DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
     };
@@ -1351,7 +1408,7 @@
                                         OK.close();
                                     }, 3000);
                                 }
-                                else if(resp.data==false){
+                                else if (resp.data == false) {
                                     var ERROR = isc.Dialog.create({
                                         message: "این استاد دارای حداقل یک کلاس می باشد و قابل حذف نیست",
                                         icon: "[SKIN]stop.png",
@@ -1361,7 +1418,7 @@
                                         ERROR.close();
                                     }, 3000);
                                 }
-                                 else {
+                                else {
                                     var ERROR = isc.Dialog.create({
                                         message: "<spring:message code='msg.record.remove.failed'/>",
                                         icon: "[SKIN]stop.png",
@@ -1422,10 +1479,19 @@
         }
     };
 
-    <%--function showAttach() {--%>
-        <%--showAttachViewLoader.setViewURL("/teacher/getAttach/" + attachName + "/" + responseID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');--%>
-        <%--showAttachViewLoader.show();--%>
-    <%--};--%>
+    function showAttach() {
+        var selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        var selectedRecordPhoto = ListGrid_Teacher_JspTeacher.getSelectedRecord().attachPhoto;
+        if (selectedRecordPhoto == null || selectedRecordPhoto == undefined || selectedRecordPhoto == "") {
+            showAttachViewLoader.setView();
+            showAttachViewLoader.show();
+        }
+        else {
+            showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
+            showAttachViewLoader.show();
+        }
+
+    };
 
     function showTempAttach() {
         var formData1 = new FormData();
@@ -1441,45 +1507,42 @@
                 attachNameTemp = request.response;
                 showAttachViewLoader.setViewURL("/teacher/getTempAttach/" + attachNameTemp + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
                 showAttachViewLoader.show();
-        }
+            }
         }
 
     };
 
-   function checkCodeMeli(code)
-   {
-            if(code=="undefined" && code==null && code=="")
-                return false;
-            var L=code.length;
-
-            if(L<8 || parseFloat(code,10)==0) return false;
-            code=('0000'+code).substr(L+4-10);
-            if(parseFloat(code.substr(3,6),10)==0) return false;
-            var c=parseFloat(code.substr(9,1),10);
-            var s=0;
-            for(var i=0;i<9;i++)
-            s+=parseFloat(code.substr(i,1),10)*(10-i);
-            s=s%11;
-            return (s<2 && c==s) || (s>=2 && c==(11-s));
-            return true;
-   };
-
-   function checkEmail(email)
-   {
-       if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
+    function checkCodeMeli(code) {
+        if (code == "undefined" && code == null && code == "")
             return false;
-       else
-            return true;
-   };
+        var L = code.length;
 
+        if (L < 8 || parseFloat(code, 10) == 0) return false;
+        code = ('0000' + code).substr(L + 4 - 10);
+        if (parseFloat(code.substr(3, 6), 10) == 0) return false;
+        var c = parseFloat(code.substr(9, 1), 10);
+        var s = 0;
+        for (var i = 0; i < 9; i++)
+            s += parseFloat(code.substr(i, 1), 10) * (10 - i);
+        s = s % 11;
+        return (s < 2 && c == s) || (s >= 2 && c == (11 - s));
+        return true;
+    };
 
-   function checkMobile(mobile)
-   {
-       if (mobile[0] == "0" && mobile[1] == "9")
-            return true;
-       else
+    function checkEmail(email) {
+        if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
             return false;
-   };
+        else
+            return true;
+    };
+
+
+    function checkMobile(mobile) {
+        if (mobile[0] == "0" && mobile[1] == "9")
+            return true;
+        else
+            return false;
+    };
 
 
 
