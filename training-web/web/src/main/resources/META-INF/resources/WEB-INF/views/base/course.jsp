@@ -230,7 +230,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
     });
     var ListGrid_CourseGoal = isc.MyListGrid.create({
 

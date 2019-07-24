@@ -59,7 +59,7 @@ public class CategoryDTO {
     @Getter
     @Setter
     @ApiModel("CategoryInfoTuple")
-    public static class CategoryInfoTuple {
+    public static class CategoryInfoTuple extends CategoryDTO {
         private Long id;
     }
 
