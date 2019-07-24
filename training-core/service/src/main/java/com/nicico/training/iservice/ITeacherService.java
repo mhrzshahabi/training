@@ -4,6 +4,7 @@ import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Category;
+import org.springframework.http.ResponseEntity;
 
 import java.util.List;
 import java.util.Set;
@@ -26,5 +27,5 @@ public interface ITeacherService {
 
 	void addCategories(CategoryDTO.Delete  request, Long teacherId);
 
-//	Set<Category> getCategories(Long teacherId);
+	List<Long> getCategories(Long teacherId);
 }

@@ -15,10 +15,12 @@ import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -138,12 +140,16 @@ public class TeacherService implements ITeacherService {
         }
     }
 
-//    @Transactional
-//    @Override
-//    public Set<Category> getCategories(Long teacherId) {
-//      	final Optional<Teacher> cById = teacherDAO.findById(teacherId);
-//        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-//        Set<Category> currents = teacher.getCategories();
-//        return currents;
-//    }
+    @Transactional
+    @Override
+    public List<Long> getCategories(Long teacherId) {
+      	final Optional<Teacher> cById = teacherDAO.findById(teacherId);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        Set<Category> currents = teacher.getCategories();
+        List<Long> categories = new ArrayList<Long>();
+        for (Category current : currents) {
+            categories.add(current.getId());
+        }
+        return categories;
+    }
 }

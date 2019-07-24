@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var method = "POST";
@@ -222,18 +222,20 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "کد", align: "center"},
-            {name: "fullNameFa", title: "نام", align: "center"},
-            {name: "educationLevel.titleFa", title: "مقطع تحصیلی", align: "center"},
-            {name: "educationMajor.titleFa", title: "رشته تحصیلی", align: "center"},
-            {name: "mobile", title: "تماس", align: "center"},
+            {name: "teacherCode", title: "کد", align: "center", filterOperator: "equals"},
+            {name: "fullNameFa", title: "نام", align: "center", filterOperator: "equals"},
+            {name: "educationLevel.titleFa", title: "مقطع تحصیلی", align: "center", filterOperator: "equals"},
+            {name: "educationMajor.titleFa", title: "رشته تحصیلی", align: "center", filterOperator: "equals"},
+            {name: "mobile", title: "تماس", align: "center", filterOperator: "equals"},
         ],
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-        filterOnKeypress: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -982,7 +984,6 @@
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
         top: 260, title: "<spring:message code='save'/>", click: function () {
 
-
             if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false)
                 return;
 
@@ -1031,7 +1032,7 @@
                         Window_Teacher_JspTeacher.close();
                     } else {
                         var ERROR = isc.Dialog.create({
-                            message: ("<spring:message code='msg.operation.error'/>"),
+                            message: ("کد ملی تکراری را وارد کرده اید"),
                             icon: "[SKIN]stop.png",
                             title: "<spring:message code='message'/>"
                         });
@@ -1232,8 +1233,26 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            "<spring:url value="/teacher/print/pdf" var="printUrl"/>"
-            window.open('${printUrl}');
+            if (ListGrid_Teacher_JspTeacher.getCriteria().operator == undefined) {
+                "<spring:url value="/teacher/print/pdf" var="printUrl"/>"
+                window.open('${printUrl}');
+            }
+
+            else {
+                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/teacher/printWithCriteria",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"}
+                        ]
+                });
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.submitForm();
+            }
         }
     });
 
@@ -1313,30 +1332,7 @@
                 DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
                 DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
             }
-
-            teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-
-            <%--isc.RPCManager.sendRequest({--%>
-            <%--httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},--%>
-            <%--useSimpleHttp: true,--%>
-            <%--contentType: "application/json; charset=utf-8",--%>
-            <%--actionURL: "${restApiUrl}/api/teacher/getCategories/" + teacherId,--%>
-            <%--httpMethod: "POST",--%>
-            <%--serverOutputAsString: false,--%>
-            <%--callback: function (resp) {--%>
-                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-                <%--} else {--%>
-                    <%--isc.say("<spring:message code='error'/>");--%>
-                <%--}--%>
-            <%--}--%>
-            <%--});--%>
-
-            teacherCategories = ListGrid_Teacher_JspTeacher.getSelectedRecord().categories;
-            teacherCategoriesID = new Array();
-            teacherCategories.forEach(showTeacherCategories);
-            DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(teacherCategoriesID);
-            teacherCategoriesID = new Array();
-
+            showCategories();
             Window_Teacher_JspTeacher.show();
             Window_Teacher_JspTeacher.bringToFront();
         }
@@ -1481,16 +1477,34 @@
 
     function showAttach() {
         var selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        var selectedRecordPhoto = ListGrid_Teacher_JspTeacher.getSelectedRecord().attachPhoto;
-        if (selectedRecordPhoto == null || selectedRecordPhoto == undefined || selectedRecordPhoto == "") {
-            showAttachViewLoader.setView();
-            showAttachViewLoader.show();
-        }
-        else {
-            showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
-            showAttachViewLoader.show();
-        }
+// var selectedRecordPhoto = ListGrid_Teacher_JspTeacher.getSelectedRecord().attachPhoto;
+// if (selectedRecordPhoto == null || selectedRecordPhoto == undefined || selectedRecordPhoto == "") {
+// showAttachViewLoader.setView();
+// showAttachViewLoader.show();
+// }
+        <%--else {--%>
+        showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
+        showAttachViewLoader.show();
+        <%--}--%>
+    };
 
+    function showCategories() {
+        teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        isc.RPCManager.sendRequest({
+            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${restApiUrl}/api/teacher/getCategories/" + teacherId,
+            httpMethod: "POST",
+            serverOutputAsString: false,
+            callback: function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
+                } else {
+                    isc.say("<spring:message code='error'/>");
+                }
+            }
+        });
     };
 
     function showTempAttach() {
