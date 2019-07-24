@@ -8,6 +8,7 @@ com.nicico.training.iservice
 
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -30,11 +31,14 @@ public interface ISkillService {
     String getMaxSkillCode(String skillCodeStart);
 
     List<CourseDTO.Info> getCourses(Long skillID);
-    List<CourseDTO.Info> getUnAttachedCourses(Long skillID);
+    List<CourseDTO.Info> getUnAttachedCourses(Long skillID, Pageable pageable);
+    Integer getUnAttachedCoursesCount(Long skillID);
     List<CompetenceDTO.Info> getCompetences(Long skillID);
-    List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID);
+    List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable);
+    Integer getUnAttachedCompetencesCount(Long skillID);
     List<SkillGroupDTO.Info> getSkillGroups(Long skillID);
-    List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID);
+    List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID, Pageable pageable);
+    Integer getUnAttachedSkillGroupsCount(Long skillID);
     List<JobDTO.Info> getJobs(Long skillID);
 
     CategoryDTO.Info getCategory(Long skillID);

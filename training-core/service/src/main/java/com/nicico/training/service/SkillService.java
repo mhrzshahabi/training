@@ -16,6 +16,7 @@ import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -167,13 +168,22 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CourseDTO.Info> getUnAttachedCourses(Long skillID) {
+    public List<CourseDTO.Info> getUnAttachedCourses(Long skillID,Pageable pageable) {
 
         final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
         final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
 
-        return modelMapper.map( courseDAO.findCoursesBySkillId(skillID),new TypeToken<List<CourseDTO.Info>>(){}.getType());
+        return modelMapper.map( courseDAO.getUnAttachedCoursesBySkillId(skillID,pageable),new TypeToken<List<CourseDTO.Info>>(){}.getType());
+    }
+
+    @Override
+    public Integer getUnAttachedCoursesCount(Long skillID) {
+        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+
+
+        return  courseDAO.getUnAttachedCoursesCountBySkillId(skillID);
     }
 
     @Transactional(readOnly = true)
@@ -198,12 +208,21 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID) {
+    public List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable) {
         final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
         final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
 
-        return modelMapper.map( competenceDAO.findCompetencesBySkillId(skillID),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
+        return modelMapper.map( competenceDAO.getUnAttachedCompetencesBySkillId(skillID,pageable),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
+    }
+
+    @Override
+    public Integer getUnAttachedCompetencesCount(Long skillID) {
+        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+
+
+        return  competenceDAO.getUnAttachedCompetencesCountBySkillId(skillID);
     }
 
     @Transactional(readOnly = true)
@@ -218,11 +237,20 @@ public class SkillService implements ISkillService {
 
     @Transactional(readOnly = true)
     @Override
-    public List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID) {
+    public List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID,Pageable pageable) {
         final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
         final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
-        return modelMapper.map( skillGroupDAO.findSkillGroupsBySkillId(skillID),new TypeToken<List<SkillGroupDTO.Info>>(){}.getType());
+        return modelMapper.map( skillGroupDAO.getUnAttachedSkillGroupsBySkillId(skillID,pageable),new TypeToken<List<SkillGroupDTO.Info>>(){}.getType());
+    }
+
+    @Override
+    public Integer getUnAttachedSkillGroupsCount(Long skillID) {
+        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+
+
+        return  skillGroupDAO.getUnAttachedSkillGroupsCountBySkillId(skillID);
     }
 
     @Transactional(readOnly = true)

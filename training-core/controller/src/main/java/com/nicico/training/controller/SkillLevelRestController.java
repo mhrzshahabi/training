@@ -55,17 +55,31 @@ public class SkillLevelRestController {
 	@Loggable
 	@DeleteMapping(value = "/{id}")
 	@PreAuthorize("hasAuthority('d_skillLevel')")
-	public ResponseEntity<Void> delete(@PathVariable Long id) {
-		skillLevelService.delete(id);
-		return new ResponseEntity(HttpStatus.OK);
+	public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+		boolean flag=true;
+		HttpStatus httpStatus=HttpStatus.OK;
+		try {
+			skillLevelService.delete(id);
+		} catch (Exception e) {
+			httpStatus=HttpStatus.NO_CONTENT;
+			flag=false;
+		}
+		return new ResponseEntity<>(flag,httpStatus);
 	}
 
 	@Loggable
 	@DeleteMapping(value = "/list")
 	@PreAuthorize("hasAuthority('d_skillLevel')")
-	public ResponseEntity<Void> delete(@Validated @RequestBody SkillLevelDTO.Delete request) {
-		skillLevelService.delete(request);
-		return new ResponseEntity(HttpStatus.OK);
+	public ResponseEntity<Boolean> delete(@Validated @RequestBody SkillLevelDTO.Delete request) {
+		boolean flag=true;
+		HttpStatus httpStatus=HttpStatus.OK;
+		try {
+			skillLevelService.delete(request);
+		} catch (Exception e) {
+			httpStatus=HttpStatus.NO_CONTENT;
+			flag=false;
+		}
+		return new ResponseEntity<>(flag,httpStatus);
 	}
 
 	@Loggable

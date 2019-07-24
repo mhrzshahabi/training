@@ -19,6 +19,8 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -220,15 +222,24 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "{skillId}/unattached-skill-groups")
     @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getUnAttachedSkillGroups(@PathVariable Long skillId) {
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getUnAttachedSkillGroups(@RequestParam("_startRow") Integer startRow,
+                                                                                   @RequestParam("_endRow") Integer endRow,
+                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy,@PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId);
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId,pageable);
 
         final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
         specResponse.setData(skillGroups)
-                .setStartRow(0)
-                .setEndRow(skillGroups.size())
-                .setTotalRows(skillGroups.size());
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedSkillGroupsCount(skillId));
 
         final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
         specRs.setResponse(specResponse);
@@ -259,16 +270,29 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/unattached-skill-groups")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getOtherSkillGroups(@RequestParam("skillId") String skillID) {
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getOtherSkillGroups(@RequestParam("_startRow") Integer startRow,
+                                                                              @RequestParam("_endRow") Integer endRow,
+                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                              @RequestParam(value = "operator", required = false) String operator,
+                                                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                                                              @RequestParam(value = "_sortBy", required = false) String sortBy
+                                                                              ,@RequestParam("skillId") String skillID) {
+
+
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
         Long skillId = Long.parseLong(skillID);
 
-        List<SkillGroupDTO.Info> skillGroupList = skillService.getUnAttachedSkillGroups(skillId);
+        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId,pageable);
 
         final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
-        specResponse.setData(skillGroupList)
-                .setStartRow(0)
-                .setEndRow(skillGroupList.size())
-                .setTotalRows(skillGroupList.size());
+        specResponse.setData(skillGroups)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedSkillGroupsCount(skillId));
 
         final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
         specRs.setResponse(specResponse);
@@ -335,19 +359,36 @@ public class SkillRestController {
     }
 
 
+
+
+
     @Loggable
     @GetMapping(value = "{skillId}/unattached-competences")
 //    @PreAuthorize("hasAnyAuthority('r_competence')")
-    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getUnAttachedCompetences(@PathVariable Long skillId) {
+    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getUnAttachedCompetences(@RequestParam("_startRow") Integer startRow,
+                                                                                   @RequestParam("_endRow") Integer endRow,
+                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                                   @PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId);
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+
+
+
+        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
 
         final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
         specResponse.setData(competences)
-                .setStartRow(0)
-                .setEndRow(competences.size())
-                .setTotalRows(competences.size());
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
 
         final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
@@ -378,16 +419,26 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/unattached-competences")
 //    @PreAuthorize("hasAuthority('r_competence')")
-    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getOtherCompetences(@RequestParam("skillId") String skillID) {
+    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getOtherCompetences(@RequestParam("_startRow") Integer startRow,
+                                                                              @RequestParam("_endRow") Integer endRow,
+                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                              @RequestParam(value = "operator", required = false) String operator,
+                                                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                                                              @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                              @RequestParam("skillId") String skillID) {
         Long skillId = Long.parseLong(skillID);
 
-        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId);
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
 
         final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
         specResponse.setData(competences)
-                .setStartRow(0)
-                .setEndRow(competences.size())
-                .setTotalRows(competences.size());
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
 
         final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
@@ -457,16 +508,27 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "{skillId}/unattached-courses")
 //    @PreAuthorize("hasAnyAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> getUnAttachedCourses(@PathVariable Long skillId) {
+    public ResponseEntity<CourseDTO.CourseSpecRs> getUnAttachedCourses(@RequestParam("_startRow") Integer startRow,
+                                                                       @RequestParam("_endRow") Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                       @PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId);
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId,pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
-                .setStartRow(0)
-                .setEndRow(courses.size())
-                .setTotalRows(courses.size());
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedCoursesCount(skillId));
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
@@ -497,16 +559,27 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/unattached-courses")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> getOtherCourses(@RequestParam("skillId") String skillID) {
+    public ResponseEntity<CourseDTO.CourseSpecRs> getOtherCourses(@RequestParam("_startRow") Integer startRow,
+                                                                  @RequestParam("_endRow") Integer endRow,
+                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                  @RequestParam(value = "operator", required = false) String operator,
+                                                                  @RequestParam(value = "criteria", required = false) String criteria,
+                                                                  @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                  @RequestParam("skillId") String skillID) {
         Long skillId = Long.parseLong(skillID);
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId);
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+
+        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId,pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
-                .setStartRow(0)
-                .setEndRow(courses.size())
-                .setTotalRows(courses.size());
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(skillService.getUnAttachedCoursesCount(skillId));
 
         final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
 

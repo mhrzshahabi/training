@@ -23,7 +23,7 @@ public class SkillLevelDTO {
 	@NotEmpty
 	@ApiModelProperty(required = true)
 	private String titleFa;
-	@NotNull
+
 	@ApiModelProperty(required = true)
 	private String titleEn;
 
