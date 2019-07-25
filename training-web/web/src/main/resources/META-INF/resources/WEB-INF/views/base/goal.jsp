@@ -599,29 +599,41 @@
         shadowDepth: 10
     });
     var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+        // icon: "[SKIN]/RichTextEditor/print.png",
+        autoDraw: false,
+        width: 100,
         title: "چاپ",
         menu: Menu_Print_GoalJsp,
         click: function () {
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="/goal/print/pdf"/>")'
+                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
                 }, {
                     title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
-                    click: "alert('salam')"
+                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}])
+                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa,
+                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                }])
             } else {
-                Menu_Print_GoalJsp.setData([{title: "همه اهداف"}, {
+                Menu_Print_GoalJsp.setData([{
+                    title: "همه اهداف",
+                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
+                }, {
                     title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
-                    click: "alert('salam')"
+                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}, {title: "سرفصل هاي هدف " + ListGrid_Goal.getSelectedRecord().titleFa}])
+                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa,
+                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                },
+                    {title: "سرفصل هاي هدف " + ListGrid_Goal.getSelectedRecord().titleFa,
+                     click: 'window.open("/syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                }])
             }
         }
     });

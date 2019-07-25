@@ -125,6 +125,7 @@ public class SyllabusDTO {
     @ApiModel("SyllabusInfoTuple")
     public static class SyllabusInfoTuple {
         private String titleFa;
+        private String titleEn;
         private EDomainType eDomainType;
         private Long theoreticalDuration;
         private Long practicalDuration;

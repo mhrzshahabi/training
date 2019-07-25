@@ -5,7 +5,7 @@
 
 <html>
 <head>
-    <title>سیستم آموزش     </title>
+    <title>سیستم آموزش </title>
 
     <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
@@ -143,7 +143,6 @@
     });
 
     isc.defineClass("MyDynamicForm", DynamicForm);
-
     isc.MyDynamicForm.addProperties({
         width: "100%",
         align: "center",
@@ -166,20 +165,20 @@
             errorMessage: "فيلد اجباري است.",
             expression: /^(?!\s*$).+/
         },
-    NotStartWithNumber:{
-        type:"regexp",
-        errorMessage:"این فیلد نباید با عدد شروع شود.",
-        expression:/^(?!([0-9]))/,
-    },
-        NotStartWithSpecialChar:{
-            type:"regexp",
-            errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression:/^(?!([!@#$%^&*~';:.{}_]))/,
+        NotStartWithNumber: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید با عدد شروع شود.",
+            expression: /^(?!([0-9]))/,
         },
-        NotContainSpecialChar:{
-            type:"regexp",
-            errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
-            expression:/\w+(?![!@#$%^&*~';:.{}_]).*/,
+        NotStartWithSpecialChar: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
+            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
+        },
+        NotContainSpecialChar: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید شامل حروف خاص باشد.",
+            expression: /\w+(?![!@#$%^&*~';:.{}_]).*/,
         }
     };
 
@@ -316,12 +315,9 @@
             for (i = 0; i < mainTabSet.tabs.length; i++) {
 
                 if (title == mainTabSet.getTab(i).title) {
-                    if(title == "دوره")
-                    {
-                        for (j = 0; j < mainTabSet.tabs.length; j++)
-                        {
-                            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
-                            {
+                    if (title == "دوره") {
+                        for (j = 0; j < mainTabSet.tabs.length; j++) {
+                            if (mainTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
                                 mainTabSet.removeTab(j);
                             }
                         }
@@ -782,24 +778,25 @@
             this.Super("closeClick", arguments);
         },
 
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var tabTitle = ID.title;
-            if(tabTitle.substr(0,5) == "اهداف"){
+            if (tabTitle.substr(0, 5) == "اهداف") {
                 setTimeout(function () {
                     ListGrid_Goal.fetchData();
                     ListGrid_Goal.invalidateCache();
-                    RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
+                    RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
                     ListGrid_Syllabus_Goal.fetchData();
                     ListGrid_Syllabus_Goal.invalidateCache();
                 }, 100);
             }
-            if(tabTitle.substr(0,4) == "دوره"){
+            if (tabTitle.substr(0, 4) == "دوره") {
                 setTimeout(function () {
                     ListGrid_CourseGoal.invalidateCache();
-                    if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
+                    if (courseId != "") {
+                        RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
-                        ListGrid_CourseSyllabus.invalidateCache();}
+                        ListGrid_CourseSyllabus.invalidateCache();
+                    }
                 }, 100);
             }
         },
@@ -839,7 +836,6 @@
         backgroundColor: "",
         members: [headerLayout, ribbonHLayout, mainTabSet]
     });
-
 
 
 </script>
