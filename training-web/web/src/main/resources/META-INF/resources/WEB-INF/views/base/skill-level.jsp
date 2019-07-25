@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%--<script>--%>
+//<script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -107,12 +107,12 @@
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
                 length: "50",
                 validators: [{
-                    type: "isString",
                     validateOnExit: true,
-min: 1,
-max: 50,
+                    type: "lengthRange",
+                    min: 1,
+                    max: 50,
                     stopOnError: true,
-                    errorMessage: "تعداد حرف مجاز برای عنوان بین یک تا پنجاه کاراکتر است"
+                    errorMessage: "تعداد کاراکتر مجاز بین 1 تا 250 می باشد. "
                 }]
             }, {
                 name: "titleEn",
@@ -122,13 +122,12 @@ max: 50,
                 length: "50",
                 hint: "Latin",
                 validators: [{
-                    type: "isString",
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,
-                    max: 50,
+                    max: 250,
                     stopOnError: true,
-                    errorMessage: "نام مجاز بین صفر تا پنجاه کاراکتر است"
+                    errorMessage: "تعداد کاراکتر مجاز بین 0 تا 250 می باشد. "
                 }]
 
             }]

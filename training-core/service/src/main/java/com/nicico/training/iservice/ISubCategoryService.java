@@ -16,9 +16,9 @@ public interface ISubCategoryService {
 
     List<SubCategoryDTO.Info> list();
 
-    SubCategoryDTO.Info create(SubCategoryDTO.Create request);
+    SubCategoryDTO.Info create(Object request);
 
-    SubCategoryDTO.Info update(Long id, SubCategoryDTO.Update request);
+    SubCategoryDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 

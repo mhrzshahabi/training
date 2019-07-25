@@ -26,4 +26,9 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Transactional
     public List<Teacher> findByNationalCode(@Param("nationalCode") String nationalCode);
 
+    @Modifying
+    @Query(value = "select * from TBL_TEACHER where C_NATIONAL_CODE = :nationalCode and ID != :id",nativeQuery = true)
+    @Transactional
+    public List<Teacher> findByNationalCode(@Param("id") Long id, @Param("nationalCode") String nationalCode);
+
 }

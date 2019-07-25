@@ -360,7 +360,6 @@
             },
             {
                 name: "skillLevelId",
-                type: "IntegerItem",
                 title: "سطح مهارت",
                 hint: "سطح مهارت",
                 showHintInField: true,
@@ -369,14 +368,15 @@
                 textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
-                changeOnKeypress: true,
+                addUnknownValues: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Skill_Level,
                 autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -416,14 +416,15 @@
                 required: true,
                 textAlign: "right",
                 editorType: "ComboBoxItem",
-                pickListWidth: 300,
+                addUnknownValues: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true, pickListWidth: 300,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Category,
                 autoFetchData: true,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -461,11 +462,12 @@
                 pickListWidth: 300,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Skill_SubCategory,
-                autoFetchData: false,
                 addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true, optionDataSource: RestDataSource_Skill_SubCategory,
+                autoFetchData: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -498,14 +500,15 @@
                 textAlign: "right",
                 editorType: "ComboBoxItem",
                 pickListWidth: 300,
-                changeOnKeypress: true,
+                addUnknownValues: false,
+                useClientFiltering: true,
+                cachePickListResults: true,
+                changeOnKeypress: false,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_EDomainType,
                 autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -888,7 +891,7 @@
                                 console.log(resp.httpResponseCode);
                                 wait.close();
                                 console.log(resp.httpResponseCode);
-                                if (resp.data=="true") {
+                                if (resp.data == "true") {
                                     ListGrid_Skill_Skill.invalidateCache();
                                     var OK = isc.Dialog.create({
                                         message: "مهارت با موفقيت حذف گرديد",
@@ -954,7 +957,7 @@
         skill_ActionUrl = "${restApiUrl}/api/skill";
         DynamicForm_Skill_Skill.clearValues();
         DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(false);
-        DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(false);
+        DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
         DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("code").visible = false;
         Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
@@ -967,14 +970,7 @@
         } else {
             ListGrid_Skill_Skill.selectRecord(record);
         }
-        skill_selectedSkillId = -1;
-        RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
-        RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
-        RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
         ListGrid_Skill_Skill.invalidateCache();
-        ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-        ListGrid_Skill_Attached_Competences.invalidateCache();
-        ListGrid_Skill_Attached_Courses.invalidateCache();
     };
 
     var Menu_ListGrid_Skill_Skill = isc.Menu.create({
@@ -1074,8 +1070,30 @@
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        freezeFieldText: "ثابت نگه داشتن",
+        dataArrived: function (startRow, endRow) {
+            record = ListGrid_Skill_Skill.getSelectedRecord();
+            if (record == null) {
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/job-dummy";
+            } else {
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/jobs";
+                selectedSkillId = record.id;
+            }
+            ListGrid_Skill_Attached_SkillGroups.invalidateCache();
+            ListGrid_Skill_Attached_Competences.invalidateCache();
+            ListGrid_Skill_Attached_Courses.invalidateCache();
+            ListGrid_Skill_Attached_Jobs.invalidateCache();
+
+
+        },
     });
+
 
     var ToolStripButton_Skill_Skill_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
@@ -1780,7 +1798,7 @@
         width: 700,
         height: 30,
         border: "0px solid yellow",
-backgroundColor: "lightgray",
+        backgroundColor: "lightgray",
         layoutMargin: 5,
         align: "center",
         members: [
@@ -1795,14 +1813,14 @@ backgroundColor: "lightgray",
         border: "0px solid red", layoutMargin: 5,
         members: [
             HLayOut_Skill_AddCompetence_Header,
-isc.HLayout.create({
-width: "100%",
-height: 10,
-backgroundColor: "blue",
-autoDraw: false,
-border: "0px solid red", layoutMargin: 5,
-members: []
-}),
+            isc.HLayout.create({
+                width: "100%",
+                height: 10,
+                backgroundColor: "blue",
+                autoDraw: false,
+                border: "0px solid red", layoutMargin: 5,
+                members: []
+            }),
             HStack_Skill_AddCompetence
         ]
     });
@@ -2155,7 +2173,7 @@ members: []
         width: 700,
         height: 30,
         border: "0px solid yellow",
-backgroundColor: "lightgray",
+        backgroundColor: "lightgray",
         layoutMargin: 5,
         align: "center",
         members: [
@@ -2170,14 +2188,14 @@ backgroundColor: "lightgray",
         border: "0px solid red", layoutMargin: 5,
         members: [
             HLayOut_Skill_AddCourse_Header,
-isc.HLayout.create({
-width: "100%",
-height: 10,
-backgroundColor: "blue",
-autoDraw: false,
-border: "0px solid red", layoutMargin: 5,
-members: []
-}),
+            isc.HLayout.create({
+                width: "100%",
+                height: 10,
+                backgroundColor: "blue",
+                autoDraw: false,
+                border: "0px solid red", layoutMargin: 5,
+                members: []
+            }),
             HStack_Skill_AddCourse
         ]
     });

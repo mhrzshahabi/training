@@ -52,23 +52,23 @@ public class SubCategoryService implements ISubCategoryService {
 
     @Transactional
     @Override
-    public SubCategoryDTO.Info create(SubCategoryDTO.Create request) {
+    public SubCategoryDTO.Info create(Object request) {
         final SubCategory subCategory = modelMapper.map(request, SubCategory.class);
 
-        return save(subCategory, request.getCategoryId());
+        return save(subCategory, subCategory.getCategoryId());
     }
 
     @Transactional
     @Override
-    public SubCategoryDTO.Info update(Long id, SubCategoryDTO.Update request) {
+    public SubCategoryDTO.Info update(Long id, Object request) {
         final Optional<SubCategory> cById = subCategoryDAO.findById(id);
         final SubCategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
-
+        SubCategoryDTO.Update update=modelMapper.map(request,SubCategoryDTO.Update.class);
         SubCategory updating = new SubCategory();
         modelMapper.map(subCategory, updating);
-        modelMapper.map(request, updating);
+        modelMapper.map(update, updating);
 
-        return save(updating, request.getCategoryId());
+        return save(updating, update.getCategoryId());
     }
 
     @Transactional

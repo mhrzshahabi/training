@@ -11,6 +11,7 @@ import com.nicico.training.dto.SubCategoryDTO;
 import com.nicico.training.iservice.ISubCategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -46,7 +47,8 @@ public class SubCategoryRestController {
     @Loggable
     @PostMapping
     @PreAuthorize("hasAuthority('c_sub_Category')")
-    public ResponseEntity<SubCategoryDTO.Info> create(@RequestBody SubCategoryDTO.Create request) {
+    public ResponseEntity<SubCategoryDTO.Info> create(@RequestBody Object request) {
+        //SubCategoryDTO.Create create=(new ModelMapper()).map(request,SubCategoryDTO.Create.class);
 
         return new ResponseEntity<>(subCategoryService.create(request), HttpStatus.CREATED);
     }
@@ -54,7 +56,9 @@ public class SubCategoryRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('u_sub_Category')")
-    public ResponseEntity<SubCategoryDTO.Info> update(@PathVariable Long id, @RequestBody SubCategoryDTO.Update request) {
+    public ResponseEntity<SubCategoryDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+//        SubCategoryDTO.Update update=(new ModelMapper()).map(request,SubCategoryDTO.Update.class);
+
         return new ResponseEntity<>(subCategoryService.update(id, request), HttpStatus.OK);
     }
 
