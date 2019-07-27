@@ -71,7 +71,11 @@ public class TeacherService implements ITeacherService {
         teacher.setEMilitaryTitleFa(teacher.getEMilitary().getTitleFa());
         teacher.setEGenderTitleFa(teacher.getEGender().getTitleFa());
 
-        return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
+		List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
+		if(teacherList==null || teacherList.size()==0)
+			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
+		else
+			return null;
 	}
 
 	@Transactional
@@ -91,7 +95,11 @@ public class TeacherService implements ITeacherService {
         updating.setEMilitaryTitleFa(updating.getEMilitary().getTitleFa());
         updating.setEGenderTitleFa(updating.getEGender().getTitleFa());
 
-        return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
+        List<Teacher> teacherList = teacherDAO.findByNationalCode(id,request.getNationalCode());
+		if(teacherList==null || teacherList.size()==0)
+			   return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
+		else
+			return null;
 	}
 
 	@Transactional

@@ -1,10 +1,13 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.Competence;
 import com.nicico.training.model.EducationLicense;
 import com.nicico.training.service.CourseService;
@@ -13,6 +16,7 @@ import com.sun.xml.internal.bind.v2.model.core.Ref;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,7 +29,9 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -42,6 +48,9 @@ public class CourseRestController {
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
+    private final ICourseService iCourseService;
+    private final DateUtil dateUtil;
+    private final ObjectMapper objectMapper;
     private final EducationLicenseService educationLicenseService;
     // ---------------------------------
 
@@ -268,4 +277,27 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Course.jasper", params, response);
     }
+
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+
+        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+
+        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = iCourseService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+    //    JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+          JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
+    }
+
+
 }

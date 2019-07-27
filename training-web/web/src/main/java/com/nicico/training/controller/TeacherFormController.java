@@ -112,8 +112,8 @@ public class TeacherFormController {
     }
 
 
-    @PostMapping("/printWithCriteria")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
+    @PostMapping("/printWithCriteria/{type}")
+	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("token");
 
 		final RestTemplate restTemplate = new RestTemplate();
@@ -129,7 +129,14 @@ public class TeacherFormController {
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		return restTemplate.exchange(restApiUrl + "/api/teacher/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+		if(type.equals("pdf"))
+			return restTemplate.exchange(restApiUrl + "/api/teacher/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("excel"))
+			return restTemplate.exchange(restApiUrl + "/api/teacher/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("html"))
+			return restTemplate.exchange(restApiUrl + "/api/teacher/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+		else
+			return null;
 	}
 
 
