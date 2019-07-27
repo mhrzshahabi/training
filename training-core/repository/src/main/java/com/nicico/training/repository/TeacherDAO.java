@@ -9,6 +9,7 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
+import java.util.List;
 
 @Repository
 public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificationExecutor<Teacher> {
@@ -19,5 +20,10 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
             " WHERE ID= :id" ,nativeQuery = true)
     @Transactional
     public void addAttach(@Param("id") Long id, @Param("attachFileName") String attachFileName);
+
+    @Modifying
+    @Query(value = "select * from TBL_TEACHER where C_NATIONAL_CODE = :nationalCode",nativeQuery = true)
+    @Transactional
+    public List<Teacher> findByNationalCode(@Param("nationalCode") String nationalCode);
 
 }

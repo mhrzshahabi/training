@@ -299,9 +299,15 @@ public class TeacherRestController {
 	public void printWithCriteria(HttpServletResponse response,
 								  @PathVariable String type,
 								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-
-		final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-		final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if(criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        }
+        else{
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
 
 		final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
