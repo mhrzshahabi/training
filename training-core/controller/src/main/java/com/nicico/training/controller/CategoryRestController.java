@@ -146,7 +146,7 @@ public class CategoryRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/dummy")
+    @GetMapping(value = "sub-categories/dummy")
     @PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<SubCategoryDTO.SubCategorySpecRs>(new SubCategoryDTO.SubCategorySpecRs(), HttpStatus.OK);

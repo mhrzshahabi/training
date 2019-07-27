@@ -160,13 +160,13 @@ public class SkillRestController {
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
 
-            if (StringUtils.isNotEmpty(sortBy)) {
-                request.set_sortBy(sortBy);
-            }
 
             request.setCriteria(criteriaRq);
         }
 
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
