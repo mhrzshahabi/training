@@ -29,14 +29,14 @@
                     show_JobRemoveForm();
                 }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+               /* title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
                 }
             }, {
                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
                 }
             }, {
                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                }
+                }*/
             }]
     });
     //****************************************************************************************************************
@@ -131,10 +131,11 @@
                 click: function () {
                     show_JobRemoveForm();
                 }
-            }), isc.MyPrintButton.create({
+            }),
+            /*isc.MyPrintButton.create({
                 click: function () {
                 }
-            }),
+            }),*/
         ]
     });
 
@@ -157,10 +158,11 @@
                 click: function () {
                     show_JobCompetenceRemoveForm();
                 }
-            }), isc.MyPrintButton.create({
-                click: function () {
-                }
             }),
+            // isc.MyPrintButton.create({
+            //     click: function () {
+            //     }
+            // }),
         ]
     });
 
