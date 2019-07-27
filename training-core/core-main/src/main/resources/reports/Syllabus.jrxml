@@ -10,11 +10,16 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="521"/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<queryString language="SQL">
-		<![CDATA[select * from Training.tbl_syllabus]]>
+		<![CDATA[select
+		training.tbl_syllabus.c_title_fa,
+		training.tbl_syllabus.c_description,
+		DECODE(training.tbl_syllabus.e_domain_type,1,'دانشی',2,'مهارتی',3,'نگرشی') e_domain_type,
+		training.tbl_syllabus.n_practical_duration
+		from Training.tbl_syllabus]]>
 	</queryString>
 	<field name="C_TITLE_FA" class="java.lang.String"/>
 	<field name="C_DESCRIPTION" class="java.lang.String"/>
-	<field name="E_DOMAIN_TYPE" class="java.math.BigDecimal"/>
+	<field name="E_DOMAIN_TYPE" class="java.lang.String"/>
 	<field name="N_PRACTICAL_DURATION" class="java.math.BigDecimal"/>
 	<background>
 		<band splitType="Stretch"/>

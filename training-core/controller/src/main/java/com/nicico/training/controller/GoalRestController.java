@@ -3,17 +3,23 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
+import com.nicico.training.dto.GoalDTO;
+import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IGoalService;
 import com.nicico.training.iservice.ISyllabusService;
+import com.nicico.training.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.ietf.jgss.GSSName;
 import org.springframework.http.HttpStatus;
@@ -22,7 +28,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +43,9 @@ import java.util.Map;
 public class GoalRestController {
     
     private final IGoalService goalService;
+    private final ICourseService courseService;
     private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
     // ------------------------------
@@ -167,10 +177,25 @@ public class GoalRestController {
     // -----------------
 
     @Loggable
-    @GetMapping(value = {"/print/{type}"})
+    @GetMapping(value = {"/print-all/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Goal.jasper", params, response);
+    }
+    //------------------
+
+    @Loggable
+    @GetMapping(value = {"/print-one-course/{courseId}/{type}"})
+    public void printOneCourse (HttpServletResponse response, @PathVariable Long courseId, @PathVariable String type) throws Exception {
+        List<GoalDTO.Info> getGoal = courseService.getgoal(courseId);
+        CourseDTO.Info info = courseService.get(courseId);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        params.put("courseName", info.getTitleFa());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(getGoal) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/GoalsOneCourse.jasper", params, jsonDataSource, response);
     }
 }

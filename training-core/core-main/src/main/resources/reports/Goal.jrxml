@@ -10,7 +10,10 @@
 	<property name="com.jaspersoft.studio.data.sql.SQLQueryDesigner.sash.w2" value="521"/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<queryString language="SQL">
-		<![CDATA[select * from Training.tbl_goal]]>
+		<![CDATA[select
+		training.tbl_goal.c_title_fa,
+		training.tbl_goal.c_title_en
+		from Training.tbl_goal]]>
 	</queryString>
 	<field name="C_TITLE_FA" class="java.lang.String"/>
 	<field name="C_TITLE_EN" class="java.lang.String"/>
@@ -72,7 +75,7 @@
 	</columnHeader>
 	<detail>
 		<band height="20" splitType="Stretch">
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="300" y="0" width="250" height="20" uuid="c4b24c8e-19e3-4ab1-a9ae-0018d4b26b83"/>
 				<box>
 					<pen lineWidth="0.5"/>
@@ -86,7 +89,7 @@
 				</textElement>
 				<textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
 			</textField>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="2" y="0" width="298" height="20" uuid="e4b7e8c2-4ac3-4a32-8e5c-ae63ea5dd54f"/>
 				<box>
 					<pen lineWidth="0.5"/>

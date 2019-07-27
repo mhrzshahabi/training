@@ -39,8 +39,8 @@ public class GoalFormController {
         return "base/goal";
     }
 
-    @RequestMapping("/print/{type}")
-    public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
+    @RequestMapping("/print-all/{type}")
+    public ResponseEntity<?> printAll(Authentication authentication, @PathVariable String type) {
         String token = "";
         if (authentication instanceof OAuth2AuthenticationToken) {
             OAuth2AuthorizedClient client = authorizedClientService
@@ -59,11 +59,39 @@ public class GoalFormController {
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print/pdf", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-all/pdf", HttpMethod.GET, entity, byte[].class);
         else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print/excel", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-all/excel", HttpMethod.GET, entity, byte[].class);
         else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print/html", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-all/html", HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
+    }
+    @RequestMapping("/print-one-course/{courseId}/{type}")
+    public ResponseEntity<?> printOneCourse(Authentication authentication, @PathVariable String type, @PathVariable Long courseId) {
+        String token = "";
+        if (authentication instanceof OAuth2AuthenticationToken) {
+            OAuth2AuthorizedClient client = authorizedClientService
+                    .loadAuthorizedClient(
+                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
+                            authentication.getName());
+            token = client.getAccessToken().getTokenValue();
+        }
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        if(type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/pdf", HttpMethod.GET, entity, byte[].class);
+        else if(type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/excel", HttpMethod.GET, entity, byte[].class);
+        else if(type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
