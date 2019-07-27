@@ -60,10 +60,6 @@ public class CourseFormController {
 		else
 			return null;
 	}
-
-
-
-
 	@PostMapping("/printWithCriteria")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request) {
 		String token = (String) request.getSession().getAttribute("token");
