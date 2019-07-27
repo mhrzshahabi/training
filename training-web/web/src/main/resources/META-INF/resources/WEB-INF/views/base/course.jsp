@@ -4,7 +4,6 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 //<script>
-
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
     var courseId = "";
     var runV = "";
@@ -15,7 +14,7 @@
     var count = "";
     var x;
     var ChangeEtechnicalType = false;
-    var chang =false;
+    var chang = false;
     var course_url = "${restApiUrl}/api/course";
     var RestDataSource_category = isc.MyRestDataSource.create({
         ID: "categoryDS",
@@ -50,24 +49,24 @@
         autoFetchData: true,
     });
     var RestDataSource_e_level_type = isc.MyRestDataSource.create({
-        autoCacheAllData:false,
+        autoCacheAllData: false,
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: "${restApiUrl}/api/enum/eLevelType",
         autoFetchData: true,
-        });
+    });
     var RestDataSource_e_run_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: "${restApiUrl}/api/enum/eRunType/spec-list",
-     //   cacheAllData:true,
+// cacheAllData:true,
         autoFetchData: true,
     });
     var RestDataSourceETheoType = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: "${restApiUrl}/api/enum/eTheoType",
-      //  cacheAllData:true,
+// cacheAllData:true,
         autoFetchData: true,
     });
     var RestDataSourceSubCategory = isc.MyRestDataSource.create({
@@ -91,7 +90,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-            fetchDataURL: "${restApiUrl}/api/goal/spec-list"
+        fetchDataURL: "${restApiUrl}/api/goal/spec-list"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -109,7 +108,7 @@
     });
     var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
-            {name: "id", primaryKey:true},
+            {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
@@ -118,23 +117,23 @@
 
         fetchDataURL: "${restApiUrl}/api/syllabus/spec-list"
     });
-    var RestDataSource_CourseCompetence=isc.MyRestDataSource.create({
+    var RestDataSource_CourseCompetence = isc.MyRestDataSource.create({
         fields: [
-        {name: "id"},
-        {name: "titleFa"},
-        {name:"titleEn"   },
+            {name: "id"},
+            {name: "titleFa"},
+            {name: "titleEn"},
         ],
 
         fetchDataURL: "http://localhost:9090/api/course/getcompetence/" + courseId.id
-        });
-    var RestDataSourceEducation=isc.MyRestDataSource.create({
+    });
+    var RestDataSourceEducation = isc.MyRestDataSource.create({
         fields: [
-        {name: "id"},
-        {name: "titleFa"}
+            {name: "id"},
+            {name: "titleFa"}
         ],
 
         fetchDataURL: "http://localhost:9090/api/course/getlistEducationLicense",
-        });
+    });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
@@ -156,9 +155,9 @@
                 ListGrid_Course_remove()
             }
         }, {
-          //  title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
-        //        openTabGoal();
-        //    }
+// title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+// openTabGoal();
+// }
         }, {isSeparator: true}, {
             title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
                 window.open("<spring:url value="/course/print/pdf"/>");
@@ -177,8 +176,8 @@
         dataSource: "courseDS",
         contextMenu: Menu_ListGrid_course,
         doubleClick: function () {
-        DynamicForm_course.clearValues();
-        ListGrid_Course_Edit()
+            DynamicForm_course.clearValues();
+            ListGrid_Course_Edit()
         },
         selectionChanged: function (record, state) {
             courseId = record;
@@ -210,19 +209,58 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code="corse_code"/>", align: "center",filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center",filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center",filterOperator: "contains"},
-            {name: "category.titleFa", title: "<spring:message code="course_category"/>", align: "center",filterOperator: "contains"},
-            {name: "subCategory.titleFa", title: "<spring:message code="course_subcategory"/>", align: "center",filterOperator: "contains"},
-            {name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center",filterOperator: "contains"},
-            {name: "elevelType.titleFa", title: "<spring:message code="cousre_elevelType"/>", align: "center",filterOperator: "contains"},
-            {name: "etheoType.titleFa", title: "<spring:message code="course_etheoType"/>", align: "center",filterOperator: "contains"},
-            {name: "theoryDuration", title: "<spring:message code="course_theoryDuration"/>", align: "center",filterOperator: "contains"},
-            {name: "etechnicalType.titleFa", title: "<spring:message code="course_etechnicalType"/>", align: "center",filterOperator: "contains"},
-            {name: "minTeacherDegree", title: "<spring:message code="course_minTeacherDegree"/>", align: "center",filterOperator: "contains"},
-            {name: "minTeacherExpYears", title: "<spring:message code="course_minTeacherExpYears"/>", align: "center",filterOperator: "contains"},
-            {name: "minTeacherEvalScore", title: "<spring:message code="course_minTeacherEvalScore"/>", align: "center",filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="corse_code"/>", align: "center", filterOperator: "contains"},
+            {
+                name: "titleFa",
+                title: "<spring:message code="course_fa_name"/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code="course_en_name"/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "category.titleFa", title: "<spring:message
+        code="course_category"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "subCategory.titleFa", title: "<spring:message
+        code="course_subcategory"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "elevelType.titleFa", title: "<spring:message
+        code="cousre_elevelType"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "etheoType.titleFa", title: "<spring:message
+        code="course_etheoType"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "theoryDuration", title: "<spring:message
+        code="course_theoryDuration"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "etechnicalType.titleFa", title: "<spring:message
+        code="course_etechnicalType"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "minTeacherDegree", title: "<spring:message
+        code="course_minTeacherDegree"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "minTeacherExpYears", title: "<spring:message
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains"
+            },
+            {
+                name: "minTeacherEvalScore", title: "<spring:message
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
+            },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
         ],
@@ -239,9 +277,9 @@
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
-             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
-             {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
+            {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
@@ -268,21 +306,21 @@
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>" , align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
 
         autoFetchData: false
     });
-    var ListGrid_CourseCompetence=isc.MyListGrid.create({
-                dataSource: RestDataSource_CourseCompetence,
-                fields: [
-                {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-                {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
-                {name:"titleEn",title: "<spring:message code="course_en_name"/>",align:"center"}
-                 ],
-                autoFetchData: false
-                });
+    var ListGrid_CourseCompetence = isc.MyListGrid.create({
+        dataSource: RestDataSource_CourseCompetence,
+        fields: [
+            {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"}
+        ],
+        autoFetchData: false
+    });
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
         dataSource: RestDataSource_Syllabus,
@@ -352,30 +390,63 @@
             ListGrid_Course_remove()
         }
     });
-   //--------------------------------------
+    //--------------------------------------
+    <%--isc.Menu.create({--%>
+    <%--    ID: "menu",--%>
+    <%--    autoDraw: false,--%>
+    <%--    showShadow: true,--%>
+    <%--    shadowDepth: 10,--%>
+    <%--    data: [--%>
+    <%--        {title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {window.open("<spring:url value="/course/print/excel"/>")}},--%>
+    <%--        {title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {window.open("<spring:url value="/course/print/html"/>")}},--%>
+    <%--        {title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {window.open("<spring:url value="/course/print/pdf"/>")}}--%>
+    <%--         ]});--%>
+
+<%--    var ToolStripButton_Print = isc.ToolStrip.create({--%>
+<%--        title: "<spring:message code="print"/>",--%>
+<%--        icon: "[SKIN]/RichTextEditor/print.png",--%>
+<%--       // menu: menu,--%>
+<%--           click:function() {--%>
+<%--            <spring:url value="/course/print/html" var="printUrl"/>"--%>
+<%--            window.open('${printUrl}');--%>
+<%--}--%>
+<%--    });--%>
 
 
+    var ToolStripButton_Print = isc.ToolStripButton.create({
+                    icon: "[SKIN]/RichTextEditor/print.png",
+                    title: "<spring:message code='print'/>",
+                    click: function () {
+                    if (ListGrid_Course.getCriteria().operator == undefined) {
+                        <spring:url value="/course/print/pdf" var="printUrl"/>
+                        window.open('${printUrl}');
+                    }
 
-        var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png", title: "<spring:message code="print"/>",
-            click: function () {
-         "<spring:url value="/course/print/pdf" var="printUrl"/>"
-         window.open('${printUrl}');
-        }
-    });
-
-
-
-
-
-//----------------------------------------------
-var ToolStrip_Actions = isc.ToolStrip.create({
+                    else {
+                    var advancedCriteria = ListGrid_Course.getCriteria();
+                    var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/course/printWithCriteria",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                    [
+                    {name: "CriteriaStr", type: "hidden"}
+                    ]
+                    });
+                    criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                    criteriaForm.submitForm();
+                    }
+                    }
+                    });
+    //----------------------------------------------
+    var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print]
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
-        height:380,
+        height: 380,
         align: "center",
         titleAlign: "center",
         showInlineErrors: true,
@@ -467,7 +538,7 @@ var ToolStrip_Actions = isc.ToolStrip.create({
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                showFilterEditor: true
+                    showFilterEditor: true
                 },
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
@@ -629,26 +700,26 @@ var ToolStrip_Actions = isc.ToolStrip.create({
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                showFilterEditor: true,
+                    showFilterEditor: true,
                 },
                 pickListFields: [
-                {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
-                ChangeEtechnicalType=true;
-                switch (value) {
-                case 1:
-                eLevelTypeV = "1";
-                break;
-                case 2:
-                eLevelTypeV = "2";
-                break;
-                case 3:
-                eLevelTypeV = "3";
-                break;
-                }
+                    ChangeEtechnicalType = true;
+                    switch (value) {
+                        case 1:
+                            eLevelTypeV = "1";
+                            break;
+                        case 2:
+                            eLevelTypeV = "2";
+                            break;
+                        case 3:
+                            eLevelTypeV = "3";
+                            break;
+                    }
 
                 },
-                },
+            },
             {
                 name: "theoryDuration",
                 title: "<spring:message code="course_theoryDuration"/>",
@@ -661,31 +732,31 @@ var ToolStrip_Actions = isc.ToolStrip.create({
                 keyPressFilter: "[0-9]"
             },
             {
-                    name: "minTeacherDegree",
-                    title: "<spring:message code="course_minTeacherDegree"/>",
-                    autoFetchData: true,
-                    required: true,
-                    height: "30",
-                    width: "*",
-                    changeOnKeypress: true,
-                    filterOnKeypress: true,
-                    displayField: "titleFa",
-                    valueField: "titleFa",
-                    optionDataSource:RestDataSourceEducation,
-                    addUnknownValues: false,
-                    cachePickListResults: false,
-                    useClientFiltering: false,
-                    filterFields: ["titleFa"],
-                    sortField: ["id"],
-                    textMatchStyle: "startsWith",
-                    generateExactMatchCriteria: true,
-                    pickListProperties: {showFilterEditor: true},
-                    pickListFields: [
+                name: "minTeacherDegree",
+                title: "<spring:message code="course_minTeacherDegree"/>",
+                autoFetchData: true,
+                required: true,
+                height: "30",
+                width: "*",
+                changeOnKeypress: true,
+                filterOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "titleFa",
+                optionDataSource: RestDataSourceEducation,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: false,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {showFilterEditor: true},
+                pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                    changed: function (form, item, value) {
+                changed: function (form, item, value) {
                     RestDataSourceEducation.fetchDataURL = "http://localhost:9090/api/course/getlistEducationLicense";
-                      },
-                    },
+                },
+            },
             {
                 name: "minTeacherExpYears",
                 title: "<spring:message code="course_minTeacherExpYears"/>",
@@ -713,9 +784,9 @@ var ToolStrip_Actions = isc.ToolStrip.create({
                 max: 100,
                 width: "*",
                 keyPressFilter: "[0-9]",
-                // validators: [ { type: "integerRange", min: 0, max: 100,
-                //         errorMessage: "لطفا نمره را صحیح وارد کنید",
-                //     }]
+// validators: [ { type: "integerRange", min: 0, max: 100,
+// errorMessage: "لطفا نمره را صحیح وارد کنید",
+// }]
             },
             {
                 name: "description",
@@ -743,9 +814,9 @@ var ToolStrip_Actions = isc.ToolStrip.create({
     });
     var IButton_course_Save = isc.IButton.create({
 
-       //     align: "center",
-            title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
-            click: function () {
+// align: "center",
+        title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
+        click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
                 return;
@@ -780,7 +851,7 @@ var ToolStrip_Actions = isc.ToolStrip.create({
 
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                                    simpleDialog("<spring:message code="create"/>","<spring:message code="msg.operation.successful"/>",2000,"say");
+                                    simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     Window_course.close();
                                     ListGrid_Course_refresh();
                                 } else {
@@ -794,9 +865,9 @@ var ToolStrip_Actions = isc.ToolStrip.create({
                     }
                 });
             }//end if
-            else if((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT"  && ChangeEtechnicalType == true)) {
+            else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" && ChangeEtechnicalType == true)) {
                 var data1 = DynamicForm_course.getValues();
-                    ChangeEtechnicalType=false;
+                ChangeEtechnicalType = false;
                 isc.RPCManager.sendRequest({
                     actionURL: course_url,
                     httpMethod: course_method,
@@ -810,9 +881,9 @@ var ToolStrip_Actions = isc.ToolStrip.create({
 
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                            simpleDialog("<spring:message code="edit"/>","<spring:message code="msg.operation.successful"/>",3000,"say");
-                              
-                             Window_course.close();
+                            simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
+
+                            Window_course.close();
                             ListGrid_Course_refresh();
                         } else {
 
@@ -822,21 +893,22 @@ var ToolStrip_Actions = isc.ToolStrip.create({
 
                     }
                 });
-            }else {
-                simpleDialog("<spring:message code="edit"/>","<spring:message code="course_noEdit"/>",3000,"say");
-                Window_course.close();}//end else
+            } else {
+                simpleDialog("<spring:message code="edit"/>", "<spring:message code="course_noEdit"/>", 3000, "say");
+                Window_course.close();
+            }//end else
 //-----------------------------------------------
 
         }
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
 //-------------
- //   defaultLayoutAlign: "center",
- //   verticalAlign: "center",
-    alignment:"center",
-    align: "center",
-     //   defaultLayoutAlign: "center",
-        membersMargin:10,
+// defaultLayoutAlign: "center",
+// verticalAlign: "center",
+        alignment: "center",
+        align: "center",
+// defaultLayoutAlign: "center",
+        membersMargin: 10,
         members: [IButton_course_Save, isc.IButton.create({
             ID: "EditExitIButton",
             title: "<spring:message code="cancel"/>",
@@ -912,11 +984,11 @@ var ToolStrip_Actions = isc.ToolStrip.create({
             ListGrid_CourseJob
         ]
     });
-    var HLayout_Tab_Course_Competence=isc.HLayout.create({
-    width:"100%",
-    height:"100%",
-members:[ ListGrid_CourseCompetence]
-});
+    var HLayout_Tab_Course_Competence = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [ListGrid_CourseCompetence]
+    });
     var Detail_Tab_Course = isc.TabSet.create({
         tabBarPosition: "top",
         width: "100%",
@@ -938,9 +1010,11 @@ members:[ ListGrid_CourseCompetence]
                 title: "<spring:message code="course_job"/>",
                 pane: HLayout_Tab_Course_Job
             },
-            {id: "TabPane_Competence",
-            title: "<spring:message code="course_compatency"/>",
-            pane: HLayout_Tab_Course_Competence}
+            {
+                id: "TabPane_Competence",
+                title: "<spring:message code="course_compatency"/>",
+                pane: HLayout_Tab_Course_Competence
+            }
         ]
     });
     var HLayout_Tab_Course = isc.HLayout.create({
@@ -954,15 +1028,17 @@ members:[ ListGrid_CourseCompetence]
         height: "100%",
         members: [HLayout_Actions_Course, HLayout_Grid_Course, HLayout_Tab_Course]
     });
+
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
     };
+
     function ListGrid_Course_add() {
-DynamicForm_course.getItem("category.id").setDisabled(false);
-DynamicForm_course.getItem("subCategory.id").setDisabled(false);
-DynamicForm_course.getItem("erunType.id").setDisabled(false);
-DynamicForm_course.getItem("elevelType.id").setDisabled(false);
-DynamicForm_course.getItem("etheoType.id").setDisabled(false);
+        DynamicForm_course.getItem("category.id").setDisabled(false);
+        DynamicForm_course.getItem("subCategory.id").setDisabled(false);
+        DynamicForm_course.getItem("erunType.id").setDisabled(false);
+        DynamicForm_course.getItem("elevelType.id").setDisabled(false);
+        DynamicForm_course.getItem("etheoType.id").setDisabled(false);
         course_method = "POST";
         course_url = "http://localhost:9090/api/course";
         DynamicForm_course.clearValues();
@@ -971,6 +1047,7 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
 
         Window_course.show();
     };
+
     function ListGrid_Course_remove() {
         var record = ListGrid_Course.getSelectedRecord();
         if (record == null) {
@@ -985,7 +1062,9 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
             });
         } else {
             var Dialog_Delete = isc.Dialog.create({
-                message: "<spring:message code="course_delete"/>" + "   " + getFormulaMessage(record.titleFa, 3, "red", "I") + "   " + "<spring:message code="course_delete1"/>",
+                message: "<spring:message
+        code="course_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message
+        code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="yes"/>"}), isc.Button.create({
@@ -1005,7 +1084,7 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                             serverOutputAsString: false,
                             callback: function (resp) {
 
-                               if (resp.data=="true") {
+                                if (resp.data == "true") {
                                     ListGrid_Course_refresh();
                                     ListGrid_CourseJob.setData([]);
                                     ListGrid_CourseSkill.setData([]);
@@ -1013,9 +1092,9 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                                     ListGrid_CourseGoal.setData([]);
                                     ListGrid_CourseCompetence.setData([]);
                                     var OK = isc.Dialog.create({
-                                       message: "<spring:message code="msg.record.remove.successful"/>",
+                                        message: "<spring:message code="msg.record.remove.successful"/>",
 
-                                       icon: "[SKIN]say.png",
+                                        icon: "[SKIN]say.png",
                                         title: "<spring:message code="msg.command.done"/>"
                                     });
                                     setTimeout(function () {
@@ -1050,16 +1129,16 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
 
         if (sRecord == null || sRecord.id == null) {
 
-          //  simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");
-                isc.Dialog.create({
+// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");
+            isc.Dialog.create({
                 message: "<spring:message code="msg.record.not.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
-                this.close();
+                    this.close();
                 }
-                });
+            });
         } else {
             course_method = "PUT";
             course_url = "http://localhost:9090/api/course/" + sRecord.id;
@@ -1084,7 +1163,8 @@ DynamicForm_course.getItem("etheoType.id").setDisabled(false);
                 }
             });
         } else {
-            createTab("<spring:message code="course_goal_of_syllabus"/>" +" " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message
+        code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
         }
     }
-//</script>
+
