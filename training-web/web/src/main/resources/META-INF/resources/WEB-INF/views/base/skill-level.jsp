@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+<%--<script>--%>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -16,7 +16,8 @@
             }
         }, {
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-ListGrid_skill_level_Add();            }
+                ListGrid_skill_level_Add();
+            }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
                 ListGrid_skill_level_edit();
@@ -71,8 +72,6 @@ ListGrid_skill_level_Add();            }
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
-        filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -81,7 +80,6 @@ ListGrid_skill_level_Add();            }
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن",
-
     });
     var DynamicForm_skill_level = isc.DynamicForm.create({
         width: "100%",
@@ -107,28 +105,30 @@ ListGrid_skill_level_Add();            }
                 type: 'text',
                 hint: "Persian/فارسی",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
-                length: "20",
+                length: "50",
                 validators: [{
                     type: "isString",
                     validateOnExit: true,
+min: 1,
+max: 50,
                     stopOnError: true,
-                    errorMessage: "نام مجاز بین چهار تا بیست کاراکتر است"
+                    errorMessage: "تعداد حرف مجاز برای عنوان بین یک تا پنجاه کاراکتر است"
                 }]
             }, {
                 name: "titleEn",
                 title: "نام لاتین ",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "20",
+                length: "50",
                 hint: "Latin",
                 validators: [{
                     type: "isString",
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 0,
-                    max: 20,
+                    max: 50,
                     stopOnError: true,
-                    errorMessage: "نام مجاز بین چهار تا بیست کاراکتر است"
+                    errorMessage: "نام مجاز بین صفر تا پنجاه کاراکتر است"
                 }]
 
             }]
@@ -162,7 +162,7 @@ ListGrid_skill_level_Add();            }
                         });
                         setTimeout(function () {
                             OK.close();
-                        }, 3000);
+                        }, 2000);
                         ListGrid_skill_level_refresh();
                         Window_skill_level.close();
                     } else {
@@ -173,7 +173,7 @@ ListGrid_skill_level_Add();            }
                         });
                         setTimeout(function () {
                             ERROR.close();
-                        }, 3000);
+                        }, 2000);
                     }
                 }
             });
@@ -229,79 +229,79 @@ ListGrid_skill_level_Add();            }
         ListGrid_skill_level.invalidateCache();
     };
 
-function ListGrid_skill_level_remove() {
+    function ListGrid_skill_level_remove() {
 
 
-var record = ListGrid_skill_level.getSelectedRecord();
-console.log(record);
-if (record == null) {
-isc.Dialog.create({
-message: "سطح مهارتی برای حذف انتخاب نشده است!",
-icon: "[SKIN]ask.png",
-title: "توجه",
-buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-buttonClick: function (button, index) {
-this.close();
-}
-});
-} else {
-var Dialog_Delete = isc.Dialog.create({
-message: "آيا مي خواهيد اين سطح مهارت حذف گردد؟",
-icon: "[SKIN]ask.png",
-title: "هشدار",
-buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-title: "خير"
-})],
-buttonClick: function (button, index) {
-this.close();
+        var record = ListGrid_skill_level.getSelectedRecord();
+        console.log(record);
+        if (record == null) {
+            isc.Dialog.create({
+                message: "سطح مهارتی برای حذف انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين سطح مهارت حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "هشدار",
+                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
 
-if (index == 0) {
-var wait = isc.Dialog.create({
-message: "<spring:message code='global.form.do.operation'/>",
-icon: "[SKIN]say.png",
-title: "<spring:message code='global.message'/>"
-});
-isc.RPCManager.sendRequest({
-actionURL: "${restApiUrl}/api/skill-level/" + record.id,
-httpMethod: "DELETE",
-useSimpleHttp: true,
-contentType: "application/json; charset=utf-8",
-httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-showPrompt: true,
-serverOutputAsString: false,
-callback: function (resp) {
-console.log(resp.httpResponseCode);
-wait.close();
-console.log(resp.httpResponseCode);
-if (resp.httpResponseCode == 200) {
-ListGrid_skill_level.invalidateCache();
-var OK = isc.Dialog.create({
-message: "سطح مهارت با موفقيت حذف گرديد",
-icon: "[SKIN]say.png",
-title: "انجام شد"
-});
-setTimeout(function () {
-OK.close();
-}, 3000);
-} else {
-var ERROR = isc.Dialog.create({
-message: "ركورد مورد نظر قابل حذف نيست",
-icon: "[SKIN]stop.png",
-title: "خطا"
-});
-setTimeout(function () {
-ERROR.close();
-}, 3000);
-}
-}
-});
-}
-}
-});
-}
+                    if (index == 0) {
+                        var wait = isc.Dialog.create({
+                            message: "<spring:message code='global.form.do.operation'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='global.message'/>"
+                        });
+                        isc.RPCManager.sendRequest({
+                            actionURL: "${restApiUrl}/api/skill-level/" + record.id,
+                            httpMethod: "DELETE",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            showPrompt: true,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                console.log(resp.httpResponseCode);
+                                wait.close();
+                                console.log(resp.httpResponseCode);
+                                if (resp.data == "true") {
+                                    ListGrid_skill_level.invalidateCache();
+                                    var OK = isc.Dialog.create({
+                                        message: "سطح مهارت با موفقيت حذف گرديد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام شد"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 2000);
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "خطا"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 2000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
 
-};
+    };
 
 
     function ListGrid_skill_level_Add() {
@@ -352,7 +352,7 @@ ERROR.close();
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
-ListGrid_skill_level_Add();
+            ListGrid_skill_level_Add();
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
@@ -362,16 +362,9 @@ ListGrid_skill_level_Add();
             ListGrid_skill_level_remove();
         }
     });
-    var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
-        click: function () {
-            window.open("/skill-level/print/pdf");
-        }
-    });
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Refresh, ToolStripButton_Print]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove]
     });
     var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
     var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_skill_level]});
