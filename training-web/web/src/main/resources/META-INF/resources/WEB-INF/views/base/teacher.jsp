@@ -1508,15 +1508,23 @@
 
     function showAttach() {
         var selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-// var selectedRecordPhoto = ListGrid_Teacher_JspTeacher.getSelectedRecord().attachPhoto;
-// if (selectedRecordPhoto == null || selectedRecordPhoto == undefined || selectedRecordPhoto == "") {
-// showAttachViewLoader.setView();
-// showAttachViewLoader.show();
-// }
-        <%--else {--%>
-        showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
-        showAttachViewLoader.show();
-        <%--}--%>
+        isc.RPCManager.sendRequest({
+            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${restApiUrl}/api/teacher/checkAttach/" + selectedRecordID,
+            httpMethod: "GET",
+            serverOutputAsString: false,
+            callback: function (resp) {
+                if (resp.data == "true") {
+                    showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
+                    showAttachViewLoader.show();
+                } else if(resp.data == "false") {
+                    showAttachViewLoader.setView();
+                    showAttachViewLoader.show();
+                }
+            }
+        });
     };
 
     function showCategories() {
