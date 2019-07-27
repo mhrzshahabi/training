@@ -370,16 +370,14 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/syllabus/print/pdf"/>");
+                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf");
             }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/syllabus/print/excel"/>");
-            }
+                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/excel")            }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/syllabus/print/html"/>");
-            }
+                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/html")            }
         }]
     });
     var Menu_ListGrid_Goal = isc.Menu.create({
@@ -407,16 +405,13 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/goal/print/pdf"/>");
-            }
+                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")            }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/goal/print/exel"/>");
-            }
+                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/excel")            }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/goal/print/html"/>");
-            }
+                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/html")            }
         }]
     });
 
@@ -599,35 +594,43 @@
         shadowDepth: 10
     });
     var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+        // icon: "[SKIN]/RichTextEditor/print.png",
+        autoDraw: false,
+        width: 100,
         title: "چاپ",
-        menu: Menu_Print_GoalJsp,
+        menu: menuPalette,
         click: function () {
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="/goal/print/pdf"/>")'
+                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
                 }, {
-                    title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
-                    click: "alert('salam')"
+                    title: "اهداف دوره " + '"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}])
+                }, {title: "سرفصل هاي دوره " +'"'+ ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                }])
             } else {
-                Menu_Print_GoalJsp.setData([{title: "همه اهداف"}, {
-                    title: "اهداف دوره " + ListGrid_Course.getSelectedRecord().titleFa,
-                    click: "alert('salam')"
+                Menu_Print_GoalJsp.setData([{
+                    title: "همه اهداف",
+                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
+                }, {
+                    title: "اهداف دوره " +'"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " + ListGrid_Course.getSelectedRecord().titleFa}, {title: "سرفصل هاي هدف " + ListGrid_Goal.getSelectedRecord().titleFa}])
+                }, {title: "سرفصل هاي دوره " +'"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                },
+                    {title: "سرفصل هاي هدف " +'"'+ ListGrid_Goal.getSelectedRecord().titleFa+'"',
+                     click: 'window.open("/syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                }])
             }
         }
-    });
-    var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
-        width: "100%",
-        members: [ToolStripButton_Syllabus_Print, "separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
     });
     var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
@@ -800,7 +803,11 @@
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Goal_Refresh, ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
+        members: [ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
+    });
+    var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
+        width: "100%",
+        members: [ToolStripButton_Goal_Refresh, "separator", ToolStripButton_Syllabus_Print,"separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
     });
     var ToolStrip_Vertical_Goals = isc.ToolStrip.create({
         width: "100%",

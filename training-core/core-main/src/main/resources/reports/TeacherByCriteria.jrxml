@@ -44,7 +44,7 @@
 		<field name="teacherCode" class="java.lang.String"/>
 		<field name="mobile" class="java.lang.String"/>
 		<field name="fullNameFa" class="java.lang.String"/>
-		<field name="enableStatus" class="java.lang.String"/>
+		<field name="enableStatus" class="java.lang.Boolean"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -115,7 +115,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="273fe532-7b50-4594-b4ad-dd806805ec40"/>
 									<box>
 										<pen lineWidth="0.5"/>
@@ -123,7 +123,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{enableStatus}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[($F{enableStatus}) ? "فعال" : "غیرفعال"]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -151,7 +151,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="cb3dd6c7-ebd0-4a06-851f-e1efa63a5208"/>
 									<box>
 										<pen lineWidth="0.5"/>
@@ -190,7 +190,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="e4b1dbfb-687d-4325-93e5-0bdf69440434"/>
 									<box>
 										<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -232,7 +232,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="376768c0-6602-463d-bb45-ee7874058650"/>
 									<box>
 										<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -271,7 +271,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="1c692ec3-46d9-45bb-99a5-a012155bcb04"/>
 									<box>
 										<pen lineWidth="0.5"/>
@@ -305,7 +305,7 @@
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="cafa63aa-d675-4f98-a8d0-2beddc00bf7e"/>
 								<box>
 									<pen lineWidth="0.5"/>
@@ -336,7 +336,7 @@
 				</textElement>
 				<text><![CDATA[تاریخ چاپ:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="22" y="10" width="72" height="21" uuid="767bdd9f-086f-4ce0-baa6-99885fadc917"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="9" isBold="true"/>

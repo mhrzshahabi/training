@@ -18,16 +18,15 @@
     var cellPhoneCheck = true;
     var mailCheck = true;
 
-    var photoDescription = "* سایز عکس بین 5 تا 1000 KB" + "<br/>" + "<br/>" + "* اندازه ی عکس بین 300*100 تا 400*200 px" + "<br/>" + "<br/>" + "* فرمت عکس jpg,png,gif";
+    var photoDescription =  "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
+                            "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
+                            "<spring:message code='photo.format.hint'/>";
 
-    var teacherCategories;
     var teacherCategoriesID = new Array();
-    var dummy = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
-    //--------------------
-    // ------------------------------------------------------------------------------------------------//
+    // ------------------------------------------------------------------------------------------------------------------//
 
     var RestDataSource_Teacher_JspTeacher = isc.RestDataSource.create({
         fields: [
@@ -192,18 +191,51 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
-                "<spring:url value="/teacher/print/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
+                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/teacher/printWithCriteria/pdf",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"}
+                        ]
+                });
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.submitForm();
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
-                "<spring:url value="/teacher/print/excel" var="printUrl"/>"
-                window.open('${printUrl}');
+                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/teacher/printWithCriteria/excel",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"}
+                        ]
+                });
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.submitForm();
             }
         }, {
             title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
-                "<spring:url value="/teacher/print/html" var="printUrl"/>"
-                window.open('${printUrl}');
+                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+                var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/teacher/printWithCriteria/html",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"}
+                        ]
+                });
+                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                criteriaForm.submitForm();
             }
         }]
     });
@@ -222,11 +254,11 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "کد", align: "center", filterOperator: "equals"},
-            {name: "fullNameFa", title: "نام", align: "center", filterOperator: "equals"},
-            {name: "educationLevel.titleFa", title: "مقطع تحصیلی", align: "center", filterOperator: "equals"},
-            {name: "educationMajor.titleFa", title: "رشته تحصیلی", align: "center", filterOperator: "equals"},
-            {name: "mobile", title: "تماس", align: "center", filterOperator: "equals"},
+            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
+            {name: "fullNameFa", title: "<spring:message code='firstName'/>", align: "center", filterOperator: "contains"},
+            {name: "educationLevel.titleFa", title: "<spring:message code='education.level'/>", align: "center", filterOperator: "contains"},
+            {name: "educationMajor.titleFa", title: "<spring:message code='education.major'/>", align: "center", filterOperator: "contains"},
+            {name: "mobile", title: "<spring:message code='mobile.connection'/>", align: "center", filterOperator: "contains"},
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -236,14 +268,14 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        sortFieldAscendingText:  "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
 
     });
 
@@ -269,7 +301,7 @@
         width: "130px",
         border: "1px solid red",
         scrollbarSize: 0,
-        loadingMessage: "تصویری آپلود نشده است"
+        loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
     var VLayOut_ViewLoader_JspTeacher = isc.HLayout.create({
@@ -306,14 +338,14 @@
 
             {
                 name: "teacherCode",
-                title: "کد مدرس",
+                title: "<spring:message code='teacher.code'/>",
                 type: 'text',
                 disabled: true
             },
 
             {
                 name: "fullNameFa",
-                title: "نام و نام خانوادگی",
+                title: "<spring:message code='firstName.lastName'/>",
                 type: 'text',
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
@@ -323,7 +355,7 @@
 
             {
                 name: "fullNameEn",
-                title: "نام لاتین",
+                title: "<spring:message code='firstName.latin'/>",
                 type: 'text',
                 required: true,
                 keyPressFilter: "[a-z|A-Z |]",
@@ -333,20 +365,20 @@
 
             {
                 name: "nationalCode",
-                title: "کد ملی",
+                title: "<spring:message code='national.code'/>",
                 type: 'text',
                 required: true,
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
                 length: "10",
-                hint: "کد ملی ده رقمی را وارد کنید",
+                hint:"<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true
                 , blur: function () {
                     var codeCheck = false;
                     codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("nationalCode"));
                     codeMeliCheck = codeCheck;
                     if (codeCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode", "کد ملی اشتباهی را وارد کرده اید", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode", "<spring:message code='msg.national.code.validation'/>", true);
 
                     if (codeCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
@@ -355,7 +387,7 @@
 
             {
                 name: "fatherName",
-                title: "نام پدر",
+                title: "<spring:message code='father.name'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 hint: "Persian/فارسی",
@@ -366,7 +398,7 @@
             {
                 name: "egender.id",
                 type: "IntegerItem",
-                title: "جنسیت",
+                title: "<spring:message code='gender'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -391,7 +423,7 @@
 
             {
                 name: "birthDate",
-                title: "تاریخ تولد",
+                title: "<spring:message code='birth.date'/>",
                 ID: "birthDate_jspTeacher",
                 type: 'text',
                 hint: "YYYY/MM/DD",
@@ -421,7 +453,7 @@
 
             {
                 name: "birthLocation",
-                title: "محل تولد",
+                title: "<spring:message code='birth.location'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
@@ -430,7 +462,7 @@
 
             {
                 name: "birthCertificate",
-                title: "شماره شناسنامه",
+                title: "<spring:message code='birth.certificate'/>",
                 type: 'text',
                 keyPressFilter: "[/|0-9]",
                 length: "15"
@@ -438,7 +470,7 @@
 
             {
                 name: "birthCertificateLocation",
-                title: "محل صدور",
+                title: "<spring:message code='birth.certificate.location'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
@@ -446,18 +478,18 @@
 
             {
                 name: "religion",
-                title: "دین/مذهب",
+                title: "<spring:message code='religion'/>",
                 type: 'text',
-                defaultValue: "اسلام",
+                defaultValue: "<spring:message code='islam'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
 
             {
                 name: "nationality",
-                title: "ملیت",
+                title: "<spring:message code='nationality'/>",
                 type: 'text',
-                defaultValue: "ایرانی",
+                defaultValue: "<spring:message code='persian'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
@@ -465,7 +497,7 @@
             {
                 name: "emarried.id",
                 type: "IntegerItem",
-                title: "وضعیت تاهل",
+                title: "<spring:message code='married.status'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -490,7 +522,7 @@
 
             {
                 name: "email",
-                title: "پست الکترونیکی",
+                title: "<spring:message code='email'/>",
                 type: 'text',
                 hint: "test@nicico.com",
                 showHintInField: true,
@@ -500,7 +532,7 @@
                     emailCheck = checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("email"));
                     mailCheck = emailCheck;
                     if (emailCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email", "پست الکترونیکی اشتباهی را وارد کرده اید", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
 
                     if (emailCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
@@ -509,7 +541,7 @@
 
             {
                 name: "educationLevelId",
-                title: "مقطع تحصیلی",
+                title: "<spring:message code='education.level'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 pickListWidth: 230,
@@ -539,7 +571,7 @@
 
             {
                 name: "educationMajorId",
-                title: "رشته تحصیلی",
+                title: "<spring:message code='education.major'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 pickListWidth: 230,
@@ -569,7 +601,7 @@
 
             {
                 name: "educationOrientationId",
-                title: "گرایش تحصیلی",
+                title: "<spring:message code='education.orientation'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 pickListWidth: 230,
@@ -600,7 +632,7 @@
             {
                 name: "emilitary.id",
                 type: "IntegerItem",
-                title: "نظام وظیفه",
+                title: "<spring:message code='military'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -625,19 +657,19 @@
 
             {
                 name: "mobile",
-                title: "تلفن همراه",
+                title: "<spring:message code='cellPhone'/>",
                 type: 'text',
                 keyPressFilter: "[/|0-9]",
                 length: "11",
                 hint: "*********09",
                 showHintInField: true,
-                errorMessage: "شماره ی موبایل اشتباهی را وارد کرده اید"
+                errorMessage: "<spring:message code='msg.mobile.validation'/>"
                 , blur: function () {
                     var mobileCheck = false;
                     mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("mobile"));
                     cellPhoneCheck = mobileCheck;
                     if (mobileCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile", "شماره ی موبایل اشتباهی را وارد کرده اید", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
 
                     if (mobileCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
@@ -646,7 +678,7 @@
 
             {
                 name: "economicalCode",
-                title: "کد اقتصادی",
+                title: "<spring:message code='economical.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "15",
@@ -655,7 +687,7 @@
 
             {
                 name: "economicalRecordNumber",
-                title: "شماره ثبت",
+                title: "<spring:message code='economical.record.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "15",
@@ -664,7 +696,7 @@
 
             {
                 name: "description",
-                title: "توضیحات",
+                title: "<spring:message code='description'/>",
                 type: 'textArea',
                 length: "500",
                 height: 30
@@ -672,9 +704,9 @@
 
             {
                 name: "enableStatus",
-                title: "وضعیت",
+                title:"<spring:message code='status'/>",
                 type: "radioGroup",
-                valueMap: {"true": "فعال", "false": "غیرفعال"},
+                valueMap: {"true": "<spring:message code='enabled'/>", "false":"<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
             },
@@ -683,7 +715,7 @@
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                title: "زمینه ی آموزش",
+                title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
@@ -700,7 +732,7 @@
                                 isc.ToolStripButton.create({
                                     width: "50%",
                                     icon: "[SKIN]/actions/approve.png",
-                                    title: "انتخاب همه",
+                                    title: "<spring:message code='select.all'/>",
                                     click: function () {
                                         var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList"),
                                             fullData = item.pickList.data,
@@ -717,7 +749,7 @@
                                 isc.ToolStripButton.create({
                                     width: "50%",
                                     icon: "[SKIN]/actions/close.png",
-                                    title: "حذف همه",
+                                    title: "<spring:message code='deselect.all'/>",
                                     click: function () {
                                         var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList");
                                         item.setValue([]);
@@ -817,7 +849,7 @@
 
             {
                 name: "workName",
-                title: "محل کار",
+                title: "<spring:message code='work.place'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -825,7 +857,7 @@
 
             {
                 name: "workPhone",
-                title: "تلفن",
+                title: "<spring:message code='telephone'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "11"
@@ -833,7 +865,7 @@
 
             {
                 name: "workPostalCode",
-                title: "کد پستی",
+                title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "15"
@@ -841,7 +873,7 @@
 
             {
                 name: "workJob",
-                title: "شغل",
+                title: "<spring:message code='job'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -849,7 +881,7 @@
 
             {
                 name: "workTeleFax",
-                title: "دورنگار",
+                title: "<spring:message code='telefax'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
@@ -857,7 +889,7 @@
 
             {
                 name: "workAddress",
-                title: "آدرس",
+                title:"<spring:message code='address'/>",
                 type: 'textArea',
                 height: 30,
                 length: "255"
@@ -865,7 +897,7 @@
 
             {
                 name: "workWebSite",
-                title: "وبسایت",
+                title: "<spring:message code='website'/>",
                 type: 'text',
                 length: "30"
             },
@@ -894,7 +926,7 @@
 
             {
                 name: "accountNember",
-                title: "شماره حساب",
+                title: "<spring:message code='account.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
@@ -902,7 +934,7 @@
 
             {
                 name: "bank",
-                title: "بانک",
+                title: "<spring:message code='bank'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -910,7 +942,7 @@
 
             {
                 name: "bankBranch",
-                title: "شعبه بانک",
+                title:"<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -918,7 +950,7 @@
 
             {
                 name: "cartNumber",
-                title: "شماره کارت",
+                title: "<spring:message code='cart.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
@@ -926,7 +958,7 @@
 
             {
                 name: "shabaNumber",
-                title: "شماره شبا",
+                title: "<spring:message code='shaba.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
@@ -956,7 +988,7 @@
 
             {
                 name: "homePhone",
-                title: "تلفن",
+                title: "<spring:message code='telephone'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "11"
@@ -964,7 +996,7 @@
 
             {
                 name: "homePostalCode",
-                title: "کد پستی",
+                title:"<spring:message code='postal.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "15"
@@ -972,7 +1004,7 @@
 
             {
                 name: "homeAddress",
-                title: "آدرس",
+                title: "<spring:message code='address'/>",
                 type: 'textArea',
                 height: 30,
                 length: "255"
@@ -1008,31 +1040,43 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        responseID = JSON.parse(resp.data).id;
-                        gridState = "[{id:" + responseID + "}]";
-                        categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
-                        var OK = isc.Dialog.create({
-                            message: "<spring:message code='msg.operation.successful'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='msg.command.done'/>"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                            ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                        }, 1000);
-                        if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
-                            addAttach(responseID);
-                        setTimeout(function () {
-                            if (categoryList != undefined)
-                                addCategories(responseID, categoryList);
-                        }, 300);
-                        showAttachViewLoader.hide();
-                        ListGrid_Teacher_JspTeacher.invalidateCache();
-                        ListGrid_Teacher_JspTeacher.fetchData();
-                        Window_Teacher_JspTeacher.close();
+                        if (resp.data == "") {
+                            var ERROR = isc.Dialog.create({
+                                message: ("<spring:message code='msg.national.code.dublicate'/>"),
+                                icon: "[SKIN]stop.png",
+                                title: "<spring:message code='message'/>"
+                            });
+                            setTimeout(function () {
+                                ERROR.close();
+                            }, 3000);
+                        }
+                        else {
+                            responseID = JSON.parse(resp.data).id;
+                            gridState = "[{id:" + responseID + "}]";
+                            categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
+                            var OK = isc.Dialog.create({
+                                message: "<spring:message code='msg.operation.successful'/>",
+                                icon: "[SKIN]say.png",
+                                title: "<spring:message code='msg.command.done'/>"
+                            });
+                            setTimeout(function () {
+                                OK.close();
+                                ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+                            }, 1000);
+                            if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
+                                addAttach(responseID);
+                            setTimeout(function () {
+                                if (categoryList != undefined)
+                                    addCategories(responseID, categoryList);
+                            }, 300);
+                            showAttachViewLoader.hide();
+                            ListGrid_Teacher_JspTeacher.invalidateCache();
+                            ListGrid_Teacher_JspTeacher.fetchData();
+                            Window_Teacher_JspTeacher.close();
+                        }
                     } else {
                         var ERROR = isc.Dialog.create({
-                            message: ("کد ملی تکراری را وارد کرده اید"),
+                            message: ("<spring:message code='error'/>"),
                             icon: "[SKIN]stop.png",
                             title: "<spring:message code='message'/>"
                         });
@@ -1076,7 +1120,7 @@
         height: "300",
         tabs: [
             {
-                title: "اطلاعات پایه", canClose: false,
+                title: "<spring:message code='basic.information'/>", canClose: false,
                 pane: DynamicForm_BasicInfo_JspTeacher
             }
         ]
@@ -1088,7 +1132,7 @@
         height: "150",
         tabs: [
             {
-                title: "محل کار", canClose: false,
+                title: "<spring:message code='work.place'/>", canClose: false,
                 pane: DynamicForm_JobInfo_JspTeacher
             }
         ]
@@ -1099,7 +1143,7 @@
         titleEditorTopOffset: 2,
         tabs: [
             {
-                title: "اطلاعات حساب", canClose: false,
+                title: "<spring:message code='account.information'/>", canClose: false,
                 pane: DynamicForm_AccountInfo_JspTeacher
             }
         ]
@@ -1111,7 +1155,7 @@
         height: "150",
         tabs: [
             {
-                title: "محل سکونت", canClose: false,
+                title: "<spring:message code='home.place'/>", canClose: false,
                 pane: DynamicForm_AddressInfo_JspTeacher
             }
         ]
@@ -1138,7 +1182,7 @@
         align: "center",
         tabs: [
             {
-                title: "عکس پرسنلی", canClose: false,
+                title: "<spring:message code='personality.photo'/>", canClose: false,
                 pane: VLayOut_Photo_JspTeacher
             }
         ]
@@ -1233,26 +1277,19 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            if (ListGrid_Teacher_JspTeacher.getCriteria().operator == undefined) {
-                "<spring:url value="/teacher/print/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
-            }
-
-            else {
-                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/teacher/printWithCriteria",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
-            }
+            var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "/teacher/printWithCriteria/pdf",
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "CriteriaStr", type: "hidden"}
+                    ]
+            });
+            criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+            criteriaForm.submitForm();
         }
     });
 
@@ -1300,11 +1337,6 @@
     };
 
     function ListGrid_teacher_edit() {
-        showAttach();
-        vm.clearValues();
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
@@ -1317,6 +1349,11 @@
                 }
             });
         } else {
+            showAttach();
+            vm.clearValues();
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
             method = "PUT";
             url = "${restApiUrl}/api/teacher/" + record.id;
             vm.editRecord(record);
@@ -1406,7 +1443,7 @@
                                 }
                                 else if (resp.data == false) {
                                     var ERROR = isc.Dialog.create({
-                                        message: "این استاد دارای حداقل یک کلاس می باشد و قابل حذف نیست",
+                                        message: "<spring:message code='msg.teacher.remove.error'/>" ,
                                         icon: "[SKIN]stop.png",
                                         title: "<spring:message code='message'/>"
                                     });
@@ -1464,12 +1501,6 @@
             request.onreadystatechange = function () {
                 attachName = request.response;
                 if (request.readyState == XMLHttpRequest.DONE) {
-                    if (request.responseText == "error")
-                        isc.say("آپلود فایل با مشکل مواجه شده است.");
-                    if (request.responseText == "badFile")
-                        isc.say("آپلود فایل قابل قرارگیری روی موتور گردش کار نیست.");
-                    if (request.responseText == "success")
-                        isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
                 }
             }
         }

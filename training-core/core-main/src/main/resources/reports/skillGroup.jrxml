@@ -22,12 +22,16 @@
 				<reportElement x="10" y="6" width="540" height="69" backcolor="#F0F0F0" uuid="3df34796-04c6-4a3a-9f71-3e96d888933f"/>
 			</rectangle>
 			<staticText>
-				<reportElement x="184" y="30" width="116" height="30" uuid="aa7e1370-e9c8-485d-8c50-73ebb92d24bf"/>
+				<reportElement x="220" y="27" width="116" height="30" uuid="aa7e1370-e9c8-485d-8c50-73ebb92d24bf"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
 				</textElement>
 				<text><![CDATA[لیست گروه مهارت]]></text>
 			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement stretchType="ContainerHeight" x="473" y="14" width="50" height="50" uuid="d8bb158b-53fe-439f-9b9a-b4ef51245f31"/>
+				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+			</image>
 		</band>
 	</pageHeader>
 	<columnHeader>
