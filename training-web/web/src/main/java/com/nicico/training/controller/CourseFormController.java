@@ -81,7 +81,7 @@ public class CourseFormController {
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/html", HttpMethod.POST, entity, byte[].class);
+		return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/pdf", HttpMethod.POST, entity, byte[].class);
 	}
 
 
