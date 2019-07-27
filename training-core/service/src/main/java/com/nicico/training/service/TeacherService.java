@@ -95,11 +95,14 @@ public class TeacherService implements ITeacherService {
         updating.setEMilitaryTitleFa(updating.getEMilitary().getTitleFa());
         updating.setEGenderTitleFa(updating.getEGender().getTitleFa());
 
-        List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
-		if(teacherList.size()!=1)
+//        List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
+//		for (Teacher teacher1 : teacherList) {
+//
+//		}
+//		if(teacherList.size()==1)
 			   return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
-		else
-			return null;
+//		else
+//			return null;
 	}
 
 	@Transactional
