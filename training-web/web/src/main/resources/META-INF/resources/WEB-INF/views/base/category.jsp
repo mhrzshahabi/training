@@ -739,10 +739,20 @@
         } else {
             method = "PUT";
             url = category_BaseUrl + "/" + record.id;
+            DynamicForm_Category.getItem("code").setDisabled(true);
             DynamicForm_Category.editRecord(record);
             Window_Category.show();
         }
     };
+
+    function ListGrid_Category_Add() {
+        method = "POST";
+        url = category_BaseUrl;
+        DynamicForm_Category.clearValues();
+        DynamicForm_Category.getItem("code").setDisabled(false);
+        Window_Category.show();
+
+    }
 
     function ListGrid_Category_refresh() {
         var record = ListGrid_Category.getSelectedRecord();
@@ -761,10 +771,7 @@
             }
         }, {
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-                method = "POST";
-                url = category_BaseUrl;
-                DynamicForm_Category.clearValues();
-                Window_Category.show();
+                ListGrid_Category_Add();
             }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
@@ -894,10 +901,7 @@
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
-            method = "POST";
-            url = category_BaseUrl;
-            DynamicForm_Category.clearValues();
-            Window_Category.show();
+            ListGrid_Category_Add();
         }
     });
     var ToolStripButton_Category_Remove = isc.ToolStripButton.create({

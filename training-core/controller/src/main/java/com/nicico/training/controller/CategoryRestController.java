@@ -12,6 +12,7 @@ import com.nicico.training.dto.SubCategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -94,7 +95,12 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     @PreAuthorize("hasAuthority('r_category')")
-    public ResponseEntity<CategoryDTO.CategorySpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<CategoryDTO.CategorySpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                           @RequestParam("_endRow") Integer endRow,
+                                                           @RequestParam(value = "_constructor", required = false) String constructor,
+                                                           @RequestParam(value = "operator", required = false) String operator,
+                                                           @RequestParam(value = "criteria", required = false) String criteria,
+                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -106,6 +112,10 @@ public class CategoryRestController {
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
 
         final CategoryDTO.CategorySpecRs specRs = new CategoryDTO.CategorySpecRs();
         specRs.setResponse(specResponse);
@@ -127,7 +137,13 @@ public class CategoryRestController {
     @Loggable
     @GetMapping(value = "{categoryId}/sub-categories")
     @PreAuthorize("hasAnyAuthority('r_sub_Category')")
-    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> getSubCategories(@PathVariable Long categoryId) {
+    public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam("_startRow") Integer startRow,
+                                                                             @RequestParam("_endRow") Integer endRow,
+                                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                                             @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                             @PathVariable Long categoryId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
