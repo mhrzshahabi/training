@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
@@ -14,6 +15,7 @@ import com.nicico.training.service.SkillGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -23,7 +25,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -36,6 +40,7 @@ public class SkillGroupRestController {
     private final SkillGroupService skillGroupService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final DateUtil dateUtil;
 
     // ------------------------------
 
@@ -112,11 +117,13 @@ public class SkillGroupRestController {
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
 
-            if (StringUtils.isNotEmpty(sortBy)) {
-                request.set_sortBy(sortBy);
-            }
+
 
             request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
         }
 
         request.setStartIndex(startRow)
@@ -290,4 +297,48 @@ public class SkillGroupRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/skillGroup.jasper", params, response);
     }
+
+
+//
+//    @Loggable
+//    @PostMapping(value = {"/printWithCriteria/{type}"})
+//    public void printWithCriteria(HttpServletResponse response,
+//                                  @PathVariable String type,
+//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+//
+//        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+//        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+//
+//        final SearchDTO.SearchRs<SkillGroupDTO.Info> searchRs = skillGroupService.search(searchRq);
+//
+//        final Map<String, Object> params = new HashMap<>();
+//        params.put("todayDate", dateUtil.todayDate());
+//
+//        final List<SearchDTO.CriteriaRq> criteriaRqList = criteriaRq.getCriteria();
+//        criteriaRqList.forEach(criteriaRqFE -> {
+//            switch (criteriaRqFE.getFieldName()) {
+//                case "startDate":
+//                    params.put("startDate", criteriaRqFE.getValue().toString());
+//                    break;
+//                case "endDate":
+//                    params.put("endDate", criteriaRqFE.getValue().toString());
+//                    break;
+//                case "group":
+//                    params.put("group", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
+//                    break;
+//                case "course.id":
+//                    params.put("course.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
+//                    break;
+//                case "teacher.id":
+//                    params.put("teacher.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
+//                    break;
+//            }
+//        });
+//
+//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+//
+//        params.put(ConstantVARs.REPORT_TYPE, type);
+//        reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
+//    }
 }

@@ -294,6 +294,25 @@ public class TeacherRestController {
         }
     }
 
+
+    @RequestMapping(value = {"/checkAttach/{Id}"}, method = RequestMethod.GET)
+    @Transactional
+    public ResponseEntity<Boolean> checkAttach(@PathVariable Long Id) {
+        final Optional<Teacher> cById = teacherDAO.findById(Id);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        String fileName = teacher.getAttachPhoto();
+        try {
+            if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
+                return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+            else
+                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
+
+
 	@Loggable
 	@PostMapping(value = {"/printWithCriteria/{type}"})
 	public void printWithCriteria(HttpServletResponse response,
