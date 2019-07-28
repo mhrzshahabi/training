@@ -33,38 +33,44 @@ public class Institute {
     @Column(name = "c_title_en", nullable = false)
     private String titleEn;
 
-    @Column(name = "c_phone", nullable = false)
+    @Column(name = "c_phone")
     private String telephone;
 
-    @Column(name = "c_address", nullable = false)
+    @Column(name = "c_address")
     private String address;
 
-    @Column(name = "c_email", nullable = false)
+    @Column(name = "c_email")
     private String email;
 
-    @Column(name = "c_postalCode", nullable = false)
+    @Column(name = "c_postalCode")
     private String postalCode;
 
-    @Column(name = "e_institute_type")
+    @Column(name = "e_institute_type" ,  insertable = false, updatable = false)
     private EInstituteType eInstituteType;
+
+    @Column(name = "e_institute_type")
+    private Integer eInstituteTypeId;
 
     @Column(name = "c_institute_type")
     private String eInstituteTypeTitleFa;
 
-    @Column(name = "e_license_type")
+    @Column(name = "e_license_type", insertable = false, updatable = false)
     private ELicenseType eLicenseType;
+
+    @Column(name = "e_license_type")
+    private Integer eLicenseTypeId;
 
     @Column(name = "c_license_type")
     private String eLicenseTypeTitleFa;
 
-    @Column(name = "c_branch", nullable = false)
+    @Column(name = "c_branch")
     private String branch;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
+
     @JoinTable(name = "tbl_institute_teacher", schema = "TRAINING",
             joinColumns = {@JoinColumn(name = "f_institute", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")})
     private Set<Teacher> teachers;
-
 
 }

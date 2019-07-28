@@ -35,4 +35,11 @@ public class EMilitaryDTO {
         private Integer totalRows = EMilitary.values().length;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EMilitaryInfoTuple")
+    public static class EMilitaryInfoTuple {
+        private String titleFa;
+    }
+
 }

@@ -3,6 +3,9 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.dto.date.DateTimeDTO;
+import com.nicico.training.dto.enums.EGenderDTO;
+import com.nicico.training.dto.enums.EMarriedDTO;
+import com.nicico.training.dto.enums.EMilitaryDTO;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.EducationOrientation;
 import com.nicico.training.model.enums.EGender;
@@ -91,11 +94,10 @@ public class TeacherDTO {
 		private String createdBy;
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
-//		private Integer version;
 		private Set<CategoryDTO.CategoryInfoTuple> categories;
-		private EMilitary eMilitary;
-		private EMarried eMarried;
-		private EGender eGender;
+		private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
+		private EMarriedDTO.EMarriedInfoTuple eMarried;
+		private EGenderDTO.EGenderInfoTuple eGender;
 		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
 		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
 		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
@@ -125,9 +127,6 @@ public class TeacherDTO {
 	@Accessors(chain = true)
 	@ApiModel("TeacherUpdateRq")
 	public static class Update extends TeacherDTO {
-//		@NotNull
-//		@ApiModelProperty(required = true)
-//		private Integer version;
 	}
 
 	// ------------------------------

@@ -31,15 +31,9 @@ public class StudentDTO {
     @ApiModelProperty(required = true)
     private String fullNameEn;
 
-    @ApiModelProperty(required = true)
     private String personalID;
-
-    @ApiModelProperty(required = true)
     private String department;
-
-    @ApiModelProperty(required = true)
     private String license;
-
 
     @Getter
     @Setter
@@ -51,7 +45,6 @@ public class StudentDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
     }
 
     // ------------------------------
@@ -70,9 +63,6 @@ public class StudentDTO {
     @Accessors(chain = true)
     @ApiModel("StudentUpdateRq")
     public static class Update extends StudentDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

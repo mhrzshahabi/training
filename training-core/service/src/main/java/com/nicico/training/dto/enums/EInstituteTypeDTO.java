@@ -35,4 +35,11 @@ public class EInstituteTypeDTO {
         private Integer totalRows = EInstituteType.values().length;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EInstituteTypeInfoTuple")
+    public static class EInstituteTypeInfoTuple {
+        private String titleFa;
+    }
+
 }

@@ -86,14 +86,23 @@ public abstract class Person extends Auditable {
     @Column(name = "c_attach_photo")
     private String attachPhoto;
 
-    @Column(name = "e_married")
+    @Column(name = "e_married" ,insertable = false, updatable = false)
 	private EMarried eMarried;
 
-	@Column(name = "e_military")
+    @Column(name = "e_married")
+	private Integer eMarriedId;
+
+	@Column(name = "e_military" ,insertable = false, updatable = false)
 	private EMilitary eMilitary;
 
-	@Column(name = "e_gender")
+	@Column(name = "e_military")
+	private Integer eMilitaryId;
+
+	@Column(name = "e_gender" ,insertable = false, updatable = false)
 	private EGender eGender;
+
+	@Column(name = "e_gender")
+	private Integer eGenderId;
 
 	@Column(name = "c_married")
 	private String eMarriedTitleFa;
@@ -103,5 +112,4 @@ public abstract class Person extends Auditable {
 
 	@Column(name = "c_gender")
 	private String eGenderTitleFa;
-
 }

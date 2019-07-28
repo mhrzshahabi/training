@@ -18,9 +18,9 @@
     var cellPhoneCheck = true;
     var mailCheck = true;
 
-    var photoDescription =  "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
-                            "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
-                            "<spring:message code='photo.format.hint'/>";
+    var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
+        "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
+        "<spring:message code='photo.format.hint'/>";
 
     var teacherCategoriesID = new Array();
 
@@ -255,10 +255,30 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
-            {name: "fullNameFa", title: "<spring:message code='firstName'/>", align: "center", filterOperator: "contains"},
-            {name: "educationLevel.titleFa", title: "<spring:message code='education.level'/>", align: "center", filterOperator: "contains"},
-            {name: "educationMajor.titleFa", title: "<spring:message code='education.major'/>", align: "center", filterOperator: "contains"},
-            {name: "mobile", title: "<spring:message code='mobile.connection'/>", align: "center", filterOperator: "contains"},
+            {
+                name: "fullNameFa",
+                title: "<spring:message code='firstName'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "educationLevel.titleFa",
+                title: "<spring:message code='education.level'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "educationMajor.titleFa",
+                title: "<spring:message code='education.major'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "mobile",
+                title: "<spring:message code='mobile.connection'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -268,7 +288,7 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText:  "<spring:message code='sort.ascending'/>",
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
         sortFieldDescendingText: "<spring:message code='sort.descending'/>",
         configureSortText: "<spring:message code='configureSortText'/>",
         autoFitAllText: "<spring:message code='autoFitAllText'/>",
@@ -371,7 +391,7 @@
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
                 length: "10",
-                hint:"<spring:message code='msg.national.code.hint'/>",
+                hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true
                 , blur: function () {
                     var codeCheck = false;
@@ -396,7 +416,7 @@
             },
 
             {
-                name: "egender.id",
+                name: "egenderId",
                 type: "IntegerItem",
                 title: "<spring:message code='gender'/>",
                 textAlign: "center",
@@ -409,7 +429,7 @@
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -495,7 +515,7 @@
             },
 
             {
-                name: "emarried.id",
+                name: "emarriedId",
                 type: "IntegerItem",
                 title: "<spring:message code='married.status'/>",
                 textAlign: "center",
@@ -508,7 +528,7 @@
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -552,7 +572,7 @@
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -582,7 +602,7 @@
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -613,7 +633,7 @@
                 addUnknownValues: false,
                 disabled: true,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -630,7 +650,7 @@
                 ]
             },
             {
-                name: "emilitary.id",
+                name: "emilitaryId",
                 type: "IntegerItem",
                 title: "<spring:message code='military'/>",
                 textAlign: "center",
@@ -643,7 +663,7 @@
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
@@ -704,9 +724,9 @@
 
             {
                 name: "enableStatus",
-                title:"<spring:message code='status'/>",
+                title: "<spring:message code='status'/>",
                 type: "radioGroup",
-                valueMap: {"true": "<spring:message code='enabled'/>", "false":"<spring:message code='disabled'/>"},
+                valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
             },
@@ -889,7 +909,7 @@
 
             {
                 name: "workAddress",
-                title:"<spring:message code='address'/>",
+                title: "<spring:message code='address'/>",
                 type: 'textArea',
                 height: 30,
                 length: "255"
@@ -942,7 +962,7 @@
 
             {
                 name: "bankBranch",
-                title:"<spring:message code='bank.branch'/>",
+                title: "<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -996,7 +1016,7 @@
 
             {
                 name: "homePostalCode",
-                title:"<spring:message code='postal.code'/>",
+                title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "15"
@@ -1014,7 +1034,10 @@
     });
 
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
-        top: 260, title: "<spring:message code='save'/>", click: function () {
+        top: 260,
+        title: "<spring:message code='save'/>",
+        icon: "pieces/16/save.png",
+        click: function () {
 
             if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false)
                 return;
@@ -1093,6 +1116,7 @@
 
     var IButton_Teacher_Exit_JspTeacher = isc.IButton.create({
         title: "<spring:message code='cancel'/>",
+        icon: "pieces/16/icon_delete.png",
         prompt: "",
         width: 100,
         orientation: "vertical",
@@ -1443,7 +1467,7 @@
                                 }
                                 else if (resp.data == false) {
                                     var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.teacher.remove.error'/>" ,
+                                        message: "<spring:message code='msg.teacher.remove.error'/>",
                                         icon: "[SKIN]stop.png",
                                         title: "<spring:message code='message'/>"
                                     });
@@ -1519,7 +1543,7 @@
                 if (resp.data == "true") {
                     showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
                     showAttachViewLoader.show();
-                } else if(resp.data == "false") {
+                } else if (resp.data == "false") {
                     showAttachViewLoader.setView();
                     showAttachViewLoader.show();
                 }

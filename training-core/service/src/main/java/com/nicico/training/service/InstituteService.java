@@ -49,10 +49,14 @@ public class InstituteService implements IInstituteService {
     @Override
     public InstituteDTO.Info create(InstituteDTO.Create request) {
         final Institute institute = modelMapper.map(request, Institute.class);
-        institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
-        institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
-        institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
-        institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
+        if(request.getEInstituteTypeId() != null) {
+            institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
+            institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
+        }
+        if(request.getELicenseTypeId() != null) {
+            institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
+            institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
+        }
         return modelMapper.map(instituteDAO.saveAndFlush(institute), InstituteDTO.Info.class);
     }
 
@@ -64,10 +68,15 @@ public class InstituteService implements IInstituteService {
         Institute updating = new Institute();
         modelMapper.map(institute, updating);
         modelMapper.map(request, updating);
-        updating.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
-        updating.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
-        updating.setELicenseTypeTitleFa(updating.getELicenseType().getTitleFa());
-        updating.setEInstituteTypeTitleFa(updating.getEInstituteType().getTitleFa());
+         if(request.getEInstituteTypeId() != null) {
+             updating.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
+             updating.setEInstituteTypeTitleFa(updating.getEInstituteType().getTitleFa());
+         }
+         if(request.getELicenseTypeId() != null) {
+             updating.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
+             updating.setELicenseTypeTitleFa(updating.getELicenseType().getTitleFa());
+         }
+
         return modelMapper.map(instituteDAO.saveAndFlush(updating), InstituteDTO.Info.class);
     }
 

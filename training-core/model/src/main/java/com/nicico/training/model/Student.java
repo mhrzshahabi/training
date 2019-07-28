@@ -31,13 +31,13 @@ public class Student extends Auditable {
 	@Column(name = "c_full_name_en", nullable = false)
 	private String fullNameEn;
 
-	@Column(name = "c_personal_id", nullable = false)
+	@Column(name = "c_personal_id")
 	private String personalID;
 
-	@Column(name = "c_department", nullable = false)
+	@Column(name = "c_department")
 	private String department;
 
-	@Column(name = "c_license", nullable = false)
+	@Column(name = "c_license")
 	private String license;
 
 }

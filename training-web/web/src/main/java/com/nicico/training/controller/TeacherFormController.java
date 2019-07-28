@@ -37,37 +37,6 @@ public class TeacherFormController {
 		return "base/teacher";
 	}
 
-	@RequestMapping("/print/{type}")
-	public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
-
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-		HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-
-		HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/teacher/print/pdf", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/teacher/print/excel", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/teacher/print/html", HttpMethod.GET, entity, byte[].class);
-		else
-			return null;
-	}
-
-
-
    	@GetMapping(value = {"/getTempAttach/{fileName}"})
 	public String getTempAttach(ModelMap modelMap, Authentication authentication,@PathVariable String fileName) {
 		String token = "";
@@ -138,9 +107,5 @@ public class TeacherFormController {
 		else
 			return null;
 	}
-
-
-
-
 
 }

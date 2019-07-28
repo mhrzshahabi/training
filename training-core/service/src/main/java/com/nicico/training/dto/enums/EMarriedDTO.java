@@ -36,4 +36,11 @@ public class EMarriedDTO {
         private Integer totalRows = EMarried.values().length;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EMarriedInfoTuple")
+    public static class EMarriedInfoTuple {
+        private String titleFa;
+    }
+
 }

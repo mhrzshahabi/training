@@ -37,6 +37,13 @@ public class ELicenseTypeDTO {
         private Integer totalRows = ELicenseType.values().length;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("ELicenseTypeInfoTuple")
+    public static class ELicenseTypeInfoTuple {
+        private String titleFa;
+    }
+
 
 
 }

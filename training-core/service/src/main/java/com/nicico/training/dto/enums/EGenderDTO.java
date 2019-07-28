@@ -35,4 +35,11 @@ public class EGenderDTO {
         private Integer totalRows = EGender.values().length;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("EGenderInfoTuple")
+    public static class EGenderInfoTuple {
+        private String titleFa;
+    }
+
 }

@@ -5,6 +5,8 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.dto.enums.EInstituteTypeDTO;
+import com.nicico.training.dto.enums.ELicenseTypeDTO;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.enums.EInstituteType;
 import com.nicico.training.model.enums.ELicenseType;
@@ -35,27 +37,12 @@ public class InstituteDTO {
     @ApiModelProperty(required = true)
     private String titleEn;
 
-    @ApiModelProperty(required = true)
     private String telephone;
-
-    @ApiModelProperty(required = true)
     private String address;
-
-    @ApiModelProperty(required = true)
     private String email;
-
-    @ApiModelProperty(required = true)
     private String postalCode;
-
-    @ApiModelProperty(required = true)
     private String branch;
-
-    @NotNull
-    @ApiModelProperty(required = true)
     private Integer eInstituteTypeId;
-
-    @NotNull
-    @ApiModelProperty(required = true)
     private Integer eLicenseTypeId;
 
     @Getter
@@ -68,10 +55,9 @@ public class InstituteDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
-        private Set<Teacher> teachers;
-        private EInstituteType eInstituteType;
-        private ELicenseType eLicenseType;
+        private Set<TeacherDTO.TeacherInfoTuple> teachers;
+        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
+        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
     }
 
     // ------------------------------
@@ -90,9 +76,6 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

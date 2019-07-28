@@ -1,21 +1,30 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.StudentDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IStudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
@@ -29,6 +38,8 @@ public class StudentRestController {
     
     private final IStudentService studentService;
     private final ReportUtil reportUtil;
+    private final DateUtil dateUtil;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -77,20 +88,42 @@ public class StudentRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_student')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<StudentDTO.StudentSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                     @RequestParam("_endRow") Integer endRow,
+                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<StudentDTO.Info> response = studentService.search(request);
 
         final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -103,12 +136,32 @@ public class StudentRestController {
         return new ResponseEntity<>(studentService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = {"/print/{type}"})
-    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/Student.jasper", params, response);
-    }
+
+	@Loggable
+	@PostMapping(value = {"/printWithCriteria/{type}"})
+	public void printWithCriteria(HttpServletResponse response,
+								  @PathVariable String type,
+								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if(criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        }
+        else{
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+
+		final SearchDTO.SearchRs<StudentDTO.Info> searchRs = studentService.search(searchRq);
+
+		final Map<String, Object> params = new HashMap<>();
+		params.put("todayDate", dateUtil.todayDate());
+
+		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+		params.put(ConstantVARs.REPORT_TYPE, type);
+		reportUtil.export("/reports/StudentByCriteria.jasper", params, jsonDataSource, response);
+	}
 
 }

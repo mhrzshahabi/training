@@ -1,8 +1,10 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.file.FileInfo;
@@ -10,6 +12,7 @@ import com.nicico.copper.core.util.file.FileUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
@@ -22,6 +25,7 @@ import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.activiti.engine.RepositoryService;
 import org.apache.commons.io.FilenameUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -133,20 +137,42 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                     @RequestParam("_endRow") Integer endRow,
+                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
 
         final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -159,14 +185,6 @@ public class TeacherRestController {
     @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<SearchDTO.SearchRs<TeacherDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
-    }
-
-    @Loggable
-    @GetMapping(value = {"/print/{type}"})
-    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/Teacher.jasper", params, response);
     }
 
     @Loggable
