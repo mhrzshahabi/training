@@ -9,12 +9,11 @@ import com.nicico.copper.core.domain.criteria.SearchUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillGroupService;
-import com.nicico.training.model.Competence;
-import com.nicico.training.model.Skill;
-import com.nicico.training.model.SkillGroup;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.repository.SkillGroupDAO;
@@ -166,6 +165,26 @@ public class SkillGroupService implements ISkillGroupService {
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
 
         return modelMapper.map(skillGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTO.Info>>() {
+        }.getType());
+    }
+
+    @Override
+    @Transactional
+    public List<JobDTO.Info> getJobs(Long skillGroupID) {
+        final Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupID);
+        final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
+         Set<Competence> competenceSet=skillGroup.getCompetenceSet();
+         Set<Job> jobs=new HashSet<>();
+        for (Competence competence:skillGroup.getCompetenceSet()
+             ) {
+
+            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
+                 ) {
+                jobs.add(jobCompetence.getJob());
+
+            }
+        }
+        return modelMapper.map(jobs, new TypeToken<List<JobDTO.Info>>() {
         }.getType());
     }
 
