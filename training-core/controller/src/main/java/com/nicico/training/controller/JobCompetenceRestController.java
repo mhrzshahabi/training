@@ -6,12 +6,20 @@ DATE: 6/8/2019
 TIME: 10:57 AM
 */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobCompetenceDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.service.JobCompetenceService;
+import com.nicico.training.service.JobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,7 +27,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+
+import static java.awt.SystemColor.info;
 
 @Slf4j
 @RestController
@@ -28,6 +43,10 @@ import java.util.List;
 public class JobCompetenceRestController {
 
     private final JobCompetenceService jobCompetenceService;
+    private final JobService jobService;
+    private final ReportUtil reportUtil;
+    private final DateUtil dateUtil;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping("/{id}")
@@ -107,6 +126,25 @@ public class JobCompetenceRestController {
     @GetMapping("/search")
     public ResponseEntity<SearchDTO.SearchRs<JobCompetenceDTO.Info>> search(@RequestBody SearchDTO.SearchRq req) {
         return new ResponseEntity<>(jobCompetenceService.search(req), HttpStatus.OK);
+    }
+
+    //-------------{hamed jafari}------------------
+
+    @Loggable
+    @GetMapping(value = {"/printCo/{type}/{jobId}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @PathVariable Long jobId) throws Exception {
+
+        List<JobCompetenceDTO.Info> list = jobService.getJobCompetence(jobId);
+        JobDTO.Info info = jobService.get(jobId);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        params.put("jobName", info.getTitleFa());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(list) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/JobCompetenceByCriteria.jasper", params, jsonDataSource, response);
     }
 
 }

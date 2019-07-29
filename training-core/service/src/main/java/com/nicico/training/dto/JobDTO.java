@@ -77,7 +77,6 @@ public class JobDTO implements Serializable {
     @ApiModel("Job DTO Info Req")
     public static class Info extends JobDTO {
         private Long id;
-
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;

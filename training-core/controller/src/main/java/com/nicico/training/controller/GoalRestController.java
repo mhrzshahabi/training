@@ -182,7 +182,9 @@ public class GoalRestController {
 
     @Loggable
     @GetMapping(value = {"/print-one-course/{courseId}/{type}"})
-    public void printOneCourse (HttpServletResponse response, @PathVariable Long courseId, @PathVariable String type) throws Exception {
+    public void printOneCourse (HttpServletResponse response,
+                                @PathVariable Long courseId,
+                                @PathVariable String type) throws Exception {
         List<GoalDTO.Info> getGoal = courseService.getgoal(courseId);
         CourseDTO.Info info = courseService.get(courseId);
         final Map<String, Object> params = new HashMap<>();

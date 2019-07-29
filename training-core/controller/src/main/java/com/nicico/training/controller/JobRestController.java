@@ -6,19 +6,29 @@ DATE: 6/8/2019
 TIME: 10:57 AM
 */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.JobCompetenceDTO;
 import com.nicico.training.dto.JobDTO;
-import com.nicico.training.service.JobService;
+import com.nicico.training.iservice.IJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
+import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -26,7 +36,11 @@ import java.util.List;
 @RequestMapping("/api/job")
 public class JobRestController {
 
-    private final JobService jobService;
+    private final IJobService jobService;
+    private final DateUtil dateUtil;
+    private final ObjectMapper objectMapper;
+    private final ReportUtil reportUtil;
+
 
     @Loggable
     @GetMapping("/{id}")
@@ -158,6 +172,34 @@ public class JobRestController {
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    //---------------{hamed jafari}-----------
+
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+
+        final SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/JobByCriteria.jasper", params, jsonDataSource, response);
     }
 
 }

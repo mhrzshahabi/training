@@ -127,9 +127,15 @@
                 click: function () {
                     show_JobEditForm();
                 }
-            }), isc.MyRemoveButton.create({
+            }),
+                isc.MyRemoveButton.create({
                 click: function () {
                     show_JobRemoveForm();
+                }
+            }),
+                isc.MyPrintButton.create({
+                click: function () {
+                    print_JobListGrid();
                 }
             }),
             /*isc.MyPrintButton.create({
@@ -158,6 +164,9 @@
                 click: function () {
                     show_JobCompetenceRemoveForm();
                 }
+            }),isc.MyPrintButton.create({
+                click: function () {
+                print_JobCompetenceListGrid();}
             }),
             // isc.MyPrintButton.create({
             //     click: function () {
@@ -491,6 +500,38 @@
                 });
             }
         }
+    };
+
+    function print_JobListGrid() {
+        var advancedCriteria = LG_Job_job.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/job/printWithCriteria/pdf",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+            [
+            {name: "CriteriaStr", type: "hidden"}
+            ]
+        })
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+    };
+
+    function print_JobCompetenceListGrid() {
+        var advancedCriteria = LG_JobCompetence_job.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "/job/printCo/pdf/"+LG_Job_job.getSelectedRecord().id,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+            [
+            {name: "CriteriaStr", type: "hidden"}
+            ]
+        })
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
     };
 
     function show_JobCompetenceActionResult(resp) {
