@@ -1033,6 +1033,13 @@
 
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
+        for (j = 0; j < mainTabSet.tabs.length; j++)
+        {
+            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
+            {
+                mainTabSet.removeTab(j);
+            }
+        }
     };
 
     function ListGrid_Course_add() {

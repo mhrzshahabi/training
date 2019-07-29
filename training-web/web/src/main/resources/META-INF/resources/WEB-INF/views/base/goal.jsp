@@ -154,23 +154,22 @@
                 textAlign: "center",
                 editorType: "MyComboBoxItem",
                 pickListWidth: 210,
-                changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceGoalEDomainType,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
-                useClientFiltering: false,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
+                // filterOnKeypress: true,
+                // filterFields: "titleFa",
+                sortField: "id",
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
                     showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                    {name: "titleFa", width: "30%"}]
             },
             {
                 name: "practicalDuration",
@@ -178,6 +177,7 @@
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
                 defaultValue: 2,
+                keyPressFilter: "^[0-9]",
                 min: 1,
                 max: 300,
                 step: 2
@@ -334,7 +334,6 @@
     });
 
     var Window_Goal = isc.MyWindow.create({
-        title: "هدف",
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -393,10 +392,7 @@
             }
         }, {
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-                methodGoal = "POST";
-                urlGoal = "http://localhost:9090/api/goal";
-                DynamicForm_Goal.clearValues();
-                Window_Goal.show();
+                ListGrid_Goal_Add();
             }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
@@ -677,8 +673,8 @@
     });
     var ToolStripButton_Goal_Print = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/plus.png",
-        prompt: "تخصیص هدف موجود به دوره مذکور",
-        hoverWidth: 160,
+        prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
+        hoverWidth: "12%",
         title: "افزودن هدف",
         click: function () {
             Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
@@ -810,11 +806,11 @@
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
+        members: [ToolStripButton_Goal_Refresh, "separator", ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Goal_Refresh, "separator", ToolStripButton_Syllabus_Print,"separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
+        members: [ToolStripButton_Syllabus_Print,"separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
     });
     var ToolStrip_Vertical_Goals = isc.ToolStrip.create({
         width: "100%",
@@ -981,6 +977,7 @@
             urlGoal = "http://localhost:9090/api/goal/" + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
+            Window_Goal.setTitle("ویرایش هدف");
             Window_Goal.show();
         }
     };
@@ -992,7 +989,8 @@
             ListGrid_Goal.selectRecord(record);
         }
         ListGrid_Goal.invalidateCache();
-    };
+        ListGrid_Syllabus_Goal.invalidateCache();
+    }
 
     function ListGrid_Goal_Add() {
         if (courseId == null || courseId.id == null) {
@@ -1009,6 +1007,7 @@
             methodGoal = "POST";
             urlGoal = "http://localhost:9090/api/goal/create/" + courseId.id;
             DynamicForm_Goal.clearValues();
+            Window_Goal.setTitle("ایجاد هدف");
             Window_Goal.show();
         }
     };
@@ -1092,6 +1091,7 @@
             urlSyllabus = "http://localhost:9090/api/syllabus";
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
+            Window_Syllabus.setTitle("ایجاد سرفصل");
             Window_Syllabus.show();
         }
     };
@@ -1113,6 +1113,7 @@
             urlSyllabus = "http://localhost:9090/api/syllabus/" + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
+            Window_Syllabus.setTitle("ویرایش سرفصل");
             Window_Syllabus.show();
         }
     };
