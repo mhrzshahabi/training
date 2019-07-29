@@ -94,7 +94,6 @@ public class CourseDTO implements Serializable {
     @Setter
     @ApiModel("CourseInfoTuple")
     public static class CourseInfoTuple {
-        private Long id;
         private String code;
         private String titleFa;
     }

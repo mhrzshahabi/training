@@ -2,19 +2,21 @@ package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
@@ -30,32 +32,31 @@ public class ClassFormController {
         return "training/class";
     }
 
-    @RequestMapping("/print/{type}")
-    public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
-        String token = "";
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthorizedClient client = authorizedClientService
-                    .loadAuthorizedClient(
-                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-                            authentication.getName());
-            token = client.getAccessToken().getTokenValue();
-        }
 
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+    @PostMapping("/printWithCriteria/{type}")
+	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
+		String token = (String) request.getSession().getAttribute("token");
 
-        HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+		final RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+		final HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
 
-        if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/tclass/print/pdf", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/tclass/print/excel", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/tclass/print/html", HttpMethod.GET, entity, byte[].class);
-        else
-            return null;
-    }
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		if(type.equals("pdf"))
+			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("excel"))
+			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("html"))
+			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+		else
+			return null;
+	}
 }

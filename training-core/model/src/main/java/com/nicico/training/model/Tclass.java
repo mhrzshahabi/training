@@ -32,7 +32,7 @@ public class Tclass extends Auditable {
 	@Column(name = "c_end_date", nullable = false)
 	private String endDate;
 
-	@Column(name = "n_duration", nullable = false)
+	@Column(name = "n_duration")
 	private Long duration;
 
 	@Column(name = "c_code", nullable = false)

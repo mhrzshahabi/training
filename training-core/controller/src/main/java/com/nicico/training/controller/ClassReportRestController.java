@@ -45,27 +45,6 @@ public class ClassReportRestController {
 		final Map<String, Object> params = new HashMap<>();
 		params.put("todayDate", dateUtil.todayDate());
 
-		final List<SearchDTO.CriteriaRq> criteriaRqList = criteriaRq.getCriteria();
-		criteriaRqList.forEach(criteriaRqFE -> {
-			switch (criteriaRqFE.getFieldName()) {
-				case "startDate":
-					params.put("startDate", criteriaRqFE.getValue().toString());
-					break;
-				case "endDate":
-					params.put("endDate", criteriaRqFE.getValue().toString());
-					break;
-				case "group":
-					params.put("group", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-					break;
-				case "course.id":
-					params.put("course.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-					break;
-				case "teacher.id":
-					params.put("teacher.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-					break;
-			}
-		});
-
 		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
 		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 

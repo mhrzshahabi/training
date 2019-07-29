@@ -34,7 +34,6 @@ public class TclassDTO {
     @ApiModelProperty(required = true)
     private String code;
 
-    @ApiModelProperty(required = true)
     private Long duration;
 
     @ApiModelProperty(required = true)
@@ -54,7 +53,6 @@ public class TclassDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
         private TeacherDTO.TeacherInfoTuple teacher;
         private CourseDTO.CourseInfoTuple course;
     }
@@ -75,9 +73,6 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

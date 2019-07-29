@@ -108,7 +108,6 @@ public class TeacherDTO {
 	@Setter
 	@ApiModel("TeacherInfoTuple")
 	public static class TeacherInfoTuple {
-		private Long id;
 		private String fullNameFa;
 	}
 	// ------------------------------
