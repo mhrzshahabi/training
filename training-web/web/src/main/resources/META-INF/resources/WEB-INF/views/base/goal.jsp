@@ -145,7 +145,7 @@
                 }]
             },
             {
-                name: "edomainType.id",
+                name: "edomainTypeId",
                 value: "",
                 type: "IntegerItem",
                 title: "حیطه",
@@ -234,7 +234,13 @@
             if (DynamicForm_Syllabus.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_Syllabus.getValues();
+            titleFa = DynamicForm_Syllabus.getValue('titleFa')
+            titleEn = DynamicForm_Syllabus.getValue('titleEn')
+            goalId = DynamicForm_Syllabus.getValue('goalId')
+            practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration')
+            eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId')
+            var  data = {"titleFa": titleFa, "titleEn": titleEn, "goalId": goalId, "practicalDuration":practicalDuration, "eDomainTypeId":eDomainType};
+            // var data = DynamicForm_Syllabus.getValuesForm();
             isc.RPCManager.sendRequest({
                 actionURL: urlSyllabus,
                 httpMethod: methodSyllabus,
@@ -260,7 +266,6 @@
 
                 }
             });
-
         }
     });
 
@@ -521,7 +526,7 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
@@ -598,8 +603,9 @@
         autoDraw: false,
         width: 100,
         title: "چاپ",
+        showMenuOnRollOver:true,
         menu: menuPalette,
-        click: function () {
+        mouseMove : function () {
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",

@@ -60,9 +60,10 @@ public class SyllabusService implements ISyllabusService {
 		final Optional<Syllabus> sById = syllabusDAO.findById(id);
 		final Syllabus syllabus = sById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
 		Syllabus updating = new Syllabus();
+//		updating.setEDomainTypeId(eDomainTypeConverter.convertToEntityAttribute(request.getEDomainTypeId()));
 		modelMapper.map(syllabus, updating);
 		modelMapper.map(request, updating);
-		updating.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEDomainTypeId()));
+
 		return save(updating);
 	}
 

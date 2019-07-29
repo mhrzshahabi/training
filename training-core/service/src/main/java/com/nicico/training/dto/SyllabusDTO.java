@@ -24,22 +24,16 @@ public class SyllabusDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
-    @ApiModelProperty(required = true)
 	private String titleEn;
-
     @NotNull
     @ApiModelProperty(required = true)
 	private Long practicalDuration;
 
-    @NotNull
-    @ApiModelProperty(required = true)
-	private Long goalId;
-
-    @ApiModelProperty(required = true)
 	private String description;
 
-
+    @NotNull
+    @ApiModelProperty
+    private Integer eDomainTypeId;
 
     // ------------------------------
     @Getter
@@ -54,7 +48,7 @@ public class SyllabusDTO {
         private String lastModifiedBy;
         private Integer version;
         private EDomainType eDomainType;
-
+        private Long goalId;
     }
 
     // ------------------------------
@@ -65,8 +59,8 @@ public class SyllabusDTO {
     @ApiModel("SyllabusCreateRq")
     public static class Create extends SyllabusDTO {
         @NotNull
-        @ApiModelProperty
-        private Integer eDomainTypeId;
+        @ApiModelProperty(required = true)
+        private Long goalId;
     }
 
     // ------------------------------
@@ -76,9 +70,7 @@ public class SyllabusDTO {
     @Accessors(chain = true)
     @ApiModel("SyllabusUpdateRq")
     public static class Update extends SyllabusDTO {
-        @NotNull
-        @ApiModelProperty
-        private Integer eDomainTypeId;
+
     }
 
     // ------------------------------

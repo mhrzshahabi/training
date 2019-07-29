@@ -11,17 +11,13 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
-import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.iservice.IGoalService;
-import com.nicico.training.iservice.ISyllabusService;
-import com.nicico.training.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.ietf.jgss.GSSName;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -112,11 +108,10 @@ public class GoalRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-            if (StringUtils.isNotEmpty(sortBy)) {
-                request.set_sortBy(sortBy);
-            }
-
             request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

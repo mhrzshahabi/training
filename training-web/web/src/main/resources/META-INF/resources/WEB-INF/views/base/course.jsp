@@ -112,6 +112,7 @@
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
+            {name: "practicalDuration"},
             {name: "code"}
         ],
 
@@ -329,6 +330,7 @@
             {name: "code", title: "کد سرفصل", align: "center", hidden: true},
             {name: "titleFa", title: "<spring:message code="course_syllabusOfcourse_selected"/>", align: "center"},
             {name: "edomainType.titleFa", title: "<spring:message code="course_domain"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],

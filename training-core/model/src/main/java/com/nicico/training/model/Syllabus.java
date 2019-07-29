@@ -47,6 +47,9 @@ public class Syllabus extends Auditable
 	@Column(name = "f_goal", nullable = false)
 	private Long goalId;
 
-	@Column(name = "e_domain_type")
+	@Column(name = "e_domain_type", insertable = false, updatable = false)
 	private EDomainType eDomainType;
+
+	@Column(name = "e_domain_type")
+	private Integer eDomainTypeId;
 }
