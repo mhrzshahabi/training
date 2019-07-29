@@ -179,7 +179,7 @@
         NotContainSpecialChar:{
             type:"regexp",
             errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
-            expression:/\w+(?![!@#$%^&*~';:.{}_]).*/,
+            expression:/^((?![~!@#$%^&*()+='"?]).)*$/,
         }
     };
 

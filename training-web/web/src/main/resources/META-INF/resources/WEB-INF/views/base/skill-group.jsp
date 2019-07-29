@@ -96,25 +96,7 @@ deleteCompetenceFromSkillGroup(activeCompetence.id,activeSkillGroup.id);
 }
 }
 },
-{isSeparator: true}, {
-title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-"<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
-window.open('${printUrl}');
-}
-}, {
-title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-"<spring:url value="/skill-group/print/excel" var="printUrl"/>"
-window.open('${printUrl}');
 
-}
-}, {
-title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-
-"<spring:url value="/skill-group/print/html" var="printUrl"/>"
-window.open('${printUrl}');
-
-
-}}
 ]
 }
 );
@@ -155,16 +137,7 @@ deleteSkillFromSkillGroup(activeSkill.id,activeSkillGroup.id);
 }
 }
 },
-{isSeparator: true}, {
-title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-}
-}, {
-title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-}
-}, {
-title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
 
-}}
 ]
 }
 );
@@ -301,7 +274,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 		],
 		sortField: 1,
 		sortDirection: "descending",
-		dataPageSize: 50,
+		dataPageSize: 22,
 		autoFetchData: true,
 		showFilterEditor: true,
 		filterOnKeypress: true,
@@ -496,7 +469,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 
 		sortField: 1,
 		sortDirection: "descending",
-		dataPageSize: 50,
+		dataPageSize: 22,
 		autoFetchData: false,
 		showFilterEditor: true,
 		filterOnKeypress: true,
@@ -575,7 +548,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 		width: "100%",
 		height: "300",
 		autoDraw: false,
-		border: "3px solid red", layoutMargin: 5,
+		border: "3px solid gray", layoutMargin: 5,
 		members: [
 			HLayOut_thisSkillGroup_AddSkill_Jsp,
 			HStack_thisSkillGroup_AddSkill_Jsp
@@ -635,7 +608,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 		allowAdvancedCriteria: true,
 		allowFilterExpressions: true,
 		showResizeBars:true,
-		filterOnKeypress: false,
+		filterOnKeypress: true,
 		dataSource: RestDataSource_Skill_Group_Skills_Jsp,
 		contextMenu: Menu_ListGrid_Skill_Group_Skills,
 		doubleClick: function () {
@@ -650,7 +623,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 		],
 		sortField: 1,
 		sortDirection: "descending",
-		dataPageSize: 12,
+		dataPageSize: 22,
 		autoFetchData: false,
 		showFilterEditor: true,
 		filterOnKeypress: true,
@@ -683,7 +656,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 		],
 		sortField: 1,
 		sortDirection: "descending",
-		dataPageSize: 50,
+		dataPageSize: 22,
 		autoFetchData: false,
 		showFilterEditor: true,
 		filterOnKeypress: true,
@@ -1230,7 +1203,7 @@ simpleDialog("تایید حذف","حذف با موفقیت انجام گردید
 		color: "red",
 		dataSource: RestDataSource_Skill_Group_Jsp,
 		allowAdvancedCriteria:true,
-		filterOnKeypress:false,
+		filterOnKeypress:true,
 		showResizeBars:true,
 		allowFilterExpressions:true,
 		contextMenu: Menu_ListGrid_Skill_Group_Jsp,
@@ -1267,7 +1240,7 @@ simpleDialog("تایید حذف","حذف با موفقیت انجام گردید
 		],
 		sortField: 1,
 		sortDirection: "descending",
-		dataPageSize: 50,
+		dataPageSize: 22,
 		autoFetchData: true,
 		showFilterEditor: true,
 		sortFieldAscendingText: "مرتب سازی صعودی ",
@@ -1365,6 +1338,22 @@ simpleDialog("خطا در حذف",msg,0,"stop");
 
 }
 	});
+
+
+
+var ToolStripButton_PrintAll_Skill_Group_Jsp = isc.ToolStripButton.create({
+icon: "[SKIN]/RichTextEditor/print.png",
+title: "چاپ با جزییات",
+click: function () {
+"<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
+window.open('${printUrl}');
+
+}});
+
+
+
+
+
 	var ToolStripButton_Print_Skill_Group_Jsp = isc.ToolStripButton.create({
 		icon: "[SKIN]/RichTextEditor/print.png",
 		title: "چاپ",
@@ -1372,8 +1361,7 @@ simpleDialog("خطا در حذف",msg,0,"stop");
 "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
 window.open('${printUrl}');
 
-}
-	});
+}});
 	var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
 		icon: "pieces/512/skill-standard.png",
 		title: "لیست مهارت ها",
@@ -1428,7 +1416,8 @@ window.open('${printUrl}');
 			ToolStripButton_Edit_Skill_Group_Jsp,
 			ToolStripButton_Remove_Skill_Group_Jsp,
 			ToolStripButton_Add_Skill_Group_AddSkill_Jsp,
-            ToolStripButton_Print_Skill_Group_Jsp]
+            ToolStripButton_Print_Skill_Group_Jsp,
+			ToolStripButton_PrintAll_Skill_Group_Jsp]
 	});
 
 

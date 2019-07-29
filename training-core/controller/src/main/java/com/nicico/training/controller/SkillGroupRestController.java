@@ -299,6 +299,15 @@ public class SkillGroupRestController {
     }
 
 
+    @Loggable
+    @GetMapping(value = {"/printAll/{type}"})
+    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/skillgroupwithskills.jasper", params, response);
+    }
+
+
 //
 //    @Loggable
 //    @PostMapping(value = {"/printWithCriteria/{type}"})
