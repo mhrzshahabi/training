@@ -9,6 +9,7 @@ import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.service.SkillGroupService;
@@ -183,6 +184,29 @@ public class SkillGroupRestController {
     }
 
 
+    @Loggable
+    @GetMapping(value = "/{skillGroupId}/getJobs")
+//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+    public ResponseEntity<JobDTO.iscRes> getJobs(@PathVariable Long skillGroupId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<JobDTO.Info> list = skillGroupService.getJobs(skillGroupId);
+
+        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow( list.size())
+                .setTotalRows(list.size());
+
+        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs,HttpStatus.OK);
+
+
+    }
+
 
 
 
@@ -296,6 +320,15 @@ public class SkillGroupRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/skillGroup.jasper", params, response);
+    }
+
+
+    @Loggable
+    @GetMapping(value = {"/printAll/{type}"})
+    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/skillgroupwithskills.jasper", params, response);
     }
 
 

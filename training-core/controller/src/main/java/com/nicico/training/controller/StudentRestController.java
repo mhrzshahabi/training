@@ -72,17 +72,22 @@ public class StudentRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_student')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        try {
         studentService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity(true, HttpStatus.OK);
+        }
+        catch (Exception ex) {
+            return new ResponseEntity(false, HttpStatus.NO_CONTENT);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_student')")
     public ResponseEntity<Void> delete(@Validated @RequestBody StudentDTO.Delete request) {
-        studentService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+            studentService.delete(request);
+            return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
