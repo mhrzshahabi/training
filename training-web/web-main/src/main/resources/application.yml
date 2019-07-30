@@ -44,7 +44,7 @@ spring:
 server:
   servlet:
     context-path: /
-  port: 10680
+  port: 10884
 
 nicico:
   oauth2:
@@ -52,7 +52,7 @@ nicico:
       cookie:
         domain: localhost
   rest-api:
-    url: http://localhost:9090
+    url: http://localhost:9094
 
 logging:
   level:
@@ -85,7 +85,7 @@ spring:
 server:
   servlet:
     context-path: /
-  port: 10680
+  port: 10884
 
 nicico:
   oauth2:
@@ -93,7 +93,7 @@ nicico:
       cookie:
         domain: localhost
   rest-api:
-    url: http://localhost:9090
+    url: http://localhost:9094
 
 logging:
   level:
