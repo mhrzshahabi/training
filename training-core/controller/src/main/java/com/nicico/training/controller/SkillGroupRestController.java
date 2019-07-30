@@ -187,7 +187,7 @@ public class SkillGroupRestController {
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getJobs")
 //    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<JobDTO.iscRes> getJobs(@PathVariable Long skillGroupId) {
+    public ResponseEntity<JobDTO.IscRes> getJobs(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         List<JobDTO.Info> list = skillGroupService.getJobs(skillGroupId);
@@ -198,7 +198,7 @@ public class SkillGroupRestController {
                 .setEndRow( list.size())
                 .setTotalRows(list.size());
 
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
 
         specRs.setResponse(specResponse);
 

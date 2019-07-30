@@ -10,11 +10,8 @@ import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
-import com.nicico.training.model.Competence;
-import com.nicico.training.model.EducationLicense;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.EducationLicenseService;
-import com.sun.xml.internal.bind.v2.model.core.Ref;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -23,15 +20,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.RequestDispatcher;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.servlet.http.HttpSession;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -197,7 +190,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTO.iscRes> getJob(@PathVariable Long courseId)
+    public ResponseEntity<JobDTO.IscRes> getJob(@PathVariable Long courseId)
     {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
@@ -205,7 +198,7 @@ public class CourseRestController {
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs,HttpStatus.OK);
     }
