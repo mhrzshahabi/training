@@ -97,7 +97,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="70" height="30" uuid="5f42afe0-44dc-4456-b4ca-cf719204a4cf"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{etechnicalType.titleFa}]]></textFieldExpression>
 							</textField>
@@ -116,7 +116,9 @@
 						<jr:detailCell style="Table_TD" height="30">
 							<textField>
 								<reportElement x="0" y="0" width="50" height="30" uuid="cbacd4d7-a830-4ddc-a770-f78965981f0b"/>
-								<textElement textAlignment="Center" verticalAlignment="Middle"/>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" isBold="false"/>
+								</textElement>
 								<textFieldExpression><![CDATA[$F{theoryDuration}]]></textFieldExpression>
 							</textField>
 						</jr:detailCell>
@@ -135,7 +137,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="70" height="30" uuid="eb9d4552-7f14-4672-ac15-cd8c32e56092"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{etheoType.titleFa}]]></textFieldExpression>
 							</textField>
@@ -155,7 +157,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="80" height="30" uuid="86056bd9-6efb-494d-adc1-9df86cb23c57"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{elevelType.titleFa}]]></textFieldExpression>
 							</textField>
@@ -175,7 +177,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="80" height="30" uuid="d4266deb-1191-4248-a4f3-45e8227c5038"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{erunType.titleFa}]]></textFieldExpression>
 							</textField>
@@ -195,7 +197,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="70" height="30" uuid="b6854ee8-33fa-49c2-8afb-a43d3b120bc9"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{subCategory.titleFa}]]></textFieldExpression>
 							</textField>
@@ -215,7 +217,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="701f2cc8-1e58-4067-9fb2-a44018ba9044"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{category.titleFa}]]></textFieldExpression>
 							</textField>
@@ -235,7 +237,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="5f914f47-b330-478f-9ed9-b9a94b77aefa"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{titleEn}]]></textFieldExpression>
 							</textField>
@@ -255,7 +257,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="90" height="30" uuid="73e14efd-298b-49c1-a9e3-eeb3a76c7776"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{titleFa}]]></textFieldExpression>
 							</textField>
@@ -275,7 +277,7 @@
 							<textField>
 								<reportElement x="0" y="0" width="100" height="30" uuid="9fd01a09-4568-479c-ae4b-0522669f6c87"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font isBold="true"/>
+									<font fontName="Shabnam-FD" size="10" isBold="false"/>
 								</textElement>
 								<textFieldExpression><![CDATA[$F{code}]]></textFieldExpression>
 							</textField>
