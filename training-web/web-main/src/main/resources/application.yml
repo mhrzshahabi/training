@@ -44,7 +44,7 @@ spring:
 server:
   servlet:
     context-path: /
-  port: 10680
+  port: 10884
 
 nicico:
   oauth2:
@@ -85,7 +85,7 @@ spring:
 server:
   servlet:
     context-path: /
-  port: 10680
+  port: 10884
 
 nicico:
   oauth2:
