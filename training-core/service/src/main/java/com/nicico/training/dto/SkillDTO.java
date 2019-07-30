@@ -85,6 +85,10 @@ public class SkillDTO {
         Set<Long> competenceIds;
         Set<Long> skillGroupIds;
 
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long defaultCompetenceId;
+
     }
 
     // ------------------------------

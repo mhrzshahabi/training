@@ -38,7 +38,7 @@ public class SkillService implements ISkillService {
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
     private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter= new EnumsConverter.EDomainTypeConverter();
-
+    private String saveType="";
     @Transactional(readOnly = true)
     @Override
     public SkillDTO.Info get(Long id) {
@@ -59,7 +59,14 @@ public class SkillService implements ISkillService {
     @Override
     public SkillDTO.Info create(SkillDTO.Create request) {
         final Skill skill = modelMapper.map(request, Skill.class);
+        Set<Long> competences= new HashSet<Long>();
+        Long defaultCompetence=request.getDefaultCompetenceId();
+        if(defaultCompetence!=null && defaultCompetence>0){
+            competences.add(defaultCompetence);
+            request.setCompetenceIds(competences);
+        }
         skill.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEdomainTypeId()));
+        saveType="create";
         return save(skill, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
     }
 
@@ -76,11 +83,6 @@ public class SkillService implements ISkillService {
         Skill updating = new Skill();
         modelMapper.map(currentSkill, updating);
         modelMapper.map(requestSkill, updating);
-     /*
-        updating.setEdomainTypeId(request.getEdomainTypeId());
-        updating.setSubCategoryId(request.getSubCategoryId());
-        updating.setCategoryId(request.getCategoryId());
-        updating.setSkillLevelId(request.getSkillLevelId());*/
         return modelMapper.map(skillDAO.saveAndFlush(updating), SkillDTO.Info.class);
     }
 
@@ -111,7 +113,8 @@ public class SkillService implements ISkillService {
 
     // ---------------
 
-    private SkillDTO.Info save(Skill skill, Set<Long> courseIds,Set<Long> competenceIds,Set<Long> skillGroupIds) {
+    @Transactional
+    SkillDTO.Info save(Skill skill, Set<Long> courseIds, Set<Long> competenceIds, Set<Long> skillGroupIds) {
         final Set<Course> courses = new HashSet<>();
         final Set<Competence> competences = new HashSet<>();
         final Set<SkillGroup> skillGroups = new HashSet<>();
@@ -152,6 +155,11 @@ public class SkillService implements ISkillService {
         skill.setSubCategory(subCategory);
 
         final Skill saved = skillDAO.saveAndFlush(skill);
+        if(saveType.equals("create") && competenceIds!=null && competenceIds.size()>0) {
+            Long[] cids= (Long[]) competenceIds.toArray(new Long[competenceIds.size()]);
+            addCompetence(cids[0], saved.getId());
+        }
+        saveType="";
         return modelMapper.map(saved, SkillDTO.Info.class);
     }
 
