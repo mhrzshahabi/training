@@ -1,8 +1,8 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.core.dto.search.SearchDTO;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -25,4 +25,13 @@ public interface IJobService {
 	List<JobCompetenceDTO.Info> getJobCompetence(Long jobId);
 
 	List<JobDTO.Info> getOtherJobs(Long competenceId);
+
+	@Transactional(readOnly = true)
+	List<SkillDTO.Info> getSkills(Long competenceId);
+
+	@Transactional(readOnly = true)
+    List<SkillGroupDTO.Info> getSkillGroups(Long competenceId);
+
+	@Transactional(readOnly = true)
+	List<CourseDTO.Info> getCourses(Long jobId);
 }

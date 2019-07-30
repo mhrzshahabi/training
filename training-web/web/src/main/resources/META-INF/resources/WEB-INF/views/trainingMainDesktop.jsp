@@ -106,7 +106,7 @@
 
     isc.MyRefreshButton.addProperties({
         icon: "[SKIN]/actions/refresh.png",
-        title: "بازخواني",
+        title: "بازخواني اطلاعات",
         autoDraw: false,
     });
 
@@ -228,9 +228,10 @@
     isc.defineClass("MyOkDialog", Dialog);
 
     isc.MyOkDialog.addProperties({
-        title: "",
+        title: "<spring:message code='message'/>",
         isModal: true,
         buttons: [isc.MyButton.create({title: "تائید",})],
+        icon: "[SKIN]say.png",
         buttonClick: function (button, index) {
             this.close();
         }
@@ -239,8 +240,9 @@
     isc.defineClass("MyYesNoDialog", Dialog);
 
     isc.MyYesNoDialog.addProperties({
-        title: "",
         isModal: true,
+        icon: "[SKIN]say.png",
+        title: "<spring:message code='message'/>",
         buttons: [
             isc.MyButton.create({title: "بله",}),
             isc.MyButton.create({title: "خير",})],

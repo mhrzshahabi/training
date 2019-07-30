@@ -9,10 +9,9 @@ TIME: 7:49 AM
 import com.nicico.copper.core.domain.criteria.SearchUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IJobService;
-import com.nicico.training.model.Job;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.JobDAO;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +20,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -102,11 +99,83 @@ public class JobService implements IJobService {
         return list;
     }
 
-     @Transactional(readOnly = true)
+    @Transactional(readOnly = true)
     @Override
     public List<JobDTO.Info> getOtherJobs(Long competenceId) {
         final List<Job> jobList = jobDAO.findOtherJobsForCompetence(competenceId);
         return mapper.map(jobList, new TypeToken<List<JobDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SkillDTO.Info> getSkills(Long jobId) {
+        final Optional<Job> optionalJob = jobDAO.findById(jobId);
+        final Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+
+        final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
+        Set<Competence> competenceSet = new HashSet<>();
+        Set<Skill> skillSet = new HashSet<>();
+
+        for (JobCompetence jobCompetence : jobCompetenceSet) {
+            competenceSet.add(jobCompetence.getCompetence());
+        }
+        for (Competence competence : competenceSet) {
+            skillSet.addAll(competence.getSkillSet());
+            for (SkillGroup skillGroup : competence.getSkillGroupSet()) {
+                skillSet.addAll(skillGroup.getSkillSet());
+            }
+        }
+        return mapper.map(skillSet, new TypeToken<List<SkillDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<SkillGroupDTO.Info> getSkillGroups(Long jobId) {
+        final Optional<Job> optionalJob = jobDAO.findById(jobId);
+        final Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+
+        final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
+        Set<Competence> competenceSet = new HashSet<>();
+        Set<SkillGroup> skillGroupSet = new HashSet<>();
+
+        for (JobCompetence jobCompetence : jobCompetenceSet) {
+            competenceSet.add(jobCompetence.getCompetence());
+        }
+
+        for (Competence competence : competenceSet) {
+            skillGroupSet.addAll(competence.getSkillGroupSet());
+        }
+        return mapper.map(skillGroupSet, new TypeToken<List<SkillGroupDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CourseDTO.Info> getCourses(Long jobId) {
+        final Optional<Job> optionalJob = jobDAO.findById(jobId);
+        final Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+
+        final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
+        Set<Competence> competenceSet = new HashSet<>();
+        Set<SkillGroup> skillGroupSet = new HashSet<>();
+        Set<Skill> skillSet = new HashSet<>();
+        Set<Course> courseSet = new HashSet<>();
+
+        for (JobCompetence jobCompetence : jobCompetenceSet) {
+            competenceSet.add(jobCompetence.getCompetence());
+        }
+        for (Competence competence : competenceSet) {
+            skillSet.addAll(competence.getSkillSet());
+            for (SkillGroup skillGroup : competence.getSkillGroupSet()) {
+                skillSet.addAll(skillGroup.getSkillSet());
+            }
+        }
+        for (Skill skill : skillSet) {
+            courseSet.addAll(skill.getCourseSet());
+        }
+        return mapper.map(courseSet, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
     }
 

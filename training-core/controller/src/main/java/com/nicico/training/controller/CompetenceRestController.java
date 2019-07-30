@@ -6,21 +6,23 @@ DATE: 6/8/2019
 TIME: 12:26 PM
 */
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
-import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.SkillGroupDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.service.CompetenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,6 +33,7 @@ import java.util.List;
 public class CompetenceRestController {
 
     private final CompetenceService competenceService;
+    private final ObjectMapper objectMapper;
 
     @Loggable
     @GetMapping("/{id}")
@@ -80,21 +83,40 @@ public class CompetenceRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-//    @PreAuthorize("hasAuthority('r_competence')")
-    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                               @RequestParam("_endRow") Integer endRow,
+                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<CompetenceDTO.Info> response = competenceService.search(request);
 
         final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -147,7 +169,7 @@ public class CompetenceRestController {
 
     @Loggable
     @GetMapping(value = "/{competenceId}/job-competence/spec-list")
-    public ResponseEntity<JobCompetenceDTO.iscRes> getJobCompetences(@PathVariable Long competenceId) {
+    public ResponseEntity<JobCompetenceDTO.IscRes> getJobCompetences(@PathVariable Long competenceId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         List<JobCompetenceDTO.Info> list = competenceService.getJobCompetence(competenceId);
@@ -158,7 +180,7 @@ public class CompetenceRestController {
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
 
-        final JobCompetenceDTO.iscRes specRs = new JobCompetenceDTO.iscRes();
+        final JobCompetenceDTO.IscRes specRs = new JobCompetenceDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -197,6 +219,25 @@ public class CompetenceRestController {
                 .setTotalRows(list.size());
 
         final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{competenceId}/courses/spec-list")
+    public ResponseEntity<CourseDTO.CourseSpecRs> getCourses(@PathVariable Long competenceId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<CourseDTO.Info> list = competenceService.getCourses(competenceId);
+
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);

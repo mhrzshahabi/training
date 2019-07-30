@@ -89,7 +89,7 @@ public class JobDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("Job ISC Res")
-    public static class iscRes {
+    public static class IscRes {
         private SpecRs response;
     }
 

@@ -9,22 +9,25 @@ TIME: 10:57 AM
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IJobService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -63,7 +66,6 @@ public class JobRestController {
         } catch (Exception ex) {
             return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
         }
-
     }
 
     @Loggable
@@ -88,29 +90,49 @@ public class JobRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-//    @PreAuthorize("hasAuthority('job_r')")
-    public ResponseEntity<JobDTO.iscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<JobDTO.IscRes> list(@RequestParam("_startRow") Integer startRow,
+                                              @RequestParam("_endRow") Integer endRow,
+                                              @RequestParam(value = "_constructor", required = false) String constructor,
+                                              @RequestParam(value = "operator", required = false) String operator,
+                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                              @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.set_sortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<JobDTO.Info> response = jobService.search(request);
 
         final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/competence/{competenceId}/spec-list")
-    public ResponseEntity<JobDTO.iscRes> list1(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+  /*  @Loggable
+    @GetMapping(value = "/spec-list")
+//    @PreAuthorize("hasAuthority('job_r')")
+    public ResponseEntity<JobDTO.IscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -123,7 +145,28 @@ public class JobRestController {
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }*/
+
+    @Loggable
+    @GetMapping(value = "/competence/{competenceId}/spec-list")
+    public ResponseEntity<JobDTO.IscRes> list1(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+
+        SearchDTO.SearchRs<JobDTO.Info> response = jobService.search(request);
+
+        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -131,7 +174,7 @@ public class JobRestController {
 
     @Loggable
     @GetMapping(value = "/{jobId}/job-competence/spec-list")
-    public ResponseEntity<JobCompetenceDTO.iscRes> getJobCompetences(@PathVariable Long jobId) {
+    public ResponseEntity<JobCompetenceDTO.IscRes> getJobCompetences(@PathVariable Long jobId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -143,7 +186,7 @@ public class JobRestController {
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
 
-        final JobCompetenceDTO.iscRes specRs = new JobCompetenceDTO.iscRes();
+        final JobCompetenceDTO.IscRes specRs = new JobCompetenceDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -158,7 +201,7 @@ public class JobRestController {
 
     @Loggable
     @GetMapping(value = "/competence/not/{competenceId}/spec-list")
-    public ResponseEntity<JobDTO.iscRes> getOtherJobs(@PathVariable Long competenceId) {
+    public ResponseEntity<JobDTO.IscRes> getOtherJobs(@PathVariable Long competenceId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         List<JobDTO.Info> list = jobService.getOtherJobs(competenceId);
 
@@ -168,7 +211,7 @@ public class JobRestController {
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
 
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -200,6 +243,63 @@ public class JobRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/JobByCriteria.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{jobId}/skills/spec-list")
+    public ResponseEntity<SkillDTO.SkillSpecRs> getSkills(@PathVariable Long jobId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<SkillDTO.Info> list = jobService.getSkills(jobId);
+
+        final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{jobId}/skillGroups/spec-list")
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroups(@PathVariable Long jobId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<SkillGroupDTO.Info> list = jobService.getSkillGroups(jobId);
+
+        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/{jobId}/courses/spec-list")
+    public ResponseEntity<CourseDTO.CourseSpecRs> getCourses(@PathVariable Long jobId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<CourseDTO.Info> list = jobService.getCourses(jobId);
+
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

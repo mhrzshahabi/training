@@ -12,7 +12,6 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.JobCompetenceDTO;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.service.JobCompetenceService;
@@ -33,8 +32,6 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static java.awt.SystemColor.info;
 
 @Slf4j
 @RestController
@@ -102,7 +99,7 @@ public class JobCompetenceRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     @PreAuthorize("hasAuthority('r_job')")
-    public ResponseEntity<JobCompetenceDTO.iscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<JobCompetenceDTO.IscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -115,7 +112,7 @@ public class JobCompetenceRestController {
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final JobCompetenceDTO.iscRes specRs = new JobCompetenceDTO.iscRes();
+        final JobCompetenceDTO.IscRes specRs = new JobCompetenceDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);

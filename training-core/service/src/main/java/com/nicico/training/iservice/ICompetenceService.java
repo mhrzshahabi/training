@@ -7,10 +7,7 @@ TIME: 12:21 PM
 */
 
 import com.nicico.copper.core.dto.search.SearchDTO;
-import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.SkillGroupDTO;
+import com.nicico.training.dto.*;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -40,4 +37,7 @@ public interface ICompetenceService {
 
     @Transactional(readOnly = true)
     List<SkillGroupDTO.Info> getSkillGroups(Long competenceId);
+
+    @Transactional(readOnly = true)
+    List<CourseDTO.Info> getCourses(Long competenceId);
 }

@@ -629,7 +629,7 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "{skillId}/jobs")
 //    @PreAuthorize("hasAnyAuthority('r_competence')")
-    public ResponseEntity<JobDTO.iscRes> getJobs(@PathVariable Long skillId) {
+    public ResponseEntity<JobDTO.IscRes> getJobs(@PathVariable Long skillId) {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         List<JobDTO.Info> competences = skillService.getJobs(skillId);
@@ -640,7 +640,7 @@ public class SkillRestController {
                 .setEndRow(competences.size())
                 .setTotalRows(competences.size());
 
-        final JobDTO.iscRes specRs = new JobDTO.iscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -651,8 +651,8 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/job-dummy")
 //    @PreAuthorize("hasAuthority('r_competence')")
-    public ResponseEntity<JobDTO.iscRes> jobDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<JobDTO.iscRes>(new JobDTO.iscRes(), HttpStatus.OK);
+    public ResponseEntity<JobDTO.IscRes> jobDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<JobDTO.IscRes>(new JobDTO.IscRes(), HttpStatus.OK);
     }
 
     // ------------------------------------------------------------------------------------------------

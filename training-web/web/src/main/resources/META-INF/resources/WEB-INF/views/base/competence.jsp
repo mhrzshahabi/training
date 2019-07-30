@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     let competenceMethod_competence;
     let jobCompetenceMethod_competence;
@@ -14,7 +14,7 @@
     Menu_Competence_competence = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی", icon: "pieces/16/refresh.png", click: function () {
+                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
                     refresh_CompetenceListGrid_competence();
                 }
             }, {
@@ -29,16 +29,7 @@
                 title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
                     show_CompetenceRemoveForm_competence();
                 }
-            }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                }
-            }, {
-                title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                }
-            }, {
-                title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                }
-            }]
+            }, ]
     });
     //****************************************************************************************************************
     // RestDataSource & ListGrid
@@ -65,6 +56,7 @@
             refresh_JobCompetenceListGrid_competence();
             refresh_SkillListGrid_competence();
             refresh_SkillGroupListGrid_competence();
+            refresh_CourseListGrid_competence();
         },
         sortField: 0,
     });
@@ -159,6 +151,30 @@
         fetchDataURL: enumUrl + "eJobCompetenceType/spec-list"
     });
 
+    var DS_Course_competence = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "عنوان دوره", align: "center"},
+            {name: "titleEn", title: "عنوان انگلیسی", align: "center"},
+            {name: "category.titleFa", title: "گروه", align: "center"},
+            {name: "subCategory.titleFa", title: "زیرگروه", align: "center"},
+            {name: "erunType.titleFa", title: "نوع اجرا", align: "center"},
+            {name: "elevelType.titleFa", title: "سطح دوره", align: "center"},
+            {name: "etheoType.titleFa", title: "نوع دوره", align: "center"},
+            {name: "theoryDuration", title: "طول دوره (ساعت)", align: "center"},
+            {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
+            {name: "minTeacherDegree", title: "حداقل مدرک استاد", align: "center"},
+            {name: "minTeacherExpYears", title: "حداقل سابقه تدريس", align: "center"},
+            {name: "minTeacherEvalScore", title: "حداقل نمره ارزيابي", align: "center"},
+        ],
+    });
+
+    let LG_Course_competence  = isc.MyListGrid.create({
+        dataSource: DS_Course_competence,
+        doubleClick: function () {
+        },
+    });
+
     //****************************************************************************************************************
     // ToolStrip
     //****************************************************************************************************************
@@ -181,10 +197,7 @@
                 click: function () {
                     show_CompetenceRemoveForm_competence();
                 }
-            }), isc.MyPrintButton.create({
-                click: function () {
-                }
-            }),
+            }), ,
         ]
     });
 
@@ -195,6 +208,7 @@
                     refresh_JobCompetenceListGrid_competence();
                     refresh_SkillListGrid_competence();
                     refresh_SkillGroupListGrid_competence();
+                    refresh_CourseListGrid_competence();
                 }
             }), isc.MyCreateButton.create({
                 title: "افزودن شغل به شايستگي شغلي",
@@ -208,9 +222,6 @@
             }), isc.MyRemoveButton.create({
                 click: function () {
                     show_JobCompetenceRemoveForm_competence();
-                }
-            }), isc.MyPrintButton.create({
-                click: function () {
                 }
             }),
         ]
@@ -268,11 +279,13 @@
         items: [DF_Competence_competence, isc.MyHLayoutButtons.create({
             members: [isc.MyButton.create({
                 title: "ذخیره",
+                icon: "pieces/16/save.png",
                 click: function () {
                     save_Competence_competence();
                 }
             }), isc.MyButton.create({
                 title: "لغو",
+                icon: "pieces/16/icon_delete.png",
                 click: function () {
                     Win_Competence_competence.close();
                 }
@@ -355,11 +368,13 @@
                 isc.MyHLayoutButtons.create({
                     members: [isc.MyButton.create({
                         title: "ذخیره",
+                        icon: "pieces/16/save.png",
                         click: function () {
                             save_JobCompetence_competence();
                         }
                     }), isc.MyButton.create({
                         title: "لغو",
+                        icon: "pieces/16/icon_delete.png",
                         click: function () {
                             Win_JobCompetence_competence.close();
                         }
@@ -386,6 +401,11 @@
             title: "ليست گروه مهارت ها", pane: isc.MyVLayout.create({
                 members: [LG_SkillGroup_competence]
             }),
+        }, {
+            title: "ليست دوره ها",
+            pane: isc.MyVLayout.create({
+                members: [LG_Course_competence]
+            }),
         }]
     });
 
@@ -404,10 +424,14 @@
         if (showDialog) {
             title = title ? title : "";
             msg = msg ? msg : "رکوردی انتخاب نشده است!";
-            isc.MyOkDialog.create({
+            var  MyOkDialog_job = isc.MyOkDialog.create({
                 message: msg,
                 title: title,
             });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
         }
         return false;
     };
@@ -417,11 +441,13 @@
         refresh_JobCompetenceListGrid_competence();
         refresh_SkillListGrid_competence();
         refresh_SkillGroupListGrid_competence();
+        refresh_CourseListGrid_competence();
     };
 
     function show_CompetenceNewForm_competence() {
         competenceMethod_competence = "POST";
         DF_Competence_competence.clearValues();
+        Win_Competence_competence.setTitle("ایجاد شایستگی شغلی");
         Win_Competence_competence.show();
     };
 
@@ -431,6 +457,7 @@
             competenceMethod_competence = "PUT";
             DF_Competence_competence.clearValues();
             DF_Competence_competence.editRecord(record);
+            Win_Competence_competence.setTitle("ویرایش شایستگی شغلی");
             Win_Competence_competence.show();
         }
     };
@@ -451,15 +478,21 @@
     function show_CompetenceActionResult_competence(resp) {
         let respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            isc.MyOkDialog.create({
+            MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
             });
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
             Win_Competence_competence.close();
             refresh_CompetenceListGrid_competence();
         } else {
-            isc.MyOkDialog.create({
+            MyOkDialog_job = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
             });
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
         }
     };
 
@@ -529,7 +562,7 @@
             LG_Job_competence.invalidateCache();
             LG_Job_competence.fetchData();
             LG_Job_competence.show();
-
+            Win_JobCompetence_competence.setTitle("افزدن شغل به شایستگی شغلی");
             Win_JobCompetence_competence.show();
         }
     };
@@ -576,6 +609,7 @@
                 DF_JobCompetenceType_competence.editRecord(jobRecord);
 
                 LG_Job_competence.hide();
+                Win_JobCompetence_competence.setTitle("ویرایش نوع ارتباط شایستگی شغلی با شغل");
                 Win_JobCompetence_competence.show();
             }
         }
@@ -603,14 +637,37 @@
     function show_JobCompetenceActionResult_competence(resp) {
         respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            isc.MyOkDialog.create({
+            MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
             });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+
             Win_JobCompetence_competence.close();
             refresh_JobCompetenceListGrid_competence();
+            refresh_SkillListGrid_competence();
+            refresh_SkillGroupListGrid_competence();
+            refresh_CourseListGrid_competence();
         } else {
-            isc.MyOkDialog.create({
+            MyOkDialog_job = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
             });
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+
+        }
+    };
+
+    function refresh_CourseListGrid_competence() {
+        let record = LG_Competence_competence.getSelectedRecord();
+        if (checkRecord_competence(record)) {
+            DS_Course_competence.fetchDataURL = competenceUrl + record.id + "/courses/spec-list";
+            LG_Course_competence.invalidateCache();
+            LG_Course_competence.fetchData();
+        } else {
+            LG_Course_competence.setData([]);
         }
     };

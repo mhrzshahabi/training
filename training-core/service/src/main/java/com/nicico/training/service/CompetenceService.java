@@ -9,12 +9,12 @@ TIME: 12:22 PM
 import com.nicico.copper.core.domain.criteria.SearchUtil;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.SkillGroupDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.model.Competence;
+import com.nicico.training.model.Course;
+import com.nicico.training.model.Skill;
+import com.nicico.training.model.SkillGroup;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.CompetenceDAO;
 import lombok.RequiredArgsConstructor;
@@ -23,9 +23,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 
 @Service
@@ -147,5 +145,27 @@ public class CompetenceService implements ICompetenceService {
                                 list.add(mapper.map(skillGroup, SkillGroupDTO.Info.class))
                         ));
         return list;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CourseDTO.Info> getCourses(Long competenceId) {
+        final Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
+        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+
+        Set<SkillGroup> skillGroupSet = new HashSet<>();
+        Set<Skill> skillSet = new HashSet<>();
+        Set<Course> courseSet = new HashSet<>();
+        skillGroupSet = competence.getSkillGroupSet();
+        skillSet = competence.getSkillSet();
+
+        for (SkillGroup skillGroup : skillGroupSet) {
+            skillSet.addAll(skillGroup.getSkillSet());
+        }
+        for (Skill skill : skillSet) {
+            courseSet.addAll(skill.getCourseSet());
+        }
+        return mapper.map(courseSet, new TypeToken<List<CourseDTO.Info>>() {
+        }.getType());
     }
 }

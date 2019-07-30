@@ -123,7 +123,7 @@ public class JobCompetenceDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("CompetenceSpecRs")
-    public static class iscRes {
+    public static class IscRes {
         private SpecRs response;
     }
 
