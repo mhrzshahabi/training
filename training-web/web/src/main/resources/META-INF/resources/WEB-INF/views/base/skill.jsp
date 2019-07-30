@@ -2034,8 +2034,8 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
             DynamicForm_Skill_SkillData_Add_Competence.invalidateCache();
 
             DynamicForm_Skill_SkillData_Add_Competence.setValue("titleFa", record.titleFa);
-            DynamicForm_Skill_SkillData_Add_Competence.setValue("titleEn", record.titeEn);
-            DynamicForm_Skill_SkillData_Add_Competence.setValue("id", record.id);
+            DynamicForm_Skill_SkillData_Add_Competence.setValue("titleEn", record.titleEn);
+            DynamicForm_Skill_SkillData_Add_Competence.setValue("code", record.code);
             ListGrid_Skill_UnAttached_Competence.fetchData();
             ListGrid_Skill_Selected_Competence.fetchData();
             Window_Skill_AddCompetence.show();
@@ -2409,8 +2409,8 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
             DynamicForm_Skill_SkillData_Add_Course.invalidateCache();
 
             DynamicForm_Skill_SkillData_Add_Course.setValue("titleFa", record.titleFa);
-            DynamicForm_Skill_SkillData_Add_Course.setValue("titleEn", record.titeEn);
-            DynamicForm_Skill_SkillData_Add_Course.setValue("id", record.id);
+            DynamicForm_Skill_SkillData_Add_Course.setValue("titleEn", record.titleEn);
+            DynamicForm_Skill_SkillData_Add_Course.setValue("code", record.code);
             ListGrid_Skill_UnAttached_Course.fetchData();
             ListGrid_Skill_Selected_Course.fetchData();
             Window_Skill_AddCourse.show();
