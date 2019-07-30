@@ -239,7 +239,8 @@
                 required: true,
                 keyPressFilter: "[a-z|A-Z |]",
                 hint: "English/انگليسي",
-                showHintInField: true
+                showHintInField: true,
+                length: "30"
             },
             {
                 name: "telephone",

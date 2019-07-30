@@ -214,12 +214,14 @@
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 hint: "Persian/فارسی",
+                length: "30",
                 showHintInField: true
             },
             {
                 name: "department",
                 title: "<spring:message code='department'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
             },
             {
                 name: "fullNameEn",
@@ -227,11 +229,13 @@
                 required: true,
                 keyPressFilter: "[a-z|A-Z |]",
                 hint: "English/انگليسي",
+                length: "30",
                 showHintInField: true
             },
             {
                 name: "license",
-                title: "<spring:message code='degree'/>"
+                title: "<spring:message code='degree'/>",
+                length: "30"
             },
 
         ]
@@ -475,7 +479,18 @@
                                     setTimeout(function () {
                                         OK.close();
                                     }, 3000);
-                                } else {
+                                }
+                                else if (resp.data == false) {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "<spring:message code='msg.student.remove.error'/>",
+                                        icon: "[SKIN]stop.png",
+                                        title: "<spring:message code='message'/>"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                                 else {
                                     var ERROR = isc.Dialog.create({
                                         message: "<spring:message code='msg.record.remove.failed'/>",
                                         icon: "[SKIN]stop.png",
