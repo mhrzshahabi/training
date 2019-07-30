@@ -42,11 +42,11 @@
     });
     var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: "true"},
-            {name: "titleFa", title: "سرفصل ها"},
+            {name: "id", primaryKey: true, hidden: "true",align: "center"},
+            {name: "titleFa", title: "سرفصل ها",align: "center",width:"60%"},
             {name: "titleEn", title: "نام انگلیسی", hidden: "true"},
-            {name: "edomainType.titleFa", title: "حیطه"},
-            {name: "code", hidden: "true"}
+            {name: "edomainType.titleFa", title: "حیطه",align: "center",width:"20%"},
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center",width:"20%"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -492,7 +492,7 @@
     var ListGrid_GoalAll = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        alternateRecordStyles: true,
+        showHeader:true,
         expansionFieldImageShowSelected: true,
         canExpandRecords: true,
         expansionMode: "related",
@@ -535,9 +535,18 @@
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
         height: "100%",
+        alternateRecordStyles: true,
+        expansionFieldImageShowSelected: true,
+        canExpandRecords: true,
+        expansionMode: "related",
+        detailDS: RestDataSource_Syllabus_JspGoal,
+        expansionRelatedProperties: {
+            border: "1px solid inherit",
+            margin: 5
+        },
         dataSource: RestDataSource_CourseGoal,
-        doubleClick: function () {
-            /*ListGrid_CourseGoal_Goal_Edit();*/
+        selectionChanged: function (record, state) {
+            RestDataSource_Syllabus_JspGoal.fetchDataURL = "http://localhost:9090/api/goal/" + record.id + "/syllabus";
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -546,12 +555,6 @@
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
-        recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-// RestDataSource_Syllabus.fetchDataURL = "http://localhost:9090/api/goal/" + record.id + "/syllabus";
-// ListGrid_CourseSyllabus.fetchData();
-// ListGrid_CourseSyllabus.invalidateCache();
-// ListGrid_GoalAll.deselectAllRecords();
-        },
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -837,7 +840,7 @@
     });
     var HLayOut_Goal_JspGoal = isc.HLayout.create({
         width: "100%",
-        height: 600,
+        height: "100%",
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
@@ -849,8 +852,12 @@
 
     var Window_AddGoal = isc.Window.create({
         title: "افزودن هدف",
-        width: 900,
-        autoSize: true,
+        width: "90%",
+        height: "90%",
+        canDragReposition:false,
+        showShadow: true,
+        shadowSoftness: 10,
+        shadowOffset: 20,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
