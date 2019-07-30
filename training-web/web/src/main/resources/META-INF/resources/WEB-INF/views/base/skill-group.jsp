@@ -2,336 +2,330 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+<%--<script>--%>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
-    var skillGrouprecordid = -1;
-    var method = "POST";
-    var url = "${restApiUrl}/api/skill-group";
+	var skillGrouprecordid = -1;
+	var method = "POST";
+	var url = "${restApiUrl}/api/skill-group";
 
-    //
-    // skillData=[
-    //     {
-    //         skill_code:"CO6A001",
-    //         skill_name:"آشنایی با مفاهیم فن آوری"
-    //     },
-    //     {
-    //         skill_code:"CO2B004",
-    //         skill_name:"توانایی برنامه نویسی با زبان C"
-    //     }
-    // ]
-    // var skillDS=isc.DataSource.create({
-    //     fields:[
-    //         {name:"skill_code", title:"کد مهارت"},
-    //         {name:"skill_name", title:"نام مهارت"},
-    //     ],
-    //     clientOnly: true,
-    //     testData: skillData
-    // })
-    //
-    //
-    // var SkillListGrid=isc.ListGrid.create({
-    //     width:"100%", alternateRecordStyles:true,
-    //     dataSource: skillDS,
-    //     autoFetchData: true
-    // })
+	//
+	// skillData=[
+	//     {
+	//         skill_code:"CO6A001",
+	//         skill_name:"آشنایی با مفاهیم فن آوری"
+	//     },
+	//     {
+	//         skill_code:"CO2B004",
+	//         skill_name:"توانایی برنامه نویسی با زبان C"
+	//     }
+	// ]
+	// var skillDS=isc.DataSource.create({
+	//     fields:[
+	//         {name:"skill_code", title:"کد مهارت"},
+	//         {name:"skill_name", title:"نام مهارت"},
+	//     ],
+	//     clientOnly: true,
+	//     testData: skillData
+	// })
+	//
+	//
+	// var SkillListGrid=isc.ListGrid.create({
+	//     width:"100%", alternateRecordStyles:true,
+	//     dataSource: skillDS,
+	//     autoFetchData: true
+	// })
 
-    //
-    // competencyData=[
-    //     {
-    //         competencey_name:"شایستگی برنامه سازی",
-    //         competencey_type:"عملکردی"
-    //     },
-    //     {
-    //         competencey_name:"شایستگی مدیریت",
-    //         competencey_type:"توسعه ای"
-    //     },
-    //     {
-    //         competencey_name:"شایستگی برنامه ریزی",
-    //         competencey_type:"عملکردی"
-    //     }
-    // ]
-    // var CompetenceDS=isc.DataSource.create({
-    //       fields:[
-    //         {name:"competencey_name", title:"نام شایستگی"},
-    //         {name:"competencey_type", title:"نوع شایستگی"},
-    //              ],
-    //     clientOnly: true,
-    //     testData: competencyData
-    // })
+	//
+	// competencyData=[
+	//     {
+	//         competencey_name:"شایستگی برنامه سازی",
+	//         competencey_type:"عملکردی"
+	//     },
+	//     {
+	//         competencey_name:"شایستگی مدیریت",
+	//         competencey_type:"توسعه ای"
+	//     },
+	//     {
+	//         competencey_name:"شایستگی برنامه ریزی",
+	//         competencey_type:"عملکردی"
+	//     }
+	// ]
+	// var CompetenceDS=isc.DataSource.create({
+	//       fields:[
+	//         {name:"competencey_name", title:"نام شایستگی"},
+	//         {name:"competencey_type", title:"نوع شایستگی"},
+	//              ],
+	//     clientOnly: true,
+	//     testData: competencyData
+	// })
 
-    var Menu_ListGrid_Skill_Group_Competences = isc.Menu.create({
-            width: 150,
-            data: [{
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-                    ListGrid_Skill_Group_Competence_refresh();
-                }
-            }, {
-                title: " حذف گروه مهارت از  شایستگی مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
-                    activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-                    activeCompetence = ListGrid_Skill_Group_Competence.getSelectedRecord();
-                    if (activeSkillGroup == null || activeCompetence == null) {
-                        simpleDialog("پیام", "شایستگی یا گروه مهارت انتخاب نشده است.", 0, "confirm");
+var Menu_ListGrid_Skill_Group_Competences = isc.Menu.create({
+width: 150,
+data: [{
+title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+ListGrid_Skill_Group_Competence_refresh();
+}
+}, {
+title: " حذف گروه مهارت از  شایستگی مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
+activeSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecord();
+activeCompetence=ListGrid_Skill_Group_Competence.getSelectedRecord();
+if(activeSkillGroup==null || activeCompetence==null)
+{
+simpleDialog("پیام","شایستگی یا گروه مهارت انتخاب نشده است.",0,"confirm");
 
-                    }
-                    else {
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkillGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
+}
+else{
+var Dialog_Delete = isc.Dialog.create({
+message: getFormulaMessage("آیا از حذف  گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkillGroup.titleFa, "3", "red", "U")+ getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+icon: "[SKIN]ask.png",
+title: "تائید حذف",
+buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+title: "خیر"
+})],
+buttonClick: function (button, index) {
+this.close();
 
-                                if (index == 0) {
-                                    deleteCompetenceFromSkillGroup(activeCompetence.id, activeSkillGroup.id);
-                                }
-                            }
-                        });
+if (index == 0) {
+deleteCompetenceFromSkillGroup(activeCompetence.id,activeSkillGroup.id);
+}
+}
+});
 
-                    }
-                }
-            },
+}
+}
+},
 
-            ]
-        }
-    );
-
-
-    var Menu_ListGrid_Skill_Group_Skills = isc.Menu.create({
-            width: 150,
-            data: [{
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-                    ListGrid_Skill_Group_Skills_refresh();
-                }
-            }, {
-                title: " حذف مهارت از گروه مهارت مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
-                    activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-                    activeSkill = ListGrid_Skill_Group_Skills.getSelectedRecord();
-                    if (activeSkillGroup == null || activeSkill == null) {
-                        simpleDialog("پیام", "مهارت یا گروه مهارت انتخاب نشده است.", 0, "confirm");
-
-                    }
-                    else {
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkill.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkillGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
-
-                                if (index == 0) {
-                                    deleteSkillFromSkillGroup(activeSkill.id, activeSkillGroup.id);
-                                }
-                            }
-                        });
-
-                    }
-                }
-            },
-
-            ]
-        }
-    );
+]
+}
+);
 
 
-    function ListGrid_Skill_Group_Skills_refresh() {
+var Menu_ListGrid_Skill_Group_Skills = isc.Menu.create({
+width: 150,
+data: [{
+title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+    ListGrid_Skill_Group_Skills_refresh();
+}
+}, {
+title: " حذف مهارت از گروه مهارت مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
+activeSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecord();
+activeSkill=ListGrid_Skill_Group_Skills.getSelectedRecord();
+if(activeSkillGroup==null || activeSkill==null)
+{
+simpleDialog("پیام","مهارت یا گروه مهارت انتخاب نشده است.",0,"confirm");
 
-        if (ListGrid_Skill_Group_Jsp.getSelectedRecord() == null)
-            ListGrid_Skill_Group_Skills.setData([]);
-        else
-            ListGrid_Skill_Group_Skills.invalidateCache();
-    }
+}
+else{
+var Dialog_Delete = isc.Dialog.create({
+message: getFormulaMessage("آیا از حذف  مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkill.titleFa, "3", "red", "U")+ getFormulaMessage(" از گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(activeSkillGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+icon: "[SKIN]ask.png",
+title: "تائید حذف",
+buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+title: "خیر"
+})],
+buttonClick: function (button, index) {
+this.close();
 
-    function ListGrid_Skill_Group_Competence_refresh() {
+if (index == 0) {
+deleteSkillFromSkillGroup(activeSkill.id,activeSkillGroup.id);
+}
+}
+});
 
-        if (ListGrid_Skill_Group_Jsp.getSelectedRecord() == null)
-            ListGrid_Skill_Group_Competence.setData([]);
-        else
-            ListGrid_Skill_Group_Competence.invalidateCache();
-    }
+}
+}
+},
 
-
-    var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        autoFetchData: false,
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        }
-        // ,fetchDataURL:"${restApiUrl}/api/skill-group/1/getSkills"
-    });
-
-
-    var RestDataSource_All_Skills = isc.RestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        autoFetchData: false,
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        }
-        , fetchDataURL: "${restApiUrl}/api/skill/spec-list"
-    });
-
-    var RestDataSource_ForThisSkillGroup_GetSkills = isc.RestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        autoFetchData: false,
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        }
-        //,fetchDataURL:"${restApiUrl}/api/skill-group/1/getSkills"
-    });
+]
+}
+);
 
 
-    var DynamicForm_thisSkillGroupHeader_Jsp = isc.DynamicForm.create({
-        titleWidth: "400",
-        width: "700",
-        align: "right",
-        autoDraw: false,
+function ListGrid_Skill_Group_Skills_refresh(){
+
+    if(ListGrid_Skill_Group_Jsp.getSelectedRecord()==null)
+        ListGrid_Skill_Group_Skills.setData([]);
+    else
+        ListGrid_Skill_Group_Skills.invalidateCache();
+}
+
+function ListGrid_Skill_Group_Competence_refresh(){
+
+if(ListGrid_Skill_Group_Jsp.getSelectedRecord()==null)
+ListGrid_Skill_Group_Competence.setData([]);
+else
+ListGrid_Skill_Group_Competence.invalidateCache();
+}
 
 
-        fields: [
-            //     {name: "id", type: "hidden", title: ""},
-            //     {
-            //         name: "titleFa",
-            //         type: "header",
-            //         title: "افزودن مهارت به گروه مهارت:",
-            //         wrapTitle: false,
-            //         width: "250",
-            //         align:"right"
-            //      }
-            //,
-            {
-                name: "sgTitle",
-                type: "staticText",
-                title: "افزودن مهارت به گروه مهارت:",
-                wrapTitle: false,
-                width: 250
-            }
-        ]
-    });
+var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
+		fields: [
+			{name: "id"},
+			{name: "titleFa"},
+			{name: "titleEn"},
+			{name: "description"},
+			{name: "version"}
+		], dataFormat: "json",
+		jsonPrefix: "",
+		jsonSuffix: "",
+		autoFetchData: false,
+		transformRequest: function (dsRequest) {
+			dsRequest.httpHeaders = {
+				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+				"Access-Control-Allow-Origin": "${restApiUrl}"
+			};
+			return this.Super("transformRequest", arguments);
+		}
+		// ,fetchDataURL:"${restApiUrl}/api/skill-group/1/getSkills"
+	});
 
 
-    var ListGrid_AllSkills = isc.ListGrid.create({
-        //title:"تمام مهارت ها",
-        width: "100%",
-        height: "100%",
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
-        autoFetchData: true,
-        dataSource: RestDataSource_All_Skills,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد مهارت", align: "center", width: "20%"},
-            {name: "titleFa", title: "نام مهارت", align: "center", width: "60%"},
-            {name: "titleEn", title: "نام لاتین مهارت", align: "center", hidden: true},
-            {name: "description", title: "توضیحات", align: "center", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        autoFetchData: true,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        dragTrackerMode: "title",
-        canDrag: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
+	var RestDataSource_All_Skills = isc.RestDataSource.create({
+		fields: [
+			{name: "id"},
+			{name: "code"},
+			{name: "titleFa"},
+			{name: "titleEn"},
+			{name: "description"},
+			{name: "version"}
+		], dataFormat: "json",
+		jsonPrefix: "",
+		jsonSuffix: "",
+		autoFetchData: false,
+		transformRequest: function (dsRequest) {
+			dsRequest.httpHeaders = {
+				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+				"Access-Control-Allow-Origin": "${restApiUrl}"
+			};
+			return this.Super("transformRequest", arguments);
+		}
+		, fetchDataURL: "${restApiUrl}/api/skill/spec-list"
+	});
+
+	var RestDataSource_ForThisSkillGroup_GetSkills = isc.RestDataSource.create({
+		fields: [
+			{name: "id"},
+			{name: "code"},
+			{name: "titleFa"},
+			{name: "titleEn"},
+			{name: "description"},
+			{name: "version"}
+		], dataFormat: "json",
+		jsonPrefix: "",
+		jsonSuffix: "",
+		autoFetchData: false,
+		transformRequest: function (dsRequest) {
+			dsRequest.httpHeaders = {
+				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
+				"Access-Control-Allow-Origin": "${restApiUrl}"
+			};
+			return this.Super("transformRequest", arguments);
+		}
+		//,fetchDataURL:"${restApiUrl}/api/skill-group/1/getSkills"
+	});
 
 
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-            // var activeSkill = record;
-            // var activeSkillId = activeSkill.id;
-            // var activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-            // var activeSkillGroupId = activeSkillGroup.id;
-
-            var skillGroupRecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-            var skillGroupId = skillGroupRecord.id;
-            //  alert(skillGroupId);
-            // var skillId=dropRecords[0].id;
-            var skillIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                skillIds.add(dropRecords[i].id);
-            }
-            ;
-
-            //  alert("${restApiUrl}/api/skill-group/addSkills/"+skillGroupId+"/"+skillIds);
-
-            var JSONObj = {"ids": skillIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                //${restApiUrl}/api/skill-group/addSkills/22/23%2C41
-                actionURL: "${restApiUrl}/api/skill-group/removeSkills/" + skillGroupId + "/" + skillIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
-                httpMethod: "DELETE",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                        ListGrid_ForThisSkillGroup_GetSkills.invalidateCache();
-                        ListGrid_AllSkills.invalidateCache();
+	var DynamicForm_thisSkillGroupHeader_Jsp = isc.DynamicForm.create({
+		titleWidth: "400",
+		width: "700",
+		align: "right",
+		autoDraw: false,
 
 
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
-            });
-        }
+		fields: [
 
-    });
+			{
+				name: "sgTitle",
+				type: "staticText",
+				title: "افزودن مهارت به گروه مهارت:",
+				wrapTitle: false,
+				width: 250
+			}
+		]
+	});
+
+
+	var ListGrid_AllSkills = isc.ListGrid.create({
+		//title:"تمام مهارت ها",
+		width: "100%",
+		height: "100%",canDragResize:true,
+
+		canDragRecordsOut: true,
+		canAcceptDroppedRecords: true,
+		autoFetchData: true,
+		dataSource: RestDataSource_All_Skills,
+		fields: [
+			{name: "id", title: "id", primaryKey: true, hidden: true},
+			{name: "code", title: "کد مهارت", align: "center", width: "20%"},
+			{name: "titleFa", title: "نام مهارت", align: "center", width: "60%"},
+			{name: "titleEn", title: "نام لاتین مهارت", align: "center", hidden: true},
+			{name: "description", title: "توضیحات", align: "center", hidden: true},
+			{name: "version", title: "version", canEdit: false, hidden: true}
+		],
+		sortField: 1,
+		sortDirection: "descending",
+		dataPageSize: 22,
+		autoFetchData: true,
+		showFilterEditor: true,
+		filterOnKeypress: true,
+		dragTrackerMode: "title",
+		canDrag: true,
+		sortFieldAscendingText: "مرتب سازی صعودی ",
+		sortFieldDescendingText: "مرتب سازی نزولی",
+		configureSortText: "تنظیم مرتب سازی",
+		autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+		autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+		filterUsingText: "فیلتر کردن",
+		groupByText: "گروه بندی",
+		freezeFieldText: "ثابت نگه داشتن",
+
+
+		recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+
+			// var activeSkill = record;
+			// var activeSkillId = activeSkill.id;
+			// var activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
+			// var activeSkillGroupId = activeSkillGroup.id;
+
+			var skillGroupRecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
+			var skillGroupId = skillGroupRecord.id;
+			//  alert(skillGroupId);
+			// var skillId=dropRecords[0].id;
+			var skillIds = new Array();
+			for (i = 0; i < dropRecords.getLength(); i++) {
+				skillIds.add(dropRecords[i].id);
+			}
+			;
+
+			//  alert("${restApiUrl}/api/skill-group/addSkills/"+skillGroupId+"/"+skillIds);
+
+			var JSONObj = {"ids": skillIds};
+			isc.RPCManager.sendRequest({
+				httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+				useSimpleHttp: true,
+				contentType: "application/json; charset=utf-8",
+				//${restApiUrl}/api/skill-group/addSkills/22/23%2C41
+				actionURL: "${restApiUrl}/api/skill-group/removeSkills/" + skillGroupId + "/" + skillIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
+				httpMethod: "DELETE",
+				data: JSON.stringify(JSONObj),
+				serverOutputAsString: false,
+				callback: function (resp) {
+					if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+						ListGrid_ForThisSkillGroup_GetSkills.invalidateCache();
+						ListGrid_AllSkills.invalidateCache();
+
+
+					} else {
+						isc.say("خطا");
+					}
+				}
+			});
+		}
+
+	});
 
 
     var ListGrid_ForThisSkillGroup_GetSkills = isc.ListGrid.create({
@@ -667,7 +661,6 @@
     });
 
 
-
     function ListGrid_Skill_Group_edit() {
         var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -730,6 +723,8 @@
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Skill_Group_Jsp.invalidateCache();
                                     simpleDialog("عملیات موفق", "حذف با موفقیت انجام شد", 2000, "say");
+ListGrid_Skill_Group_Skills.setData([]);
+ListGrid_Skill_Group_Competence.setData([]);
 
                                 } else {
                                     simpleDialog("پیام خطا", "حذف با خطا مواجه شد", 2000, "stop");
@@ -742,7 +737,7 @@
             });
 
 
-            //---
+
         }
     };
 
@@ -774,7 +769,7 @@
         titleAlign: "right",
         requiredMessage: "فیلد اجباری است.",
         validateOnExit: true,
-        //numCols: 2,
+        numCols: 2,
         wrapTitle: false,
 
         colWidths: [140, "*"],
@@ -788,7 +783,7 @@
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 title: "نام گروه مهارت",
-                //keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithNumber, MyValidators.NotStartWithSpecialChar, MyValidators.NotContainSpecialChar],
                 length: "500",
                 width: "*",
@@ -805,7 +800,7 @@
                 title: "نام لاتین گروه مهارت ",
                 hint: "English/انگلیسی",
                 showHintInField: true,
-                keyPressFilter: "[a-z|A-Z|0-9]",
+                keyPressFilter: "[a-z|A-Z|0-9 |]",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithNumber, MyValidators.NotStartWithSpecialChar],
             },
             {
@@ -817,7 +812,7 @@
                 title: "توضیحات",
                 hint: "توضیحات",
                 showHintInField: true,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar],
             }
         ]
@@ -1116,6 +1111,7 @@
 
 
                     ListGrid_Skill_Group_Competence.invalidateCache();
+
                 }
             }
         },
@@ -1395,9 +1391,10 @@
             ToolStripButton_Add_Skill_Group_Jsp,
             ToolStripButton_Edit_Skill_Group_Jsp,
             ToolStripButton_Remove_Skill_Group_Jsp,
+ToolStripButton_Add_Skill_Group_AddSkill_Jsp,
             ToolStripButton_Print_Skill_Group_Jsp,
             ToolStripButton_PrintAll_Skill_Group_Jsp,
-            ToolStripButton_Add_Skill_Group_AddSkill_Jsp]
+            ]
     });
 
 
