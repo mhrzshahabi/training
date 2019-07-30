@@ -66,7 +66,7 @@
 				<reportElement x="30" y="5" width="100" height="77" uuid="6cfbe028-4df1-4993-8016-65b7a6d60468"/>
 				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
 			</image>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="167" y="19" width="239" height="30" uuid="c7d3f184-138c-45cb-82f6-6729da5dd466"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="Shabnam-ED" size="15" isBold="true"/>
@@ -104,7 +104,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="62618ecd-0ef4-4a44-ae46-1e9c60d441d5"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
@@ -128,7 +128,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="90" height="30" uuid="4a2e3c09-02bb-4dc1-9e11-71b56ff82a46"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
@@ -160,7 +160,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="150" height="30" uuid="f94403f0-e33e-45e1-844d-210e995824ae"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -194,7 +194,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="180" height="30" uuid="584747fe-d846-451b-8fe8-d3951a7f9918"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -223,7 +223,7 @@
 				</textElement>
 				<text><![CDATA[تاریخ چاپ:]]></text>
 			</staticText>
-			<textField>
+			<textField isBlankWhenNull="true">
 				<reportElement x="22" y="10" width="72" height="21" uuid="767bdd9f-086f-4ce0-baa6-99885fadc917"/>
 				<textElement textAlignment="Left" verticalAlignment="Middle">
 					<font fontName="Shabnam-FD" size="9" isBold="true"/>
