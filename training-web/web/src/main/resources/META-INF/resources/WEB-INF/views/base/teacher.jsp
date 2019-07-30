@@ -1165,6 +1165,7 @@
     var TabSet_AccountInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
+        height: "150",
         tabs: [
             {
                 title: "<spring:message code='account.information'/>", canClose: false,
@@ -1248,7 +1249,7 @@
         isModal: true,
         showModalMask: true,
         autoDraw: false,
-        dismissOnEscape: false,
+        dismissOnEscape: true,
         border: "1px solid gray",
         items: [isc.VLayout.create({
             width: "100%",
