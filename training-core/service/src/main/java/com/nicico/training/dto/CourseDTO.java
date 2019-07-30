@@ -86,7 +86,6 @@ public class CourseDTO implements Serializable {
         private ETheoType eTheoType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-
     }
 
     //-------------------------------

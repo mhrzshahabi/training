@@ -26,6 +26,7 @@
     var RestDataSource_course = isc.MyRestDataSource.create({
         ID: "courseDS",
         fields: [{name: "id", type: "Integer", primaryKey: true},
+            {name:"code"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "category.titleFa"},
@@ -82,8 +83,7 @@
             };
             return this.Super("transformRequest", arguments);
         },
-        fetchDataURL: "${restApiUrl}/api/sub-category/spec-list",
-        autoFetchData: true,
+
     });
     var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
         fields: [
@@ -232,23 +232,29 @@
         code="course_subcategory"/>", align: "center", filterOperator: "contains"
             },
             {
-                name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center", filterOperator: "contains"
+                name: "erunType.titleFa", title: "<spring:message code="course_eruntype"/>", align: "center", filterOperator: "contains",
+                allowFilterOperators:false,
+canFilter:false
+
             },
             {
                 name: "elevelType.titleFa", title: "<spring:message
-        code="cousre_elevelType"/>", align: "center", filterOperator: "contains"
+        code="cousre_elevelType"/>", align: "center", filterOperator: "contains",
+                canFilter:false
             },
             {
                 name: "etheoType.titleFa", title: "<spring:message
-        code="course_etheoType"/>", align: "center", filterOperator: "contains"
+        code="course_etheoType"/>", align: "center", filterOperator: "contains",
+            canFilter:false
             },
             {
                 name: "theoryDuration", title: "<spring:message
-        code="course_theoryDuration"/>", align: "center", filterOperator: "contains"
+        code="course_theoryDuration"/>", align: "center", filterOperator: "equals"
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
-        code="course_etechnicalType"/>", align: "center", filterOperator: "contains"
+        code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
+                canFilter:false
             },
             {
                 name: "minTeacherDegree", title: "<spring:message
@@ -256,11 +262,11 @@
             },
             {
                 name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains"
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "equals"
             },
             {
                 name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "equals"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
@@ -420,7 +426,7 @@
                     title: "<spring:message code='print'/>",
                     click: function () {
                     if (ListGrid_Course.getCriteria().operator == undefined) {
-                        <spring:url value="/course/print/pdf" var="printUrl"/>
+                        <spring:url value="/course/print/html" var="printUrl"/>
                         window.open('${printUrl}');
                     }
 
@@ -448,7 +454,7 @@
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
-        height: 380,
+        height: 360,
         align: "center",
         titleAlign: "center",
         showInlineErrors: true,
@@ -471,11 +477,11 @@
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
                 colSpan: 2,
-                length: "250",
+                length: "230",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9]",
                 height: "30",
-                width: "319",
+                width: "285",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
             {
@@ -512,10 +518,11 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
+
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
                     RestDataSourceSubCategory.fetchDataURL = "http://localhost:9090/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
-                    DynamicForm_course.getItem("subCategory.id").setValue("");
+                    // DynamicForm_course.getItem("subCategory.id").setValue("");
                 },
             },
             {
@@ -531,7 +538,7 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
-                autoFetchData: true,
+                autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: false,
@@ -816,7 +823,7 @@
     });
     var IButton_course_Save = isc.IButton.create({
 
-// align: "center",
+       align: "center",
         title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_course.validate();
@@ -904,12 +911,10 @@
         }
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
-//-------------
-// defaultLayoutAlign: "center",
-// verticalAlign: "center",
+
         alignment: "center",
-        align: "center",
-// defaultLayoutAlign: "center",
+         padding:6,
+         align: "center",
         membersMargin: 10,
         members: [IButton_course_Save, isc.IButton.create({
             ID: "EditExitIButton",
@@ -924,7 +929,7 @@
         })]
     });
     var Window_course = isc.Window.create({
-        width: "900",
+        width: "800",
         autoSize: true,
         autoCenter: true,
         isModal: true,
