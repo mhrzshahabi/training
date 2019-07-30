@@ -114,7 +114,7 @@
             var data = DynamicForm_Category.getValues();
 
             isc.RPCManager.sendRequest({
-                actionURL: category_BaseUrl,
+                actionURL: url,
                 httpMethod: method,
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
