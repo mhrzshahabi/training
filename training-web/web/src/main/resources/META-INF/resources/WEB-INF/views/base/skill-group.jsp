@@ -1028,7 +1028,7 @@ ListGrid_Skill_Group_Competence.setData([]);
 
 
                     isc.RPCManager.sendRequest({
-                        actionURL: "http://localhost:9090/api/skill-group/" + skillGrouprecord.id + "/canDelete",
+                        actionURL: "http://localhost:9094/api/skill-group/" + skillGrouprecord.id + "/canDelete",
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                         useSimpleHttp: true,
@@ -1287,7 +1287,7 @@ ListGrid_Skill_Group_Competence.setData([]);
 
 
                 isc.RPCManager.sendRequest({
-                    actionURL: "http://localhost:9090/api/skill-group/" + activeSkillGrouprecord.id + "/canDelete",
+                    actionURL: "http://localhost:9094/api/skill-group/" + activeSkillGrouprecord.id + "/canDelete",
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                     useSimpleHttp: true,

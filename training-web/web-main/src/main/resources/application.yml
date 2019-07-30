@@ -52,7 +52,7 @@ nicico:
       cookie:
         domain: localhost
   rest-api:
-    url: http://localhost:9090
+    url: http://localhost:9094
 
 logging:
   level:
@@ -93,7 +93,7 @@ nicico:
       cookie:
         domain: localhost
   rest-api:
-    url: http://localhost:9090
+    url: http://localhost:9094
 
 logging:
   level:
