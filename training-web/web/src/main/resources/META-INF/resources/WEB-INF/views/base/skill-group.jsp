@@ -667,6 +667,7 @@
     });
 
 
+
     function ListGrid_Skill_Group_edit() {
         var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
