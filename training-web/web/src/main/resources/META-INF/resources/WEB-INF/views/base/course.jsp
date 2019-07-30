@@ -140,6 +140,11 @@
         data: [{
             title: "<spring:message code="refresh"/>", icon: "pieces/16/refresh.png", click: function () {
                 ListGrid_Course_refresh();
+                ListGrid_CourseJob.setData([]);
+                ListGrid_CourseSkill.setData([]);
+                ListGrid_CourseSyllabus.setData([]);
+                ListGrid_CourseGoal.setData([]);
+                ListGrid_CourseCompetence.setData([]);
             }
         }, {
             title: "<spring:message code="create"/>", icon: "pieces/16/icon_add.png", click: function () {
@@ -426,7 +431,7 @@ canFilter:false
                     title: "<spring:message code='print'/>",
                     click: function () {
                     if (ListGrid_Course.getCriteria().operator == undefined) {
-                        <spring:url value="/course/print/html" var="printUrl"/>
+                        <spring:url value="/course/print/pdf" var="printUrl"/>
                         window.open('${printUrl}');
                     }
 
@@ -931,6 +936,7 @@ canFilter:false
     var Window_course = isc.Window.create({
         width: "800",
         autoSize: true,
+        canDragReposition:false,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
