@@ -216,4 +216,15 @@ public class CourseDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CourseGoalsSyllabus")
+    public static class GoalsWithSyllabus extends CourseDTO {
+        private ETechnicalType eTechnicalType;
+        private List<GoalDTO.Syllabuses> goalSet;
+    }
 }

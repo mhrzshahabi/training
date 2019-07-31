@@ -48,6 +48,8 @@
     const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
+    const goalUrl = rootUrl + "/goal/";
+    const syllabusUrl = rootUrl + "/syllabus/";
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -800,8 +802,10 @@
             }
             if(tabTitle.substr(0,4) == "دوره"){
                 setTimeout(function () {
-
-                   ListGrid_CourseGoal.invalidateCache();
+                    ListGrid_CourseCompetence.invalidateCache();
+                    ListGrid_CourseSkill.invalidateCache();
+                    ListGrid_CourseJob.invalidateCache();
+                    ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
                         RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/"+courseId.id;
                         ListGrid_CourseSyllabus.fetchData();

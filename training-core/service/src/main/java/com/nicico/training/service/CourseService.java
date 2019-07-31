@@ -100,6 +100,16 @@ public class CourseService implements ICourseService {
         return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
     }
 
+    //-------jafari--------
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request) {
+        SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.GoalsWithSyllabus.class));
+        return search;
+    }
+    //-------jafari--------
+
+
     @Transactional
     @Override
     public List<GoalDTO.Info> getgoal(Long courseId) {

@@ -22,7 +22,10 @@ public interface ICourseService {
 
 	SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request);
 
-	List<GoalDTO.Info> getgoal(Long courseId);
+    //-------jafari--------
+    SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchDetails(SearchDTO.SearchRq request);
+
+    List<GoalDTO.Info> getgoal(Long courseId);
 	List<GoalDTO.Info> getGoalWithOut(Long courseId);
 	List<SkillDTO.Info> getSkill(Long courseId);
 

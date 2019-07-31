@@ -81,5 +81,26 @@ public class CourseFormController {
 	}
 
 
+	@PostMapping("/printGoalsAndSyllabus")
+	public ResponseEntity<?> printGoalsAndSyllabus(final HttpServletRequest request) {
+		String token = (String) request.getSession().getAttribute("token");
+
+		final RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+		final HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
+
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		return restTemplate.exchange(restApiUrl + "/api/course/GoalsAndSyllabus/pdf", HttpMethod.POST, entity, byte[].class);
+	}
+
+
 
 }
