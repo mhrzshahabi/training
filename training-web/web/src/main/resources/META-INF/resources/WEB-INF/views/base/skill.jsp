@@ -1278,45 +1278,82 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
             ListGrid_Skill_Skill_Edit();
         }
     });
-    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
-        click: function () {
-            <%--skill_Method = "POST";--%>
-            <%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
-            <%--DynamicForm_Skill_Skill.clearValues();--%>
-            <%--Window_Skill_Skill.show();--%>
-            ListGrid_Skill_Skill_Add();
-        }
-    });
-    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
-        click: function () {
-            ListGrid_Skill_Skill_Remove();
-        }
-    });
-    var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
-        click: function () {
-            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-            window.open('${printUrl}');
-        }
-    });
-    var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
-        width: "100%",
-        members: [
-            ToolStripButton_Skill_Skill_Refresh,
-            ToolStripButton_Skill_Skill_Add,
-            ToolStripButton_Skill_Skill_Edit,
-            ToolStripButton_Skill_Skill_Remove,
-            ToolStripButton_Skill_Skill_Print
-        ]
-    });
+var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
+icon: "[SKIN]/actions/add.png",
+title: "ایجاد",
+click: function () {
+<%--skill_Method = "POST";--%>
+<%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
+<%--DynamicForm_Skill_Skill.clearValues();--%>
+<%--Window_Skill_Skill.show();--%>
+ListGrid_Skill_Skill_Add();
+}
+});
+var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
+icon: "[SKIN]/actions/remove.png",
+title: "حذف",
+click: function () {
+ListGrid_Skill_Skill_Remove();
+}
+});
+var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
+icon: "[SKIN]/RichTextEditor/print.png",
+title: "چاپ",
+click: function () {
+"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
+window.open('${printUrl}');
+}
+});
+var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
+width: "100%",
+members: [
+ToolStripButton_Skill_Skill_Refresh,
+ToolStripButton_Skill_Skill_Add,
+ToolStripButton_Skill_Skill_Edit,
+ToolStripButton_Skill_Skill_Remove,
+ToolStripButton_Skill_Skill_Print
+]
+});
 
 
     // Start Block Add Skill Groups To Skill ---------------------------------------------------------------
+
+var ToolStripButton_Skill_AddSkillGroup_Select_Single = isc.ToolStripButton.create({
+ icon: "pieces/512/right-arrow.png",
+// title: ">",
+click: function () {
+}
+});
+var ToolStripButton_Skill_AddSkillGroup_Select_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+title: ">>",
+click: function () {
+}
+});
+var ToolStripButton_Skill_AddSkillGroup_Deselect_Single = isc.ToolStripButton.create({
+icon: "pieces/512/left-arrow.png",
+// title: "<",
+click: function () {
+}
+});
+var ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+title: "<<",
+click: function () {
+}
+});
+var ToolStrip_Skill_AddSkillGroup = isc.ToolStrip.create({
+height: "100%",
+vertical: true,
+align:"center",
+alignLayout: "center",
+members: [
+ToolStripButton_Skill_AddSkillGroup_Select_Single,
+ToolStripButton_Skill_AddSkillGroup_Deselect_Single,
+ToolStripButton_Skill_AddSkillGroup_Select_Multiple,
+ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
+]
+});
 
     var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.MyDynamicForm.create({
         titleWidth: 400,
@@ -1584,11 +1621,23 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
         ]
     });
 
+    var VLayOut_Skill_SkillGroup_Add_Action = isc.VLayout.create({
+width: 100,
+height: "100%",
+autoDraw: false,
+// border: "0px solid red", layoutMargin: 5,
+align:"center",
+alignLayout: "center",
+members: [ToolStrip_Skill_AddSkillGroup
+]
+});
+
     var HStack_Skill_AddSkillGroup = isc.HStack.create({
         membersMargin: 10,
         height: 500,
         members: [
             SectionStack_Skill_UnAttached_SkillGroup,
+            VLayOut_Skill_SkillGroup_Add_Action,
             SectionStack_Skill_Attached_SkillGroup
         ]
     });
@@ -1685,6 +1734,7 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
         }
         ListGrid_Skill_Attached_SkillGroups.invalidateCache();
     };
+
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
     // Start Block Add Competences To Skill ---------------------------------------------------------------
 
