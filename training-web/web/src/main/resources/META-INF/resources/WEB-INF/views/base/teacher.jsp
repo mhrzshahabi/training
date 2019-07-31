@@ -399,7 +399,6 @@
                     codeMeliCheck = codeCheck;
                     if (codeCheck == false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode", "<spring:message code='msg.national.code.validation'/>", true);
-
                     if (codeCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
                 }
