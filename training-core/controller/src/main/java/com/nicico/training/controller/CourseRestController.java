@@ -293,6 +293,7 @@ public class CourseRestController {
         reportUtil.export("/reports/Course.jasper", params, response);
     }
 
+
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
@@ -305,10 +306,27 @@ public class CourseRestController {
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-    //    JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
           JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
    }
+
+
+
+    @Loggable
+    @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
+    public void printGoalsAndSyllabus(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        final SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchRs = iCourseService.searchDetails(searchRq);
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/test.jasper", params, jsonDataSource, response);
+    }
 
 }

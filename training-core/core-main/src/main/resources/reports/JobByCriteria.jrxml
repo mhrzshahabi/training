@@ -112,7 +112,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="120" height="30" uuid="0159b771-a77e-4a59-ba0d-14ea4721c7d6"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -145,7 +145,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="3b07c06e-9904-4c08-9954-659dddc6fa28"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -181,7 +181,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="6c727ca5-87eb-4580-9af9-354bc7ce34af"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -217,7 +217,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="100" height="30" uuid="348dbefd-952a-4ce4-8882-87ab604e8b08"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -250,7 +250,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="100" height="30" uuid="4906f648-9649-420d-8897-4515f3421241"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>

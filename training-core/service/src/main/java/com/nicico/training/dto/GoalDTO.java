@@ -100,5 +100,14 @@ public class GoalDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+    //-------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class Syllabuses extends GoalDTO{
+        private List<SyllabusDTO.SyllabusInfoTuple> syllabusSet;
+    }
 
 }

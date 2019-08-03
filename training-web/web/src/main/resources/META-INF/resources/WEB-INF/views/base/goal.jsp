@@ -4,9 +4,9 @@
 
 //<script>
     var methodGoal = "GET";
-    var urlGoal = "http://localhost:9094/api/goal";
+    var urlGoal = goalUrl;
     var methodSyllabus = "GET";
-    var urlSyllabus = "http://localhost:9094/api/syllabus";
+    var urlSyllabus = syllabusUrl;
     var selectedRecord = 0;
 
     var RestDataSourceGoalEDomainType = isc.MyRestDataSource.create({
@@ -513,7 +513,7 @@
         ],
         selectionType: "multiple",
         selectionChanged: function (record, state) {
-            RestDataSource_Syllabus_JspGoal.fetchDataURL = "http://localhost:9094/api/goal/" + record.id + "/syllabus";
+            RestDataSource_Syllabus_JspGoal.fetchDataURL = goalUrl + record.id + "/syllabus";
         },
         sortField: 1,
         sortDirection: "descending",
@@ -546,7 +546,7 @@
         },
         dataSource: RestDataSource_CourseGoal,
         selectionChanged: function (record, state) {
-            RestDataSource_Syllabus_JspGoal.fetchDataURL = "http://localhost:9094/api/goal/" + record.id + "/syllabus";
+            RestDataSource_Syllabus_JspGoal.fetchDataURL = goalUrl + record.id + "/syllabus";
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -787,11 +787,9 @@
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
-// data: JSON.stringify(vsRecord,goalRecord),
                         serverOutputAsString: false,
                         callback: function (resp) {
                             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
                                 ListGrid_GoalAll.invalidateCache();
                                 ListGrid_CourseGoal_Goal.invalidateCache();
                                 ListGrid_Goal.invalidateCache();
@@ -981,7 +979,7 @@
             });
         } else {
             methodGoal = "PUT";
-            urlGoal = "http://localhost:9094/api/goal/" + record.id;
+            urlGoal = goalUrl + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
             Window_Goal.setTitle("ویرایش هدف");
@@ -1050,7 +1048,7 @@
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: "http://localhost:9094/api/syllabus/" + record.id,
+                            actionURL: syllabusUrl + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1095,7 +1093,7 @@
         } else {
             selectedGoalId = gRecord.id;
             methodSyllabus = "POST";
-            urlSyllabus = "http://localhost:9094/api/syllabus";
+            urlSyllabus = syllabusUrl;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.setTitle("ایجاد سرفصل");
@@ -1117,7 +1115,7 @@
             });
         } else {
             methodSyllabus = "PUT";
-            urlSyllabus = "http://localhost:9094/api/syllabus/" + sRecord.id;
+            urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
             Window_Syllabus.setTitle("ویرایش سرفصل");

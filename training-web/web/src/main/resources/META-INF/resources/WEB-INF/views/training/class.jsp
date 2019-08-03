@@ -9,6 +9,10 @@
     var method = "POST";
     var url = "${restApiUrl}/api/tclass";
 
+    var str1 = "";
+    var str2 = "";
+    var str3 = "";
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -437,7 +441,19 @@
                 changed: function (form, item, value) {
                 },
             }
-        ]
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name == "courseId" || item.name == "startDate" || item.name == "group") {
+                if(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord() != undefined)
+                        str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
+                if(DynamicForm_Class_JspClass.getItem("startDate").getValue() != undefined)
+                    str2 = DynamicForm_Class_JspClass.getItem("startDate").getValue().substring(0,4);
+                if(DynamicForm_Class_JspClass.getItem("group").getValue() != undefined)
+                    str3 = DynamicForm_Class_JspClass.getItem("group").getValue();
+                var code_value = str1 + "-" + str2 + "-" + str3;
+                DynamicForm_Class_JspClass.getItem("code").setValue(code_value);
+            }
+        }
     });
 
     var IButton_Class_Exit_JspClass = isc.IButton.create({
@@ -468,14 +484,6 @@
             if (DynamicForm_Class_JspClass.hasErrors()) {
                 return;
             }
-
-            var str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
-            var str2 = DynamicForm_Class_JspClass.getItem("startDate").getValue().substring(0, 4);
-            var str3 = DynamicForm_Class_JspClass.getItem("group").getValue();
-
-            var code_value = str1 + "-" + str2 + "-" + str3;
-
-            DynamicForm_Class_JspClass.getItem("code").setValue(code_value);
 
             var data = DynamicForm_Class_JspClass.getValues();
 

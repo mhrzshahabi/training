@@ -110,7 +110,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="130" height="30" uuid="9e2865c6-46e7-4f08-9f48-ef3b42dbf135"/>
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8"/>
@@ -142,7 +142,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="100" height="30" uuid="500fc653-a3a2-4177-a95f-5cff957a1be5"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -175,7 +175,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="60" height="30" uuid="051797f4-b70b-4e30-94b1-a8e74718ea8b"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -211,7 +211,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="60" height="30" uuid="53a00a77-de84-4c9b-a433-70e227a941d4"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -247,7 +247,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="100" height="30" uuid="3538fa3e-9f27-4ebd-9288-10450a3055c6"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>
@@ -280,7 +280,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="100" height="30" uuid="67b47576-9bfc-403d-8388-8f466adb9df2"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8"/>

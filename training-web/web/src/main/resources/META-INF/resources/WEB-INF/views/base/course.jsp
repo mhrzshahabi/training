@@ -452,10 +452,29 @@ canFilter:false
                     }
                     }
                     });
+    var ToolStripButton_Print_Detail = isc.ToolStripButton.create({
+                    icon: "[SKIN]/RichTextEditor/print.png",
+                    title: "<spring:message code='course_print_detail'/>",
+                    click: function () {
+                    var advancedCriteria = ListGrid_Course.getCriteria();
+                    var criteriaForm = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "/course/printGoalsAndSyllabus",
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                    [
+                    {name: "CriteriaStr", type: "hidden"}
+                    ]
+                    });
+                    criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+                    criteriaForm.submitForm();
+                    }
+                    });
     //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print, ToolStripButton_Print_Detail]
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
