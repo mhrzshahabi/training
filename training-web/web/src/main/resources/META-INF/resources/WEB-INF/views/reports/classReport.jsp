@@ -157,7 +157,7 @@
                 name: "group",
                 title: "<spring:message code='group'/>",
                 operator: "equals",
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "4",
                 validators: [{
                     type: "isInteger", validateOnExit: true, stopOnError: true,

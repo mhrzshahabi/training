@@ -286,7 +286,7 @@
             {
                 name: "duration",
                 title: "<spring:message code='duration'/>",
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "4",
                 validators: [{
                     type: "isInteger", validateOnExit: true, stopOnError: true,
@@ -406,7 +406,7 @@
                 name: "group",
                 title: "<spring:message code='group'/>",
                 required: true,
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "4",
                 validators: [{
                     type: "isInteger", validateOnExit: true, stopOnError: true,
