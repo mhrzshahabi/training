@@ -296,13 +296,17 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        selectionType: "single",
+        selectionType: "none",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             RestDataSource_Syllabus.fetchDataURL = "http://localhost:9094/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
         },
         sortField: 1,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
         autoFetchData: false,
     });
     var ListGrid_CourseSkill = isc.MyListGrid.create({
@@ -313,7 +317,12 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        autoFetchData: false
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+selectionType: "none",
     });
     var ListGrid_CourseJob = isc.MyListGrid.create({
 
@@ -324,8 +333,12 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-
-        autoFetchData: false
+selectionType: "none",
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
     });
     var ListGrid_CourseCompetence = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseCompetence,
@@ -334,7 +347,12 @@ canFilter:false
             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"}
         ],
-        autoFetchData: false
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+selectionType: "none",
     });
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
@@ -348,8 +366,12 @@ canFilter:false
             {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-
+selectionType: "none",
         autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
     });
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
