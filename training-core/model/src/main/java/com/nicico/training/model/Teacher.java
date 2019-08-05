@@ -35,6 +35,7 @@ public class Teacher extends Person {
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
 	private Set<Category> categories;
+	
 
 	@Column(name = "c_economical_code")
 	private String economicalCode;
