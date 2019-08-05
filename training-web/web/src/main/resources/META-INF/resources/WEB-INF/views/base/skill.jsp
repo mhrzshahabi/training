@@ -342,10 +342,10 @@
         freezeFieldText: "ثابت نگه داشتن",
         autoFetchData: false,
         doubleClick: function () {
-if (method_Skill_Select_Competence() == 1) {
-Window_Skill_All_Competence.close();
-}
-},
+            if (method_Skill_Select_Competence() == 1) {
+                Window_Skill_All_Competence.close();
+            }
+        },
         sortField: 0,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -381,9 +381,9 @@ Window_Skill_All_Competence.close();
     var HLayout_Skill_All_Competence_Action = isc.HLayout.create({
         width: "100%",
         height: "30",
-        align:"center",
-padding: 10,
-membersMargin: 10,
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
 
         <%--border: "2px solid blue",--%>
         members: [
@@ -421,7 +421,7 @@ membersMargin: 10,
         title: "شایستگی ها",
         width: "1000",
         height: "500",
-      //  autoSize: true,
+// autoSize: true,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
@@ -454,14 +454,12 @@ membersMargin: 10,
             {name: "id", hidden: true},
             {
                 name: "code",
-                hint: " کد مهارت",
-                showHintInField: true,
                 colSpan: 2,
                 title: "کد مهارت",
                 length: 10,
-                type: 'text',
+                type: 'staticText',
                 required: false,
-                // editable:false,
+// editable:false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
             },
@@ -474,7 +472,7 @@ membersMargin: 10,
                 type: 'text',
                 default: "125",
                 readonly: true,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255",
                 width: "300",
                 validators: [{
@@ -488,7 +486,7 @@ membersMargin: 10,
                 name: "titleEn",
                 title: "عنوان لاتین ",
                 type: 'text',
-                keyPressFilter: "[a-z|A-Z|0-9 ]",
+                keyPressFilter: "[a-z|A-Z|0-9| ]",
                 hint: " عنوان لاتین",
                 showHintInField: true,
                 length: "255",
@@ -671,26 +669,26 @@ membersMargin: 10,
             },
             {
                 name: "defaultCompetenceId",
-                hidden:true
+                hidden: true
             },
             {
                 name: "defaultCompetenceTitle",
-title: "شایستگی",
-icons: [{
-name: "add",
-src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
-inline: true
-}],
-iconWidth: 16,
-iconHeight: 16,
+                title: "شایستگی",
+                icons: [{
+                    name: "add",
+                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
+                    inline: true
+                }],
+                iconWidth: 16,
+                iconHeight: 16,
                 width: "317",
                 colSpan: 3,
-                canEdit:false,
+                canEdit: false,
                 textAlign: "right",
-click: function (form, item, icon) {
-//  item.clearValue();
-method_skill_Show_Competences();
-},
+                click: function (form, item, icon) {
+// item.clearValue();
+                    method_skill_Show_Competences();
+                },
                 editorType: "text"
             },
             {
@@ -710,7 +708,9 @@ method_skill_Show_Competences();
         top: 260, title: "ذخیره", icon: "pieces/16/save.png",
         click: function () {
             if (skill_Method == "POST") {
-                var sub_cat_code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
+                var sub_cat_code;
+                if (DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord() != null)
+                    sub_cat_code = DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord().code;
                 DynamicForm_Skill_Skill.getItem('code').setValue(sub_cat_code + skill_Level_Symbol);
             }
             DynamicForm_Skill_Skill.validate();
@@ -934,9 +934,9 @@ method_skill_Show_Competences();
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "هیچ مهارتی انتخاب نشده است.",
+                    message: "لطفا یک مهارت را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
-                    title: "پیغام",
+                    title: "توجه",
                     buttons: [isc.Button.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -955,7 +955,7 @@ method_skill_Show_Competences();
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "هیچ مهارتی انتخاب نشده است.",
+                    message: "لطفا یک مهارت را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
                     buttons: [isc.Button.create({title: "تائید"})],
@@ -974,7 +974,7 @@ method_skill_Show_Competences();
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "هیچ مهارتی انتخاب نشده است.",
+                    message: "لطفا یک مهارت را انتخاب کنید",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
                     buttons: [isc.Button.create({title: "تائید"})],
@@ -1017,13 +1017,11 @@ method_skill_Show_Competences();
 
 
     function ListGrid_Skill_Skill_Remove() {
-
-
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "مهارتی برای حذف انتخاب نشده است!",
+                message: "هیچ مهارتی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
@@ -1096,7 +1094,7 @@ method_skill_Show_Competences();
             isc.Dialog.create({
                 message: "هیچ مهارتی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -1114,10 +1112,11 @@ method_skill_Show_Competences();
             DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
-DynamicForm_Skill_Skill.getItem("code").visible = true;
-DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = false;
-DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(false);
-            Window_Skill_Skill.setTitle(" ویرایش مهارت  " + getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
+            DynamicForm_Skill_Skill.getItem("code").visible = true;
+            DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = false;
+            DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(false);
+            DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(false);
+            Window_Skill_Skill.setTitle(" ویرایش مهارت " + getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
             Window_Skill_Skill.show();
 
         }
@@ -1131,8 +1130,9 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(false);
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
         DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("code").visible = false;
-DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = true;
-DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
+        DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = true;
+        DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
+        DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(true);
         Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
         Window_Skill_Skill.show();
     };
@@ -1198,14 +1198,14 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center"},
-            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center"},
-            {name: "category.titleFa", title: "رسته", align: "center"},
-            {name: "subCategory.titleFa", title: "زیر رسته", align: "center"},
-            {name: "description", title: "توضیحات", align: "center", hidden: true}
+            {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
+            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center", filterOperator: "iContains"},
+            {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
+            {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
         selectionChanged: function (record, state) {
@@ -1278,88 +1278,201 @@ DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
             ListGrid_Skill_Skill_Edit();
         }
     });
-var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
-icon: "[SKIN]/actions/add.png",
-title: "ایجاد",
-click: function () {
-<%--skill_Method = "POST";--%>
-<%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
-<%--DynamicForm_Skill_Skill.clearValues();--%>
-<%--Window_Skill_Skill.show();--%>
-ListGrid_Skill_Skill_Add();
-}
-});
-var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
-icon: "[SKIN]/actions/remove.png",
-title: "حذف",
-click: function () {
-ListGrid_Skill_Skill_Remove();
-}
-});
-var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
-icon: "[SKIN]/RichTextEditor/print.png",
-title: "چاپ",
-click: function () {
-"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-window.open('${printUrl}');
-}
-});
-var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
-width: "100%",
-members: [
-ToolStripButton_Skill_Skill_Refresh,
-ToolStripButton_Skill_Skill_Add,
-ToolStripButton_Skill_Skill_Edit,
-ToolStripButton_Skill_Skill_Remove,
-ToolStripButton_Skill_Skill_Print
-]
-});
+    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/add.png",
+        title: "ایجاد",
+        click: function () {
+            <%--skill_Method = "POST";--%>
+            <%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
+            <%--DynamicForm_Skill_Skill.clearValues();--%>
+            <%--Window_Skill_Skill.show();--%>
+            ListGrid_Skill_Skill_Add();
+        }
+    });
+    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            ListGrid_Skill_Skill_Remove();
+        }
+    });
+    var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "چاپ",
+        click: function () {
+            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
+            window.open('${printUrl}');
+        }
+    });
+    var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
+        width: "100%",
+        members: [
+            ToolStripButton_Skill_Skill_Refresh,
+            ToolStripButton_Skill_Skill_Add,
+            ToolStripButton_Skill_Skill_Edit,
+            ToolStripButton_Skill_Skill_Remove,
+            ToolStripButton_Skill_Skill_Print
+        ]
+    });
 
 
     // Start Block Add Skill Groups To Skill ---------------------------------------------------------------
 
-var ToolStripButton_Skill_AddSkillGroup_Select_Single = isc.ToolStripButton.create({
- icon: "pieces/512/right-arrow.png",
-// title: ">",
-click: function () {
-}
-});
-var ToolStripButton_Skill_AddSkillGroup_Select_Multiple = isc.ToolStripButton.create({
+    var ToolStripButton_Skill_AddSkillGroup_Select_Single = isc.ToolStripButton.create({
+        // icon: "pieces/512/right-arrow.png",
+        width: 300,
+        title: getFormulaMessage(">", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skillGroupRecord = ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord();
+                var skillGroupId = skillGroupRecord.id;
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-skill-group/" + skillGroupId + "/" + skillId,
+                    httpMethod: "POST",
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_SkillGroup.invalidateCache();
+                            ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddSkillGroup_Select_Multiple = isc.ToolStripButton.create({
 // icon: "[SKIN]/actions/add.png",
-title: ">>",
-click: function () {
-}
-});
-var ToolStripButton_Skill_AddSkillGroup_Deselect_Single = isc.ToolStripButton.create({
-icon: "pieces/512/left-arrow.png",
-// title: "<",
-click: function () {
-}
-});
-var ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple = isc.ToolStripButton.create({
+        title: getFormulaMessage(">>", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skilGroupRecords = ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecords();
+                var skillGroupIds = new Array();
+                for (i = 0; i < skilGroupRecords.getLength(); i++) {
+                    skillGroupIds.add(skilGroupRecords[i].id);
+                }
+                var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-skill-group-list/" + skillId,
+                    httpMethod: "POST",
+                    data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_SkillGroup.invalidateCache();
+                            ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+        }
+    });
+    var ToolStripButton_Skill_AddSkillGroup_Deselect_Single = isc.ToolStripButton.create({
+        // icon: "pieces/512/left-arrow.png",
+        title: getFormulaMessage("<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_SkillGroup.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skillGroupRecord = ListGrid_Skill_Selected_SkillGroup.getSelectedRecord();
+                var skillGroupId = skillGroupRecord.id;
+// var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-skill-group/" + skillGroupId + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_SkillGroup.invalidateCache();
+                            ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple = isc.ToolStripButton.create({
 // icon: "[SKIN]/actions/add.png",
-title: "<<",
-click: function () {
-}
-});
-var ToolStrip_Skill_AddSkillGroup = isc.ToolStrip.create({
-height: "100%",
-vertical: true,
-align:"center",
-alignLayout: "center",
-members: [
-ToolStripButton_Skill_AddSkillGroup_Select_Single,
-ToolStripButton_Skill_AddSkillGroup_Deselect_Single,
-ToolStripButton_Skill_AddSkillGroup_Select_Multiple,
-ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
-]
-});
+        title: getFormulaMessage("<<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_SkillGroup.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skillGroupRecords = ListGrid_Skill_Selected_SkillGroup.getSelectedRecords();
+                var skillGroupIds = new Array();
+                for (i = 0; i < skillGroupRecords.getLength(); i++) {
+                    skillGroupIds.add(skillGroupRecords[i].id);
+                }
+// var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_SkillGroup.invalidateCache();
+                            ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    });
+    var ToolStrip_Skill_AddSkillGroup = isc.ToolStrip.create({
+        height: "100%",
+        vertical: true,
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
+        membersMargin: 10,
+
+        members: [
+            ToolStripButton_Skill_AddSkillGroup_Select_Single,
+            ToolStripButton_Skill_AddSkillGroup_Deselect_Single,
+            ToolStripButton_Skill_AddSkillGroup_Select_Multiple,
+            ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
+        ]
+    });
 
     var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.MyDynamicForm.create({
         titleWidth: 400,
-//        border:2,
+// border:2,
         width: "100%",
+        height: "100%",
         align: "right",
+        titleAlign: "left",
         numCols: "6",
         fields: [
             {name: "id", hidden: true},
@@ -1389,28 +1502,15 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
     var ListGrid_Skill_UnAttached_SkillGroup = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        canAcceptDroppedRecords: true,
         canReorderRecords: true,
-        dragTrackerMode: "none",
         dataSource: RestDataSource_Skill_UnAttached_SkillGroups,
         showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
         autoFetchData: false,
         border: "0px solid green",
-        showConnectors: true,
-        canDragRecordsOut: true,
-        closedIconSuffix: "",
-        openIconSuffix: "",
-        selectedIconSuffix: "",
-        dropIconSuffix: "",
-        showOpenIcons: false,
-        showDropIcons: false,
         selectionType: "multiple",
-        canDragSelect: true,
         rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
+            //          autoFitWidthApproach: "both",
+            //           canDragResize: true,
             autoFitWidth: false,
             headerTitle: "<spring:message code='global.grid.row'/>",
             width: 50
@@ -1420,33 +1520,6 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
             {name: "titleFa", title: "نام فارسی", align: "center"},
             {name: "titleEn", title: "نام لاتین", align: "center"}
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-            var skillId = skillRecord.id;
-            var skillGroupIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                skillGroupIds.add(dropRecords[i].id);
-            }
-            // var JSONObj = {"ids": skillGroupIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
-                httpMethod: "DELETE",
-                //  data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_SkillGroup.invalidateCache();
-                        ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
-                    } else {
-                        isc.say("<spring:message code='error'/>");
-                    }
-                }
-            });
-        },
-
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillGroupRecord = record;
             var skillGroupId = skillGroupRecord.id;
@@ -1464,27 +1537,27 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
                         ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                         ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
         },
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         sortField: 0,
+        sortDirection: "descending",
         dataPageSize: 50,
     });
 
     var ListGrid_Skill_Selected_SkillGroup = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        //autoDraw: false,
-        canDragRecordsOut: true,
-        dragTrackerMode: "none",
-        canAcceptDroppedRecords: true,
+        selectionType: "multiple",
         canReorderRecords: true,
         alternateRecordStyles: true,
         alternateFieldStyles: false,
         dataSource: RestDataSource_Skill_Attached_SkillGroups,
-        canDragSelect: true,
         autoFetchData: false,
         showRowNumbers: true,
         showRecordComponents: true,
@@ -1497,10 +1570,6 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
             width: 50
         },
         canEdit: false,
-        //editEvent: "click",
-        //editByCell: true,
-        //rowEndEditAction: "done",
-        //listEndEditAction: "next",
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "نام فارسی", align: "center"},
@@ -1508,90 +1577,36 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
             {name: "OnDelete", title: "حذف", align: "center"}
 
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+        recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
-            var skillGroupIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                skillGroupIds.add(dropRecords[i].id);
-            }
-            var JSONObj = {"ids": skillGroupIds};
+            var skillGroupRecord = record;
+            var skillGroupId = skillGroupRecord.id;
+
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-skill-group-list/" + skillId,
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
+                actionURL: "${restApiUrl}/api/skill/remove-skill-group/" + skillGroupId + "/" + skillId,
+                httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                         ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
+                        ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
-        },
 
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-
-            if (fieldName == "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 22,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-
-                var removeIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
-                    prompt: "<spring:message code='global.form.remove'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-
-                        var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                        var skillId = skillRecord.id;
-                        var skillGroupRecord = record;
-                        var skillGroupId = skillGroupRecord.id;
-
-                        isc.RPCManager.sendRequest({
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            actionURL: "${restApiUrl}/api/skill/remove-skill-group/" + skillGroupId + "/" + skillId,
-                            httpMethod: "DELETE",
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
-                                    ListGrid_Skill_Selected_SkillGroup.invalidateCache();
-                                } else {
-                                    isc.say("<spring:message code='error'/>");
-                                }
-                            }
-                        });
-                    }
-                });
-                recordCanvas.addMember(removeIcon);
-                return recordCanvas;
-            } else
-                return null;
         },
         dataPageSize: 50
     });
 
     var SectionStack_Skill_UnAttached_SkillGroup = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
                 title: "گروه مهارتهای انتخاب نشده",
@@ -1607,7 +1622,7 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
 
     var SectionStack_Skill_Attached_SkillGroup = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
                 title: "گروه مهارتهای انتخاب شده",
@@ -1622,19 +1637,22 @@ ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple
     });
 
     var VLayOut_Skill_SkillGroup_Add_Action = isc.VLayout.create({
-width: 100,
-height: "100%",
-autoDraw: false,
+        width: "10%",
+        height: "100%",
+        autoDraw: false,
 // border: "0px solid red", layoutMargin: 5,
-align:"center",
-alignLayout: "center",
-members: [ToolStrip_Skill_AddSkillGroup
-]
-});
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
+        membersMargin: 10,
+
+        members: [ToolStrip_Skill_AddSkillGroup
+        ]
+    });
 
     var HStack_Skill_AddSkillGroup = isc.HStack.create({
-        membersMargin: 10,
-        height: 500,
+        width: "100%",
+        height: "100%",
         members: [
             SectionStack_Skill_UnAttached_SkillGroup,
             VLayOut_Skill_SkillGroup_Add_Action,
@@ -1645,6 +1663,8 @@ members: [ToolStrip_Skill_AddSkillGroup
     var HLayOut_Skill_AddSkillGroup_Header = isc.HLayout.create({
         width: "100%",
         height: 30,
+//autoDraw: true,
+        autoSize: false,
         border: "0px solid yellow",
         backgroundColor: "lightgray",
 
@@ -1657,7 +1677,7 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var VLayOut_Skill_SkillGroup_Add_Main = isc.VLayout.create({
         width: "100%",
-        height: 400,
+        height: "100%",
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
@@ -1677,8 +1697,9 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var Window_Skill_AddSkillGroup = isc.Window.create({
         title: "مرتبط کردن/حذف ارتباط گروه مهارت با مهارت",
-        width: 1000,
-        autoSize: true,
+        width: "80%",
+        height: "80%",
+        autoSize: false,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
@@ -1701,7 +1722,7 @@ members: [ToolStrip_Skill_AddSkillGroup
             isc.Dialog.create({
                 message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "پیام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تایید"})],
                 buttonClick: function () {
                     this.close();
@@ -1739,29 +1760,180 @@ members: [ToolStrip_Skill_AddSkillGroup
     // Start Block Add Competences To Skill ---------------------------------------------------------------
 
     // Start Block Add Competence To Skill ---------------------------------------------------------------
+    var ToolStripButton_Skill_AddCompetence_Select_Single = isc.ToolStripButton.create({
+// icon: "pieces/512/right-arrow.png",
+        width: 300,
+        title: getFormulaMessage(">", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_Competence.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var competenceRecord = ListGrid_Skill_UnAttached_Competence.getSelectedRecord();
+                var competenceId = competenceRecord.id;
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-competence/" + competenceId + "/" + skillId,
+                    httpMethod: "POST",
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Competence.invalidateCache();
+                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddCompetence_Select_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+        title: getFormulaMessage(">>", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_Competence.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skilGroupRecords = ListGrid_Skill_UnAttached_Competence.getSelectedRecords();
+                var competenceIds = new Array();
+                for (i = 0; i < skilGroupRecords.getLength(); i++) {
+                    competenceIds.add(skilGroupRecords[i].id);
+                }
+                var JSONObj = {"ids": competenceIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-competence-list/" + skillId,
+                    httpMethod: "POST",
+                    data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Competence.invalidateCache();
+                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+        }
+    });
+    var ToolStripButton_Skill_AddCompetence_Deselect_Single = isc.ToolStripButton.create({
+// icon: "pieces/512/left-arrow.png",
+        title: getFormulaMessage("<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_Competence.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var competenceRecord = ListGrid_Skill_Selected_Competence.getSelectedRecord();
+                var competenceId = competenceRecord.id;
+// var JSONObj = {"ids": competenceIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Competence.invalidateCache();
+                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddCompetence_Deselect_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+        title: getFormulaMessage("<<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_Competence.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var competenceRecords = ListGrid_Skill_Selected_Competence.getSelectedRecords();
+                var competenceIds = new Array();
+                for (i = 0; i < competenceRecords.getLength(); i++) {
+                    competenceIds.add(competenceRecords[i].id);
+                }
+// var JSONObj = {"ids": competenceIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-competence-list/" + competenceIds + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Competence.invalidateCache();
+                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    });
+    var ToolStrip_Skill_AddCompetence = isc.ToolStrip.create({
+        height: "100%",
+        vertical: true,
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
+        membersMargin: 10,
+
+        members: [
+            ToolStripButton_Skill_AddCompetence_Select_Single,
+            ToolStripButton_Skill_AddCompetence_Deselect_Single,
+            ToolStripButton_Skill_AddCompetence_Select_Multiple,
+            ToolStripButton_Skill_AddCompetence_Deselect_Multiple
+        ]
+    });
+
     var DynamicForm_Skill_SkillData_Add_Competence = isc.MyDynamicForm.create({
         titleWidth: 400,
-        width: 700,
+// border:2,
+        width: "100%",
+        height: "100%",
         align: "right",
+        titleAlign: "left",
         numCols: "6",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد",
+                title: "کد مهارت",
                 type: 'staticText',
                 width: "100"
             },
             {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "عنوان فارسی",
                 type: 'staticText',
                 length: "200",
                 width: "150"
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "عنوان لاتین ",
                 type: 'staticText',
                 length: "200",
                 width: "150"
@@ -1772,28 +1944,15 @@ members: [ToolStrip_Skill_AddSkillGroup
     var ListGrid_Skill_UnAttached_Competence = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        canAcceptDroppedRecords: true,
         canReorderRecords: true,
-        dragTrackerMode: "none",
         dataSource: RestDataSource_Skill_UnAttached_Competences,
         showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
         autoFetchData: false,
         border: "0px solid green",
-        showConnectors: true,
-        canDragRecordsOut: true,
-        closedIconSuffix: "",
-        openIconSuffix: "",
-        selectedIconSuffix: "",
-        dropIconSuffix: "",
-        showOpenIcons: false,
-        showDropIcons: false,
         selectionType: "multiple",
-        canDragSelect: true,
         rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
+//          autoFitWidthApproach: "both",
+//           canDragResize: true,
             autoFitWidth: false,
             headerTitle: "<spring:message code='global.grid.row'/>",
             width: 50
@@ -1803,33 +1962,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             {name: "titleFa", title: "نام فارسی", align: "center"},
             {name: "titleEn", title: "نام لاتین", align: "center"}
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-            var skillId = skillRecord.id;
-            var competenceIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                competenceIds.add(dropRecords[i].id);
-            }
-// var JSONObj = {"ids": competenceIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-competence-list/" + competenceIds + "/" + skillId,
-                httpMethod: "DELETE",
-//  data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_Competence.invalidateCache();
-                        ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                    } else {
-                        isc.say("<spring:message code='error'/>");
-                    }
-                }
-            });
-        },
-
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var competenceRecord = record;
             var competenceId = competenceRecord.id;
@@ -1847,27 +1979,27 @@ members: [ToolStrip_Skill_AddSkillGroup
                         ListGrid_Skill_Selected_Competence.invalidateCache();
                         ListGrid_Skill_UnAttached_Competence.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
         },
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         sortField: 0,
+        sortDirection: "descending",
         dataPageSize: 50,
     });
 
     var ListGrid_Skill_Selected_Competence = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-//autoDraw: false,
-        canDragRecordsOut: true,
-        dragTrackerMode: "none",
-        canAcceptDroppedRecords: true,
+        selectionType: "multiple",
         canReorderRecords: true,
         alternateRecordStyles: true,
         alternateFieldStyles: false,
         dataSource: RestDataSource_Skill_Attached_Competences,
-        canDragSelect: true,
         autoFetchData: false,
         showRowNumbers: true,
         showRecordComponents: true,
@@ -1880,10 +2012,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             width: 50
         },
         canEdit: false,
-//editEvent: "click",
-//editByCell: true,
-//rowEndEditAction: "done",
-//listEndEditAction: "next",
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "نام فارسی", align: "center"},
@@ -1891,93 +2019,39 @@ members: [ToolStrip_Skill_AddSkillGroup
             {name: "OnDelete", title: "حذف", align: "center"}
 
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+        recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
-            var competenceIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                competenceIds.add(dropRecords[i].id);
-            }
-            var JSONObj = {"ids": competenceIds};
+            var competenceRecord = record;
+            var competenceId = competenceRecord.id;
+
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-competence-list/" + skillId,
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
+                actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
+                httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_Competence.invalidateCache();
                         ListGrid_Skill_UnAttached_Competence.invalidateCache();
+                        ListGrid_Skill_Selected_Competence.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
-        },
 
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-
-            if (fieldName == "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 22,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-
-                var removeIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
-                    prompt: "<spring:message code='global.form.remove'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-
-                        var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                        var skillId = skillRecord.id;
-                        var competenceRecord = record;
-                        var competenceId = competenceRecord.id;
-
-                        isc.RPCManager.sendRequest({
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
-                            httpMethod: "DELETE",
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                                    ListGrid_Skill_Selected_Competence.invalidateCache();
-                                } else {
-                                    isc.say("<spring:message code='error'/>");
-                                }
-                            }
-                        });
-                    }
-                });
-                recordCanvas.addMember(removeIcon);
-                return recordCanvas;
-            } else
-                return null;
         },
         dataPageSize: 50
     });
 
     var SectionStack_Skill_UnAttached_Competence = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
-                title: "شایستگی های انتخاب نشده",
+                title: "شایستگیهای انتخاب نشده",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -1990,10 +2064,10 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var SectionStack_Skill_Attached_Competence = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
-                title: "شایستگی های انتخاب شده",
+                title: "شایستگیهای انتخاب شده",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -2004,20 +2078,38 @@ members: [ToolStrip_Skill_AddSkillGroup
         ]
     });
 
-    var HStack_Skill_AddCompetence = isc.HStack.create({
+    var VLayOut_Skill_Competence_Add_Action = isc.VLayout.create({
+        width: "10%",
+        height: "100%",
+        autoDraw: false,
+// border: "0px solid red", layoutMargin: 5,
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
         membersMargin: 10,
-        height: 500,
+
+        members: [ToolStrip_Skill_AddCompetence
+        ]
+    });
+
+    var HStack_Skill_AddCompetence = isc.HStack.create({
+        width: "100%",
+        height: "100%",
         members: [
             SectionStack_Skill_UnAttached_Competence,
+            VLayOut_Skill_Competence_Add_Action,
             SectionStack_Skill_Attached_Competence
         ]
     });
 
     var HLayOut_Skill_AddCompetence_Header = isc.HLayout.create({
-        width: 700,
+        width: "100%",
         height: 30,
+//autoDraw: true,
+        autoSize: false,
         border: "0px solid yellow",
         backgroundColor: "lightgray",
+
         layoutMargin: 5,
         align: "center",
         members: [
@@ -2027,7 +2119,7 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var VLayOut_Skill_Competence_Add_Main = isc.VLayout.create({
         width: "100%",
-        height: 400,
+        height: "100%",
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
@@ -2040,14 +2132,16 @@ members: [ToolStrip_Skill_AddSkillGroup
                 border: "0px solid red", layoutMargin: 5,
                 members: []
             }),
+
             HStack_Skill_AddCompetence
         ]
     });
 
     var Window_Skill_AddCompetence = isc.Window.create({
         title: "مرتبط کردن/حذف ارتباط شایستگی با مهارت",
-        width: 900,
-        autoSize: true,
+        width: "80%",
+        height: "80%",
+        autoSize: false,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
@@ -2068,9 +2162,9 @@ members: [ToolStrip_Skill_AddSkillGroup
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است",
+                message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "پیام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تایید"})],
                 buttonClick: function () {
                     this.close();
@@ -2082,7 +2176,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             ListGrid_Skill_UnAttached_Competence.invalidateCache();
             ListGrid_Skill_Selected_Competence.invalidateCache();
             DynamicForm_Skill_SkillData_Add_Competence.invalidateCache();
-
             DynamicForm_Skill_SkillData_Add_Competence.setValue("titleFa", record.titleFa);
             DynamicForm_Skill_SkillData_Add_Competence.setValue("titleEn", record.titleEn);
             DynamicForm_Skill_SkillData_Add_Competence.setValue("code", record.code);
@@ -2101,42 +2194,187 @@ members: [ToolStrip_Skill_AddSkillGroup
         } else {
             RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
             selectedSkillId = record.id;
-// // RestDataSource_Skill_Attached_SkillGroup.fetchData();
-
         }
         ListGrid_Skill_Attached_Competences.invalidateCache();
-
-
     };
 
-
     // End Block Add Competences To Skill ---------------------------------------------------------------
+
     // Start Block Add Courses To Skill ---------------------------------------------------------------
-    // Start Block Add Courses To Skill ---------------------------------------------------------------
-    // Start Block Add Course To Skill ---------------------------------------------------------------
+    var ToolStripButton_Skill_AddCourse_Select_Single = isc.ToolStripButton.create({
+// icon: "pieces/512/right-arrow.png",
+        width: 300,
+        title: getFormulaMessage(">", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_Course.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var courseRecord = ListGrid_Skill_UnAttached_Course.getSelectedRecord();
+                var courseId = courseRecord.id;
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-course/" + courseId + "/" + skillId,
+                    httpMethod: "POST",
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Course.invalidateCache();
+                            ListGrid_Skill_UnAttached_Course.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddCourse_Select_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+        title: getFormulaMessage(">>", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_UnAttached_Course.getSelectedRecord() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var skilGroupRecords = ListGrid_Skill_UnAttached_Course.getSelectedRecords();
+                var courseIds = new Array();
+                for (i = 0; i < skilGroupRecords.getLength(); i++) {
+                    courseIds.add(skilGroupRecords[i].id);
+                }
+                var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/add-course-list/" + skillId,
+                    httpMethod: "POST",
+                    data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Course.invalidateCache();
+                            ListGrid_Skill_UnAttached_Course.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+        }
+    });
+    var ToolStripButton_Skill_AddCourse_Deselect_Single = isc.ToolStripButton.create({
+// icon: "pieces/512/left-arrow.png",
+        title: getFormulaMessage("<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_Course.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var courseRecord = ListGrid_Skill_Selected_Course.getSelectedRecord();
+                var courseId = courseRecord.id;
+// var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-course/" + courseId + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Course.invalidateCache();
+                            ListGrid_Skill_UnAttached_Course.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+            }
+
+        }
+    });
+    var ToolStripButton_Skill_AddCourse_Deselect_Multiple = isc.ToolStripButton.create({
+// icon: "[SKIN]/actions/add.png",
+        title: getFormulaMessage("<<", "5", "blue", "B"),
+        click: function () {
+            if (ListGrid_Skill_Selected_Course.getSelectedRecords() != null) {
+                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
+                var skillId = skillRecord.id;
+                var courseRecords = ListGrid_Skill_Selected_Course.getSelectedRecords();
+                var courseIds = new Array();
+                for (i = 0; i < courseRecords.getLength(); i++) {
+                    courseIds.add(courseRecords[i].id);
+                }
+// var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: "${restApiUrl}/api/skill/remove-course-list/" + courseIds + "/" + skillId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Skill_Selected_Course.invalidateCache();
+                            ListGrid_Skill_UnAttached_Course.invalidateCache();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            }
+        }
+    });
+    var ToolStrip_Skill_AddCourse = isc.ToolStrip.create({
+        height: "100%",
+        vertical: true,
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
+        membersMargin: 10,
+
+        members: [
+            ToolStripButton_Skill_AddCourse_Select_Single,
+            ToolStripButton_Skill_AddCourse_Deselect_Single,
+            ToolStripButton_Skill_AddCourse_Select_Multiple,
+            ToolStripButton_Skill_AddCourse_Deselect_Multiple
+        ]
+    });
+
     var DynamicForm_Skill_SkillData_Add_Course = isc.MyDynamicForm.create({
         titleWidth: 400,
-        width: 700,
+// border:2,
+        width: "100%",
+        height: "100%",
         align: "right",
+        titleAlign: "left",
         numCols: "6",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد",
+                title: "کد مهارت",
                 type: 'staticText',
                 width: "100"
             },
             {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "عنوان فارسی",
                 type: 'staticText',
                 length: "200",
                 width: "150"
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "عنوان لاتین ",
                 type: 'staticText',
                 length: "200",
                 width: "150"
@@ -2147,28 +2385,15 @@ members: [ToolStrip_Skill_AddSkillGroup
     var ListGrid_Skill_UnAttached_Course = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        canAcceptDroppedRecords: true,
         canReorderRecords: true,
-        dragTrackerMode: "none",
         dataSource: RestDataSource_Skill_UnAttached_Courses,
         showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
         autoFetchData: false,
         border: "0px solid green",
-        showConnectors: true,
-        canDragRecordsOut: true,
-        closedIconSuffix: "",
-        openIconSuffix: "",
-        selectedIconSuffix: "",
-        dropIconSuffix: "",
-        showOpenIcons: false,
-        showDropIcons: false,
         selectionType: "multiple",
-        canDragSelect: true,
         rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
+//          autoFitWidthApproach: "both",
+//           canDragResize: true,
             autoFitWidth: false,
             headerTitle: "<spring:message code='global.grid.row'/>",
             width: 50
@@ -2178,33 +2403,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             {name: "titleFa", title: "نام فارسی", align: "center"},
             {name: "titleEn", title: "نام لاتین", align: "center"}
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-            var skillId = skillRecord.id;
-            var courseIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                courseIds.add(dropRecords[i].id);
-            }
-// var JSONObj = {"ids": courseIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-course-list/" + courseIds + "/" + skillId,
-                httpMethod: "DELETE",
-//  data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_Course.invalidateCache();
-                        ListGrid_Skill_UnAttached_Course.invalidateCache();
-                    } else {
-                        isc.say("<spring:message code='error'/>");
-                    }
-                }
-            });
-        },
-
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var courseRecord = record;
             var courseId = courseRecord.id;
@@ -2222,27 +2420,27 @@ members: [ToolStrip_Skill_AddSkillGroup
                         ListGrid_Skill_Selected_Course.invalidateCache();
                         ListGrid_Skill_UnAttached_Course.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
         },
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         sortField: 0,
+        sortDirection: "descending",
         dataPageSize: 50,
     });
 
     var ListGrid_Skill_Selected_Course = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-//autoDraw: false,
-        canDragRecordsOut: true,
-        dragTrackerMode: "none",
-        canAcceptDroppedRecords: true,
+        selectionType: "multiple",
         canReorderRecords: true,
         alternateRecordStyles: true,
         alternateFieldStyles: false,
         dataSource: RestDataSource_Skill_Attached_Courses,
-        canDragSelect: true,
         autoFetchData: false,
         showRowNumbers: true,
         showRecordComponents: true,
@@ -2255,10 +2453,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             width: 50
         },
         canEdit: false,
-//editEvent: "click",
-//editByCell: true,
-//rowEndEditAction: "done",
-//listEndEditAction: "next",
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "نام فارسی", align: "center"},
@@ -2266,93 +2460,39 @@ members: [ToolStrip_Skill_AddSkillGroup
             {name: "OnDelete", title: "حذف", align: "center"}
 
         ],
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+        recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
-            var courseIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                courseIds.add(dropRecords[i].id);
-            }
-            var JSONObj = {"ids": courseIds};
+            var courseRecord = record;
+            var courseId = courseRecord.id;
+
             isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-course-list/" + skillId,
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
+                actionURL: "${restApiUrl}/api/skill/remove-course/" + courseId + "/" + skillId,
+                httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_Course.invalidateCache();
                         ListGrid_Skill_UnAttached_Course.invalidateCache();
+                        ListGrid_Skill_Selected_Course.invalidateCache();
                     } else {
-                        isc.say("<spring:message code='error'/>");
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
                     }
                 }
             });
-        },
 
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-
-            if (fieldName == "OnDelete") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 22,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-
-                var removeIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
-                    prompt: "<spring:message code='global.form.remove'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-
-                        var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                        var skillId = skillRecord.id;
-                        var courseRecord = record;
-                        var courseId = courseRecord.id;
-
-                        isc.RPCManager.sendRequest({
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            actionURL: "${restApiUrl}/api/skill/remove-course/" + courseId + "/" + skillId,
-                            httpMethod: "DELETE",
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    ListGrid_Skill_UnAttached_Course.invalidateCache();
-                                    ListGrid_Skill_Selected_Course.invalidateCache();
-                                } else {
-                                    isc.say("<spring:message code='error'/>");
-                                }
-                            }
-                        });
-                    }
-                });
-                recordCanvas.addMember(removeIcon);
-                return recordCanvas;
-            } else
-                return null;
         },
         dataPageSize: 50
     });
 
     var SectionStack_Skill_UnAttached_Course = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
-                title: "گروه مهارتهای انتخاب نشده",
+                title: "دوره های انتخاب نشده",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -2365,10 +2505,10 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var SectionStack_Skill_Attached_Course = isc.SectionStack.create({
         visibilityMode: "multiple",
-        width: "50%",
+        width: "45%",
         sections: [
             {
-                title: "گروه مهارتهای انتخاب شده",
+                title: "دوره های انتخاب شده",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -2379,20 +2519,38 @@ members: [ToolStrip_Skill_AddSkillGroup
         ]
     });
 
-    var HStack_Skill_AddCourse = isc.HStack.create({
+    var VLayOut_Skill_Course_Add_Action = isc.VLayout.create({
+        width: "10%",
+        height: "100%",
+        autoDraw: false,
+// border: "0px solid red", layoutMargin: 5,
+        align: "center",
+        alignLayout: "center",
+        padding: 10,
         membersMargin: 10,
-        height: 500,
+
+        members: [ToolStrip_Skill_AddCourse
+        ]
+    });
+
+    var HStack_Skill_AddCourse = isc.HStack.create({
+        width: "100%",
+        height: "100%",
         members: [
             SectionStack_Skill_UnAttached_Course,
+            VLayOut_Skill_Course_Add_Action,
             SectionStack_Skill_Attached_Course
         ]
     });
 
     var HLayOut_Skill_AddCourse_Header = isc.HLayout.create({
-        width: 700,
+        width: "100%",
         height: 30,
+//autoDraw: true,
+        autoSize: false,
         border: "0px solid yellow",
         backgroundColor: "lightgray",
+
         layoutMargin: 5,
         align: "center",
         members: [
@@ -2402,7 +2560,7 @@ members: [ToolStrip_Skill_AddSkillGroup
 
     var VLayOut_Skill_Course_Add_Main = isc.VLayout.create({
         width: "100%",
-        height: 400,
+        height: "100%",
         autoDraw: false,
         border: "0px solid red", layoutMargin: 5,
         members: [
@@ -2415,14 +2573,16 @@ members: [ToolStrip_Skill_AddSkillGroup
                 border: "0px solid red", layoutMargin: 5,
                 members: []
             }),
+
             HStack_Skill_AddCourse
         ]
     });
 
     var Window_Skill_AddCourse = isc.Window.create({
         title: "مرتبط کردن/حذف ارتباط دوره با مهارت",
-        width: 900,
-        autoSize: true,
+        width: "80%",
+        height: "80%",
+        autoSize: false,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
@@ -2443,9 +2603,9 @@ members: [ToolStrip_Skill_AddSkillGroup
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است",
+                message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "پیام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تایید"})],
                 buttonClick: function () {
                     this.close();
@@ -2457,7 +2617,6 @@ members: [ToolStrip_Skill_AddSkillGroup
             ListGrid_Skill_UnAttached_Course.invalidateCache();
             ListGrid_Skill_Selected_Course.invalidateCache();
             DynamicForm_Skill_SkillData_Add_Course.invalidateCache();
-
             DynamicForm_Skill_SkillData_Add_Course.setValue("titleFa", record.titleFa);
             DynamicForm_Skill_SkillData_Add_Course.setValue("titleEn", record.titleEn);
             DynamicForm_Skill_SkillData_Add_Course.setValue("code", record.code);
@@ -2476,14 +2635,9 @@ members: [ToolStrip_Skill_AddSkillGroup
         } else {
             RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
             selectedSkillId = record.id;
-// // RestDataSource_Skill_Attached_SkillGroup.fetchData();
-
         }
         ListGrid_Skill_Attached_Courses.invalidateCache();
-
-
     };
-
 
     // End Block Add Courses To Skill ---------------------------------------------------------------
 
@@ -2601,23 +2755,23 @@ members: [ToolStrip_Skill_AddSkillGroup
         tabs: [
             {
                 id: "TabPane_Skill_SkillGroup",
-                title: "گروه مهارتهای مرتبط",
+                title: "لیست گروه های مهارت",
                 pane: HLayout_Tab_Skill_SkillGroups
 
             },
             {
                 id: "TabPane_Skill_Competence",
-                title: "شایستگی های مرتبط",
+                title: "لیست شایستگی ها",
                 pane: HLayout_Tab_Skill_Competences
             },
             {
                 id: "TabPane_Skill_Course",
-                title: "دوره های مرتبط",
+                title: "لیست دوره ها",
                 pane: HLayout_Tab_Skill_Courses
             },
             {
                 id: "TabPane_Skill_Job",
-                title: "مشاغل مرتبط",
+                title: "لیست مشاغل",
                 pane: HLayout_Tab_Skill_Jobs
             }
         ]

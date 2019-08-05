@@ -33,8 +33,7 @@ public class SubCategoryDTO {
         @ApiModelProperty(required = true)
         private String titleFa;
 
-        @NotEmpty
-        @ApiModelProperty(required = true)
+        @ApiModelProperty
         private String titleEn;
 
         @NotEmpty

@@ -302,30 +302,68 @@ public class SkillRestController {
 
     @Loggable
     @DeleteMapping(value = "/remove-skill-group/{skillGroupId}/{skillId}")
-    public ResponseEntity<Void> removeSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        skillService.removeSkillGroup(skillGroupId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeSkillGroup(skillGroupId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+
     }
 
     @Loggable
     @DeleteMapping(value = "/remove-skill-group-list/{skillGroupIds}/{skillId}")
-    public ResponseEntity<Void> removeSkillGroups(@PathVariable List<Long> skillGroupIds, @PathVariable Long skillId) {
-        skillService.removeSkillGroups(skillGroupIds, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeSkillGroups(@PathVariable List<Long> skillGroupIds, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeSkillGroups(skillGroupIds, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+
     }
 
     @Loggable
     @PostMapping(value = "/add-skill-group/{skillGroupId}/{skillId}")
-    public ResponseEntity<Void> addSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        skillService.addSkillGroup(skillGroupId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addSkillGroup(skillGroupId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-skill-group-list/{skillId}")
-    public ResponseEntity<Void> addSkillGroups(@Validated @RequestBody SkillGroupDTO.SkillGroupIdList request, @PathVariable Long skillId) {
-        skillService.addSkillGroups(request.getIds(), skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addSkillGroups(@Validated @RequestBody SkillGroupDTO.SkillGroupIdList request, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addSkillGroups(request.getIds(), skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
 
@@ -447,31 +485,67 @@ public class SkillRestController {
     }
 
     @Loggable
-    @DeleteMapping(value = "/remove-competence/{competenceId}/{skillId}")
-    public ResponseEntity<Void> removeCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
-        skillService.removeCompetence(competenceId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    @DeleteMapping(value = "/ competence/{competenceId}/{skillId}")
+    public ResponseEntity<Boolean> removeCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeCompetence(competenceId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/remove-competence-list/{competenceIds}/{skillId}")
-    public ResponseEntity<Void> removeCompetences(@PathVariable List<Long> competenceIds, @PathVariable Long skillId) {
-        skillService.removeCompetences(competenceIds, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeCompetences(@PathVariable List<Long> competenceIds, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeCompetences(competenceIds, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-competence/{competenceId}/{skillId}")
-    public ResponseEntity<Void> addCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
-        skillService.addCompetence(competenceId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addCompetence(competenceId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-competence-list/{skillId}")
-    public ResponseEntity<Void> addCompetences(@Validated @RequestBody CompetenceDTO.CompetenceIdList request, @PathVariable Long skillId) {
-        skillService.addCompetences(request.getIds(), skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addCompetences(@Validated @RequestBody CompetenceDTO.CompetenceIdList request, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addCompetences(request.getIds(), skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
 
@@ -590,30 +664,66 @@ public class SkillRestController {
 
     @Loggable
     @DeleteMapping(value = "/remove-course/{courseId}/{skillId}")
-    public ResponseEntity<Void> removeCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
-        skillService.removeCourse(courseId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeCourse(courseId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/remove-course-list/{courseIds}/{skillId}")
-    public ResponseEntity<Void> removeCourses(@PathVariable List<Long> courseIds, @PathVariable Long skillId) {
-        skillService.removeCourses(courseIds, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> removeCourses(@PathVariable List<Long> courseIds, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.removeCourses(courseIds, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-course/{courseId}/{skillId}")
-    public ResponseEntity<Void> addCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
-        skillService.addCourse(courseId, skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addCourse(courseId, skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-course-list/{skillId}")
-    public ResponseEntity<Void> addCourses(@Validated @RequestBody CourseDTO.CourseIdList request, @PathVariable Long skillId) {
-        skillService.addCourses(request.getIds(), skillId);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> addCourses(@Validated @RequestBody CourseDTO.CourseIdList request, @PathVariable Long skillId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            skillService.addCourses(request.getIds(), skillId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
 

@@ -31,8 +31,7 @@ public class CategoryDTO {
     @ApiModelProperty(required = true)
     private String titleFa;
 
-    @NotEmpty
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String titleEn;
 
     @ApiModelProperty
