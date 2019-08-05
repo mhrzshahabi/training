@@ -101,7 +101,7 @@ public class GoalRestController {
                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException
     {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq;
+        SearchDTO. CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
             criteria = "[" + criteria + "]";
             criteriaRq = new SearchDTO.CriteriaRq();
