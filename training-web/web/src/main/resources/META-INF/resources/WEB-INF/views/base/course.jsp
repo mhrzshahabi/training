@@ -532,16 +532,8 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
-                filterFields: ["titleFa"],
+                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {showFilterEditor: true},
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
@@ -559,15 +551,12 @@ canFilter:false
                 required: true,
                 height: "30",
                 width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
-                filterFields: ["titleFa", "code"],
+                filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+
 
                 changed: function (form, item, value) {
 
@@ -575,24 +564,18 @@ canFilter:false
             },
             {
                 name: "erunType.id",
-                value: "erunTypeId",
                 title: "<spring:message code="course_eruntype"/>",
-                editorType: "MyComboBoxItem",
-                textAlign: "center",
+             //   value: "erunTypeId",
                 required: true,
-                height: "30",
-                width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_e_run_type,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
-                changed: function (form, item, value) {
+                 editorType: "MyComboBoxItem",
+                textAlign: "center",
+                    optionDataSource: RestDataSource_e_run_type,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    sortField: ["id"],
+                    height: "30",
+                   width: "*",
+           changed: function (form, item, value) {
 
                     switch (value) {
                         case 1:
@@ -650,25 +633,17 @@ canFilter:false
             },
             {
                 name: "etheoType.id",
-                value: "etheoTypeId",
                 title: "<spring:message code="course_etheoType"/>",
+                required: true,
                 editorType: "MyComboBoxItem",
                 textAlign: "center",
-                required: true,
-                height: "30",
-                width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
                 optionDataSource: RestDataSourceETheoType,
-
-                filterFields: ["titleFa"],
+                valueField: "id",
+                displayField: "titleFa",
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
-                changed: function (form, item, value) {
+                height: "30",
+               width: "*",
+          changed: function (form, item, value) {
                     switch (value) {
                         case 1:
                             etheoTypeV = "T";
@@ -686,24 +661,16 @@ canFilter:false
             },
             {
                 name: "etechnicalType.id",
-                value: "etechnicalTypeId",
                 title: "<spring:message code="course_etechnicalType"/>",
                 editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
-                width: "*",
-                height: "30",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_eTechnicalType,
-
-                filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
+                width: "*",
+                height: "30",
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
                     switch (value) {
@@ -725,36 +692,29 @@ canFilter:false
                 title: "<spring:message code="course_theoryDuration"/>",
                 height: "30",
                 required: true,
-                type: 'text',
+                type: "integer",
                 textAlign: "center",
                 width: "*",
-                length: 3,
                 keyPressFilter: "[0-9]",
-                requiredMessage:"حداکثر یک عدد سه رقمی وارد کنید",
-                validators:[MyValidators.NotStartWithZero],
+                requiredMessage:"لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
+                    validators: [ { type: "integerRange", min: 1, max: 999,
+                    errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
+                    }]
+
             },
             {
                 name: "minTeacherDegree",
                 title: "<spring:message code="course_minTeacherDegree"/>",
+                editorType: "MyComboBoxItem",
                 autoFetchData: true,
                 required: true,
                 height: "30",
                 width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "titleFa",
                 optionDataSource: RestDataSourceEducation,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {showFilterEditor: true},
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
                     RestDataSourceEducation.fetchDataURL = "http://localhost:9094/api/course/getlistEducationLicense";
                 },
@@ -762,13 +722,13 @@ canFilter:false
             {
                 name: "minTeacherExpYears",
                 title: "<spring:message code="course_minTeacherExpYears"/>",
-                shouldSaveValue: true,
+               // shouldSaveValue: true,
                 textAlign: "center",
-                editorType: "SpinnerItem",
-                writeStackedIcons: true,
+                type:"integer",
                 required: true,
-                min: 1,
-                max: 15,
+                validators: [ { type: "integerRange", min: 1, max: 15,
+                errorMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
+                }],
                 height: "30",
                 width: "*",
                 keyPressFilter: "[0-9]",
@@ -779,18 +739,16 @@ canFilter:false
                 title: "<spring:message code="course_minTeacherEvalScore"/>",
                 shouldSaveValue: true,
                 textAlign: "center",
-                editorType: "SpinnerItem",
+                type:"integer",
                 writeStackedIcons: true,
                 height: "30",
                 required: true,
-                min: 65,
-                max: 100,
                 width: "*",
                 keyPressFilter: "[0-9]",
                 requiredMessage:"لطفا یک عدد بین 65 تا 100 وارد کنید",
-// validators: [ { type: "integerRange", min: 0, max: 100,
-// errorMessage: "لطفا نمره را صحیح وارد کنید",
-// }]
+                validators: [ { type: "integerRange", min: 65, max: 100,
+                errorMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",
+                }]
             },
             {
                 name: "description",
