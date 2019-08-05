@@ -183,13 +183,7 @@
             errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
             expression:/^((?![~!@#$%^&*()+='"?]).)*$/,
         },
-
-        NotStartWithZero:{
-            type:"regexp",
-            errorMessage:"لطفا صفر را از ابتدای عدد حذف کنید",
-            expression:/^(?!([0]))/,
-        }
-    };
+       };
 
     isc.defineClass("MyButton", Button);
 

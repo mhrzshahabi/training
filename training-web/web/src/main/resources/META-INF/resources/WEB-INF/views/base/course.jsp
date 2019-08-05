@@ -160,11 +160,13 @@
             title: "<spring:message code="remove"/>", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Course_remove()
             }
-        }, {
-// title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
-// openTabGoal();
-// }
-        }, {isSeparator: true}, {
+        },
+        // {
+        // title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+        // openTabGoal();
+        // }
+        //        },
+          {isSeparator: true}, {
             title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
                 window.open("<spring:url value="/course/print/pdf"/>");
             }
@@ -259,7 +261,7 @@ canFilter:false
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
-        code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
+                 code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
                 canFilter:false
             },
             {
@@ -294,13 +296,17 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        selectionType: "single",
+        selectionType: "none",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             RestDataSource_Syllabus.fetchDataURL = "http://localhost:9094/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
         },
         sortField: 1,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
         autoFetchData: false,
     });
     var ListGrid_CourseSkill = isc.MyListGrid.create({
@@ -311,7 +317,12 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        autoFetchData: false
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+selectionType: "none",
     });
     var ListGrid_CourseJob = isc.MyListGrid.create({
 
@@ -322,8 +333,12 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-
-        autoFetchData: false
+selectionType: "none",
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
     });
     var ListGrid_CourseCompetence = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseCompetence,
@@ -332,7 +347,12 @@ canFilter:false
             {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"}
         ],
-        autoFetchData: false
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
+selectionType: "none",
     });
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
@@ -346,8 +366,12 @@ canFilter:false
             {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-
+selectionType: "none",
         autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
     });
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
@@ -404,27 +428,6 @@ canFilter:false
             ListGrid_Course_remove()
         }
     });
-    //--------------------------------------
-    <%--isc.Menu.create({--%>
-    <%--    ID: "menu",--%>
-    <%--    autoDraw: false,--%>
-    <%--    showShadow: true,--%>
-    <%--    shadowDepth: 10,--%>
-    <%--    data: [--%>
-    <%--        {title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {window.open("<spring:url value="/course/print/excel"/>")}},--%>
-    <%--        {title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {window.open("<spring:url value="/course/print/html"/>")}},--%>
-    <%--        {title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {window.open("<spring:url value="/course/print/pdf"/>")}}--%>
-    <%--         ]});--%>
-
-<%--    var ToolStripButton_Print = isc.ToolStrip.create({--%>
-<%--        title: "<spring:message code="print"/>",--%>
-<%--        icon: "[SKIN]/RichTextEditor/print.png",--%>
-<%--       // menu: menu,--%>
-<%--           click:function() {--%>
-<%--            <spring:url value="/course/print/html" var="printUrl"/>"--%>
-<%--            window.open('${printUrl}');--%>
-<%--}--%>
-<%--    });--%>
 
 
     var ToolStripButton_Print = isc.ToolStripButton.create({
@@ -453,29 +456,11 @@ canFilter:false
                     }
                     }
                     });
-    <%--var ToolStripButton_Print_Detail = isc.ToolStripButton.create({--%>
-    <%--                icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--                title: "<spring:message code='course_print_detail'/>",--%>
-    <%--                click: function () {--%>
-    <%--                var advancedCriteria = ListGrid_Course.getCriteria();--%>
-    <%--                var criteriaForm = isc.DynamicForm.create({--%>
-    <%--                method: "POST",--%>
-    <%--                action: "/course/printGoalsAndSyllabus",--%>
-    <%--                target: "_Blank",--%>
-    <%--                canSubmit: true,--%>
-    <%--                fields:--%>
-    <%--                [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"}--%>
-    <%--                ]--%>
-    <%--                });--%>
-    <%--                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--                criteriaForm.submitForm();--%>
-    <%--                }--%>
-    <%--                });--%>
+
     //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print,ToolStripButton_OpenTabGoal]
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
@@ -532,22 +517,15 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
-                filterFields: ["titleFa"],
+                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {showFilterEditor: true},
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
+                    DynamicForm_course.getItem("subCategory.id").setValue();
                     RestDataSourceSubCategory.fetchDataURL = "http://localhost:9094/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
-                    // DynamicForm_course.getItem("subCategory.id").setValue("");
+
                 },
             },
             {
@@ -559,15 +537,12 @@ canFilter:false
                 required: true,
                 height: "30",
                 width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
-                filterFields: ["titleFa", "code"],
+                filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
+
 
                 changed: function (form, item, value) {
 
@@ -575,24 +550,18 @@ canFilter:false
             },
             {
                 name: "erunType.id",
-                value: "erunTypeId",
                 title: "<spring:message code="course_eruntype"/>",
-                editorType: "MyComboBoxItem",
-                textAlign: "center",
+             //   value: "erunTypeId",
                 required: true,
-                height: "30",
-                width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_e_run_type,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
-                changed: function (form, item, value) {
+                 editorType: "MyComboBoxItem",
+                textAlign: "center",
+                    optionDataSource: RestDataSource_e_run_type,
+                    valueField: "id",
+                    displayField: "titleFa",
+                    sortField: ["id"],
+                    height: "30",
+                   width: "*",
+           changed: function (form, item, value) {
 
                     switch (value) {
                         case 1:
@@ -650,25 +619,17 @@ canFilter:false
             },
             {
                 name: "etheoType.id",
-                value: "etheoTypeId",
                 title: "<spring:message code="course_etheoType"/>",
+                required: true,
                 editorType: "MyComboBoxItem",
                 textAlign: "center",
-                required: true,
-                height: "30",
-                width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
                 optionDataSource: RestDataSourceETheoType,
-
-                filterFields: ["titleFa"],
+                valueField: "id",
+                displayField: "titleFa",
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
-                changed: function (form, item, value) {
+                height: "30",
+               width: "*",
+          changed: function (form, item, value) {
                     switch (value) {
                         case 1:
                             etheoTypeV = "T";
@@ -686,24 +647,16 @@ canFilter:false
             },
             {
                 name: "etechnicalType.id",
-                value: "etechnicalTypeId",
                 title: "<spring:message code="course_etechnicalType"/>",
                 editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
-                width: "*",
-                height: "30",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_eTechnicalType,
-
-                filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-
+                width: "*",
+                height: "30",
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
                     switch (value) {
@@ -725,36 +678,29 @@ canFilter:false
                 title: "<spring:message code="course_theoryDuration"/>",
                 height: "30",
                 required: true,
-                type: 'text',
+                type: "integer",
                 textAlign: "center",
                 width: "*",
-                length: 3,
                 keyPressFilter: "[0-9]",
-                requiredMessage:"حداکثر یک عدد سه رقمی وارد کنید",
-                validators:[MyValidators.NotStartWithZero],
+                requiredMessage:"لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
+                    validators: [ { type: "integerRange", min: 1, max: 999,
+                    errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
+                    }]
+
             },
             {
                 name: "minTeacherDegree",
                 title: "<spring:message code="course_minTeacherDegree"/>",
+                editorType: "MyComboBoxItem",
                 autoFetchData: true,
                 required: true,
                 height: "30",
                 width: "*",
-                changeOnKeypress: true,
-                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "titleFa",
                 optionDataSource: RestDataSourceEducation,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {showFilterEditor: true},
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 changed: function (form, item, value) {
                     RestDataSourceEducation.fetchDataURL = "http://localhost:9094/api/course/getlistEducationLicense";
                 },
@@ -762,13 +708,13 @@ canFilter:false
             {
                 name: "minTeacherExpYears",
                 title: "<spring:message code="course_minTeacherExpYears"/>",
-                shouldSaveValue: true,
+               // shouldSaveValue: true,
                 textAlign: "center",
-                editorType: "SpinnerItem",
-                writeStackedIcons: true,
+                type:"integer",
                 required: true,
-                min: 1,
-                max: 15,
+                validators: [ { type: "integerRange", min: 1, max: 15,
+                errorMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
+                }],
                 height: "30",
                 width: "*",
                 keyPressFilter: "[0-9]",
@@ -779,18 +725,16 @@ canFilter:false
                 title: "<spring:message code="course_minTeacherEvalScore"/>",
                 shouldSaveValue: true,
                 textAlign: "center",
-                editorType: "SpinnerItem",
+                type:"integer",
                 writeStackedIcons: true,
                 height: "30",
                 required: true,
-                min: 65,
-                max: 100,
                 width: "*",
                 keyPressFilter: "[0-9]",
                 requiredMessage:"لطفا یک عدد بین 65 تا 100 وارد کنید",
-// validators: [ { type: "integerRange", min: 0, max: 100,
-// errorMessage: "لطفا نمره را صحیح وارد کنید",
-// }]
+                validators: [ { type: "integerRange", min: 65, max: 100,
+                errorMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",
+                }]
             },
             {
                 name: "description",
@@ -817,9 +761,7 @@ canFilter:false
         ],
     });
     var IButton_course_Save = isc.IButton.create({
-
-       align: "center",
-        title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
+       title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
@@ -907,10 +849,12 @@ canFilter:false
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
-        alignment: "center",
-         padding:6,
-         align: "center",
-        membersMargin: 10,
+        width: "100%",
+        align: "center",
+        verticalAlign: "center",
+        membersMargin: 15,
+        autoDraw: false,
+        defaultLayoutAlign: "center",
         members: [IButton_course_Save, isc.IButton.create({
             ID: "EditExitIButton",
             title: "<spring:message code="cancel"/>",
