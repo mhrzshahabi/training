@@ -160,11 +160,13 @@
             title: "<spring:message code="remove"/>", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Course_remove()
             }
-        }, {
-// title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
-// openTabGoal();
-// }
-        }, {isSeparator: true}, {
+        },
+        // {
+        // title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+        // openTabGoal();
+        // }
+        //        },
+          {isSeparator: true}, {
             title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
                 window.open("<spring:url value="/course/print/pdf"/>");
             }
@@ -259,7 +261,7 @@ canFilter:false
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
-        code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
+                 code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
                 canFilter:false
             },
             {
@@ -475,7 +477,7 @@ canFilter:false
     //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print,ToolStripButton_OpenTabGoal]
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
@@ -537,9 +539,10 @@ canFilter:false
                 changed: function (form, item, value) {
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
+                    DynamicForm_course.getItem("subCategory.id").setValue();
                     RestDataSourceSubCategory.fetchDataURL = "http://localhost:9094/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
-                    // DynamicForm_course.getItem("subCategory.id").setValue("");
+
                 },
             },
             {
