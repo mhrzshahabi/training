@@ -254,7 +254,8 @@ canFilter:false
             },
             {
                 name: "theoryDuration", title: "<spring:message
-        code="course_theoryDuration"/>", align: "center", filterOperator: "equals"
+                code="course_theoryDuration"/>", align: "center", filterOperator: "contains",
+
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
@@ -267,11 +268,11 @@ canFilter:false
             },
             {
                 name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "equals"
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains"
             },
             {
                 name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "equals"
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
@@ -452,29 +453,29 @@ canFilter:false
                     }
                     }
                     });
-    var ToolStripButton_Print_Detail = isc.ToolStripButton.create({
-                    icon: "[SKIN]/RichTextEditor/print.png",
-                    title: "<spring:message code='course_print_detail'/>",
-                    click: function () {
-                    var advancedCriteria = ListGrid_Course.getCriteria();
-                    var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/course/printGoalsAndSyllabus",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                    [
-                    {name: "CriteriaStr", type: "hidden"}
-                    ]
-                    });
-                    criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                    criteriaForm.submitForm();
-                    }
-                    });
+    <%--var ToolStripButton_Print_Detail = isc.ToolStripButton.create({--%>
+    <%--                icon: "[SKIN]/RichTextEditor/print.png",--%>
+    <%--                title: "<spring:message code='course_print_detail'/>",--%>
+    <%--                click: function () {--%>
+    <%--                var advancedCriteria = ListGrid_Course.getCriteria();--%>
+    <%--                var criteriaForm = isc.DynamicForm.create({--%>
+    <%--                method: "POST",--%>
+    <%--                action: "/course/printGoalsAndSyllabus",--%>
+    <%--                target: "_Blank",--%>
+    <%--                canSubmit: true,--%>
+    <%--                fields:--%>
+    <%--                [--%>
+    <%--                {name: "CriteriaStr", type: "hidden"}--%>
+    <%--                ]--%>
+    <%--                });--%>
+    <%--                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
+    <%--                criteriaForm.submitForm();--%>
+    <%--                }--%>
+    <%--                });--%>
     //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_OpenTabGoal, ToolStripButton_Print, ToolStripButton_Print_Detail]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
     });
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
@@ -552,6 +553,7 @@ canFilter:false
             {
                 name: "subCategory.id",
                 title: "<spring:message code="course_subcategory"/>",
+                editorType: "MyComboBoxItem",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
@@ -562,19 +564,10 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa", "code"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
 
                 changed: function (form, item, value) {
 
@@ -584,6 +577,7 @@ canFilter:false
                 name: "erunType.id",
                 value: "erunTypeId",
                 title: "<spring:message code="course_eruntype"/>",
+                editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 height: "30",
@@ -593,19 +587,11 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_run_type,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+
                 changed: function (form, item, value) {
 
                     switch (value) {
@@ -632,6 +618,7 @@ canFilter:false
                 name: "elevelType.id",
                 value: "eLevelTypeId",
                 title: "<spring:message code="cousre_elevelType"/>",
+                 editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 height: "30",
@@ -641,20 +628,12 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_level_type,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
+
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-                changed: function (form, item, value) {
+               changed: function (form, item, value) {
                     switch (value) {
                         case 1:
                             eLevelTypeV = "1";
@@ -673,6 +652,7 @@ canFilter:false
                 name: "etheoType.id",
                 value: "etheoTypeId",
                 title: "<spring:message code="course_etheoType"/>",
+                editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 height: "30",
@@ -682,19 +662,12 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceETheoType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
+
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+
                 changed: function (form, item, value) {
                     switch (value) {
                         case 1:
@@ -715,6 +688,7 @@ canFilter:false
                 name: "etechnicalType.id",
                 value: "etechnicalTypeId",
                 title: "<spring:message code="course_etechnicalType"/>",
+                editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 width: "*",
@@ -724,19 +698,12 @@ canFilter:false
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_eTechnicalType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: false,
+
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
                     switch (value) {
@@ -762,7 +729,9 @@ canFilter:false
                 textAlign: "center",
                 width: "*",
                 length: 3,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                requiredMessage:"حداکثر یک عدد سه رقمی وارد کنید",
+                validators:[MyValidators.NotStartWithZero],
             },
             {
                 name: "minTeacherDegree",
@@ -802,7 +771,8 @@ canFilter:false
                 max: 15,
                 height: "30",
                 width: "*",
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                requiredMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
             },
             {
                 name: "minTeacherEvalScore",
@@ -813,10 +783,11 @@ canFilter:false
                 writeStackedIcons: true,
                 height: "30",
                 required: true,
-                min: 1,
+                min: 65,
                 max: 100,
                 width: "*",
                 keyPressFilter: "[0-9]",
+                requiredMessage:"لطفا یک عدد بین 65 تا 100 وارد کنید",
 // validators: [ { type: "integerRange", min: 0, max: 100,
 // errorMessage: "لطفا نمره را صحیح وارد کنید",
 // }]

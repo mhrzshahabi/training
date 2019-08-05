@@ -270,7 +270,7 @@ public class TeacherRestController {
                 readImage = ImageIO.read(new File(tempUploadDir + "/" + file.getOriginalFilename()));
                 int h = readImage.getHeight();
                 int w = readImage.getWidth();
-                if (200 > h || h > 400 || 100 > w || w > 300) {
+                if (100 > h || h > 500 || 100 > w || w > 500) {
                     return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
                 }
             } else

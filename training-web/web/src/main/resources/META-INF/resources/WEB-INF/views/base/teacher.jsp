@@ -446,6 +446,7 @@
                 ID: "birthDate_jspTeacher",
                 type: 'text',
                 hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
@@ -483,7 +484,7 @@
                 name: "birthCertificate",
                 title: "<spring:message code='birth.certificate'/>",
                 type: 'text',
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "15"
             },
 
@@ -678,7 +679,7 @@
                 name: "mobile",
                 title: "<spring:message code='cellPhone'/>",
                 type: 'text',
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "11",
                 hint: "*********09",
                 showHintInField: true,
@@ -829,7 +830,7 @@
                 title: "",
                 type: "file",
                 titleWidth: "80",
-                accept: ".png,.gif,.jpg",
+                accept: ".png,.gif,.jpg, .jpeg",
                 multiple: "",
                 width: "100%"
             }
@@ -981,8 +982,7 @@
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
-            },
-
+            }
         ]
     });
 
@@ -1261,6 +1261,7 @@
             ]
         })]
     });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1375,14 +1376,15 @@
         } else {
             showAttach();
             vm.clearValues();
+            vm.clearErrors(true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
             method = "PUT";
             url = "${restApiUrl}/api/teacher/" + record.id;
             vm.editRecord(record);
-
             var eduMajorValue = record.educationMajorId;
+
             var eduOrientationValue = record.educationOrientationId;
             if (eduOrientationValue == undefined && eduMajorValue == undefined) {
                 DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
@@ -1400,9 +1402,10 @@
     };
 
     function ListGrid_teacher_add() {
+        vm.clearValues();
+        vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
-        vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);

@@ -62,7 +62,7 @@ nicico:
       dir: c:/upload/teacher/
   temp:
     upload:
-      dir: c:/upload/temp
+      dir: c:/upload/temp/
 
 ---
 

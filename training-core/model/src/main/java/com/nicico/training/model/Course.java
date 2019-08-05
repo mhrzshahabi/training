@@ -38,7 +38,7 @@ public class Course extends Auditable {
     private String titleEn;
 
     @Column(name = "n_theory_duration", length = 5)
-    private Long theoryDuration;
+    private String theoryDuration;
 
     @Column(name = "c_description")
     private String description;
@@ -47,10 +47,10 @@ public class Course extends Auditable {
     private String mainObjective;
 
     @Column(name = "n_min_teacher_eval_score")
-    private Float minTeacherEvalScore;
+    private String minTeacherEvalScore;
 
     @Column(name = "n_min_teacher_exp_years")
-    private Long minTeacherExpYears;
+    private String minTeacherExpYears;
 
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
