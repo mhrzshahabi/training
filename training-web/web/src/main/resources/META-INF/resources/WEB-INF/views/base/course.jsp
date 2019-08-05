@@ -428,27 +428,6 @@ selectionType: "none",
             ListGrid_Course_remove()
         }
     });
-    //--------------------------------------
-    <%--isc.Menu.create({--%>
-    <%--    ID: "menu",--%>
-    <%--    autoDraw: false,--%>
-    <%--    showShadow: true,--%>
-    <%--    shadowDepth: 10,--%>
-    <%--    data: [--%>
-    <%--        {title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {window.open("<spring:url value="/course/print/excel"/>")}},--%>
-    <%--        {title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {window.open("<spring:url value="/course/print/html"/>")}},--%>
-    <%--        {title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {window.open("<spring:url value="/course/print/pdf"/>")}}--%>
-    <%--         ]});--%>
-
-<%--    var ToolStripButton_Print = isc.ToolStrip.create({--%>
-<%--        title: "<spring:message code="print"/>",--%>
-<%--        icon: "[SKIN]/RichTextEditor/print.png",--%>
-<%--       // menu: menu,--%>
-<%--           click:function() {--%>
-<%--            <spring:url value="/course/print/html" var="printUrl"/>"--%>
-<%--            window.open('${printUrl}');--%>
-<%--}--%>
-<%--    });--%>
 
 
     var ToolStripButton_Print = isc.ToolStripButton.create({
@@ -477,25 +456,7 @@ selectionType: "none",
                     }
                     }
                     });
-    <%--var ToolStripButton_Print_Detail = isc.ToolStripButton.create({--%>
-    <%--                icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--                title: "<spring:message code='course_print_detail'/>",--%>
-    <%--                click: function () {--%>
-    <%--                var advancedCriteria = ListGrid_Course.getCriteria();--%>
-    <%--                var criteriaForm = isc.DynamicForm.create({--%>
-    <%--                method: "POST",--%>
-    <%--                action: "/course/printGoalsAndSyllabus",--%>
-    <%--                target: "_Blank",--%>
-    <%--                canSubmit: true,--%>
-    <%--                fields:--%>
-    <%--                [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"}--%>
-    <%--                ]--%>
-    <%--                });--%>
-    <%--                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--                criteriaForm.submitForm();--%>
-    <%--                }--%>
-    <%--                });--%>
+
     //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -800,9 +761,7 @@ selectionType: "none",
         ],
     });
     var IButton_course_Save = isc.IButton.create({
-
-       align: "center",
-        title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
+       title: "<spring:message code="save"/>", icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
@@ -890,10 +849,12 @@ selectionType: "none",
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
-        alignment: "center",
-         padding:6,
-         align: "center",
-        membersMargin: 10,
+        width: "100%",
+        align: "center",
+        verticalAlign: "center",
+        membersMargin: 15,
+        autoDraw: false,
+        defaultLayoutAlign: "center",
         members: [IButton_course_Save, isc.IButton.create({
             ID: "EditExitIButton",
             title: "<spring:message code="cancel"/>",
