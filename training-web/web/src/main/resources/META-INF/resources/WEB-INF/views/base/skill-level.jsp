@@ -232,7 +232,7 @@
 
 
         var record = ListGrid_skill_level.getSelectedRecord();
-        console.log(record);
+        //console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "سطح مهارتی برای حذف انتخاب نشده است!",
@@ -269,9 +269,7 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                console.log(resp.httpResponseCode);
                                 wait.close();
-                                console.log(resp.httpResponseCode);
                                 if (resp.data == "true") {
                                     ListGrid_skill_level.invalidateCache();
                                     var OK = isc.Dialog.create({

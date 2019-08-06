@@ -655,7 +655,7 @@
     function ListGrid_Category_Remove() {
 
         var record = ListGrid_Category.getSelectedRecord();
-        console.log(record);
+        // console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است!",

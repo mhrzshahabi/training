@@ -922,7 +922,7 @@ ListGrid_GoalAll.invalidateCache();
 
     function ListGrid_Goal_Remove() {
         var record = ListGrid_Goal.getSelectedRecord();
-        console.log(record);
+        // console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "<spring:message code='msg.record.not.selected'/> !",
@@ -1030,7 +1030,7 @@ ListGrid_GoalAll.invalidateCache();
 
     function ListGrid_Syllabus_Goal_Remove() {
         var record = ListGrid_Syllabus_Goal.getSelectedRecord();
-        console.log(record);
+        //console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "<spring:message code='msg.record.not.selected'/> !",

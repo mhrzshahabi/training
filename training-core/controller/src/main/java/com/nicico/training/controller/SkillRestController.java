@@ -484,7 +484,7 @@ public class SkillRestController {
     }
 
     @Loggable
-    @DeleteMapping(value = "/ competence/{competenceId}/{skillId}")
+    @DeleteMapping(value = "/competence/{competenceId}/{skillId}")
     public ResponseEntity<Boolean> removeCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
         boolean flag=false;
         HttpStatus httpStatus=HttpStatus.OK;

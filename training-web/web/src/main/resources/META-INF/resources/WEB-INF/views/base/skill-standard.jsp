@@ -220,7 +220,7 @@
 	function ListGrid_skill_standard_remove() {
 
 		var record = ListGrid_Skill_Standard.getSelectedRecord();
-		console.log(record);
+		//console.log(record);
 		if (record == null) {
 			isc.Dialog.create({
 				message: "<spring:message code='global.grid.record.not.selected'/> !",

@@ -122,7 +122,7 @@
 
 
 		var record = ListGrid_Syllabus.getSelectedRecord();
-		console.log(record);
+		//console.log(record);
 		if (record == null) {
 			isc.Dialog.create({
 				message: "<spring:message code='global.grid.record.not.selected'/> !",

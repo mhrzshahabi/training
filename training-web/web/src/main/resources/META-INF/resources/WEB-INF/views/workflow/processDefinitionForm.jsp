@@ -164,7 +164,7 @@
                             // data: fiscalYearId,
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
-                                console.log(RpcResponse_o);
+                                //console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
                                     ListGrid_ProcessDefinitionList.invalidateCache();
                                     isc.say("حذف رکورد با موفقیت انجام شد.");

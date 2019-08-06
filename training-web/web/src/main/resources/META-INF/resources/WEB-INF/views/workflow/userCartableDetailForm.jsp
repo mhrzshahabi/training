@@ -300,7 +300,7 @@ abaspour 9803
 		width: "150",
 		click: function () {
 			var data = taskStartConfirmForm.getValues();
-			console.log(data);
+			//console.log(data);
 
 			createTab(" شایستگی" + data.cId, "${addDocumentUrl}" + data.cId, false);
 

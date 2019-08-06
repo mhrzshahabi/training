@@ -535,7 +535,7 @@
 
     function refresh_SkillGroupListGrid_competence() {
         let record = LG_Competence_competence.getSelectedRecord();
-        console.log(record);
+        //console.log(record);
         if (checkRecord_competence(record)) {
             DS_SkillGroup_competence.fetchDataURL = competenceUrl + record.id + "/skillGroups/spec-list";
             LG_SkillGroup_competence.invalidateCache();

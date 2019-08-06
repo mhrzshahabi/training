@@ -721,7 +721,7 @@ icon: "pieces/16/icon_delete.png",
                 return;
             }
             var data = DynamicForm_Skill_Skill.getValues();
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
 
             isc.RPCManager.sendRequest({
                 actionURL: skill_ActionUrl,
@@ -1021,7 +1021,7 @@ icon: "pieces/16/icon_delete.png",
 
     function ListGrid_Skill_Skill_Remove() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
-        console.log(record);
+        //console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "مهارتی برای حذف انتخاب نشده است!",
@@ -1102,7 +1102,7 @@ icon: "pieces/16/icon_delete.png",
                 }
             });
         } else {
-            console.log('record:' + JSON.stringify(record));
+            //console.log('record:' + JSON.stringify(record));
             var id = record.categoryId;
             DynamicForm_Skill_Skill.clearValues();
             RestDataSource_Skill_SubCategory.fetchDataURL = "${restApiUrl}/api/category/" + id + "/sub-categories";
