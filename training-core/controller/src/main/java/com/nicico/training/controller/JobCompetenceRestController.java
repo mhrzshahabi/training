@@ -98,7 +98,7 @@ public class JobCompetenceRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_job')")
+//    @PreAuthorize("hasAuthority('r_job')")
     public ResponseEntity<JobCompetenceDTO.IscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
