@@ -394,6 +394,15 @@
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
                 ListGrid_Goal_Add();
             }
+        },{
+            title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {
+Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
+Window_AddGoal.show();
+ListGrid_CourseGoal_Goal.invalidateCache();
+RestDataSource_GoalAll.fetchDataURL = "http://localhost:9094/api/course/goal/" + courseId.id;
+ListGrid_GoalAll.invalidateCache();
+<%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
+}
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
 
@@ -572,21 +581,21 @@
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش سرفصل",
+        title: "ویرایش",
         click: function () {
             ListGrid_Syllabus_Goal_Edit();
         }
     });
     var ToolStripButton_Syllabus_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد سرفصل",
+        title: "ایجاد",
         click: function () {
             ListGrid_Syllabus_Goal_Add();
         }
     });
     var ToolStripButton_Syllabus_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف سرفصل",
+        title: "حذف",
         click: function () {
             ListGrid_Syllabus_Goal_Remove();
         }
@@ -640,7 +649,7 @@
     });
     var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
-        title: "بازخوانی اطلاعات",
+        title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
             RestDataSource_Syllabus.fetchDataURL = "http://localhost:9094/api/syllabus/course/" + courseId.id;
@@ -649,7 +658,7 @@
     });
     var ToolStripButton_Goal_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش هدف",
+        title: "ویرایش",
         prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
         hoverWidth: 320,
         click: function () {
@@ -658,7 +667,7 @@
     });
     var ToolStripButton_Goal_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد هدف",
+        title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
         click: function () {
@@ -667,7 +676,7 @@
     });
     var ToolStripButton_Goal_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف هدف",
+        title: "حذف",
         prompt: "اخطار<br/>هدف انتخاب شده از تمامی دوره های موجود حذف خواهد شد.",
         hoverWidth: 280,
         click: function () {
@@ -678,7 +687,7 @@
         icon: "[SKIN]/actions/plus.png",
         prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
         hoverWidth: "12%",
-        title: "افزودن هدف",
+        title: "افزودن",
         click: function () {
             Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
             Window_AddGoal.show();
