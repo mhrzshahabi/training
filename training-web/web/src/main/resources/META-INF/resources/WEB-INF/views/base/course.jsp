@@ -4,7 +4,9 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 //<script>
+
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";

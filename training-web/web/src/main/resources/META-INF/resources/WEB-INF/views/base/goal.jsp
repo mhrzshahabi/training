@@ -3,6 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 //<script>
+	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+
     var methodGoal = "GET";
     var urlGoal = goalUrl;
     var methodSyllabus = "GET";
