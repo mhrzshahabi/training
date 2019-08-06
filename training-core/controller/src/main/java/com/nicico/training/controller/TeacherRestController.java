@@ -33,7 +33,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -77,21 +76,21 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(teacherService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<List<TeacherDTO.Info>> list() {
         return new ResponseEntity<>(teacherService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_teacher')")
+//    @PreAuthorize("hasAuthority('c_teacher')")
     public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
         TeacherDTO.Create create = (new ModelMapper()).map(request, TeacherDTO.Create.class);
         return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
@@ -99,7 +98,7 @@ public class TeacherRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_teacher')")
+//    @PreAuthorize("hasAuthority('u_teacher')")
     public ResponseEntity<TeacherDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
@@ -110,7 +109,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_teacher')")
+//    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         try {
             final Optional<Teacher> cById = teacherDAO.findById(id);
@@ -128,7 +127,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_teacher')")
+//    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity<Void> delete(@Validated @RequestBody TeacherDTO.Delete request) {
         teacherService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
@@ -136,7 +135,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                      @RequestParam("_endRow") Integer endRow,
                                                      @RequestParam(value = "_constructor", required = false) String constructor,
@@ -182,7 +181,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<SearchDTO.SearchRs<TeacherDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }
