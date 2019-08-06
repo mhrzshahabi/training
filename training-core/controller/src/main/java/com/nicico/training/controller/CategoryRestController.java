@@ -33,21 +33,21 @@ public class CategoryRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_category')")
+    //@PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<CategoryDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(categoryService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_category')")
+    //@PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<List<CategoryDTO.Info>> list() {
         return new ResponseEntity<>(categoryService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_category')")
+    //@PreAuthorize("hasAuthority('c_category')")
     public ResponseEntity<CategoryDTO.Info> create(@Validated @RequestBody CategoryDTO.Create request) {
         HttpStatus httpStatus=HttpStatus.CREATED;
         CategoryDTO.Info categoryInfo=null;
@@ -63,7 +63,7 @@ public class CategoryRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_category')")
+    //@PreAuthorize("hasAuthority('u_category')")
     public ResponseEntity<CategoryDTO.Info> update(@PathVariable Long id, @Validated @RequestBody CategoryDTO.Update request) {
         HttpStatus httpStatus=HttpStatus.OK;
         CategoryDTO.Info categoryInfo=null;
@@ -79,7 +79,7 @@ public class CategoryRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_category')")
+    //@PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
         boolean flag=true;
@@ -97,7 +97,7 @@ public class CategoryRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_category')")
+    //@PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody CategoryDTO.Delete request) {
         boolean flag=true;
         HttpStatus httpStatus=HttpStatus.OK;
@@ -112,7 +112,7 @@ public class CategoryRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_category')")
+    //@PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<CategoryDTO.CategorySpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                            @RequestParam("_endRow") Integer endRow,
                                                            @RequestParam(value = "_constructor", required = false) String constructor,
@@ -145,7 +145,7 @@ public class CategoryRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_category')")
+    //@PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<SearchDTO.SearchRs<CategoryDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(categoryService.search(request), HttpStatus.OK);
     }
@@ -154,7 +154,7 @@ public class CategoryRestController {
 
     @Loggable
     @GetMapping(value = "{categoryId}/sub-categories")
-    @PreAuthorize("hasAnyAuthority('r_sub_Category')")
+    //@PreAuthorize("hasAnyAuthority('r_sub_Category')")
     public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> getSubCategories(@RequestParam("_startRow") Integer startRow,
                                                                              @RequestParam("_endRow") Integer endRow,
                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
@@ -181,7 +181,7 @@ public class CategoryRestController {
 
     @Loggable
     @GetMapping(value = "sub-categories/dummy")
-    @PreAuthorize("hasAuthority('r_category')")
+    //@PreAuthorize("hasAuthority('r_category')")
     public ResponseEntity<SubCategoryDTO.SubCategorySpecRs> dummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<SubCategoryDTO.SubCategorySpecRs>(new SubCategoryDTO.SubCategorySpecRs(), HttpStatus.OK);
     }
