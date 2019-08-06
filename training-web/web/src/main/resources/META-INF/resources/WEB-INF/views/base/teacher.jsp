@@ -17,6 +17,7 @@
     var codeMeliCheck = true;
     var cellPhoneCheck = true;
     var mailCheck = true;
+    var persianDateCheck = true;
 
     var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
         "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
@@ -468,7 +469,17 @@
                     max: 10,
                     stopOnError: true,
                     errorMessage: "<spring:message code='msg.correct.date'/>"
-                }]
+                }],
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_BasicInfo_JspTeacher.getValue("birthDate"));
+                    persianDateCheck = dateCheck;
+                    if (dateCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("birthDate", "<spring:message code='msg.correct.date'/>", true);
+
+                    if (dateCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("birthDate", true);
+                }
             },
 
             {
@@ -1038,7 +1049,7 @@
         icon: "pieces/16/save.png",
         click: function () {
 
-            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false)
+            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false || persianDateCheck == false)
                 return;
 
             vm.validate();
@@ -1622,6 +1633,23 @@
             return true;
         else
             return false;
+    };
+
+
+    function checkDate(date) {
+        var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
+        var month = parseInt(date.substr(5,6));
+        var day = parseInt(date.substr(8,9));
+        var year = parseInt(date.substr(0,3));
+        if(date[4]!= "/" || date[7]!= "/")
+            return false;
+        if(month>12)
+            return false;
+        if(day > khMonth[month])
+            return false;
+        if(year > new Date().getFullYear())
+            return false;
+        return true;
     };
 
 
