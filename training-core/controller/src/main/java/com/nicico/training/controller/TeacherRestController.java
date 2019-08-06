@@ -8,32 +8,23 @@ import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
 import com.nicico.copper.core.util.file.FileInfo;
-import com.nicico.copper.core.util.file.FileUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SkillDTO;
-import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.Category;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.activiti.engine.RepositoryService;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
@@ -41,15 +32,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.FileImageInputStream;
-import javax.imageio.stream.ImageInputStream;
-import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.sql.SQLException;
-import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -77,21 +63,21 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(teacherService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<List<TeacherDTO.Info>> list() {
         return new ResponseEntity<>(teacherService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_teacher')")
+//    @PreAuthorize("hasAuthority('c_teacher')")
     public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
         TeacherDTO.Create create = (new ModelMapper()).map(request, TeacherDTO.Create.class);
         return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
@@ -99,7 +85,7 @@ public class TeacherRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_teacher')")
+//    @PreAuthorize("hasAuthority('u_teacher')")
     public ResponseEntity<TeacherDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
@@ -110,7 +96,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_teacher')")
+//    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         try {
             final Optional<Teacher> cById = teacherDAO.findById(id);
@@ -128,7 +114,7 @@ public class TeacherRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_teacher')")
+//    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity<Void> delete(@Validated @RequestBody TeacherDTO.Delete request) {
         teacherService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
@@ -136,7 +122,7 @@ public class TeacherRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                      @RequestParam("_endRow") Integer endRow,
                                                      @RequestParam(value = "_constructor", required = false) String constructor,
@@ -182,7 +168,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_teacher')")
+//    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<SearchDTO.SearchRs<TeacherDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }

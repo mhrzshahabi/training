@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,35 +25,35 @@ public class SkillStandardSubCategoryRestController {
 
 	@Loggable
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
 	public ResponseEntity<SkillStandardSubCategoryDTO.Info> get(@PathVariable Long id) {
 		return new ResponseEntity<>(skillWorkSubCategoryService.get(id), HttpStatus.OK);
 	}
 
 	@Loggable
 	@GetMapping(value = "/list")
-	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
 	public ResponseEntity<List<SkillStandardSubCategoryDTO.Info>> list() {
 		return new ResponseEntity<>(skillWorkSubCategoryService.list(), HttpStatus.OK);
 	}
 
 	@Loggable
 	@PostMapping
-	@PreAuthorize("hasAuthority('c_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('c_skillStandardSubCategory')")
 	public ResponseEntity<SkillStandardSubCategoryDTO.Info> create(@Validated @RequestBody SkillStandardSubCategoryDTO.Create request) {
 		return new ResponseEntity<>(skillWorkSubCategoryService.create(request), HttpStatus.CREATED);
 	}
 
 	@Loggable
 	@PutMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('u_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('u_skillStandardSubCategory')")
 	public ResponseEntity<SkillStandardSubCategoryDTO.Info> update(@PathVariable Long id, @Validated @RequestBody SkillStandardSubCategoryDTO.Update request) {
 		return new ResponseEntity<>(skillWorkSubCategoryService.update(id, request), HttpStatus.OK);
 	}
 
 	@Loggable
 	@DeleteMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('d_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('d_skillStandardSubCategory')")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		skillWorkSubCategoryService.delete(id);
 		return new ResponseEntity(HttpStatus.OK);
@@ -62,7 +61,7 @@ public class SkillStandardSubCategoryRestController {
 
 	@Loggable
 	@DeleteMapping(value = "/list")
-	@PreAuthorize("hasAuthority('d_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('d_skillStandardSubCategory')")
 	public ResponseEntity<Void> delete(@Validated @RequestBody SkillStandardSubCategoryDTO.Delete request) {
 		skillWorkSubCategoryService.delete(request);
 		return new ResponseEntity(HttpStatus.OK);
@@ -70,7 +69,7 @@ public class SkillStandardSubCategoryRestController {
 
 	@Loggable
 	@GetMapping(value = "/spec-list")
-	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
 	public ResponseEntity<SkillStandardSubCategoryDTO.SkillStandardSubCategorySpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
 		SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 		request.setStartIndex(startRow)
@@ -94,7 +93,7 @@ public class SkillStandardSubCategoryRestController {
 
 	@Loggable
 	@PostMapping(value = "/search")
-	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
+//	@PreAuthorize("hasAuthority('r_skillStandardSubCategory')")
 	public ResponseEntity<SearchDTO.SearchRs<SkillStandardSubCategoryDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
 		return new ResponseEntity<>(skillWorkSubCategoryService.search(request), HttpStatus.OK);
 	}
