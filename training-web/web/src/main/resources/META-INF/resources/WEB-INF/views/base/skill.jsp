@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+<%--//<script>--%>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
     var skill_Level_Symbol = ""
@@ -1205,7 +1205,7 @@ icon: "pieces/16/icon_delete.png",
             {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
             {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
             {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
-            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center",canFilter:false},//filterOperator: "iContains"},
+            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center",canFilter:false,canSort:false},//filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
