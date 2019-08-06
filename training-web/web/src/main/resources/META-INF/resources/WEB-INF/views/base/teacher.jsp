@@ -474,9 +474,10 @@
                     var dateCheck = false;
                     dateCheck = checkDate(DynamicForm_BasicInfo_JspTeacher.getValue("birthDate"));
                     persianDateCheck = dateCheck;
-                    if (dateCheck == false)
+                    if (dateCheck == false) {
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("birthDate", "<spring:message code='msg.correct.date'/>", true);
-
+                        alert("<spring:message code='msg.correct.date'/>");
+                    }
                     if (dateCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("birthDate", true);
                 }
@@ -564,7 +565,6 @@
                     mailCheck = emailCheck;
                     if (emailCheck == false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
-
                     if (emailCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
                 }
