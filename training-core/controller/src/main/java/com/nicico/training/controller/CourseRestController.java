@@ -328,5 +328,4 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/test.jasper", params, jsonDataSource, response);
     }
-
 }
