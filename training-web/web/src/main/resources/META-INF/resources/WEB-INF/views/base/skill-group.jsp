@@ -1024,7 +1024,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 
 
                     isc.RPCManager.sendRequest({
-                        actionURL: "http://localhost:9094/api/skill-group/" + skillGrouprecord.id + "/canDelete",
+                        actionURL: "${restApiUrl}/api/skill-group/" + skillGrouprecord.id + "/canDelete",
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                         useSimpleHttp: true,
@@ -1283,7 +1283,7 @@ var RestDataSource_Skill_Group_Skills_Jsp = isc.RestDataSource.create({
 
 
                 isc.RPCManager.sendRequest({
-                    actionURL: "http://localhost:9094/api/skill-group/" + activeSkillGrouprecord.id + "/canDelete",
+                    actionURL: "${restApiUrl}/api/skill-group/" + activeSkillGrouprecord.id + "/canDelete",
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                     useSimpleHttp: true,

@@ -22,7 +22,6 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -53,7 +52,7 @@ public class JobCompetenceRestController {
 
     @Loggable
     @GetMapping("/list")
-//    @PreAuthorize("hasAuthority('r_job')")
+//  @PreAuthorize("hasAuthority('r_job')")
     public ResponseEntity<List<JobCompetenceDTO.Info>> list() {
         return new ResponseEntity<>(jobCompetenceService.list(), HttpStatus.OK);
     }
@@ -98,7 +97,7 @@ public class JobCompetenceRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_job')")
+//  @PreAuthorize("hasAuthority('r_job')")
     public ResponseEntity<JobCompetenceDTO.IscRes> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)

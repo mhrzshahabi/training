@@ -11,6 +11,7 @@
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
 
     <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
+    <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
@@ -557,12 +558,12 @@
     })
 
     var categoryButton = isc.IconButton.create({
-        title: "دسته بندي استانداردها",
+        title: "گروه بندی",
         icon: "pieces/512/category.png",
         largeIcon: "pieces/512/category.png",
         orientation: "vertical",
         click: function () {
-            createTab("دسته بندي استانداردها", "/category/show-form", false);
+            createTab("گروه بندي", "/category/show-form", false);
         }
     })
 
@@ -615,18 +616,6 @@
             createTab("گزارش", "/teacher/show-form", false)
         }
     })
-
-    var classReportButton = isc.IconButton.create({
-        title: "گزارش کلاس ها",
-        icon: "pieces/512/repo1.png",
-        largeIcon: "pieces/512/repo1.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("گزارش کلاس ها", "/classReport/show-form", false)
-        }
-    })
-
-
     var baseRibbon = isc.RibbonGroup.create({
         title: "<spring:message code='base.system.info'/>",
         numRows: 3,
@@ -680,7 +669,6 @@
         titleAlign: "center",
         controls: [
             competencyReportButton,
-            classReportButton
         ],
         autoDraw: true
     });

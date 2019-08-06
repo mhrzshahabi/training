@@ -13,6 +13,9 @@
     var str2 = "";
     var str3 = "";
 
+    var startDateCheck = true;
+    var endDateCheck = true;
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -340,6 +343,7 @@
                 ID: "startDate_jspClass",
                 type: 'text', required: true,
                 hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('startDate_jspClass', this, 'ymd', '/');
@@ -351,17 +355,15 @@
                         displayDatePicker('startDate_jspClass', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    validateOnExit: true,
-                    type: "substringCount",
-                    substring: "/",
-                    operator: "==",
-                    count: "2",
-                    min: 10,
-                    max: 10,
-                    stopOnError: true,
-                    errorMessage: "<spring:message code='msg.correct.date'/>"
-                }]
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_Class_JspClass.getValue("startDate"));
+                    startDateCheck = dateCheck;
+                    if (dateCheck == false)
+                        DynamicForm_Class_JspClass.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    if (dateCheck == true)
+                       DynamicForm_Class_JspClass.clearFieldErrors("startDate", true);
+                }
             },
 
             {
@@ -376,6 +378,7 @@
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
                 hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('endDate_jspClass', this, 'ymd', '/');
@@ -387,19 +390,31 @@
                         displayDatePicker('endDate_jspClass', this, 'ymd', '/');
                     }
                 }],
-                validators: [
-                    {
-                        validateOnExit: true,
-                        type: "substringCount",
-                        substring: "/",
-                        operator: "==",
-                        count: "2",
-                        min: 10,
-                        max: 10,
-                        stopOnError: true,
-                        errorMessage: "<spring:message code='msg.correct.date'/>"
-                    }
-                ]
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_Class_JspClass.getValue("endDate"));
+                    var endDate = DynamicForm_Class_JspClass.getValue("endDate");
+                    var startDate = DynamicForm_Class_JspClass.getValue("startDate");
+                    if (dateCheck == false){
+                            DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
+                            DynamicForm_Class_JspClass.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                            endDateCheck = false;
+                        }
+                    if (dateCheck == true){
+                        if(startDate == undefined)
+                            DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
+                        if(startDate != undefined && startDate > endDate){
+                            DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
+                            DynamicForm_Class_JspClass.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                            endDateCheck = false;
+                        }
+                        if(startDate != undefined && startDate < endDate){
+                            DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
+                            endDateCheck = true;
+                        }
+                       }
+                }
+
             },
 
             {
@@ -472,14 +487,9 @@
         icon: "pieces/16/save.png",
         align: "center",
         click: function () {
-            var endDate = DynamicForm_Class_JspClass.getValue("endDate");
-            var startDate = DynamicForm_Class_JspClass.getValue("startDate");
-            if (startDate > endDate) {
-                DynamicForm_Class_JspClass.clearErrors(true);
-                DynamicForm_Class_JspClass.setError("endDate", "<spring:message code='msg.date.order'/>");
-                DynamicForm_Class_JspClass.showErrors();
+
+            if (startDateCheck == false || endDateCheck == false)
                 return;
-            }
             DynamicForm_Class_JspClass.validate();
             if (DynamicForm_Class_JspClass.hasErrors()) {
                 return;
@@ -1078,5 +1088,30 @@
         }
 
     }
+
+
+    function checkDate(date) {
+        var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
+        var dateIndex = new Array(0,1,2,3,5,6,8,9);
+        if(date.length != 10)
+            return false;
+
+        var month = parseInt(date.substr(5,2));
+        var day = parseInt(date.substr(8,2));
+        var year = parseInt(date.substr(0,4));
+
+        if(date[4]!= "/" || date[7]!= "/")
+            return false;
+        if(month>12)
+            return false;
+        if(day > khMonth[month])
+            return false;
+        for(var i=0; i< dateIndex.length ; i++){
+            if(date[dateIndex[i]]=="/"){
+            return false;
+            }
+        }
+        return true;
+    };
 
 

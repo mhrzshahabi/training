@@ -91,10 +91,10 @@ nicico:
   oauth2:
     token:
       cookie:
-        domain: localhost
+        domain: production.icico.net.ir
   rest-api:
-    url: http://localhost:9094
+    url: http://production.icico.net.ir:9094
 
 logging:
   level:
-    com.nicico: debug
+    com.nicico: info
