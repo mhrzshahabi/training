@@ -1,61 +1,62 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="113" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="d162e653-1e86-4a1f-afc4-1113471c5b53">
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="training.xml"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<queryString language="SQL">
 		<![CDATA[select  "TBL_SKILL_GROUP"."C_TITLE_FA" as sgname , "TBL_SKILL"."C_CODE"  , "TBL_SKILL"."C_TITLE_FA" as skillname ,  "TBL_SKILL"."C_DESCRIPTION"  from  "TBL_SKILL" , "TBL_SKILL_GROUP" , "TBL_SKILL_SKILLGROUP" where   "TBL_SKILL_SKILLGROUP"."F_SKILLGROUP_ID" =  "TBL_SKILL_GROUP"."ID" and   "TBL_SKILL_SKILLGROUP"."F_SKILL_ID" =  "TBL_SKILL"."ID" order by sgname]]>
 	</queryString>
-	<field name="SGNAME" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="SGNAME"/>
-	</field>
-	<field name="C_CODE" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="C_CODE"/>
-	</field>
-	<field name="SKILLNAME" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="SKILLNAME"/>
-	</field>
-	<field name="C_DESCRIPTION" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="C_DESCRIPTION"/>
-	</field>
+	<field name="SGNAME" class="java.lang.String"/>
+	<field name="C_CODE" class="java.lang.String"/>
+	<field name="SKILLNAME" class="java.lang.String"/>
+	<field name="C_DESCRIPTION" class="java.lang.String"/>
 	<group name="SGNAME">
 		<groupExpression><![CDATA[$F{SGNAME}]]></groupExpression>
 		<groupHeader>
 			<band height="106">
 				<staticText>
-					<reportElement x="200" y="76" width="218" height="30" uuid="975cc7b4-d59a-4b44-9213-95ffa7a1dc68">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d2e75043-74ee-4ca2-9db0-28cccfb0723d"/>
-					</reportElement>
+					<reportElement x="200" y="76" width="218" height="30" uuid="975cc7b4-d59a-4b44-9213-95ffa7a1dc68"/>
 					<box>
-						<pen lineWidth="2.0" lineStyle="Solid"/>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Shabnam-FD" size="18" isBold="true"/>
+						<font fontName="Shabnam-FD" size="18" isBold="false"/>
 					</textElement>
 					<text><![CDATA[نام مهارت]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="9" y="76" width="191" height="30" uuid="9c89e10b-5109-476d-9b5c-d32a81a04bdb">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="114af27c-5c36-41e7-bb9e-ca88898b88e3"/>
-					</reportElement>
+					<reportElement x="9" y="76" width="191" height="30" uuid="9c89e10b-5109-476d-9b5c-d32a81a04bdb"/>
 					<box>
-						<pen lineWidth="2.0" lineStyle="Solid"/>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Shabnam-FD" size="18" isBold="true"/>
+						<font fontName="Shabnam-FD" size="18" isBold="false"/>
 					</textElement>
 					<text><![CDATA[توضیحات]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="418" y="76" width="100" height="30" uuid="6d5c6045-2a20-4ff9-8884-702f53bc3e13">
-						<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9b62365f-0c62-4495-a7a8-1a10cb268e8f"/>
-					</reportElement>
+					<reportElement x="418" y="76" width="100" height="30" uuid="6d5c6045-2a20-4ff9-8884-702f53bc3e13"/>
 					<box>
-						<pen lineWidth="2.0" lineStyle="Solid"/>
+						<pen lineWidth="0.5"/>
+						<topPen lineWidth="0.5"/>
+						<leftPen lineWidth="0.5"/>
+						<bottomPen lineWidth="0.5"/>
+						<rightPen lineWidth="0.5"/>
 					</box>
 					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="Shabnam-FD" size="18" isBold="true"/>
+						<font fontName="Shabnam-FD" size="18" isBold="false"/>
 					</textElement>
 					<text><![CDATA[کد]]></text>
 				</staticText>
@@ -103,33 +104,45 @@
 	<detail>
 		<band height="31" splitType="Stretch">
 			<textField>
-				<reportElement x="9" y="0" width="191" height="30" uuid="fe336970-9143-4bfd-b510-c271b9378f02">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="114af27c-5c36-41e7-bb9e-ca88898b88e3"/>
-				</reportElement>
+				<reportElement x="9" y="0" width="191" height="30" uuid="fe336970-9143-4bfd-b510-c271b9378f02"/>
 				<box>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="14" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{C_DESCRIPTION}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="0" width="218" height="30" uuid="7b402903-7756-41b2-9488-0197fe528a97">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="d2e75043-74ee-4ca2-9db0-28cccfb0723d"/>
-				</reportElement>
+				<reportElement x="200" y="0" width="218" height="30" uuid="7b402903-7756-41b2-9488-0197fe528a97"/>
 				<box>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="14" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{SKILLNAME}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="418" y="0" width="100" height="30" uuid="071c6011-3812-400b-920a-64e9fe13c71f">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="9b62365f-0c62-4495-a7a8-1a10cb268e8f"/>
-				</reportElement>
+				<reportElement x="418" y="0" width="100" height="30" uuid="071c6011-3812-400b-920a-64e9fe13c71f"/>
 				<box>
-					<pen lineWidth="1.0" lineStyle="Solid"/>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
 				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="14" isBold="false"/>
+				</textElement>
 				<textFieldExpression><![CDATA[$F{C_CODE}]]></textFieldExpression>
 			</textField>
 		</band>
