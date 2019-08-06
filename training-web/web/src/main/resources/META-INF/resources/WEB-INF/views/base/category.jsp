@@ -136,7 +136,7 @@
                         Window_Category.close();
                     } else {
                         var ERROR = isc.Dialog.create({
-                            message: ("اجرای عملیات با مشکل مواجه شده است!"),
+                            message: ("کد گروه تکراری است!"),
                             icon: "[SKIN]stop.png",
                             title: "توجه"
                         });
@@ -334,7 +334,7 @@
                             Window_Sub_Category.close();
                         } else {
                             var ERROR = isc.Dialog.create({
-                                message: ("اجرای عملیات با مشکل مواجه شده است!"),
+                                message: ("کد زیرگروه تکراری است."),
                                 icon: "[SKIN]stop.png",
                                 title: "توجه"
                             });
