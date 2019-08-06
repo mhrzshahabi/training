@@ -72,16 +72,16 @@ public class Skill extends Auditable{
     private Integer edomainTypeId;
 
     //-------------------------------------------------
-    @ManyToMany(fetch = FetchType.EAGER, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinTable(name = "tbl_skill_course", schema = "TRAINING",
             joinColumns = {@JoinColumn(name = "f_skill_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
     private Set<Course> courseSet;
 
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "skillSet" )
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet" )
     private Set<SkillGroup> skillGroupSet;
 
-    @ManyToMany(fetch = FetchType.EAGER,mappedBy = "skillSet")
+    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet")
     private Set<Competence> competenceSet;
 
 

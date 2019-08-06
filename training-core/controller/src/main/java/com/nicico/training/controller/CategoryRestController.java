@@ -49,14 +49,32 @@ public class CategoryRestController {
     @PostMapping
     @PreAuthorize("hasAuthority('c_category')")
     public ResponseEntity<CategoryDTO.Info> create(@Validated @RequestBody CategoryDTO.Create request) {
-        return new ResponseEntity<>(categoryService.create(request), HttpStatus.CREATED);
+        HttpStatus httpStatus=HttpStatus.CREATED;
+        CategoryDTO.Info categoryInfo=null;
+        try {
+            categoryInfo=categoryService.create(request);
+
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            categoryInfo=null;
+        }
+        return new ResponseEntity<>(categoryInfo, httpStatus);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAuthority('u_category')")
     public ResponseEntity<CategoryDTO.Info> update(@PathVariable Long id, @Validated @RequestBody CategoryDTO.Update request) {
-        return new ResponseEntity<>(categoryService.update(id, request), HttpStatus.OK);
+        HttpStatus httpStatus=HttpStatus.OK;
+        CategoryDTO.Info categoryInfo=null;
+        try {
+            categoryInfo=categoryService.update(id, request);
+
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            categoryInfo=null;
+        }
+        return new ResponseEntity<>(categoryInfo, httpStatus);
     }
 
     @Loggable

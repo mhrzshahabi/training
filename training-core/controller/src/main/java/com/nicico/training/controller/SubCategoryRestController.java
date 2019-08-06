@@ -49,8 +49,17 @@ public class SubCategoryRestController {
     @PreAuthorize("hasAuthority('c_sub_Category')")
     public ResponseEntity<SubCategoryDTO.Info> create(@RequestBody Object request) {
         //SubCategoryDTO.Create create=(new ModelMapper()).map(request,SubCategoryDTO.Create.class);
+        HttpStatus httpStatus=HttpStatus.CREATED;
+        SubCategoryDTO.Info subCategoryInfo=null;
+        try {
+            subCategoryInfo=subCategoryService.create(request);
 
-        return new ResponseEntity<>(subCategoryService.create(request), HttpStatus.CREATED);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            subCategoryInfo=null;
+        }
+        return new ResponseEntity<>(subCategoryInfo, httpStatus);
+
     }
 
     @Loggable
@@ -58,8 +67,16 @@ public class SubCategoryRestController {
     @PreAuthorize("hasAuthority('u_sub_Category')")
     public ResponseEntity<SubCategoryDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
 //        SubCategoryDTO.Update update=(new ModelMapper()).map(request,SubCategoryDTO.Update.class);
+        HttpStatus httpStatus=HttpStatus.OK;
+        SubCategoryDTO.Info subCategoryInfo=null;
+        try {
+            subCategoryInfo=subCategoryService.update(id, request);
 
-        return new ResponseEntity<>(subCategoryService.update(id, request), HttpStatus.OK);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            subCategoryInfo=null;
+        }
+        return new ResponseEntity<>(subCategoryInfo, httpStatus);
     }
 
     @Loggable

@@ -60,7 +60,7 @@
                 type: 'text',
                 // default:"125",
                 //readonly: true,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z| ]",
                 length: "200",
                 width: "100%",
                 height: 30,
@@ -78,7 +78,7 @@
                 name: "titleEn",
                 title: "نام لاتین ",
                 type: 'text',
-                keyPressFilter: "[a-z|A-Z|0-9 ]",
+                keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "200",
                 width: "100%",
                 height: 30,
@@ -138,7 +138,7 @@
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",
-                            title: "پیغام"
+                            title: "توجه"
                         });
                         setTimeout(function () {
                             ERROR.close();
@@ -150,7 +150,6 @@
 
         }
     });
-
 
     var Hlayout_Category_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
@@ -261,7 +260,7 @@
                 type: 'text',
                 height: 30,
                 //readonly: true,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z| ]",
                 length: "200",
                 width: "100%",
                 validators: [{
@@ -277,7 +276,7 @@
                 name: "titleEn",
                 title: "نام لاتین ",
                 type: 'text',
-                keyPressFilter: "[a-z|A-Z|0-9 ]",
+                keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "200",
                 height: 30,
                 width: "100%",
@@ -337,7 +336,7 @@
                             var ERROR = isc.Dialog.create({
                                 message: ("اجرای عملیات با مشکل مواجه شده است!"),
                                 icon: "[SKIN]stop.png",
-                                title: "پیغام"
+                                title: "توجه"
                             });
                             setTimeout(function () {
                                 ERROR.close();
@@ -353,14 +352,13 @@
                 isc.Dialog.create({
                     message: ("دو حرف اول کد باید با کد گروه یکی باشد"),
                     icon: "[SKIN]stop.png",
-                    title: "پیغام"
+                    title: "توجه"
                 });
 
             }
         }
 
     });
-
 
     var Hlayout_Sub_Category_SaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
@@ -403,7 +401,6 @@
             members: [DynamicForm_Sub_Category, Hlayout_Sub_Category_SaveOrExit]
         })]
     });
-
 
     var RestDataSource_Sub_Category = isc.RestDataSource.create({
         fields: [
@@ -496,7 +493,7 @@
             isc.Dialog.create({
                 message: "گروهی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -533,7 +530,7 @@
             isc.Dialog.create({
                 message: "گروه یا زیر گروه انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -730,7 +727,7 @@
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();

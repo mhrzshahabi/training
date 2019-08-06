@@ -39,7 +39,7 @@ public class SkillGroup extends Auditable {
     private Set<Skill> skillSet;
 
    // @ManyToMany(mappedBy = "skillGroupSet" )
-   @ManyToMany(fetch = FetchType.EAGER)
+   @ManyToMany
    @JoinTable(schema = "training", name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_skill_group_id"),
            inverseJoinColumns = @JoinColumn(name = "f_competence_id"))
     private Set<Competence> competenceSet;

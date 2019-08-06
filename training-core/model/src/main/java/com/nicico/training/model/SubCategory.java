@@ -25,7 +25,7 @@ public class SubCategory extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code",length = 7,nullable = false)
+    @Column(name = "c_code",length = 7,nullable = false,unique = true)
     private String code;
 
     @Column(name = "c_title_fa",  nullable = false)

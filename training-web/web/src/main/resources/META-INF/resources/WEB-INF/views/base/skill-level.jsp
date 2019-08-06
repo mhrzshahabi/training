@@ -168,7 +168,7 @@
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",
-                            title: "پیغام"
+                            title: "توجه"
                         });
                         setTimeout(function () {
                             ERROR.close();
@@ -318,7 +318,7 @@
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -328,6 +328,7 @@
             skillLevelMethod = "PUT";
             skillLevelActionUrl = "${restApiUrl}/api/skill-level/" + record.id;
             DynamicForm_skill_level.editRecord(record);
+            Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
             Window_skill_level.show();
         }
     };
