@@ -1058,9 +1058,7 @@ icon: "pieces/16/icon_delete.png",
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                console.log(resp.httpResponseCode);
                                 wait.close();
-                                console.log(resp.httpResponseCode);
                                 if (resp.data == "true") {
                                     ListGrid_Skill_Skill.invalidateCache();
                                     var OK = isc.Dialog.create({
