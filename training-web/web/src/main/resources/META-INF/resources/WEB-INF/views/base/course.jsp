@@ -709,7 +709,7 @@ selectionType: "none",
             {
                 name: "minTeacherExpYears",
                 title: "<spring:message code="course_minTeacherExpYears"/>",
-                prompt: "لطفا حداقل سابقه تدریس را به صورت یک عدد وارد کنید",
+                prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                // shouldSaveValue: true,
                 textAlign: "center",
                 type:"integer",
@@ -978,7 +978,6 @@ selectionType: "none",
         height: "100%",
         members: [HLayout_Actions_Course, HLayout_Grid_Course, HLayout_Tab_Course]
     });
-
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
         for (j = 0; j < mainTabSet.tabs.length; j++)
@@ -989,7 +988,6 @@ selectionType: "none",
             }
         }
     };
-
     function ListGrid_Course_add() {
         DynamicForm_course.getItem("category.id").setDisabled(false);
         DynamicForm_course.getItem("subCategory.id").setDisabled(false);
@@ -1004,7 +1002,6 @@ selectionType: "none",
 
         Window_course.show();
     };
-
     function ListGrid_Course_remove() {
         var record = ListGrid_Course.getSelectedRecord();
         if (record == null) {
@@ -1074,7 +1071,6 @@ selectionType: "none",
             });
         }
     };
-
     function ListGrid_Course_Edit() {
         DynamicForm_course.getItem("category.id").setDisabled(true);
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
@@ -1107,7 +1103,6 @@ selectionType: "none",
             Window_course.show();
         }
     };
-
     function openTabGoal() {
         if (ListGrid_Course.getSelectedRecord() == null) {
             isc.Dialog.create({
