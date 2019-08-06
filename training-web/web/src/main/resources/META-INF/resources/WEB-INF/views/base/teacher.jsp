@@ -476,7 +476,6 @@
                     persianDateCheck = dateCheck;
                     if (dateCheck == false) {
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("birthDate", "<spring:message code='msg.correct.date'/>", true);
-                        alert("<spring:message code='msg.correct.date'/>");
                     }
                     if (dateCheck == true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("birthDate", true);
