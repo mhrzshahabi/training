@@ -50,21 +50,21 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_skill')")
+//    @PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SkillDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(skillService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_skill')")
+//    //@PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<List<SkillDTO.Info>> list() {
         return new ResponseEntity<>(skillService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_skill')")
+//    //@PreAuthorize("hasAuthority('c_skill')")
     public ResponseEntity<SkillDTO.Info> create(@RequestBody Object request) {
         String maxSkillCode = "";
         String newSkillCode = "";
@@ -89,7 +89,7 @@ public class SkillRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_skill')")
+    //@PreAuthorize("hasAuthority('u_skill')")
     public ResponseEntity<SkillDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
 //		SkillDTO.Update u=new SkillDTO.Update();
 //        ModelMapper m=new ModelMapper();
@@ -99,7 +99,7 @@ public class SkillRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_skill')")
+    //@PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
         boolean flag=false;
@@ -117,7 +117,7 @@ public class SkillRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_skill')")
+    //@PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody SkillDTO.Delete request) {
         boolean flag=false;
         HttpStatus httpStatus=HttpStatus.OK;
@@ -141,7 +141,7 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_skill')")
+    //@PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SkillDTO.SkillSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                      @RequestParam("_endRow") Integer endRow,
                                                      @RequestParam(value = "_constructor", required = false) String constructor,
@@ -188,7 +188,7 @@ public class SkillRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_skill')")
+    //@PreAuthorize("hasAuthority('r_skill')")
     public ResponseEntity<SearchDTO.SearchRs<SkillDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(skillService.search(request), HttpStatus.OK);
     }
@@ -201,7 +201,7 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "{skillId}/skill-groups")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+    //@PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroups(@PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -221,7 +221,7 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "{skillId}/unattached-skill-groups")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+    //@PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getUnAttachedSkillGroups(@RequestParam("_startRow") Integer startRow,
                                                                                    @RequestParam("_endRow") Integer endRow,
                                                                                    @RequestParam(value = "_constructor", required = false) String constructor,
@@ -369,7 +369,7 @@ public class SkillRestController {
 
     @Loggable
     @GetMapping(value = "/skill-group-dummy")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+    //@PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> skillGroupDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<SkillGroupDTO.SkillGroupSpecRs>(new SkillGroupDTO.SkillGroupSpecRs(), HttpStatus.OK);
     }
