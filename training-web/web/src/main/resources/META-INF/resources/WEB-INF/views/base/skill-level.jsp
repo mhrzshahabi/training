@@ -328,8 +328,8 @@
             skillLevelMethod = "PUT";
             skillLevelActionUrl = "${restApiUrl}/api/skill-level/" + record.id;
             DynamicForm_skill_level.editRecord(record);
-Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
-Window_skill_level.show();
+            Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
+            Window_skill_level.show();
         }
     };
 

@@ -363,7 +363,7 @@
             isc.Dialog.create({
                 message: "هیچ شایستگی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -389,6 +389,8 @@
         members: [
             isc.MyButton.create({
                 title: "انتخاب",
+icon: "pieces/16/ok.png",
+
                 prompt: "",
                 width: 100,
                 orientation: "vertical",
@@ -400,6 +402,7 @@
             }),
             isc.MyButton.create({
                 title: "لغو",
+icon: "pieces/16/icon_delete.png",
                 prompt: "",
                 width: 100,
                 orientation: "vertical",
@@ -745,7 +748,7 @@
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
                             icon: "[SKIN]stop.png",
-                            title: "پیغام"
+                            title: "توجه"
                         });
                         setTimeout(function () {
                             ERROR.close();
@@ -957,7 +960,7 @@
                 isc.Dialog.create({
                     message: "لطفا یک مهارت را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
-                    title: "پیغام",
+                    title: "توجه",
                     buttons: [isc.Button.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -976,7 +979,7 @@
                 isc.Dialog.create({
                     message: "لطفا یک مهارت را انتخاب کنید",
                     icon: "[SKIN]ask.png",
-                    title: "پیغام",
+                    title: "توجه",
                     buttons: [isc.Button.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -1021,7 +1024,7 @@
         console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "هیچ مهارتی برای حذف انتخاب نشده است!",
+                message: "مهارتی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
@@ -1092,7 +1095,7 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "هیچ مهارتی برای ویرایش انتخاب نشده است.",
+                message: "مهارتی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
@@ -1201,10 +1204,10 @@
             {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
             {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
             {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"},
-            {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
-            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center", filterOperator: "iContains"},
             {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
             {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
+            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center",canFilter:false},//filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
