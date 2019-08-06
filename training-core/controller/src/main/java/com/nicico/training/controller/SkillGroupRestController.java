@@ -47,21 +47,21 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(skillGroupService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<List<SkillGroupDTO.Info>> list() {
         return new ResponseEntity<>(skillGroupService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_skill_group')")
+//    @PreAuthorize("hasAuthority('c_skill_group')")
     public ResponseEntity<SkillGroupDTO.Info> create(@Validated @RequestBody SkillGroupDTO.Create request) {
         return new ResponseEntity<>(skillGroupService.create(request), HttpStatus.CREATED);
     }
@@ -75,7 +75,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_skill_group')")
+//    @PreAuthorize("hasAuthority('d_skill_group')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         skillGroupService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
@@ -83,7 +83,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_skill_group')")
+//    @PreAuthorize("hasAuthority('d_skill_group')")
     public ResponseEntity<Void> delete(@Validated @RequestBody SkillGroupDTO.Delete request) {
         skillGroupService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
@@ -98,7 +98,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                                @RequestParam("_endRow") Integer endRow,
                                                                @RequestParam(value = "_constructor", required = false) String constructor,
@@ -154,7 +154,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SearchDTO.SearchRs<SkillGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(skillGroupService.search(request), HttpStatus.OK);
     }
@@ -163,7 +163,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getCompetences")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -294,7 +294,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getSkills")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<SkillDTO.SkillSpecRs> getSkills(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
