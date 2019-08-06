@@ -30,35 +30,35 @@ public class EquipmentRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_equipment')")
+//    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<EquipmentDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(equipmentService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_equipment')")
+//    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<List<EquipmentDTO.Info>> list() {
         return new ResponseEntity<>(equipmentService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_equipment')")
+//    @PreAuthorize("hasAuthority('c_equipment')")
     public ResponseEntity<EquipmentDTO.Info> create(@Validated @RequestBody EquipmentDTO.Create request) {
         return new ResponseEntity<>(equipmentService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_equipment')")
+//    @PreAuthorize("hasAuthority('u_equipment')")
     public ResponseEntity<EquipmentDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EquipmentDTO.Update request) {
         return new ResponseEntity<>(equipmentService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_equipment')")
+//    @PreAuthorize("hasAuthority('d_equipment')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         equipmentService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
@@ -66,7 +66,7 @@ public class EquipmentRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_equipment')")
+//    @PreAuthorize("hasAuthority('d_equipment')")
     public ResponseEntity<Void> delete(@Validated @RequestBody EquipmentDTO.Delete request) {
         equipmentService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
@@ -74,7 +74,7 @@ public class EquipmentRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_equipment')")
+//    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<EquipmentDTO.EquipmentSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
@@ -98,7 +98,7 @@ public class EquipmentRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_equipment')")
+//    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<SearchDTO.SearchRs<EquipmentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(equipmentService.search(request), HttpStatus.OK);
     }
