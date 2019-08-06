@@ -459,17 +459,6 @@
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
-                validators: [{
-                    validateOnExit: true,
-                    type: "substringCount",
-                    substring: "/",
-                    operator: "==",
-                    count: "2",
-                    min: 10,
-                    max: 10,
-                    stopOnError: true,
-                    errorMessage: "<spring:message code='msg.correct.date'/>"
-                }],
                 blur: function () {
                     var dateCheck = false;
                     dateCheck = checkDate(DynamicForm_BasicInfo_JspTeacher.getValue("birthDate"));
@@ -1637,17 +1626,23 @@
     function checkDate(date) {
         var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
         var dateIndex = new Array(0,1,2,3,5,6,8,9);
-        var month = parseInt(date.substr(5,6));
-        var day = parseInt(date.substr(8,9));
-        var year = parseInt(date.substr(0,3));
+        if(date.length != 10)
+            return false;
+
+        var month = parseInt(date.substr(5,2));
+        var day = parseInt(date.substr(8,2));
+        var year = parseInt(date.substr(0,4));
+
+        var jeoDate = new Date(JalaliDate.jalaliToGregorian(year,month,day));
+        var todayDate = new Date();
         if(date[4]!= "/" || date[7]!= "/")
             return false;
         if(month>12)
             return false;
         if(day > khMonth[month])
             return false;
-        // if(year > new Date().getFullYear())
-        //     return false;
+        if(jeoDate > todayDate)
+            return false;
         for(var i=0; i< dateIndex.length ; i++){
             if(date[dateIndex[i]]=="/"){
             return false;
