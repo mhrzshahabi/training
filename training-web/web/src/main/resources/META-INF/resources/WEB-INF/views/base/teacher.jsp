@@ -1638,6 +1638,7 @@
 
     function checkDate(date) {
         var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
+        var dateIndex = new Array(0,1,2,3,5,6,8,9);
         var month = parseInt(date.substr(5,6));
         var day = parseInt(date.substr(8,9));
         var year = parseInt(date.substr(0,3));
@@ -1647,8 +1648,13 @@
             return false;
         if(day > khMonth[month])
             return false;
-        if(year > new Date().getFullYear())
+        // if(year > new Date().getFullYear())
+        //     return false;
+        for(var i=0; i< dateIndex.length ; i++){
+            if(date[dateIndex[i]]=="/"){
             return false;
+            }
+        }
         return true;
     };
 
