@@ -97,14 +97,14 @@
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
 
-        fetchDataURL: "http://localhost:9094/api/course/skill/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/skill/" + courseId.id
     });
     var RestDataSource_CourseJob = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ],
 
-        fetchDataURL: "http://localhost:9094/api/course/job/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/job/" + courseId.id
     });
     var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
@@ -125,7 +125,7 @@
             {name: "titleEn"},
         ],
 
-        fetchDataURL: "http://localhost:9094/api/course/getcompetence/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/getcompetence/" + courseId.id
     });
     var RestDataSourceEducation = isc.MyRestDataSource.create({
         fields: [
@@ -133,7 +133,7 @@
             {name: "titleFa"}
         ],
 
-        fetchDataURL: "http://localhost:9094/api/course/getlistEducationLicense",
+        fetchDataURL: "${restApiUrl}/api/course/getlistEducationLicense",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -189,19 +189,19 @@
         },
         selectionChanged: function (record, state) {
             courseId = record;
-            RestDataSource_CourseGoal.fetchDataURL = "http://localhost:9094/api/course/" + courseId.id + "/goal";
+            RestDataSource_CourseGoal.fetchDataURL = "${restApiUrl}/api/course/" + courseId.id + "/goal";
             ListGrid_CourseGoal.fetchData();
             ListGrid_CourseGoal.invalidateCache();
-            RestDataSource_Syllabus.fetchDataURL = "http://localhost:9094/api/syllabus/course/" + courseId.id;
+            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = "http://localhost:9094/api/course/skill/" + courseId.id;
+            RestDataSource_CourseSkill.fetchDataURL = "${restApiUrl}/api/course/skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = "http://localhost:9094/api/course/job/" + courseId.id;
+            RestDataSource_CourseJob.fetchDataURL = "${restApiUrl}/api/course/job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = "http://localhost:9094/api/course/getcompetence/" + courseId.id;
+            RestDataSource_CourseCompetence.fetchDataURL = "${restApiUrl}/api/course/getcompetence/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
             for (i = 0; i < mainTabSet.tabs.length; i++) {
@@ -298,7 +298,7 @@ canFilter:false
         ],
         selectionType: "none",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            RestDataSource_Syllabus.fetchDataURL = "http://localhost:9094/api/goal/" + record.id + "/syllabus";
+            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
         },
@@ -523,7 +523,7 @@ selectionType: "none",
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
                     DynamicForm_course.getItem("subCategory.id").setValue();
-                    RestDataSourceSubCategory.fetchDataURL = "http://localhost:9094/api/category/" + value + "/sub-categories";
+                    RestDataSourceSubCategory.fetchDataURL = "${restApiUrl}/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
 
                 },
@@ -703,7 +703,7 @@ selectionType: "none",
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    RestDataSourceEducation.fetchDataURL = "http://localhost:9094/api/course/getlistEducationLicense";
+                    RestDataSourceEducation.fetchDataURL = "${restApiUrl}/api/course/getlistEducationLicense";
                 },
             },
             {
@@ -775,7 +775,7 @@ selectionType: "none",
 //------------------------------------
             if (course_method == "POST") {
                 isc.RPCManager.sendRequest({
-                    actionURL: "http://localhost:9094/api/course/getmaxcourse/" + x,
+                    actionURL: "${restApiUrl}/api/course/getmaxcourse/" + x,
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                     useSimpleHttp: true,
@@ -995,7 +995,7 @@ selectionType: "none",
         DynamicForm_course.getItem("elevelType.id").setDisabled(false);
         DynamicForm_course.getItem("etheoType.id").setDisabled(false);
         course_method = "POST";
-        course_url = "http://localhost:9094/api/course";
+        course_url = "${restApiUrl}/api/course";
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         Window_course.setTitle("<spring:message code="create"/>");
@@ -1094,9 +1094,9 @@ selectionType: "none",
             });
         } else {
             course_method = "PUT";
-            course_url = "http://localhost:9094/api/course/" + sRecord.id;
+            course_url = "${restApiUrl}/api/course/" + sRecord.id;
             DynamicForm_course.clearValues();
-            RestDataSourceSubCategory.fetchDataURL = "http://localhost:9094/api/category/" + sRecord.category.id + "/sub-categories"
+            RestDataSourceSubCategory.fetchDataURL = "${restApiUrl}/api/category/" + sRecord.category.id + "/sub-categories"
             DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
