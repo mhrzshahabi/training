@@ -483,7 +483,7 @@
             });
             setTimeout(function () {
                 MyOkDialog_job.close();
-            }, 3000);
+            }, 1000);
             Win_Competence_competence.close();
             refresh_CompetenceListGrid_competence();
         } else {
@@ -492,7 +492,7 @@
             });
             setTimeout(function () {
                 MyOkDialog_job.close();
-            }, 3000);
+            }, 1000);
         }
     };
 

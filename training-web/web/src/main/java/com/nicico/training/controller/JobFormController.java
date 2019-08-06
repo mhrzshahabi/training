@@ -19,69 +19,69 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/job")
 public class JobFormController {
 
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
+    @Value("${nicico.rest-api.url}")
+    private String restApiUrl;
 
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "base/job";
-	}
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "base/job";
+    }
 
 
 //--------------------------------{hamed jafari}----------------------------
 
-	@PostMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("token");
+    @PostMapping("/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getSession().getAttribute("token");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		if (type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-		else if (type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-		else if (type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/job/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
 
 
-	@RequestMapping("/printCo/{type}/{jobId}")
-	public ResponseEntity<?> printCo(final HttpServletRequest request, @PathVariable String type, @PathVariable Long jobId) {
-		String token = (String) request.getSession().getAttribute("token");
+    @RequestMapping("/printCo/{type}/{jobId}")
+    public ResponseEntity<?> printCo(final HttpServletRequest request, @PathVariable String type, @PathVariable Long jobId) {
+        String token = (String) request.getSession().getAttribute("token");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		if (type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/pdf/"+jobId, HttpMethod.GET, entity, byte[].class);
-		else if (type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/EXCEL/"+jobId, HttpMethod.GET, entity, byte[].class);
-		else if (type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/HTML/"+jobId, HttpMethod.GET, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/pdf/" + jobId, HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/EXCEL/" + jobId, HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/job-competence/printCo/HTML/" + jobId, HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
+    }
 }

@@ -29,14 +29,17 @@
                     show_JobRemoveForm();
                 }
             }, {isSeparator: true}, {
-                /* title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                    print_JobListGrid("pdf");
                  }
              }, {
                  title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                    print_JobListGrid("excel");
                  }
              }, {
                  title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                 }*/
+                    print_JobListGrid("html");
+                }
             }]
     });
     //****************************************************************************************************************
@@ -45,11 +48,11 @@
     let DS_Job_job = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان شغل", align: "center"},
-            {name: "titleEn", title: "عنوان انگليسي", align: "center"},
-            {name: "code", title: "کد شغل", align: "center"},
-            {name: "costCenter", title: "مرکز هزينه", align: "center"},
-            {name: "description", title: "توضيحات", align: "center"}],
+            {name: "titleFa", title: "عنوان شغل", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "عنوان انگليسي", align: "center", filterOperator: "contains"},
+            {name: "code", title: "کد شغل", align: "center", filterOperator: "contains"},
+            {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "contains"},
+            {name: "description", title: "توضيحات", align: "center", filterOperator: "contains"}],
         fetchDataURL: jobUrl + "spec-list"
     });
 
@@ -195,13 +198,9 @@
             }),
             isc.MyPrintButton.create({
                 click: function () {
-                    print_JobListGrid();
+                    print_JobListGrid("pdf");
                 }
             }),
-            /*isc.MyPrintButton.create({
-                click: function () {
-                }
-            }),*/
         ]
     });
 
@@ -639,11 +638,11 @@
         }
     };
 
-    function print_JobListGrid() {
+    function print_JobListGrid(type) {
         var advancedCriteria = LG_Job_job.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
-            action: "/job/printWithCriteria/pdf",
+            action: "/job/printWithCriteria/" + type,
             target: "_Blank",
             canSubmit: true,
             fields:

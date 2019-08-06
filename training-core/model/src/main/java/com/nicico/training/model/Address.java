@@ -20,27 +20,14 @@ public class Address extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_neighbourhood")
-    private String neighbourhood;
-
-    @Column(name = "c_street")
-    private String street;
-
-    @Column(name = "c_alley")
-    private String alley;
-
-    @Column(name = "c_plaque")
-    private String plaque;
+    @Column(name = "c_address")
+    private String address;
 
     @Column(name = "n_post_code")
     private Long postCode;
 
     @Column(name = "n_phone")
     private String phone;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_state")
-    private State state;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_city")

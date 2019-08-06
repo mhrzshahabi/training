@@ -221,7 +221,7 @@
                 name: "code", title: "<spring:message code='code'/>",
                 type: 'text',
                 required: true,
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "15",
             },
             {
@@ -245,7 +245,7 @@
             {
                 name: "telephone",
                 title: "<spring:message code='telephone'/>",
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "15",
             },
             {
@@ -272,7 +272,7 @@
             {
                 name: "postalCode",
                 title: "<spring:message code='postal.code'/>",
-                keyPressFilter: "[/|0-9]",
+                keyPressFilter: "[0-9]",
                 length: "15"
             },
             {
@@ -348,6 +348,9 @@
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
+
+             if (mailCheck == false)
+                return;
 
             DynamicForm_Institute_JspInstitute.validate();
             if (DynamicForm_Institute_JspInstitute.hasErrors()) {

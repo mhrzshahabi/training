@@ -182,8 +182,8 @@
             type:"regexp",
             errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
             expression:/^((?![~!@#$%^&*()+='"?]).)*$/,
-        }
-    };
+        },
+       };
 
     isc.defineClass("MyButton", Button);
 
