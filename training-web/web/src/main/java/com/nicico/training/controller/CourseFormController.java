@@ -32,7 +32,35 @@ public class CourseFormController {
 	public String showForm() {
 		return "base/course";
 	}
-	@RequestMapping("/print/{type}")
+
+	@PostMapping("/printWithCriteria/{type}")
+	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
+		String token = (String) request.getSession().getAttribute("token");
+
+		final RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+		final HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
+
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		if(type.equals("pdf"))
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("excel"))
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+		else if(type.equals("html"))
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+		else
+			return null;
+	}
+
+	/*@RequestMapping("/print/{type}")
 	public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
 		String token = "";
 		if (authentication instanceof OAuth2AuthenticationToken) {
@@ -78,7 +106,7 @@ public class CourseFormController {
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
 		return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/pdf", HttpMethod.POST, entity, byte[].class);
-	}
+	}*/
 
 
 	@PostMapping("/printGoalsAndSyllabus")

@@ -170,15 +170,15 @@
         //        },
           {isSeparator: true}, {
             title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/course/print/pdf"/>");
+                print_CourseListGrid("pdf");
             }
         }, {
             title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/course/print/excel"/>");
+                print_CourseListGrid("excel");
             }
         }, {
             title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/course/print/html"/>");
+                print_CourseListGrid("html");
             }
         }]
     });
@@ -436,26 +436,7 @@ selectionType: "none",
                     icon: "[SKIN]/RichTextEditor/print.png",
                     title: "<spring:message code='print'/>",
                     click: function () {
-                    if (ListGrid_Course.getCriteria().operator == undefined) {
-                        <spring:url value="/course/print/pdf" var="printUrl"/>
-                        window.open('${printUrl}');
-                    }
-
-                    else {
-                    var advancedCriteria = ListGrid_Course.getCriteria();
-                    var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/course/printWithCriteria",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                    [
-                    {name: "CriteriaStr", type: "hidden"}
-                    ]
-                    });
-                    criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                    criteriaForm.submitForm();
-                    }
+                            print_CourseListGrid("pdf");
                     }
                     });
 
@@ -1121,4 +1102,20 @@ selectionType: "none",
         code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
         }
     }
+
+    function print_CourseListGrid(type) {
+        var advancedCriteria_course = ListGrid_Course.getCriteria();
+        var criteriaForm_course = isc.DynamicForm.create({
+            method: "POST",
+            action: "/course/printWithCriteria/" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        })
+        criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+        criteriaForm_course.submitForm();
+    };
 
