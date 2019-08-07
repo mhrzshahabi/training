@@ -26,19 +26,7 @@
             title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_skill_level_remove();
             }
-        }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("/skill-level/print/pdf");
-            }
-        }, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("/skill-level/print/excel");
-            }
-        }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("/skill-level/print/html");
-            }
-        }]
+        },]
     });
     var RestDataSource_skill_level = isc.RestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}, {name: "titleEn"},
