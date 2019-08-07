@@ -342,10 +342,8 @@
                                 ERROR.close();
                             }, 3000);
                         }
-
                     }
                 });
-
 
             } else {
 
@@ -590,19 +588,7 @@
             title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Sub_Category_Remove();
             }
-        }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/sub-category/print/pdf"/>");
-            }
-        }, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/sub-category/print/exel"/>");
-            }
-        }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/sub-category/print/html"/>");
-            }
-        }]
+        }, ]
     });
 
     var ListGrid_Sub_Category = isc.ListGrid.create({
@@ -780,19 +766,7 @@
             title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Category_Remove();
             }
-        }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/category/print/pdf"/>");
-            }
-        }, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/category/print/exel"/>");
-            }
-        }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/category/print/html"/>");
-            }
-        }]
+        },]
     });
 
     var ListGrid_Category = isc.ListGrid.create({
