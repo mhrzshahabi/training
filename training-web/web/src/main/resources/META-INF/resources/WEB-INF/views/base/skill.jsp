@@ -1813,14 +1813,12 @@
                 var skillId = skillRecord.id;
                 var competenceRecord = ListGrid_Skill_Selected_Competence.getSelectedRecord();
                 var competenceId = competenceRecord.id;
-// var JSONObj = {"ids": competenceIds};
                 isc.RPCManager.sendRequest({
                     httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
                     actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
                     httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
                     callback: function (resp) {
                         if (resp.data == "true") {
