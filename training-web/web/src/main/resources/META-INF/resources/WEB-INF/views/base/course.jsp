@@ -298,7 +298,7 @@ canFilter:false
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        selectionType: "none",
+        selectionType: "single",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
@@ -324,7 +324,7 @@ canFilter:false
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-selectionType: "none",
+selectionType: "single",
     });
     var ListGrid_CourseJob = isc.MyListGrid.create({
 
@@ -335,7 +335,7 @@ selectionType: "none",
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-selectionType: "none",
+selectionType: "single",
         autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
@@ -354,7 +354,7 @@ selectionType: "none",
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
-selectionType: "none",
+selectionType: "single",
     });
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
@@ -368,7 +368,7 @@ selectionType: "none",
             {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-selectionType: "none",
+selectionType: "single",
         autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
