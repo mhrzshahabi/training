@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
     var skill_Level_Symbol = ""
@@ -114,10 +114,6 @@
             {name: "skillLevel.titleFa"},
             {name: "edomainType.titleFa"},
             {name: "description"},
-            /*{name: "categoryId"},
-            {name: "subCategoryId"},
-            {name: "skillLevelId"},
-            {name: "edomainTypeId"},*/
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -213,7 +209,6 @@
             return this.Super("transformRequest", arguments);
         },
         fetchDataURL: "${restApiUrl}/api/competence/spec-list"
-// fetchDataURL: "${restApiUrl}/api/skill/-1/competences"
     });
 
     var RestDataSource_Skill_UnAttached_Competences = isc.RestDataSource.create({
@@ -236,7 +231,6 @@
             return this.Super("transformRequest", arguments);
         },
         fetchDataURL: "${restApiUrl}/api/skill/competence-dummy"
-// fetchDataURL: "${restApiUrl}/api/skill/-1/competences"
     });
 
     var RestDataSource_Skill_Attached_Courses = isc.RestDataSource.create({
@@ -261,7 +255,6 @@
             };
             return this.Super("transformRequest", arguments);
         },
-// fetchDataURL: "${restApiUrl}/api/skill/-1/courses"
         fetchDataURL: "${restApiUrl}/api/skill/course-dummy"
     });
 
@@ -287,7 +280,6 @@
             };
             return this.Super("transformRequest", arguments);
         },
-// fetchDataURL: "${restApiUrl}/api/skill/-1/courses"
         fetchDataURL: "${restApiUrl}/api/skill/course-dummy"
     });
 
@@ -369,9 +361,7 @@
                     this.close();
                     return 0;
                 }
-
             });
-
         }
         DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setValue(record.id);
         DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setValue(record.titleFa);
@@ -384,12 +374,10 @@
         align: "center",
         padding: 10,
         membersMargin: 10,
-
-        <%--border: "2px solid blue",--%>
         members: [
             isc.MyButton.create({
                 title: "انتخاب",
-icon: "pieces/16/ok.png",
+                icon: "pieces/16/ok.png",
 
                 prompt: "",
                 width: 100,
@@ -402,7 +390,7 @@ icon: "pieces/16/ok.png",
             }),
             isc.MyButton.create({
                 title: "لغو",
-icon: "pieces/16/icon_delete.png",
+                icon: "pieces/16/icon_delete.png",
                 prompt: "",
                 width: 100,
                 orientation: "vertical",
@@ -416,7 +404,6 @@ icon: "pieces/16/icon_delete.png",
     var VLayout_Skill_All_Competence_Grid = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        <%--border: "2px solid blue",--%>
         members: [ListGrid_Skill_All_Competences]
     });
 
@@ -424,7 +411,6 @@ icon: "pieces/16/icon_delete.png",
         title: "شایستگی ها",
         width: "1000",
         height: "500",
-// autoSize: true,
         autoCenter: true,
         isModal: true,
         showModalMask: true,
@@ -462,7 +448,6 @@ icon: "pieces/16/icon_delete.png",
                 length: 10,
                 type: 'staticText',
                 required: false,
-// editable:false,
                 keyPressFilter: "^[A-Z|0-9 ]",
                 width: "300"
             },
@@ -721,7 +706,7 @@ icon: "pieces/16/icon_delete.png",
                 return;
             }
             var data = DynamicForm_Skill_Skill.getValues();
-            console.log(JSON.stringify(data));
+            //console.log(JSON.stringify(data));
 
             isc.RPCManager.sendRequest({
                 actionURL: skill_ActionUrl,
@@ -1021,7 +1006,7 @@ icon: "pieces/16/icon_delete.png",
 
     function ListGrid_Skill_Skill_Remove() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
-        console.log(record);
+        //console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "مهارتی برای حذف انتخاب نشده است!",
@@ -1058,9 +1043,7 @@ icon: "pieces/16/icon_delete.png",
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-                                console.log(resp.httpResponseCode);
                                 wait.close();
-                                console.log(resp.httpResponseCode);
                                 if (resp.data == "true") {
                                     ListGrid_Skill_Skill.invalidateCache();
                                     var OK = isc.Dialog.create({
@@ -1104,7 +1087,7 @@ icon: "pieces/16/icon_delete.png",
                 }
             });
         } else {
-            console.log('record:' + JSON.stringify(record));
+            //console.log('record:' + JSON.stringify(record));
             var id = record.categoryId;
             DynamicForm_Skill_Skill.clearValues();
             RestDataSource_Skill_SubCategory.fetchDataURL = "${restApiUrl}/api/category/" + id + "/sub-categories";
@@ -1207,7 +1190,7 @@ icon: "pieces/16/icon_delete.png",
             {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
             {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
             {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
-            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center",canFilter:false},//filterOperator: "iContains"},
+            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center", canFilter: false, canSort: false},//filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
@@ -1760,11 +1743,8 @@ icon: "pieces/16/icon_delete.png",
     };
 
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
-    // Start Block Add Competences To Skill ---------------------------------------------------------------
-
     // Start Block Add Competence To Skill ---------------------------------------------------------------
     var ToolStripButton_Skill_AddCompetence_Select_Single = isc.ToolStripButton.create({
-// icon: "pieces/512/right-arrow.png",
         width: 300,
         title: getFormulaMessage(">", "5", "blue", "B"),
         click: function () {
@@ -1789,14 +1769,10 @@ icon: "pieces/16/icon_delete.png",
                         }
                     }
                 });
-
-
             }
-
         }
     });
     var ToolStripButton_Skill_AddCompetence_Select_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
         title: getFormulaMessage(">>", "5", "blue", "B"),
         click: function () {
             if (ListGrid_Skill_UnAttached_Competence.getSelectedRecord() != null) {
@@ -1837,14 +1813,12 @@ icon: "pieces/16/icon_delete.png",
                 var skillId = skillRecord.id;
                 var competenceRecord = ListGrid_Skill_Selected_Competence.getSelectedRecord();
                 var competenceId = competenceRecord.id;
-// var JSONObj = {"ids": competenceIds};
                 isc.RPCManager.sendRequest({
                     httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
                     actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
                     httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
                     callback: function (resp) {
                         if (resp.data == "true") {

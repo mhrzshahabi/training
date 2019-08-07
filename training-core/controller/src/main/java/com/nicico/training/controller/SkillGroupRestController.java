@@ -2,8 +2,8 @@ package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.dto.search.EOperator;
 import com.nicico.copper.core.dto.search.SearchDTO;
 import com.nicico.copper.core.util.Loggable;
@@ -16,19 +16,15 @@ import com.nicico.training.service.SkillGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -47,35 +43,35 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(skillGroupService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<List<SkillGroupDTO.Info>> list() {
         return new ResponseEntity<>(skillGroupService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
-    @PreAuthorize("hasAuthority('c_skill_group')")
+//    @PreAuthorize("hasAuthority('c_skill_group')")
     public ResponseEntity<SkillGroupDTO.Info> create(@Validated @RequestBody SkillGroupDTO.Create request) {
         return new ResponseEntity<>(skillGroupService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('u_skill_group')")
+//    @PreAuthorize("hasAuthority('u_skill_group')")
     public ResponseEntity<SkillGroupDTO.Info> update(@PathVariable Long id, @Validated @RequestBody SkillGroupDTO.Update request) {
         return new ResponseEntity<>(skillGroupService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    @PreAuthorize("hasAuthority('d_skill_group')")
+//    @PreAuthorize("hasAuthority('d_skill_group')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
         skillGroupService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
@@ -83,7 +79,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    @PreAuthorize("hasAuthority('d_skill_group')")
+//    @PreAuthorize("hasAuthority('d_skill_group')")
     public ResponseEntity<Void> delete(@Validated @RequestBody SkillGroupDTO.Delete request) {
         skillGroupService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
@@ -98,7 +94,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                                @RequestParam("_endRow") Integer endRow,
                                                                @RequestParam(value = "_constructor", required = false) String constructor,
@@ -154,7 +150,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @PostMapping(value = "/search")
-    @PreAuthorize("hasAuthority('r_skill_group')")
+//    @PreAuthorize("hasAuthority('r_skill_group')")
     public ResponseEntity<SearchDTO.SearchRs<SkillGroupDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(skillGroupService.search(request), HttpStatus.OK);
     }
@@ -163,7 +159,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getCompetences")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -294,7 +290,7 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getSkills")
-    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
     public ResponseEntity<SkillDTO.SkillSpecRs> getSkills(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 

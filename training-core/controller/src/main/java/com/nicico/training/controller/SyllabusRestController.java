@@ -19,12 +19,10 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import javax.validation.constraints.NotEmpty;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
@@ -51,21 +49,21 @@ public class SyllabusRestController {
 
 	@Loggable
 	@GetMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('r_syllabus')")
+//	@PreAuthorize("hasAuthority('r_syllabus')")
 	public ResponseEntity<SyllabusDTO.Info> get(@PathVariable Long id) {
 		return new ResponseEntity<>(syllabusService.get(id), HttpStatus.OK);
 	}
 
 	@Loggable
 	@GetMapping(value = "/list")
-	@PreAuthorize("hasAuthority('r_syllabus')")
+//	@PreAuthorize("hasAuthority('r_syllabus')")
 	public ResponseEntity<List<SyllabusDTO.Info>> list() {
 		return new ResponseEntity<>(syllabusService.list(), HttpStatus.OK);
 	}
 
 	@Loggable
 	@PostMapping
-	@PreAuthorize("hasAuthority('c_syllabus')")
+//	@PreAuthorize("hasAuthority('c_syllabus')")
 	public ResponseEntity<SyllabusDTO.Info> create(@RequestBody Object req) {
 		SyllabusDTO.Create create = (new ModelMapper()).map(req, SyllabusDTO.Create.class);
 		return new ResponseEntity<>(syllabusService.create(create), HttpStatus.CREATED);
@@ -73,7 +71,7 @@ public class SyllabusRestController {
 
 	@Loggable
 	@PutMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('u_syllabus')")
+//	@PreAuthorize("hasAuthority('u_syllabus')")
 	public ResponseEntity<SyllabusDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
 		SyllabusDTO.Update update = (new ModelMapper()).map(request, SyllabusDTO.Update.class);
 		return new ResponseEntity<>(syllabusService.update(id, update), HttpStatus.OK);
@@ -81,7 +79,7 @@ public class SyllabusRestController {
 
 	@Loggable
 	@DeleteMapping(value = "/{id}")
-	@PreAuthorize("hasAuthority('d_syllabus')")
+//	@PreAuthorize("hasAuthority('d_syllabus')")
 	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		syllabusService.delete(id);
 		return new ResponseEntity(HttpStatus.OK);
@@ -89,7 +87,7 @@ public class SyllabusRestController {
 
 	@Loggable
 	@DeleteMapping(value = "/list")
-	@PreAuthorize("hasAuthority('d_syllabus')")
+//	@PreAuthorize("hasAuthority('d_syllabus')")
 	public ResponseEntity<Void> delete(@Validated @RequestBody SyllabusDTO.Delete request) {
 		syllabusService.delete(request);
 		return new ResponseEntity(HttpStatus.OK);
@@ -97,7 +95,7 @@ public class SyllabusRestController {
 
 	@Loggable
 	@GetMapping(value = "/spec-list")
-	@PreAuthorize("hasAuthority('r_syllabus')")
+//	@PreAuthorize("hasAuthority('r_syllabus')")
 	public ResponseEntity<SyllabusDTO.SyllabusSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
 		SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 		request.setStartIndex(startRow)
@@ -134,7 +132,7 @@ public class SyllabusRestController {
 
 	@Loggable
 	@PostMapping(value = "/search")
-	@PreAuthorize("hasAuthority('r_syllabus')")
+//	@PreAuthorize("hasAuthority('r_syllabus')")
 	public ResponseEntity<SearchDTO.SearchRs<SyllabusDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
 		return new ResponseEntity<>(syllabusService.search(request), HttpStatus.OK);
 	}

@@ -157,7 +157,7 @@
 			<%--if (form1.hasErrors()) {--%>
 			<%--return;--%>
 			<%--}--%>
-			console.log(form1.validate());
+			// console.log(form1.validate());
 			if (form1.validate()) {
 				isc.Dialog.create({
 					message: "آیا اطمینان دارید؟",
@@ -208,7 +208,7 @@
 		width: "150",
 		click: function () {
 			var data = form1.getValues();
-			console.log(data);
+			// console.log(data);
 
 			createTab(" سند شماره" + data.documentId, "/account/document/addDocument?action=show&docId=" + data.documentId, false);
 

@@ -4,7 +4,9 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 //<script>
+
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";
@@ -168,15 +170,15 @@
         //        },
           {isSeparator: true}, {
             title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
-                window.open("<spring:url value="/course/print/pdf"/>");
+                print_CourseListGrid("pdf");
             }
         }, {
             title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
-                window.open("<spring:url value="/course/print/excel"/>");
+                print_CourseListGrid("excel");
             }
         }, {
             title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
-                window.open("<spring:url value="/course/print/html"/>");
+                print_CourseListGrid("html");
             }
         }]
     });
@@ -212,6 +214,8 @@
                 }
 
             }
+
+
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -432,25 +436,7 @@ selectionType: "none",
                     icon: "[SKIN]/RichTextEditor/print.png",
                     title: "<spring:message code='print'/>",
                     click: function () {
-                    if (ListGrid_Course.getCriteria().operator == undefined) {
-                        <spring:url value="/course/print/pdf" var="printUrl"/>
-                        window.open('${printUrl}');
-                    }
-                    else {
-                    var advancedCriteria = ListGrid_Course.getCriteria();
-                    var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/course/printWithCriteria",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                    [
-                    {name: "CriteriaStr", type: "hidden"}
-                    ]
-                    });
-                    criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                    criteriaForm.submitForm();
-                    }
+                            print_CourseListGrid("pdf");
                     }
                     });
 
@@ -514,7 +500,7 @@ selectionType: "none",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_category,
-                filterFields: ["titleFa"],
+                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
 
@@ -548,9 +534,10 @@ selectionType: "none",
             {
                 name: "erunType.id",
                 title: "<spring:message code="course_eruntype"/>",
+             //   value: "erunTypeId",
+                required: true,
                  editorType: "MyComboBoxItem",
                 textAlign: "center",
-                    required: true,
                     optionDataSource: RestDataSource_e_run_type,
                     valueField: "id",
                     displayField: "titleFa",
@@ -581,17 +568,24 @@ selectionType: "none",
             },
             {
                 name: "elevelType.id",
+                value: "eLevelTypeId",
                 title: "<spring:message code="cousre_elevelType"/>",
-                editorType: "MyComboBoxItem",
+                 editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 height: "30",
                 width: "*",
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_e_level_type,
+
+                filterFields: ["titleFa"],
                 sortField: ["id"],
-                changed: function (form, item, value) {
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+               changed: function (form, item, value) {
                     switch (value) {
                         case 1:
                             eLevelTypeV = "1";
@@ -617,7 +611,7 @@ selectionType: "none",
                 displayField: "titleFa",
                 sortField: ["id"],
                 height: "30",
-                width: "*",
+               width: "*",
           changed: function (form, item, value) {
                     switch (value) {
                         case 1:
@@ -637,12 +631,12 @@ selectionType: "none",
             {
                 name: "etechnicalType.id",
                 title: "<spring:message code="course_etechnicalType"/>",
-                required: true,
                 editorType: "MyComboBoxItem",
                 textAlign: "center",
-                optionDataSource: RestDataSource_eTechnicalType,
-                valueField: "id",
+                required: true,
                 displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_eTechnicalType,
                 sortField: ["id"],
                 width: "*",
                 height: "30",
@@ -1108,4 +1102,20 @@ selectionType: "none",
         code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
         }
     }
+
+    function print_CourseListGrid(type) {
+        var advancedCriteria_course = ListGrid_Course.getCriteria();
+        var criteriaForm_course = isc.DynamicForm.create({
+            method: "POST",
+            action: "/course/printWithCriteria/" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        })
+        criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+        criteriaForm_course.submitForm();
+    };
 

@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,35 +25,35 @@ public class SkillLevelRestController {
 
 	@Loggable
 	@GetMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('r_skillLevel')")
+//	@PreAuthorize("hasAuthority('r_skillLevel')")
 	public ResponseEntity<SkillLevelDTO.Info> get(@PathVariable Long id) {
 		return new ResponseEntity<>(skillLevelService.get(id), HttpStatus.OK);
 	}
 
 	@Loggable
 	@GetMapping(value = "/list")
-	//@PreAuthorize("hasAuthority('r_skillLevel')")
+//	@PreAuthorize("hasAuthority('r_skillLevel')")
 	public ResponseEntity<List<SkillLevelDTO.Info>> list() {
 		return new ResponseEntity<>(skillLevelService.list(), HttpStatus.OK);
 	}
 
 	@Loggable
 	@PostMapping
-	//@PreAuthorize("hasAuthority('c_skillLevel')")
+//	@PreAuthorize("hasAuthority('c_skillLevel')")
 	public ResponseEntity<SkillLevelDTO.Info> create(@Validated @RequestBody SkillLevelDTO.Create request) {
 		return new ResponseEntity<>(skillLevelService.create(request), HttpStatus.CREATED);
 	}
 
 	@Loggable
 	@PutMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('u_skillLevel')")
+//	@PreAuthorize("hasAuthority('u_skillLevel')")
 	public ResponseEntity<SkillLevelDTO.Info> update(@PathVariable Long id, @Validated @RequestBody SkillLevelDTO.Update request) {
 		return new ResponseEntity<>(skillLevelService.update(id, request), HttpStatus.OK);
 	}
 
 	@Loggable
 	@DeleteMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('d_skillLevel')")
+//	@PreAuthorize("hasAuthority('d_skillLevel')")
 	public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 		boolean flag=true;
 		HttpStatus httpStatus=HttpStatus.OK;
@@ -69,7 +68,7 @@ public class SkillLevelRestController {
 
 	@Loggable
 	@DeleteMapping(value = "/list")
-	//@PreAuthorize("hasAuthority('d_skillLevel')")
+//	@PreAuthorize("hasAuthority('d_skillLevel')")
 	public ResponseEntity<Boolean> delete(@Validated @RequestBody SkillLevelDTO.Delete request) {
 		boolean flag=true;
 		HttpStatus httpStatus=HttpStatus.OK;
@@ -84,7 +83,7 @@ public class SkillLevelRestController {
 
 	@Loggable
 	@GetMapping(value = "/spec-list")
-	//@PreAuthorize("hasAuthority('r_skillLevel')")
+//	@PreAuthorize("hasAuthority('r_skillLevel')")
 	public ResponseEntity<SkillLevelDTO.SkillLevelSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
 		SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 		request.setStartIndex(startRow)
@@ -108,7 +107,7 @@ public class SkillLevelRestController {
 
 	@Loggable
 	@PostMapping(value = "/search")
-	//@PreAuthorize("hasAuthority('r_skillLevel')")
+//	@PreAuthorize("hasAuthority('r_skillLevel')")
 	public ResponseEntity<SearchDTO.SearchRs<SkillLevelDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
 		return new ResponseEntity<>(skillLevelService.search(request), HttpStatus.OK);
 	}
