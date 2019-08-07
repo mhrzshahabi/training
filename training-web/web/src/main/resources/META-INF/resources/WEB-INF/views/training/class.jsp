@@ -1090,28 +1090,3 @@
     }
 
 
-    function checkDate(date) {
-        var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
-        var dateIndex = new Array(0,1,2,3,5,6,8,9);
-        if(date.length != 10)
-            return false;
-
-        var month = parseInt(date.substr(5,2));
-        var day = parseInt(date.substr(8,2));
-        var year = parseInt(date.substr(0,4));
-
-        if(date[4]!= "/" || date[7]!= "/")
-            return false;
-        if(month>12)
-            return false;
-        if(day > khMonth[month])
-            return false;
-        for(var i=0; i< dateIndex.length ; i++){
-            if(date[dateIndex[i]]=="/"){
-            return false;
-            }
-        }
-        return true;
-    };
-
-
