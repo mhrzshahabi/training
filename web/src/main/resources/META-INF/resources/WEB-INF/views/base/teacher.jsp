@@ -1614,15 +1614,12 @@
             return true;
     };
 
-
     function checkMobile(mobile) {
         if (mobile[0] == "0" && mobile[1] == "9")
             return true;
         else
             return false;
     };
-
-
 
 
 
