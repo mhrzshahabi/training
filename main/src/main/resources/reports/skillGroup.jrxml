@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="oracle.xml"/>
+	<property name="ireport.zoom" value="1.6105100000000008"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<parameter name="logo_nicico" class="java.lang.Object"/>
+	<queryString language="SQL">
+		<![CDATA[select * from  training.TBL_SKILL_GROUP]]>
+	</queryString>
+	<field name="C_DESCRIPTION" class="java.lang.String"/>
+	<field name="C_TITLE_EN" class="java.lang.String"/>
+	<field name="C_TITLE_FA" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<pageHeader>
+		<band height="82">
+			<rectangle radius="5">
+				<reportElement x="10" y="6" width="540" height="69" backcolor="#F0F0F0" uuid="3df34796-04c6-4a3a-9f71-3e96d888933f"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="220" y="27" width="116" height="30" uuid="aa7e1370-e9c8-485d-8c50-73ebb92d24bf"/>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+				</textElement>
+				<text><![CDATA[لیست گروه مهارت]]></text>
+			</staticText>
+			<image hAlign="Center" vAlign="Middle">
+				<reportElement stretchType="ContainerHeight" x="473" y="14" width="50" height="50" uuid="d8bb158b-53fe-439f-9b9a-b4ef51245f31"/>
+				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+			</image>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="66" splitType="Stretch">
+			<staticText>
+				<reportElement key="" positionType="Float" x="490" y="12" width="58" height="49" uuid="01afcc00-1531-467d-abe8-d580ae723618"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="Shabnam-FD" size="19"/>
+				</textElement>
+				<text><![CDATA[ردیف]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="160" y="12" width="143" height="49" uuid="8327e56f-c3fe-4880-8c35-caaca51a1ad9"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="19"/>
+				</textElement>
+				<text><![CDATA[نام لاتین]]></text>
+			</staticText>
+			<staticText>
+				<reportElement positionType="Float" x="10" y="12" width="150" height="49" uuid="b6ecea9d-1480-4695-a17a-42a8c802e744"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD" size="19"/>
+				</textElement>
+				<text><![CDATA[توضیحات]]></text>
+			</staticText>
+			<staticText>
+				<reportElement key="" positionType="Float" x="303" y="12" width="186" height="49" uuid="a54cab96-681f-4345-a5cf-9f6667c68551"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle" rotation="None">
+					<font fontName="Shabnam-FD" size="19"/>
+				</textElement>
+				<text><![CDATA[نام فارسی]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="34" splitType="Stretch">
+			<textField>
+				<reportElement x="303" y="-3" width="187" height="33" uuid="faa246e3-86a3-41e0-874f-f1b7f04594ea"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="160" y="-3" width="143" height="33" uuid="8918e6f0-0d53-46b9-a8db-65bebca35b67"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C_TITLE_EN}]]></textFieldExpression>
+			</textField>
+			<textField isBlankWhenNull="true">
+				<reportElement x="10" y="-3" width="150" height="33" uuid="fd1d8a91-f9af-4999-bf45-52e0a47424da"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle">
+					<font fontName="Shabnam-FD"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$F{C_DESCRIPTION}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="490" y="-3" width="58" height="33" uuid="76fa5b9e-86cb-464b-bdb3-599824824ed3"/>
+				<box>
+					<pen lineWidth="0.5"/>
+					<topPen lineWidth="0.5"/>
+					<leftPen lineWidth="0.5"/>
+					<bottomPen lineWidth="0.5"/>
+					<rightPen lineWidth="0.5"/>
+				</box>
+				<textElement textAlignment="Center" verticalAlignment="Middle"/>
+				<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<pageFooter>
+		<band height="52">
+			<staticText>
+				<reportElement x="396" y="10" width="130" height="30" uuid="c333d864-3867-4c99-9751-f1d7711f145e"/>
+				<textElement>
+					<font fontName="Shabnam-FD" size="14"/>
+				</textElement>
+				<text><![CDATA[امضاء کارشناس ارشد]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="40" y="10" width="210" height="30" uuid="f6bd4de2-ba37-45f1-9624-6eeb06f77963"/>
+				<textElement>
+					<font fontName="Shabnam-FD" size="14"/>
+				</textElement>
+				<text><![CDATA[امضاء رییس برنامه ریزی]]></text>
+			</staticText>
+		</band>
+	</pageFooter>
+</jasperReport>

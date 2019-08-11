@@ -1,0 +1,25 @@
+package com.nicico.training.iservice;
+
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EducationOrientationDTO;
+
+import java.util.List;
+
+public interface IEducationOrientationService {
+    EducationOrientationDTO.Info get(Long id);
+
+    List<EducationOrientationDTO.Info> list();
+
+    EducationOrientationDTO.Info create(EducationOrientationDTO.Create request);
+
+    EducationOrientationDTO.Info update(Long id, EducationOrientationDTO.Update request);
+
+    void delete(Long id);
+
+    void delete(EducationOrientationDTO.Delete request);
+
+
+    SearchDTO.SearchRs<EducationOrientationDTO.Info> search(SearchDTO.SearchRq request);
+
+    //------------------------
+}
