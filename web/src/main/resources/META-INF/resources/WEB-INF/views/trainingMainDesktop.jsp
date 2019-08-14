@@ -11,17 +11,14 @@
 <html>
 <head>
     <title>سیستم آموزش     </title>
-
     <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
-
     <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
-
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -46,10 +43,8 @@
 <script type="application/javascript">
 
     <%--<script>--%>
-
     <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 	<spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
-
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
@@ -57,7 +52,8 @@
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
-
+    const courseUrl=rootUrl + "/course/";
+    const  categoryUrl=rootUrl+"/category/";
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -548,7 +544,7 @@
         orientation: "vertical",
         click: function () {
 
-            createTab("<spring:message code="course"/>", "/course/show-form", false);
+            createTab("<spring:message code="course"/>","<spring:url value="/course/show-form"/>", false);
         }
     });
 
