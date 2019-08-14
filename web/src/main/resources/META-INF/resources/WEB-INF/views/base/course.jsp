@@ -1,10 +1,14 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 //<script>
-    <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
+
+    <spring:eval var="restApiUrl" expression="pageContext.servletContext.contextPath" />
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";
@@ -15,12 +19,18 @@
     var x;
     var ChangeEtechnicalType = false;
     var chang = false;
-    var course_url = courseUrl;
+    var course_url =  "${restApiUrl}/api/course";
     var RestDataSource_category = isc.MyRestDataSource.create({
         ID: "categoryDS",
+        transformRequest: function (dsRequest) {
+        dsRequest.httpHeaders = {
+        "Authorization": "Bearer <%= accessToken %>"
+        };
+        return this.Super("transformRequest", arguments);
+        },
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
-        fetchDataURL: "${contextPath}/api/category/spec-list",
+        fetchDataURL: "${restApiUrl}/api/category/spec-list",
         autoFetchData: true,
     });
     var RestDataSource_course = isc.MyRestDataSource.create({
@@ -41,32 +51,32 @@
             {name: "minTeacherEvalScore"},
             {name: "version"}
         ],
-        fetchDataURL: courseUrl+"spec-list",
+        fetchDataURL:  "${restApiUrl}/api/course/spec-list",
     });
     var RestDataSource_eTechnicalType = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: enumUrl+"eTechnicalType/spec-list",
+        fetchDataURL: "${restApiUrl}/api/enum/eTechnicalType/spec-list",
         autoFetchData: true,
     });
     var RestDataSource_e_level_type = isc.MyRestDataSource.create({
         autoCacheAllData: false,
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: enumUrl+"eLevelType",
+        fetchDataURL:  "${restApiUrl}/api/enum/eLevelType",
         autoFetchData: true,
     });
     var RestDataSource_e_run_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: enumUrl+"eRunType/spec-list",
+        fetchDataURL:  "${restApiUrl}/api/enum/eRunType/spec-list",
 // cacheAllData:true,
         autoFetchData: true,
     });
     var RestDataSourceETheoType = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: enumUrl+"eTheoType",
+        fetchDataURL: "${restApiUrl}/api/enum/eTheoType",
 // cacheAllData:true,
         autoFetchData: true,
     });
@@ -76,13 +86,6 @@
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${contextPath}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
 
     });
     var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
@@ -90,21 +93,21 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        fetchDataURL: goalUrl+"spec-list"
+        fetchDataURL: "${restApiUrl}/api/goal/spec-list"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
 
-        fetchDataURL: courseUrl+"skill/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/skill/" + courseId.id
     });
     var RestDataSource_CourseJob = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ],
 
-        fetchDataURL: courseUrl+"job/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/job/" + courseId.id
     });
     var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
@@ -116,7 +119,7 @@
             {name: "code"}
         ],
 
-        fetchDataURL: syllabusUrl+"spec-list"
+        fetchDataURL:"${restApiUrl}/api/syllabus/spec-list"
     });
     var RestDataSource_CourseCompetence = isc.MyRestDataSource.create({
         fields: [
@@ -125,7 +128,7 @@
             {name: "titleEn"},
         ],
 
-        fetchDataURL: courseUrl+"getcompetence/" + courseId.id
+        fetchDataURL: "${restApiUrl}/api/course/getcompetence/" + courseId.id
     });
     var RestDataSourceEducation = isc.MyRestDataSource.create({
         fields: [
@@ -133,7 +136,7 @@
             {name: "titleFa"}
         ],
 
-        fetchDataURL: courseUrl+"getlistEducationLicense",
+        fetchDataURL: "${restApiUrl}/api/course/getlistEducationLicense",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -189,19 +192,19 @@
         },
         selectionChanged: function (record, state) {
             courseId = record;
-            RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
+            RestDataSource_CourseGoal.fetchDataURL = "${restApiUrl}/api/course/" + courseId.id + "/goal";
             ListGrid_CourseGoal.fetchData();
             ListGrid_CourseGoal.invalidateCache();
-            RestDataSource_Syllabus.fetchDataURL = syllabusUrl+"course/" + courseId.id;
+            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = courseUrl+"skill/" + courseId.id;
+            RestDataSource_CourseSkill.fetchDataURL = "${restApiUrl}/api/course/skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = courseUrl+"job/" + courseId.id;
+            RestDataSource_CourseJob.fetchDataURL = "${restApiUrl}/api/course/job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = courseUrl+"getcompetence/" + courseId.id;
+            RestDataSource_CourseCompetence.fetchDataURL = "${restApiUrl}/api/course/getcompetence/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
             for (i = 0; i < mainTabSet.tabs.length; i++) {
@@ -298,7 +301,7 @@ canFilter:false
         ],
         selectionType: "single",
         recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            RestDataSource_Syllabus.fetchDataURL = goalUrl + record.id + "/syllabus";
+            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/goal/" + record.id + "/syllabus";
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
         },
@@ -428,8 +431,6 @@ selectionType: "single",
             ListGrid_Course_remove()
         }
     });
-
-
     var ToolStripButton_Print = isc.ToolStripButton.create({
                     icon: "[SKIN]/RichTextEditor/print.png",
                     title: "<spring:message code='print'/>",
@@ -437,8 +438,6 @@ selectionType: "single",
                             print_CourseListGrid("pdf");
                     }
                     });
-
-    //----------------------------------------------
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print,ToolStripButton_OpenTabGoal]
@@ -504,7 +503,7 @@ selectionType: "single",
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
                     DynamicForm_course.getItem("subCategory.id").setValue();
-                    RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
+                    RestDataSourceSubCategory.fetchDataURL ="${restApiUrl}/api/category/" + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
 
                 },
@@ -684,7 +683,7 @@ selectionType: "single",
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    RestDataSourceEducation.fetchDataURL = courseUrl+"getlistEducationLicense";
+                    RestDataSourceEducation.fetchDataURL = "${restApiUrl}/api/course/getlistEducationLicense";
                 },
             },
             {
@@ -756,9 +755,9 @@ selectionType: "single",
 //------------------------------------
             if (course_method == "POST") {
                 isc.RPCManager.sendRequest({
-                    actionURL: courseUrl+"getmaxcourse/" + x,
+                    actionURL:  "${restApiUrl}/api/course/getmaxcourse/" + x,
                     httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
                     showPrompt: false,
@@ -771,7 +770,7 @@ selectionType: "single",
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             httpMethod: course_method,
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
                             showPrompt: false,
@@ -801,7 +800,7 @@ selectionType: "single",
                 isc.RPCManager.sendRequest({
                     actionURL: course_url,
                     httpMethod: course_method,
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
                     showPrompt: false,
@@ -976,7 +975,7 @@ selectionType: "single",
         DynamicForm_course.getItem("elevelType.id").setDisabled(false);
         DynamicForm_course.getItem("etheoType.id").setDisabled(false);
         course_method = "POST";
-        course_url = courseUrl;
+        course_url ="${restApiUrl}/api/course";
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         Window_course.setTitle("<spring:message code="create"/>");
@@ -1010,11 +1009,11 @@ selectionType: "single",
 
                     if (index == 0) {
                         isc.RPCManager.sendRequest({
-                            actionURL: courseUrl+"deleteCourse/" + record.id,
+                            actionURL: "${restApiUrl}/api/course/deleteCourse/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -1075,9 +1074,9 @@ selectionType: "single",
             });
         } else {
             course_method = "PUT";
-            course_url = courseUrl + sRecord.id;
+            course_url = "${restApiUrl}/api/course/" + sRecord.id;
             DynamicForm_course.clearValues();
-            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories"
+            RestDataSourceSubCategory.fetchDataURL = "${restApiUrl}/api/category/" + sRecord.category.id + "/sub-categories",
             DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
