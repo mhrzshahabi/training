@@ -53,7 +53,7 @@
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl=rootUrl + "/course/";
-    const  categoryUrl=rootUrl+"/category/";
+    const categoryUrl=rootUrl+"/category/";
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},

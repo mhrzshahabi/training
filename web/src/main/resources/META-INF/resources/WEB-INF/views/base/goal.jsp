@@ -1,9 +1,14 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 //<script>
-	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var methodGoal = "GET";
     var urlGoal = goalUrl;
@@ -16,14 +21,7 @@
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/enum/eDomainType"
+        fetchDataURL: enumUrl + "eDomainType"
     });
     var RestDataSource_GoalAll = isc.MyRestDataSource.create({
         ID: "goalDS",
@@ -33,32 +31,18 @@
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/course/goal/" + courseId.id
+        fetchDataURL: courseUrl + "goal/" + courseId.id
     });
     var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: "true",align: "center"},
-            {name: "titleFa", title: "سرفصل ها",align: "center",width:"60%"},
+            {name: "id", primaryKey: true, hidden: "true", align: "center"},
+            {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
             {name: "titleEn", title: "نام انگلیسی", hidden: "true"},
-            {name: "edomainType.titleFa", title: "حیطه",align: "center",width:"20%"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center",width:"20%"}
+            {name: "edomainType.titleFa", title: "حیطه", align: "center", width: "20%"},
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", width: "20%"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
     });
     var DynamicForm_Goal = isc.MyDynamicForm.create({
         fields: [
@@ -203,7 +187,7 @@
             isc.RPCManager.sendRequest({
                 actionURL: urlGoal,
                 httpMethod: methodGoal,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
@@ -241,12 +225,18 @@
             goalId = DynamicForm_Syllabus.getValue('goalId')
             practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration')
             eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId')
-            var  data = {"titleFa": titleFa, "titleEn": titleEn, "goalId": goalId, "practicalDuration":practicalDuration, "eDomainTypeId":eDomainType};
+            var data = {
+                "titleFa": titleFa,
+                "titleEn": titleEn,
+                "goalId": goalId,
+                "practicalDuration": practicalDuration,
+                "eDomainTypeId": eDomainType
+            };
             // var data = DynamicForm_Syllabus.getValuesForm();
             isc.RPCManager.sendRequest({
                 actionURL: urlSyllabus,
                 httpMethod: methodSyllabus,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
@@ -376,14 +366,16 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf");
+                window.open("/syllabus/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf");
             }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/excel")            }
+                window.open("/syllabus/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/excel")
+            }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/html")            }
+                window.open("/syllabus/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/html")
+            }
         }]
     });
     var Menu_ListGrid_Goal = isc.Menu.create({
@@ -396,15 +388,15 @@
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
                 ListGrid_Goal_Add();
             }
-        },{
+        }, {
             title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {
-Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
-Window_AddGoal.show();
-ListGrid_CourseGoal_Goal.invalidateCache();
-RestDataSource_GoalAll.fetchDataURL = "${restApiUrl}/api/course/goal/" + courseId.id;
-ListGrid_GoalAll.invalidateCache();
-<%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
-}
+                Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
+                Window_AddGoal.show();
+                ListGrid_CourseGoal_Goal.invalidateCache();
+                RestDataSource_GoalAll.fetchDataURL = "${restApiUrl}/api/course/goal/" + courseId.id;
+                ListGrid_GoalAll.invalidateCache();
+                <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
+            }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
 
@@ -417,13 +409,16 @@ ListGrid_GoalAll.invalidateCache();
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")            }
+                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf")
+            }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/excel")            }
+                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/excel")
+            }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/html")            }
+                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/html")
+            }
         }]
     });
 
@@ -503,7 +498,7 @@ ListGrid_GoalAll.invalidateCache();
     var ListGrid_GoalAll = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        showHeader:true,
+        showHeader: true,
         expansionFieldImageShowSelected: false,
         canExpandRecords: true,
         expansionMode: "related",
@@ -613,21 +608,22 @@ ListGrid_GoalAll.invalidateCache();
         autoDraw: false,
         width: 100,
         title: "چاپ",
-        showMenuOnRollOver:true,
+        showMenuOnRollOver: true,
         menu: menuPalette,
-        mouseMove : function () {
+        mouseMove: function () {
             // ToolStripButton_Syllabus_Print.hideClickMask();
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
                     click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
                 }, {
-                    title: "اهداف دوره " + '"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " +'"'+ ListGrid_Course.getSelectedRecord().titleFa+'"',
+                }, {
+                    title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }])
             } else {
@@ -635,17 +631,19 @@ ListGrid_GoalAll.invalidateCache();
                     title: "همه اهداف",
                     click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
                 }, {
-                    title: "اهداف دوره " +'"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                    title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
                     click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
-                }, {title: "سرفصل هاي دوره " +'"'+ListGrid_Course.getSelectedRecord().titleFa+'"',
+                }, {
+                    title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
                     click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 },
-                    {title: "سرفصل هاي هدف " +'"'+ ListGrid_Goal.getSelectedRecord().titleFa+'"',
-                     click: 'window.open("/syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
-                }])
+                    {
+                        title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
+                        click: 'window.open("/syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                    }])
             }
         }
     });
@@ -734,7 +732,7 @@ ListGrid_GoalAll.invalidateCache();
                     isc.RPCManager.sendRequest({
                         actionURL: "${restApiUrl}/api/course/" + courseId.id + "/" + goalList.toString(),
                         httpMethod: "GET",
-                        httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
@@ -794,7 +792,7 @@ ListGrid_GoalAll.invalidateCache();
 
                         actionURL: "${restApiUrl}/api/course/remove/" + courseId.id + "/" + arryRecord.toString(),
                         httpMethod: "GET",
-                        httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
                         showPrompt: false,
@@ -822,7 +820,7 @@ ListGrid_GoalAll.invalidateCache();
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Syllabus_Print,"separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
+        members: [ToolStripButton_Syllabus_Print, "separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
     });
     var ToolStrip_Vertical_Goals = isc.ToolStrip.create({
         width: "100%",
@@ -863,7 +861,7 @@ ListGrid_GoalAll.invalidateCache();
         title: "افزودن هدف",
         width: "90%",
         height: "90%",
-        canDragReposition:false,
+        canDragReposition: false,
         showShadow: true,
         shadowSoftness: 10,
         shadowOffset: 20,
@@ -954,7 +952,7 @@ ListGrid_GoalAll.invalidateCache();
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -1063,7 +1061,7 @@ ListGrid_GoalAll.invalidateCache();
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -1143,4 +1141,4 @@ ListGrid_GoalAll.invalidateCache();
         ListGrid_Syllabus_Goal.invalidateCache();
     };
 
-//</script>
+    //</script>

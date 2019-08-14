@@ -1095,8 +1095,7 @@ selectionType: "single",
                 }
             });
         } else {
-            createTab("<spring:message
-        code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "/goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form?courseId=" + courseId.id, false);
         }
     }
     function print_CourseListGrid(type) {
