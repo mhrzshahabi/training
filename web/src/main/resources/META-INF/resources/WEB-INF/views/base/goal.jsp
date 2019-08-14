@@ -465,7 +465,7 @@
             ListGrid_Syllabus_Goal_Edit();
         },
         getCellCSSText: function (record, rowNum, colNum) {
-            if (record.goalId == selectedRecord && ListGrid_Goal.getSelectedRecord() != null) {
+            if (ListGrid_Goal.getSelectedRecord() != null && record.goalId == selectedRecord) {
                 return "color: brown;font-size: 14px;";
             } else {
                 return "color:gray;font-size: 10px;";
@@ -615,34 +615,34 @@
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
+                    click: 'window.open("<spring:url value="goal/print-all/pdf"/>")'
                 }, {
                     title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
-                    click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
+                    click: 'window.open("<spring:url value="syllabus/print/pdf"/>")'
                 }, {
                     title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }])
             } else {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="/goal/print-all/pdf"/>")'
+                    click: 'window.open("<spring:url value="goal/print-all/pdf"/>")'
                 }, {
                     title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("/goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
-                    click: 'window.open("<spring:url value="/syllabus/print/pdf"/>")'
+                    click: 'window.open("<spring:url value="syllabus/print/pdf"/>")'
                 }, {
                     title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("/syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
                 },
                     {
                         title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
-                        click: 'window.open("/syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                        click: 'window.open("syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
                     }])
             }
         }
@@ -975,7 +975,7 @@
 
     function ListGrid_Goal_Edit() {
         var record = ListGrid_Goal.getSelectedRecord();
-        selectedRecord = ListGrid_Goal.getRowNum(record);
+        // selectedRecord = ListGrid_Goal.getRowNum(record);
         if (record == null || record.id == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است.",
