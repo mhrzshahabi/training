@@ -1,13 +1,18 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 //<script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 
     var skillLevelMethod = "get";
-    var skillLevelActionUrl = "${restApiUrl}/api/skill-level";
+    var skillLevelHomeUrl= rootUrl + "/skill-level";
+    var skillLevelActionUrl = skillLevelHomeUrl;
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
         data: [{
@@ -28,20 +33,12 @@
             }
         },]
     });
-    var RestDataSource_skill_level = isc.RestDataSource.create({
+    var RestDataSource_skill_level = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill-level/spec-list"
+        ],
+
+        fetchDataURL: skillLevelHomeUrl + "/spec-list"
     });
     var ListGrid_skill_level = isc.ListGrid.create({
         width: "100%",
@@ -130,14 +127,13 @@
                 return;
             }
             var data = DynamicForm_skill_level.getValues();
-
             isc.RPCManager.sendRequest({
                 actionURL: skillLevelActionUrl,
                 httpMethod: skillLevelMethod,
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -249,11 +245,11 @@
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/skill-level/" + record.id,
+                            actionURL: skillLevelHomeUrl +"/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -291,7 +287,7 @@
 
     function ListGrid_skill_level_Add() {
         skillLevelMethod = "POST";
-        skillLevelActionUrl = "${restApiUrl}/api/skill-level";
+        skillLevelActionUrl = skillLevelHomeUrl;
         DynamicForm_skill_level.clearValues();
         Window_skill_level.setTitle("ایجاد سطح مهارت جدید");
         Window_skill_level.show();
@@ -312,7 +308,7 @@
             });
         } else {
             skillLevelMethod = "PUT";
-            skillLevelActionUrl = "${restApiUrl}/api/skill-level/" + record.id;
+            skillLevelActionUrl = skillLevelHomeUrl+ "/" + record.id;
             DynamicForm_skill_level.editRecord(record);
             Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
             Window_skill_level.show();

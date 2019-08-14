@@ -1,16 +1,21 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 //<script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+    <%
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
 
-    var category_BaseUrl = "${restApiUrl}/api/category";
-    var category_SubCategoryDummyUrl = "${restApiUrl}/api/category/sub-categories/dummy"
-    var category_SubCategoryUrl = "${restApiUrl}/api/sub-category"
+
+    var category_CategoryHomeUrl = rootUrl + "/category";
+    var category_SubCategoryHomeUrl = rootUrl + "/sub-category";
+    var category_SubCategoryDummyUrl = category_CategoryHomeUrl + "/sub-categories/dummy";
+    var category_SubCategoryUrl = category_SubCategoryHomeUrl;
     var method = "GET";
-    var url = "${restApiUrl}/api/category";
+    var url = category_CategoryHomeUrl;
     var selectedCategoryId = -1;
 
     var DynamicForm_Category = isc.DynamicForm.create({
@@ -116,7 +121,7 @@
             isc.RPCManager.sendRequest({
                 actionURL: url,
                 httpMethod: method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
@@ -314,7 +319,7 @@
                 isc.RPCManager.sendRequest({
                     actionURL: url,
                     httpMethod: method,
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
                     showPrompt: false,
@@ -400,20 +405,11 @@
         })]
     });
 
-    var RestDataSource_Sub_Category = isc.RestDataSource.create({
+    var RestDataSource_Sub_Category = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: category_SubCategoryDummyUrl
     });
 
@@ -452,7 +448,7 @@
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -588,7 +584,7 @@
             title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Sub_Category_Remove();
             }
-        }, ]
+        },]
     });
 
     var ListGrid_Sub_Category = isc.ListGrid.create({
@@ -621,21 +617,12 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var RestDataSource_Category = isc.RestDataSource.create({
+    var RestDataSource_Category = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}, {name: "description"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: category_BaseUrl + "/spec-list"
+        ],
+        fetchDataURL: category_CategoryHomeUrl + "/spec-list"
     });
 
     function ListGrid_Category_Remove() {
@@ -670,11 +657,11 @@
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: category_BaseUrl + "/" + record.id,
+                            actionURL: category_CategoryHomeUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -721,7 +708,7 @@
             });
         } else {
             method = "PUT";
-            url = category_BaseUrl + "/" + record.id;
+            url = category_CategoryHomeUrl + "/" + record.id;
             DynamicForm_Category.getItem("code").setDisabled(true);
             DynamicForm_Category.editRecord(record);
             Window_Category.show();
@@ -730,7 +717,7 @@
 
     function ListGrid_Category_Add() {
         method = "POST";
-        url = category_BaseUrl;
+        url = category_CategoryHomeUrl;
         DynamicForm_Category.clearValues();
         DynamicForm_Category.getItem("code").setDisabled(false);
         Window_Category.show();
@@ -786,7 +773,7 @@
         ],
         selectionType: "single",
         selectionChanged: function (record, state) {
-            RestDataSource_Sub_Category.fetchDataURL = category_BaseUrl + "/" + record.id + "/sub-categories";
+            RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
             selectedCategoryId = record.id;
             <%--RestDataSource_Sub_Category.fetchData();--%>
             ListGrid_Sub_Category.invalidateCache();
@@ -797,7 +784,7 @@
                 RestDataSource_Sub_Category.fetchDataURL = category_SubCategoryDummyUrl;
                 selectedCategoryId = -1;
             } else {
-                RestDataSource_Sub_Category.fetchDataURL = category_BaseUrl + "/" + record.id + "/sub-categories";
+                RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
                 selectedCategoryId = record.id;
             }
             ListGrid_Sub_Category.invalidateCache();
