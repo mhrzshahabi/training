@@ -49,6 +49,7 @@ public class SyllabusDTO {
         private Integer version;
         private EDomainType eDomainType;
         private Long goalId;
+        private GoalDTO.GoalTitleFa goal;
     }
 
     // ------------------------------

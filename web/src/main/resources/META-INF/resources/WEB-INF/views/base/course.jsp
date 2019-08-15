@@ -7,8 +7,6 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 //<script>
-
-    <spring:eval var="restApiUrl" expression="pageContext.servletContext.contextPath" />
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";
@@ -19,7 +17,7 @@
     var x;
     var ChangeEtechnicalType = false;
     var chang = false;
-    var course_url = "${restApiUrl}/api/course";
+    var course_url = courseUrl;
     var RestDataSource_category = isc.MyRestDataSource.create({
         ID: "categoryDS",
         transformRequest: function (dsRequest) {
@@ -30,7 +28,7 @@
         },
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
-        fetchDataURL: "${restApiUrl}/api/category/spec-list",
+        fetchDataURL: categoryUrl + "spec-list",
         autoFetchData: true,
     });
     var RestDataSource_course = isc.MyRestDataSource.create({
@@ -49,34 +47,35 @@
             {name: "minTeacherDegree"},
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
-            {name: "version"}
+            // {name: "daneshi", title: "دانشی", valueField :"بای بای"},
+            {name: "version"},
         ],
-        fetchDataURL: "${restApiUrl}/api/course/spec-list",
+        fetchDataURL: courseUrl + "spec-list",
     });
     var RestDataSource_eTechnicalType = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: "${restApiUrl}/api/enum/eTechnicalType/spec-list",
+        fetchDataURL: enumUrl + "eTechnicalType/spec-list",
         autoFetchData: true,
     });
     var RestDataSource_e_level_type = isc.MyRestDataSource.create({
         autoCacheAllData: false,
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: "${restApiUrl}/api/enum/eLevelType",
+        fetchDataURL: enumUrl + "eLevelType",
         autoFetchData: true,
     });
     var RestDataSource_e_run_type = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL: "${restApiUrl}/api/enum/eRunType/spec-list",
+        fetchDataURL: enumUrl + "eRunType/spec-list",
 // cacheAllData:true,
         autoFetchData: true,
     });
     var RestDataSourceETheoType = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: "${restApiUrl}/api/enum/eTheoType",
+        fetchDataURL: enumUrl + "eTheoType",
 // cacheAllData:true,
         autoFetchData: true,
     });
@@ -93,30 +92,30 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        fetchDataURL: "${restApiUrl}/api/goal/spec-list"
+        fetchDataURL: goalUrl + "spec-list"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
 
-        fetchDataURL: "${restApiUrl}/api/course/skill/" + courseId.id
+        fetchDataURL: courseUrl + "skill/" + courseId.id
     });
     var RestDataSource_CourseJob = isc.MyRestDataSource.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
         ],
 
-        fetchDataURL: "${restApiUrl}/api/course/job/" + courseId.id
+        fetchDataURL: courseUrl + "job/" + courseId.id
     });
     var RestDataSource_Syllabus = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "goal.titleFa"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "edomainType.titleFa"},
-            {name: "practicalDuration"},
-            {name: "code"}
+            {name: "practicalDuration"}
         ],
 
         fetchDataURL: syllabusUrl + "spec-list"
@@ -128,7 +127,7 @@
             {name: "titleEn"}
         ],
 
-        fetchDataURL: "${restApiUrl}/api/course/getcompetence/" + courseId.id
+        fetchDataURL: courseUrl + "getcompetence/" + courseId.id
     });
     var RestDataSourceEducation = isc.MyRestDataSource.create({
         fields: [
@@ -136,7 +135,7 @@
             {name: "titleFa"}
         ],
 
-        fetchDataURL: "${restApiUrl}/api/course/getlistEducationLicense",
+        fetchDataURL: courseUrl + "getlistEducationLicense",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -185,6 +184,7 @@
     });
     var ListGrid_Course = isc.MyListGrid.create({
         dataSource: "courseDS",
+        canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         doubleClick: function () {
             DynamicForm_course.clearValues();
@@ -192,26 +192,27 @@
         },
         selectionChanged: function (record, state) {
             courseId = record;
-            RestDataSource_CourseGoal.fetchDataURL = "${restApiUrl}/api/course/" + courseId.id + "/goal";
-            ListGrid_CourseGoal.fetchData();
-            ListGrid_CourseGoal.invalidateCache();
-            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
+            // RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
+            // ListGrid_CourseGoal.fetchData();
+            // ListGrid_CourseGoal.invalidateCache();
+            RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = "${restApiUrl}/api/course/skill/" + courseId.id;
+            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = "${restApiUrl}/api/course/job/" + courseId.id;
+            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = "${restApiUrl}/api/course/getcompetence/" + courseId.id;
+            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
             for (i = 0; i < mainTabSet.tabs.length; i++) {
                 if ("اهداف" == (mainTabSet.getTab(i).title).substr(0, 5)) {
-                    mainTabSet.getTab(i).setTitle("اهداف دوره " + courseId.titleFa);
+                    mainTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
                 }
             }
+            // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -277,6 +278,13 @@
                 name: "minTeacherEvalScore", title: "<spring:message
         code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
             },
+            {name: "daneshi", title: "دانشی", align:"center",filterOperator: "contains",
+                formatCellValue: function (value, record) {
+                    // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
+                    var gdpPerCapita = Math.round(record.theoryDuration/10);
+                    return isc.NumberUtil.format(gdpPerCapita, "%");
+                }
+            },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goalSet", hidden: true}
         ],
@@ -286,30 +294,30 @@
         allowFilterExpressions: true,
         filterOnKeypress: true,
     });
-    var ListGrid_CourseGoal = isc.MyListGrid.create({
+    <%--var ListGrid_CourseGoal = isc.MyListGrid.create({--%>
 
-        dataSource: RestDataSource_CourseGoal,
-        doubleClick: function () {
-        },
-        fields: [
-            {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
-        ],
-        selectionType: "single",
-        recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/goal/" + record.id + "/syllabus";
-            ListGrid_CourseSyllabus.fetchData();
-            ListGrid_CourseSyllabus.invalidateCache();
-        },
-        sortField: 1,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
-        autoFetchData: false,
-    });
+        <%--dataSource: RestDataSource_CourseGoal,--%>
+        <%--doubleClick: function () {--%>
+        <%--},--%>
+        <%--fields: [--%>
+            <%--{name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},--%>
+            <%--{name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},--%>
+            <%--{name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},--%>
+            <%--{name: "version", title: "version", canEdit: false, hidden: true}--%>
+        <%--],--%>
+        <%--selectionType: "single",--%>
+        <%--recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {--%>
+            <%--RestDataSource_Syllabus.fetchDataURL = goalUrl + record.id + "/syllabus";--%>
+            <%--ListGrid_CourseSyllabus.fetchData();--%>
+            <%--ListGrid_CourseSyllabus.invalidateCache();--%>
+        <%--},--%>
+        <%--sortField: 1,--%>
+        <%--showFilterEditor: true,--%>
+        <%--allowAdvancedCriteria: true,--%>
+        <%--allowFilterExpressions: true,--%>
+        <%--filterOnKeypress: true,--%>
+        <%--autoFetchData: false,--%>
+    <%--});--%>
     var ListGrid_CourseSkill = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseSkill,
         fields: [
@@ -358,13 +366,16 @@
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
         dataSource: RestDataSource_Syllabus,
+        groupByField:"goal.titleFa", groupStartOpen:"none",
+        showGridSummary:true,
+        showGroupSummary:true,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد سرفصل", align: "center", hidden: true},
-            {name: "titleFa", title: "<spring:message code="course_syllabusOfcourse_selected"/>", align: "center"},
+            {name: "goal.titleFa", title: "نام هدف", align: "center"},
+            {name: "titleFa", title: "<spring:message code="course_syllabus_name"/>", align: "center"},
             {name: "edomainType.titleFa", title: "<spring:message code="course_domain"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
-            {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden:true},
+            {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center", summaryFunction:"sum"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
@@ -524,7 +535,7 @@
 
                     DynamicForm_course.getItem("subCategory.id").setDisabled(false);
                     DynamicForm_course.getItem("subCategory.id").setValue();
-                    RestDataSourceSubCategory.fetchDataURL = "${restApiUrl}/api/category/" + value + "/sub-categories";
+                    RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                     DynamicForm_course.getItem("subCategory.id").fetchData();
 
                 },
@@ -723,7 +734,7 @@
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    RestDataSourceEducation.fetchDataURL = "${restApiUrl}/api/course/getlistEducationLicense";
+                    RestDataSourceEducation.fetchDataURL = courseUrl + "getlistEducationLicense";
                 },
             },
             {
@@ -780,7 +791,7 @@
 //------------------------------------
             if (course_method == "POST") {
                 isc.RPCManager.sendRequest({
-                    actionURL: "${restApiUrl}/api/course/getmaxcourse/" + x,
+                    actionURL: courseUrl + "getmaxcourse/" + x,
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
@@ -894,13 +905,13 @@
             members: [DynamicForm_course, courseSaveOrExitHlayout]
         })]
     });
-    var VLayout_Grid_Goal = isc.VLayout.create({
-        width: "30%",
-        height: "100%",
-        members: [ListGrid_CourseGoal]
-    });
+    // var VLayout_Grid_Goal = isc.VLayout.create({
+    //     width: "30%",
+    //     height: "100%",
+    //     members: [ListGrid_CourseGoal]
+    // });
     var VLayout_Grid_Syllabus = isc.VLayout.create({
-        width: "70%",
+        width: "100%",
         height: "100%",
         members: [ListGrid_CourseSyllabus]
     });
@@ -920,7 +931,7 @@
         height: "100%",
         <%--border: "2px solid blue",--%>
         members: [
-            VLayout_Grid_Goal, VLayout_Grid_Syllabus
+            VLayout_Grid_Syllabus
         ]
     });
     var HLayout_Tab_Course_Skill = isc.HLayout.create({
@@ -1000,12 +1011,13 @@
         DynamicForm_course.getItem("elevelType.id").setDisabled(false);
         DynamicForm_course.getItem("etheoType.id").setDisabled(false);
         course_method = "POST";
-        course_url = "${restApiUrl}/api/course";
+        course_url = courseUrl;
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         Window_course.setTitle("<spring:message code="create"/>");
 
         Window_course.show();
+        DynamicForm_course.getFields().get(5).prompt = "لطفا طول دوره را به صورت یک عدد وارد کنید";
     };
 
     function ListGrid_Course_remove() {
@@ -1035,7 +1047,7 @@
 
                     if (index == 0) {
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/course/deleteCourse/" + record.id,
+                            actionURL: courseUrl + "deleteCourse/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1101,13 +1113,14 @@
             });
         } else {
             course_method = "PUT";
-            course_url = "${restApiUrl}/api/course/" + sRecord.id;
+            course_url = courseUrl + sRecord.id;
             DynamicForm_course.clearValues();
-            RestDataSourceSubCategory.fetchDataURL = "${restApiUrl}/api/category/" + sRecord.category.id + "/sub-categories",
+            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories",
                 DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
+            DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها "+(ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString()+" ساعت می باشد."
         }
     };
 

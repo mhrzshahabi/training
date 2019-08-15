@@ -8,7 +8,7 @@
 %>
 
 //<script>
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+    <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 
     var methodGoal = "GET";
     var urlGoal = goalUrl;
@@ -35,9 +35,8 @@
     });
     var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
-            {name: "id", primaryKey: true, hidden: "true", align: "center"},
+            {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
-            {name: "titleEn", title: "نام انگلیسی", hidden: "true"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center", width: "20%"},
             {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", width: "20%"}
         ], dataFormat: "json",
@@ -393,7 +392,7 @@
                 Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
                 Window_AddGoal.show();
                 ListGrid_CourseGoal_Goal.invalidateCache();
-                RestDataSource_GoalAll.fetchDataURL = "${restApiUrl}/api/course/goal/" + courseId.id;
+                RestDataSource_GoalAll.fetchDataURL = courseUrl +"goal/" + courseId.id;
                 ListGrid_GoalAll.invalidateCache();
                 <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
             }
@@ -460,6 +459,9 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Syllabus,
+        // groupByField:"goal.titleFa", groupStartOpen:"all",
+        showGridSummary:true,
+        // showGroupSummary:true,
         contextMenu: Menu_ListGrid_Syllabus_Goal,
         doubleClick: function () {
             ListGrid_Syllabus_Goal_Edit();
@@ -477,8 +479,9 @@
             {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
             {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction:"sum"},
+            {name: "version", title: "version", canEdit: false, hidden: true},
+            {name: "goal.titleFa",hidden: true}
         ],
         sortField: "goalId",
         sortDirection: "descending",
@@ -652,8 +655,7 @@
         title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
-            RestDataSource_Syllabus.fetchDataURL = "${restApiUrl}/api/syllabus/course/" + courseId.id;
-            ListGrid_Syllabus_Goal.invalidateCache();
+            ListGrid_Syllabus_Goal_refresh();
         }
     });
     var ToolStripButton_Goal_Edit = isc.ToolStripButton.create({
@@ -692,7 +694,7 @@
             Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
-            RestDataSource_GoalAll.fetchDataURL = "${restApiUrl}/api/course/goal/" + courseId.id;
+            RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;
             ListGrid_GoalAll.invalidateCache();
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
@@ -730,7 +732,7 @@
                         goalList.add(goalRecord[i].id);
                     }
                     isc.RPCManager.sendRequest({
-                        actionURL: "${restApiUrl}/api/course/" + courseId.id + "/" + goalList.toString(),
+                        actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
@@ -790,7 +792,7 @@
                     }
                     isc.RPCManager.sendRequest({
 
-                        actionURL: "${restApiUrl}/api/course/remove/" + courseId.id + "/" + arryRecord.toString(),
+                        actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
@@ -948,7 +950,7 @@
                             title: "<spring:message code='message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/goal/delete/" + record.id,
+                            actionURL: goalUrl + "delete/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1019,7 +1021,7 @@
             });
         } else {
             methodGoal = "POST";
-            urlGoal = "${restApiUrl}/api/goal/create/" + courseId.id;
+            urlGoal = goalUrl + "create/" + courseId.id;
             DynamicForm_Goal.clearValues();
             Window_Goal.setTitle("ایجاد هدف");
             Window_Goal.show();
@@ -1100,7 +1102,6 @@
                 }
             });
         } else {
-            selectedGoalId = gRecord.id;
             methodSyllabus = "POST";
             urlSyllabus = syllabusUrl;
             DynamicForm_Syllabus.clearValues();
