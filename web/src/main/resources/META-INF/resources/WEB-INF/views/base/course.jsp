@@ -375,7 +375,7 @@
             {name: "titleFa", title: "<spring:message code="course_syllabus_name"/>", align: "center"},
             {name: "edomainType.titleFa", title: "<spring:message code="course_domain"/>", align: "center"},
             {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden:true},
-            {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center", summaryFunction:"sum"},
+            {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center", summaryFunction:"sum",type:"integer", format: "# ساعت "},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
