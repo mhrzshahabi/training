@@ -97,4 +97,7 @@ public class Course extends Auditable {
 
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
+
+//    @OneToMany(mappedBy = "course")
+//    private Set<PreCourse> preCourseSet;
 }

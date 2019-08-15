@@ -803,7 +803,7 @@
 
                    ListGrid_Goal.fetchData();
                    ListGrid_Goal.invalidateCache();
-                   RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl+ "course/" + courseId.id;
                    ListGrid_Syllabus_Goal.fetchData();
                    ListGrid_Syllabus_Goal.invalidateCache();
 
@@ -816,7 +816,7 @@
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl+ "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
                     }
