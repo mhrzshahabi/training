@@ -98,6 +98,34 @@ public class Course extends Auditable {
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
 
+    @Transient
+    private Long knowledge = Long.valueOf(0);
+
+    @Transient
+    private Long skill = Long.valueOf(0);
+
+    @Transient
+    private Long attitude = Long.valueOf(0);
+
+//    @Transient
+//    private Long calDomainType(Integer n){
+//        Long x = Long.valueOf(0);
+//        Long sumTime = Long.valueOf(0);
+//        Long sumAllTime = Long.valueOf(0);
+//        List<Goal> goalList = this.getGoalSet();
+//        for (Goal goal : goalList) {
+//            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+//            for (Syllabus syllabus : syllabusSet) {
+//                if(syllabus.getEDomainTypeId().equals(n)) {
+//                    sumTime += syllabus.getPracticalDuration();
+//                }
+//              sumAllTime += syllabus.getPracticalDuration();
+//            }
+//            x = (sumTime/sumAllTime)*100;
+//        }
+//        return x;
+//    }
+
 //    @OneToMany(mappedBy = "course")
 //    private Set<PreCourse> preCourseSet;
 }

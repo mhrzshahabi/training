@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
+import static java.lang.Math.round;
+
 @Service
 @RequiredArgsConstructor
 public class CourseService implements ICourseService {
@@ -45,7 +47,35 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public List<CourseDTO.Info> list() {
+        Long a = Long.valueOf(0);
+        Long b = Long.valueOf(0);
+        Long c = Long.valueOf(0);
+        Long sumAll = Long.valueOf(0);
         final List<Course> cAll = courseDAO.findAll();
+        for (Course course : cAll) {
+            List<Goal> goalSet = course.getGoalSet();
+            for (Goal goal : goalSet) {
+                Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+                for (Syllabus syllabus : syllabusSet) {
+                    Integer eDomainTypeId = syllabus.getEDomainTypeId();
+                    switch (eDomainTypeId){
+                        case 1:
+                            a += syllabus.getPracticalDuration();
+                            break;
+                        case 2:
+                            b += syllabus.getPracticalDuration();
+                            break;
+                        case 3:
+                            c += syllabus.getPracticalDuration();
+                            break;
+                    }
+                    sumAll += syllabus.getPracticalDuration();
+                }
+            }
+            course.setKnowledge(a*100/sumAll);
+            course.setSkill(b*100/sumAll);
+            course.setAttitude(c*100/sumAll);
+        }
         return modelMapper.map(cAll, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
     }
@@ -55,13 +85,11 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-
         course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
         return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
-
     }
 
     @Transactional
@@ -69,9 +97,6 @@ public class CourseService implements ICourseService {
     public CourseDTO.Info update(Long id, CourseDTO.Update request) {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-
-
-
         Course course = new Course();
         modelMapper.map(currentCourse, course);
         modelMapper.map(request, course);
@@ -85,7 +110,6 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void delete(Long id) {
-
       courseDAO.deleteById(id);
     }
 
@@ -99,7 +123,47 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<CourseDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, CourseDTO.Info.class));
+        SearchDTO.SearchRs<Course> search = SearchUtil.search(courseDAO, request, course -> modelMapper.map(course, Course.class));
+        SearchDTO.SearchRs<CourseDTO.Info> exitList = new SearchDTO.SearchRs<>();
+        exitList.setTotalCount(search.getTotalCount());
+        Float a;
+        Float b;
+        Float c;
+        Long sumAll;
+        List<CourseDTO.Info> infoList = new ArrayList<>();
+        List<Course> list = search.getList();
+        for (Course course : list) {
+            a = Float.valueOf(0);
+            b = Float.valueOf(0);
+            c = Float.valueOf(0);
+            sumAll = Long.valueOf(0);
+            List<Goal> goalSet = course.getGoalSet();
+            for (Goal goal : goalSet) {
+                Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+                for (Syllabus syllabus : syllabusSet) {
+                    Integer eDomainTypeId = syllabus.getEDomainTypeId();
+                    switch (eDomainTypeId){
+                        case 1:
+                            a += syllabus.getPracticalDuration();
+                            break;
+                        case 2:
+                            b += syllabus.getPracticalDuration();
+                            break;
+                        case 3:
+                            c += syllabus.getPracticalDuration();
+                            break;
+                    }
+                    sumAll += syllabus.getPracticalDuration();
+                }
+            }
+            course.setKnowledge((long) round(a*100/(Float.valueOf(sumAll))));
+            course.setSkill((long)round(b*100/(Float.valueOf(sumAll))));
+            course.setAttitude((long)round(c*100/(Float.valueOf(sumAll))));
+            CourseDTO.Info map = modelMapper.map(course, CourseDTO.Info.class);
+            infoList.add(map);
+        }
+        exitList.setList(infoList);
+        return exitList;
     }
 
     //-------jafari--------
@@ -219,7 +283,6 @@ public class CourseService implements ICourseService {
             if (max < Integer.parseInt(course.getCode().substring(6, 10)))
 
                 max = Integer.parseInt(course.getCode().substring(6, 10));
-
         }
         return String.valueOf(max);
     }
@@ -273,6 +336,5 @@ public class CourseService implements ICourseService {
         Optional<Course> one = courseDAO.findById(id);
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         course.getGoalSet().clear();
-
     }
 }

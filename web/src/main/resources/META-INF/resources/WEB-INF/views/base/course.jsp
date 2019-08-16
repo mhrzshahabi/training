@@ -47,8 +47,10 @@
             {name: "minTeacherDegree"},
             {name: "minTeacherExpYears"},
             {name: "minTeacherEvalScore"},
-            // {name: "daneshi", title: "دانشی", valueField :"بای بای"},
-            {name: "version"},
+            {name: "knowledge"},
+            {name: "skill"},
+            {name: "attitude"},
+            // {name: "version"},
         ],
         fetchDataURL: courseUrl + "spec-list",
     });
@@ -278,15 +280,17 @@
                 name: "minTeacherEvalScore", title: "<spring:message
         code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
             },
-            {name: "daneshi", title: "دانشی", align:"center",filterOperator: "contains",
-                formatCellValue: function (value, record) {
-                    // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
-                    var gdpPerCapita = Math.round(record.theoryDuration/10);
-                    return isc.NumberUtil.format(gdpPerCapita, "%");
-                }
+            {name: "knowledge", title: "دانشی", align:"center",filterOperator: "greaterThan", format: "%"
+                // formatCellValue: function (value, record) {
+                //     // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
+                //     var gdpPerCapita = Math.round(record.theoryDuration/10);
+                //     return isc.NumberUtil.format(gdpPerCapita, "%");
+                // }
             },
-            {name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "goalSet", hidden: true}
+            {name: "skill", title: "مهارتی", align:"center",filterOperator: "greaterThan", format: "%"},
+            {name: "attitude", title: "نگرشی", align:"center",filterOperator: "greaterThan", format: "%"},
+            // {name: "version", title: "version", canEdit: false, hidden: true},
+            // {name: "goalSet", hidden: true}
         ],
         autoFetchData: true,
         showFilterEditor: true,
