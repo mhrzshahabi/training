@@ -564,7 +564,7 @@
         orientation: "vertical",
         click: function () {
 
-            createTab("ترم", "/term/show-form", false);
+            createTab("ترم", "<spring:url value="/term/show-form"/>", false);
         }
     });
 
