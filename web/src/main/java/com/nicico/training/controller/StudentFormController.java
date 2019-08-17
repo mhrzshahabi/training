@@ -1,6 +1,7 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.hibernate.annotations.DynamicUpdate;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
@@ -22,9 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 public class StudentFormController {
     private final OAuth2AuthorizedClientService authorizedClientService;
 
-//    @Value("${pageContext.servletContext.contextPath}")
-    private String restApiUrl="localhost:8080/training";
-
     @RequestMapping("/show-form")
     public String showForm() {
         return "training/student";
@@ -32,7 +30,7 @@ public class StudentFormController {
 
     @PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("token");
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -46,6 +44,8 @@ public class StudentFormController {
 		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/student/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
