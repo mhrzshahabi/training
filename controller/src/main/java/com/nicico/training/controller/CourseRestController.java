@@ -20,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -52,7 +53,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-//	@PreAuthorize("hasAuthority('r_course')")
+	//@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<CourseDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(courseService.get(id), HttpStatus.OK);
     }
@@ -73,7 +74,7 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-//	@PreAuthorize("hasAuthority('u_course')")
+	//@PreAuthorize("hasAuthority('u_course')")
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
@@ -83,7 +84,7 @@ public class CourseRestController {
 
     @Loggable
     @DeleteMapping(value = "deleteCourse/{id}")
-//	@PreAuthorize("hasAuthority('d_course')")
+	//@PreAuthorize("hasAuthority('d_course')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id){
       boolean check=courseService.checkForDelete(id);
         if(check)

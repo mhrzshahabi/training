@@ -27,6 +27,6 @@ public class Country extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
-    private Set<State> stateSet;
+//    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
+//    private Set<State> stateSet;
 }

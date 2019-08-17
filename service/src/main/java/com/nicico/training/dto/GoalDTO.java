@@ -26,8 +26,6 @@ public class GoalDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-//    @NotNull
-//    @ApiModelProperty(required = true)
     private String titleEn;
 
     // ------------------------------
@@ -108,6 +106,14 @@ public class GoalDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class Syllabuses extends GoalDTO{
         private List<SyllabusDTO.SyllabusInfoTuple> syllabusSet;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class GoalTitleFa {
+        private String titleFa;
     }
 
 }

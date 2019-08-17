@@ -52,8 +52,8 @@
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
-    const courseUrl=rootUrl + "/course/";
-    const  categoryUrl=rootUrl+"/category/";
+    const courseUrl = rootUrl + "/course/";
+    const categoryUrl = rootUrl+"/category/";
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -548,6 +548,17 @@
         }
     });
 
+      var termButton = isc.IconButton.create({
+        title: "ترم",
+        icon: "pieces/512/course.png",
+        largeIcon: "pieces/512/term.png",
+        orientation: "vertical",
+        click: function () {
+
+            createTab("ترم","<spring:url value="/term/show-form"/>", false);
+        }
+    });
+
     var jobButton = isc.IconButton.create({
         title: "شغل",
         icon: "pieces/512/job.png",
@@ -703,6 +714,7 @@
         controls: [
             classButton,
             courseButton,
+            termButton,
             studentButton,
         ],
         autoDraw: true
@@ -803,7 +815,7 @@
 
                    ListGrid_Goal.fetchData();
                    ListGrid_Goal.invalidateCache();
-                   RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                    ListGrid_Syllabus_Goal.fetchData();
                    ListGrid_Syllabus_Goal.invalidateCache();
 
@@ -816,7 +828,7 @@
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
                     }
