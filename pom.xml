@@ -51,18 +51,18 @@
 			<distributionManagement>
 				<snapshotRepository>
 					<id>nexus-snapshots</id>
-					<url>http://172.16.180.24:8081/repository/maven-snapshots/</url>
+					<url>http://devops01.icico.net.ir/nexus/repository/maven-snapshots/</url>
 				</snapshotRepository>
 				<repository>
 					<id>nexus-releases</id>
-					<url>http://172.16.180.24:8081/repository/maven-releases/</url>
+					<url>http://devops01.icico.net.ir/nexus/repository/maven-releases/</url>
 				</repository>
 			</distributionManagement>
 
 			<repositories>
 				<repository>
 					<id>nexus-public</id>
-					<url>http://172.16.180.24:8081/repository/maven-public/</url>
+					<url>http://devops01.icico.net.ir/nexus/repository/maven-public/</url>
 				</repository>
 			</repositories>
 		</profile>
