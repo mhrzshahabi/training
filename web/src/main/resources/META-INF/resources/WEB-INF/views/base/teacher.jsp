@@ -3,10 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var method = "POST";
-    var url = "${restApiUrl}/api/teacher";
 
     var responseID;
     var categoryList;
@@ -29,7 +27,7 @@
     /*Rest Data Sources*/
     // ------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Teacher_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Teacher_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
@@ -41,132 +39,60 @@
             {name: "mobile"},
             {name: "attachPhoto"},
             {name: "categories"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/teacher/spec-list"
+        ],
+        fetchDataURL: teacherUrl + "spec-list"
     });
 
 
-    var RestDataSource_Egender_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Egender_JspTeacher = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: enumUrl + "eGender/spec-list"
     });
 
-    var RestDataSource_Emarried_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Emarried_JspTeacher = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: enumUrl + "eMarried/spec-list"
     });
 
-    var RestDataSource_Emilitary_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Emilitary_JspTeacher = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
 
-    var RestDataSource_Category_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Category_JspTeacher = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/category/spec-list"
+        ],
+        fetchDataURL:  categoryUrl + "spec-list"
     });
 
-    var RestDataSource_Education_Level_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Education_Level_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
             {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/educationLevel/spec-list"
+        ],
+        fetchDataURL: educationLevelUrl + "spec-list"
     });
 
-    var RestDataSource_Education_Major_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Education_Major_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
             {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/educationMajor/spec-list"
+        ],
+        fetchDataURL:  educationMajorUrl + "spec-list"
     });
 
-    var RestDataSource_Education_Orientation_JspTeacher = isc.RestDataSource.create({
+    var RestDataSource_Education_Orientation_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
             {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/educationOrientation/spec-list"
+        ],
+        fetchDataURL: educationOrientationUrl + "spec-list"
     });
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -791,7 +717,7 @@
                 }
                 else {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + newValue;
+                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + newValue;
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
                     DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
                 }
@@ -1379,7 +1305,7 @@
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
             method = "PUT";
-            url = "${restApiUrl}/api/teacher/" + record.id;
+            url = "${contextPath}/api/teacher/" + record.id;
             vm.editRecord(record);
             var eduMajorValue = record.educationMajorId;
 
@@ -1389,7 +1315,7 @@
                 DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
             }
             else if (eduMajorValue != undefined) {
-                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${restApiUrl}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
+                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
                 DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
                 DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
             }
@@ -1408,7 +1334,7 @@
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
         method = "POST";
-        url = "${restApiUrl}/api/teacher";
+        url = "${contextPath}/api/teacher";
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
         DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
@@ -1446,7 +1372,7 @@
                             title: "<spring:message code='message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/teacher/" + record.id,
+                            actionURL: "${contextPath}/api/teacher/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -1498,9 +1424,10 @@
         var JSONObj = {"ids": categoryIds};
         isc.RPCManager.sendRequest({
             httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: "${restApiUrl}/api/teacher/addCategories/" + teacherId,
+            actionURL: "${contextPath}/api/teacher/addCategories/" + teacherId,
             httpMethod: "POST",
             data: JSON.stringify(JSONObj),
             serverOutputAsString: false,
@@ -1520,7 +1447,7 @@
         formData1.append("file", file);
         if (file != undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", "${restApiUrl}/api/teacher/addAttach/" + teacherId);
+            request.open("POST", "${contextPath}/api/teacher/addAttach/" + teacherId);
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {
@@ -1537,7 +1464,7 @@
             httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: "${restApiUrl}/api/teacher/checkAttach/" + selectedRecordID,
+            actionURL: "${contextPath}/api/teacher/checkAttach/" + selectedRecordID,
             httpMethod: "GET",
             serverOutputAsString: false,
             callback: function (resp) {
@@ -1558,7 +1485,7 @@
             httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: "${restApiUrl}/api/teacher/getCategories/" + teacherId,
+            actionURL: "${contextPath}/api/teacher/getCategories/" + teacherId,
             httpMethod: "POST",
             serverOutputAsString: false,
             callback: function (resp) {
@@ -1578,7 +1505,7 @@
         formData1.append("file", file);
         if (file !== undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", "${restApiUrl}/api/teacher/addTempAttach");
+            request.open("POST", "${contextPath}/api/teacher/addTempAttach");
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {

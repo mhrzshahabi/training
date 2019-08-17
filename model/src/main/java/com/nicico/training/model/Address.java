@@ -23,11 +23,17 @@ public class Address extends Auditable {
     @Column(name = "c_address")
     private String address;
 
-    @Column(name = "n_post_code")
+    @Column(name = "n_post_code", unique = true, nullable = false)
     private Long postCode;
 
     @Column(name = "n_phone")
     private String phone;
+
+    @Column(name = "n_fax")
+    private String fax;
+
+    @Column(name = "c_website")
+    private String webSite;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_city")

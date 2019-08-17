@@ -13,10 +13,10 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
     open-in-view: false
-#  liquibase:
-#    database-change-log-table: Z_LIQ_CHANGELOG
-#    database-change-log-lock-table: Z_LIQ_CHANGELOG_LOCK
-#    change-log: classpath:db/changelog/liquibase-master.xml
+  liquibase:
+    database-change-log-table: Z_LIQ_CHANGELOG
+    database-change-log-lock-table: Z_LIQ_CHANGELOG_LOCK
+    change-log: classpath:db/changelog/liquibase-master.xml
   redis:
     port: 6379
   main:

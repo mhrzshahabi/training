@@ -1,0 +1,1280 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-1">
+        <createSequence sequenceName="seq_Course_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-2">
+        <createSequence sequenceName="seq_Equipment_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-3">
+        <createSequence sequenceName="seq_Term_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-4">
+        <createSequence sequenceName="seq_address_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-5">
+        <createSequence sequenceName="seq_category_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-6">
+        <createSequence sequenceName="seq_class_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-7">
+        <createSequence sequenceName="seq_competence_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-8">
+        <createSequence sequenceName="seq_country_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-9">
+        <createSequence sequenceName="seq_education_level_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-10">
+        <createSequence sequenceName="seq_education_license_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-11">
+        <createSequence sequenceName="seq_education_major_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-12">
+        <createSequence sequenceName="seq_education_orientation_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-13">
+        <createSequence sequenceName="seq_goal_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-14">
+        <createSequence sequenceName="seq_institute_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-15">
+        <createSequence sequenceName="seq_job_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-16">
+        <createSequence sequenceName="seq_pre_course_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-17">
+        <createSequence sequenceName="seq_skill_category_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-18">
+        <createSequence sequenceName="seq_skill_group_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-19">
+        <createSequence sequenceName="seq_skill_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-20">
+        <createSequence sequenceName="seq_skill_level_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-21">
+        <createSequence sequenceName="seq_skill_standard_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-22">
+        <createSequence sequenceName="seq_skill_sub_category_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-23">
+        <createSequence sequenceName="seq_skill_type_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-24">
+        <createSequence sequenceName="seq_student_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-25">
+        <createSequence sequenceName="seq_syllabus_id"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-26">
+        <createSequence sequenceName="seq_teacher_id"/>
+    </changeSet>
+
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-27">
+        <createTable tableName="tbl_address">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_addressPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_post_code" type="NUMBER(19, 0)"/>
+            <column name="f_city" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-28">
+        <createTable tableName="tbl_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(2 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_desc" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-29">
+        <createTable tableName="tbl_city">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_cityPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_state" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-30">
+        <createTable tableName="tbl_class">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_classPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_course" type="NUMBER(19, 0)"/>
+            <column name="n_duration" type="NUMBER(19, 0)"/>
+            <column name="c_end_date" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_start_date" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-31">
+        <createTable tableName="tbl_competence">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_competencePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_Competence_input_type" type="NUMBER(10, 0)"/>
+            <column name="e_technical_type" type="NUMBER(10, 0)"/>
+            <column name="titleEn" type="VARCHAR2(255 CHAR)"/>
+            <column name="titleFa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="wf_status" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-32">
+        <createTable tableName="tbl_competence_skill">
+            <column name="f_competence_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-33">
+        <createTable tableName="tbl_competence_skill_group">
+            <column name="f_skill_group_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_competence_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-34">
+        <createTable tableName="tbl_country">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_countryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-35">
+        <createTable tableName="tbl_course">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_coursePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_level_type" type="NUMBER(10, 0)"/>
+            <column name="e_run_type" type="NUMBER(10, 0)"/>
+            <column name="e_technical_type" type="NUMBER(10, 0)"/>
+            <column name="e_theo_type" type="NUMBER(10, 0)"/>
+            <column name="c_main_objective" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_degree" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_eval_score" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_min_teacher_exp_years" type="VARCHAR2(255 CHAR)"/>
+            <column name="subcategory_id" type="NUMBER(19, 0)"/>
+            <column name="n_theory_duration" type="VARCHAR2(5 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-36">
+        <createTable tableName="tbl_course_goal">
+            <column name="f_course_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_goal_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-37">
+        <createTable tableName="tbl_education_level">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_levelPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-38">
+        <createTable tableName="tbl_education_license">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_licensePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-39">
+        <createTable tableName="tbl_education_major">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_majorPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-40">
+        <createTable tableName="tbl_education_orientation">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_education_orientationPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_education_major" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-41">
+        <createTable tableName="tbl_equipment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_equipmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-42">
+        <createTable tableName="tbl_goal">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_goalPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-43">
+        <createTable tableName="tbl_institute">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_institutePK"/>
+            </column>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_branch" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_institute_type" type="NUMBER(10, 0)"/>
+            <column name="c_institute_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_license_type" type="NUMBER(10, 0)"/>
+            <column name="c_license_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_email" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_postalCode" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-44">
+        <createTable tableName="tbl_institute_teacher">
+            <column name="f_institute" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-45">
+        <createTable tableName="tbl_job">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_jobPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="cost_center" type="VARCHAR2(255 CHAR)"/>
+            <column name="description" type="VARCHAR2(255 CHAR)"/>
+            <column name="titleEn" type="VARCHAR2(255 CHAR)"/>
+            <column name="titleFa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-46">
+        <createTable tableName="tbl_job_competence">
+            <column name="f_competence_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_job_competencePK"/>
+            </column>
+            <column name="f_job_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_job_competencePK"/>
+            </column>
+            <column name="e_job_competence_type" type="NUMBER(10, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-47">
+        <createTable tableName="tbl_pre_course">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_pre_coursePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="pre_course_set" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_pre_course" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-48">
+        <createTable tableName="tbl_skill">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skillPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="e_domain_type" type="NUMBER(10, 0)"/>
+            <column name="f_skill_level" type="NUMBER(19, 0)"/>
+            <column name="f_sub_category" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-49">
+        <createTable tableName="tbl_skill_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-50">
+        <createTable tableName="tbl_skill_course">
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_course_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-51">
+        <createTable tableName="tbl_skill_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-52">
+        <createTable tableName="tbl_skill_level">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_levelPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-53">
+        <createTable tableName="tbl_skill_skillgroup">
+            <column name="f_skillgroup_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_skill_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-54">
+        <createTable tableName="tbl_skill_standard">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_standardPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(7 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_skill_level" type="NUMBER(19, 0)"/>
+            <column name="f_skill_category" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-55">
+        <createTable tableName="tbl_skill_standard_course">
+            <column name="f_skill_standard" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_course" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-56">
+        <createTable tableName="tbl_skill_sub_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_sub_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_skill_category" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-57">
+        <createTable tableName="tbl_skill_type">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_skill_typePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_desc" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-58">
+        <createTable tableName="tbl_state">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_statePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="name" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-59">
+        <createTable tableName="tbl_student">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_studentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_department" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_full_name_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_full_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_license" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_personal_id" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_student_id" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-60">
+        <createTable tableName="tbl_student_class">
+            <column name="f_class" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_student" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-61">
+        <createTable tableName="tbl_sub_category">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sub_categoryPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_category_id" type="NUMBER(19, 0)"/>
+            <column name="c_code" type="VARCHAR2(7 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-62">
+        <createTable tableName="tbl_syllabus">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_syllabusPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_domain_type" type="NUMBER(10, 0)"/>
+            <column name="f_goal" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_practical_duration" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_theoretical_duration" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-63">
+        <createTable tableName="tbl_teacher">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacherPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attach_photo" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="e_gender" type="NUMBER(10, 0)"/>
+            <column name="c_gender" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_married" type="NUMBER(10, 0)"/>
+            <column name="c_married" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_military" type="NUMBER(10, 0)"/>
+            <column name="c_military" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_email" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_full_name_en" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_full_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_home_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_home_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_home_postal_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_mobile" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_national_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_nationality" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_religion" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_job" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_postal_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_telefax" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_webSite" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_account_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cart_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_economical_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_economical_record_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_edu_level" type="NUMBER(19, 0)"/>
+            <column name="f_edu_major" type="NUMBER(19, 0)"/>
+            <column name="f_edu_orientation" type="NUMBER(19, 0)"/>
+            <column name="b_enabled" type="NUMBER(1, 0)"/>
+            <column name="c_shaba_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_teacher_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-64">
+        <createTable tableName="tbl_teacher_category">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-65">
+        <createTable tableName="tbl_term">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_termPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_enddate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_startdate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-66">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_CATEGORYC_CODE_COL" tableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-67">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SKILLC_CODE_COL" tableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-68">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SKILL_CATEGORYC_CODE_COL"
+                             tableName="tbl_skill_category"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-69">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SKILL_STANDARDC_CODE_COL"
+                             tableName="tbl_skill_standard"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-70">
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SUB_CATEGORYC_CODE_COL"
+                             tableName="tbl_sub_category"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-71">
+        <addUniqueConstraint columnNames="c_national_code" constraintName="UC_TBL_TEACHERC_NATIONAL_CODE_COL"
+                             tableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-72">
+        <addUniqueConstraint columnNames="c_teacher_code" constraintName="UC_TBL_TEACHERC_TEACHER_CODE_COL"
+                             tableName="tbl_teacher"/>
+    </changeSet>
+
+
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-73">
+        <addForeignKeyConstraint baseColumnNames="f_skill_level" baseTableName="tbl_skill_standard"
+                                 constraintName="FK11nvnbg3shi5q4n3mx19b2uyu" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_level" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-74">
+        <addForeignKeyConstraint baseColumnNames="f_goal_id" baseTableName="tbl_course_goal"
+                                 constraintName="FK1fv4j3f1368flv0fe2q0ilqcx" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_goal"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-75">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_class"
+                                 constraintName="FK25i5bh05mgy0ka0a6ygc8lh16" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-76">
+        <addForeignKeyConstraint baseColumnNames="f_sub_category" baseTableName="tbl_skill"
+                                 constraintName="FK2tgy9vvd3wc7ilbmidqkxu48x" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-77">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_category"
+                                 constraintName="FK32psxahk7a9ldr1vwydjbuc9x" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-78">
+        <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation"
+                                 constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-79">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_teacher"
+                                 constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-80">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_course_goal"
+                                 constraintName="FK49yjb7t4oqw4fv5mntplb7ppm" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-81">
+        <addForeignKeyConstraint baseColumnNames="f_edu_orientation" baseTableName="tbl_teacher"
+                                 constraintName="FK5rjcxyruo8d7vru4m2d5h4qt3" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_education_orientation" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-82">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_competence_skill"
+                                 constraintName="FK5ufxj6humic0g21opg3o56qmb" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-83">
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_city"
+                                 constraintName="FK796uthe94t6y9cd71cq0yiy74" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_state"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-84">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_competence_skill_group"
+                                 constraintName="FK7qvvhhpysgtt6ah5pdxuo2hjm" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_competence" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-85">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_category"
+                                 constraintName="FK9i5416d4h83ib79admhqqo62n" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-86">
+        <addForeignKeyConstraint baseColumnNames="f_pre_course" baseTableName="tbl_pre_course"
+                                 constraintName="FKa2hiukejbuduoe9odkn2741ky" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-87">
+        <addForeignKeyConstraint baseColumnNames="f_skill_group_id" baseTableName="tbl_competence_skill_group"
+                                 constraintName="FKbo4reuew9xfmenaau57dy10oy" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_group" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-88">
+        <addForeignKeyConstraint baseColumnNames="f_skill_level" baseTableName="tbl_skill"
+                                 constraintName="FKd2e04ftpfpvvlwfo90osfvtat" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_level" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-89">
+        <addForeignKeyConstraint baseColumnNames="f_skill_category" baseTableName="tbl_skill_standard"
+                                 constraintName="FKee0nmcc4s0lpy368i86n3lyq1" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_category" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-90">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_competence_skill"
+                                 constraintName="FKenyjin05qr2d00y9c7veo51o" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_competence" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-91">
+        <addForeignKeyConstraint baseColumnNames="f_student" baseTableName="tbl_student_class"
+                                 constraintName="FKfiyhqj7fkycfycxc1t1kl6ekb" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_student"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-92">
+        <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_sub_category"
+                                 constraintName="FKgeij774xqyfccuqeobdcs8vm5" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-93">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_institute_teacher"
+                                 constraintName="FKgmqk8uu4bfjf7yrswb4sp0f5f" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-94">
+        <addForeignKeyConstraint baseColumnNames="f_skill_standard" baseTableName="tbl_skill_standard_course"
+                                 constraintName="FKgv5gbeiyt14wxw96n0kgvj9yc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_standard" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-95">
+        <addForeignKeyConstraint baseColumnNames="f_edu_major" baseTableName="tbl_teacher"
+                                 constraintName="FKgvpofpjf2e4sjeo7pl3yb9qii" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-96">
+        <addForeignKeyConstraint baseColumnNames="f_skillgroup_id" baseTableName="tbl_skill_skillgroup"
+                                 constraintName="FKh9adhaxe5ap8m3hn4rn3bc8u7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_group" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-97">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_skill_course"
+                                 constraintName="FKinyh244r4fyiejiantef0dvva" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-98">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_job_competence"
+                                 constraintName="FKiqcgyreceg3jsp1p0u89agknh" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_competence" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-99">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_skillgroup"
+                                 constraintName="FKjk6fq86fr0rsnxghkain906ef" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-100">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_course"
+                                 constraintName="FKk5fy44bd4a6gd5dtbbretckwo" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-101">
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address"
+                                 constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-102">
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_class"
+                                 constraintName="FKm6x5pso1g2egu20vd6l4m3481" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-103">
+        <addForeignKeyConstraint baseColumnNames="f_skill_category" baseTableName="tbl_skill_sub_category"
+                                 constraintName="FKmubjngcxquu3j0ylq79aidppb" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_skill_category" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-104">
+        <addForeignKeyConstraint baseColumnNames="f_goal" baseTableName="tbl_syllabus"
+                                 constraintName="FKoc0lv4at1b523lhu427t4c014" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_goal"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-105">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_skill"
+                                 constraintName="FKpbkr700j7d90r5qx8dyjjtyf5" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-106">
+        <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_student_class"
+                                 constraintName="FKpw8xm78sw3q0xti3okmpjjfw9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-107">
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_skill_standard_course"
+                                 constraintName="FKq51kqmjhhmygsy85s1plvdlsa" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-108">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="tbl_course"
+                                 constraintName="FKr8meube4urptptaplv55hvac7" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-109">
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_job_competence"
+                                 constraintName="FKs06v4ro1k380not1iddx10ucs" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_job"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-110">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_course"
+                                 constraintName="FKs48kdjo8ol5303e1vqm195m84" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="p-dodangeh (generated)" id="1566016200922-111">
+        <addForeignKeyConstraint baseColumnNames="f_edu_level" baseTableName="tbl_teacher"
+                                 constraintName="FKthixnnbrntlej80pub6ebq8s6" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
