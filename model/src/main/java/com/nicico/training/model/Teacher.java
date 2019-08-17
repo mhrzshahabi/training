@@ -63,6 +63,12 @@ public class Teacher extends Person {
 	@Column(name = "f_edu_orientation")
 	private Long educationOrientationId;
 
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "f_account_info", nullable = true, insertable = false, updatable = false)
+	private AccountInfo accountInfo;
+
+///////////////////////////////////////////////////////////////////
+
     @Column(name = "c_account_number")
 	private String accountNember;
 

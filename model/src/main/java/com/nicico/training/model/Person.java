@@ -7,8 +7,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Column;
-import javax.persistence.MappedSuperclass;
+import javax.persistence.*;
 
 @Getter
 @Setter
@@ -46,11 +45,6 @@ public abstract class Person extends Auditable {
 	@Column(name = "c_nationality")
 	private String nationality;
 
-	@Column(name = "c_email")
-	private String email;
-
-	@Column(name = "c_mobile")
-	private String mobile;
 
 	@Column(name = "c_description",  length = 500)
 	private String description;
@@ -58,32 +52,39 @@ public abstract class Person extends Auditable {
 	@Column(name = "c_work_name")
 	private String workName;
 
-	@Column(name = "c_work_address")
-	private String workAddress;
 
-	@Column(name = "c_work_phone")
-	private String workPhone;
+//	@Column(name = "c_email")
+//	private String email;
+//
+//	@Column(name = "c_mobile")
+//	private String mobile;
 
-	@Column(name = "c_work_postal_code")
-	private String workPostalCode;
+//	@Column(name = "c_work_address")
+//	private String workAddress;
+//
+//	@Column(name = "c_work_phone")
+//	private String workPhone;
+//
+//	@Column(name = "c_work_postal_code")
+//	private String workPostalCode;
 
 	@Column(name = "c_work_job")
 	private String workJob;
 
-	@Column(name = "c_work_telefax")
-	private String workTeleFax;
+//	@Column(name = "c_work_telefax")
+//	private String workTeleFax;
+//
+//	@Column(name = "c_work_webSite")
+//	private String workWebSite;
 
-	@Column(name = "c_work_webSite")
-	private String workWebSite;
-
-    @Column(name = "c_home_address")
-	private String homeAddress;
-
-    @Column(name = "c_home_phone")
-	private String homePhone;
-
-    @Column(name = "c_home_postal_code")
-	private String homePostalCode;
+//    @Column(name = "c_home_address")
+//	private String homeAddress;
+//
+//    @Column(name = "c_home_phone")
+//	private String homePhone;
+//
+//    @Column(name = "c_home_postal_code")
+//	private String homePostalCode;
 
     @Column(name = "c_attach_photo")
     private String attachPhoto;
@@ -114,4 +115,18 @@ public abstract class Person extends Auditable {
 
 	@Column(name = "c_gender")
 	private String eGenderTitleFa;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "f_contact_info", nullable = false, insertable = false, updatable = false)
+	private ContactInfo contactInfo;
+
+	@Column(name = "f_contact_info")
+	private Long contactInfoId;
+
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "f_account_info", nullable = false, insertable = false, updatable = false)
+	private AccountInfo accountInfo;
+
+	@Column(name = "f_account_info")
+	private Long accountInfoId;
 }

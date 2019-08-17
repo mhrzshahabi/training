@@ -4,16 +4,13 @@
 
 // <script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-
     var method = "POST";
-    var url = "${restApiUrl}/api/student";
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Student_JspStudent = isc.RestDataSource.create({
+    var RestDataSource_Student_JspStudent = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "studentID"},
@@ -23,17 +20,8 @@
             {name: "department"},
             {name: "license"},
             {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/student/spec-list"
+        ],
+        fetchDataURL: studentUrl + "spec-list"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -78,8 +66,8 @@
             title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
                 var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
+                    action: "<spring:url value="/student/printWithCriteria/excel"/>",
                     method: "POST",
-                    action: "/student/printWithCriteria/excel",
                     target: "_Blank",
                     canSubmit: true,
                     fields:
@@ -460,7 +448,7 @@
                             title: "<spring:message code='message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/student/" + record.id,
+                            actionURL: "rootUrl/student/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -523,7 +511,7 @@
             });
         } else {
             method = "PUT";
-            url = "${restApiUrl}/api/student/" + record.id;
+            url = "rootUrl/student/" + record.id;
             DynamicForm_Student_JspStudent.editRecord(record);
             Window_Student_JspStudent.show();
         }
@@ -535,7 +523,7 @@
 
     function ListGrid_student_add() {
         method = "POST";
-        url = "${restApiUrl}/api/student";
+        url = "rootUrl/student";
         DynamicForm_Student_JspStudent.clearValues();
         Window_Student_JspStudent.show();
     };

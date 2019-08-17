@@ -11,14 +11,17 @@
 <html>
 <head>
     <title>سیستم آموزش     </title>
+
     <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
+
     <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
+
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -43,8 +46,9 @@
 <script type="application/javascript">
 
     <%--<script>--%>
-    <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
+
 	<spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
+
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
@@ -52,8 +56,13 @@
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
-    const courseUrl = rootUrl + "/course/";
-    const categoryUrl = rootUrl+"/category/";
+    const teacherUrl = rootUrl + "/teacher/";
+    const studentUrl = rootUrl + "/student/";
+    const categoryUrl = rootUrl + "/category/";
+    const educationLevelUrl = rootUrl + "/educationLevel/";
+    const educationMajorUrl = rootUrl + "/educationMajor/";
+    const educationOrientationUrl = rootUrl + "/educationOrientation/";
+
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -532,7 +541,7 @@
         largeIcon: "pieces/512/student.png",
         orientation: "vertical",
         click: function () {
-            createTab("دانشجو", "/student/show-form", false)
+            createTab("دانشجو", "<spring:url value="/student/printWithCriteria/excel"/>", false)
         }
     });
 
@@ -544,18 +553,7 @@
         orientation: "vertical",
         click: function () {
 
-            createTab("<spring:message code="course"/>","<spring:url value="/course/show-form"/>", false);
-        }
-    });
-
-      var termButton = isc.IconButton.create({
-        title: "ترم",
-        icon: "pieces/512/course.png",
-        largeIcon: "pieces/512/term.png",
-        orientation: "vertical",
-        click: function () {
-
-            createTab("ترم","<spring:url value="/term/show-form"/>", false);
+            createTab("<spring:message code="course"/>", "/course/show-form", false);
         }
     });
 
@@ -595,7 +593,7 @@
         largeIcon: "pieces/512/category.png",
         orientation: "vertical",
         click: function () {
-            createTab("گروه بندي", "<spring:url value="/category/show-form"/>", false);
+            createTab("گروه بندي", "/category/show-form", false);
         }
     })
 
@@ -605,7 +603,7 @@
         largeIcon: "pieces/512/skill-level.png",
         orientation: "vertical",
         click: function () {
-            createTab("سطح مهارت",  "<spring:url value="/skill-level/show-form"/>", false);
+            createTab("سطح مهارت", "/skill-level/show-form", false);
         }
     })
 
@@ -615,7 +613,7 @@
         largeIcon: "pieces/512/skill.png",
         orientation: "vertical",
         click: function () {
-            createTab("مهارت",  "<spring:url value="/skill/show-form"/>", false)
+            createTab("مهارت", "/skill/show-form", false)
         }
     })
 
@@ -635,7 +633,7 @@
         largeIcon: "pieces/512/teacher.png",
         orientation: "vertical",
         click: function () {
-            createTab("استاد", "/teacher/show-form", false)
+            createTab("استاد", "<spring:url value="/teacher/show-form"/>", false)
         }
     })
 
@@ -714,7 +712,6 @@
         controls: [
             classButton,
             courseButton,
-            termButton,
             studentButton,
         ],
         autoDraw: true
@@ -815,7 +812,7 @@
 
                    ListGrid_Goal.fetchData();
                    ListGrid_Goal.invalidateCache();
-                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
+                   RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
                    ListGrid_Syllabus_Goal.fetchData();
                    ListGrid_Syllabus_Goal.invalidateCache();
 
@@ -828,7 +825,7 @@
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
+                        RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
                     }

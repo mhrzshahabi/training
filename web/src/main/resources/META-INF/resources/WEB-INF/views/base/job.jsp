@@ -643,6 +643,7 @@
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: "/job/printWithCriteria/" + type,
+
             target: "_Blank",
             canSubmit: true,
             fields:

@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,15 +22,15 @@ import javax.servlet.http.HttpServletRequest;
 public class StudentFormController {
     private final OAuth2AuthorizedClientService authorizedClientService;
 
-    @Value("${nicico.rest-api.url}")
-    private String restApiUrl;
+//    @Value("${pageContext.servletContext.contextPath}")
+    private String restApiUrl="localhost:8080/training";
 
     @RequestMapping("/show-form")
     public String showForm() {
         return "training/student";
     }
 
-     @PostMapping("/printWithCriteria/{type}")
+    @PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("token");
 
