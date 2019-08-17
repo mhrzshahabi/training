@@ -554,7 +554,7 @@
         orientation: "vertical",
         click: function () {
 
-            createTab("<spring:message code="course"/>", "/course/show-form", false);
+            createTab("<spring:message code="course"/>", "<spring:url value="/course/show-form"/>", false);
         }
     });
 
