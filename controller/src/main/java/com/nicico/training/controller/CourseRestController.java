@@ -39,7 +39,6 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/course")
 public class CourseRestController {
-
     private final HttpServletRequest request;
     private  final HttpServletResponse response;
     //------------------------------------------
@@ -50,14 +49,12 @@ public class CourseRestController {
     private final ObjectMapper objectMapper;
     private final EducationLicenseService educationLicenseService;
     // ---------------------------------
-
     @Loggable
     @GetMapping(value = "/{id}")
 	//@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<CourseDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(courseService.get(id), HttpStatus.OK);
     }
-
     @Loggable
     @GetMapping(value = "/list")
 //	@PreAuthorize("hasAuthority('r_course')")

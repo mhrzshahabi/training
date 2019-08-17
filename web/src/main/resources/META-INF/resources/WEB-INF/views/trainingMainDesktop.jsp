@@ -557,6 +557,18 @@
         }
     });
 
+    var termButton = isc.IconButton.create({
+        title: "ترم",
+        icon: "pieces/512/course.png",
+        largeIcon: "pieces/512/term.png",
+        orientation: "vertical",
+        click: function () {
+
+            createTab("ترم", "/term/show-form", false);
+        }
+    });
+
+
     var jobButton = isc.IconButton.create({
         title: "شغل",
         icon: "pieces/512/job.png",
@@ -712,6 +724,7 @@
         controls: [
             classButton,
             courseButton,
+            termButton,
             studentButton,
         ],
         autoDraw: true
