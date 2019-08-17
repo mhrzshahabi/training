@@ -58,6 +58,7 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
+    const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
     const educationLevelUrl = rootUrl + "/educationLevel/";
     const educationMajorUrl = rootUrl + "/educationMajor/";
