@@ -19,6 +19,7 @@ public class TrainingException extends NICICOException {
 		SkillStandardGroupNotFound(404),
 		CourseNotFound(404),
 		JobNotFound(404),
+
 		TeacherNotFound(404),
 		EquipmentNotFound(404),
 		CategoryNotFound(404),
@@ -37,8 +38,9 @@ public class TrainingException extends NICICOException {
 		AddressNotFound(404),
 		EducationOrientationNotFound(404),
 		EducationMajorNotFound(404),
-		EducationLevelNotFound(404), CountryNotFound(404);
-
+		EducationLevelNotFound(404),
+		CountryNotFound(404),
+		TermNotFound(404);
 		private final Integer httpStatusCode;
 
 		@Override

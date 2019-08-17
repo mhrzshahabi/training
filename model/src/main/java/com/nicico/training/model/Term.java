@@ -2,6 +2,7 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
 
@@ -14,7 +15,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_term", schema = "training")
 public class Term extends Auditable{
-  @Id
+    @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Term_seq")
     @SequenceGenerator(name = "Term_seq", sequenceName = "seq_Term_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
