@@ -6,8 +6,7 @@
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
-    var method = "POST";
-    var url = "${restApiUrl}/api/tclass";
+    var classMethod = "POST";
 
     var str1 = "";
     var str2 = "";

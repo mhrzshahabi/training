@@ -56,10 +56,14 @@
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
+    const courseUrl = rootUrl + "/course/";
+
+    const categoryUrl = rootUrl + "/category/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
-    const courseUrl = rootUrl + "/course/";
-    const categoryUrl = rootUrl + "/category/";
+    const classUrl = rootUrl + "/tclass/";
+    const classReportUrl = rootUrl + "/classReport/";
+    const instituteUrl = rootUrl + "/institute/";
     const educationLevelUrl = rootUrl + "/educationLevel/";
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
@@ -532,7 +536,7 @@
         largeIcon: "pieces/512/class.png",
         orientation: "vertical",
         click: function () {
-            createTab("کلاس", "/tclass/show-form", false)
+            createTab("کلاس", "<spring:url value="/tclass/show-form"/>", false)
         }
     });
 
@@ -586,7 +590,7 @@
         largeIcon: "pieces/512/institute.png",
         orientation: "vertical",
         click: function () {
-            createTab("مراکز آموزشي", "/institute/show-form", false);
+            createTab("مراکز آموزشي", "<spring:url value="/institute/show-form"/>", false);
         }
     })
 
@@ -651,12 +655,12 @@
     })
 
     var competencyReportButton = isc.IconButton.create({
-        title: "لیست شایستگی های شغل",
+        title: "گزارش کلاس ها",
         icon: "pieces/512/repo1.png",
         largeIcon: "pieces/512/repo1.png",
         orientation: "vertical",
         click: function () {
-            createTab("گزارش", "/teacher/show-form", false)
+            createTab("گزارش کلاس ها", "<spring:url value="/classReport/show-form"/>", false)
         }
     })
     var baseRibbon = isc.RibbonGroup.create({
