@@ -542,7 +542,7 @@
         largeIcon: "pieces/512/student.png",
         orientation: "vertical",
         click: function () {
-            createTab("دانشجو", "<spring:url value="/student/printWithCriteria/excel"/>", false)
+            createTab("دانشجو", "<spring:url value="/student/show-form"/>", false)
         }
     });
 

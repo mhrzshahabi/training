@@ -89,13 +89,21 @@
 				stopOnError: true,
 				errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
 			}]
-		}, {
-			name: "titleEn",
-			title: "نام لاتین ",
+		},
+{
+	name:"endDate",
+	title:"تاریخ پایان",
+	type:'text',
+hint: "تاریخ پایان/endDate",
+},
+{
+			name: "startDate",
+			title: "تاریخ شروع",
 			type: 'text',
-			keyPressFilter: "[a-z|A-Z|0-9 ]",
-			length: "20",
-			hint: "Latin",
+			//keyPressFilter: "[a-z|A-Z|0-9 ]",
+			//length: "20",
+			//hint: "Latin",
+hint: "تاریخ شروع/startDate",
 			validators: [{
 				type: "isString",
 				validateOnExit: true,
@@ -106,8 +114,8 @@
 				errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
 			}]
 		}, {
-			name: "duration",
-			title: "مدت زمان",
+			name: "description",
+			title: "توضیحات",
 			type: "text"
 		}
 
