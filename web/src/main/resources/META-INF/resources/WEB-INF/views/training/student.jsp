@@ -4,7 +4,8 @@
 
 // <script>
 
-    var method = "POST";
+    var studentMethod = "POST";
+    var studentWait;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -48,51 +49,15 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
-                var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "<spring:url value="/student/printWithCriteria/pdf"/>",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_student_print("pdf");
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
-                var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    action: "<spring:url value="/student/printWithCriteria/excel"/>",
-                    method: "POST",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_student_print("excel");
             }
         }, {
             title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
-                var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "<spring:url value="/student/printWithCriteria/html"/>",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_student_print("html");
             }
         }]
     });
@@ -253,43 +218,12 @@
             }
             var data = DynamicForm_Student_JspStudent.getValues();
 
-            isc.RPCManager.sendRequest({
-                actionURL: url,
-                httpMethod: method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        var OK = isc.Dialog.create({
-                            message: "<spring:message code='msg.operation.successful'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='msg.command.done'/>"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                            ListGrid_Student_JspStudent.setSelectedState(gridState);
-                        }, 1000);
-                        ListGrid_student_refresh();
-                        Window_Student_JspStudent.close();
-                    } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("<spring:message code='msg.operation.error'/>"),
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
-                    }
-
-                }
-            });
+            var studentSaveUrl = studentUrl;
+            if (studentMethod.localeCompare("PUT") == 0) {
+                var studentRecord = ListGrid_Student_JspStudent.getSelectedRecord();
+                studentSaveUrl += studentRecord.id;
+            }
+            isc.RPCManager.sendRequest(MyDsRequest(studentSaveUrl, studentMethod, JSON.stringify(data), "callback: student_action_result(rpcResponse)"));
         }
     });
 
@@ -368,19 +302,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/student/printWithCriteria/pdf"/>",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"}
-                    ]
-            });
-            criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-            criteriaForm.submitForm();
+            ListGrid_student_print("pdf");
         }
     });
 
@@ -442,54 +364,12 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        studentWait = isc.Dialog.create({
                             message: "<spring:message code='msg.waiting'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: "rootUrl/student/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Student_JspStudent.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='msg.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                }
-                                else if (resp.data == false) {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.student.remove.error'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                                 else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.failed'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+                        isc.RPCManager.sendRequest(MyDsRequest(studentUrl + record.id, "DELETE", null, "callback: student_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -510,8 +390,7 @@
                 }
             });
         } else {
-            method = "PUT";
-            url = "rootUrl/student/" + record.id;
+            studentMethod = "PUT";
             DynamicForm_Student_JspStudent.editRecord(record);
             Window_Student_JspStudent.show();
         }
@@ -522,8 +401,86 @@
     };
 
     function ListGrid_student_add() {
-        method = "POST";
-        url = "rootUrl/student";
+        studentMethod = "POST";
         DynamicForm_Student_JspStudent.clearValues();
         Window_Student_JspStudent.show();
+    };
+
+    function ListGrid_student_print(type) {
+        var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/student/printWithCriteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+    };
+
+    function student_action_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            var responseID = JSON.parse(resp.data).id;
+            var gridState = "[{id:" + responseID + "}]";
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.operation.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+                ListGrid_Student_JspStudent.setSelectedState(gridState);
+            }, 1000);
+            ListGrid_student_refresh();
+            Window_Student_JspStudent.close();
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.operation.error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+
+    };
+
+    function student_delete_result(resp) {
+        studentWait.close();
+        if (resp.httpResponseCode == 200) {
+            ListGrid_Student_JspStudent.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+        else if (resp.data == false) {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.student.remove.error'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+        else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.failed'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
     };
