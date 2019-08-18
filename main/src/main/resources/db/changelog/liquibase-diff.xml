@@ -1,0 +1,779 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-99">
+        <addColumn tableName="tbl_job">
+            <column name="titleFa" type="varchar2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-100">
+        <createIndex indexName="IX_null" tableName="tbl_skill_skillgroup" unique="true">
+            <column name="f_skillgroup_id"/>
+            <column name="f_skill_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_skillgroup_id, f_skill_id" forIndexName="IX_null" tableName="tbl_skill_skillgroup"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-101">
+        <createIndex indexName="IX_null" tableName="tbl_teacher_category" unique="true">
+            <column name="f_teacher"/>
+            <column name="f_category"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_teacher, f_category" forIndexName="IX_null" tableName="tbl_teacher_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-102">
+        <addUniqueConstraint columnNames="n_post_code" constraintName="UC_TBL_ADDRESSN_POST_CODE_COL" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-103">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_DEADLETTER_JOB" constraintName="ACT_FK_DJOB_EXCEPTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-104">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_DEADLETTER_JOB" constraintName="ACT_FK_DJOB_EXECUTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-105">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_DEADLETTER_JOB" constraintName="ACT_FK_DJOB_PROCESS_INSTANCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-106">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_DEADLETTER_JOB" constraintName="ACT_FK_DJOB_PROC_DEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-107">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_JOB" constraintName="ACT_FK_JOB_EXECUTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-108">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_JOB" constraintName="ACT_FK_JOB_PROCESS_INSTANCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-109">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_JOB" constraintName="ACT_FK_JOB_PROC_DEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-110">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_SUSPENDED_JOB" constraintName="ACT_FK_SJOB_EXCEPTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-111">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_SUSPENDED_JOB" constraintName="ACT_FK_SJOB_EXECUTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-112">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_SUSPENDED_JOB" constraintName="ACT_FK_SJOB_PROCESS_INSTANCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-113">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_SUSPENDED_JOB" constraintName="ACT_FK_SJOB_PROC_DEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-114">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_TIMER_JOB" constraintName="ACT_FK_TJOB_EXCEPTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-115">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_TIMER_JOB" constraintName="ACT_FK_TJOB_EXECUTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-116">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_TIMER_JOB" constraintName="ACT_FK_TJOB_PROCESS_INSTANCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-117">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_TIMER_JOB" constraintName="ACT_FK_TJOB_PROC_DEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-118">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD" constraintName="FK11NVNBG3SHI5Q4N3MX19B2UYU"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-119">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD_GROUP_SKILL_STANDARD" constraintName="FK5WHEPOCN6MT2W3A8DSUOMV7UY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-120">
+        <dropForeignKeyConstraint baseTableName="TBL_COMPETENCE_DOMAIN_TYPE" constraintName="FKAATIUF63PGA350XWU1UF9TW0K"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-121">
+        <dropForeignKeyConstraint baseTableName="TBL_STATE_BK" constraintName="FKAYS8ER033GSB4VP6LAUILJS0T"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-122">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD" constraintName="FKEE0NMCC4S0LPY368I86N3LYQ1"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-123">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD_GROUP_SKILL_STANDARD" constraintName="FKFENJMQQAJJ6R9391JGGC9MEUW"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-124">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD_COURSE" constraintName="FKGV5GBEIYT14WXW96N0KGVJ9YC"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-125">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_SUB_CATEGORY" constraintName="FKMUBJNGCXQUU3J0YLQ79AIDPPB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-126">
+        <dropForeignKeyConstraint baseTableName="TBL_SKILL_STANDARD_COURSE" constraintName="FKQ51KQMJHHMYGSY85S1PLVDLSA"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-127">
+        <dropUniqueConstraint constraintName="ACT_UNIQ_PROCDEF" tableName="ACT_RE_PROCDEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-128">
+        <dropUniqueConstraint constraintName="UK_2UXP5LCAP0BIM43KGIXA1PKHQ" tableName="TBL_PERSON"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-129">
+        <dropUniqueConstraint constraintName="UK_70KT87A5F6N2I26I156U3OIWB" tableName="TBL_AC_DATA_SOURCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-130">
+        <dropUniqueConstraint constraintName="UK_7Q56RWQAX5SWMN5SF6QOV4OPW" tableName="TBL_PERSON"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-131">
+        <dropUniqueConstraint constraintName="UK_DR69E0MTODGRMBMA4C8GUD2G" tableName="TBL_DATA_SOURCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-132">
+        <dropUniqueConstraint constraintName="UK_TIP4IJ11T3KSTXPH4ICYD9P9O" tableName="TBL_SKILL_STANDARD"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-133">
+        <dropUniqueConstraint constraintName="UK_TPY73OY9E7YU3W6G3U76BIXMJ" tableName="TBL_SKILL_CATEGORY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-134">
+        <dropTable tableName="ACT_EVT_LOG"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-135">
+        <dropTable tableName="ACT_GE_BYTEARRAY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-136">
+        <dropTable tableName="ACT_GE_PROPERTY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-137">
+        <dropTable tableName="ACT_HI_ACTINST"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-138">
+        <dropTable tableName="ACT_HI_ATTACHMENT"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-139">
+        <dropTable tableName="ACT_HI_COMMENT"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-140">
+        <dropTable tableName="ACT_HI_DETAIL"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-141">
+        <dropTable tableName="ACT_HI_IDENTITYLINK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-142">
+        <dropTable tableName="ACT_HI_PROCINST"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-143">
+        <dropTable tableName="ACT_HI_TASKINST"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-144">
+        <dropTable tableName="ACT_HI_VARINST"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-145">
+        <dropTable tableName="ACT_ID_GROUP"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-146">
+        <dropTable tableName="ACT_ID_INFO"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-147">
+        <dropTable tableName="ACT_ID_MEMBERSHIP"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-148">
+        <dropTable tableName="ACT_ID_USER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-149">
+        <dropTable tableName="ACT_PROCDEF_INFO"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-150">
+        <dropTable tableName="ACT_RE_DEPLOYMENT"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-151">
+        <dropTable tableName="ACT_RE_MODEL"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-152">
+        <dropTable tableName="ACT_RE_PROCDEF"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-153">
+        <dropTable tableName="ACT_RU_DEADLETTER_JOB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-154">
+        <dropTable tableName="ACT_RU_EVENT_SUBSCR"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-155">
+        <dropTable tableName="ACT_RU_EXECUTION"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-156">
+        <dropTable tableName="ACT_RU_IDENTITYLINK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-157">
+        <dropTable tableName="ACT_RU_JOB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-158">
+        <dropTable tableName="ACT_RU_SUSPENDED_JOB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-159">
+        <dropTable tableName="ACT_RU_TASK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-160">
+        <dropTable tableName="ACT_RU_TIMER_JOB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-161">
+        <dropTable tableName="ACT_RU_VARIABLE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-162">
+        <dropTable tableName="TBL_AC_DATA_SOURCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-163">
+        <dropTable tableName="TBL_CITY_BK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-164">
+        <dropTable tableName="TBL_COMPETENCE_DOMAIN_TYPE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-165">
+        <dropTable tableName="TBL_COUNTRY_BK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-166">
+        <dropTable tableName="TBL_DATA_SOURCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-167">
+        <dropTable tableName="TBL_OA_USER_DETAIL"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-168">
+        <dropTable tableName="TBL_PERSON"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-169">
+        <dropTable tableName="TBL_SKILL_CATEGORY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-170">
+        <dropTable tableName="TBL_SKILL_STANDARD"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-171">
+        <dropTable tableName="TBL_SKILL_STANDARD_COURSE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-172">
+        <dropTable tableName="TBL_SKILL_STANDARD_GROUP"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-173">
+        <dropTable tableName="TBL_SKILL_STANDARD_GROUP_SKILL_STANDARD"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-174">
+        <dropTable tableName="TBL_SKILL_SUB_CATEGORY"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-175">
+        <dropTable tableName="TBL_STATE_BK"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-176">
+        <dropPrimaryKey constraintName="SYS_C0018231" tableName="TBL_COURSE_GOAL"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-177">
+        <dropColumn columnName="C_EMAIL" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-178">
+        <dropColumn columnName="C_HOME_ADDRESS" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-179">
+        <dropColumn columnName="C_HOME_PHONE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-180">
+        <dropColumn columnName="C_HOME_POSTAL_CODE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-181">
+        <dropColumn columnName="C_MOBILE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-182">
+        <dropColumn columnName="C_PERSONAL_WEB_SITE" tableName="TBL_CONTACT_INFO"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-183">
+        <dropColumn columnName="C_POSTAL_CODE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-184">
+        <dropColumn columnName="C_WORK_ADDRESS" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-185">
+        <dropColumn columnName="C_WORK_PHONE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-186">
+        <dropColumn columnName="C_WORK_POSTAL_CODE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-187">
+        <dropColumn columnName="C_WORK_TELEFAX" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-188">
+        <dropColumn columnName="C_WORK_WEBSITE" tableName="TBL_TEACHER"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-189">
+        <dropColumn columnName="TITLE_EN" tableName="TBL_COMPETENCE"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-190">
+        <dropColumn columnName="TITLE_EN" tableName="TBL_JOB"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-191">
+        <dropSequence sequenceName="SEQ_OA_USER_DETAIL_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-192">
+        <dropSequence sequenceName="SEQ_OA_USER_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-193">
+        <dropSequence sequenceName="SEQ_PERSON_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-194">
+        <dropSequence sequenceName="SEQ_SKILL_CATEGORY_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-195">
+        <dropSequence sequenceName="SEQ_SKILL_STANDARD_GROUP_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-196">
+        <dropSequence sequenceName="SEQ_SKILL_STANDARD_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-197">
+        <dropSequence sequenceName="SEQ_SKILL_SUB_CATEGORY_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-198">
+        <dropSequence sequenceName="SEQ_SKILL_WORK_GROUP_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-199">
+        <dropSequence sequenceName="SEQ_SKILL_WORK_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-200">
+        <dropSequence sequenceName="SEQ_SUB_CATEGORY_ID"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-1">
+        <dropForeignKeyConstraint baseTableName="tbl_course_goal" constraintName="FK1fv4j3f1368flv0fe2q0ilqcx"/>
+        <addForeignKeyConstraint baseColumnNames="f_goal_id" baseTableName="tbl_course_goal" constraintName="FK1fv4j3f1368flv0fe2q0ilqcx" referencedColumnNames="id" referencedTableName="tbl_goal"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-2">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16"/>
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16" referencedColumnNames="id" referencedTableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-3">
+        <dropForeignKeyConstraint baseTableName="tbl_skill" constraintName="FK2tgy9vvd3wc7ilbmidqkxu48x"/>
+        <addForeignKeyConstraint baseColumnNames="f_sub_category" baseTableName="tbl_skill" constraintName="FK2tgy9vvd3wc7ilbmidqkxu48x" referencedColumnNames="id" referencedTableName="tbl_sub_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-4">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x"/>
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x" referencedColumnNames="id" referencedTableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-5">
+        <dropForeignKeyConstraint baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1"/>
+        <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" referencedColumnNames="id" referencedTableName="tbl_education_major"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-6">
+        <dropForeignKeyConstraint baseTableName="tbl_institute_teacher" constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y"/>
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_teacher" constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y" referencedColumnNames="id" referencedTableName="tbl_institute"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-7">
+        <dropForeignKeyConstraint baseTableName="tbl_course_goal" constraintName="FK49yjb7t4oqw4fv5mntplb7ppm"/>
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_course_goal" constraintName="FK49yjb7t4oqw4fv5mntplb7ppm" referencedColumnNames="id" referencedTableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-8">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher" constraintName="FK5rjcxyruo8d7vru4m2d5h4qt3"/>
+        <addForeignKeyConstraint baseColumnNames="f_edu_orientation" baseTableName="tbl_teacher" constraintName="FK5rjcxyruo8d7vru4m2d5h4qt3" referencedColumnNames="id" referencedTableName="tbl_education_orientation"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-9">
+        <dropForeignKeyConstraint baseTableName="tbl_competence_skill" constraintName="FK5ufxj6humic0g21opg3o56qmb"/>
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_competence_skill" constraintName="FK5ufxj6humic0g21opg3o56qmb" referencedColumnNames="id" referencedTableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-10">
+        <dropForeignKeyConstraint baseTableName="tbl_city" constraintName="FK796uthe94t6y9cd71cq0yiy74"/>
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_city" constraintName="FK796uthe94t6y9cd71cq0yiy74" referencedColumnNames="id" referencedTableName="tbl_state"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-11">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher" constraintName="FK7dpmr5reh4nt875lvj2a89b0e"/>
+        <addForeignKeyConstraint baseColumnNames="f_account_info" baseTableName="tbl_teacher" constraintName="FK7dpmr5reh4nt875lvj2a89b0e" referencedColumnNames="id" referencedTableName="tbl_acoount_info"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-12">
+        <dropForeignKeyConstraint baseTableName="tbl_contact_info" constraintName="FK7hpk92bs7p1peunblhmvscsqk"/>
+        <addForeignKeyConstraint baseColumnNames="f_work_address" baseTableName="tbl_contact_info" constraintName="FK7hpk92bs7p1peunblhmvscsqk" referencedColumnNames="id" referencedTableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-13">
+        <dropForeignKeyConstraint baseTableName="tbl_competence_skill_group" constraintName="FK7qvvhhpysgtt6ah5pdxuo2hjm"/>
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_competence_skill_group" constraintName="FK7qvvhhpysgtt6ah5pdxuo2hjm" referencedColumnNames="id" referencedTableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-14">
+        <dropForeignKeyConstraint baseTableName="tbl_contact_info" constraintName="FK8iu907lh4cia8b3oxdr94juxy"/>
+        <addForeignKeyConstraint baseColumnNames="f_home_address" baseTableName="tbl_contact_info" constraintName="FK8iu907lh4cia8b3oxdr94juxy" referencedColumnNames="id" referencedTableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-15">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher_category" constraintName="FK9i5416d4h83ib79admhqqo62n"/>
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_category" constraintName="FK9i5416d4h83ib79admhqqo62n" referencedColumnNames="id" referencedTableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-16">
+        <dropForeignKeyConstraint baseTableName="tbl_pre_course" constraintName="FKa2hiukejbuduoe9odkn2741ky"/>
+        <addForeignKeyConstraint baseColumnNames="f_pre_course" baseTableName="tbl_pre_course" constraintName="FKa2hiukejbuduoe9odkn2741ky" referencedColumnNames="id" referencedTableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-17">
+        <dropForeignKeyConstraint baseTableName="tbl_competence_skill_group" constraintName="FKbo4reuew9xfmenaau57dy10oy"/>
+        <addForeignKeyConstraint baseColumnNames="f_skill_group_id" baseTableName="tbl_competence_skill_group" constraintName="FKbo4reuew9xfmenaau57dy10oy" referencedColumnNames="id" referencedTableName="tbl_skill_group"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-18">
+        <dropForeignKeyConstraint baseTableName="tbl_skill" constraintName="FKd2e04ftpfpvvlwfo90osfvtat"/>
+        <addForeignKeyConstraint baseColumnNames="f_skill_level" baseTableName="tbl_skill" constraintName="FKd2e04ftpfpvvlwfo90osfvtat" referencedColumnNames="id" referencedTableName="tbl_skill_level"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-19">
+        <dropForeignKeyConstraint baseTableName="tbl_competence_skill" constraintName="FKenyjin05qr2d00y9c7veo51o"/>
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_competence_skill" constraintName="FKenyjin05qr2d00y9c7veo51o" referencedColumnNames="id" referencedTableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-20">
+        <dropForeignKeyConstraint baseTableName="tbl_student_class" constraintName="FKfiyhqj7fkycfycxc1t1kl6ekb"/>
+        <addForeignKeyConstraint baseColumnNames="f_student" baseTableName="tbl_student_class" constraintName="FKfiyhqj7fkycfycxc1t1kl6ekb" referencedColumnNames="id" referencedTableName="tbl_student"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-21">
+        <dropForeignKeyConstraint baseTableName="tbl_sub_category" constraintName="FKgeij774xqyfccuqeobdcs8vm5"/>
+        <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_sub_category" constraintName="FKgeij774xqyfccuqeobdcs8vm5" referencedColumnNames="id" referencedTableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-22">
+        <dropForeignKeyConstraint baseTableName="tbl_institute_teacher" constraintName="FKgmqk8uu4bfjf7yrswb4sp0f5f"/>
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_institute_teacher" constraintName="FKgmqk8uu4bfjf7yrswb4sp0f5f" referencedColumnNames="id" referencedTableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-23">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher" constraintName="FKgvpofpjf2e4sjeo7pl3yb9qii"/>
+        <addForeignKeyConstraint baseColumnNames="f_edu_major" baseTableName="tbl_teacher" constraintName="FKgvpofpjf2e4sjeo7pl3yb9qii" referencedColumnNames="id" referencedTableName="tbl_education_major"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-24">
+        <dropForeignKeyConstraint baseTableName="tbl_skill_skillgroup" constraintName="FKh9adhaxe5ap8m3hn4rn3bc8u7"/>
+        <addForeignKeyConstraint baseColumnNames="f_skillgroup_id" baseTableName="tbl_skill_skillgroup" constraintName="FKh9adhaxe5ap8m3hn4rn3bc8u7" referencedColumnNames="id" referencedTableName="tbl_skill_group"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-25">
+        <dropForeignKeyConstraint baseTableName="tbl_skill_course" constraintName="FKinyh244r4fyiejiantef0dvva"/>
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_skill_course" constraintName="FKinyh244r4fyiejiantef0dvva" referencedColumnNames="id" referencedTableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-26">
+        <dropForeignKeyConstraint baseTableName="tbl_job_competence" constraintName="FKiqcgyreceg3jsp1p0u89agknh"/>
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_job_competence" constraintName="FKiqcgyreceg3jsp1p0u89agknh" referencedColumnNames="id" referencedTableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-27">
+        <dropForeignKeyConstraint baseTableName="tbl_skill_skillgroup" constraintName="FKjk6fq86fr0rsnxghkain906ef"/>
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_skillgroup" constraintName="FKjk6fq86fr0rsnxghkain906ef" referencedColumnNames="id" referencedTableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-28">
+        <dropForeignKeyConstraint baseTableName="tbl_skill_course" constraintName="FKk5fy44bd4a6gd5dtbbretckwo"/>
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_course" constraintName="FKk5fy44bd4a6gd5dtbbretckwo" referencedColumnNames="id" referencedTableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-29">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher" constraintName="FKl9jbromsykwpluwtf50jsi2wk"/>
+        <addForeignKeyConstraint baseColumnNames="f_contact_info" baseTableName="tbl_teacher" constraintName="FKl9jbromsykwpluwtf50jsi2wk" referencedColumnNames="id" referencedTableName="tbl_contact_info"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-30">
+        <dropForeignKeyConstraint baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k"/>
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" referencedColumnNames="id" referencedTableName="tbl_city"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-31">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FKm6x5pso1g2egu20vd6l4m3481"/>
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_class" constraintName="FKm6x5pso1g2egu20vd6l4m3481" referencedColumnNames="id" referencedTableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-32">
+        <dropForeignKeyConstraint baseTableName="tbl_syllabus" constraintName="FKoc0lv4at1b523lhu427t4c014"/>
+        <addForeignKeyConstraint baseColumnNames="f_goal" baseTableName="tbl_syllabus" constraintName="FKoc0lv4at1b523lhu427t4c014" referencedColumnNames="id" referencedTableName="tbl_goal"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-33">
+        <dropForeignKeyConstraint baseTableName="tbl_skill" constraintName="FKpbkr700j7d90r5qx8dyjjtyf5"/>
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_skill" constraintName="FKpbkr700j7d90r5qx8dyjjtyf5" referencedColumnNames="id" referencedTableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-34">
+        <dropForeignKeyConstraint baseTableName="tbl_student_class" constraintName="FKpw8xm78sw3q0xti3okmpjjfw9"/>
+        <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_student_class" constraintName="FKpw8xm78sw3q0xti3okmpjjfw9" referencedColumnNames="id" referencedTableName="tbl_class"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-35">
+        <dropForeignKeyConstraint baseTableName="tbl_course" constraintName="FKr8meube4urptptaplv55hvac7"/>
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="tbl_course" constraintName="FKr8meube4urptptaplv55hvac7" referencedColumnNames="id" referencedTableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-36">
+        <dropForeignKeyConstraint baseTableName="tbl_job_competence" constraintName="FKs06v4ro1k380not1iddx10ucs"/>
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_job_competence" constraintName="FKs06v4ro1k380not1iddx10ucs" referencedColumnNames="id" referencedTableName="tbl_job"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-37">
+        <dropForeignKeyConstraint baseTableName="tbl_course" constraintName="FKs48kdjo8ol5303e1vqm195m84"/>
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_course" constraintName="FKs48kdjo8ol5303e1vqm195m84" referencedColumnNames="id" referencedTableName="tbl_sub_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-38">
+        <dropForeignKeyConstraint baseTableName="tbl_teacher" constraintName="FKthixnnbrntlej80pub6ebq8s6"/>
+        <addForeignKeyConstraint baseColumnNames="f_edu_level" baseTableName="tbl_teacher" constraintName="FKthixnnbrntlej80pub6ebq8s6" referencedColumnNames="id" referencedTableName="tbl_education_level"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-39">
+        <alterSequence sequenceName="seq_Course_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-40">
+        <alterSequence sequenceName="seq_Equipment_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-41">
+        <alterSequence sequenceName="seq_Term_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-42">
+        <alterSequence sequenceName="seq_account_info_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-43">
+        <alterSequence sequenceName="seq_address_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-44">
+        <alterSequence sequenceName="seq_category_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-45">
+        <alterSequence sequenceName="seq_class_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-46">
+        <alterSequence sequenceName="seq_competence_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-47">
+        <alterSequence sequenceName="seq_contact_info_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-48">
+        <alterSequence sequenceName="seq_country_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-49">
+        <alterSequence sequenceName="seq_education_level_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-50">
+        <alterSequence sequenceName="seq_education_license_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-51">
+        <alterSequence sequenceName="seq_education_major_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-52">
+        <alterSequence sequenceName="seq_education_orientation_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-53">
+        <alterSequence sequenceName="seq_goal_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-54">
+        <alterSequence sequenceName="seq_institute_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-55">
+        <alterSequence sequenceName="seq_job_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-56">
+        <alterSequence sequenceName="seq_pre_course_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-57">
+        <alterSequence sequenceName="seq_skill_group_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-58">
+        <alterSequence sequenceName="seq_skill_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-59">
+        <alterSequence sequenceName="seq_skill_level_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-60">
+        <alterSequence sequenceName="seq_skill_type_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-61">
+        <alterSequence sequenceName="seq_student_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-62">
+        <alterSequence sequenceName="seq_syllabus_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-63">
+        <alterSequence sequenceName="seq_teacher_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-64">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="n_post_code" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-65">
+        <dropUniqueConstraint constraintName="UC_TBL_CATEGORYC_CODE_COL" tableName="tbl_category"/>
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_CATEGORYC_CODE_COL" tableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-66">
+        <dropUniqueConstraint constraintName="UC_TBL_SKILLC_CODE_COL" tableName="tbl_skill"/>
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SKILLC_CODE_COL" tableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-67">
+        <dropUniqueConstraint constraintName="UC_TBL_SUB_CATEGORYC_CODE_COL" tableName="tbl_sub_category"/>
+        <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_SUB_CATEGORYC_CODE_COL" tableName="tbl_sub_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-68">
+        <dropUniqueConstraint constraintName="UC_TBL_TEACHERC_NATIONAL_CODE_COL" tableName="tbl_teacher"/>
+        <addUniqueConstraint columnNames="c_national_code" constraintName="UC_TBL_TEACHERC_NATIONAL_CODE_COL" tableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-69">
+        <dropUniqueConstraint constraintName="UC_TBL_TEACHERC_TEACHER_CODE_COL" tableName="tbl_teacher"/>
+        <addUniqueConstraint columnNames="c_teacher_code" constraintName="UC_TBL_TEACHERC_TEACHER_CODE_COL" tableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-70">
+        <dropPrimaryKey tableName="tbl_competence_skill"/>
+        <createIndex indexName="IX_null" tableName="tbl_competence_skill" unique="true">
+            <column name="f_competence_id"/>
+            <column name="f_skill_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_competence_id, f_skill_id" forIndexName="IX_null" tableName="tbl_competence_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-71">
+        <dropPrimaryKey tableName="tbl_competence_skill_group"/>
+        <createIndex indexName="IX_null" tableName="tbl_competence_skill_group" unique="true">
+            <column name="f_competence_id"/>
+            <column name="f_skill_group_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_competence_id, f_skill_group_id" forIndexName="IX_null" tableName="tbl_competence_skill_group"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-72">
+        <dropPrimaryKey tableName="tbl_institute_teacher"/>
+        <createIndex indexName="IX_null" tableName="tbl_institute_teacher" unique="true">
+            <column name="f_institute"/>
+            <column name="f_teacher"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_institute, f_teacher" forIndexName="IX_null" tableName="tbl_institute_teacher"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-73">
+        <dropPrimaryKey tableName="tbl_skill_course"/>
+        <createIndex indexName="IX_null" tableName="tbl_skill_course" unique="true">
+            <column name="f_skill_id"/>
+            <column name="f_course_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_skill_id, f_course_id" forIndexName="IX_null" tableName="tbl_skill_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-74">
+        <dropPrimaryKey tableName="tbl_address"/>
+        <createIndex indexName="IX_tbl_addressPK" tableName="tbl_address" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_addressPK" forIndexName="IX_tbl_addressPK" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-75">
+        <dropPrimaryKey tableName="tbl_category"/>
+        <createIndex indexName="IX_tbl_categoryPK" tableName="tbl_category" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_categoryPK" forIndexName="IX_tbl_categoryPK" tableName="tbl_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-76">
+        <dropPrimaryKey tableName="tbl_city"/>
+        <createIndex indexName="IX_tbl_cityPK" tableName="tbl_city" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_cityPK" forIndexName="IX_tbl_cityPK" tableName="tbl_city"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-77">
+        <dropPrimaryKey tableName="tbl_class"/>
+        <createIndex indexName="IX_tbl_classPK" tableName="tbl_class" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_classPK" forIndexName="IX_tbl_classPK" tableName="tbl_class"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-78">
+        <dropPrimaryKey tableName="tbl_competence"/>
+        <createIndex indexName="IX_tbl_competencePK" tableName="tbl_competence" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_competencePK" forIndexName="IX_tbl_competencePK" tableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-79">
+        <dropPrimaryKey tableName="tbl_country"/>
+        <createIndex indexName="IX_tbl_countryPK" tableName="tbl_country" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_countryPK" forIndexName="IX_tbl_countryPK" tableName="tbl_country"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-80">
+        <dropPrimaryKey tableName="tbl_course"/>
+        <createIndex indexName="IX_tbl_coursePK" tableName="tbl_course" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_coursePK" forIndexName="IX_tbl_coursePK" tableName="tbl_course"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-81">
+        <dropPrimaryKey tableName="tbl_education_level"/>
+        <createIndex indexName="IX_tbl_education_levelPK" tableName="tbl_education_level" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_education_levelPK" forIndexName="IX_tbl_education_levelPK" tableName="tbl_education_level"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-82">
+        <dropPrimaryKey tableName="tbl_education_license"/>
+        <createIndex indexName="IX_tbl_education_licensePK" tableName="tbl_education_license" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_education_licensePK" forIndexName="IX_tbl_education_licensePK" tableName="tbl_education_license"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-83">
+        <dropPrimaryKey tableName="tbl_education_major"/>
+        <createIndex indexName="IX_tbl_education_majorPK" tableName="tbl_education_major" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_education_majorPK" forIndexName="IX_tbl_education_majorPK" tableName="tbl_education_major"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-84">
+        <dropPrimaryKey tableName="tbl_education_orientation"/>
+        <createIndex indexName="IX_tbl_education_orientationPK" tableName="tbl_education_orientation" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_education_orientationPK" forIndexName="IX_tbl_education_orientationPK" tableName="tbl_education_orientation"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-85">
+        <dropPrimaryKey tableName="tbl_equipment"/>
+        <createIndex indexName="IX_tbl_equipmentPK" tableName="tbl_equipment" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_equipmentPK" forIndexName="IX_tbl_equipmentPK" tableName="tbl_equipment"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-86">
+        <dropPrimaryKey tableName="tbl_goal"/>
+        <createIndex indexName="IX_tbl_goalPK" tableName="tbl_goal" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_goalPK" forIndexName="IX_tbl_goalPK" tableName="tbl_goal"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-87">
+        <dropPrimaryKey tableName="tbl_institute"/>
+        <createIndex indexName="IX_tbl_institutePK" tableName="tbl_institute" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_institutePK" forIndexName="IX_tbl_institutePK" tableName="tbl_institute"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-88">
+        <dropPrimaryKey tableName="tbl_job"/>
+        <createIndex indexName="IX_tbl_jobPK" tableName="tbl_job" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_jobPK" forIndexName="IX_tbl_jobPK" tableName="tbl_job"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-89">
+        <dropPrimaryKey tableName="tbl_job_competence"/>
+        <createIndex indexName="IX_tbl_job_competencePK" tableName="tbl_job_competence" unique="true">
+            <column name="f_competence_id"/>
+            <column name="f_job_id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_competence_id, f_job_id" constraintName="tbl_job_competencePK" forIndexName="IX_tbl_job_competencePK" tableName="tbl_job_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-90">
+        <dropPrimaryKey tableName="tbl_skill"/>
+        <createIndex indexName="IX_tbl_skillPK" tableName="tbl_skill" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_skillPK" forIndexName="IX_tbl_skillPK" tableName="tbl_skill"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-91">
+        <dropPrimaryKey tableName="tbl_skill_group"/>
+        <createIndex indexName="IX_tbl_skill_groupPK" tableName="tbl_skill_group" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_skill_groupPK" forIndexName="IX_tbl_skill_groupPK" tableName="tbl_skill_group"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-92">
+        <dropPrimaryKey tableName="tbl_skill_level"/>
+        <createIndex indexName="IX_tbl_skill_levelPK" tableName="tbl_skill_level" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_skill_levelPK" forIndexName="IX_tbl_skill_levelPK" tableName="tbl_skill_level"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-93">
+        <dropPrimaryKey tableName="tbl_skill_type"/>
+        <createIndex indexName="IX_tbl_skill_typePK" tableName="tbl_skill_type" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_skill_typePK" forIndexName="IX_tbl_skill_typePK" tableName="tbl_skill_type"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-94">
+        <dropPrimaryKey tableName="tbl_state"/>
+        <createIndex indexName="IX_tbl_statePK" tableName="tbl_state" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_statePK" forIndexName="IX_tbl_statePK" tableName="tbl_state"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-95">
+        <dropPrimaryKey tableName="tbl_student"/>
+        <createIndex indexName="IX_tbl_studentPK" tableName="tbl_student" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_studentPK" forIndexName="IX_tbl_studentPK" tableName="tbl_student"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-96">
+        <dropPrimaryKey tableName="tbl_sub_category"/>
+        <createIndex indexName="IX_tbl_sub_categoryPK" tableName="tbl_sub_category" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_sub_categoryPK" forIndexName="IX_tbl_sub_categoryPK" tableName="tbl_sub_category"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-97">
+        <dropPrimaryKey tableName="tbl_syllabus"/>
+        <createIndex indexName="IX_tbl_syllabusPK" tableName="tbl_syllabus" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_syllabusPK" forIndexName="IX_tbl_syllabusPK" tableName="tbl_syllabus"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1566104808669-98">
+        <dropPrimaryKey tableName="tbl_teacher"/>
+        <createIndex indexName="IX_tbl_teacherPK" tableName="tbl_teacher" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_teacherPK" forIndexName="IX_tbl_teacherPK" tableName="tbl_teacher"/>
+    </changeSet>
+</databaseChangeLog>
