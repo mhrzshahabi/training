@@ -5,9 +5,10 @@
 //<script>
 
 	 <spring:eval var="restApiUrl" expression="pageContext.servletContext.contextPath" />
- 	var course_method = "POST";
-	var course_url = "${restApiUrl}/api/course";
-
+ 	var term_method = "POST";
+	var term_url = "${restApiUrl}/api/course";
+	 var startDateCheckTerm = true;
+    var endDateCheckTerm = true;
  //************************************************************************************
     // RestDataSource & ListGrid
  //************************************************************************************
@@ -83,9 +84,9 @@
                 name: "startDate",
                 title: "تاریخ شروع",
                 ID: "startDate_jspTerm",
-                type: 'text',
+                type: 'text', required: true,
                 hint: "YYYY/MM/DD",
-                keyPressFilter: "[0-9/]",
+                keyPressFilter:"[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
@@ -99,19 +100,58 @@
                 }],
                 blur: function () {
                     var dateCheck = false;
-                    dateCheck = checkBirthDate(DynamicForm_Term.getValue("startDate"));
-                    persianDateCheck = dateCheck;
+                    dateCheck = checkDate(DynamicForm_Term.getValue("startDate"));
+                    startDateCheckTerm = dateCheck;
                     if (dateCheck == false)
                         DynamicForm_Term.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     if (dateCheck == true)
-                        DynamicForm_Term.clearFieldErrors("startDate", true);
+                       DynamicForm_Term.clearFieldErrors("startDate", true);
                 }
             },
-		{
-	name:"endDate",
-	title:"تاریخ پایان",
-	type:'text'
-},
+		 {
+                name: "endDate",
+                title: "تاریخ پایان",
+                ID: "endDate_jspTerm",
+                type: 'text', required: true,
+                hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
+                showHintInField: true,
+                focus: function () {
+                    displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                },
+                icons: [{
+                    src: "pieces/pcal.png",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                    }
+                }],
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_Term.getValue("endDate"));
+                    var endDate = DynamicForm_Term.getValue("endDate");
+                    var startDate = DynamicForm_Term.getValue("startDate");
+                    if (dateCheck == false){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                            endDateCheckTerm = false;
+                        }
+                    if (dateCheck == true){
+                        if(startDate == undefined)
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                        if(startDate != undefined && startDate > endDate){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                            endDateCheckTerm = false;
+                        }
+                        if(startDate != undefined && startDate < endDate){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            endDateCheckTerm = true;
+                        }
+                       }
+                }
+
+            },
 		 {
 			name: "description",
 			title: "توضیحات",
@@ -132,8 +172,8 @@
 			var data = DynamicForm_Term.getValues();
 
 			isc.RPCManager.sendRequest({
-				actionURL: course_url,
-				httpMethod: course_method,
+				actionURL: term_url,
+				httpMethod: term_method,
 				httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
 				useSimpleHttp: true,
 				contentType: "application/json; charset=utf-8",
@@ -230,8 +270,8 @@
 		icon: "[SKIN]/actions/add.png",
 		title: "ایجاد",
 		click: function () {
-			course_method = "POST";
-			course_url = "${restApiUrl}/api/course";
+			term_method = "POST";
+			term_url = "${restApiUrl}/api/course";
 			DynamicForm_Term.clearValues();
 			Windows_Term.show();
 
@@ -321,8 +361,8 @@
 				}
 			});
 		} else {
-			course_method = "PUT";
-			course_url = "${restApiUrl}/api/course/" + record.id;
+			term_method = "PUT";
+			term_url = "${restApiUrl}/api/course/" + record.id;
 			DynamicForm_Term.editRecord(record);
 			Windows_Term.show();
 		}
