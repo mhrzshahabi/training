@@ -7,6 +7,9 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 //<script>
+
+    var testData = [];
+
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";
@@ -185,6 +188,7 @@
             }]
     });
     var ListGrid_Course = isc.MyListGrid.create({
+        ID: "gridCourse",
         dataSource: "courseDS",
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
@@ -298,30 +302,6 @@
         allowFilterExpressions: true,
         filterOnKeypress: true,
     });
-    <%--var ListGrid_CourseGoal = isc.MyListGrid.create({--%>
-
-        <%--dataSource: RestDataSource_CourseGoal,--%>
-        <%--doubleClick: function () {--%>
-        <%--},--%>
-        <%--fields: [--%>
-            <%--{name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},--%>
-            <%--{name: "titleFa", title: "<spring:message code="course_fa_name"/>", align: "center"},--%>
-            <%--{name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},--%>
-            <%--{name: "version", title: "version", canEdit: false, hidden: true}--%>
-        <%--],--%>
-        <%--selectionType: "single",--%>
-        <%--recordClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {--%>
-            <%--RestDataSource_Syllabus.fetchDataURL = goalUrl + record.id + "/syllabus";--%>
-            <%--ListGrid_CourseSyllabus.fetchData();--%>
-            <%--ListGrid_CourseSyllabus.invalidateCache();--%>
-        <%--},--%>
-        <%--sortField: 1,--%>
-        <%--showFilterEditor: true,--%>
-        <%--allowAdvancedCriteria: true,--%>
-        <%--allowFilterExpressions: true,--%>
-        <%--filterOnKeypress: true,--%>
-        <%--autoFetchData: false,--%>
-    <%--});--%>
     var ListGrid_CourseSkill = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseSkill,
         fields: [
@@ -455,6 +435,52 @@
         width: "100%",
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
     });
+
+
+    isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
+    isc.ListGridItem.addProperties({
+        height:"*", width:"*",
+        rowSpan:"*", endRow:true, startRow:true,
+
+        // this is going to be an editable data item
+        shouldSaveValue:true,
+
+        // Implement 'createCanvas' to build a ListGrid from which the user may
+        // select items.
+        createCanvas : function () {
+            return isc.ListGrid.create({
+                autoDraw:false,
+                // fill the space the form allocates to the item
+                width:this.width, height:this.height,
+                leaveScrollbarGaps:false,
+                // dataSource and fields to use, provided to a listGridItem as
+                // listGridItem.gridDataSource and optional gridFields
+                dataSource:this.gridDataSource,
+                fields:this.gridFields,
+                autoFetchData:true,
+                dataArrived : function () {
+                    this.canvasItem.showValue(null, this.canvasItem.getValue());
+                },
+                selectionUpdated : function (record) {
+                    var item = this.canvasItem;
+                    if (record == null) item.storeValue(null);
+                    else item.storeValue(record[item.name]);
+                }
+            });
+        },
+
+        // implement showValue to update the ListGrid selection
+        showValue : function (displayValue, dataValue) {
+            if (this.canvas == null) return;
+            var record = this.canvas.data.find(this.name, dataValue);
+            if (record) this.canvas.selection.selectSingle(record)
+            else this.canvas.selection.deselectAll();
+        }
+    });
+
+
+
+
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
         colWidths: [60, "*"],
@@ -699,21 +725,23 @@
             {
                 name: "description",
                 type: "textArea",
-                colSpan: 6,
+                colSpan: 3,
                 height: "50",
+                titleOrientation: "top",
                 title: "<spring:message code="course_description"/>",
-                width: "500",
+                width: "600",
                 length: 5000,
 
             },
             {
                 name: "mainObjective",
+                titleOrientation: "top",
                 title: "<spring:message code="course_mainObjective"/>",
-                colSpan: 6,
+                colSpan: 3,
                 readonly: true,
                 type: "textArea",
-                height: "70",
-                width: "500",
+                height: "50",
+                width: "650",
                 length: "500",
                 required: true,
 
@@ -780,8 +808,23 @@
                     errorMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",
                 }]
             },
+            {
+                defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
+                itemIds: ["countryName"]
+            },
+            {name:"countryName",
+                title:"Home Country",
+                editorType:"ListGridItem",
+                height: "300",
+                gridDataSource:"courseDS",
+                gridFields:[ {name:"titleFa"}],
+                hidden: false
+            }
+
         ],
     });
+
+
     var IButton_course_Save = isc.IButton.create({
         title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -889,6 +932,152 @@
             }
         })]
     });
+
+
+    isc.DataSource.create({
+        ID:"preCourseDS",
+        clientOnly:true,
+        testData:testData,
+        fields:[
+            {name: "id",type: "integer", primaryKey:true},
+            // {name: "code"},
+            {name: "titleFa", type: "text"}
+            // {name: "titleEn"},
+            // {name: "category.titleFa"},
+            // {name: "subCategory.titleFa"},
+            // {name: "erunType.titleFa"},
+            // {name: "elevelType.titleFa"},
+            // {name: "etheoType.titleFa"},
+            // {name: "theoryDuration"},
+            // {name: "etechnicalType.titleFa"},
+            // {name: "minTeacherDegree"},
+            // {name: "minTeacherExpYears"},
+            // {name: "minTeacherEvalScore"},
+            // {name: "knowledge"},
+            // {name: "skill"},
+            // {name: "attitude"},
+        ]
+    });
+
+
+    isc.DynamicForm.create({
+        ID: "teamSelectionForm",
+        width: "300",
+        height: "30",
+        fields: [
+            {name: "TeamId", title: "Team", type: "select",
+                valueMap: {
+                    "csv" : "CSV" ,
+                    "xml" : "XML",
+                    "json" : "JSON",
+                    "xls" : "XLS (Excel97)",
+                    "ooxml" : "OOXML (Excel2007)"
+                },
+                // changed: "item.splitEmployeesByTeam()",
+                dataArrived : function (startRow, endRow, data) {
+                    if (this.getValue() == null && startRow == 0 && endRow > 0) {
+                        var record = data.get(0),
+                            value;
+                        if (record == null || record === isc.ResultSet.getLoadingMarker()) {
+                            value = null;
+                        } else {
+                            value = record[this.getValueFieldName()];
+                        }
+                        this.setValue(value);
+                        this.splitEmployeesByTeam();
+                    }
+                },
+                splitEmployeesByTeam : function () {
+                    var criteria = teamSelectionForm.getValuesAsCriteria();
+                    teamMembersGrid.fetchData(criteria);
+                    var dsRequest = {
+                        ID: "dsRequestID",
+                        operationType: "fetch",
+                        operationId: "fetchEmployeesNotInTeam"
+                    };
+                    employeesGrid.fetchData(criteria, null, dsRequest);
+                }
+            }
+        ]
+    });
+    isc.ListGrid.create({
+        ID: "employeesGrid",
+        width:300, height:224,
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        // dragType: "nonTeamMemberEmployee",
+        autoFetchData: true,
+        sortField: "id",
+        dataSource: "courseDS",
+        fields:[
+            {name: "id", title:"ID", primaryKey:true, width:50},
+            {name: "titleFa", title: "Employee Name"}
+        ]
+    });
+    isc.ListGrid.create({
+        ID: "teamMembersGrid",
+        width:350, height:264,
+        canAcceptDroppedRecords: true,
+        // dropTypes: ["nonTeamMemberEmployee"],
+        canRemoveRecords: true,
+        autoFetchData: true,
+        sortField: "id",
+        dataSource: "preCourseDS",
+        fields:[
+            {name: "id", title:"EID", width:"20%"},
+            {name: "titleFa", title: "Employee Name", width:"40%"}
+        ],
+        // recordDrop : function (dropRecords, targetRecord, index, sourceWidget) {
+        //     // mockRemoveEmployees(dropRecords);
+        //     return this.Super("recordDrop", arguments);
+        // },
+        removeRecordClick : function (rowNum) {
+            var record = this.getRecord(rowNum);
+            this.removeData(record, function (dsResponse, data, dsRequest) {
+                // Update `employeesGrid` now that an employee has been removed from
+                // the selected team.  This will add the employee back to `employeesGrid`,
+                // the list of employees who are not in the team.
+                // mockAddEmployeesFromTeamMemberRecords(record);
+            });
+        }
+    });
+
+    isc.LayoutSpacer.create({
+        ID: "spacer",
+        height: 30
+    });
+
+    isc.Img.create({
+        ID: "arrowImg",
+        layoutAlign:"center",
+        width: 32,
+        height: 32,
+        src: "icons/32/arrow_right.png",
+        click : function () {
+            var selectedEmployeeRecords = employeesGrid.getSelectedRecords();
+            teamMembersGrid.transferSelectedData(employeesGrid);
+            mockRemoveEmployees(selectedEmployeeRecords);
+        }
+    });
+
+    isc.VStack.create({
+        ID: "vStack",
+        members: [spacer, employeesGrid]
+    });
+
+    isc.VStack.create({
+        ID: "vStack2",
+        members: [teamSelectionForm, teamMembersGrid]
+    });
+
+    isc.HStack.create({
+        ID: "hStack",
+        height: 160,
+        members: [vStack, arrowImg, vStack2]
+    });
+
+
+
     var Window_course = isc.Window.create({
         width: "90%",
         autoSize: true,
@@ -906,7 +1095,7 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_course, courseSaveOrExitHlayout]
+            members: [DynamicForm_course,courseSaveOrExitHlayout,hStack]
         })]
     });
     // var VLayout_Grid_Goal = isc.VLayout.create({
@@ -1119,8 +1308,8 @@
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
             DynamicForm_course.clearValues();
-            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories",
-                DynamicForm_course.getItem("subCategory.id").fetchData();
+            RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
+            DynamicForm_course.getItem("subCategory.id").fetchData();
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
@@ -1160,3 +1349,44 @@
         criteriaForm_course.submitForm();
     };
 
+
+
+    function mockRemoveEmployees (employeeRecords) {
+        if (employeeRecords.length == 0) {
+            return;
+        }
+        // var dsRequest = {
+        //     ID: "mockRemoveResponse",
+        //     operationType: "remove",
+        //     data: employeeRecords
+        // }
+        // testData.add({id:employeesGrid.getSelectedRecord().id,titleFa:employeesGrid.getSelectedRecord().titleFa});
+        teamMembersGrid.invalidateCache();
+        // employeesByTeam.updateCaches(dsRequest);
+    }
+
+    function mockAddEmployeesFromTeamMemberRecords(teamMemberRecord) {
+        var mockEmployeeRecord = teamMemberRecord;
+        mockEmployeeRecord.Name = teamMemberRecord.EmployeeName;
+        mockEmployeeRecord.Job = teamMemberRecord.EmployeeJob;
+
+        var dsRequest = {
+            ID: "mockAddResponse",
+            operationType: "add",
+            data: mockEmployeeRecord
+        }
+        employeesByTeam.updateCaches(dsRequest);
+    }
+
+    function mappedByListId(listId,listGrid,DS) {
+        var listGridRecord = listGrid.getOriginalData().allRows
+        for (var i = 0; i < listId.length ; i++) {
+            for(var j = 0; j < listGridRecord.length ; i++) {
+                if(listId[i] == listGridRecord[j].id){
+                    DS.addData(listGridRecord[j])
+                    break
+                }
+            }
+        }
+    }
+//</script>

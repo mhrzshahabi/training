@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -106,6 +107,9 @@ public class Course extends Auditable {
 
     @Transient
     private Long attitude = Long.valueOf(0);
+
+    @ElementCollection
+    protected List<Long> preCourse = new ArrayList<>();
 
 //    @Transient
 //    private Long calDomainType(Integer n){
