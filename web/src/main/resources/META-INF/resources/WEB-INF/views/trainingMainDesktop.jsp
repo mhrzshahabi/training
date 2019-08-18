@@ -58,6 +58,7 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
+    const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
     const educationLevelUrl = rootUrl + "/educationLevel/";
     const educationMajorUrl = rootUrl + "/educationMajor/";
@@ -541,7 +542,7 @@
         largeIcon: "pieces/512/student.png",
         orientation: "vertical",
         click: function () {
-            createTab("دانشجو", "<spring:url value="/student/printWithCriteria/excel"/>", false)
+            createTab("دانشجو", "<spring:url value="/student/show-form"/>", false)
         }
     });
 
@@ -553,9 +554,21 @@
         orientation: "vertical",
         click: function () {
 
-            createTab("<spring:message code="course"/>", "/course/show-form", false);
+            createTab("<spring:message code="course"/>", "<spring:url value="/course/show-form"/>", false);
         }
     });
+
+    var termButton = isc.IconButton.create({
+        title: "ترم",
+        icon: "pieces/512/course.png",
+        largeIcon: "pieces/512/term.png",
+        orientation: "vertical",
+        click: function () {
+
+            createTab("ترم", "<spring:url value="/term/show-form"/>", false);
+        }
+    });
+
 
     var jobButton = isc.IconButton.create({
         title: "شغل",
@@ -712,6 +725,7 @@
         controls: [
             classButton,
             courseButton,
+            termButton,
             studentButton,
         ],
         autoDraw: true
@@ -812,7 +826,7 @@
 
                    ListGrid_Goal.fetchData();
                    ListGrid_Goal.invalidateCache();
-                   RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                    ListGrid_Syllabus_Goal.fetchData();
                    ListGrid_Syllabus_Goal.invalidateCache();
 
@@ -825,7 +839,7 @@
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
                     if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = "<spring:url value='${contextPath}/api/syllabus/course/' />" + courseId.id;
+                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
                     }

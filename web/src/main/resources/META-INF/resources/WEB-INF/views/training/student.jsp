@@ -51,7 +51,7 @@
                 var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
                     method: "POST",
-                    action: "/student/printWithCriteria/pdf",
+                    action: "<spring:url value="/student/printWithCriteria/pdf"/>",
                     target: "_Blank",
                     canSubmit: true,
                     fields:
@@ -83,7 +83,7 @@
                 var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
                 var criteriaForm = isc.DynamicForm.create({
                     method: "POST",
-                    action: "/student/printWithCriteria/html",
+                    action: "<spring:url value="/student/printWithCriteria/html"/>",
                     target: "_Blank",
                     canSubmit: true,
                     fields:
@@ -371,7 +371,7 @@
             var advancedCriteria = ListGrid_Student_JspStudent.getCriteria();
             var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
-                action: "/student/printWithCriteria/pdf",
+                action: "<spring:url value="/student/printWithCriteria/pdf"/>",
                 target: "_Blank",
                 canSubmit: true,
                 fields:

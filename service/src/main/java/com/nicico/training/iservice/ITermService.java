@@ -1,0 +1,21 @@
+package com.nicico.training.iservice;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.TermDTO;
+import java.util.List;
+
+public interface ITermService {
+
+    TermDTO.Info get(Long id);
+
+    List<TermDTO.Info> list();
+
+    TermDTO.Info create(TermDTO.Create request);
+
+    TermDTO.Info update(Long id,TermDTO.Update request);
+
+    void delete(Long id);
+
+    void delete(TermDTO.Delete request);
+
+    SearchDTO.SearchRs<TermDTO.Info> search(SearchDTO.SearchRq request);
+}
