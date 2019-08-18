@@ -4,7 +4,8 @@
 
 // <script>
 
-    var method = "POST";
+    var teacherMethod = "POST";
+    var teacherWait;
 
     var responseID;
     var categoryList;
@@ -65,7 +66,7 @@
     var RestDataSource_Category_JspTeacher = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
-        fetchDataURL:  categoryUrl + "spec-list"
+        fetchDataURL: categoryUrl + "spec-list"
     });
 
     var RestDataSource_Education_Level_JspTeacher = isc.MyRestDataSource.create({
@@ -83,7 +84,7 @@
             {name: "titleEn"},
             {name: "titleFa"}
         ],
-        fetchDataURL:  educationMajorUrl + "spec-list"
+        fetchDataURL: educationMajorUrl + "spec-list"
     });
 
     var RestDataSource_Education_Orientation_JspTeacher = isc.MyRestDataSource.create({
@@ -118,51 +119,15 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
-                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/teacher/printWithCriteria/pdf",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_teacher_print("pdf");
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
-                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/teacher/printWithCriteria/excel",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_teacher_print("excel");
             }
         }, {
             title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
-                var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/teacher/printWithCriteria/html",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_teacher_print("html");
             }
         }]
     });
@@ -373,7 +338,7 @@
                 ID: "birthDate_jspTeacher",
                 type: 'text',
                 hint: "YYYY/MM/DD",
-                keyPressFilter:"[0-9/]",
+                keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
@@ -975,65 +940,12 @@
 
             var data = vm.getValues();
 
-            isc.RPCManager.sendRequest({
-                actionURL: url,
-                httpMethod: method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        if (resp.data == "") {
-                            var ERROR = isc.Dialog.create({
-                                message: ("<spring:message code='msg.national.code.dublicate'/>"),
-                                icon: "[SKIN]stop.png",
-                                title: "<spring:message code='message'/>"
-                            });
-                            setTimeout(function () {
-                                ERROR.close();
-                            }, 3000);
-                        }
-                        else {
-                            responseID = JSON.parse(resp.data).id;
-                            gridState = "[{id:" + responseID + "}]";
-                            categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
-                            var OK = isc.Dialog.create({
-                                message: "<spring:message code='msg.operation.successful'/>",
-                                icon: "[SKIN]say.png",
-                                title: "<spring:message code='msg.command.done'/>"
-                            });
-                            setTimeout(function () {
-                                OK.close();
-                                ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                            }, 1000);
-                            if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
-                                addAttach(responseID);
-                            setTimeout(function () {
-                                if (categoryList != undefined)
-                                    addCategories(responseID, categoryList);
-                            }, 300);
-                            showAttachViewLoader.hide();
-                            ListGrid_Teacher_JspTeacher.invalidateCache();
-                            ListGrid_Teacher_JspTeacher.fetchData();
-                            Window_Teacher_JspTeacher.close();
-                        }
-                    } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("<spring:message code='error'/>"),
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
-                    }
-
-                }
-            });
-
+            var teacherSaveUrl = teacherUrl;
+            if (teacherMethod.localeCompare("PUT") == 0) {
+                var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+                teacherSaveUrl += teacherRecord.id;
+            }
+            isc.RPCManager.sendRequest(MyDsRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data), "callback: teacher_action_result(rpcResponse)"));
         }
     });
 
@@ -1226,19 +1138,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/teacher/printWithCriteria/pdf",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"}
-                    ]
-            });
-            criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-            criteriaForm.submitForm();
+            ListGrid_teacher_print("pdf");
         }
     });
 
@@ -1304,7 +1204,7 @@
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
-            method = "PUT";
+            teacherMethod = "PUT";
             url = "${contextPath}/api/teacher/" + record.id;
             vm.editRecord(record);
             var eduMajorValue = record.educationMajorId;
@@ -1333,7 +1233,7 @@
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
-        method = "POST";
+        teacherMethod = "POST";
         url = "${contextPath}/api/teacher";
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
@@ -1366,78 +1266,39 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        teacherWait = isc.Dialog.create({
                             message: "<spring:message code='msg.waiting'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: "${contextPath}/api/teacher/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Teacher_JspTeacher.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='msg.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                }
-                                else if (resp.data == false) {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.teacher.remove.error'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                                else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.failed'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+
+                        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + record.id, "DELETE", null, "callback: teacher_delete_result(rpcResponse)"));
                     }
                 }
             });
         }
     };
 
+    function ListGrid_teacher_print(type) {
+        var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/teacher/printWithCriteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+    };
+
     function addCategories(teacherId, categoryIds) {
         var JSONObj = {"ids": categoryIds};
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj), "callback: teacher_addCategories_result(rpcResponse)"));
 
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: "${contextPath}/api/teacher/addCategories/" + teacherId,
-            httpMethod: "POST",
-            data: JSON.stringify(JSONObj),
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                } else {
-                    isc.say("<spring:message code='error'/>");
-                }
-            }
-        });
     };
 
     function addAttach(teacherId) {
@@ -1460,42 +1321,12 @@
 
     function showAttach() {
         var selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: "${contextPath}/api/teacher/checkAttach/" + selectedRecordID,
-            httpMethod: "GET",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.data == "true") {
-                    showAttachViewLoader.setViewURL("/teacher/getAttach/" + selectedRecordID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
-                    showAttachViewLoader.show();
-                } else if (resp.data == "false") {
-                    showAttachViewLoader.setView();
-                    showAttachViewLoader.show();
-                }
-            }
-        });
+        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "checkAttach/" + selectedRecordID, "GET", null, "callback: teacher_checkAttach_result(rpcResponse)"));
     };
 
     function showCategories() {
         teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest({
-            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            actionURL: "${contextPath}/api/teacher/getCategories/" + teacherId,
-            httpMethod: "POST",
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
-                } else {
-                    isc.say("<spring:message code='error'/>");
-                }
-            }
-        });
+        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "getCategories/" + teacherId, "POST", null, "callback: teacher_getCategories_result(rpcResponse)"));
     };
 
     function showTempAttach() {
@@ -1516,6 +1347,116 @@
         }
 
     };
+
+    function teacher_delete_result(resp) {
+        teacherWait.close();
+        if (resp.httpResponseCode == 200) {
+            ListGrid_Teacher_JspTeacher.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+        else if (resp.data == false) {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.teacher.remove.error'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+        else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.failed'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    };
+
+    function teacher_action_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.data == "") {
+                var ERROR = isc.Dialog.create({
+                    message: ("<spring:message code='msg.national.code.dublicate'/>"),
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                }, 3000);
+            }
+            else {
+                responseID = JSON.parse(resp.data).id;
+                gridState = "[{id:" + responseID + "}]";
+                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
+                var OK = isc.Dialog.create({
+                    message: "<spring:message code='msg.operation.successful'/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code='msg.command.done'/>"
+                });
+                setTimeout(function () {
+                    OK.close();
+                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+                }, 1000);
+                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
+                    addAttach(responseID);
+                setTimeout(function () {
+                    if (categoryList != undefined)
+                        addCategories(responseID, categoryList);
+                }, 300);
+                showAttachViewLoader.hide();
+                ListGrid_Teacher_JspTeacher.invalidateCache();
+                ListGrid_Teacher_JspTeacher.fetchData();
+                Window_Teacher_JspTeacher.close();
+            }
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    };
+
+    function teacher_addCategories_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+        } else {
+            isc.say("<spring:message code='error'/>");
+        }
+    };
+
+    function teacher_checkAttach_result(resp) {
+        var selectedRecordID = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        if (resp.data == "true") {
+            showAttachViewLoader.setViewURL("<spring:url value="/teacher/getAttach/"/>" + selectedRecordID);
+            showAttachViewLoader.show();
+        } else if (resp.data == "false") {
+            showAttachViewLoader.setView();
+            showAttachViewLoader.show();
+        }
+    };
+
+    function teacher_getCategories_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
+        } else {
+            isc.say("<spring:message code='error'/>");
+        }
+    };
+
 
     function checkCodeMeli(code) {
         if (code == "undefined" && code == null && code == "")

@@ -27,9 +27,6 @@ import java.util.Base64;
 public class TeacherFormController {
 	private final OAuth2AuthorizedClientService authorizedClientService;
 
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
-
 	@RequestMapping("/show-form")
 	public String showForm() {
 		return "base/teacher";
@@ -49,6 +46,8 @@ public class TeacherFormController {
 		headers.add("Authorization", "Bearer " + token);
         HttpEntity<String> request = new HttpEntity<String>(headers);
 
+		String restApiUrl="htttp:localhost:8080/training";
+
         RestTemplate restTemplate = new RestTemplate();
 		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getTempAttach/"+fileName , HttpMethod.GET, request, byte[].class);
 		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
@@ -58,21 +57,18 @@ public class TeacherFormController {
 
 
    	@GetMapping(value = {"/getAttach/{Id}"})
-	public String getAttach(ModelMap modelMap, Authentication authentication,@PathVariable Long Id) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
+	public String getAttach(ModelMap modelMap, final HttpServletRequest request,@PathVariable Long Id) {
+		String token = (String) request.getSession().getAttribute("AccessToken");
+
         HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + token);
-        HttpEntity<String> request = new HttpEntity<String>(headers);
+
+		String restApiUrl="htttp:localhost:8080/training";
 
         RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getAttach/"+Id , HttpMethod.GET, request, byte[].class);
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getAttach/"+Id , HttpMethod.GET, entity, byte[].class);
 		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
 
         return "base/teacherImage";
@@ -81,7 +77,7 @@ public class TeacherFormController {
 
     @PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("token");
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -95,6 +91,8 @@ public class TeacherFormController {
 		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/teacher/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
