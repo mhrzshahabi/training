@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.Set;
 
 @Setter
 @Getter
@@ -20,8 +22,8 @@ public class PreCourse extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "pre_course_set")
-    private String preCourseSet;
+    @ElementCollection()
+    private Set<Long> preCourseSet = new HashSet<>();
 
     @ManyToOne()
     @JoinColumn(name = "f_pre_course")
