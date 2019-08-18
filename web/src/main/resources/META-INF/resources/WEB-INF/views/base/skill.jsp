@@ -1612,6 +1612,7 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
     };
 
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
+
     // Start Block Add Competence To Skill ---------------------------------------------------------------
     var ToolStripButton_Skill_AddCompetence_Select_Single = isc.ToolStripButton.create({
         width: 300,
