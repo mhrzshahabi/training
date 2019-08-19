@@ -2,11 +2,10 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.AddressDTO;
-import com.nicico.training.iservice.IAddressService;
+import com.nicico.training.dto.ContactInfoDTO;
+import com.nicico.training.iservice.IContactInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -17,59 +16,59 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/address")
-public class AddressRestController {
+@RequestMapping(value = "/api/contactinfo")
+public class ContactInfoRestController {
 
-    private final IAddressService addressService;
+    private final IContactInfoService contactInfoService;
 
     @Loggable
     @GetMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<AddressDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(addressService.get(id), HttpStatus.OK);
+    public ResponseEntity<ContactInfoDTO.Info> get(@PathVariable Long id) {
+        return new ResponseEntity<>(contactInfoService.get(id), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<List<AddressDTO.Info>> list() {
-        return new ResponseEntity<>(addressService.list(), HttpStatus.OK);
+    public ResponseEntity<List<ContactInfoDTO.Info>> list() {
+        return new ResponseEntity<>(contactInfoService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_address')")
-    public ResponseEntity<AddressDTO.Info> create(@Validated @RequestBody AddressDTO.Create request) {
-        return new ResponseEntity<>(addressService.create(request), HttpStatus.CREATED);
+    public ResponseEntity<ContactInfoDTO.Info> create(@Validated @RequestBody ContactInfoDTO.Create request) {
+        return new ResponseEntity<>(contactInfoService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_address')")
-    public ResponseEntity<AddressDTO.Info> update(@PathVariable Long id, @Validated @RequestBody AddressDTO.Update request) {
-        return new ResponseEntity<>(addressService.update(id, request), HttpStatus.OK);
+    public ResponseEntity<ContactInfoDTO.Info> update(@PathVariable Long id, @Validated @RequestBody ContactInfoDTO.Update request) {
+        return new ResponseEntity<>(contactInfoService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_address')")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        addressService.delete(id);
+        contactInfoService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_address')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody AddressDTO.Delete request) {
-        addressService.delete(request);
+    public ResponseEntity<Void> delete(@Validated @RequestBody ContactInfoDTO.Delete request) {
+        contactInfoService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<AddressDTO.AddressSpecRs> list(@RequestParam("_startRow") Integer startRow,
+    public ResponseEntity<ContactInfoDTO.ContactInfoSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                          @RequestParam("_endRow") Integer endRow,
                                                          @RequestParam(value = "operator", required = false) String operator,
                                                          @RequestParam(value = "criteria", required = false) String criteria) {
@@ -77,15 +76,15 @@ public class AddressRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<AddressDTO.Info> response = addressService.search(request);
+        SearchDTO.SearchRs<ContactInfoDTO.Info> response = contactInfoService.search(request);
 
-        final AddressDTO.SpecRs specResponse = new AddressDTO.SpecRs();
+        final ContactInfoDTO.SpecRs specResponse = new ContactInfoDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final AddressDTO.AddressSpecRs specRs = new AddressDTO.AddressSpecRs();
+        final ContactInfoDTO.ContactInfoSpecRs specRs = new ContactInfoDTO.ContactInfoSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -96,8 +95,8 @@ public class AddressRestController {
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<SearchDTO.SearchRs<AddressDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(addressService.search(request), HttpStatus.OK);
+    public ResponseEntity<SearchDTO.SearchRs<ContactInfoDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+        return new ResponseEntity<>(contactInfoService.search(request), HttpStatus.OK);
     }
 
 }
