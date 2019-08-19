@@ -40,7 +40,8 @@ public class TermRestController {
     public ResponseEntity<List<TermDTO.Info>> list() {
         return new ResponseEntity<>(termService.list(), HttpStatus.OK);
     }
-     @Loggable
+
+    @Loggable
     @PostMapping
     public ResponseEntity<TermDTO.Info> create(@RequestBody TermDTO.Create req) {
         TermDTO.Create create = (new ModelMapper()).map(req, TermDTO.Create.class);

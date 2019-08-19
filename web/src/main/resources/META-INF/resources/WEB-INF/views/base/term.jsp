@@ -4,10 +4,9 @@
 
 //<script>
 
-	 <spring:eval var="restApiUrl" expression="pageContext.servletContext.contextPath" />
+
  	var term_method = "POST";
-	var term_url = "${restApiUrl}/api/course";
-	 var startDateCheckTerm = true;
+	var startDateCheckTerm = true;
     var endDateCheckTerm = true;
  //************************************************************************************
     // RestDataSource & ListGrid
@@ -172,7 +171,7 @@
 			var data = DynamicForm_Term.getValues();
 
 			isc.RPCManager.sendRequest({
-				actionURL: term_url,
+				actionURL: termUrl,
 				httpMethod: term_method,
 				httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
 				useSimpleHttp: true,
@@ -229,33 +228,35 @@
 		})]
 	});
 
-	var Windows_Term = isc.Window.create({
+	var Windows_Term = isc.MyWindow.create({
 		title: "ترم",
 		width: 500,
-		autoSize: true,
-		autoCenter: true,
-		isModal: true,
-		showModalMask: true,
-		align: "center",
-		autoDraw: false,
-		dismissOnEscape: false,
-		border: "1px solid gray",
-		closeClick: function () {
+	    closeClick: function () {
 			this.Super("closeClick", arguments);
 		},
-		items: [isc.VLayout.create({
-			width: "100%",
-			height: "100%",
-			members: [DynamicForm_Term, courseSaveOrExitHlayout]
-		})]
-	});
+		items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
+			 members: [isc.MyButton.create({
+                title: "ذخیره",
+                icon: "pieces/16/save.png",
+                click: function () {
+
+                }
+            }), isc.MyButton.create({
+                title: "لغو",
+                icon: "pieces/16/icon_delete.png",
+                click: function () {
+                    Windows_Term.close();
+                }
+            })],
+        }),]
+    });
 
 //****************************************************************************************
 	var ToolStripButton_Refresh = isc.ToolStripButton.create({
 		icon: "[SKIN]/actions/refresh.png",
 		title: "بازخوانی اطلاعات",
 		click: function () {
-			ListGrid_course_refresh();
+			ListGrid_Term_refresh();
 		}
 	});
 	var ToolStripButton_Edit = isc.ToolStripButton.create({
@@ -263,7 +264,7 @@
 		title: "ویرایش",
 		click: function () {
 
-			ListGrid_course_edit();
+			ListGrid_Term_edit();
 		}
 	});
 	var ToolStripButton_Add = isc.ToolStripButton.create({
@@ -271,7 +272,7 @@
 		title: "ایجاد",
 		click: function () {
 			term_method = "POST";
-			term_url = "${restApiUrl}/api/course";
+			//termUrl = "${restApiUrl}/api/course";
 			DynamicForm_Term.clearValues();
 			Windows_Term.show();
 
@@ -281,7 +282,7 @@
 		icon: "[SKIN]/actions/remove.png",
 		title: "حذف",
 		click: function () {
-			ListGrid_Course_remove()
+			ListGrid_Term_remove()
 		}
 	});
 	var ToolStripButton_Print = isc.ToolStripButton.create({
@@ -297,7 +298,7 @@
 		width: 150,
 		data: [{
 			title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-				ListGrid_course_refresh();
+				ListGrid_Term_refresh();
 			}
 		}, {
 			title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
@@ -307,10 +308,11 @@
 			}
 		}, {
 			title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+			 ListGrid_Term_edit()
 			}
 		}, {
 			title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
-				ListGrid_Course_remove()
+				ListGrid_Term_remove()
 			}
 		}, {isSeparator: true}, {
 			title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
@@ -348,7 +350,7 @@
 		]
 	});
 
-	function ListGrid_course_edit() {
+	function ListGrid_Term_edit() {
 		var record = ListGrid_Course.getSelectedRecord();
 		if (record == null || record.id == null) {
 			isc.Dialog.create({
@@ -362,14 +364,13 @@
 			});
 		} else {
 			term_method = "PUT";
-			term_url = "${restApiUrl}/api/course/" + record.id;
+			//termUrl = "${restApiUrl}/api/course/" + record.id;
 			DynamicForm_Term.editRecord(record);
 			Windows_Term.show();
 		}
 	};
 
-
-	function ListGrid_Course_remove() {
+	function ListGrid_Term_remove() {
 
 
 		var record = ListGrid_Course.getSelectedRecord();
@@ -440,8 +441,7 @@
 		}
 	};
 
-
-	function ListGrid_course_refresh() {
+	function ListGrid_Term_refresh() {
 		var record = ListGrid_Course.getSelectedRecord();
 		if (record == null || record.id == null) {
 		} else {
@@ -449,3 +449,16 @@
 		}
 		ListGrid_Course.invalidateCache();
 	};
+
+	function ListGrid_Term_save() {
+        if (!DynamicForm_Term.validate()) {
+            return;
+        }
+        var termData = DynamicForm_Term.getValues();
+        var termSaveUrl = termUrl;
+        if (term_method .localeCompare("PUT") == 0) {
+            var termRecord = ListGrid_Term.getSelectedRecord();
+            termSaveUrl += termRecord.id;
+        }
+        isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback: show_JobActionResult(rpcResponse)"));
+    };
