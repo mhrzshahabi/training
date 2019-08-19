@@ -22,7 +22,7 @@ public class AccountInfo extends Auditable{
     private Long id;
 
     @Column(name = "c_account_number")
-	private String accountNember;
+	private String accountNumber;
 
     @Column(name = "c_bank")
 	private String bank;
