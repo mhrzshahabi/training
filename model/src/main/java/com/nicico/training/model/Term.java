@@ -2,7 +2,7 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.DynamicUpdate;
+
 
 import javax.persistence.*;
 

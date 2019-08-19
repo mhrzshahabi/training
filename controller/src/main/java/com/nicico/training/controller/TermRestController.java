@@ -28,24 +28,21 @@ import java.util.List;
 public class TermRestController {
   private final TermService termService;
    private final ObjectMapper objectMapper;
- @Loggable
+
+    @Loggable
     @GetMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<TermDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(termService.get(id), HttpStatus.OK);
     }
 
      @Loggable
     @GetMapping(value = "/list")
-//	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<List<TermDTO.Info>> list() {
         return new ResponseEntity<>(termService.list(), HttpStatus.OK);
     }
-
-
      @Loggable
     @PostMapping
-    public ResponseEntity<TermDTO.Info> create(@RequestBody Object req) {
+    public ResponseEntity<TermDTO.Info> create(@RequestBody TermDTO.Create req) {
         TermDTO.Create create = (new ModelMapper()).map(req, TermDTO.Create.class);
         return new ResponseEntity<>(termService.create(create), HttpStatus.CREATED);
     }
@@ -66,7 +63,6 @@ public class TermRestController {
 
      @Loggable
     @DeleteMapping(value = "/list")
-//	@PreAuthorize("hasAuthority('d_course')")
     public ResponseEntity<Void> delete(@Validated @RequestBody TermDTO.Delete request) {
         termService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
@@ -75,7 +71,6 @@ public class TermRestController {
 
      @Loggable
     @GetMapping(value = "/spec-list")
-//	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<TermDTO.TermSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                        @RequestParam("_endRow") Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
@@ -117,7 +112,6 @@ public class TermRestController {
 
       @Loggable
     @PostMapping(value = "/search")
-//	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<SearchDTO.SearchRs<TermDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(termService.search(request), HttpStatus.OK);
     }

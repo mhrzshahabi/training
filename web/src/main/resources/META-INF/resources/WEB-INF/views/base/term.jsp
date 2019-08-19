@@ -5,12 +5,13 @@
 //<script>
 
 	 <spring:eval var="restApiUrl" expression="pageContext.servletContext.contextPath" />
- 	var course_method = "POST";
-	var course_url = "${restApiUrl}/api/course";
-
- //****************************************************************************************************************
+ 	var term_method = "POST";
+	var term_url = "${restApiUrl}/api/course";
+	 var startDateCheckTerm = true;
+    var endDateCheckTerm = true;
+ //************************************************************************************
     // RestDataSource & ListGrid
- //***************************************************************************************************************
+ //************************************************************************************
 	var RestDataSource_course = isc.RestDataSource.create({
 		fields: [
 			{name: "id"},
@@ -51,72 +52,111 @@
 		],
 		sortField: 0,
 	});
-
-	var DynamicForm_course = isc.DynamicForm.create({
-		width: "100%",
-		height: "100%",
-		setMethod: 'POST',
-		align: "center",
-		canSubmit: true,
-		showInlineErrors: true,
-		showErrorText: true,
-		showErrorStyle: true,
-		errorOrientation: "right",
-		colWidths: ["30%", "*"],
-		titleAlign: "right",
-		requiredMessage: "فیلد اجباری است.",
-		numCols: 2,
-		margin: 10,
-		newPadding: 5,
-		fields: [{name: "id", hidden: true}, {
+//*************************************************************************************
+			//DynamicForm & Window
+//*************************************************************************************
+	var DynamicForm_Term = isc.MyDynamicForm.create({
+		 ID: "DF_TERM",
+		// numCols: 2,
+		// margin: 10,
+		// newPadding: 5,
+		fields: [{name: "id", hidden: true},
+		 {
 			name: "code",
 			title: "کد",
 			type: 'text',
 			required: true,
-			length: "7"
-
+			 required: true, keyPressFilter: "[/|0-9]", length: "15",
+              width: "*",
+              height: 27
 		}, {
 			name: "titleFa",
 			title: "نام فارسی",
 			required: true,
 			type: 'text',
 			readonly: true,
-			hint: "Persian/فارسی",
-			length: "200",
-			validators: [{
-				type: "isString",
-				validateOnExit: true,
-				stopOnError: true,
-				errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
-			}]
-		},
-{
-	name:"endDate",
-	title:"تاریخ پایان",
-	type:'text',
-hint: "تاریخ پایان/endDate",
-},
-{
-			name: "startDate",
-			title: "تاریخ شروع",
-			type: 'text',
-			//keyPressFilter: "[a-z|A-Z|0-9 ]",
-			//length: "20",
-			//hint: "Latin",
-hint: "تاریخ شروع/startDate",
-			validators: [{
-				type: "isString",
-				validateOnExit: true,
-				type: "lengthRange",
-				min: 0,
-				max: 200,
-				stopOnError: true,
-				errorMessage: "نام مجاز بین چهار تا دویست کاراکتر است"
-			}]
-		}, {
+		   required: true, keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
+                width: "*", height: 27, hint: "Persian/فارسی", showHintInField: true,
+                validators: [MyValidators.NotEmpty]
+					},
+
+			  {
+                name: "startDate",
+                title: "تاریخ شروع",
+                ID: "startDate_jspTerm",
+                type: 'text', required: true,
+                hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
+                showHintInField: true,
+                focus: function () {
+                    displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
+                },
+                icons: [{
+                    src: "pieces/pcal.png",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
+                    }
+                }],
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_Term.getValue("startDate"));
+                    startDateCheckTerm = dateCheck;
+                    if (dateCheck == false)
+                        DynamicForm_Term.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
+                    if (dateCheck == true)
+                       DynamicForm_Term.clearFieldErrors("startDate", true);
+                }
+            },
+		 {
+                name: "endDate",
+                title: "تاریخ پایان",
+                ID: "endDate_jspTerm",
+                type: 'text', required: true,
+                hint: "YYYY/MM/DD",
+                keyPressFilter:"[0-9/]",
+                showHintInField: true,
+                focus: function () {
+                    displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                },
+                icons: [{
+                    src: "pieces/pcal.png",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
+                    }
+                }],
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkDate(DynamicForm_Term.getValue("endDate"));
+                    var endDate = DynamicForm_Term.getValue("endDate");
+                    var startDate = DynamicForm_Term.getValue("startDate");
+                    if (dateCheck == false){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                            endDateCheckTerm = false;
+                        }
+                    if (dateCheck == true){
+                        if(startDate == undefined)
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                        if(startDate != undefined && startDate > endDate){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                            endDateCheckTerm = false;
+                        }
+                        if(startDate != undefined && startDate < endDate){
+                            DynamicForm_Term.clearFieldErrors("endDate", true);
+                            endDateCheckTerm = true;
+                        }
+                       }
+                }
+
+            },
+		 {
 			name: "description",
 			title: "توضیحات",
-			type: "text"
+			type: "text",
+			  length: "250", width: "*", height: 27
 		}
 
 		]
@@ -125,15 +165,15 @@ hint: "تاریخ شروع/startDate",
 	var IButton_course_Save = isc.IButton.create({
 		top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
 
-			DynamicForm_course.validate();
-			if (DynamicForm_course.hasErrors()) {
+			DynamicForm_Term.validate();
+			if (DynamicForm_Term.hasErrors()) {
 				return;
 			}
-			var data = DynamicForm_course.getValues();
+			var data = DynamicForm_Term.getValues();
 
 			isc.RPCManager.sendRequest({
-				actionURL: course_url,
-				httpMethod: course_method,
+				actionURL: term_url,
+				httpMethod: term_method,
 				httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
 				useSimpleHttp: true,
 				contentType: "application/json; charset=utf-8",
@@ -151,7 +191,7 @@ hint: "تاریخ شروع/startDate",
 							OK.close();
 						}, 3000);
 						ListGrid_course_refresh();
-						Window_course.close();
+						Windows_Term.close();
 					} else {
 						var ERROR = isc.Dialog.create({
 							message: ("اجرای عملیات با مشکل مواجه شده است!"),
@@ -184,13 +224,13 @@ hint: "تاریخ شروع/startDate",
 			icon: "pieces/16/icon_delete.png",
 			orientation: "vertical",
 			click: function () {
-				Window_course.close();
+				Windows_Term.close();
 			}
 		})]
 	});
 
-	var Window_course = isc.Window.create({
-		title: "دوره",
+	var Windows_Term = isc.Window.create({
+		title: "ترم",
 		width: 500,
 		autoSize: true,
 		autoCenter: true,
@@ -206,11 +246,11 @@ hint: "تاریخ شروع/startDate",
 		items: [isc.VLayout.create({
 			width: "100%",
 			height: "100%",
-			members: [DynamicForm_course, courseSaveOrExitHlayout]
+			members: [DynamicForm_Term, courseSaveOrExitHlayout]
 		})]
 	});
 
-
+//****************************************************************************************
 	var ToolStripButton_Refresh = isc.ToolStripButton.create({
 		icon: "[SKIN]/actions/refresh.png",
 		title: "بازخوانی اطلاعات",
@@ -230,10 +270,10 @@ hint: "تاریخ شروع/startDate",
 		icon: "[SKIN]/actions/add.png",
 		title: "ایجاد",
 		click: function () {
-			course_method = "POST";
-			course_url = "${restApiUrl}/api/course";
-			DynamicForm_course.clearValues();
-			Window_course.show();
+			term_method = "POST";
+			term_url = "${restApiUrl}/api/course";
+			DynamicForm_Term.clearValues();
+			Windows_Term.show();
 
 		}
 	});
@@ -261,8 +301,8 @@ hint: "تاریخ شروع/startDate",
 			}
 		}, {
 			title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-				DynamicForm_course.clearValues();
-				Window_course.show();
+				DynamicForm_Term.clearValues();
+				Windows_Term.show();
 
 			}
 		}, {
@@ -321,10 +361,10 @@ hint: "تاریخ شروع/startDate",
 				}
 			});
 		} else {
-			course_method = "PUT";
-			course_url = "${restApiUrl}/api/course/" + record.id;
-			DynamicForm_course.editRecord(record);
-			Window_course.show();
+			term_method = "PUT";
+			term_url = "${restApiUrl}/api/course/" + record.id;
+			DynamicForm_Term.editRecord(record);
+			Windows_Term.show();
 		}
 	};
 
