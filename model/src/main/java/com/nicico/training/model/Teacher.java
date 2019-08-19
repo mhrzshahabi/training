@@ -15,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_teacher", schema = "TRAINING")
-public class Teacher extends Person {
+public class Teacher extends Auditable{
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_seq")
@@ -29,59 +29,23 @@ public class Teacher extends Person {
 	@Column(name = "b_enabled")
 	private Boolean enableStatus;
 
+	@OneToOne(fetch = FetchType.EAGER)
+	@JoinColumn(name = "f_personality", nullable = false, insertable = false, updatable = false)
+	private PersonalInfo personality;
+
+	@Column(name = "f_personality")
+	private Long peronalityId;
+
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
 	private Set<Category> categories;
-	
 
 	@Column(name = "c_economical_code")
 	private String economicalCode;
 
 	@Column(name = "c_economical_record_number")
 	private String economicalRecordNumber;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
-	private EducationLevel educationLevel;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_major", insertable = false, updatable = false)
-	private EducationMajor educationMajor;
-
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_orientation", insertable = false, updatable = false)
-	private EducationOrientation educationOrientation;
-
-	@Column(name = "f_edu_level")
-	private Long educationLevelId;
-
-	@Column(name = "f_edu_major")
-	private Long educationMajorId;
-
-	@Column(name = "f_edu_orientation")
-	private Long educationOrientationId;
-
-	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "f_account_info", nullable = true, insertable = false, updatable = false)
-	private AccountInfo accountInfo;
-
-///////////////////////////////////////////////////////////////////
-
-    @Column(name = "c_account_number")
-	private String accountNember;
-
-    @Column(name = "c_bank")
-	private String bank;
-
-    @Column(name = "c_bank_branch")
-	private String bankBranch;
-
-    @Column(name = "c_cart_number")
-	private String cartNumber;
-
-    @Column(name = "c_shaba_number")
-	private String shabaNumber;
 
 }

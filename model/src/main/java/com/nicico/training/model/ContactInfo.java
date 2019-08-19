@@ -25,14 +25,14 @@ public class ContactInfo extends Auditable{
     private String email;
 
 	@ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "f_home_address", nullable = true, insertable = false, updatable = false)
+	@JoinColumn(name = "f_home_address", insertable = false, updatable = false)
 	 private Address homeAdress;
 
 	@Column(name = "f_home_address")
 	private Long homeAdressId;
 
     @ManyToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "f_work_address", nullable = true, insertable = false, updatable = false)
+	@JoinColumn(name = "f_work_address", insertable = false, updatable = false)
     private Address workAdress;
 
     @Column(name = "f_work_address")

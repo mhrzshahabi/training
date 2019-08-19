@@ -1,100 +1,63 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+//<script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-    var skill_Level_Symbol = ""
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
+var skill_Level_Symbol = ""
     var skill_Method = "GET";
-    var skill_MainUrl = "${restApiUrl}/api/";
-    var skill_ActionUrl = skill_MainUrl + "skill";
-    var skill_SkillUrl = skill_MainUrl + "skill/";
-    var skill_SkillGroupUrl = skill_MainUrl + "skill-group/";
-    var skill_CompetenceUrl = skill_MainUrl + "competence/";
-    var skill_CourseUrl = skill_MainUrl + "course/";
-    var skill_CategoryUrl = skill_MainUrl + "category/spec-list";
-    var skill_SubCategoryUrl = skill_MainUrl + "sub-category/spec-list";
-    var skill_SkillLevelUrl = skill_MainUrl + "skill-level/spec-list";
-    var skill_EnumDomainTypeUrl = skill_MainUrl + "enum/eDomainType";
+    var skill_SkillHomeUrl = rootUrl + "/skill";
+    var skill_CategoryHomeUrl = rootUrl + "/category";
+    var skill_CompetenceHomeUrl=rootUrl + "/competence";
+    var skill_ActionUrl = rootUrl + "/skill";
+    var skill_CategoryUrl = rootUrl + "/category/spec-list";
+    var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
+    var skill_EnumDomainTypeUrl = rootUrl + "/enum/eDomainType";
     var skill_selectedSkillId = -1;
-    var DF_L_Opener;
 
     // Start Block Of Combo And List Data Sources ----------------------------------------------------------
 
-    var RestDataSource_Skill_Skill_Level = isc.RestDataSource.create({
+    var RestDataSource_Skill_Skill_Level = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "version"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
         fetchDataURL: skill_SkillLevelUrl
     });
 
-    var RestDataSource_Skill_Category = isc.RestDataSource.create({
+    var RestDataSource_Skill_Category = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "code"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "description"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: skill_CategoryUrl
     });
 
-    var RestDataSource_Skill_SubCategory = isc.RestDataSource.create({
+    var RestDataSource_Skill_SubCategory = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "code"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "description"},
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ]
     });
 
-    var RestDataSource_Skill_EDomainType = isc.RestDataSource.create({
+    var RestDataSource_Skill_EDomainType = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: skill_EnumDomainTypeUrl
     });
 
@@ -103,7 +66,7 @@
 
     // Start Block Of Main And Detail Data Sources ----------------------------------------------------------
 
-    var RestDataSource_Skill_Skill = isc.RestDataSource.create({
+    var RestDataSource_Skill_Skill = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -114,59 +77,29 @@
             {name: "skillLevel.titleFa"},
             {name: "edomainType.titleFa"},
             {name: "description"},
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: skill_SkillUrl + "spec-list"
+        ],
+        fetchDataURL: skill_SkillHomeUrl + "/spec-list"
     });
 
-    var RestDataSource_Skill_Attached_SkillGroups = isc.RestDataSource.create({
+    var RestDataSource_Skill_Attached_SkillGroups = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
             {name: "titleEn"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-// fetchDataURL: "${restApiUrl}/api/skill/-1/skill-groups"
-        fetchDataURL: "${restApiUrl}/api/skill/skill-group-dummy"
+        fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
 
-    var RestDataSource_Skill_UnAttached_SkillGroups = isc.RestDataSource.create({
+    var RestDataSource_Skill_UnAttached_SkillGroups = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
             {name: "titleEn"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/skill-group-dummy"
+        fetchDataURL: skill_SkillHomeUrl +"/skill-group-dummy"
     });
 
-    var RestDataSource_Skill_Attached_Competences = isc.RestDataSource.create({
+    var RestDataSource_Skill_Attached_Competences = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -175,21 +108,10 @@
             {name: "ecompetenceInputType.titleFa"}
 
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/competence-dummy"
-// fetchDataURL: "${restApiUrl}/api/skill/-1/competences"
+        fetchDataURL: skill_SkillHomeUrl +"/competence-dummy"
     });
 
-    var RestDataSource_Skill_All_Competences = isc.RestDataSource.create({
+    var RestDataSource_Skill_All_Competences = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -198,20 +120,10 @@
             {name: "ecompetenceInputType.titleFa"}
 
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/competence/spec-list"
+        fetchDataURL:skill_CompetenceHomeUrl+ "/spec-list"
     });
 
-    var RestDataSource_Skill_UnAttached_Competences = isc.RestDataSource.create({
+    var RestDataSource_Skill_UnAttached_Competences = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -220,20 +132,10 @@
             {name: "ecompetenceInputType.titleFa"}
 
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/competence-dummy"
+        fetchDataURL: skill_SkillHomeUrl+"/competence-dummy"
     });
 
-    var RestDataSource_Skill_Attached_Courses = isc.RestDataSource.create({
+    var RestDataSource_Skill_Attached_Courses = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -245,20 +147,10 @@
             {name: "elevelType.titleFa"},
             {name: "etheoType.titleFa"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/course-dummy"
+        fetchDataURL: skill_SkillHomeUrl+"/course-dummy"
     });
 
-    var RestDataSource_Skill_UnAttached_Courses = isc.RestDataSource.create({
+    var RestDataSource_Skill_UnAttached_Courses = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -270,20 +162,10 @@
             {name: "elevelType.titleFa"},
             {name: "etheoType.titleFa"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/course-dummy"
+        fetchDataURL: skill_SkillHomeUrl+"/course-dummy"
     });
 
-    var RestDataSource_Skill_Attached_Jobs = isc.RestDataSource.create({
+    var RestDataSource_Skill_Attached_Jobs = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "کد شغل", align: "center"},
@@ -292,17 +174,7 @@
             {name: "titleEn", title: "عنوان انگليسي", align: "center"},
             {name: "description", title: "توضيحات", align: "center"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/skill/job-dummy"
+        fetchDataURL: skill_SkillHomeUrl+"/job-dummy"
     });
 
 
@@ -574,7 +446,7 @@
                     if (value == null || value.length == 0) {
 
                     } else {
-                        RestDataSource_Skill_SubCategory.fetchDataURL = "${restApiUrl}/api/category/" + value + "/sub-categories";
+                        RestDataSource_Skill_SubCategory.fetchDataURL =skill_CategoryHomeUrl+"/" + value + "/sub-categories";
                         form.getItem("subCategoryId").fetchData();
                         form.getItem("subCategoryId").setValue([]);
                         form.getItem("subCategoryId").setDisabled(false);
@@ -711,7 +583,7 @@
             isc.RPCManager.sendRequest({
                 actionURL: skill_ActionUrl,
                 httpMethod: skill_Method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
@@ -1039,7 +911,7 @@
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -1090,10 +962,10 @@
             //console.log('record:' + JSON.stringify(record));
             var id = record.categoryId;
             DynamicForm_Skill_Skill.clearValues();
-            RestDataSource_Skill_SubCategory.fetchDataURL = "${restApiUrl}/api/category/" + id + "/sub-categories";
+            RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl+"/" + id + "/sub-categories";
             DynamicForm_Skill_Skill.getItem("subCategoryId").fetchData();
             skill_Method = "PUT";
-            skill_ActionUrl = skill_SkillUrl + record.id;
+            skill_ActionUrl = skill_SkillHomeUrl +"/" + record.id;
             DynamicForm_Skill_Skill.editRecord(record);
             DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
@@ -1110,7 +982,7 @@
 
     function ListGrid_Skill_Skill_Add() {
         skill_Method = "POST";
-        skill_ActionUrl = "${restApiUrl}/api/skill";
+        skill_ActionUrl = skill_SkillHomeUrl;
         DynamicForm_Skill_Skill.clearValues();
         DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
@@ -1154,18 +1026,18 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
+                <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
+window.open(skill_SkillHomeUrl+"/print-all/pdf");
             }
         }, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
-                window.open('${printUrl}');
+                <%--"<spring:url value="/skill/print-all/excel" var="printUrl"/>"--%>
+window.open(skill_SkillHomeUrl+"/print-all/excel");
             }
         }, {
             title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                "<spring:url value="/skill/print-all/html" var="printUrl"/>"
-                window.open('${printUrl}');
+                <%--"<spring:url value="/skill/print-all/html" var="printUrl"/>"--%>
+                window.open(skill_SkillHomeUrl+"/print-all/html");
             }
         }]
     });
@@ -1197,15 +1069,15 @@
         selectionChanged: function (record, state) {
             if (record == null) {
                 skill_selectedSkillId = -1;
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/job-dummy";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/skill-group-dummy";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl+"/competence-dummy";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/course-dummy";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl+"/job-dummy";
             } else {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/jobs";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/" + record.id + "/skill-groups";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/competences";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/jobs";
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
@@ -1229,15 +1101,15 @@
         dataArrived: function (startRow, endRow) {
             record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null) {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/job-dummy";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/skill-group-dummy";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/competence-dummy";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/course-dummy";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl + "/job-dummy";
             } else {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/jobs";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
+                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/competences";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/jobs";
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
@@ -1268,10 +1140,6 @@
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
-            <%--skill_Method = "POST";--%>
-            <%--skill_ActionUrl = "${restApiUrl}/api/skill";--%>
-            <%--DynamicForm_Skill_Skill.clearValues();--%>
-            <%--Window_Skill_Skill.show();--%>
             ListGrid_Skill_Skill_Add();
         }
     });
@@ -1286,8 +1154,9 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
-            window.open('${printUrl}');
+            <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
+<%--console.log('${printUrl}')   ;--%>
+window.open(skill_SkillHomeUrl+"/print-all/pdf");
         }
     });
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
@@ -1315,10 +1184,10 @@
                 var skillGroupRecord = ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord();
                 var skillGroupId = skillGroupRecord.id;
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-skill-group/" + skillGroupId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
                     httpMethod: "POST",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -1350,10 +1219,10 @@
                 }
                 var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-skill-group-list/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-skill-group-list/" + skillId,
                     httpMethod: "POST",
                     data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1380,10 +1249,10 @@
                 var skillGroupId = skillGroupRecord.id;
 // var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-skill-group/" + skillGroupId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1415,10 +1284,10 @@
                 }
 // var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1512,10 +1381,10 @@
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-skill-group/" + skillGroupId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
                 httpMethod: "POST",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1570,10 +1439,10 @@
             var skillGroupId = skillGroupRecord.id;
 
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-skill-group/" + skillGroupId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1715,8 +1584,8 @@
                 }
             });
         } else {
-            RestDataSource_Skill_UnAttached_SkillGroups.fetchDataURL = skill_SkillUrl + record.id + "/unattached-skill-groups";
-            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillUrl + record.id + "/skill-groups";
+            RestDataSource_Skill_UnAttached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/unattached-skill-groups";
+            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
             ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
             ListGrid_Skill_Selected_SkillGroup.invalidateCache();
             DynamicForm_Skill_SkillData_Add_SkillGroup.invalidateCache();
@@ -1734,15 +1603,16 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null) {
             skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/skill-group-dummy";
+            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/skill-group-dummy";
         } else {
-            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/skill-groups";
+            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
             selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_SkillGroups.invalidateCache();
     };
 
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
+
     // Start Block Add Competence To Skill ---------------------------------------------------------------
     var ToolStripButton_Skill_AddCompetence_Select_Single = isc.ToolStripButton.create({
         width: 300,
@@ -1754,10 +1624,10 @@
                 var competenceRecord = ListGrid_Skill_UnAttached_Competence.getSelectedRecord();
                 var competenceId = competenceRecord.id;
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-competence/" + competenceId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-competence/" + competenceId + "/" + skillId,
                     httpMethod: "POST",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -1785,10 +1655,10 @@
                 }
                 var JSONObj = {"ids": competenceIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-competence-list/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-competence-list/" + skillId,
                     httpMethod: "POST",
                     data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1814,10 +1684,10 @@
                 var competenceRecord = ListGrid_Skill_Selected_Competence.getSelectedRecord();
                 var competenceId = competenceRecord.id;
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-competence/" + competenceId + "/" + skillId,
                     httpMethod: "DELETE",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -1848,10 +1718,10 @@
                 }
 // var JSONObj = {"ids": competenceIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-competence-list/" + competenceIds + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-competence-list/" + competenceIds + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1945,10 +1815,10 @@
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-competence/" + competenceId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/add-competence/" + competenceId + "/" + skillId,
                 httpMethod: "POST",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -2003,10 +1873,10 @@
             var competenceId = competenceRecord.id;
 
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-competence/" + competenceId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/remove-competence/" + competenceId + "/" + skillId,
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -2148,8 +2018,8 @@
                 }
             });
         } else {
-            RestDataSource_Skill_UnAttached_Competences.fetchDataURL = skill_SkillUrl + record.id + "/unattached-competences";
-            RestDataSource_Skill_Attached_Competences.fetchDataURL = skill_SkillUrl + record.id + "/competences";
+            RestDataSource_Skill_UnAttached_Competences.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/unattached-competences";
+            RestDataSource_Skill_Attached_Competences.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/competences";
             ListGrid_Skill_UnAttached_Competence.invalidateCache();
             ListGrid_Skill_Selected_Competence.invalidateCache();
             DynamicForm_Skill_SkillData_Add_Competence.invalidateCache();
@@ -2167,9 +2037,9 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null) {
             skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/competence-dummy";
+            RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/competence-dummy";
         } else {
-            RestDataSource_Skill_Attached_Competences.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/competences";
+            RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/competences";
             selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_Competences.invalidateCache();
@@ -2189,10 +2059,10 @@
                 var courseRecord = ListGrid_Skill_UnAttached_Course.getSelectedRecord();
                 var courseId = courseRecord.id;
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-course/" + courseId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
                     httpMethod: "POST",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -2224,10 +2094,10 @@
                 }
                 var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/add-course-list/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/add-course-list/" + skillId,
                     httpMethod: "POST",
                     data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -2254,10 +2124,10 @@
                 var courseId = courseRecord.id;
 // var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-course/" + courseId + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -2289,10 +2159,10 @@
                 }
 // var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL: "${restApiUrl}/api/skill/remove-course-list/" + courseIds + "/" + skillId,
+                    actionURL:  skill_SkillHomeUrl + "/remove-course-list/" + courseIds + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -2386,10 +2256,10 @@
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/add-course/" + courseId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
                 httpMethod: "POST",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -2444,10 +2314,10 @@
             var courseId = courseRecord.id;
 
             isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: "${restApiUrl}/api/skill/remove-course/" + courseId + "/" + skillId,
+                actionURL:  skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -2589,8 +2459,8 @@
                 }
             });
         } else {
-            RestDataSource_Skill_UnAttached_Courses.fetchDataURL = skill_SkillUrl + record.id + "/unattached-courses";
-            RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillUrl + record.id + "/courses";
+            RestDataSource_Skill_UnAttached_Courses.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/unattached-courses";
+            RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/courses";
             ListGrid_Skill_UnAttached_Course.invalidateCache();
             ListGrid_Skill_Selected_Course.invalidateCache();
             DynamicForm_Skill_SkillData_Add_Course.invalidateCache();
@@ -2608,9 +2478,9 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null) {
             skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/course-dummy";
+            RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/course-dummy";
         } else {
-            RestDataSource_Skill_Attached_Courses.fetchDataURL = "${restApiUrl}/api/skill/" + record.id + "/courses";
+            RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/courses";
             selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_Courses.invalidateCache();

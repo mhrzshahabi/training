@@ -24,26 +24,50 @@ public class Institute {
     @Column(name = "id", precision = 10)
     private long id;
 
-    @Column(name = "c_code", nullable = false)
-    private String code;
-
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
     @Column(name = "c_title_en", nullable = false)
     private String titleEn;
 
-    @Column(name = "c_phone")
-    private String telephone;
+    @ManyToOne
+    @JoinColumn(name = "f_contact_info", insertable = false, updatable = false)
+    private ContactInfo contactInfo;
 
-    @Column(name = "c_address")
-    private String address;
+    @Column(name ="f_contact_info")
+    private Long contactInfoId;
 
-    @Column(name = "c_email")
-    private String email;
+    @ManyToOne
+    @JoinColumn(name = "f_account_info", insertable = false, updatable = false)
+    private AccountInfo accountInfo;
 
-    @Column(name = "c_postalCode")
-    private String postalCode;
+    @Column(name ="f_account_info")
+    private Long accountInfoId;
+
+//    @ManyToOne
+//    @JoinColumn(name = "f_manager", insertable = false, updatable = false)
+//    private Person manager;
+//
+//    @Column(name ="f_manager", insertable = false, updatable = false)
+//    private Long managerId;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_institute_teacher",schema = "training",
+            joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name="f_teacher",referencedColumnName = "id")})
+    private Set<Teacher> teacherSet;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_institute_equipment",schema = "training",
+            joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
+    private Set<Equipment> equipmentSet;
+
+//    private Integer teacherNumPHD;
+//    private Integer empNumPHD;
+//
+//    private Integer teacherNumPHD;
+//    private Integer empNumPHD;
 
     @Column(name = "e_institute_type" ,  insertable = false, updatable = false)
     private EInstituteType eInstituteType;

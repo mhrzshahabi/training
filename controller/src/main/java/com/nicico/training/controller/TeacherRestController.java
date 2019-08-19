@@ -101,10 +101,10 @@ public class TeacherRestController {
         try {
             final Optional<Teacher> cById = teacherDAO.findById(id);
             final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-            if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
-                File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
-                file1.delete();
-            }
+//            if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
+//                File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
+//                file1.delete();
+//            }
             teacherService.delete(id);
             return new ResponseEntity(true, HttpStatus.OK);
         } catch (Exception ex) {
@@ -204,10 +204,10 @@ public class TeacherRestController {
             if (!file.isEmpty()) {
                 final Optional<Teacher> cById = teacherDAO.findById(Id);
                 final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-                if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
-                    File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
-                    file1.delete();
-                }
+//                if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
+//                    File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
+//                    file1.delete();
+//                }
                 String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
 //        			changedFileName = file.getOriginalFilename().replace(file.getOriginalFilename(), Id.toString() + "_" +currentDate + "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
                 changedFileName = Id.toString() + "_" + currentDate + "_" + file.getOriginalFilename();
@@ -215,7 +215,7 @@ public class TeacherRestController {
                 file.transferTo(destinationFile);
                 fileInfo.setFileName(destinationFile.getPath());
                 fileInfo.setFileSize(file.getSize());
-                teacher.setAttachPhoto(changedFileName);
+//                teacher.setAttachPhoto(changedFileName);
             } else
                 return new ResponseEntity<>(changedFileName, HttpStatus.NO_CONTENT);
 
@@ -287,15 +287,16 @@ public class TeacherRestController {
     public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap, @PathVariable Long Id) {
         final Optional<Teacher> cById = teacherDAO.findById(Id);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        String fileName = teacher.getAttachPhoto();
-        File file = new File(teacherUploadDir + "/" + fileName);
-        try {
-            return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
+//        String fileName = teacher.getAttachPhoto();
+//        File file = new File(teacherUploadDir + "/" + fileName);
+//        try {
+//            return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
+//
+//        } catch (FileNotFoundException e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+return null;
     }
 
 
@@ -304,16 +305,17 @@ public class TeacherRestController {
     public ResponseEntity<Boolean> checkAttach(@PathVariable Long Id) {
         final Optional<Teacher> cById = teacherDAO.findById(Id);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        String fileName = teacher.getAttachPhoto();
-        try {
-            if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
-                return new ResponseEntity<Boolean>(false, HttpStatus.OK);
-            else
-                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-        } catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
+//        String fileName = teacher.getAttachPhoto();
+//        try {
+//            if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
+//                return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+//            else
+//                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            return null;
+//        }
+return null;
     }
 
 

@@ -19,8 +19,6 @@ import javax.servlet.http.HttpServletRequest;
 @RequestMapping("/classReport")
 public class ClassReportFormController {
 
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
 
 	@RequestMapping("/show-form")
 	public String showForm() {
@@ -29,7 +27,7 @@ public class ClassReportFormController {
 
 	@PostMapping("/print")
 	public ResponseEntity<?> print(final HttpServletRequest request) {
-		String token = (String) request.getSession().getAttribute("token");
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -44,6 +42,7 @@ public class ClassReportFormController {
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 		return restTemplate.exchange(restApiUrl + "/api/classReport/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
 	}
 }

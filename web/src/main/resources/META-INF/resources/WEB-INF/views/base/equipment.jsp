@@ -5,54 +5,55 @@
 
 //<script>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+    <%
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
 
 
-    var skillLevelMethod = "get";
-    var skillLevelHomeUrl= rootUrl + "/skill-level";
-    var skillLevelActionUrl = skillLevelHomeUrl;
-    var Menu_ListGrid_skill_level = isc.Menu.create({
+    var equipmentMethod = "get";
+    var equipmentHomeUrl = rootUrl + "/equipment";
+    var equipmentActionUrl = equipmentHomeUrl;
+    var Menu_ListGrid_Equipment = isc.Menu.create({
         width: 150,
         data: [{
             title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-                ListGrid_skill_level_refresh();
+                ListGrid_Equipment_refresh();
             }
         }, {
             title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-                ListGrid_skill_level_Add();
+                ListGrid_Equipment_Add();
             }
         }, {
             title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
-                ListGrid_skill_level_edit();
+                ListGrid_Equipment_edit();
             }
         }, {
             title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
-                ListGrid_skill_level_remove();
+                ListGrid_Equipment_remove();
             }
         },]
     });
-    var RestDataSource_skill_level = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}, {name: "titleEn"},
-            {name: "version"}
+    var RestDataSource_Equipment = isc.MyRestDataSource.create({
+        fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}, {name: "titleEn"},
+            {name: "description"}
         ],
 
-        fetchDataURL: skillLevelHomeUrl + "/spec-list"
+        fetchDataURL: equipmentHomeUrl + "/spec-list"
     });
-    var ListGrid_skill_level = isc.ListGrid.create({
+    var ListGrid_Equipment = isc.ListGrid.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_skill_level,
-        contextMenu: Menu_ListGrid_skill_level,
+        dataSource: RestDataSource_Equipment,
+        contextMenu: Menu_ListGrid_Equipment,
         doubleClick: function () {
-            ListGrid_skill_level_edit();
+            ListGrid_Equipment_edit();
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد", align: "center"},
             {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "version", title: "version", canEdit: false, hidden: true}],
+            {name: "titleEn", title: "نام لاتین ", align: "center"}
+        ],
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -66,10 +67,10 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن",
     });
-    var DynamicForm_skill_level = isc.DynamicForm.create({
+    var DynamicForm_Equipment = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
-        setMethod: skillLevelMethod,
+        setMethod: equipmentMethod,
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
@@ -83,6 +84,23 @@
         margin: 10,
         newPadding: 5,
         fields: [{name: "id", hidden: true},
+            {
+                name: "code",
+                title: "کد",
+                required: true,
+                type: 'text',
+                hint: "Persian/فارسی",
+                keyPressFilter: "[a-z|A-Z|0-9 ]",
+                length: "50",
+                validators: [{
+                    validateOnExit: true,
+                    type: "lengthRange",
+                    min: 1,
+                    max: 20,
+                    stopOnError: true,
+                    errorMessage: "تعداد کاراکتر مجاز بین 1 تا 20 می باشد. "
+                }]
+            },
             {
                 name: "titleFa",
                 title: "نام فارسی",
@@ -99,7 +117,9 @@
                     stopOnError: true,
                     errorMessage: "تعداد کاراکتر مجاز بین 1 تا 250 می باشد. "
                 }]
-            }, {
+            },
+
+            {
                 name: "titleEn",
                 title: "نام لاتین ",
                 type: 'text',
@@ -115,21 +135,30 @@
                     errorMessage: "تعداد کاراکتر مجاز بین 0 تا 250 می باشد. "
                 }]
 
-            }]
+            },
+            {
+                name: "description",
+                showHintInField: true,
+                title: "توضيحات",
+                length: "500",
+                width: "700",
+                type: 'areaText'
+            }
+        ]
     });
 
 
-    var IButton_skill_level_Save = isc.IButton.create({
+    var IButton_Equipment_Save = isc.IButton.create({
         top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
 
-            DynamicForm_skill_level.validate();
-            if (DynamicForm_skill_level.hasErrors()) {
+            DynamicForm_Equipment.validate();
+            if (DynamicForm_Equipment.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_skill_level.getValues();
+            var data = DynamicForm_Equipment.getValues();
             isc.RPCManager.sendRequest({
-                actionURL: skillLevelActionUrl,
-                httpMethod: skillLevelMethod,
+                actionURL: equipmentActionUrl,
+                httpMethod: equipmentMethod,
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
@@ -146,8 +175,8 @@
                         setTimeout(function () {
                             OK.close();
                         }, 2000);
-                        ListGrid_skill_level_refresh();
-                        Window_skill_level.close();
+                        ListGrid_Equipment_refresh();
+                        Window_Equipment.close();
                     } else {
                         var ERROR = isc.Dialog.create({
                             message: ("اجرای عملیات با مشکل مواجه شده است!"),
@@ -162,7 +191,7 @@
             });
         }
     });
-    var skill_levelSaveOrExitHlayout = isc.HLayout.create({
+    var EquipmentSaveOrExitHlayout = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -170,7 +199,7 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_skill_level_Save, isc.IButton.create({
+        members: [IButton_Equipment_Save, isc.IButton.create({
             ID: "courseEditExitIButton",
             title: "لغو",
             prompt: "",
@@ -178,11 +207,11 @@
             icon: "pieces/16/icon_delete.png",
             orientation: "vertical",
             click: function () {
-                Window_skill_level.close();
+                Window_Equipment.close();
             }
         })]
     });
-    var Window_skill_level = isc.Window.create({
+    var Window_Equipment = isc.Window.create({
         title: "سطح استاندارد مهارت",
         width: 500,
         autoSize: true,
@@ -199,24 +228,24 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_skill_level, skill_levelSaveOrExitHlayout]
+            members: [DynamicForm_Equipment, EquipmentSaveOrExitHlayout]
         })]
     });
 
-    function ListGrid_skill_level_refresh() {
-        var record = ListGrid_skill_level.getSelectedRecord();
+    function ListGrid_Equipment_refresh() {
+        var record = ListGrid_Equipment.getSelectedRecord();
         if (record == null || record.id == null) {
         } else {
-            ListGrid_skill_level.selectRecord(record);
+            ListGrid_Equipment.selectRecord(record);
         }
-        ListGrid_skill_level.invalidateCache();
+        ListGrid_Equipment.invalidateCache();
     };
 
-    function ListGrid_skill_level_remove() {
+    function ListGrid_Equipment_remove() {
 
 
-        var record = ListGrid_skill_level.getSelectedRecord();
-        //console.log(record);
+        var record = ListGrid_Equipment.getSelectedRecord();
+//console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "سطح مهارتی برای حذف انتخاب نشده است!",
@@ -245,7 +274,7 @@
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: skillLevelHomeUrl +"/" + record.id,
+                            actionURL: equipmentHomeUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -255,7 +284,7 @@
                             callback: function (resp) {
                                 wait.close();
                                 if (resp.data == "true") {
-                                    ListGrid_skill_level.invalidateCache();
+                                    ListGrid_Equipment.invalidateCache();
                                     var OK = isc.Dialog.create({
                                         message: "سطح مهارت با موفقيت حذف گرديد",
                                         icon: "[SKIN]say.png",
@@ -285,17 +314,17 @@
     };
 
 
-    function ListGrid_skill_level_Add() {
-        skillLevelMethod = "POST";
-        skillLevelActionUrl = skillLevelHomeUrl;
-        DynamicForm_skill_level.clearValues();
-        Window_skill_level.setTitle("ایجاد سطح مهارت جدید");
-        Window_skill_level.show();
+    function ListGrid_Equipment_Add() {
+        equipmentMethod = "POST";
+        equipmentActionUrl = equipmentHomeUrl;
+        DynamicForm_Equipment.clearValues();
+        Window_Equipment.setTitle("ایجاد سطح مهارت جدید");
+        Window_Equipment.show();
     };
 
 
-    function ListGrid_skill_level_edit() {
-        var record = ListGrid_skill_level.getSelectedRecord();
+    function ListGrid_Equipment_edit() {
+        var record = ListGrid_Equipment.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است.",
@@ -307,11 +336,11 @@
                 }
             });
         } else {
-            skillLevelMethod = "PUT";
-            skillLevelActionUrl = skillLevelHomeUrl+ "/" + record.id;
-            DynamicForm_skill_level.editRecord(record);
-            Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
-            Window_skill_level.show();
+            equipmentMethod = "PUT";
+            equipmentActionUrl = equipmentHomeUrl + "/" + record.id;
+            DynamicForm_Equipment.editRecord(record);
+            Window_Equipment.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
+            Window_Equipment.show();
         }
     };
 
@@ -320,28 +349,28 @@
         icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی اطلاعات",
         click: function () {
-            ListGrid_skill_level_refresh();
+            ListGrid_Equipment_refresh();
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
-            ListGrid_skill_level_edit();
+            ListGrid_Equipment_edit();
         }
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
-            ListGrid_skill_level_Add();
+            ListGrid_Equipment_Add();
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
-            ListGrid_skill_level_remove();
+            ListGrid_Equipment_remove();
         }
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
@@ -349,5 +378,5 @@
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove]
     });
     var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
-    var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_skill_level]});
+    var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_Equipment]});
     var VLayout_Body = isc.VLayout.create({width: "100%", height: "100%", members: [HLayout_Actions, HLayout_Grid]});
