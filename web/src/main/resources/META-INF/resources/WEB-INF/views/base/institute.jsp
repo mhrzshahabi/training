@@ -294,7 +294,7 @@
             }
             var data = DynamicForm_Institute_JspInstitute.getValues();
 
-            var inatituteSaveUrl = instituteUrl;
+            var instituteSaveUrl = instituteUrl;
             if (instituteMethod.localeCompare("PUT") == 0) {
                 var instituteRecord = ListGrid_Institute_JspInstitute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
