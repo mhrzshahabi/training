@@ -564,7 +564,7 @@
 
     var termButton = isc.IconButton.create({
         title: "ترم",
-        icon: "pieces/512/course.png",
+        icon: "pieces/512/term.png",
         largeIcon: "pieces/512/term.png",
         orientation: "vertical",
         click: function () {
