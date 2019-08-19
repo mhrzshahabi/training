@@ -1,6 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 //<script>
 
@@ -11,43 +15,41 @@
  //************************************************************************************
     // RestDataSource & ListGrid
  //************************************************************************************
-	var RestDataSource_course = isc.RestDataSource.create({
-		fields: [
-			{name: "id"},
-			{name: "titleFa"},
-			{name: "titleEn"},
-			{name: "code"},
-			{name: "version"},
-			{name: "duration"},
-
-		], dataFormat: "json",
-		jsonPrefix: "",
-		jsonSuffix: "",
-		transformRequest: function (dsRequest) {
-			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
-			};
-			return this.Super("transformRequest", arguments);
-		},
-		fetchDataURL: "${restApiUrl}/api/course/spec-list"
-	});
+ 	var RestDataSource_term = isc.MyRestDataSource.create({
+        ID: "termDS",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fields: [{name: "id", primaryKey: true},
+         {name: "titleFa"},
+         {name: "code"},
+         {name: "titleFa"},
+         {name: "startDate"},
+          {name: "endDate"},
+        ], dataFormat: "json",
+        fetchDataURL: termUrl + "spec-list",
+        autoFetchData: true,
+    });
 	var ListGrid_Term = isc.MyListGrid.create({
 
-		//dataSource: RestDataSource_course,
-	//	contextMenu: Menu_ListGrid_course,
-    //    autoFetchData: true,
-
+		 dataSource: RestDataSource_term,
+		// contextMenu: Menu_ListGrid_term,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
 		doubleClick: function () {
 	    },
 		fields: [
 			{name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-			{name: "code", title: "کد", align: "center"},
-			{name: "titleFa", title: "نام ", align: "center"},
-			{name: "startDate", title: "شروع", align: "center"},
-			{name: "endDate", title: "پایان", align: "center"},
-			{name: "description", title: "توضیحات", align: "center"},
-			{name: "version", title: "version",hidden: true}
+			{name: "code", title: "کد", align: "center", filterOperator: "contains"},
+			{name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
+			{name: "startDate", title: "شروع", align: "center", filterOperator: "contains"},
+			{name: "endDate", title: "پایان", align: "center", filterOperator: "contains"},
+			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
 		],
 		sortField: 0,
 	});
@@ -55,11 +57,8 @@
 			//DynamicForm & Window
 //*************************************************************************************
 	var DynamicForm_Term = isc.MyDynamicForm.create({
-		 ID: "DF_TERM",
-		// numCols: 2,
-		// margin: 10,
-		// newPadding: 5,
-		fields: [{name: "id", hidden: true},
+		 ID: "DynamicForm_Term",
+			fields: [{name: "id", hidden: true},
 		 {
 			name: "code",
 			title: "کد",
@@ -160,92 +159,22 @@
 
 		]
 	});
-
-	var IButton_course_Save = isc.IButton.create({
-		top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
-
-			DynamicForm_Term.validate();
-			if (DynamicForm_Term.hasErrors()) {
-				return;
-			}
-			var data = DynamicForm_Term.getValues();
-
-			isc.RPCManager.sendRequest({
-				actionURL: termUrl,
-				httpMethod: term_method,
-				httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-				useSimpleHttp: true,
-				contentType: "application/json; charset=utf-8",
-				showPrompt: false,
-				data: JSON.stringify(data),
-				serverOutputAsString: false,
-				callback: function (resp) {
-					if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-						var OK = isc.Dialog.create({
-							message: "عملیات با موفقیت انجام شد.",
-							icon: "[SKIN]say.png",
-							title: "انجام فرمان"
-						});
-						setTimeout(function () {
-							OK.close();
-						}, 3000);
-						ListGrid_course_refresh();
-						Windows_Term.close();
-					} else {
-						var ERROR = isc.Dialog.create({
-							message: ("اجرای عملیات با مشکل مواجه شده است!"),
-							icon: "[SKIN]stop.png",
-							title: "پیغام"
-						});
-						setTimeout(function () {
-							ERROR.close();
-						}, 3000);
-					}
-
-				}
-			});
-		}
-	});
-
-	var courseSaveOrExitHlayout = isc.HLayout.create({
-		layoutMargin: 5,
-		showEdges: false,
-		edgeImage: "",
-		width: "100%",
-		alignLayout: "center",
-		padding: 10,
-		membersMargin: 10,
-		members: [IButton_course_Save, isc.IButton.create({
-			ID: "courseEditExitIButton",
-			title: "لغو",
-			prompt: "",
-			width: 100,
-			icon: "pieces/16/icon_delete.png",
-			orientation: "vertical",
-			click: function () {
-				Windows_Term.close();
-			}
-		})]
-	});
-
-	var Windows_Term = isc.MyWindow.create({
-		title: "ترم",
-		width: 500,
-	    closeClick: function () {
-			this.Super("closeClick", arguments);
-		},
-		items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-			 members: [isc.MyButton.create({
+	var Window_term = isc.MyWindow.create({
+		title: "دوره",
+		 width: 500,
+		items: [DynamicForm_Term,isc.MyHLayoutButtons.create({
+            members: [isc.MyButton.create({
                 title: "ذخیره",
                 icon: "pieces/16/save.png",
                 click: function () {
+                    save_Term();
 
                 }
             }), isc.MyButton.create({
                 title: "لغو",
                 icon: "pieces/16/icon_delete.png",
                 click: function () {
-                    Windows_Term.close();
+                    Window_term.close();
                 }
             })],
         }),]
@@ -272,9 +201,7 @@
 		title: "ایجاد",
 		click: function () {
 			term_method = "POST";
-			//termUrl = "${restApiUrl}/api/course";
-			DynamicForm_Term.clearValues();
-			Windows_Term.show();
+		   show_TermNewForm();
 
 		}
 	});
@@ -294,7 +221,7 @@
 		width: "100%",
 		members: [ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Refresh, ToolStripButton_Print]
 	});
-	var Menu_ListGrid_course = isc.Menu.create({
+	var Menu_ListGrid_term = isc.Menu.create({
 		width: 150,
 		data: [{
 			title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
@@ -329,8 +256,7 @@
 		}]
 	});
 
-
-    var HLayout_Actions_Group = isc.HLayout.create({
+	var HLayout_Actions_Group = isc.HLayout.create({
 		width: "100%",
 		members: [ToolStrip_Actions]
 	});
@@ -350,115 +276,46 @@
 		]
 	});
 
-	function ListGrid_Term_edit() {
-		var record = ListGrid_Course.getSelectedRecord();
-		if (record == null || record.id == null) {
-			isc.Dialog.create({
-				message: "رکوردی انتخاب نشده است.",
-				icon: "[SKIN]ask.png",
-				title: "پیغام",
-				buttons: [isc.Button.create({title: "تائید"})],
-				buttonClick: function (button, index) {
-					this.close();
-				}
-			});
-		} else {
-			term_method = "PUT";
-			//termUrl = "${restApiUrl}/api/course/" + record.id;
-			DynamicForm_Term.editRecord(record);
-			Windows_Term.show();
-		}
-	};
+ function  show_TermNewForm()
+{
+        term_method = "POST";
+      	DynamicForm_Term.clearValues();
+       	Window_term.show();
+    };
 
-	function ListGrid_Term_remove() {
-
-
-		var record = ListGrid_Course.getSelectedRecord();
-
-		if (record == null) {
-			isc.Dialog.create({
-				message: "<spring:message code='global.grid.record.not.selected'/> !",
-				icon: "[SKIN]ask.png",
-				title: "<spring:message code='global.message'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-				buttonClick: function (button, index) {
-					this.close();
-				}
-			});
-		} else {
-			var Dialog_Delete = isc.Dialog.create({
-				message: "<spring:message code='global.grid.record.remove.ask'/>",
-				icon: "[SKIN]ask.png",
-				title: "<spring:message code='global.grid.record.remove.ask.title'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
-					title: "<spring:message
-		code='global.no'/>"
-				})],
-				buttonClick: function (button, index) {
-					this.close();
-
-					if (index == 0) {
-						var wait = isc.Dialog.create({
-							message: "<spring:message code='global.form.do.operation'/>",
-							icon: "[SKIN]say.png",
-							title: "<spring:message code='global.message'/>"
-						});
-						isc.RPCManager.sendRequest({
-							actionURL: "${restApiUrl}/api/course/" + record.id,
-							httpMethod: "DELETE",
-							useSimpleHttp: true,
-							contentType: "application/json; charset=utf-8",
-							httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-							showPrompt: true,
-							serverOutputAsString: false,
-							callback: function (resp) {
-								wait.close();
-								if (resp.httpResponseCode == 200) {
-									ListGrid_Course.invalidateCache();
-									var OK = isc.Dialog.create({
-										message: "<spring:message code='global.form.request.successful'/>",
-										icon: "[SKIN]say.png",
-										title: "<spring:message code='global.form.command.done'/>"
-									});
-									setTimeout(function () {
-										OK.close();
-									}, 3000);
-								} else {
-									var ERROR = isc.Dialog.create({
-										message: "<spring:message code='global.grid.record.cannot.deleted'/>",
-										icon: "[SKIN]stop.png",
-										title: "<spring:message code='global.message'/>"
-									});
-									setTimeout(function () {
-										ERROR.close();
-									}, 3000);
-								}
-							}
-						});
-					}
-				}
-			});
-		}
-	};
-
-	function ListGrid_Term_refresh() {
-		var record = ListGrid_Course.getSelectedRecord();
-		if (record == null || record.id == null) {
-		} else {
-			ListGrid_Course.selectRecord(record);
-		}
-		ListGrid_Course.invalidateCache();
-	};
-
-	function ListGrid_Term_save() {
+    function  save_Term() {
         if (!DynamicForm_Term.validate()) {
             return;
         }
         var termData = DynamicForm_Term.getValues();
         var termSaveUrl = termUrl;
-        if (term_method .localeCompare("PUT") == 0) {
-            var termRecord = ListGrid_Term.getSelectedRecord();
-            termSaveUrl += termRecord.id;
+        if (term_method.localeCompare("PUT") == 0) {
+            var jobRecord = ListGrid_Term.getSelectedRecord();
+           termSaveUrl += jobRecord.id;
         }
-        isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback: show_JobActionResult(rpcResponse)"));
+        isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback: show_TermActionResult(rpcResponse)"));
     };
+    function  show_TermActionResult(resp) {
+        var respCode = resp.httpResponseCode;
+        if (respCode == 200 || respCode == 201) {
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+
+          Window_term.close();
+
+        } else {
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+        }
+    };
+
