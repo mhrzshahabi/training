@@ -1308,7 +1308,7 @@
         formData1.append("file", file);
         if (file != undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", "${contextPath}/api/teacher/addAttach/" + teacherId);
+            request.open("POST", teacherUrl + "addAttach/" + teacherId);
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {
@@ -1336,7 +1336,7 @@
         formData1.append("file", file);
         if (file !== undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", "${contextPath}/api/teacher/addTempAttach");
+            request.open("POST", teacherUrl + "addTempAttach");
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {
