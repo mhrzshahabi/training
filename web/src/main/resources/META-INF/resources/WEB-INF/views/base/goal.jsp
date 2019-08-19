@@ -445,6 +445,7 @@
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
+        allowAdvancedCriteria: true,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",

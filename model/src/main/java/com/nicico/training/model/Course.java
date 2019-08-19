@@ -108,7 +108,9 @@ public class Course extends Auditable {
     @Transient
     private Long attitude = Long.valueOf(0);
 
-    @ElementCollection
+    @ElementCollection()
+//    @CollectionTable(name="tbl_course", joinColumns=@JoinColumn(name="id"))
+    @Column(name="list_pre_course")
     protected List<Long> preCourse = new ArrayList<>();
 
 //    @Transient
@@ -130,6 +132,7 @@ public class Course extends Auditable {
 //        return x;
 //    }
 
-//    @OneToMany(mappedBy = "course")
-//    private Set<PreCourse> preCourseSet;
+    @OneToMany()
+    @JoinColumn(name = "f_course",insertable = false, updatable = false)
+    private Set<EqualCourse> equalCourseSet;
 }
