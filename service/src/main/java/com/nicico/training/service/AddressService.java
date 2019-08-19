@@ -26,7 +26,7 @@ public class AddressService implements IAddressService {
     @Override
     public AddressDTO.Info get(Long id) {
         final Optional<Address> gById = addressDAO.findById(id);
-        final Address address = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AddressNotFound));
+        final Address address = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         return modelMapper.map(address, AddressDTO.Info.class);
     }
 
@@ -49,7 +49,7 @@ public class AddressService implements IAddressService {
     @Override
     public AddressDTO.Info update(Long id, AddressDTO.Update request) {
         final Optional<Address> cById = addressDAO.findById(id);
-        final Address address = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final Address address = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         Address updating = new Address();
         modelMapper.map(address, updating);
         modelMapper.map(request, updating);
@@ -60,7 +60,7 @@ public class AddressService implements IAddressService {
     @Override
     public void delete(Long id) {
         final Optional<Address> one = addressDAO.findById(id);
-        final Address address = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final Address address = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         addressDAO.delete(address);
     }
 

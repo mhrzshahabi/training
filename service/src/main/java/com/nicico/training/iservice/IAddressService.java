@@ -19,6 +19,4 @@ public interface IAddressService {
     void delete(AddressDTO.Delete request);
 
     SearchDTO.SearchRs<AddressDTO.Info> search(SearchDTO.SearchRq request);
-
-    //------------------------
 }

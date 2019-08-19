@@ -2,8 +2,6 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.City;
-import com.nicico.training.model.State;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -19,20 +17,20 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AddressDTO {
+public class ContactInfoDTO {
 
-    private String address;
-    private Long postCode;
-    private String phone;
-    private String fax;
-    private String webSite;
-    private Long cityId;
+    private String email;
+	private Long homeAdressId;
+    private Long workAdressId;
+    private String mobile;
+    private String personalWebSite;
+    private String description;
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AddressInfo")
-    public static class Info extends AddressDTO {
+    @ApiModel("ContactInfo")
+    public static class Info extends ContactInfoDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -44,8 +42,8 @@ public class AddressDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AddressCreateRq")
-    public static class Create extends AddressDTO {
+    @ApiModel("ContactInfoCreateRq")
+    public static class Create extends ContactInfoDTO {
     }
 
     // ------------------------------
@@ -53,8 +51,8 @@ public class AddressDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AddressUpdateRq")
-    public static class Update extends AddressDTO {
+    @ApiModel("ContactInfoUpdateRq")
+    public static class Update extends ContactInfoDTO {
     }
 
     // ------------------------------
@@ -62,7 +60,7 @@ public class AddressDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("AddressDeleteRq")
+    @ApiModel("ContactInfoDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -75,19 +73,19 @@ public class AddressDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("AddressSpecRs")
-    public static class AddressSpecRs {
-        private AddressDTO.SpecRs response;
+    @ApiModel("ContactInfoSpecRs")
+    public static class ContactInfoSpecRs {
+        private ContactInfoDTO.SpecRs response;
     }
 
-    // ---------------
+    // -------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<AddressDTO.Info> data;
+        private List<ContactInfoDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

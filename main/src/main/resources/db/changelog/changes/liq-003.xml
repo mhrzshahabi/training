@@ -218,13 +218,13 @@
     <changeSet author="razmnoosh (generated)" id="1566192861857-120">
         <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city" validate="true"/>
     </changeSet>
-    <!--<changeSet author="razmnoosh (generated)" id="1566192861857-29">-->
-        <!--<alterSequence sequenceName="seq_account_info_id"/>-->
-    <!--</changeSet>-->
-    <!--<changeSet author="razmnoosh (generated)" id="1566192861857-30">-->
-        <!--<alterSequence sequenceName="seq_address_id"/>-->
-    <!--</changeSet>-->
-    <!--<changeSet author="razmnoosh (generated)" id="1566192861857-34">-->
-        <!--<alterSequence sequenceName="seq_contact_info_id"/>-->
-    <!--</changeSet>-->
+
+    <changeSet author="razmnoosh (generated)" id="1566199229300-72">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="n_post_code" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566199229300-33">
+        <dropForeignKeyConstraint baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k"/>
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" referencedColumnNames="id" referencedTableName="tbl_city"/>
+    </changeSet>
+
 </databaseChangeLog>
