@@ -4,45 +4,25 @@
 
 // <script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Teacher_JspClassReport = isc.RestDataSource.create({
+    var RestDataSource_Teacher_JspClassReport = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "fullNameFa"},
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/teacher/spec-list"
+        ],
+        fetchDataURL: teacherUrl + "spec-list"
     });
 
-    var RestDataSource_Course_JspClassReport = isc.RestDataSource.create({
+    var RestDataSource_Course_JspClassReport = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "code"},
             {name: "titleFa"},
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/course/spec-list"
+        ],
+        fetchDataURL: courseUrl + "spec-list"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -192,7 +172,7 @@
             var advancedCriteria = DynamicForm_ReportConditions_JspClassReport.getValuesAsAdvancedCriteria();
             var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
-                action: "/classReport/print",
+                action: "<spring:url value="/classReport/print"/>",
                 target: "_Blank",
                 canSubmit: true,
                 fields:
