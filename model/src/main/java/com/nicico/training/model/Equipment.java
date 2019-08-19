@@ -22,18 +22,19 @@ public class Equipment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Equipment_seq")
     @SequenceGenerator(name = "Equipment_seq", sequenceName = "seq_Equipment_id", allocationSize = 1)
-    @Column(name = "id", precision = 10)
+    @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_title_fa", length = 255, nullable = false)
+    @Column(name = "c_code",length = 10)
+    private String code;
+
+    @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
-    @Column(name = "c_title_en", length = 255, nullable = false)
+    @Column(name = "c_title_en")
     private String titleEn;
 
-    @Column(name = "c_description", length = 255, nullable = false)
+    @Column(name = "c_description", length = 500)
     private String description;
 
-    @Column(name = "c_code", length = 255, nullable = false)
-    private String code;
 }

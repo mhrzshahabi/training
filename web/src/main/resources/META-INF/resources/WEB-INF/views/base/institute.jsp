@@ -2,12 +2,10 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
-
-    var method = "POST";
-    var url = "${restApiUrl}/api/institute";
+    var instituteMethod = "POST";
+    var instituteWait;
 
     var mailCheck = true;
 
@@ -15,7 +13,7 @@
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Institute_JspInstitute = isc.RestDataSource.create({
+    var RestDataSource_Institute_JspInstitute = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -29,49 +27,23 @@
             {name: "einstituteType.titleFa"},
             {name: "elicenseType.titleFa"},
             {name: "version"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/institute/spec-list"
+        ],
+        fetchDataURL: instituteUrl + "spec-list"
     });
 
 
-    var RestDataSource_EinstituteType_JspInstitute = isc.RestDataSource.create({
+    var RestDataSource_EinstituteType_JspInstitute = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: enumUrl + "eInstituteType/spec-list"
     });
 
-    var RestDataSource_ElicenseType_JspInstitute = isc.RestDataSource.create({
+    var RestDataSource_ElicenseType_JspInstitute = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
+        ],
         fetchDataURL: enumUrl + "eLicenseType/spec-list"
     });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -96,51 +68,15 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
-                var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/institute/printWithCriteria/pdf",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_institute_print("pdf");
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
-                var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/institute/printWithCriteria/excel",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_institute_print("excel");
             }
         }, {
             title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
-                var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();
-                var criteriaForm = isc.DynamicForm.create({
-                    method: "POST",
-                    action: "/institute/printWithCriteria/html",
-                    target: "_Blank",
-                    canSubmit: true,
-                    fields:
-                        [
-                            {name: "CriteriaStr", type: "hidden"}
-                        ]
-                });
-                criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-                criteriaForm.submitForm();
+                ListGrid_institute_print("html");
             }
         }]
     });
@@ -349,7 +285,7 @@
         icon: "pieces/16/save.png",
         click: function () {
 
-             if (mailCheck == false)
+            if (mailCheck == false)
                 return;
 
             DynamicForm_Institute_JspInstitute.validate();
@@ -358,43 +294,12 @@
             }
             var data = DynamicForm_Institute_JspInstitute.getValues();
 
-            isc.RPCManager.sendRequest({
-                actionURL: url,
-                httpMethod: method,
-                httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        var OK = isc.Dialog.create({
-                            message: "<spring:message code='msg.operation.successful'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='msg.command.done'/>"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                            ListGrid_Institute_JspInstitute.setSelectedState(gridState);
-                        }, 1000);
-                        ListGrid_institute_refresh();
-                        Window_Institute_JspInstitute.close();
-                    } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("<spring:message code='msg.operation.error'/>"),
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
-                    }
-
-                }
-            });
+            var instituteSaveUrl = instituteUrl;
+            if (instituteMethod.localeCompare("PUT") == 0) {
+                var instituteRecord = ListGrid_Institute_JspInstitute.getSelectedRecord();
+                instituteSaveUrl += instituteRecord.id;
+            }
+            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_action_result(rpcResponse)"));
         }
     });
 
@@ -473,19 +378,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "/institute/printWithCriteria/pdf",
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"}
-                    ]
-            });
-            criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-            criteriaForm.submitForm();
+            ListGrid_institute_print("pdf");
         }
     });
 
@@ -547,43 +440,12 @@
                     this.close();
 
                     if (index == 0) {
-                        var wait = isc.Dialog.create({
+                        instituteWait = isc.Dialog.create({
                             message: "<spring:message code='msg.waiting'/>",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/institute/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Institute_JspInstitute.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='msg.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.failed'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+                        isc.RPCManager.sendRequest(MyDsRequest(instituteUrl + record.id, "DELETE", null, "callback: institute_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -603,7 +465,7 @@
                 }
             });
         } else {
-            method = "PUT";
+            instituteMethod = "PUT";
             DynamicForm_Institute_JspInstitute.clearValues();
             url = "${restApiUrl}/api/institute/" + record.id;
             DynamicForm_Institute_JspInstitute.editRecord(record);
@@ -616,10 +478,78 @@
     };
 
     function ListGrid_institute_add() {
-        method = "POST";
+        instituteMethod = "POST";
         url = "${restApiUrl}/api/institute";
         DynamicForm_Institute_JspInstitute.clearValues();
         Window_Institute_JspInstitute.show();
+    };
+
+    function ListGrid_institute_print(type) {
+        var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/institute/printWithCriteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+    };
+
+    function institute_action_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            var responseID = JSON.parse(resp.data).id;
+            var gridState = "[{id:" + responseID + "}]";
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.operation.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+                ListGrid_Institute_JspInstitute.setSelectedState(gridState);
+            }, 1000);
+            ListGrid_institute_refresh();
+            Window_Institute_JspInstitute.close();
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.operation.error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+
+    };
+
+    function institute_delete_result(resp) {
+        instituteWait.close();
+        if (resp.httpResponseCode == 200) {
+            ListGrid_Institute_JspInstitute.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.failed'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
     };
 
     function checkEmail(email) {

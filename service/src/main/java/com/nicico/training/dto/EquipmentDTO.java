@@ -25,17 +25,14 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EquipmentDTO {
 
-    @NotNull
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String code;
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-    @NotNull
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String titleEn;
-    @NotNull
-    @ApiModelProperty(required = true)
+    @ApiModelProperty
     private String description;
 
     // ------------------------------
@@ -52,6 +49,26 @@ public class EquipmentDTO {
         private Integer version;
     }
     //-------------------------------
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EquipmentCreateRq")
+    public static class Create extends EquipmentDTO {
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EquipmentUpdateRq")
+    public static class Update extends EquipmentDTO {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer version;
+    }
+
+    // ------------------------------
 
     @Getter
     @Setter
@@ -88,25 +105,6 @@ public class EquipmentDTO {
     }
 
     //----------------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("EquipmentCreateRq")
-    public static class Create extends EquipmentDTO {
-    }
-
-    // ------------------------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("EquipmentUpdateRq")
-    public static class Update extends EquipmentDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
-    }
 
 
 }
