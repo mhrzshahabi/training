@@ -118,7 +118,6 @@
 	<%--});--%>
 
     isc.defineClass("MyListGrid", ListGrid);
-
     isc.MyListGrid.addProperties({
         width: "100%",
         height: "100%",
@@ -261,7 +260,7 @@
         cachePickListResults: true,
         changeOnKeypress: false,
         useClientFiltering: true,
-        width: "*",
+        width: "*"
     });
 
     isc.defineClass("MyOkDialog", Dialog);
@@ -269,7 +268,7 @@
     isc.MyOkDialog.addProperties({
         title: "<spring:message code='message'/>",
         isModal: true,
-        buttons: [isc.MyButton.create({title: "تائید",})],
+        buttons: [isc.MyButton.create({title: "تائید"})],
         icon: "[SKIN]say.png",
         buttonClick: function (button, index) {
             this.close();

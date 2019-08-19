@@ -1,0 +1,230 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="razmnoosh (generated)" id="1566192861857-84">
+        <createSequence sequenceName="seq_personalInfo_id"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-88">
+        <createTable tableName="tbl_acoount_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_acoount_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_account_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_bank_branch_code" type="NUMBER(19, 0)"/>
+            <column name="c_cart_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_shaba_number" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-89">
+        <createTable tableName="tbl_address">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_addressPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_fax" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_phone" type="VARCHAR2(255 CHAR)"/>
+            <column name="n_post_code" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_website" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_city" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-90">
+        <createTable tableName="tbl_contact_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_contact_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_email" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_home_address" type="NUMBER(19, 0)"/>
+            <column name="c_mobile" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_personal_webSite" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_work_address" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-92">
+        <createTable tableName="tbl_personalInfo">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personalInfoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_account_info" type="NUMBER(19, 0)"/>
+            <column name="c_attach_photo" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_contact_info" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="e_gender" type="NUMBER(10, 0)"/>
+            <column name="c_gender" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_married" type="NUMBER(10, 0)"/>
+            <column name="c_married" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_military" type="NUMBER(10, 0)"/>
+            <column name="c_military" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_edu_level" type="NUMBER(19, 0)"/>
+            <column name="f_edu_major" type="NUMBER(19, 0)"/>
+            <column name="f_edu_orientation" type="NUMBER(19, 0)"/>
+            <column name="c_father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_first_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_full_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_national_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_nationality" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_religion" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_job" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_name" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-93">
+        <createTable tableName="tbl_teacher">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_teacherPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_economical_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_economical_record_number" type="VARCHAR2(255 CHAR)"/>
+            <column name="b_enabled" type="NUMBER(1, 0)"/>
+            <column name="f_personality" type="NUMBER(19, 0)"/>
+            <column name="c_teacher_code" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-94">
+        <createTable tableName="tbl_teacher_category">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-100">
+        <addUniqueConstraint columnNames="n_post_code" constraintName="UC_TBL_ADDRESSN_POST_CODE_COL" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-101">
+        <addUniqueConstraint columnNames="c_national_code" constraintName="UC_TBL_PERSONALINFOC_NATIONAL_CODE_COL" tableName="tbl_personalInfo"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-102">
+        <addUniqueConstraint columnNames="c_teacher_code" constraintName="UC_TBL_TEACHERC_TEACHER_CODE_COL" tableName="tbl_teacher"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-104">
+        <addForeignKeyConstraint baseColumnNames="f_edu_level" baseTableName="tbl_personalInfo" constraintName="FK1osdsufxgq26de6y56was30o8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-106">
+        <addForeignKeyConstraint baseColumnNames="f_account_info" baseTableName="tbl_personalInfo" constraintName="FK26l1hq4qamkkfxnlq2py1hnrd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_acoount_info" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-108">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-109">
+        <addForeignKeyConstraint baseColumnNames="f_edu_major" baseTableName="tbl_personalInfo" constraintName="FK5qrpl9mycaubb0edr275udjbp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-110">
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_city" constraintName="FK796uthe94t6y9cd71cq0yiy74" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_state" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-111">
+        <addForeignKeyConstraint baseColumnNames="f_work_address" baseTableName="tbl_contact_info" constraintName="FK7hpk92bs7p1peunblhmvscsqk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-112">
+        <addForeignKeyConstraint baseColumnNames="f_home_address" baseTableName="tbl_contact_info" constraintName="FK8iu907lh4cia8b3oxdr94juxy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-113">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_category" constraintName="FK9i5416d4h83ib79admhqqo62n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-114">
+        <addForeignKeyConstraint baseColumnNames="f_personality" baseTableName="tbl_teacher" constraintName="FKannjj5bo9k1mk1qpudpf07egc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personalInfo" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-117">
+        <addForeignKeyConstraint baseColumnNames="f_edu_orientation" baseTableName="tbl_personalInfo" constraintName="FKg1lg8i075x5fyd8lpna7ylkkh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_orientation" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-119">
+        <addForeignKeyConstraint baseColumnNames="f_contact_info" baseTableName="tbl_personalInfo" constraintName="FKkf4vvv0y4uwxtip640gltyu4c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_contact_info" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566192861857-120">
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city" validate="true"/>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1566199229300-72">
+        <dropNotNullConstraint columnDataType="number(19,0)" columnName="n_post_code" tableName="tbl_address"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1566199229300-33">
+        <dropForeignKeyConstraint baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k"/>
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" referencedColumnNames="id" referencedTableName="tbl_city"/>
+    </changeSet>
+
+</databaseChangeLog>

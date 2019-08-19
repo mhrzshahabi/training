@@ -61,6 +61,9 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String mainObjective;
 
+//    @ApiModelProperty(required = true)
+//    private List<Long> preCourse;
+
 
 
 //    @ApiModelProperty(required = true)

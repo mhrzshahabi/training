@@ -1,0 +1,86 @@
+package com.nicico.training.service;
+
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AccountInfoDTO;
+import com.nicico.training.iservice.IAccountInfoService;
+import com.nicico.training.model.AccountInfo;
+import com.nicico.training.repository.AccountInfoDAO;
+import lombok.RequiredArgsConstructor;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class AccountInfoService implements IAccountInfoService {
+    private final ModelMapper modelMapper;
+    private final AccountInfoDAO accountInfoDAO;
+
+    @Transactional(readOnly = true)
+    @Override
+    public AccountInfoDTO.Info get(Long id) {
+        final Optional<AccountInfo> gById = accountInfoDAO.findById(id);
+        final AccountInfo accountInfo = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(accountInfo, AccountInfoDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<AccountInfoDTO.Info> list() {
+        final List<AccountInfo> gAll = accountInfoDAO.findAll();
+        return modelMapper.map(gAll, new TypeToken<List<AccountInfoDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional
+    @Override
+    public AccountInfoDTO.Info create(AccountInfoDTO.Create request) {
+        final AccountInfo accountInfo = modelMapper.map(request, AccountInfo.class);
+        return save(accountInfo);
+    }
+
+    @Transactional
+    @Override
+    public AccountInfoDTO.Info update(Long id, AccountInfoDTO.Update request) {
+        final Optional<AccountInfo> cById = accountInfoDAO.findById(id);
+        final AccountInfo accountInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        AccountInfo updating = new AccountInfo();
+        modelMapper.map(accountInfo, updating);
+        modelMapper.map(request, updating);
+        return save(updating);
+    }
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        final Optional<AccountInfo> one = accountInfoDAO.findById(id);
+        final AccountInfo accountInfo = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        accountInfoDAO.delete(accountInfo);
+    }
+
+    @Transactional
+    @Override
+    public void delete(AccountInfoDTO.Delete request) {
+        final List<AccountInfo> gAllById = accountInfoDAO.findAllById(request.getIds());
+        accountInfoDAO.deleteAll(gAllById);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<AccountInfoDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(accountInfoDAO, request, accountInfo -> modelMapper.map(accountInfo, AccountInfoDTO.Info.class));
+    }
+
+    // ------------------------------
+
+    private AccountInfoDTO.Info save(AccountInfo accountInfo) {
+        final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
+        return modelMapper.map(saved, AccountInfoDTO.Info.class);
+    }
+}

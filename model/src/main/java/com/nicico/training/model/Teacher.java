@@ -30,10 +30,10 @@ public class Teacher extends Auditable{
 	private Boolean enableStatus;
 
 	@OneToOne(fetch = FetchType.EAGER)
-	@JoinColumn(name = "f_person", nullable = false, insertable = false, updatable = false)
-	private PersonalityInfo personality;
+	@JoinColumn(name = "f_personality", nullable = false, insertable = false, updatable = false)
+	private PersonalInfo personality;
 
-	@Column(name = "f_person")
+	@Column(name = "f_personality")
 	private Long peronalityId;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})

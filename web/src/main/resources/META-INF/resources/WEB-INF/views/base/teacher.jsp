@@ -834,7 +834,7 @@
             {name: "id", hidden: true},
 
             {
-                name: "accountNember",
+                name: aaccountNumber
                 title: "<spring:message code='account.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",

@@ -1,0 +1,221 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="banifatemi (generated)" id="1566195397393-100">
+        <createSequence sequenceName="seq_training_place_id"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-103">
+        <createTable tableName="tbl_institute_equipment">
+            <column name="f_institute" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_equipment" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-104">
+        <createTable tableName="tbl_training_place">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_training_placePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="n_capacity" type="NUMBER(10, 0)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="e_place_type" type="NUMBER(10, 0)"/>
+            <column name="f_institute" type="NUMBER(19, 0)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-105">
+        <createTable tableName="tbl_training_place_equipment">
+            <column name="f_training_place_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_equipment_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-106">
+        <addColumn tableName="tbl_institute">
+            <column name="f_account_info" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-107">
+        <addColumn tableName="tbl_institute">
+            <column name="f_contact_info" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-108">
+        <addColumn tableName="tbl_institute">
+            <column name="f_institute_parent" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-109">
+        <addColumn tableName="tbl_institute">
+            <column name="f_manager" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-110">
+        <addColumn tableName="tbl_institute">
+            <column name="n_emp_associate_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-111">
+        <addColumn tableName="tbl_institute">
+            <column name="n_emp_diploma_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-112">
+        <addColumn tableName="tbl_institute">
+            <column name="n_emp_licentiate_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-113">
+        <addColumn tableName="tbl_institute">
+            <column name="n_emp_master_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-114">
+        <addColumn tableName="tbl_institute">
+            <column name="n_emp_phd_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-115">
+        <addColumn tableName="tbl_institute">
+            <column name="n_teacher_associate_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-116">
+        <addColumn tableName="tbl_institute">
+            <column name="n_teacher_diploma_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-117">
+        <addColumn tableName="tbl_institute">
+            <column name="n_teacher_licentiate_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-118">
+        <addColumn tableName="tbl_institute">
+            <column name="n_teacher_master_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-119">
+        <addColumn tableName="tbl_institute">
+            <column name="n_teacher_phd_number" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-123">
+        <addForeignKeyConstraint baseColumnNames="f_contact_info" baseTableName="tbl_institute" constraintName="FK2nkg0ycxciyh55ddb74vopmae" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_contact_info" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-124">
+        <addForeignKeyConstraint baseColumnNames="f_manager" baseTableName="tbl_institute" constraintName="FK80pxvwj5n34t0ty8hoxmjjdaw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personalInfo" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-126">
+        <addForeignKeyConstraint baseColumnNames="f_account_info" baseTableName="tbl_institute" constraintName="FKaxmgs4ve5l61ava0okbseohms" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_acoount_info" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-127">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_training_place" constraintName="FKbfpfjmlupxm3ttgvvh40n6vha" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-128">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_institute_teacher" constraintName="FKgmqk8uu4bfjf7yrswb4sp0f5f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-129">
+        <addForeignKeyConstraint baseColumnNames="f_institute_parent" baseTableName="tbl_institute" constraintName="FKikdjo7o4nq3pbb5ovvsntiqxc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-130">
+        <addForeignKeyConstraint baseColumnNames="f_equipment_id" baseTableName="tbl_training_place_equipment" constraintName="FKmbba8v8pnamwqt9top362cmtf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equipment" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-131">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_equipment" constraintName="FKoaqmf4w8uc0yjoh0wjqlbih7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-132">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_training_place_equipment" constraintName="FKpctp2tgr49p90yxmx08t42i2v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-133">
+        <addForeignKeyConstraint baseColumnNames="f_equipment" baseTableName="tbl_institute_equipment" constraintName="FKq6vb3koxel1lhclcyjw01y9p1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equipment" validate="true"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-188">
+        <dropColumn columnName="C_ADDRESS" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-189">
+        <dropColumn columnName="C_BRANCH" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-190">
+        <dropColumn columnName="C_CODE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-191">
+        <dropColumn columnName="C_EMAIL" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-192">
+        <dropColumn columnName="C_INSTITUTE_TYPE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-193">
+        <dropColumn columnName="C_LICENSE_TYPE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-194">
+        <dropColumn columnName="C_PHONE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-195">
+        <dropColumn columnName="C_POSTALCODE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-196">
+        <dropColumn columnName="C_POSTAL_CODE" tableName="TBL_INSTITUTE"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-7">
+        <dropForeignKeyConstraint baseTableName="tbl_institute_teacher" constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y"/>
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_teacher" constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y" referencedColumnNames="id" referencedTableName="tbl_institute"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-64">
+        <dropNotNullConstraint columnDataType="varchar(10 CHAR)" columnName="c_code" tableName="tbl_equipment"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-65">
+        <dropNotNullConstraint columnDataType="varchar(500 CHAR)" columnName="c_description" tableName="tbl_equipment"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-66">
+        <dropNotNullConstraint columnDataType="varchar(255 CHAR)" columnName="c_title_en" tableName="tbl_equipment"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-75">
+        <dropPrimaryKey tableName="tbl_institute_teacher"/>
+        <createIndex indexName="IX_null" tableName="tbl_institute_teacher" unique="true">
+            <column name="f_institute"/>
+            <column name="f_teacher"/>
+        </createIndex>
+        <addPrimaryKey columnNames="f_institute, f_teacher" forIndexName="IX_null" tableName="tbl_institute_teacher"/>
+    </changeSet>
+    <changeSet author="banifatemi (generated)" id="1566195397393-87">
+        <dropPrimaryKey tableName="tbl_equipment"/>
+        <createIndex indexName="IX_tbl_equipmentPK" tableName="tbl_equipment" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_equipmentPK" forIndexName="IX_tbl_equipmentPK" tableName="tbl_equipment"/>
+    </changeSet>
+     <changeSet author="banifatemi (generated)" id="1566195397393-89">
+        <dropPrimaryKey tableName="tbl_institute"/>
+        <createIndex indexName="IX_tbl_institutePK" tableName="tbl_institute" unique="true">
+            <column name="id"/>
+        </createIndex>
+        <addPrimaryKey columnNames="id" constraintName="tbl_institutePK" forIndexName="IX_tbl_institutePK" tableName="tbl_institute"/>
+    </changeSet>
+
+</databaseChangeLog>

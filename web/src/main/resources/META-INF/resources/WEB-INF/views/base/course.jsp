@@ -9,6 +9,8 @@
 //<script>
 
     var testData = [];
+    var test1;
+    var courseCacheData = [];
 
     var courseId = "";
     var runV = "";
@@ -192,6 +194,7 @@
         dataSource: "courseDS",
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
+        allowAdvancedCriteria: true,
         doubleClick: function () {
             DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
@@ -207,12 +210,12 @@
             RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
-            ListGrid_CourseJob.fetchData();
-            ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
-            ListGrid_CourseCompetence.fetchData();
-            ListGrid_CourseCompetence.invalidateCache();
+            // RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
+            // ListGrid_CourseJob.fetchData();
+            // ListGrid_CourseJob.invalidateCache();
+            // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
+            // ListGrid_CourseCompetence.fetchData();
+            // ListGrid_CourseCompetence.invalidateCache();
             for (i = 0; i < mainTabSet.tabs.length; i++) {
                 if ("اهداف" == (mainTabSet.getTab(i).title).substr(0, 5)) {
                     mainTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -437,10 +440,13 @@
     });
 
 
+
+
+
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
     isc.ListGridItem.addProperties({
         height:"*", width:"*",
-        rowSpan:"*", endRow:true, startRow:true,
+        colSpan:"*", endRow:true, startRow:true,
 
         // this is going to be an editable data item
         shouldSaveValue:true,
@@ -458,6 +464,31 @@
                 dataSource:this.gridDataSource,
                 fields:this.gridFields,
                 autoFetchData:true,
+
+
+                canAcceptDroppedRecords: this.canAcceptDroppedRecords,
+                canDragRecordsOut: this.canDragRecordsOut,
+                dragDataAction: this.dragDataAction,
+                // sortField: "id",
+                canRemoveRecords: this.canRemoveRecords,
+                filterOnKeypress: true,
+                showFilterEditor: true,
+                align : "center",
+                alternateRecordStyles: true,
+                sortFieldAscendingText: "مرتب سازي صعودي",
+                sortFieldDescendingText: "مرتب سازي نزولي",
+                removeRecordClick : function (rowNum) {
+                    var record = this.getRecord(rowNum);
+                    this.removeData(record, function (dsResponse, data, dsRequest) {
+                        // Update `employeesGrid` now that an employee has been removed from
+                        // the selected team.  This will add the employee back to `employeesGrid`,
+                        // the list of employees who are not in the team.
+                        // mockAddEmployeesFromTeamMemberRecords(record);
+                    });
+                },
+
+
+
                 dataArrived : function () {
                     this.canvasItem.showValue(null, this.canvasItem.getValue());
                 },
@@ -473,7 +504,7 @@
         showValue : function (displayValue, dataValue) {
             if (this.canvas == null) return;
             var record = this.canvas.data.find(this.name, dataValue);
-            if (record) this.canvas.selection.selectSingle(record)
+            if (record) this.canvas.selection.selectSingle(record);
             else this.canvas.selection.deselectAll();
         }
     });
@@ -513,7 +544,7 @@
                 colSpan: 1,
                 length: "250",
                 type: 'text',
-                keyPressFilter: "[a-z|A-Z|0-9]",
+                keyPressFilter: "[a-z|A-Z|0-9|' ']",
                 // height: "30",
                 width: "300",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
@@ -809,18 +840,46 @@
                 }]
             },
             {
-                defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
-                itemIds: ["countryName"]
+                defaultValue: "پیشنیاز دوره", type: "section", sectionExpanded: false,
+                itemIds: ["courseAllGrid","imgMove","preCourseGrid"]
             },
-            {name:"countryName",
-                title:"Home Country",
+            {name:"courseAllGrid",
+                title:"دوره ها",
+                colSpan: 2,
+                rowSpan:3,
+                width: "400",
+                titleOrientation: "top",
                 editorType:"ListGridItem",
                 height: "300",
+                allowAdvancedCriteria: true,
                 gridDataSource:"courseDS",
-                gridFields:[ {name:"titleFa"}],
-                hidden: false
+                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                hidden: false,
+                canRemoveRecords:false,
+                canDragRecordsOut: true,
+                dragDataAction: "none",
+            },
+            {name:"imgMove",
+                colSpan: 1,
+                rowSpan:3,
+                title:"Click Me",
+                type:"button"
+            },
+            {name:"preCourseGrid",
+                title:"پیش نیازهای دوره",
+                colSpan:2,
+                rowSpan:3,
+                titleOrientation: "top",
+                editorType:"ListGridItem",
+                height: "300",
+                width: "400",
+                gridDataSource:"preCourseDS",
+                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                canRemoveRecords:true,
+                canDragRecordsOut: false,
+                canAcceptDroppedRecords: true,
+                dragDataAction: "none"
             }
-
         ],
     });
 
@@ -860,14 +919,11 @@
                             data: JSON.stringify(data1),
                             serverOutputAsString: false,
                             callback: function (resp) {
-
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     Window_course.close();
                                     ListGrid_Course_refresh();
                                 } else {
-
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
                                 }
@@ -941,7 +997,7 @@
         fields:[
             {name: "id",type: "integer", primaryKey:true},
             // {name: "code"},
-            {name: "titleFa", type: "text"}
+            {name: "titleFa", type: "text", title:"نام دوره"}
             // {name: "titleEn"},
             // {name: "category.titleFa"},
             // {name: "subCategory.titleFa"},
@@ -960,121 +1016,82 @@
     });
 
 
-    isc.DynamicForm.create({
-        ID: "teamSelectionForm",
-        width: "300",
-        height: "30",
-        fields: [
-            {name: "TeamId", title: "Team", type: "select",
-                valueMap: {
-                    "csv" : "CSV" ,
-                    "xml" : "XML",
-                    "json" : "JSON",
-                    "xls" : "XLS (Excel97)",
-                    "ooxml" : "OOXML (Excel2007)"
-                },
-                // changed: "item.splitEmployeesByTeam()",
-                dataArrived : function (startRow, endRow, data) {
-                    if (this.getValue() == null && startRow == 0 && endRow > 0) {
-                        var record = data.get(0),
-                            value;
-                        if (record == null || record === isc.ResultSet.getLoadingMarker()) {
-                            value = null;
-                        } else {
-                            value = record[this.getValueFieldName()];
-                        }
-                        this.setValue(value);
-                        this.splitEmployeesByTeam();
-                    }
-                },
-                splitEmployeesByTeam : function () {
-                    var criteria = teamSelectionForm.getValuesAsCriteria();
-                    teamMembersGrid.fetchData(criteria);
-                    var dsRequest = {
-                        ID: "dsRequestID",
-                        operationType: "fetch",
-                        operationId: "fetchEmployeesNotInTeam"
-                    };
-                    employeesGrid.fetchData(criteria, null, dsRequest);
-                }
-            }
-        ]
-    });
-    isc.ListGrid.create({
-        ID: "employeesGrid",
-        width:300, height:224,
-        canDragRecordsOut: true,
-        dragDataAction: "none",
-        // dragType: "nonTeamMemberEmployee",
-        autoFetchData: true,
-        sortField: "id",
-        dataSource: "courseDS",
-        fields:[
-            {name: "id", title:"ID", primaryKey:true, width:50},
-            {name: "titleFa", title: "Employee Name"}
-        ]
-    });
-    isc.ListGrid.create({
-        ID: "teamMembersGrid",
-        width:350, height:264,
-        canAcceptDroppedRecords: true,
-        // dropTypes: ["nonTeamMemberEmployee"],
-        canRemoveRecords: true,
-        autoFetchData: true,
-        sortField: "id",
-        dataSource: "preCourseDS",
-        fields:[
-            {name: "id", title:"EID", width:"20%"},
-            {name: "titleFa", title: "Employee Name", width:"40%"}
-        ],
-        // recordDrop : function (dropRecords, targetRecord, index, sourceWidget) {
-        //     // mockRemoveEmployees(dropRecords);
-        //     return this.Super("recordDrop", arguments);
-        // },
-        removeRecordClick : function (rowNum) {
-            var record = this.getRecord(rowNum);
-            this.removeData(record, function (dsResponse, data, dsRequest) {
-                // Update `employeesGrid` now that an employee has been removed from
-                // the selected team.  This will add the employee back to `employeesGrid`,
-                // the list of employees who are not in the team.
-                // mockAddEmployeesFromTeamMemberRecords(record);
-            });
-        }
-    });
 
-    isc.LayoutSpacer.create({
-        ID: "spacer",
-        height: 30
-    });
+    // isc.ListGrid.create({
+    //     ID: "employeesGrid",
+    //     width:300, height:224,
+    //     canDragRecordsOut: true,
+    //     dragDataAction: "none",
+    //     // dragType: "nonTeamMemberEmployee",
+    //     autoFetchData: true,
+    //     sortField: "id",
+    //     dataSource: "courseDS",
+    //     fields:[
+    //         {name: "id", title:"ID", primaryKey:true, width:50},
+    //         {name: "titleFa", title: "Employee Name"}
+    //     ]
+    // });
+    // isc.ListGrid.create({
+    //     ID: "teamMembersGrid",
+    //     width:350, height:264,
+    //     canAcceptDroppedRecords: true,
+    //     // dropTypes: ["nonTeamMemberEmployee"],
+    //     canRemoveRecords: true,
+    //     autoFetchData: true,
+    //     sortField: "id",
+    //     dataSource: "preCourseDS",
+    //     fields:[
+    //         {name: "id", title:"EID", width:"20%"},
+    //         {name: "titleFa", title: "Employee Name", width:"40%"}
+    //     ],
+    //     // recordDrop : function (dropRecords, targetRecord, index, sourceWidget) {
+    //     //     // mockRemoveEmployees(dropRecords);
+    //     //     return this.Super("recordDrop", arguments);
+    //     // },
+    //     removeRecordClick : function (rowNum) {
+    //         var record = this.getRecord(rowNum);
+    //         this.removeData(record, function (dsResponse, data, dsRequest) {
+    //             // Update `employeesGrid` now that an employee has been removed from
+    //             // the selected team.  This will add the employee back to `employeesGrid`,
+    //             // the list of employees who are not in the team.
+    //             // mockAddEmployeesFromTeamMemberRecords(record);
+    //         });
+    //     }
+    // });
 
-    isc.Img.create({
-        ID: "arrowImg",
-        layoutAlign:"center",
-        width: 32,
-        height: 32,
-        src: "icons/32/arrow_right.png",
-        click : function () {
-            var selectedEmployeeRecords = employeesGrid.getSelectedRecords();
-            teamMembersGrid.transferSelectedData(employeesGrid);
-            mockRemoveEmployees(selectedEmployeeRecords);
-        }
-    });
+    // isc.LayoutSpacer.create({
+    //     ID: "spacer",
+    //     height: 30
+    // });
 
-    isc.VStack.create({
-        ID: "vStack",
-        members: [spacer, employeesGrid]
-    });
+    // isc.Img.create({
+    //     ID: "arrowImg",
+    //     layoutAlign:"center",
+    //     width: 32,
+    //     height: 32,
+    //     src: "icons/32/arrow_right.png",
+    //     click : function () {
+    //         var selectedEmployeeRecords = employeesGrid.getSelectedRecords();
+    //         teamMembersGrid.transferSelectedData(employeesGrid);
+    //         mockRemoveEmployees(selectedEmployeeRecords);
+    //     }
+    // });
 
-    isc.VStack.create({
-        ID: "vStack2",
-        members: [teamSelectionForm, teamMembersGrid]
-    });
+    // isc.VStack.create({
+    //     ID: "vStack",
+    //     members: [spacer, employeesGrid]
+    // });
 
-    isc.HStack.create({
-        ID: "hStack",
-        height: 160,
-        members: [vStack, arrowImg, vStack2]
-    });
+    // isc.VStack.create({
+    //     ID: "vStack2",
+    //     members: [teamMembersGrid]
+    // });
+
+    // isc.HStack.create({
+    //     ID: "hStack",
+    //     height: 160,
+    //     members: [vStack, arrowImg, vStack2]
+    // });
 
 
 
@@ -1095,7 +1112,7 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_course,courseSaveOrExitHlayout,hStack]
+            members: [DynamicForm_course,courseSaveOrExitHlayout]
         })]
     });
     // var VLayout_Grid_Goal = isc.VLayout.create({
@@ -1365,28 +1382,21 @@
         // employeesByTeam.updateCaches(dsRequest);
     }
 
-    function mockAddEmployeesFromTeamMemberRecords(teamMemberRecord) {
-        var mockEmployeeRecord = teamMemberRecord;
-        mockEmployeeRecord.Name = teamMemberRecord.EmployeeName;
-        mockEmployeeRecord.Job = teamMemberRecord.EmployeeJob;
-
-        var dsRequest = {
-            ID: "mockAddResponse",
-            operationType: "add",
-            data: mockEmployeeRecord
-        }
-        employeesByTeam.updateCaches(dsRequest);
-    }
 
     function mappedByListId(listId,listGrid,DS) {
-        var listGridRecord = listGrid.getOriginalData().allRows
+        var listGridRecord = listGrid.getData().allRows;
         for (var i = 0; i < listId.length ; i++) {
             for(var j = 0; j < listGridRecord.length ; i++) {
                 if(listId[i] == listGridRecord[j].id){
-                    DS.addData(listGridRecord[j])
-                    break
+                    DS.addData(listGridRecord[j]);
+                    break;
                 }
             }
         }
+    }
+
+    function x(data) {
+        console.log(data);
+        test = data;
     }
 //</script>
