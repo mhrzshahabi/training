@@ -44,12 +44,12 @@ public class Institute {
     @Column(name ="f_account_info")
     private Long accountInfoId;
 
-    @ManyToOne
-    @JoinColumn(name = "f_manager", insertable = false, updatable = false)
-    private Person manager;
-
-    @Column(name ="f_manager", insertable = false, updatable = false)
-    private Long managerId;
+//    @ManyToOne
+//    @JoinColumn(name = "f_manager", insertable = false, updatable = false)
+//    private Person manager;
+//
+//    @Column(name ="f_manager", insertable = false, updatable = false)
+//    private Long managerId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_institute_teacher",schema = "training",
@@ -62,6 +62,12 @@ public class Institute {
             joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
+
+//    private Integer teacherNumPHD;
+//    private Integer empNumPHD;
+//
+//    private Integer teacherNumPHD;
+//    private Integer empNumPHD;
 
     @Column(name = "e_institute_type" ,  insertable = false, updatable = false)
     private EInstituteType eInstituteType;
