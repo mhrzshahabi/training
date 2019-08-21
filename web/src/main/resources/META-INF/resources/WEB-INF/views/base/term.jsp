@@ -35,12 +35,9 @@
 	var ListGrid_Term = isc.MyListGrid.create({
 
 		 dataSource: RestDataSource_term,
-		// contextMenu: Menu_ListGrid_term,
+		 contextMenu: Menu_ListGrid_term,
         autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+
 		doubleClick: function () {
 	    },
 		fields: [
@@ -51,6 +48,10 @@
 			{name: "endDate", title: "پایان", align: "center", filterOperator: "contains"},
 			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
 		],
+		 showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
 		sortField: 0,
 	});
 //*************************************************************************************
@@ -185,7 +186,7 @@
 		icon: "[SKIN]/actions/refresh.png",
 		title: "بازخوانی اطلاعات",
 		click: function () {
-			ListGrid_Term_refresh();
+			ListGrid_Term.invalidateCache();
 		}
 	});
 	var ToolStripButton_Edit = isc.ToolStripButton.create({
@@ -193,7 +194,7 @@
 		title: "ویرایش",
 		click: function () {
 
-			ListGrid_Term_edit();
+				 show_TermEditForm();
 		}
 	});
 	var ToolStripButton_Add = isc.ToolStripButton.create({
@@ -209,17 +210,20 @@
 		icon: "[SKIN]/actions/remove.png",
 		title: "حذف",
 		click: function () {
-			ListGrid_Term_remove()
+			show_TermRemoveForm()
 		}
 	});
 	var ToolStripButton_Print = isc.ToolStripButton.create({
 		icon: "[SKIN]/RichTextEditor/print.png",
 		title: "چاپ",
+		  click: function () {
+          print_TermListGrid("pdf");
+         }
 
 	});
 	var ToolStrip_Actions = isc.ToolStrip.create({
 		width: "100%",
-		members: [ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Refresh, ToolStripButton_Print]
+		members: [ToolStripButton_Refresh,ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove,ToolStripButton_Print]
 	});
 	var Menu_ListGrid_term = isc.Menu.create({
 		width: 150,
@@ -283,7 +287,34 @@
        	Window_term.show();
     };
 
+function  show_TermEditForm() {
+        var record = ListGrid_Term.getSelectedRecord();
+       if (record == null || record.id == null)
+      {
+
+<%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
+            isc.Dialog.create({
+                message: "<spring:message code="msg.record.not.selected"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }
+            else
+                {
+                term_method = "PUT";
+                DynamicForm_Term.clearValues();
+                DynamicForm_Term.editRecord(record);
+                Window_term.show();
+
+                } };
+
     function  save_Term() {
+      if (endDateCheckTerm == false)
+                return;
         if (!DynamicForm_Term.validate()) {
             return;
         }
@@ -294,16 +325,50 @@
            termSaveUrl += jobRecord.id;
         }
         isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback: show_TermActionResult(rpcResponse)"));
+
+    };
+
+    function show_TermRemoveForm() {
+        var record = ListGrid_Term.getSelectedRecord();
+         if (record == null || record.id == null)
+      {
+
+<%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
+            isc.Dialog.create({
+                message: "<spring:message code="msg.record.not.selected"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }
+        else{
+            isc.MyYesNoDialog.create({
+                message: "آیا رکورد انتخاب شده حذف گردد؟",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index == 0) {
+                        isc.RPCManager.sendRequest(MyDsRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
+                    }
+                }
+            });
+        }
+
     };
     function  show_TermActionResult(resp) {
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
+                ListGrid_Term.invalidateCache();
             var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
+
             });
 
             setTimeout(function () {
                 MyOkDialog_job.close();
+
             }, 3000);
 
           Window_term.close();
@@ -317,5 +382,23 @@
                 MyOkDialog_job.close();
             }, 3000);
         }
+    };
+
+     function print_TermListGrid(type) {
+        var advancedCriteria =ListGrid_Term.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/term/printWithCriteria/"/>" + type ,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+
+
     };
 
