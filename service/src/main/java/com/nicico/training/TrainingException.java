@@ -40,6 +40,7 @@ public class TrainingException extends NICICOException {
 		EducationMajorNotFound(404),
 		EducationLevelNotFound(404),
 		CountryNotFound(404),
+		TrainingPlaceNotFound(404),
 		TermNotFound(404);
 		private final Integer httpStatusCode;
 
