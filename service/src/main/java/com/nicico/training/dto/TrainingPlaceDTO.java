@@ -1,13 +1,10 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
+
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.dto.enums.EInstituteTypeDTO;
-import com.nicico.training.dto.enums.ELicenseTypeDTO;
-import com.nicico.training.model.*;
+import com.nicico.training.model.enums.EArrangementType;
+import com.nicico.training.model.enums.EPlaceType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -25,10 +22,9 @@ import java.util.Set;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class InstituteDTO {
-    
-    @ApiModelProperty(required = true)
-    private String code;
+
+public class TrainingPlaceDTO {
+
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -37,70 +33,51 @@ public class InstituteDTO {
     @ApiModelProperty
     private String titleEn;
 
-    private Long contactInfoId;
-    private Long accountInfoId;
-    private Long managerId;
-    private Integer teacherNumPHD;
-    private Integer empNumPHD;
-    private Integer teacherNumLicentiate;
-    private Integer empNumLicentiate;
-    private Integer teacherNumMaster;
-    private Integer empNumMaster;
-    private Integer teacherNumAssociate;
-    private Integer empNumAssociate;
-    private Integer teacherNumDiploma;
-    private Integer empNumDiploma;
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private Integer capacity;
+
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eInstituteTypeId;
+    private Integer ePlaceTypeId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eLicenseTypeId;
+    private Integer eArrangementTypeId;
 
-    private Long parentInstituteId;
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private Long instituteId;
 
+    @ApiModelProperty(required = true)
+    private String description;
+
+    // ------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("InstituteInfo")
-    public static class Info extends InstituteDTO {
+    @ApiModel("TrainingPlaceInfo")
+    public static class Info extends TrainingPlaceDTO {
         private Long id;
+
+        private InstituteDTO.Info institute;
+        private EPlaceType ePlaceType;
+        private EArrangementType eArrangementType;
+
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
-        private Set<EquipmentDTO.Info> equipmentSet;
-        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-        private ContactInfo contactInfo;
-        private AccountInfo accountInfo;
-        private PersonalInfo manager;
-        private InstituteDTO.Info  parentInstitute;
-        private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
-        private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
+        private Integer version;
     }
-
-    // ------------------------------
-
+    //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("InstituteCreateRq")
-    public static class Create extends InstituteDTO {
+    @ApiModel("TrainingPlaceCreateRq")
+    public static class Create extends TrainingPlaceDTO {
         Set<Long> equipmentIds;
-        Set<Long> trainingPlaceIds;
-        Set<Long> teacherIds;
-       }
-
-    // ------------------------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("InstituteUpdateRq")
-    public static class Update extends InstituteDTO {
     }
 
     // ------------------------------
@@ -108,7 +85,18 @@ public class InstituteDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("InstituteDeleteRq")
+    @ApiModel("TrainingPlaceUpdateRq")
+    public static class Update extends TrainingPlaceDTO {
+        @ApiModelProperty(required = true)
+        private Integer version;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TrainingPlaceDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -116,14 +104,13 @@ public class InstituteDTO {
     }
 
     // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("InstituteSpecRs")
-    public static class InstituteSpecRs {
-        private SpecRs response;
+    @ApiModel("TrainingPlaceSpecRs")
+    public static class TrainingPlaceSpecRs {
+        private TrainingPlaceDTO.SpecRs response;
     }
 
     // ---------------
@@ -133,10 +120,14 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<InstituteDTO.Info> data;
+        private List<TrainingPlaceDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
+
+    //----------------------
+
+
 }

@@ -288,6 +288,47 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class EPlaceTypeConverter implements AttributeConverter<EPlaceType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EPlaceType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EPlaceType convertToEntityAttribute(Integer id) {
+
+            for (EPlaceType entry : EPlaceType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class EArrangementTypeConverter implements AttributeConverter<EArrangementType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EArrangementType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EArrangementType convertToEntityAttribute(Integer id) {
+
+            for (EArrangementType entry : EArrangementType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+
 }
 
 

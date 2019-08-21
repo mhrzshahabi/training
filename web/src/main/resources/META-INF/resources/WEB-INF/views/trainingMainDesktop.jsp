@@ -610,7 +610,7 @@
         largeIcon: "pieces/512/category.png",
         orientation: "vertical",
         click: function () {
-            createTab("گروه بندي", "/category/show-form", false);
+            createTab("گروه بندي", "<spring:url value="/category/show-form"/>", false);
         }
     })
 
@@ -620,7 +620,7 @@
         largeIcon: "pieces/512/skill-level.png",
         orientation: "vertical",
         click: function () {
-            createTab("سطح مهارت", "/skill-level/show-form", false);
+            createTab("سطح مهارت",  "<spring:url value="/skill-level/show-form"/>", false);
         }
     })
 
@@ -630,7 +630,7 @@
         largeIcon: "pieces/512/skill.png",
         orientation: "vertical",
         click: function () {
-            createTab("مهارت", "/skill/show-form", false)
+            createTab("مهارت",  "<spring:url value="/skill/show-form"/>", false)
         }
     })
 

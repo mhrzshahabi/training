@@ -51,6 +51,14 @@ public class TrainingPlace extends  Auditable{
             inverseJoinColumns = {@JoinColumn( name = "f_equipment_id", referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
 
+
+    @ManyToOne
+    @JoinColumn(name = "f_institute", insertable = false, updatable = false)
+    private Institute institute;
+
+    @Column(name = "f_institute", insertable = false, updatable = false)
+    private Long instituteId;
+
     @Column(name = "c_description", length = 500)
     private String description;
 

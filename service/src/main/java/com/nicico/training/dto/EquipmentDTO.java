@@ -63,7 +63,6 @@ public class EquipmentDTO {
     @Accessors(chain = true)
     @ApiModel("EquipmentUpdateRq")
     public static class Update extends EquipmentDTO {
-        @NotNull
         @ApiModelProperty(required = true)
         private Integer version;
     }

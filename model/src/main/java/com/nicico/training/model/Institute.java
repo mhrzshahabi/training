@@ -44,12 +44,12 @@ public class Institute {
     @Column(name ="f_account_info")
     private Long accountInfoId;
 
-//    @ManyToOne
-//    @JoinColumn(name = "f_manager", insertable = false, updatable = false)
-//    private Person manager;
-//
-//    @Column(name ="f_manager", insertable = false, updatable = false)
-//    private Long managerId;
+    @ManyToOne
+    @JoinColumn(name = "f_manager", insertable = false, updatable = false)
+    private PersonalInfo manager;
+
+    @Column(name ="f_manager", insertable = false, updatable = false)
+    private Long managerId;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_institute_teacher",schema = "training",
@@ -63,11 +63,39 @@ public class Institute {
             inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
 
-//    private Integer teacherNumPHD;
-//    private Integer empNumPHD;
-//
-//    private Integer teacherNumPHD;
-//    private Integer empNumPHD;
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    private Set<TrainingPlace> trainingPlaceSet;
+
+
+    @Column(name = "n_teacher_phd_number")
+    private Integer teacherNumPHD;
+
+    @Column(name = "n_emp_phd_number")
+    private Integer empNumPHD;
+
+    @Column(name = "n_teacher_licentiate_number")
+    private Integer teacherNumLicentiate;
+
+    @Column(name = "n_emp_licentiate_number")
+    private Integer empNumLicentiate;
+
+    @Column(name = "n_teacher_master_number")
+    private Integer teacherNumMaster;
+
+    @Column(name = "n_emp_master_number")
+    private Integer empNumMaster;
+
+    @Column(name = "n_teacher_associate_number")
+    private Integer teacherNumAssociate;
+
+    @Column(name = "n_emp_associate_number")
+    private Integer empNumAssociate;
+
+    @Column(name = "n_teacher_diploma_number")
+    private Integer teacherNumDiploma;
+
+    @Column(name = "n_emp_diploma_number")
+    private Integer empNumDiploma;
 
     @Column(name = "e_institute_type" ,  insertable = false, updatable = false)
     private EInstituteType eInstituteType;
@@ -75,26 +103,18 @@ public class Institute {
     @Column(name = "e_institute_type")
     private Integer eInstituteTypeId;
 
-    @Column(name = "c_institute_type")
-    private String eInstituteTypeTitleFa;
-
     @Column(name = "e_license_type", insertable = false, updatable = false)
     private ELicenseType eLicenseType;
 
     @Column(name = "e_license_type")
     private Integer eLicenseTypeId;
 
-    @Column(name = "c_license_type")
-    private String eLicenseTypeTitleFa;
 
-    @Column(name = "c_branch")
-    private String branch;
+    @ManyToOne
+    @JoinColumn(name = "f_institute_parent", insertable = false, updatable = false)
+    private Institute parentInstitute;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.REFRESH})
-
-    @JoinTable(name = "tbl_institute_teacher", schema = "TRAINING",
-            joinColumns = {@JoinColumn(name = "f_institute", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")})
-    private Set<Teacher> teachers;
+    @Column(name ="f_institute_parent")
+    private Long parentInstituteId;
 
 }

@@ -824,7 +824,7 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     }
                 });
             } else {
-                Skill_Add_Competence();
+                // Skill_Add_Competence();
             }
         }
     });
@@ -1081,9 +1081,9 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-            ListGrid_Skill_Attached_Competences.invalidateCache();
+            // ListGrid_Skill_Attached_Competences.invalidateCache();
             ListGrid_Skill_Attached_Courses.invalidateCache();
-            ListGrid_Skill_Attached_Jobs.invalidateCache();
+            // ListGrid_Skill_Attached_Jobs.invalidateCache();
         },
         sortField: 1,
         sortDirection: "descending",
@@ -1113,9 +1113,9 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-            ListGrid_Skill_Attached_Competences.invalidateCache();
+            // ListGrid_Skill_Attached_Competences.invalidateCache();
             ListGrid_Skill_Attached_Courses.invalidateCache();
-            ListGrid_Skill_Attached_Jobs.invalidateCache();
+            // ListGrid_Skill_Attached_Jobs.invalidateCache();
 
 
         },
@@ -2609,7 +2609,8 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             {
                 id: "TabPane_Skill_Competence",
                 title: "لیست شایستگی ها",
-                pane: HLayout_Tab_Skill_Competences
+                pane: HLayout_Tab_Skill_Competences,
+visible:false
             },
             {
                 id: "TabPane_Skill_Course",
@@ -2619,7 +2620,8 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             {
                 id: "TabPane_Skill_Job",
                 title: "لیست مشاغل",
-                pane: HLayout_Tab_Skill_Jobs
+                pane: HLayout_Tab_Skill_Jobs,
+visible:false
             }
         ]
     });
