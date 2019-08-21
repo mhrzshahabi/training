@@ -834,7 +834,7 @@
             {name: "id", hidden: true},
 
             {
-                name: aaccountNumber
+                name: "accountNumber",
                 title: "<spring:message code='account.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
@@ -1308,7 +1308,7 @@
         formData1.append("file", file);
         if (file != undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", teacherUrl + "addAttach/" + teacherId);
+            request.open("POST", "${contextPath}/api/teacher/addAttach/" + teacherId);
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {
@@ -1336,7 +1336,7 @@
         formData1.append("file", file);
         if (file !== undefined) {
             var request = new XMLHttpRequest();
-            request.open("POST", teacherUrl + "addTempAttach");
+            request.open("POST", "${contextPath}/api/teacher/addTempAttach");
             request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
             request.send(formData1);
             request.onreadystatechange = function () {

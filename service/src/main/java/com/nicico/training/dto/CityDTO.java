@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.State;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,6 +24,8 @@ public class CityDTO {
     @ApiModelProperty(required = true)
     private String name;
 
+    private Long stateId;
+
     //---------------------------
     @Getter
     @Setter
@@ -35,7 +38,16 @@ public class CityDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private Integer version;
+        private StateDTO.StateInfoTuple state;
     }
+
+    @Getter
+	@Setter
+	@ApiModel("CityInfoTuple")
+	public static class CityInfoTuple {
+	    private String name;
+	    private StateDTO.StateInfoTuple state;
+	}
     // ------------------------------
 
     @Getter

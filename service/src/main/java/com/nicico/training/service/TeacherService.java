@@ -60,18 +60,18 @@ public class TeacherService implements ITeacherService {
 	@Override
 	public TeacherDTO.Info create(TeacherDTO.Create request) {
 		final Teacher teacher = modelMapper.map(request, Teacher.class);
-		if(request.getEMarriedId() != null) {
-//			teacher.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-//			teacher.setEMarriedTitleFa(teacher.getEMarried().getTitleFa());
-		}
-		if(request.getEMilitaryId() != null) {
-//			 teacher.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-//			 teacher.setEMilitaryTitleFa(teacher.getEMilitary().getTitleFa());
-		}
-		if(request.getEGenderId() != null) {
-//			teacher.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-//			teacher.setEGenderTitleFa(teacher.getEGender().getTitleFa());
-		}
+//		if(request.getEMarriedId() != null) {
+////			teacher.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
+////			teacher.setEMarriedTitleFa(teacher.getEMarried().getTitleFa());
+//		}
+//		if(request.getEMilitaryId() != null) {
+////			 teacher.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
+////			 teacher.setEMilitaryTitleFa(teacher.getEMilitary().getTitleFa());
+//		}
+//		if(request.getEGenderId() != null) {
+////			teacher.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
+////			teacher.setEGenderTitleFa(teacher.getEGender().getTitleFa());
+//		}
 //		List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
 		List<Teacher> teacherList = null;
 		if(teacherList==null || teacherList.size()==0)
@@ -88,23 +88,23 @@ public class TeacherService implements ITeacherService {
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
-
-		if(request.getEMarriedId() != null) {
-//			updating.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-//			updating.setEMarriedTitleFa(updating.getEMarried().getTitleFa());
-		}
-        if(request.getEMilitaryId() != null) {
-//			updating.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-//			updating.setEMilitaryTitleFa(updating.getEMilitary().getTitleFa());
-		}
-        if(request.getEGenderId() != null) {
-//			updating.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-//			updating.setEGenderTitleFa(updating.getEGender().getTitleFa());
-		}
-        List<Teacher> teacherList = teacherDAO.findByNationalCode(id,request.getNationalCode());
-		if(teacherList==null || teacherList.size()==0)
-			   return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
-		else
+//
+//		if(request.getEMarriedId() != null) {
+////			updating.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
+////			updating.setEMarriedTitleFa(updating.getEMarried().getTitleFa());
+//		}
+//        if(request.getEMilitaryId() != null) {
+////			updating.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
+////			updating.setEMilitaryTitleFa(updating.getEMilitary().getTitleFa());
+//		}
+//        if(request.getEGenderId() != null) {
+////			updating.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
+////			updating.setEGenderTitleFa(updating.getEGender().getTitleFa());
+//		}
+////        List<Teacher> teacherList = teacherDAO.findByNationalCode(id,request.getNationalCode());
+//		if(teacherList==null || teacherList.size()==0)
+//			   return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
+//		else
 			return null;
 	}
 

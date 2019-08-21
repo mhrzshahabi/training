@@ -110,7 +110,7 @@ public class PersonalInfo extends Auditable {
 	@Column(name = "f_account_info")
 	private Long accountInfoId;
 
-		@ManyToOne(fetch = FetchType.LAZY)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
 	private EducationLevel educationLevel;
 

@@ -20,11 +20,12 @@ import java.util.List;
 public class ContactInfoDTO {
 
     private String email;
-	private Long homeAdressId;
-    private Long workAdressId;
     private String mobile;
     private String personalWebSite;
     private String description;
+
+    private Long homeAdressId;
+    private Long workAdressId;
 
     @Getter
     @Setter
@@ -36,7 +37,22 @@ public class ContactInfoDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private AddressDTO.AddressInfoTuple homeAdress;
+        private AddressDTO.AddressInfoTuple workAdress;
     }
+
+    @Getter
+	@Setter
+	@ApiModel("ContactInfoInfoTuple")
+	public static class ContactInfoInfoTuple {
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private AddressDTO.AddressInfoTuple homeAdress;
+        private AddressDTO.AddressInfoTuple workAdress;
+
+	}
     // ------------------------------
 
     @Getter

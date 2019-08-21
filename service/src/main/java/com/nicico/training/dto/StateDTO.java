@@ -36,6 +36,13 @@ public class StateDTO {
         private String lastModifiedBy;
         private Integer version;
     }
+
+    @Getter
+	@Setter
+	@ApiModel("StatenfoTuple")
+	public static class StateInfoTuple {
+	    private String name;
+	}
     // ------------------------------
 
     @Getter

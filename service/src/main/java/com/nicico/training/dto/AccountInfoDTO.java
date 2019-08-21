@@ -38,6 +38,19 @@ public class AccountInfoDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
     }
+
+    @Getter
+	@Setter
+	@ApiModel("AccountInfoInfoTuple")
+	public static class AccountInfoInfoTuple {
+        private String accountNumber;
+        private String bank;
+        private String bankBranch;
+        private Long bankBranchCode;
+        private String cartNumber;
+        private String shabaNumber;
+        private String description;
+	}
     // ------------------------------
 
     @Getter

@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.date.DateTimeDTO;
 import com.nicico.training.dto.enums.EGenderDTO;
 import com.nicico.training.dto.enums.EMarriedDTO;
 import com.nicico.training.dto.enums.EMilitaryDTO;
+import com.nicico.training.model.PersonalInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -26,56 +27,13 @@ public class TeacherDTO {
 
 	@NotEmpty
 	@ApiModelProperty(required = true)
-	private String fullNameFa;
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String fullNameEn;
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String nationalCode;
-	@NotEmpty
-	@ApiModelProperty(required = true)
 	private String teacherCode;
-
-	private String fatherName;
-	private String birthDate;
-	private String birthLocation;
-	private String birthCertificate;
-	private String birthCertificateLocation;
-	private String religion;
-	private String nationality;
-	private String email;
-
-	private String mobile;
-	private String description;
-	private String workName;
-	private String workAddress;
-	private String workPhone;
-	private String workPostalCode;
-	private String workJob;
-	private String workTeleFax;
-	private String workWebSite;
-	private String homeAddress;
-	private String homePhone;
-	private String homePostalCode;
-    private String attachPhoto;
 
 	private Boolean enableStatus;
 	private String economicalCode;
 	private String economicalRecordNumber;
-	private String accountNember;
-	private String bank;
-	private String bankBranch;
-	private String cartNumber;
-	private String shabaNumber;
 
-	private Integer eMilitaryId;
-	private Integer eMarriedId;
-	private Integer eGenderId;
-
-    private Long educationLevelId;
-    private Long educationMajorId;
-    private Long educationOrientationId;
+	private Long peronalityId;
 
 	// ------------------------------
 
@@ -90,12 +48,7 @@ public class TeacherDTO {
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
 		private Set<CategoryDTO.CategoryInfoTuple> categories;
-		private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
-		private EMarriedDTO.EMarriedInfoTuple eMarried;
-		private EGenderDTO.EGenderInfoTuple eGender;
-		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
-		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
-		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
+		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
 	}
 
 	//-------------------------------
@@ -103,7 +56,7 @@ public class TeacherDTO {
 	@Setter
 	@ApiModel("TeacherInfoTuple")
 	public static class TeacherInfoTuple {
-		private String fullNameFa;
+		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
 	}
 	// ------------------------------
 
