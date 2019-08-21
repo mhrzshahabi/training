@@ -43,6 +43,7 @@ public class TrainingException extends NICICOException {
 		TrainingPlaceNotFound(404),
 		AccountInfoNotFound(404),
 		ContactInfoNotFound(404),
+		PersonalInfoNotFound(404),
 		TermNotFound(404);
 		private final Integer httpStatusCode;
 
