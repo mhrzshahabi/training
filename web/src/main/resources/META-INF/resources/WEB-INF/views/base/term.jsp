@@ -35,12 +35,9 @@
 	var ListGrid_Term = isc.MyListGrid.create({
 
 		 dataSource: RestDataSource_term,
-		// contextMenu: Menu_ListGrid_term,
+		 contextMenu: Menu_ListGrid_term,
         autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+
 		doubleClick: function () {
 	    },
 		fields: [
@@ -51,6 +48,10 @@
 			{name: "endDate", title: "پایان", align: "center", filterOperator: "contains"},
 			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
 		],
+		 showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
 		sortField: 0,
 	});
 //*************************************************************************************
@@ -215,6 +216,9 @@
 	var ToolStripButton_Print = isc.ToolStripButton.create({
 		icon: "[SKIN]/RichTextEditor/print.png",
 		title: "چاپ",
+		  click: function () {
+          print_TermListGrid("pdf");
+         }
 
 	});
 	var ToolStrip_Actions = isc.ToolStrip.create({
@@ -308,8 +312,6 @@ function  show_TermEditForm() {
 
                 } };
 
-
-
     function  save_Term() {
       if (endDateCheckTerm == false)
                 return;
@@ -380,5 +382,23 @@ function  show_TermEditForm() {
                 MyOkDialog_job.close();
             }, 3000);
         }
+    };
+
+     function print_TermListGrid(type) {
+        var advancedCriteria =ListGrid_Term.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/term/printWithCriteria/"/>" + type ,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        })
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+
+
     };
 
