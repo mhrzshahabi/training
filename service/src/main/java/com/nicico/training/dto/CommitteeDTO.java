@@ -1,6 +1,8 @@
 package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.Category;
+import com.nicico.training.model.SubCategory;
 import com.nicico.training.model.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +49,7 @@ public class CommitteeDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private SubCategoryDTO.SubCategoryInfoTuple subCategory;
     }
 
     @Getter
@@ -106,6 +109,8 @@ public class CommitteeDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+
 
 
 }
