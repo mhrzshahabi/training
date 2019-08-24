@@ -22,9 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 public class CourseFormController {
 	private final OAuth2AuthorizedClientService authorizedClientService;
 
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
-
 	@RequestMapping("/show-form")
 	public String showForm() {
 		return "base/course";
@@ -32,7 +29,7 @@ public class CourseFormController {
 
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("token");
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -46,6 +43,8 @@ public class CourseFormController {
 		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
@@ -108,7 +107,7 @@ public class CourseFormController {
 
 	@PostMapping("/printGoalsAndSyllabus")
 	public ResponseEntity<?> printGoalsAndSyllabus(final HttpServletRequest request) {
-		String token = (String) request.getSession().getAttribute("token");
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -122,6 +121,8 @@ public class CourseFormController {
 		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
 		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		return restTemplate.exchange(restApiUrl + "/api/course/GoalsAndSyllabus/pdf", HttpMethod.POST, entity, byte[].class);
 	}

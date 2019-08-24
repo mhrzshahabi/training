@@ -7,16 +7,15 @@ package com.nicico.training.controller;
 */
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
@@ -29,8 +28,6 @@ import javax.servlet.http.HttpServletResponse;
 @RequestMapping("/goal")
 public class GoalFormController {
     private final OAuth2AuthorizedClientService authorizedClientService;
-    @Value("${nicico.rest-api.url}")
-    private String restApiUrl;
 
     @RequestMapping("/show-form")
     public String showForm(HttpServletRequest req, HttpServletResponse rsp) {
@@ -40,23 +37,23 @@ public class GoalFormController {
     }
 
     @RequestMapping("/print-all/{type}")
-    public ResponseEntity<?> printAll(Authentication authentication, @PathVariable String type) {
-        String token = "";
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthorizedClient client = authorizedClientService
-                    .loadAuthorizedClient(
-                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-                            authentication.getName());
-            token = client.getAccessToken().getTokenValue();
-        }
+    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-        RestTemplate restTemplate = new RestTemplate();
+        final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
 
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
         if(type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/goal/print-all/pdf", HttpMethod.GET, entity, byte[].class);
@@ -68,15 +65,9 @@ public class GoalFormController {
             return null;
     }
     @RequestMapping("/print-one-course/{courseId}/{type}")
-    public ResponseEntity<?> printOneCourse(Authentication authentication, @PathVariable String type, @PathVariable Long courseId) {
-        String token = "";
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthorizedClient client = authorizedClientService
-                    .loadAuthorizedClient(
-                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-                            authentication.getName());
-            token = client.getAccessToken().getTokenValue();
-        }
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
+
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -85,6 +76,9 @@ public class GoalFormController {
         headers.add("Authorization", "Bearer " + token);
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+
 
         if(type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/pdf", HttpMethod.GET, entity, byte[].class);

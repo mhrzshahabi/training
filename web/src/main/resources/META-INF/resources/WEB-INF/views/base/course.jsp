@@ -844,7 +844,9 @@
                 itemIds: ["courseAllGrid","imgMove","preCourseGrid"]
             },
             {name:"courseAllGrid",
+                ID: "courseAllGrid",
                 title:"دوره ها",
+                align: "center",
                 colSpan: 2,
                 rowSpan:3,
                 width: "400",
@@ -857,17 +859,24 @@
                 hidden: false,
                 canRemoveRecords:false,
                 canDragRecordsOut: true,
-                dragDataAction: "none",
+                dragDataAction: "none"
             },
             {name:"imgMove",
                 colSpan: 1,
+                align: "center",
                 rowSpan:3,
-                title:"Click Me",
-                type:"button"
+                title:"",
+                type:"button",
+                icon:"pieces/512/back2.png",
+                click:function() {
+                    isc.say("courseAllGrid".getSelectedRecord().titleFa);
+                }
             },
             {name:"preCourseGrid",
+                ID : "preCourseGrid",
                 title:"پیش نیازهای دوره",
                 colSpan:2,
+                align: "center",
                 rowSpan:3,
                 titleOrientation: "top",
                 editorType:"ListGridItem",
@@ -909,6 +918,13 @@
                         x = x + newCourseCounter;
                         DynamicForm_course.getItem('code').setValue(x);
                         var data1 = DynamicForm_course.getValues();
+
+                        var idList=[];
+                        for (var i = 0; i <testData.length ; i++) {
+                            idList.add(testData[i].id);
+                        }
+                        data1.preCourse = idList;
+                        console.log(data1);
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             httpMethod: course_method,
@@ -1354,7 +1370,7 @@
         var advancedCriteria_course = ListGrid_Course.getCriteria();
         var criteriaForm_course = isc.DynamicForm.create({
             method: "POST",
-            action: "/course/printWithCriteria/" + type,
+            action: "<spring:url value="/course/printWithCriteria/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:

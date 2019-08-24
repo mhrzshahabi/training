@@ -16,13 +16,13 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
+import javax.servlet.http.HttpServletRequest;
+
 @RequiredArgsConstructor
 @Controller
 @RequestMapping("/syllabus")
 public class SyllabusFormController {
 	private final OAuth2AuthorizedClientService authorizedClientService;
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
 
 	@RequestMapping(value = "/show-form")
 	public String showForm() {
@@ -30,15 +30,8 @@ public class SyllabusFormController {
 	}
 
 	@RequestMapping("/print/{type}")
-	public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
+	public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -47,6 +40,7 @@ public class SyllabusFormController {
 		headers.add("Authorization", "Bearer " + token);
 
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/syllabus/print/pdf", HttpMethod.GET, entity, byte[].class);
@@ -58,15 +52,9 @@ public class SyllabusFormController {
 			return null;
 	}
     @RequestMapping("/print-one-course/{courseId}/{type}")
-    public ResponseEntity<?> printOneCourse(Authentication authentication, @PathVariable String type, @PathVariable Long courseId) {
-        String token = "";
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthorizedClient client = authorizedClientService
-                    .loadAuthorizedClient(
-                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-                            authentication.getName());
-            token = client.getAccessToken().getTokenValue();
-        }
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
+		String token = (String) request.getSession().getAttribute("AccessToken");
+
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -75,8 +63,9 @@ public class SyllabusFormController {
         headers.add("Authorization", "Bearer " + token);
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
-        if(type.equals("pdf"))
+		if(type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/syllabus/print-one-course/"+courseId+"/pdf", HttpMethod.GET, entity, byte[].class);
         else if(type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/syllabus/print-one-course/"+courseId+"/excel", HttpMethod.GET, entity, byte[].class);
@@ -88,15 +77,8 @@ public class SyllabusFormController {
     //------------------------------------------------
 
 	@RequestMapping("/print-one-goal/{goalId}/{type}")
-	public ResponseEntity<?> printOneGoal(Authentication authentication, @PathVariable String type, @PathVariable Long goalId) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
+	public ResponseEntity<?> printOneGoal(HttpServletRequest request, @PathVariable String type, @PathVariable Long goalId) {
+		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -105,6 +87,7 @@ public class SyllabusFormController {
 		headers.add("Authorization", "Bearer " + token);
 
 		HttpEntity<String> entity = new HttpEntity<String>(headers);
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/syllabus/print-one-goal/"+goalId+"/pdf", HttpMethod.GET, entity, byte[].class);
