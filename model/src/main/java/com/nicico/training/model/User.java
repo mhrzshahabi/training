@@ -4,6 +4,8 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -25,5 +27,8 @@ public class User {
 
     @Column(name = "c_lname")
     private String Lname;
+
+    @ManyToMany(mappedBy = "members")
+    private List<Committee> committeeSet;
 
 }

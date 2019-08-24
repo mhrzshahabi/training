@@ -48,7 +48,6 @@
     <%--<script>--%>
 
 	<spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
-
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
@@ -574,6 +573,18 @@
     });
 
 
+      var committeeButton = isc.IconButton.create({
+        title: "کمیته تخصصی",
+        icon: "pieces/512/committee.png",
+        largeIcon: "pieces/512/committee.png",
+        orientation: "vertical",
+        click: function () {
+
+            createTab("کمیته تخصصی", "<spring:url value="/committee/show-form"/>", false);
+        }
+    });
+
+
     var jobButton = isc.IconButton.create({
         title: "شغل",
         icon: "pieces/512/job.png",
@@ -730,6 +741,7 @@
             classButton,
             courseButton,
             termButton,
+            committeeButton,
             studentButton,
         ],
         autoDraw: true

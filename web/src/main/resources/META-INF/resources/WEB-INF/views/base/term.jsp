@@ -12,6 +12,37 @@
  	var term_method = "POST";
 	var startDateCheckTerm = true;
     var endDateCheckTerm = true;
+    //******************************
+    //Menu
+    //******************************
+     Menu_ListGrid_term = isc.Menu.create({
+        data: [
+            {
+                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+                ListGrid_Term.invalidateCache();
+                                   }
+            }, {
+                title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+                 show_TermNewForm();
+                                  }
+            }, {
+                title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+                             show_TermEditForm();      }
+            }, {
+                title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+                           show_TermRemoveForm();       }
+            }, {isSeparator: true}, {
+                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                          print_TermListGrid("pdf") ;        }
+             }, {
+                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                                 print_TermListGrid("excel")  }
+             }, {
+                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+                       print_TermListGrid("html");           }
+            }]
+    });
+
  //************************************************************************************
     // RestDataSource & ListGrid
  //************************************************************************************
@@ -23,21 +54,19 @@
             return this.Super("transformRequest", arguments);
         },
         fields: [{name: "id", primaryKey: true},
-         {name: "titleFa"},
          {name: "code"},
          {name: "titleFa"},
          {name: "startDate"},
-          {name: "endDate"},
+         {name: "endDate"},
         ], dataFormat: "json",
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
     });
 	var ListGrid_Term = isc.MyListGrid.create({
-
 		 dataSource: RestDataSource_term,
+		  canAddFormulaFields: true,
 		 contextMenu: Menu_ListGrid_term,
-        autoFetchData: true,
-
+         autoFetchData: true,
 		doubleClick: function () {
 	    },
 		fields: [
@@ -154,8 +183,11 @@
 		 {
 			name: "description",
 			title: "توضیحات",
-			type: "text",
-			  length: "250", width: "*", height: 27
+			type: "textArea",
+            colSpan: 3,
+            height: "50",
+		    length: "250", width: "*",
+
 		}
 
 		]
@@ -181,7 +213,9 @@
         }),]
     });
 
-//****************************************************************************************
+//**********************************************************************************
+                                //ToolStripButton
+//**********************************************************************************
 	var ToolStripButton_Refresh = isc.ToolStripButton.create({
 		icon: "[SKIN]/actions/refresh.png",
 		title: "بازخوانی اطلاعات",
@@ -225,41 +259,9 @@
 		width: "100%",
 		members: [ToolStripButton_Refresh,ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove,ToolStripButton_Print]
 	});
-	var Menu_ListGrid_term = isc.Menu.create({
-		width: 150,
-		data: [{
-			title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-				ListGrid_Term_refresh();
-			}
-		}, {
-			title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-				DynamicForm_Term.clearValues();
-				Windows_Term.show();
-
-			}
-		}, {
-			title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
-			 ListGrid_Term_edit()
-			}
-		}, {
-			title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
-				ListGrid_Term_remove()
-			}
-		}, {isSeparator: true}, {
-			title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-
-			}
-		}, {
-			title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-
-			}
-		}, {
-			title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-
-			}
-		}]
-	});
-
+//***********************************************************************************
+                                //HLayout
+//***********************************************************************************
 	var HLayout_Actions_Group = isc.HLayout.create({
 		width: "100%",
 		members: [ToolStrip_Actions]
@@ -280,19 +282,24 @@
 		]
 	});
 
- function  show_TermNewForm()
+//************************************************************************************
+                                 //function
+//************************************************************************************
+
+     function  show_TermNewForm()
 {
         term_method = "POST";
       	DynamicForm_Term.clearValues();
        	Window_term.show();
     };
+    function  show_TermEditForm() {
 
-function  show_TermEditForm() {
         var record = ListGrid_Term.getSelectedRecord();
+
        if (record == null || record.id == null)
       {
 
-<%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
+
             isc.Dialog.create({
                 message: "<spring:message code="msg.record.not.selected"/>",
                 icon: "[SKIN]ask.png",
@@ -303,18 +310,21 @@ function  show_TermEditForm() {
                 }
             });
         }
+
             else
                 {
+
                 term_method = "PUT";
                 DynamicForm_Term.clearValues();
                 DynamicForm_Term.editRecord(record);
                 Window_term.show();
 
                 } };
-
     function  save_Term() {
+
       if (endDateCheckTerm == false)
                 return;
+
         if (!DynamicForm_Term.validate()) {
             return;
         }
@@ -327,7 +337,6 @@ function  show_TermEditForm() {
         isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback: show_TermActionResult(rpcResponse)"));
 
     };
-
     function show_TermRemoveForm() {
         var record = ListGrid_Term.getSelectedRecord();
          if (record == null || record.id == null)
@@ -383,8 +392,7 @@ function  show_TermEditForm() {
             }, 3000);
         }
     };
-
-     function print_TermListGrid(type) {
+    function print_TermListGrid(type) {
         var advancedCriteria =ListGrid_Term.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
