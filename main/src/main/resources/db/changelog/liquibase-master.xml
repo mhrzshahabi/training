@@ -7,5 +7,7 @@
 
      <!--<include file="changes/liq-003.xml" relativeToChangelogFile="true"/>-->
     <!--<include file="changes/liq-004.xml" relativeToChangelogFile="true"/>-->
+<!--    <include file="changes/liq-006.xml" relativeToChangelogFile="true"/>-->
+<!--    <include file="changes/liq-008.xml" relativeToChangelogFile="true"/>-->
 
 </databaseChangeLog>
