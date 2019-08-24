@@ -4,63 +4,46 @@
                    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-110">
-        <createSequence sequenceName="seq_committee_id"/>
-    </changeSet>
-
-    <changeSet author="heydaripoor (generated)" id="1566630580529-111">
-        <createTable tableName="tbl_committee">
-            <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_committeePK"/>
-            </column>
-            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+    <changeSet author="heydaripoor (generated)" id="1566632378952-112">
+        <createTable tableName="tbl_committee_user">
+            <column name="f_committee_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="d_created_date" type="TIMESTAMP">
+            <column name="f_user_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="e_deleted" type="NUMBER(10, 0)"/>
-            <column name="e_enabled" type="NUMBER(10, 0)"/>
-            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
-            <column name="d_last_modified_date" type="TIMESTAMP"/>
-            <column name="n_version" type="NUMBER(10, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
-            <column name="subcategory_id" type="NUMBER(19, 0)"/>
-            <column name="c_tasks" type="VARCHAR2(400 CHAR)"/>
-            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-112">
-        <addColumn tableName="tbl_user">
-            <column name="f_committee_id" type="number(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-117">
+        <addForeignKeyConstraint baseColumnNames="f_user_id" baseTableName="tbl_committee_user" constraintName="FKb7bvukcta5kmg4i6nlllfyy2j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_user" validate="true"/>
     </changeSet>
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-113">
-        <addColumn tableName="tbl_user">
-            <column name="f_user_id" type="number(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-        </addColumn>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-118">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_user" constraintName="FKexu181285v0vfvrtlt8g94hd4" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
     </changeSet>
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-117">
-        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_committee" constraintName="FK84vfnjy7bng1pn3b0vnpe08sk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-134">
+        <dropForeignKeyConstraint baseTableName="TBL_USER" constraintName="FKM76PHVSVVALR1BKVIV4BGX08E"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-135">
+        <dropForeignKeyConstraint baseTableName="TBL_USER" constraintName="FKMJMPWHYK33AWUTIXBKP22JXLT"/>
     </changeSet>
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-118">
-        <addForeignKeyConstraint baseColumnNames="f_user_id" baseTableName="tbl_user" constraintName="FKm76phvsvvalr1bkviv4bgx08e" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_user" validate="true"/>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-171">
+        <dropColumn columnName="F_COMMITTEE_ID" tableName="TBL_USER"/>
     </changeSet>
 
-    <changeSet author="heydaripoor (generated)" id="1566630580529-119">
-        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_user" constraintName="FKmjmpwhyk33awutixbkp22jxlt" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+    <changeSet author="heydaripoor (generated)" id="1566632378952-172">
+        <dropColumn columnName="F_USER_ID" tableName="TBL_USER"/>
     </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1566632378952-17">
+        <dropForeignKeyConstraint baseTableName="tbl_committee" constraintName="FK84vfnjy7bng1pn3b0vnpe08sk"/>
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_committee" constraintName="FK84vfnjy7bng1pn3b0vnpe08sk" referencedColumnNames="id" referencedTableName="tbl_sub_category"/>
+    </changeSet>
+
+
 
 </databaseChangeLog>
 

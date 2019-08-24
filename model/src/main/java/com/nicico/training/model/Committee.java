@@ -37,7 +37,7 @@ public class Committee extends Auditable{
     private Long subCategoryId;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_user", schema = "training",
+    @JoinTable(name = "tbl_committee_user", schema = "training",
             joinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_user_id", referencedColumnName = "id")})
     private List<User> members;
