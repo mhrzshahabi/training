@@ -61,8 +61,6 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String mainObjective;
 
-    @ApiModelProperty(required = true)
-    private List<CourseDTO.CourseInfoTuple> preCourse;
 
 //    @ApiModelProperty(required = true)
 //    private List<Long> preCourse;
@@ -135,6 +133,9 @@ public class CourseDTO implements Serializable {
         @ApiModelProperty(required = true)
         private Long subCategoryId;
 
+        @ApiModelProperty(required = true)
+        private List<Long> preCourseListId;
+
 
     }
 
@@ -170,6 +171,9 @@ public class CourseDTO implements Serializable {
 
         @ApiModelProperty(required = true)
         private Long subCategoryId;
+
+        @ApiModelProperty(required = true)
+        private List<Long> preCourseListId;
     }
 
     // ------------------------------

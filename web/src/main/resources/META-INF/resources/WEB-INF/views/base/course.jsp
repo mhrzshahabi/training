@@ -923,7 +923,7 @@
                         for (var i = 0; i <testData.length ; i++) {
                             idList.add(testData[i].id);
                         }
-                        data1.preCourse = idList;
+                        data1.preCourseListId = idList;
                         console.log(data1);
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
@@ -952,6 +952,12 @@
             else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" && ChangeEtechnicalType == true)) {
                 var data1 = DynamicForm_course.getValues();
                 ChangeEtechnicalType = false;
+                var idList=[];
+                for (var i = 0; i <testData.length ; i++) {
+                    idList.add(testData[i].id);
+                }
+                data1.preCourseListId = idList;
+
                 isc.RPCManager.sendRequest({
                     actionURL: course_url,
                     httpMethod: course_method,
