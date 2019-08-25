@@ -5,11 +5,14 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.CategoryDAO;
+import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -30,6 +33,7 @@ public class TeacherService implements ITeacherService {
 	private final ModelMapper modelMapper;
 	private final TeacherDAO teacherDAO;
 	private final CategoryDAO categoryDAO;
+	private final IPersonalInfoService personalInfoService;
 
 	private final EnumsConverter.EGenderConverter eGenderConverter = new EnumsConverter.EGenderConverter();
     private final EnumsConverter.EMarriedConverter eMarriedConverter = new EnumsConverter.EMarriedConverter();
@@ -60,6 +64,14 @@ public class TeacherService implements ITeacherService {
 	@Override
 	public TeacherDTO.Info create(TeacherDTO.Create request) {
 		final Teacher teacher = modelMapper.map(request, Teacher.class);
+		PersonalInfo personalInfo = modelMapper.map(personalInfoService.create(request.getPersonality()),PersonalInfo.class);
+		teacher.setPersonality(personalInfo);
+		teacher.setPeronalityId(personalInfo.getId());
+		return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
+	}
+
+//	List<Teacher> teacherList = null;
+//		if(teacherList==null || teacherList.size()==0)
 //		if(request.getEMarriedId() != null) {
 //			teacher.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
 //			teacher.setEMarriedTitleFa(teacher.getEMarried().getTitleFa());
@@ -73,12 +85,7 @@ public class TeacherService implements ITeacherService {
 //			teacher.setEGenderTitleFa(teacher.getEGender().getTitleFa());
 //		}
 //		List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
-		List<Teacher> teacherList = null;
-		if(teacherList==null || teacherList.size()==0)
-			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
-		else
-			return null;
-	}
+
 
 	@Transactional
 	@Override
