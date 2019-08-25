@@ -1130,6 +1130,9 @@
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
+            // for(var i = 0; i <testData.length ; i++) {
+            // preCourseDS.removeData(testData[i]);
+            // }
         },
         items: [isc.VLayout.create({
             width: "100%",
@@ -1323,6 +1326,8 @@
     };
 
     function ListGrid_Course_Edit() {
+        // testData.length = 0;
+        // preCourseDS.invalidateCache();
         DynamicForm_course.getItem("category.id").setDisabled(true);
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         DynamicForm_course.getItem("erunType.id").setDisabled(true);
@@ -1344,6 +1349,32 @@
                 }
             });
         } else {
+
+            isc.RPCManager.sendRequest({
+            actionURL: courseUrl + "preCourse/" + ListGrid_Course.getSelectedRecord().id,
+            httpMethod: "GET",
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            showPrompt: false,
+            serverOutputAsString: false,
+            callback: function (resp) {
+                // preCourseDS.setTestData(JSON.parse(resp.data));
+                // for(var i = 0; i <testData.length ; i++) {
+                //     preCourseDS.removeData(testData[i]);
+                // }
+                // console.log(resp.data.length);
+                for(var i = 0; i <JSON.parse(resp.data).length ; i++) {
+                    // console.log(JSON.parse(resp.data)[i]);
+                    preCourseDS.addData(JSON.parse(resp.data)[i]);
+
+                }
+
+}})
+
+
+
+
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
             DynamicForm_course.clearValues();

@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static java.lang.Math.round;
 
@@ -41,7 +42,7 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info get(Long id) {
         final Optional<Course> cById = courseDAO.findById(id);
-        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EquipmentNotFound));
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         return modelMapper.map(course, CourseDTO.Info.class);
     }
 
@@ -79,6 +80,24 @@ public class CourseService implements ICourseService {
         }
         return modelMapper.map(cAll, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<CourseDTO.Info> preCourseList(Long id) {
+        final List<CourseDTO.Info> listOut = new ArrayList<>();
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        String s = course.getPreCourse();
+        List<Long> x = Arrays.stream(s.split(","))
+                .map(Long::parseLong)
+                .collect(Collectors.toList());
+        for (Long i : x) {
+            Optional<Course> pById = courseDAO.findById(i);
+            Course preCourse = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+            listOut.add(modelMapper.map(preCourse,CourseDTO.Info.class));
+        }
+        return listOut;
     }
 
 

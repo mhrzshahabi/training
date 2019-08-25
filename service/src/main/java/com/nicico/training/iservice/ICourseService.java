@@ -10,6 +10,7 @@ public interface ICourseService {
 	CourseDTO.Info get(Long id);
 
 	List<CourseDTO.Info> list();
+	List<CourseDTO.Info> preCourseList(Long id);
 
 	CourseDTO.Info create(CourseDTO.Create request);
 
