@@ -64,7 +64,7 @@ public class TeacherService implements ITeacherService {
 	@Override
 	public TeacherDTO.Info create(TeacherDTO.Create request) {
 		final Teacher teacher = modelMapper.map(request, Teacher.class);
-		PersonalInfo personalInfo = modelMapper.map(personalInfoService.create(request.getPersonality()),PersonalInfo.class);
+		final PersonalInfo personalInfo = modelMapper.map(personalInfoService.create(request.getPersonality()),PersonalInfo.class);
 		teacher.setPersonality(personalInfo);
 		teacher.setPeronalityId(personalInfo.getId());
 		return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);

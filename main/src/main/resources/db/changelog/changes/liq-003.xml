@@ -234,4 +234,12 @@
         <!--<addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_city" constraintName="FK796uthe94t6y9cd71cq0yiy74" referencedColumnNames="id" referencedTableName="tbl_state"/>-->
     <!--</changeSet>-->
 
+       <!--<changeSet author="razmnoosh (generated)" id="1566708076896-170">-->
+        <!--<dropSequence sequenceName="SEQ_PERSONALINFO_ID"/>-->
+    <!--</changeSet>-->
+    <!---->
+    <!--<changeSet author="razmnoosh (generated)" id="1566708076896-112">-->
+        <!--<createSequence sequenceName="seq_personal_info_id"/>-->
+    <!--</changeSet>-->
+
 </databaseChangeLog>
