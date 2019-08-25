@@ -14,7 +14,7 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_class", schema = "TRAINING")
+@Table(name = "tbl_class")
 public class Tclass extends Auditable {
 
 	@Id
@@ -53,7 +53,7 @@ public class Tclass extends Auditable {
 	private Long courseId;
 
 	@ManyToMany(fetch = FetchType.EAGER, cascade = {CascadeType.PERSIST})
-	@JoinTable(name = "tbl_student_class", schema = "TRAINING",
+	@JoinTable(name = "tbl_student_class",
 			joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
 	private List<Student> studentSet;

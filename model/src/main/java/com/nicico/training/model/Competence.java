@@ -22,7 +22,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(schema = "training", name = "tbl_competence")
+@Table(name = "tbl_competence")
 public class Competence extends Auditable {
 
     @Id
@@ -30,20 +30,20 @@ public class Competence extends Auditable {
     @SequenceGenerator(name = "seq_competence_id", sequenceName = "seq_competence_id", allocationSize = 1)
     private Long id;
 
-    @Column(name = "titleFa", nullable = false)
+	@Column(name = "c_title_fa", nullable = false)
     @NotEmpty
     private String titleFa;
 
-    @Column(name = "titleEn")
+	@Column(name = "c_title_en")
     private String titleEn;
 
-    @Column(name = "description")
+	@Column(name = "c_description")
     private String description;
 
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
 
-    @Column(name = "e_Competence_input_type")
+	@Column(name = "e_competence_input_type")
     private ECompetenceInputType eCompetenceInputType;
 
     @Column(name = "wf_status")
@@ -59,12 +59,12 @@ public class Competence extends Auditable {
     private Set<JobCompetence> jobCompetenceSet;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(schema = "training", name = "tbl_competence_skill", joinColumns = @JoinColumn(name = "f_competence_id"),
+	@JoinTable(name = "tbl_competence_skill", joinColumns = @JoinColumn(name = "f_competence_id"),
             inverseJoinColumns = @JoinColumn(name = "f_skill_id"))
     private Set<Skill> skillSet;
 
     @ManyToMany(cascade = {CascadeType.PERSIST, CascadeType.MERGE})
-    @JoinTable(schema = "training", name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_competence_id"),
+	@JoinTable(name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_competence_id"),
             inverseJoinColumns = @JoinColumn(name = "f_skill_group_id"))
     private Set<SkillGroup> skillGroupSet;
 

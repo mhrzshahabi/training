@@ -11,9 +11,9 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_syllabus", schema = "TRAINING")
+@Table(name = "tbl_syllabus")
 public class Syllabus extends Auditable
 {
 	@Id
