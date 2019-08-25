@@ -56,7 +56,7 @@ public class TeacherDTO {
 	@Setter
 	@ApiModel("TeacherInfoTuple")
 	public static class TeacherInfoTuple {
-		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
+		private PersonalInfoDTO.Create personality;
 	}
 	// ------------------------------
 
@@ -65,6 +65,7 @@ public class TeacherDTO {
 	@Accessors(chain = true)
 	@ApiModel("TeacherCreateRq")
 	public static class Create extends TeacherDTO {
+		private PersonalInfoDTO.Create personality;
 	}
 
 	// ------------------------------

@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.google.common.base.Joiner;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
@@ -89,6 +90,11 @@ public class CourseService implements ICourseService {
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
+        List<Long> preCourseListId = request.getPreCourseListId();
+        List<Course> preCourseList = new ArrayList<>();
+        for (Long aLong : preCourseListId) {
+            preCourseList.add(courseDAO.getOne(aLong));
+        }
         return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
     }
 
@@ -97,9 +103,12 @@ public class CourseService implements ICourseService {
     public CourseDTO.Info update(Long id, CourseDTO.Update request) {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        List<Long> preCourseListId = request.getPreCourseListId();
+        String s = Joiner.on(',').join(preCourseListId);
         Course course = new Course();
         modelMapper.map(currentCourse, course);
         modelMapper.map(request, course);
+        course.setPreCourse(s);
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));

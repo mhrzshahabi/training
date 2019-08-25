@@ -108,12 +108,15 @@ public class Course extends Auditable {
     @Transient
     private Long attitude = Long.valueOf(0);
 
-    @ManyToOne(cascade={CascadeType.ALL})
-    @JoinColumn(name="pre_course_id")
-    private Course preCourse;
+    @Column(name = "c_pre_course")
+    private String preCourse;
 
-    @OneToMany(mappedBy="preCourse")
-    private List<Course> preCourseList = new ArrayList<>();
+//    @ManyToOne(cascade={CascadeType.ALL})
+//    @JoinColumn(name="pre_course_id")
+//    private Course preCourse;
+//
+//    @OneToMany(mappedBy="preCourse")
+//    private List<Course> preCourseList = new ArrayList<>();
 
 //    @Transient
 //    private Long calDomainType(Integer n){

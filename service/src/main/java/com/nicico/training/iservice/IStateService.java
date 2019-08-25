@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.CityDTO;
 import com.nicico.training.dto.StateDTO;
 
 import java.util.List;
@@ -21,5 +22,5 @@ public interface IStateService {
 
     SearchDTO.SearchRs<StateDTO.Info> search(SearchDTO.SearchRq request);
 
-    //------------------------
+    List<CityDTO.Info> listByStateId(Long stateId);
 }

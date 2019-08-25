@@ -11,7 +11,9 @@ import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
@@ -49,6 +51,7 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+
 
     @Value("${nicico.teacher.upload.dir}")
     private String teacherUploadDir;

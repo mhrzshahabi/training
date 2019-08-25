@@ -273,8 +273,7 @@ function checkBirthDate(date) {
 
         var jeoDate = new Date(JalaliDate.jalaliToGregorian(year, month, day));
         var todayDate = new Date();
-
-        if (jeoDate > todayDate)
+        if (Date.compareDates(jeoDate,todayDate) == 1)
             return false;
         return true;
     }
@@ -288,7 +287,6 @@ function checkDate(date) {
     var dateIndex = new Array(0, 1, 2, 3, 5, 6, 8, 9);
     if (date.length != 10)
         return false;
-
     var month = parseInt(date.substr(5, 2));
     var day = parseInt(date.substr(8, 2));
     var year = parseInt(date.substr(0, 4));

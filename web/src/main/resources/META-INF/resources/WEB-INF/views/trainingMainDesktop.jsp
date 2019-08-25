@@ -67,6 +67,8 @@
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
     const termUrl=rootUrl + "/term/";
+    const cityUrl=rootUrl + "/city/";
+    const stateUrl=rootUrl + "/state/";
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {

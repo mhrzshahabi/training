@@ -3,8 +3,13 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CityDTO;
+import com.nicico.training.dto.EducationOrientationDTO;
 import com.nicico.training.dto.StateDTO;
 import com.nicico.training.iservice.IStateService;
+import com.nicico.training.model.City;
+import com.nicico.training.model.EducationMajor;
+import com.nicico.training.model.EducationOrientation;
 import com.nicico.training.model.State;
 import com.nicico.training.repository.StateDAO;
 import lombok.RequiredArgsConstructor;
@@ -13,8 +18,10 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -82,5 +89,20 @@ public class StateService implements IStateService {
     private StateDTO.Info save(State state) {
         final State saved = stateDAO.saveAndFlush(state);
         return modelMapper.map(saved, StateDTO.Info.class);
-    }   
+    }
+
+    @Transactional
+    @Override
+    public List<CityDTO.Info> listByStateId(Long stateId) {
+        final Optional<State> cById = stateDAO.findById(stateId);
+        final State one = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Set<City> cities = one.getCitySet();
+        List<CityDTO.Info> cityInfo = new ArrayList<>();
+        Optional.ofNullable(cities)
+                .ifPresent(cityList ->
+                        cityList.forEach(city ->
+                                cityInfo.add(modelMapper.map(city, CityDTO.Info.class))
+                        ));
+        return cityInfo;
+    }
 }
