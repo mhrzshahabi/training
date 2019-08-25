@@ -403,13 +403,6 @@
         title: "<spring:message code="create"/>",
 
         click: function () {
-            // DynamicForm_course.getItem("category.id").setDisabled(false);
-            // DynamicForm_course.getItem("subCategory.id").setDisabled(false);
-            // DynamicForm_course.getItem("erunType.id").setDisabled(false);
-            // DynamicForm_course.getItem("elevelType.id").setDisabled(false);
-            // DynamicForm_course.getItem("etheoType.id").setDisabled(false);
-            // DynamicForm_course.clearValues();
-
             ListGrid_Course_add();
         }
     });
@@ -455,6 +448,7 @@
         // select items.
         createCanvas : function () {
             return isc.ListGrid.create({
+                ID : this.ID,
                 autoDraw:false,
                 // fill the space the form allocates to the item
                 width:this.width, height:this.height,

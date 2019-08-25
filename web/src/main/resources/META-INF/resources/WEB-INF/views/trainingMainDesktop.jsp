@@ -666,6 +666,15 @@
             createTab("استاد", "<spring:url value="/teacher/show-form"/>", false)
         }
     })
+    var educationButton = isc.IconButton.create({
+        title: "تحصیلات",
+        icon: "pieces/512/education.png",
+        largeIcon: "pieces/512/education.png",
+        orientation: "vertical",
+        click: function () {
+            createTab("استاد", "<spring:url value="/education/show-form"/>", false)
+        }
+    })
 
     var competencyReportButton = isc.IconButton.create({
         title: "گزارش کلاس ها",
@@ -687,7 +696,8 @@
             categoryButton,
             skillLevelButton,
             instituteButton,
-            teacherButton
+            teacherButton,
+            educationButton
         ],
         autoDraw: true
     });
