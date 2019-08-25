@@ -2,7 +2,9 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.CityDTO;
 import com.nicico.training.dto.StateDTO;
+import com.nicico.training.iservice.ICityService;
 import com.nicico.training.iservice.IStateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,6 +20,7 @@ import java.util.List;
 @RequestMapping(value = "/api/state")
 public class StateRestController {
     private final IStateService stateService;
+    private final ICityService cityService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -92,6 +95,25 @@ public class StateRestController {
 //    @PreAuthorize("hasAuthority('r_state')")
     public ResponseEntity<SearchDTO.SearchRs<StateDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(stateService.search(request), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/spec-list-by-stateId/{id}")
+//    @PreAuthorize("hasAuthority('r_educationOrientation')")
+    public ResponseEntity<CityDTO.CitySpecRs> listByMajorId(@RequestParam("_startRow") Integer startRow,
+                                                                            @RequestParam("_endRow") Integer endRow,
+                                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                                            @PathVariable Long id) {
+        List<CityDTO.Info> cities = stateService.listByStateId(id);
+        final CityDTO.SpecRs specResponse = new CityDTO.SpecRs();
+        specResponse.setData(cities)
+                .setStartRow(0)
+                .setEndRow(cities.size())
+                .setTotalRows(cities.size());
+        final CityDTO.CitySpecRs specRs = new CityDTO.CitySpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs,HttpStatus.OK);
     }
 
 

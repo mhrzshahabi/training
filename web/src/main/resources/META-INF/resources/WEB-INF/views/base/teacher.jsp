@@ -32,14 +32,11 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
-            {name: "fullNameFa"},
-            {name: "educationLevel.titleFa"},
-            {name: "educationMajor.titleFa"},
-            {name: "educationMajorId"},
-            {name: "educationOrientationId"},
-            {name: "mobile"},
-            {name: "attachPhoto"},
-            {name: "categories"}
+            {name: "personality.firstNameFa"},
+            {name: "personality.lastNameFa"},
+            {name: "personality.educationLevel.titleFa"},
+            {name: "personality.educationMajor.titleFa"},
+            {name: "personality.contactInfo.mobile"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -95,6 +92,22 @@
         ],
         fetchDataURL: educationOrientationUrl + "spec-list"
     });
+
+    var RestDataSource_City_JspTeacher = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: cityUrl + "spec-list"
+    });
+
+    var RestDataSource_Sate_JspTeacher = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: stateUrl + "spec-list"
+    });
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -148,25 +161,31 @@
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
             {
-                name: "fullNameFa",
+                name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
-                name: "educationLevel.titleFa",
+                name: "personality.lastNameFa",
+                title: "<spring:message code='lastName'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
-                name: "educationMajor.titleFa",
+                name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
-                name: "mobile",
+                name: "personality.contactInfo.mobile",
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
                 filterOperator: "contains"
@@ -201,7 +220,6 @@
         height: "140px",
         width: "145px",
         align: "center",
-        valign: "center",
         contents: photoDescription
     });
 
@@ -239,78 +257,169 @@
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "vm",
-        numCols: 6,
-        titleAlign: "right",
+        numCols: 8,
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
         fields: [
             {name: "id", hidden: true},
-
             {
-                name: "teacherCode",
-                title: "<spring:message code='teacher.code'/>",
-                type: 'text',
-                disabled: true
-            },
-
-            {
-                name: "fullNameFa",
-                title: "<spring:message code='firstName.lastName'/>",
-                type: 'text',
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
-                showHintInField: true
-            },
-
-            {
-                name: "fullNameEn",
-                title: "<spring:message code='firstName.latin'/>",
-                type: 'text',
-                required: true,
-                keyPressFilter: "[a-z|A-Z |]",
-                hint: "English/انگليسي",
-                showHintInField: true
-            },
-
-            {
-                name: "nationalCode",
+                name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
                 type: 'text',
                 required: true,
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
                 length: "10",
+                width: "*",
                 hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true
                 , blur: function () {
                     var codeCheck = false;
-                    codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("nationalCode"));
+                    codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
                     codeMeliCheck = codeCheck;
                     if (codeCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("nationalCode", "<spring:message code='msg.national.code.validation'/>", true);
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message code='msg.national.code.validation'/>", true);
                     if (codeCheck == true)
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                 }
+            },
+            {
+                name: "personality.firstNameFa",
+                title: "<spring:message code='firstName'/>",
+                type: 'text',
+                width: "*",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                hint: "Persian/فارسی",
+                showHintInField: true
             },
 
             {
-                name: "fatherName",
+                name: "personality.lastNameFa",
+                title: "<spring:message code='lastName'/>",
+                type: 'text',
+                width: "*",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                hint: "Persian/فارسی",
+                showHintInField: true
+            },
+            {
+                name: "personality.fullNameEn",
+                title: "<spring:message code='firstName.latin'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[a-z|A-Z |]",
+                hint: "English/انگليسي",
+                showHintInField: true
+            },
+
+
+            {
+                name: "teacherCode",
+                title: "<spring:message code='teacher.code'/>",
+                type: 'text',
+                width: "*",
+                disabled: true
+            },
+
+
+            {
+                name: "personality.fatherName",
                 title: "<spring:message code='father.name'/>",
                 type: 'text',
+                width: "*",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 length: "30"
             },
 
+
             {
-                name: "egenderId",
+                name: "personality.nationality",
+                title: "<spring:message code='nationality'/>",
+                type: 'text',
+                width: "*",
+                defaultValue: "<spring:message code='persian'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
+            },
+            {
+                name: "personality.religion",
+                title: "<spring:message code='religion'/>",
+                type: 'text',
+                width: "*",
+                defaultValue: "<spring:message code='islam'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
+            },
+
+            {
+                name: "personality.birthDate",
+                title: "<spring:message code='birth.date'/>",
+                ID: "birthDate_jspTeacher",
+                type: 'text',
+                width: "*",
+                hint: "YYYY/MM/DD",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                focus: function () {
+                    displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
+                },
+                icons: [{
+                    src: "pieces/pcal.png",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
+                    }
+                }],
+                blur: function () {
+                    var dateCheck = false;
+                    dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
+                    persianDateCheck = dateCheck;
+                    if (dateCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.birthDate", "<spring:message code='msg.correct.date'/>", true);
+                    if (dateCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
+                }
+            },
+
+            {
+                name: "personality.birthLocation",
+                title: "<spring:message code='birth.location'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
+            },
+            {
+                name: "personality.birthCertificate",
+                title: "<spring:message code='birth.certificate'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[0-9]",
+                length: "15"
+            },
+
+            {
+                name: "personality.birthCertificateLocation",
+                title: "<spring:message code='birth.certificate.location'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "100"
+            },
+
+            {
+                name: "personality.egenderId",
                 type: "IntegerItem",
                 title: "<spring:message code='gender'/>",
                 textAlign: "center",
+                width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
@@ -332,83 +441,13 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
             },
 
-            {
-                name: "birthDate",
-                title: "<spring:message code='birth.date'/>",
-                ID: "birthDate_jspTeacher",
-                type: 'text',
-                hint: "YYYY/MM/DD",
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                focus: function () {
-                    displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
-                },
-                icons: [{
-                    src: "pieces/pcal.png",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
-                    }
-                }],
-                blur: function () {
-                    var dateCheck = false;
-                    dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("birthDate"));
-                    persianDateCheck = dateCheck;
-                    if (dateCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("birthDate", "<spring:message code='msg.correct.date'/>", true);
-                    if (dateCheck == true)
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("birthDate", true);
-                }
-            },
 
             {
-                name: "birthLocation",
-                title: "<spring:message code='birth.location'/>",
-                type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
-            },
-
-
-            {
-                name: "birthCertificate",
-                title: "<spring:message code='birth.certificate'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "15"
-            },
-
-            {
-                name: "birthCertificateLocation",
-                title: "<spring:message code='birth.certificate.location'/>",
-                type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
-            },
-
-            {
-                name: "religion",
-                title: "<spring:message code='religion'/>",
-                type: 'text',
-                defaultValue: "<spring:message code='islam'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
-            },
-
-            {
-                name: "nationality",
-                title: "<spring:message code='nationality'/>",
-                type: 'text',
-                defaultValue: "<spring:message code='persian'/>",
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "100"
-            },
-
-            {
-                name: "emarriedId",
+                name: "personality.emarriedId",
                 type: "IntegerItem",
                 title: "<spring:message code='married.status'/>",
                 textAlign: "center",
+                width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
@@ -429,31 +468,48 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
             },
-
             {
-                name: "email",
-                title: "<spring:message code='email'/>",
-                type: 'text',
-                hint: "test@nicico.com",
-                showHintInField: true,
-                length: "30"
-                , blur: function () {
-                    var emailCheck = false;
-                    emailCheck = checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("email"));
-                    mailCheck = emailCheck;
-                    if (emailCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
-                    if (emailCheck == true)
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
-                }
+                name: "personality.emilitaryId",
+                type: "IntegerItem",
+                width: "*",
+                title: "<spring:message code='military'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultToFirstOption: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Emilitary_JspTeacher,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "enableStatus",
+                title: "<spring:message code='status'/>",
+                type: "radioGroup",
+                width: "*",
+                valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
+                vertical: false,
+                defaultValue: "true"
             },
 
             {
-                name: "educationLevelId",
+                name: "personality.educationLevelId",
                 title: "<spring:message code='education.level'/>",
                 textAlign: "center",
+                width: "*",
                 editorType: "ComboBoxItem",
-                pickListWidth: 230,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -479,11 +535,11 @@
             },
 
             {
-                name: "educationMajorId",
+                name: "personality.educationMajorId",
                 title: "<spring:message code='education.major'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                pickListWidth: 230,
+                width: "*",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -509,11 +565,11 @@
             },
 
             {
-                name: "educationOrientationId",
+                name: "personality.educationOrientationId",
                 title: "<spring:message code='education.orientation'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                pickListWidth: 230,
+                width: "*",
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -539,91 +595,10 @@
                 ]
             },
             {
-                name: "emilitaryId",
-                type: "IntegerItem",
-                title: "<spring:message code='military'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Emilitary_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            },
-
-            {
-                name: "mobile",
-                title: "<spring:message code='cellPhone'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "11",
-                hint: "*********09",
-                showHintInField: true,
-                errorMessage: "<spring:message code='msg.mobile.validation'/>"
-                , blur: function () {
-                    var mobileCheck = false;
-                    mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("mobile"));
-                    cellPhoneCheck = mobileCheck;
-                    if (mobileCheck == false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
-
-                    if (mobileCheck == true)
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
-                }
-            },
-
-            {
-                name: "economicalCode",
-                title: "<spring:message code='economical.code'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "15",
-                stopOnError: true
-            },
-
-            {
-                name: "economicalRecordNumber",
-                title: "<spring:message code='economical.record.number'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "15",
-                stopOnError: true
-            },
-
-            {
-                name: "description",
-                title: "<spring:message code='description'/>",
-                type: 'textArea',
-                length: "500",
-                height: 30
-            },
-
-            {
-                name: "enableStatus",
-                title: "<spring:message code='status'/>",
-                type: "radioGroup",
-                valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
-                vertical: false,
-                defaultValue: "true"
-            },
-
-            {
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
+                width: "*",
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
@@ -670,21 +645,103 @@
                         "header", "body"
                     ]
                 }
-            }
+            },
+
+
+            {
+                name: "personality.contactInfo.mobile",
+                title: "<spring:message code='cellPhone'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[0-9]",
+                length: "11",
+                hint: "*********09",
+                showHintInField: true,
+                errorMessage: "<spring:message code='msg.mobile.validation'/>"
+                , blur: function () {
+                    var mobileCheck = false;
+                    mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.mobile"));
+                    cellPhoneCheck = mobileCheck;
+                    if (mobileCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message code='msg.mobile.validation'/>", true);
+
+                    if (mobileCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
+                }
+            },
+            {
+                name: "personality.contactInfo.email",
+                title: "<spring:message code='email'/>",
+                type: 'text',
+                width: "*",
+                hint: "test@nicico.com",
+                showHintInField: true,
+                length: "30"
+                , blur: function () {
+                    var emailCheck = false;
+                    emailCheck = checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.email"));
+                    mailCheck = emailCheck;
+                    if (emailCheck == false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.email", "<spring:message code='msg.email.validation'/>", true);
+                    if (emailCheck == true)
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
+                }
+            },
+
+
+            {
+                name: "personality.contactInfo.personalWebSite",
+                title: "<spring:message code='personal.website'/>",
+                type: 'text',
+                width: "*",
+                stopOnError: true
+            },
+
+
+            {
+                name: "economicalCode",
+                title: "<spring:message code='economical.code'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[0-9]",
+                length: "15",
+                stopOnError: true
+            },
+
+            {
+                name: "economicalRecordNumber",
+                title: "<spring:message code='economical.record.number'/>",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[0-9]",
+                length: "15",
+                stopOnError: true
+            },
+
+            {
+                name: "personality.description",
+                title: "<spring:message code='description'/>",
+                type: 'textArea',
+                width: "*",
+                length: "500",
+                height: 30
+            },
+
+
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "nationalCode")
+            if (item.name == "personality.nationalCode")
                 this.getItem("teacherCode").setValue(item.getValue());
-            if (item.name == "educationMajorId") {
+            if (item.name == "personality.educationMajorId") {
                 if (newValue == undefined) {
-                    DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-                    DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
+                    DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
+                    DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").disabled = true;
                 }
                 else {
-                    DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + newValue;
-                    DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
-                    DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
+                    DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
+                    RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationMajorUrl + "spec-list-by-majorId/" + newValue;
+                    DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
+                    DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").disabled = false;
                 }
             }
             if (item.name == "attachPic") {
@@ -707,7 +764,7 @@
         titleSuffix: "",
         valuesManager: "vm",
         numCols: 2,
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
@@ -742,76 +799,174 @@
         height: "100%",
         align: "center",
         canSubmit: true,
-        titleWidth: 80,
+        titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
-
             {
-                name: "workName",
+                name: "personality.workJob",
+                title: "<spring:message code='job'/>",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                width: "*"
+            },
+            {
+                name: "personality.workName",
                 title: "<spring:message code='work.place'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "30"
+                length: "30",
+                width: "*"
+            },
+            {
+                name: "personality.contactInfo.workAdress.webSite",
+                title: "<spring:message code='website'/>",
+                type: 'text',
+                length: "30",
+                width: "*"
             },
 
             {
-                name: "workPhone",
+                name: "personality.contactInfo.workAdress.city.stateId",
+                title: "<spring:message code='state'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                width: "*",
+                displayField: "name",
+                valueField: "id",
+                optionDataSource: RestDataSource_Sate_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["name"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "name",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "personality.contactInfo.workAdress.cityId",
+                title: "<spring:message code='city'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "name",
+                width: "*",
+                valueField: "id",
+                optionDataSource: RestDataSource_City_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                disabled: true,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["name"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "name",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "country",
+                title: "<spring:message code='other.counteries'/>",
+                editorType: "CheckboxItem",
+                showUnsetImage: false,
+                width: "*",
+                showValueIconDisabled: true,
+                showValueIconOver: true,
+                showValueIconDown: true,
+                showValueIconFocused: true
+            },
+            {
+                name: "personality.contactInfo.workAdress.address",
+                title: "<spring:message code='address.rest'/>",
+                colSpan: 6,
+                width: "*",
+                length: "255"
+            },
+            {
+                name: "personality.contactInfo.workAdress.phone",
                 title: "<spring:message code='telephone'/>",
                 type: 'text',
+                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "11"
             },
 
+
             {
-                name: "workPostalCode",
+                name: "personality.contactInfo.workAdress.fax",
+                title: "<spring:message code='telefax'/>",
+                width: "*",
+                type: 'text'
+            },
+            {
+                name: "personality.contactInfo.workAdress.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 type: 'text',
+                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name == "personality.contactInfo.workAdress.city.stateId") {
+                if (newValue == undefined) {
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
+                }
+                else {
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
+                    RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").fetchData();
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = false;
+                }
+            }
+              if (item.name == "country") {
+                if (newValue == true) {
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.city.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.city.stateId").disabled = true;
+                }
+                else {
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.city.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.city.stateId").disabled = false;
+                }
+            }
+        }
 
-            {
-                name: "workJob",
-                title: "<spring:message code='job'/>",
-                type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "30"
-            },
-
-            {
-                name: "workTeleFax",
-                title: "<spring:message code='telefax'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "30"
-            },
-
-            {
-                name: "workAddress",
-                title: "<spring:message code='address'/>",
-                type: 'textArea',
-                height: 30,
-                length: "255"
-            },
-
-            {
-                name: "workWebSite",
-                title: "<spring:message code='website'/>",
-                type: 'text',
-                length: "30"
-            },
-
-        ]
     });
 
     var DynamicForm_AccountInfo_JspTeacher = isc.DynamicForm.create({
@@ -826,31 +981,21 @@
         errorOrientation: "right",
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
-
             {
-                name: "accountNumber",
-                title: "<spring:message code='account.number'/>",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "30"
-            },
-
-            {
-                name: "bank",
+                name: "personality.accountInfo.bank",
                 title: "<spring:message code='bank'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
-
             {
-                name: "bankBranch",
+                name: "personality.accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
@@ -858,17 +1003,37 @@
             },
 
             {
-                name: "cartNumber",
+                name: "personality.accountInfo.bankBranchCode",
+                title: "<spring:message code='bank.branch.code'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+
+            {
+                name: "personality.accountInfo.accountNumber",
+                title: "<spring:message code='account.number'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+
+            {
+                name: "personality.accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
 
+
             {
-                name: "shabaNumber",
+                name: "personality.accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
                 type: 'text',
+                // width: "*",
                 keyPressFilter: "[0-9]",
                 length: "30"
             }
@@ -880,45 +1045,150 @@
         height: "100%",
         align: "center",
         canSubmit: true,
-        titleWidth: 80,
+        titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "vm",
-        numCols: 2,
-        titleAlign: "right",
+        titleAlign: "left",
+        numCols: 6,
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
-
             {
-                name: "homePhone",
+                name: "personality.contactInfo.homeAdress.city.stateId",
+                title: "<spring:message code='state'/>",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "name",
+                valueField: "id",
+                optionDataSource: RestDataSource_Sate_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["name"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "name",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "personality.contactInfo.homeAdress.cityId",
+                title: "<spring:message code='city'/>",
+                width: "*",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "name",
+                valueField: "id",
+                optionDataSource: RestDataSource_City_JspTeacher,
+                autoFetchData: true,
+                addUnknownValues: false,
+                disabled: true,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["name"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {
+                        name: "name",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "country",
+                title: "<spring:message code='other.counteries'/>",
+                editorType: "CheckboxItem",
+                showUnsetImage: false,
+                showValueIconDisabled: true,
+                showValueIconOver: true,
+                showValueIconDown: true,
+                showValueIconFocused: true,
+            },
+            {
+                name: "personality.contactInfo.homeAdress.address",
+                title: "<spring:message code='address.rest'/>",
+                width: "*",
+                colSpan: 6,
+                length: "255"
+            },
+            {
+                name: "personality.contactInfo.homeAdress.phone",
                 title: "<spring:message code='telephone'/>",
                 type: 'text',
+                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "11"
             },
 
+
             {
-                name: "homePostalCode",
+                name: "personality.contactInfo.homeAdress.fax",
+                title: "<spring:message code='telefax'/>",
+                width: "*",
+                type: 'text'
+            },
+
+            {
+                name: "personality.contactInfo.homeAdress.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 type: 'text',
+                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
 
-            {
-                name: "homeAddress",
-                title: "<spring:message code='address'/>",
-                type: 'textArea',
-                height: 30,
-                length: "255"
-            },
-
-        ]
+        ],
+        itemChanged: function (item, newValue) {
+            if (item.name == "personality.contactInfo.homeAdress.city.stateId") {
+                if (newValue == undefined) {
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
+                }
+                else {
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
+                    RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").fetchData();
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = false;
+                }
+            }
+            if (item.name == "country") {
+                if (newValue == true) {
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.city.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.city.stateId").disabled = true;
+                }
+                else {
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.city.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.city.stateId").disabled = false;
+                }
+            }
+        }
     });
 
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
@@ -935,7 +1205,7 @@
                 return;
             }
 
-            var nCode = DynamicForm_BasicInfo_JspTeacher.getField("nationalCode").getValue();
+            var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
             DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
 
             var data = vm.getValues();
@@ -976,7 +1246,7 @@
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "300",
+        height: "250",
         tabs: [
             {
                 title: "<spring:message code='basic.information'/>", canClose: false,
@@ -988,7 +1258,7 @@
     var TabSet_JobInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "150",
+        height: "160",
         tabs: [
             {
                 title: "<spring:message code='work.place'/>", canClose: false,
@@ -1000,7 +1270,7 @@
     var TabSet_AccountInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "150",
+        height: "120",
         tabs: [
             {
                 title: "<spring:message code='account.information'/>", canClose: false,
@@ -1025,11 +1295,10 @@
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        alignLayout: "center",
-        align: "center",
+        defaultLayoutAlign: "center",
         padding: 10,
         membersMargin: 10,
-        height: "180",
+        height: "150",
         members: [VLayOut_ViewLoader_JspTeacher, DynamicForm_Photo_JspTeacher]
     });
 
@@ -1201,24 +1470,24 @@
             showAttach();
             vm.clearValues();
             vm.clearErrors(true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
+            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
             teacherMethod = "PUT";
-            url = "${contextPath}/api/teacher/" + record.id;
             vm.editRecord(record);
             var eduMajorValue = record.educationMajorId;
 
             var eduOrientationValue = record.educationOrientationId;
             if (eduOrientationValue == undefined && eduMajorValue == undefined) {
-                DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
+            DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
+            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
             }
             else if (eduMajorValue != undefined) {
-                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
-                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
-                DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
+            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
+            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
+            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
             }
+
             showCategories();
             Window_Teacher_JspTeacher.show();
             Window_Teacher_JspTeacher.bringToFront();
@@ -1230,14 +1499,13 @@
         vm.clearErrors(true);
         showAttachViewLoader.show();
         showAttachViewLoader.setView();
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("mobile", true);
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("email", true);
-        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("nationalCode", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
+        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
         teacherMethod = "POST";
-        url = "${contextPath}/api/teacher";
         vm.clearValues();
-        DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-        DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
+        DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").disabled = true;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
     };
