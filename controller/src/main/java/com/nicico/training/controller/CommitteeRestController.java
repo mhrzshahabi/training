@@ -10,6 +10,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
+import com.nicico.training.model.Category;
+import com.nicico.training.repository.CategoryDAO;
+import com.nicico.training.repository.CommitteeDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,7 +41,7 @@ public class CommitteeRestController {
    private final ObjectMapper objectMapper;
    private final DateUtil dateUtil;
    private final ReportUtil reportUtil;
-
+   private final CategoryDAO categoryDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -156,7 +159,12 @@ public class CommitteeRestController {
         reportUtil.export("/reports/CommitteeByCriteria.jasper", params, jsonDataSource, response);
     }
 
-
+//    @Loggable
+//    @DeleteMapping("/get-category/{id}")
+//    public ResponseEntity<Void> getCategory(@PathVariable Long id) {
+//        Category category = categoryDAO.getOne(id);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
 }

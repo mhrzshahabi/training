@@ -14,34 +14,56 @@ var committee_method = "POST";
 //************************************************************************************
     // RestDataSource & ListGrid
  //************************************************************************************
- <%--	var RestDataSource_term = isc.MyRestDataSource.create({--%>
- <%--       ID: "termDS",--%>
- <%--       transformRequest: function (dsRequest) {--%>
- <%--           dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"--%>
- <%--           };--%>
- <%--           return this.Super("transformRequest", arguments);--%>
- <%--       },--%>
- <%--       fields: [{name: "id", primaryKey: true},--%>
- <%--        {name: "code"},--%>
- <%--        {name: "titleFa"},--%>
- <%--        {name: "startDate"},--%>
- <%--        {name: "endDate"},--%>
- <%--       ], dataFormat: "json",--%>
- <%--       fetchDataURL: termUrl + "spec-list",--%>
- <%--       autoFetchData: true,--%>
- <%--   });--%>
+ 	var RestDataSource_committee = isc.MyRestDataSource.create({
+        ID: "CommitteeDS",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fields: [{name: "id", primaryKey: true},
+         {name: "titleFa"},
+			{name:"subCategory.category.titleFa"},
+         {name: "subCategory.titleFa"},
+         {name: "members"},
+         {name: "tasks"},
+         {name: "description"},
+        ], dataFormat: "json",
+        fetchDataURL: committeeUrl + "spec-list",
+        autoFetchData: true,
+    });
+     var RestDataSource_category = isc.MyRestDataSource.create({
+        ID: "categoryDS",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {    "Authorization": "Bearer <%= accessToken %>"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+        ], dataFormat: "json",
+        fetchDataURL: categoryUrl + "spec-list",
+        autoFetchData: true,
+    });
+    var RestDataSourceSubCategory = isc.MyRestDataSource.create({
+
+        fields: [{name: "id"}, {name: "titleFa"}, {name: "code"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+
+    });
 	var ListGrid_Committee = isc.MyListGrid.create({
-		 // dataSource: RestDataSource_term,
+		  dataSource: RestDataSource_committee,
 		  canAddFormulaFields: true,
-		 // contextMenu: Menu_ListGrid_term,
-         // autoFetchData: true,
+		 //پ contextMenu: Menu_ListGrid_term,
+          autoFetchData: true,
 		doubleClick: function () {
 	    },
 		fields: [
 			{name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
 			{name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
-			{name: "category", title: "گروه", align: "center", filterOperator: "contains"},
-			{name: "subCategory", title: "زیر گروه", align: "center", filterOperator: "contains"},
+			{name: "subCategory.category.titleFa", title: "گروه", align: "center", filterOperator: "contains"},
+			{name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "contains"},
 			{name: "members", title: "اعضاء", align: "center", filterOperator: "contains"},
 			{name: "tasks", title: "وظایف", align: "center", filterOperator: "contains"},
 			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
@@ -70,39 +92,42 @@ var committee_method = "POST";
 
 		 {
                 name: "category",
-
                 title: "<spring:message code="course_category"/>",
                 editorType: "MyComboBoxItem",
-                //autoFetchData: true,
+               textAlign: "center",
+                autoFetchData: true,
                 required: true,
-                // height: "30",
                 width: "*",
-                //displayField: "titleFa",
-                //valueField: "titleFa",
-                //optionDataSource: RestDataSourceEducation,
-                //filterFields: ["titleFa"],
+                changeOnKeypress: true,
+                filterOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_category,
+                filterFields: ["titleFa"],
                 sortField: ["id"],
-                changed: function (form, item, value) {
-                    //RestDataSourceEducation.fetchDataURL = courseUrl + "getlistEducationLicense";
+               changed: function (form, item, value) {
+					  RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                 },
             },
 
-            {
-                name: "subCategory",
+           {
+                name: "subCategory.id",
+                colSpan: 1,
 
                 title: "<spring:message code="course_subcategory"/>",
                 editorType: "MyComboBoxItem",
-                //autoFetchData: true,
+                prompt: "ابتدا گروه را انتخاب کنید",
+                textAlign: "center",
                 required: true,
                 // height: "30",
-                width: "*",
-                //displayField: "titleFa",
-                //valueField: "titleFa",
-                //optionDataSource: RestDataSourceEducation,
-                //filterFields: ["titleFa"],
+                width: "200",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSourceSubCategory,
+                filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    //RestDataSourceEducation.fetchDataURL = courseUrl + "getlistEducationLicense";
+
                 },
             },
             {

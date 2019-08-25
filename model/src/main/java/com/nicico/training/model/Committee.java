@@ -29,7 +29,7 @@ public class Committee extends Auditable{
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subcategory_id", nullable = false, insertable = false, updatable = false)
     private SubCategory subCategory;
 
