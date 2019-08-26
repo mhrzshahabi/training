@@ -75,6 +75,15 @@
         ],
     });
 
+    var ToolStripButton_Refresh = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/refresh.png",
+        title: "<spring:message code="refresh"/> ",
+
+        click: function () {
+            ListGrid_EducationLevel_refresh();
+        }
+    });
+
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
@@ -268,7 +277,6 @@
 
     function ListGrid_EducationLevel_Edit() {
         var record = ListGrid_EducationLevel.getSelectedRecord();
-        // selectedRecord = ListGrid_EducationLevel.getRowNum(record);
         if (record == null || record.id == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است.",
@@ -284,7 +292,7 @@
             urlEducationLevel = educationLevelUrl + record.id;
             DynamicForm_EducationLevel.clearValues();
             DynamicForm_EducationLevel.editRecord(record);
-            Window_EducationLevel.setTitle("ویرایش هدف");
+            Window_EducationLevel.setTitle("ویرایش مقطع تحصیلی");
             Window_EducationLevel.show();
         }
     };
@@ -299,21 +307,10 @@
     };
 
     function ListGrid_EducationLevel_Add() {
-        if (courseId == null || courseId.id == null) {
-            isc.Dialog.create({
-                message: "دوره اي انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
             methodEducationLevel = "POST";
-            urlEducationLevel = educationLevelUrl + "create/" + courseId.id;
+            urlEducationLevel = educationLevelUrl + "create/";
             DynamicForm_EducationLevel.clearValues();
-            Window_EducationLevel.setTitle("ایجاد هدف");
+            Window_EducationLevel.setTitle("ایجاد مقطع تحصیلی");
             Window_EducationLevel.show();
-        }
+
     };

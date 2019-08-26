@@ -136,13 +136,13 @@
 
         fetchDataURL: courseUrl + "getcompetence/" + courseId.id
     });
-    var RestDataSourceEducation = isc.MyRestDataSource.create({
+    var RestDataSourceEducationCourseJsp = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"},
-            {name: "titleFa"}
+            {name: "id", primaryKey: true},
+            {name: "titleFa", type: "text"}
         ],
 
-        fetchDataURL: courseUrl + "getlistEducationLicense",
+        fetchDataURL: educationLevelUrl + "spec-list",
     });
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
@@ -787,7 +787,7 @@
                 width: "200",
                 displayField: "titleFa",
                 valueField: "titleFa",
-                optionDataSource: RestDataSourceEducation,
+                optionDataSource: RestDataSourceEducationCourseJsp,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
