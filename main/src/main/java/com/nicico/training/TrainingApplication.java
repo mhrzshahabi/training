@@ -28,18 +28,3 @@ public class TrainingApplication {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
