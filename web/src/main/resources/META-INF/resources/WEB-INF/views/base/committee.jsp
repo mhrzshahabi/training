@@ -93,8 +93,7 @@ var committee_method = "POST";
 		 {
                 name: "category",
                 title: "<spring:message code="course_category"/>",
-                editorType: "MyComboBoxItem",
-               textAlign: "center",
+                textAlign: "center",
                 autoFetchData: true,
                 required: true,
                 width: "*",
@@ -106,7 +105,7 @@ var committee_method = "POST";
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                changed: function (form, item, value) {
-					  RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
+		    	  RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                 },
             },
 
@@ -115,12 +114,12 @@ var committee_method = "POST";
                 colSpan: 1,
 
                 title: "<spring:message code="course_subcategory"/>",
-                editorType: "MyComboBoxItem",
+               // editorType: "MyComboBoxItem",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
                 // height: "30",
-                width: "200",
+                width: "*",
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
@@ -170,7 +169,7 @@ var committee_method = "POST";
 		]
 	});
 	var Window_Committee = isc.MyWindow.create({
-		title: "دوره",
+		title: "ایجاد",
 		 width: 500,
 		items: [DynamicForm_Committee,isc.MyHLayoutButtons.create({
             members: [isc.MyButton.create({
