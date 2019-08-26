@@ -69,6 +69,7 @@
     const termUrl=rootUrl + "/term/";
     const cityUrl=rootUrl + "/city/";
     const stateUrl=rootUrl + "/state/";
+    const committeeUrl = rootUrl + "/committee/";
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
