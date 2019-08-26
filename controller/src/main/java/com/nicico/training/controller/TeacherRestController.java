@@ -15,7 +15,12 @@ import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.AccountInfo;
+import com.nicico.training.model.City;
+import com.nicico.training.model.State;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.CityDAO;
+import com.nicico.training.repository.StateDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -51,6 +56,9 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+
+    private final CityDAO cityDAO;
+    private final StateDAO stateDAO;
 
 
     @Value("${nicico.teacher.upload.dir}")

@@ -15,7 +15,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_student", schema = "TRAINING")
+@Table(name = "tbl_student")
 public class Student extends Auditable {
 
 	@Id

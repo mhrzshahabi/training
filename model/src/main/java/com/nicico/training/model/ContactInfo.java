@@ -41,7 +41,7 @@ public class ContactInfo extends Auditable{
     @Column(name = "c_mobile")
     private String mobile;
 
-    @Column(name = "c_personal_webSite")
+	@Column(name = "c_personal_web_site")
 	private String personalWebSite;
 
 	@Column(name = "c_description")

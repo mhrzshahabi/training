@@ -14,7 +14,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain=true)
-@EqualsAndHashCode(of={"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name="tbl_training_place",schema = "TRAINING")
 public class TrainingPlace extends  Auditable{
@@ -46,7 +46,7 @@ public class TrainingPlace extends  Auditable{
     private Integer eArrangementTypeId;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_training_place_equipment",schema = "training",
+	@JoinTable(name = "tbl_training_place_equipment",
             joinColumns={@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn( name = "f_equipment_id", referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;

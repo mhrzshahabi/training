@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_acoount_info")
+@Table(name = "tbl_account_info")
 public class AccountInfo extends Auditable{
 
     @Id

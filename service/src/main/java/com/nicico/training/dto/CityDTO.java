@@ -89,7 +89,7 @@ public class CityDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("CitySpecRs")
     public static class CitySpecRs {
-        private CityDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // ---------------
@@ -99,7 +99,7 @@ public class CityDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<CityDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

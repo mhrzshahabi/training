@@ -15,7 +15,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_institute", schema = "TRAINING")
+@Table(name = "tbl_institute")
 public class Institute {
 
     @Id
@@ -52,13 +52,13 @@ public class Institute {
     private Long managerId;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_institute_teacher",schema = "training",
+    @JoinTable(name = "tbl_institute_teacher",
             joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="f_teacher",referencedColumnName = "id")})
     private Set<Teacher> teacherSet;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_institute_equipment",schema = "training",
+    @JoinTable(name = "tbl_institute_equipment",
             joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
