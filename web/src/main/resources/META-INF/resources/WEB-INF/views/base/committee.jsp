@@ -42,7 +42,7 @@ var committee_method = "POST";
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         fetchDataURL: categoryUrl + "spec-list",
-        autoFetchData: true,
+
     });
     var RestDataSourceSubCategory = isc.MyRestDataSource.create({
 
@@ -94,13 +94,14 @@ var committee_method = "POST";
                 name: "category",
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
+                optionDataSource: RestDataSource_category,
                 autoFetchData: true,
                 required: true,
                 width: "*",
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 valueField: "id",
-                optionDataSource: RestDataSource_category,
+
                  displayField: "titleFa",
                 filterFields: ["titleFa"],
                 sortField: ["id"],
