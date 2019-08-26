@@ -278,17 +278,17 @@ public class CourseRestController {
     }
 
 
-    @Loggable
-    @GetMapping(value ="/getlistEducationLicense" )
-    public ResponseEntity<EducationLicenseDTO.SpecRs> getlistEducation()
-    {
-        List<EducationLicenseDTO.Info> educationInfo=educationLicenseService.list();
-        final EducationLicenseDTO.SpecRs specResponse = new EducationLicenseDTO.SpecRs();
-        specResponse.setData(educationInfo).setStartRow(0).setEndRow(educationInfo.size()).setTotalRows(educationInfo.size());
-        final EducationLicenseDTO.EducationLicenseSpecRs educationLicenseSpecRs=new EducationLicenseDTO.EducationLicenseSpecRs();
-        educationLicenseSpecRs.setResponse(specResponse);
-        return new ResponseEntity(educationLicenseSpecRs,HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value ="/getlistEducationLicense" )
+//    public ResponseEntity<EducationLicenseDTO.SpecRs> getlistEducation()
+//    {
+//        List<EducationLicenseDTO.Info> educationInfo=educationLicenseService.list();
+//        final EducationLicenseDTO.SpecRs specResponse = new EducationLicenseDTO.SpecRs();
+//        specResponse.setData(educationInfo).setStartRow(0).setEndRow(educationInfo.size()).setTotalRows(educationInfo.size());
+//        final EducationLicenseDTO.EducationLicenseSpecRs educationLicenseSpecRs=new EducationLicenseDTO.EducationLicenseSpecRs();
+//        educationLicenseSpecRs.setResponse(specResponse);
+//        return new ResponseEntity(educationLicenseSpecRs,HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = {"/print/{type}"})

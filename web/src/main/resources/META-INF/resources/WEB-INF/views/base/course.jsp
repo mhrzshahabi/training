@@ -471,36 +471,41 @@
                 alternateRecordStyles: true,
                 sortFieldAscendingText: "مرتب سازي صعودي",
                 sortFieldDescendingText: "مرتب سازي نزولي",
-                removeRecordClick : function (rowNum) {
-                    var record = this.getRecord(rowNum);
-                    this.removeData(record, function (dsResponse, data, dsRequest) {
-                        // Update `employeesGrid` now that an employee has been removed from
-                        // the selected team.  This will add the employee back to `employeesGrid`,
-                        // the list of employees who are not in the team.
-                        // mockAddEmployeesFromTeamMemberRecords(record);
-                    });
-                },
+
+// dropComplete: function() {
+// equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
+// equalCourseGrid.refreshFields();
+// }
+                // removeRecordClick : function (rowNum) {
+                //     var record = this.getRecord(rowNum);
+                //     this.removeData(record, function (dsResponse, data, dsRequest) {
+                //         // Update `employeesGrid` now that an employee has been removed from
+                //         // the selected team.  This will add the employee back to `employeesGrid`,
+                //         // the list of employees who are not in the team.
+                //         // mockAddEmployeesFromTeamMemberRecords(record);
+                //     });
+                // },
 
 
 
-                dataArrived : function () {
-                    this.canvasItem.showValue(null, this.canvasItem.getValue());
-                },
-                selectionUpdated : function (record) {
-                    var item = this.canvasItem;
-                    if (record == null) item.storeValue(null);
-                    else item.storeValue(record[item.name]);
-                }
+                // dataArrived : function () {
+                //     this.canvasItem.showValue(null, this.canvasItem.getValue());
+                // },
+                // selectionUpdated : function (record) {
+                //     var item = this.canvasItem;
+                //     if (record == null) item.storeValue(null);
+                //     else item.storeValue(record[item.name]);
+                // }
             });
         },
 
         // implement showValue to update the ListGrid selection
-        showValue : function (displayValue, dataValue) {
-            if (this.canvas == null) return;
-            var record = this.canvas.data.find(this.name, dataValue);
-            if (record) this.canvas.selection.selectSingle(record);
-            else this.canvas.selection.deselectAll();
-        }
+        // showValue : function (displayValue, dataValue) {
+        //     if (this.canvas == null) return;
+        //     var record = this.canvas.data.find(this.name, dataValue);
+        //     if (record) this.canvas.selection.selectSingle(record);
+        //     else this.canvas.selection.deselectAll();
+        // }
     });
 
 
@@ -860,10 +865,16 @@
                 align: "center",
                 rowSpan:3,
                 title:"",
+                width:"*",
                 type:"button",
                 icon:"pieces/512/back2.png",
                 click:function() {
-                    isc.say("courseAllGrid".getSelectedRecord().titleFa);
+                    if(courseAllGrid.getSelectedRecord()== null){
+                        isc.say("دوره ای انتخاب نشده است");
+                    }
+                    else {
+                        preCourseGrid.transferSelectedData(courseAllGrid);
+                    }
                 }
             },
             {name:"preCourseGrid",
@@ -943,7 +954,8 @@
                     }
                 });
             }//end if
-            else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" && ChangeEtechnicalType == true)) {
+            // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
+            else if (course_method == "PUT") {
                 var data1 = DynamicForm_course.getValues();
                 ChangeEtechnicalType = false;
                 var idList=[];
@@ -979,7 +991,7 @@
                 });
             } else {
                 simpleDialog("<spring:message code="edit"/>", "<spring:message code="course_noEdit"/>", 3000, "say");
-                Window_course.close();
+                // Window_course.close();
             }//end else
 //-----------------------------------------------
 
@@ -1320,8 +1332,9 @@
     };
 
     function ListGrid_Course_Edit() {
-        // testData.length = 0;
+        testData.length = 0;
         // preCourseDS.invalidateCache();
+        preCourseGrid.invalidateCache();
         DynamicForm_course.getItem("category.id").setDisabled(true);
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         DynamicForm_course.getItem("erunType.id").setDisabled(true);
