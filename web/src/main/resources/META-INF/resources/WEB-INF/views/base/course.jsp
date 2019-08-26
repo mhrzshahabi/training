@@ -473,6 +473,11 @@
                 alternateRecordStyles: true,
                 sortFieldAscendingText: "مرتب سازي صعودي",
                 sortFieldDescendingText: "مرتب سازي نزولي",
+                selectionChanged: function (record, state) {
+                    if(this.ID == "courseAllGrid"){
+                        orBtn.setTitle("افزودن دوره "+"'"+record.titleFa+"'"+" به معادل های دوره");
+                    }
+                }
 
 // dropComplete: function() {
 // equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
@@ -857,6 +862,7 @@
             },
 
             {name:"andBtn",
+                ID:"andBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
@@ -864,7 +870,7 @@
                 title:"",
                 width:"*",
                 type:"button",
-                icon:"pieces/512/back2.png",
+                // icon:"pieces/512/back2.png",
                 click:function() {
                     if(courseAllGrid.getSelectedRecord() == null){
                         isc.say("دوره ای انتخاب نشده است");
@@ -875,6 +881,7 @@
                 }
             },
             {name:"orBtn",
+                ID:"orBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
@@ -883,7 +890,7 @@
                 // endRow:false,
                 width:"*",
                 type:"button",
-                icon:"pieces/512/back2.png",
+                // icon:"pieces/512/back2.png",
                 click:function() {
                     if(courseAllGrid.getSelectedRecord() == null){
                         isc.say("دوره ای انتخاب نشده است");
@@ -911,7 +918,10 @@
                 // showFilterEditor:true,
                 // filterOnKeypress:true,
                 canAcceptDroppedRecords: true,
-                dragDataAction: "none"
+                dragDataAction: "none",
+                // selectionChanged : function(record, state) {
+                //     orBtn.setTitle(record.titleFa);
+                // }
             },
             {name:"courseAllGrid",
                 ID: "courseAllGrid",
@@ -930,7 +940,10 @@
                 gridFields:[ {name:"titleFa",title:"نام دوره"}],
                 canRemoveRecords:false,
                 canDragRecordsOut: true,
-                dragDataAction: "none"
+                dragDataAction: "none",
+                // selectionChanged : function(record, state) {
+                //     orBtn.setTitle(record.titleFa);
+                // }
             },
             {name:"imgMove",
                 colSpan: 1,
