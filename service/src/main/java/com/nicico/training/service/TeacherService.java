@@ -7,13 +7,9 @@ import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.PersonalInfo;
-import com.nicico.training.model.Teacher;
+import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
-import com.nicico.training.repository.CategoryDAO;
-import com.nicico.training.repository.PersonalInfoDAO;
-import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -33,7 +29,10 @@ public class TeacherService implements ITeacherService {
 	private final ModelMapper modelMapper;
 	private final TeacherDAO teacherDAO;
 	private final CategoryDAO categoryDAO;
-	private final IPersonalInfoService personalInfoService;
+	private final PersonalInfoDAO personalInfoDAO;
+	private final ContactInfoDAO contactInfoDAO;
+	private final AccountInfoDAO accountInfoDAO;
+	private final AddressDAO addressDAO;
 
 	private final EnumsConverter.EGenderConverter eGenderConverter = new EnumsConverter.EGenderConverter();
     private final EnumsConverter.EMarriedConverter eMarriedConverter = new EnumsConverter.EMarriedConverter();
@@ -63,28 +62,67 @@ public class TeacherService implements ITeacherService {
 	@Transactional
 	@Override
 	public TeacherDTO.Info create(TeacherDTO.Create request) {
-		final Teacher teacher = modelMapper.map(request, Teacher.class);
-		final PersonalInfo personalInfo = modelMapper.map(personalInfoService.create(request.getPersonality()),PersonalInfo.class);
-		teacher.setPersonality(personalInfo);
-		teacher.setPeronalityId(personalInfo.getId());
-		return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
-	}
+		Teacher teacher;
+		PersonalInfo personalInfo;
+		ContactInfo contactInfo;
+		AccountInfo accountInfo;
+		Address homeAddress;
+		Address workAddress;
 
-//	List<Teacher> teacherList = null;
-//		if(teacherList==null || teacherList.size()==0)
-//		if(request.getEMarriedId() != null) {
-//			teacher.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-//			teacher.setEMarriedTitleFa(teacher.getEMarried().getTitleFa());
-//		}
-//		if(request.getEMilitaryId() != null) {
-//			 teacher.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-//			 teacher.setEMilitaryTitleFa(teacher.getEMilitary().getTitleFa());
-//		}
-//		if(request.getEGenderId() != null) {
-//			teacher.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-//			teacher.setEGenderTitleFa(teacher.getEGender().getTitleFa());
-//		}
-//		List<Teacher> teacherList = teacherDAO.findByNationalCode(teacher.getNationalCode());
+		teacher = modelMapper.map(request, Teacher.class);
+		personalInfo = modelMapper.map(request.getPersonality(),PersonalInfo.class);
+
+		List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(personalInfo.getNationalCode());
+
+		if(personalInfoList==null || personalInfoList.size()==0) {
+
+			if (request.getPersonality().getAccountInfo() != null) {
+				accountInfo = modelMapper.map(request.getPersonality().getAccountInfo(), AccountInfo.class);
+				accountInfoDAO.saveAndFlush(accountInfo);
+				personalInfo.setAccountInfo(accountInfo);
+				personalInfo.setAccountInfoId(accountInfo.getId());
+			}
+
+			if (request.getPersonality().getContactInfo() != null) {
+				contactInfo = modelMapper.map(request.getPersonality().getContactInfo(), ContactInfo.class);
+				if (request.getPersonality().getContactInfo() != null) {
+					homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAdress(), Address.class);
+					addressDAO.saveAndFlush(homeAddress);
+					contactInfo.setHomeAdress(homeAddress);
+					contactInfo.setHomeAdressId(homeAddress.getId());
+				}
+				if (request.getPersonality().getContactInfo() != null) {
+					workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAdress(), Address.class);
+					addressDAO.saveAndFlush(workAddress);
+					contactInfo.setWorkAdress(workAddress);
+					contactInfo.setWorkAdressId(workAddress.getId());
+				}
+				contactInfoDAO.saveAndFlush(contactInfo);
+				personalInfo.setContactInfo(contactInfo);
+				personalInfo.setContactInfoId(contactInfo.getId());
+			}
+
+			if(request.getPersonality().getEMarriedId() != null) {
+				personalInfo.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getPersonality().getEMarriedId()));
+				personalInfo.setEMarriedTitleFa(personalInfo.getEMarried().getTitleFa());
+			}
+			if(request.getPersonality().getEMilitaryId() != null) {
+				 personalInfo.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getPersonality().getEMilitaryId()));
+				 personalInfo.setEMilitaryTitleFa(personalInfo.getEMilitary().getTitleFa());
+			}
+			if(request.getPersonality().getEGenderId() != null) {
+				personalInfo.setEGender(eGenderConverter.convertToEntityAttribute(request.getPersonality().getEGenderId()));
+				personalInfo.setEGenderTitleFa(personalInfo.getEGender().getTitleFa());
+			}
+
+			personalInfoDAO.saveAndFlush(personalInfo);
+			teacher.setPersonality(personalInfo);
+			teacher.setPeronalityId(personalInfo.getId());
+			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
+		}
+		else
+			return null;
+	}
 
 
 	@Transactional

@@ -191,8 +191,8 @@
                 filterOperator: "contains"
             },
         ],
-        sortField: 1,
-        sortDirection: "descending",
+        // sortField: 1,
+        // sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
@@ -930,7 +930,7 @@
                 type: 'text'
             },
             {
-                name: "personality.contactInfo.workAdress.postalCode",
+                name: "personality.contactInfo.workAdress.postCode",
                 title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 width: "*",
@@ -1152,7 +1152,7 @@
             },
 
             {
-                name: "personality.contactInfo.homeAdress.postalCode",
+                name: "personality.contactInfo.homeAdress.postCode",
                 title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 width: "*",
@@ -1209,7 +1209,6 @@
             DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
 
             var data = vm.getValues();
-
             var teacherSaveUrl = teacherUrl;
             if (teacherMethod.localeCompare("PUT") == 0) {
                 var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
@@ -1467,7 +1466,7 @@
                 }
             });
         } else {
-            showAttach();
+            // showAttach();
             vm.clearValues();
             vm.clearErrors(true);
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
@@ -1475,20 +1474,20 @@
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
             teacherMethod = "PUT";
             vm.editRecord(record);
-            var eduMajorValue = record.educationMajorId;
+            <%--var eduMajorValue = record.educationMajorId;--%>
 
-            var eduOrientationValue = record.educationOrientationId;
-            if (eduOrientationValue == undefined && eduMajorValue == undefined) {
-            DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");
-            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;
-            }
-            else if (eduMajorValue != undefined) {
-            RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;
-            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();
-            DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;
-            }
+            <%--var eduOrientationValue = record.educationOrientationId;--%>
+            <%--if (eduOrientationValue == undefined && eduMajorValue == undefined) {--%>
+            <%--DynamicForm_BasicInfo_JspTeacher.clearValue("educationOrientationId");--%>
+            <%--DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = true;--%>
+            <%--}--%>
+            <%--else if (eduMajorValue != undefined) {--%>
+            <%--RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = "${contextPath}/api/educationMajor/spec-list-by-majorId/" + eduMajorValue;--%>
+            <%--DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").fetchData();--%>
+            <%--DynamicForm_BasicInfo_JspTeacher.getField("educationOrientationId").disabled = false;--%>
+            <%--}--%>
 
-            showCategories();
+            // showCategories();
             Window_Teacher_JspTeacher.show();
             Window_Teacher_JspTeacher.bringToFront();
         }

@@ -16,6 +16,9 @@ import javax.persistence.*;
 public class City extends Auditable
 {
 	@Id
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
+	@SequenceGenerator(name = "city_seq", sequenceName = "seq_city_id", allocationSize = 1)
+	@Column(name = "id", precision = 10)
 	private Long id;
 
 	@Column(name = "name", nullable = false)

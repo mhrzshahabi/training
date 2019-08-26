@@ -84,7 +84,7 @@ public class StateDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("StateSpecRs")
     public static class StateSpecRs {
-        private StateDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // ---------------
@@ -94,7 +94,7 @@ public class StateDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<StateDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

@@ -50,6 +50,7 @@ public class AddressDTO {
         private String fax;
         private String webSite;
         private CityDTO.CityInfoTuple city;
+        private Long cityId;
 	}
     // ------------------------------
 
@@ -58,6 +59,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
     public static class Create extends AddressDTO {
+     private CityDTO.Create city;
     }
 
     // ------------------------------
@@ -89,7 +91,7 @@ public class AddressDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AddressSpecRs")
     public static class AddressSpecRs {
-        private AddressDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // ---------------
@@ -99,7 +101,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<AddressDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
