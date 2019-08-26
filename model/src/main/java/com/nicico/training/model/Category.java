@@ -16,7 +16,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"})
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_category", schema = "TRAINING")
 

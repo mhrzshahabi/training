@@ -5,7 +5,6 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -14,7 +13,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"},callSuper = false)
 @Entity
-@Table(name = "tbl_user", schema = "training")
+@Table(name = "tbl_user")
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "User_seq")

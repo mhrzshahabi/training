@@ -19,7 +19,7 @@ public class State extends Auditable
 	@Id
 	private Long id;
 
-	@Column(name = "name")
+	@Column(name = "c_name")
 	private String name;
 
 	@OneToMany(mappedBy = "state", fetch = FetchType.LAZY)

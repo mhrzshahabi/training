@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_skill_level", schema = "TRAINING")
+@Table(name = "tbl_skill_level")
 public class SkillLevel extends Auditable {
 
     @Id

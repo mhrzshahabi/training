@@ -9,7 +9,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -20,7 +19,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"},callSuper = false)
 @Entity
-@Table(name = "tbl_course", schema = "training")
+@Table(name = "tbl_course")
 public class Course extends Auditable {
 
     @Id
@@ -82,7 +81,7 @@ public class Course extends Auditable {
     }
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_course_goal", schema = "training",
+	@JoinTable(name = "tbl_course_goal",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
