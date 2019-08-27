@@ -520,6 +520,7 @@
 
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
+        sectionVisibilityMode: "mutex",
         colWidths: [200, "*"],
         // height: "90%",
         // align: "center",
@@ -795,7 +796,7 @@
             },
 
             {
-                defaultValue: "اطلاعات مدرس دوره", type: "section", sectionExpanded: false,
+                defaultValue: "شرایط مدرس دوره", type: "section", sectionExpanded: false,
                 itemIds: ["minTeacherDegree","minTeacherExpYears","minTeacherEvalScore"]
             },
             {
@@ -860,7 +861,70 @@
                 defaultValue: "پیشنیاز دوره", type: "section", sectionExpanded: false,
                 itemIds: ["orBtn","andBtn","equalCourseGrid","courseAllGrid","imgMove","preCourseGrid"]
             },
-
+            {name:"equalCourseGrid",
+                ID : "equalCourseGrid",
+                title:"معادل های دوره",
+                colSpan:2,
+                align: "center",
+                rowSpan:3,
+                // startRow:true,
+                titleOrientation: "top",
+                editorType:"ListGridItem",
+                // height: "400",
+                width: "*",
+                gridDataSource:"equalCourseDS",
+                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                canRemoveRecords:true,
+                canDragRecordsOut: false,
+                // showFilterEditor:true,
+                // filterOnKeypress:true,
+                // canAcceptDroppedRecords: true,
+                dragDataAction: "none",
+                // selectionChanged : function(record, state) {
+                //     orBtn.setTitle(record.titleFa);
+                // }
+            },
+            {name:"courseAllGrid",
+                ID: "courseAllGrid",
+                title:"دوره ها",
+                align: "center",
+                colSpan:4,
+                rowSpan:3,
+                width: "*",
+                titleOrientation: "top",
+                editorType:"ListGridItem",
+                // height: "400",
+                allowAdvancedCriteria: true,
+                filterOnKeypress:true,
+                showFilterEditor:true,
+                gridDataSource:"courseDS",
+                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                canRemoveRecords:false,
+                canDragRecordsOut: true,
+                dragDataAction: "none",
+                // selectionChanged : function(record, state) {
+                //     orBtn.setTitle(record.titleFa);
+                // }
+            },
+            {name:"preCourseGrid",
+                ID : "preCourseGrid",
+                title:"پیش نیازهای دوره",
+                colSpan:2,
+                align: "center",
+                rowSpan:3,
+                titleOrientation: "top",
+                editorType:"ListGridItem",
+                // height: "400",
+                width: "*",
+                gridDataSource:"preCourseDS",
+                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                canRemoveRecords:true,
+                canDragRecordsOut: false,
+                // showFilterEditor:true,
+                // filterOnKeypress:true,
+                canAcceptDroppedRecords: true,
+                dragDataAction: "none"
+            },
             {name:"andBtn",
                 ID:"andBtn",
                 colSpan: 2,
@@ -880,13 +944,31 @@
                     }
                 }
             },
+            {name:"imgMove",
+                colSpan: 6,
+                align: "left",
+                // rowSpan:4,
+                title:"",
+                // width:"400",
+                type:"button",
+                startRow:false,
+                icon:"pieces/512/back2.png",
+                click:function() {
+                    if(courseAllGrid.getSelectedRecord() == null){
+                        isc.say("دوره ای انتخاب نشده است");
+                    }
+                    else {
+                        preCourseGrid.transferSelectedData(courseAllGrid);
+                    }
+                }
+            },
             {name:"orBtn",
                 ID:"orBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
                 title:"",
-                startRow:false,
+                startRow:true,
                 // endRow:false,
                 width:"*",
                 type:"button",
@@ -900,87 +982,7 @@
                     }
                 }
             },
-            {name:"equalCourseGrid",
-                ID : "equalCourseGrid",
-                title:"معادل های دوره",
-                colSpan:2,
-                align: "center",
-                rowSpan:3,
-                // startRow:true,
-                titleOrientation: "top",
-                editorType:"ListGridItem",
-                // height: "400",
-                width: "*",
-                gridDataSource:"preCourseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
-                canRemoveRecords:true,
-                canDragRecordsOut: false,
-                // showFilterEditor:true,
-                // filterOnKeypress:true,
-                canAcceptDroppedRecords: true,
-                dragDataAction: "none",
-                // selectionChanged : function(record, state) {
-                //     orBtn.setTitle(record.titleFa);
-                // }
-            },
-            {name:"courseAllGrid",
-                ID: "courseAllGrid",
-                title:"دوره ها",
-                align: "center",
-                colSpan:3,
-                rowSpan:3,
-                width: "*",
-                titleOrientation: "top",
-                editorType:"ListGridItem",
-                // height: "400",
-                allowAdvancedCriteria: true,
-                filterOnKeypress:true,
-                showFilterEditor:true,
-                gridDataSource:"courseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
-                canRemoveRecords:false,
-                canDragRecordsOut: true,
-                dragDataAction: "none",
-                // selectionChanged : function(record, state) {
-                //     orBtn.setTitle(record.titleFa);
-                // }
-            },
-            {name:"imgMove",
-                colSpan: 1,
-                align: "center",
-                rowSpan:4,
-                title:"",
-                width:"100",
-                type:"button",
-                icon:"pieces/512/back2.png",
-                click:function() {
-                    if(courseAllGrid.getSelectedRecord() == null){
-                        isc.say("دوره ای انتخاب نشده است");
-                    }
-                    else {
-                        preCourseGrid.transferSelectedData(courseAllGrid);
-                    }
-                }
-            },
-            {name:"preCourseGrid",
-                ID : "preCourseGrid",
-                title:"پیش نیازهای دوره",
-                colSpan:2,
-                align: "center",
-                rowSpan:3,
-                titleOrientation: "top",
-                editorType:"ListGridItem",
-                // height: "400",
-                width: "*",
-                gridDataSource:"preCourseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
-                canRemoveRecords:true,
-                canDragRecordsOut: false,
-                showFilterEditor:true,
-                filterOnKeypress:true,
-                canAcceptDroppedRecords: true,
-                dragDataAction: "none"
-            },
+
             // {
             //     defaultValue: "معادل دوره", type: "section", sectionExpanded: false,
             //     itemIds: ["courseAllEqualGrid","imgEqualMove","equalCourseGrid"]
