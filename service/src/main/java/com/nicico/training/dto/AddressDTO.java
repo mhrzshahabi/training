@@ -26,6 +26,7 @@ public class AddressDTO {
     private String webSite;
 
     private Long cityId;
+    private Long stateId1;
 
     @Getter
     @Setter
@@ -38,6 +39,7 @@ public class AddressDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private CityDTO.CityInfoTuple city;
+        private StateDTO.StateInfoTuple state1;
     }
 
     @Getter
@@ -50,7 +52,9 @@ public class AddressDTO {
         private String fax;
         private String webSite;
         private CityDTO.CityInfoTuple city;
+        private StateDTO.StateInfoTuple state1;
         private Long cityId;
+        private Long stateId1;
 	}
     // ------------------------------
 

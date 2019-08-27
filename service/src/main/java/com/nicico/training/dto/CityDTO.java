@@ -46,8 +46,8 @@ public class CityDTO {
 	@ApiModel("CityInfoTuple")
 	public static class CityInfoTuple {
 	    private String name;
-	    private StateDTO.StateInfoTuple state;
-	     private Long stateId;
+//	    private StateDTO.StateInfoTuple state;
+//	    private Long stateId;
 	}
     // ------------------------------
 

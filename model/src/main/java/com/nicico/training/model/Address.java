@@ -41,4 +41,11 @@ public class Address extends Auditable {
 
     @Column(name = "f_city")
 	private Long cityId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_state1", insertable = false, updatable = false)
+    private State state1;
+
+    @Column(name = "f_state1")
+	private Long stateId1;
 }
