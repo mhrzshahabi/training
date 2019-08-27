@@ -85,13 +85,13 @@ public class TeacherService implements ITeacherService {
 
 			if (request.getPersonality().getContactInfo() != null) {
 				contactInfo = modelMapper.map(request.getPersonality().getContactInfo(), ContactInfo.class);
-				if (request.getPersonality().getContactInfo() != null) {
+				if (request.getPersonality().getContactInfo().getHomeAdress() != null) {
 					homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAdress(), Address.class);
 					addressDAO.saveAndFlush(homeAddress);
 					contactInfo.setHomeAdress(homeAddress);
 					contactInfo.setHomeAdressId(homeAddress.getId());
 				}
-				if (request.getPersonality().getContactInfo() != null) {
+				if (request.getPersonality().getContactInfo().getWorkAdress() != null) {
 					workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAdress(), Address.class);
 					addressDAO.saveAndFlush(workAddress);
 					contactInfo.setWorkAdress(workAddress);

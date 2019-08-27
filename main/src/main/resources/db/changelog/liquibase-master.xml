@@ -9,5 +9,6 @@
 	<!--<include file="classpath:/db/changelog/changes/liq-activiti.xml"/>-->
 	<!--<include file="changes/liq-001.xml" relativeToChangelogFile="true"/>-->
 	<!--<include file="changes/liq-002.xml" relativeToChangelogFile="true"/>-->
+	<!--<include file="changes/liq-003.xml" relativeToChangelogFile="true"/>-->
 
 </databaseChangeLog>
