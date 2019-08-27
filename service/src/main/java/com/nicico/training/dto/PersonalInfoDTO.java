@@ -106,6 +106,9 @@ public class PersonalInfoDTO {
         private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
         private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
         private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
+        private Long educationLevelId;
+        private Long educationMajorId;
+        private Long educationOrientationId;
         }
     // ------------------------------
 
@@ -114,6 +117,8 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCreateRq")
     public static class Create extends PersonalInfoDTO {
+        private ContactInfoDTO.Create contactInfo;
+        private AccountInfoDTO.Create accountInfo;
     }
 
     // ------------------------------
@@ -145,7 +150,7 @@ public class PersonalInfoDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("PersonalInfoSpecRs")
     public static class PersonalInfoSpecRs {
-        private PersonalInfoDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // ---------------
@@ -155,7 +160,7 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<PersonalInfoDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

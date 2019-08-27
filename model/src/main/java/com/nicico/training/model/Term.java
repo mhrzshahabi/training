@@ -3,7 +3,6 @@ package com.nicico.training.model;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-
 import javax.persistence.*;
 
 @Getter
@@ -13,7 +12,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"},callSuper = false)
 @Entity
-@Table(name = "tbl_term", schema = "training")
+@Table(name = "tbl_term")
 public class Term extends Auditable{
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Term_seq")

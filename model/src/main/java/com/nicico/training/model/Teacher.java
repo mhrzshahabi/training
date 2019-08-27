@@ -14,7 +14,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_teacher", schema = "TRAINING")
+@Table(name = "tbl_teacher")
 public class Teacher extends Auditable{
 
 	@Id
@@ -37,7 +37,7 @@ public class Teacher extends Auditable{
 	private Long peronalityId;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-	@JoinTable(name = "tbl_teacher_category", schema = "TRAINING",
+	@JoinTable(name = "tbl_teacher_category",
 			joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
 			inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
 	private Set<Category> categories;

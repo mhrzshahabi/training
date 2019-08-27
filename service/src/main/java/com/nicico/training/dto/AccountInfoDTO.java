@@ -89,7 +89,7 @@ public class AccountInfoDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AccountInfoSpecRs")
     public static class AccountInfoSpecRs {
-        private AccountInfoDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // ---------------
@@ -99,7 +99,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<AccountInfoDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

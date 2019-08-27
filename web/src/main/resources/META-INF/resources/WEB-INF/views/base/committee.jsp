@@ -33,7 +33,7 @@ var committee_method = "POST";
         autoFetchData: true,
     });
      var RestDataSource_category = isc.MyRestDataSource.create({
-        ID: "categoryDS",
+        ID: "category",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {    "Authorization": "Bearer <%= accessToken %>"
             };
@@ -42,15 +42,15 @@ var committee_method = "POST";
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         fetchDataURL: categoryUrl + "spec-list",
+      });
 
-    });
+
     var RestDataSourceSubCategory = isc.MyRestDataSource.create({
-
-        fields: [{name: "id"}, {name: "titleFa"}
+         ID: "subcategory",
+        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-
     });
 	var ListGrid_Committee = isc.MyListGrid.create({
 		  dataSource: RestDataSource_committee,
@@ -64,8 +64,7 @@ var committee_method = "POST";
 			{name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
 			{name: "subCategory.category.titleFa", title: "گروه", align: "center", filterOperator: "contains"},
 			{name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "contains"},
-			// {name: "members", title: "اعضاء", align: "center", filterOperator: "contains"},
-			{name: "tasks", title: "وظایف", align: "center", filterOperator: "contains"},
+		    {name: "tasks", title: "وظایف", align: "center", filterOperator: "contains"},
 			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
 		],
 		 showFilterEditor: true,
@@ -101,15 +100,14 @@ var committee_method = "POST";
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 valueField: "id",
-
-                 displayField: "titleFa",
+                displayField: "titleFa",
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-               changed: function (form, item, value) {
-
+                changed: function (form, item, value) {
+                    DynamicForm_Committee.getItem("subCategoryId").setValue();
 		    	  RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
-		    	  DynamicForm_Committee.getItem("subCategoryId").setValue();
 		    	  DynamicForm_Committee.getItem("subCategoryId").fetchData();
+		    	  DynamicForm_Committee.getItem("subCategoryId").setDisabled(false);
                 },
             },
 
@@ -129,25 +127,7 @@ var committee_method = "POST";
                 changed: function (form, item, value) {
                 },
             },
-            <%--{--%>
-            <%--    name: "members",--%>
-            <%--    title: "<spring:message code="committee_members"/>",--%>
-            <%--    editorType: "MyComboBoxItem",--%>
-            <%--    //autoFetchData: true,--%>
-            <%--    required: true,--%>
-            <%--    // height: "30",--%>
-            <%--    width: "*",--%>
-            <%--    displayField: "titleFa",--%>
-            <%--    valueField: "titleFa",--%>
-            <%--    //optionDataSource: RestDataSourceEducation,--%>
-            <%--    filterFields: ["titleFa"],--%>
-            <%--    sortField: ["id"],--%>
-            <%--    changed: function (form, item, value) {--%>
-            <%--        //RestDataSourceEducation.fetchDataURL = courseUrl + "getlistEducationLicense";--%>
-            <%--    },--%>
-            <%--},--%>
-
-            {
+                      {
 			name: "tasks",
 			title: "وظایف",
 			type: "textArea",
@@ -268,7 +248,8 @@ var committee_method = "POST";
      function  show_CommitteeNewForm()
 	{
         committee_method = "POST";
-      	DynamicForm_Committee.clearValues();
+       	DynamicForm_Committee.clearValues();
+        DynamicForm_Committee.getItem("subCategoryId").setDisabled(true);
        	Window_Committee.show();
     };
      function  save_Committee() {
@@ -316,7 +297,7 @@ var committee_method = "POST";
 
         var record = ListGrid_Committee.getSelectedRecord();
 
-       if (record == null || record.id == null)
+        if (record == null || record.id == null)
       {
 
 
@@ -326,7 +307,7 @@ var committee_method = "POST";
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
-                    this.close();
+                   this.close();
                 }
             });
         }
@@ -336,7 +317,7 @@ var committee_method = "POST";
 
                 committee_method = "PUT";
                 DynamicForm_Committee.clearValues();
-                DynamicForm_Committee.editRecord(record);
+                // DynamicForm_Committee.editRecord(record);
                 Window_Committee.show();
 
                 } };

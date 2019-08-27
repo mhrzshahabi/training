@@ -60,6 +60,8 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoCreateRq")
     public static class Create extends ContactInfoDTO {
+        private AddressDTO.Create homeAdress;
+        private AddressDTO.Create workAdress;
     }
 
     // ------------------------------
@@ -91,7 +93,7 @@ public class ContactInfoDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("ContactInfoSpecRs")
     public static class ContactInfoSpecRs {
-        private ContactInfoDTO.SpecRs response;
+        private SpecRs response;
     }
 
     // -------------------------------
@@ -101,7 +103,7 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ContactInfoDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

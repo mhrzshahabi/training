@@ -40,7 +40,7 @@
 
 <body dir="rtl">
 
-<form action="/logout" method="get" id="logoutForm">
+<form action="<spring:url value='/logout' />" method="get" id="logoutForm">
 </form>
 
 <script type="application/javascript">
