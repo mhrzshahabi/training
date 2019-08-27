@@ -1,0 +1,18 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+
+    <changeSet author="jafari-h (generated)" id="1566922794658-90">
+        <addColumn tableName="tbl_course">
+            <column name="c_equal_course" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+
+
+</databaseChangeLog>

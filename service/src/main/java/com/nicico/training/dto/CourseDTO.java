@@ -174,6 +174,9 @@ public class CourseDTO implements Serializable {
 
         @ApiModelProperty(required = true)
         private List<Long> preCourseListId;
+
+        @ApiModelProperty(required = true)
+        private List<String> equalCourseListId;
     }
 
     // ------------------------------

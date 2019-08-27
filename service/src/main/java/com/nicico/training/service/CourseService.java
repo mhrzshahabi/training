@@ -123,11 +123,14 @@ public class CourseService implements ICourseService {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<Long> preCourseListId = request.getPreCourseListId();
+        List<String> equalCourseListId = request.getEqualCourseListId();
         String s = Joiner.on(',').join(preCourseListId);
+        String s1 = Joiner.on(',').join(equalCourseListId);
         Course course = new Course();
         modelMapper.map(currentCourse, course);
         modelMapper.map(request, course);
         course.setPreCourse(s);
+        course.setEqualCourse(s1);
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
