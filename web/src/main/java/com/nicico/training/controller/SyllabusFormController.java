@@ -22,7 +22,6 @@ import javax.servlet.http.HttpServletRequest;
 @Controller
 @RequestMapping("/syllabus")
 public class SyllabusFormController {
-	private final OAuth2AuthorizedClientService authorizedClientService;
 
 	@RequestMapping(value = "/show-form")
 	public String showForm() {
