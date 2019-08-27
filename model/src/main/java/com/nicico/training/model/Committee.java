@@ -35,6 +35,13 @@ public class Committee extends Auditable{
     @Column(name="subcategory_id")
     private Long subCategoryId;
 
+     @ManyToOne(fetch = FetchType.LAZY)
+      @JoinColumn(name = "f_category_id",insertable = false,updatable = false)
+      private Category category;
+
+     @Column(name = "f_category_id")
+      private Long categoryId;
+
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tbl_committee_user",
             joinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")},

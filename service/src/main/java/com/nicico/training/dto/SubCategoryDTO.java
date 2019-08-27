@@ -64,8 +64,7 @@ public class SubCategoryDTO {
             private Long id;
             private String titleFa;
             private String titleEn;
-            private CategoryDTO.CategoryInfoTuple category;
-        }
+         }
 
 
         //----------------------

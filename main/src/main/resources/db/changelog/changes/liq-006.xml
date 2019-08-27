@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+ <changeSet author="heydaripoor (generated)" id="1566915268805-88">
+        <addColumn tableName="tbl_committee">
+            <column name="f_category_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1566915268805-90">
+        <addForeignKeyConstraint baseColumnNames="f_category_id" baseTableName="tbl_committee" constraintName="FKesujyiql29a18vhuj0bodca45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

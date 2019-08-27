@@ -23,7 +23,8 @@ public class Address extends Auditable {
     @Column(name = "c_address")
     private String address;
 
-    @Column(name = "n_post_code", unique = true)
+//    @Column(name = "n_post_code", unique = true)
+    @Column(name = "n_post_code")
     private Long postCode;
 
     @Column(name = "n_phone")
@@ -43,9 +44,9 @@ public class Address extends Auditable {
 	private Long cityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_state", insertable = false, updatable = false)
-    private State state;
+    @JoinColumn(name = "f_state1", insertable = false, updatable = false)
+    private State state1;
 
-    @Column(name = "f_state")
-	private Long stateId;
+    @Column(name = "f_state1")
+	private Long stateId1;
 }

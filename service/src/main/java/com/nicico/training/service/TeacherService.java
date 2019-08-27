@@ -117,7 +117,7 @@ public class TeacherService implements ITeacherService {
 
 			personalInfoDAO.saveAndFlush(personalInfo);
 			teacher.setPersonality(personalInfo);
-			teacher.setPeronalityId(personalInfo.getId());
+			teacher.setPesronalityId(personalInfo.getId());
 			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
 		}
 		else
