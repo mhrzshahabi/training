@@ -10,6 +10,8 @@
 
     var testData = [];
     var equalCourse = [];
+    var preCourseIdList=[];
+    var equalCourseIdList = [];
     // var test1;
     // var courseCacheData = [];
 
@@ -464,6 +466,7 @@
                 canAcceptDroppedRecords: this.canAcceptDroppedRecords,
                 canDragRecordsOut: this.canDragRecordsOut,
                 dragDataAction: this.dragDataAction,
+                selectionType: this.selectionType,
                 allowAdvancedCriteria: this.allowAdvancedCriteria,
                 // sortField: "id",
                 canRemoveRecords: this.canRemoveRecords,
@@ -476,6 +479,17 @@
                 selectionChanged: function (record, state) {
                     if(this.ID == "courseAllGrid"){
                         orBtn.setTitle("افزودن دوره "+"'"+record.titleFa+"'"+" به معادل های دوره");
+                        addPreCourseBtn.setTitle("افزودن دوره "+"'"+record.titleFa+"'"+" به پیش نیازهای دوره");
+                        if(equalCourseGrid.getSelectedRecord() != null){
+                        andBtn.enable();
+                        andBtn.setTitle("افزودن "+"'"+record.titleFa+"'"+" و "+equalCourseGrid.getSelectedRecord().nameEC+" به معادل های دوره")}
+                        else{andBtn.disable();}
+                    }
+                    if(this.ID == "equalCourseGrid"){
+                        if(courseAllGrid.getSelectedRecord() != null){
+                        andBtn.enable();
+                        andBtn.setTitle("افزودن "+"'"+courseAllGrid.getSelectedRecord().titleFa+"'"+" و "+record.nameEC+" به معادل های دوره")}
+                        else{andBtn.disable();}
                     }
                 }
 
@@ -520,7 +534,8 @@
 
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
-        sectionVisibilityMode: "mutex",
+        // sectionVisibilityMode: "mutex",
+        canTabToSectionHeaders:true,
         colWidths: [200, "*"],
         // height: "90%",
         // align: "center",
@@ -873,9 +888,10 @@
                 // height: "400",
                 width: "*",
                 gridDataSource:"equalCourseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
+                gridFields:[ {name:"nameEC",title:"نام دوره"}],
                 canRemoveRecords:true,
                 canDragRecordsOut: false,
+                selectionType: "single",
                 // showFilterEditor:true,
                 // filterOnKeypress:true,
                 // canAcceptDroppedRecords: true,
@@ -901,6 +917,7 @@
                 gridFields:[ {name:"titleFa",title:"نام دوره"}],
                 canRemoveRecords:false,
                 canDragRecordsOut: true,
+                selectionType: "single",
                 dragDataAction: "none",
                 // selectionChanged : function(record, state) {
                 //     orBtn.setTitle(record.titleFa);
@@ -940,16 +957,20 @@
                         isc.say("دوره ای انتخاب نشده است");
                     }
                     else {
-                        preCourseGrid.transferSelectedData(courseAllGrid);
+                        equalCourseGrid.addData({
+                            nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
+                            idEC: courseAllGrid.getSelectedRecord().id.toString() + "^" + equalCourseGrid.getSelectedRecord().idEC
+                        });
                     }
                 }
             },
             {name:"imgMove",
+                ID:"addPreCourseBtn",
                 colSpan: 6,
                 align: "left",
                 // rowSpan:4,
                 title:"",
-                // width:"400",
+                width:"350",
                 type:"button",
                 startRow:false,
                 icon:"pieces/512/back2.png",
@@ -978,7 +999,11 @@
                         isc.say("دوره ای انتخاب نشده است");
                     }
                     else {
-                        preCourseGrid.transferSelectedData(courseAllGrid);
+                        equalCourseGrid.addData({
+                            // id: courseAllGrid.getSelectedRecord().id,
+                            nameEC: "'"+courseAllGrid.getSelectedRecord().titleFa+"'",
+                            idEC: courseAllGrid.getSelectedRecord().id.toString()
+                        });
                     }
                 }
             },
@@ -1069,12 +1094,11 @@
                         DynamicForm_course.getItem('code').setValue(x);
                         var data1 = DynamicForm_course.getValues();
 
-                        var idList=[];
+                        preCourseIdList=[];
                         for (var i = 0; i <testData.length ; i++) {
-                            idList.add(testData[i].id);
+                            preCourseIdList.add(testData[i].id);
                         }
-                        data1.preCourseListId = idList;
-                        console.log(data1);
+                        data1.preCourseListId = preCourseIdList;
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             httpMethod: course_method,
@@ -1103,12 +1127,16 @@
             else if (course_method == "PUT") {
                 var data1 = DynamicForm_course.getValues();
                 ChangeEtechnicalType = false;
-                var idList=[];
-                for (var i = 0; i <testData.length ; i++) {
-                    idList.add(testData[i].id);
+                preCourseIdList=[];
+                equalCourseIdList=[];
+                for (let i = 0; i <testData.length ; i++) {
+                    preCourseIdList.add(testData[i].id);
                 }
-                data1.preCourseListId = idList;
-
+                for (let i = 0; i <equalCourse.length ; i++) {
+                    equalCourseIdList.add(equalCourse[i].idEC);
+                }
+                data1.equalCourseListId = equalCourseIdList;
+                data1.preCourseListId = preCourseIdList;
                 isc.RPCManager.sendRequest({
                     actionURL: course_url,
                     httpMethod: course_method,
@@ -1192,9 +1220,10 @@
         clientOnly:true,
         testData:equalCourse,
         fields:[
-            {name: "id",type: "integer", primaryKey:true},
+            {name: "id",type: "sequence", primaryKey:true},
             // {name: "code"},
-            {name: "titleFa", type: "text", title:"نام دوره"}
+            {name: "nameEC", type: "text", title:"نام دوره"},
+            {name: "idEC", type: "text", hidden:true}
             // {name: "titleEn"},
             // {name: "category.titleFa"},
             // {name: "subCategory.titleFa"},
@@ -1543,7 +1572,6 @@
                 for(var i = 0; i <JSON.parse(resp.data).length ; i++) {
                     // console.log(JSON.parse(resp.data)[i]);
                     preCourseDS.addData(JSON.parse(resp.data)[i]);
-
                 }
 
 }})
