@@ -21,7 +21,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode
 @Entity
-@Table(schema = "training", name = "tbl_job_competence")
+@Table(name = "tbl_job_competence")
 public class JobCompetence {
 
     @EmbeddedId

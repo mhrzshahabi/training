@@ -17,7 +17,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_equipment", schema = "TRAINING")
+@Table(name = "tbl_equipment")
 public class Equipment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Equipment_seq")

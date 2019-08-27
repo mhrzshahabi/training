@@ -40,7 +40,7 @@
 
 <body dir="rtl">
 
-<form action="/logout" method="get" id="logoutForm">
+<form action="<spring:url value='/logout' />" method="get" id="logoutForm">
 </form>
 
 <script type="application/javascript">
@@ -56,7 +56,6 @@
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl = rootUrl + "/course/";
-
     const categoryUrl = rootUrl + "/category/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
@@ -69,6 +68,7 @@
     const termUrl=rootUrl + "/term/";
     const cityUrl=rootUrl + "/city/";
     const stateUrl=rootUrl + "/state/";
+    const committeeUrl=rootUrl + "/committee/";
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
