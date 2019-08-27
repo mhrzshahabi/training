@@ -1,0 +1,22 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+	<changeSet author="rrazmnoush" id="1569029078270-121">
+	<addColumn tableName="tbl_address">
+        	<column name="f_state" type="NUMBER(19, 0)"/>
+    </addColumn>
+    </changeSet>
+
+	<changeSet author="rrazmnoush" id="1566729078270-121">
+		<addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_address"
+								 constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false"
+								 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city"
+								 validate="true"/>
+	</changeSet>
+
+</databaseChangeLog>
