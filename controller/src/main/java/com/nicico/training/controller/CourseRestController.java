@@ -70,6 +70,13 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/equalCourse/{courseId}")
+//	@PreAuthorize("hasAuthority('r_course')")
+    public ResponseEntity<List<Map>> equalCourseList(@PathVariable Long courseId) {
+        return new ResponseEntity<>(courseService.equalCourseList(courseId), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
     public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req) {
         CourseDTO.Create create = (new ModelMapper()).map(req, CourseDTO.Create.class);

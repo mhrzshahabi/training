@@ -99,6 +99,37 @@ public class CourseService implements ICourseService {
         }
         return listOut;
     }
+    @Transactional(readOnly = true)
+    @Override
+    public List<Map> equalCourseList(Long id) {
+        final List<Map> listOut = new ArrayList<>();
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        String s = course.getEqualCourse();
+        String nameEQ1;
+        String idEQ1;
+        List<String> myList = new ArrayList<>(Arrays.asList(s.split(",")));
+        for (String i : myList) {
+            nameEQ1 ="";
+            idEQ1 = i;
+            List<Long> x = Arrays.stream(i.split("_"))
+                    .map(Long::parseLong)
+                    .collect(Collectors.toList());
+            for (Long j : x) {
+                Optional<Course> pById = courseDAO.findById(j);
+                Course equalCourse = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+                if (x.size() == 1)
+                    nameEQ1 = "'"+equalCourse.getTitleFa()+"'";
+                else
+                    nameEQ1 = nameEQ1+" و "+"'"+equalCourse.getTitleFa()+"'";
+            }
+            Map<String,String> map = new HashMap<>();
+            map.put("idEC",idEQ1);
+            map.put("nameEC",nameEQ1);
+            listOut.add(map);
+        }
+        return listOut;
+    }
 
 
     @Transactional

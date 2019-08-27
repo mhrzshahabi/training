@@ -959,7 +959,7 @@
                     else {
                         equalCourseGrid.addData({
                             nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
-                            idEC: courseAllGrid.getSelectedRecord().id.toString() + "^" + equalCourseGrid.getSelectedRecord().idEC
+                            idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC
                         });
                     }
                 }
@@ -1531,8 +1531,10 @@
 
     function ListGrid_Course_Edit() {
         testData.length = 0;
+        equalCourse.length = 0;
         // preCourseDS.invalidateCache();
         preCourseGrid.invalidateCache();
+        equalCourseGrid.invalidateCache();
         DynamicForm_course.getItem("category.id").setDisabled(true);
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         DynamicForm_course.getItem("erunType.id").setDisabled(true);
@@ -1573,6 +1575,24 @@
                     // console.log(JSON.parse(resp.data)[i]);
                     preCourseDS.addData(JSON.parse(resp.data)[i]);
                 }
+                isc.RPCManager.sendRequest({
+                    actionURL: courseUrl + "equalCourse/" + ListGrid_Course.getSelectedRecord().id,
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        // preCourseDS.setTestData(JSON.parse(resp.data));
+                        // for(var i = 0; i <testData.length ; i++) {
+                        //     preCourseDS.removeData(testData[i]);
+                        // }
+                        // console.log(resp.data.length);
+                        for(var i = 0; i <JSON.parse(resp.data).length ; i++) {
+                            // console.log(JSON.parse(resp.data)[i]);
+                            equalCourseDS.addData(JSON.parse(resp.data)[i]);
+                        }}})
 
 }})
 

@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 
 import java.util.List;
+import java.util.Map;
 
 public interface ICourseService {
 
@@ -11,6 +12,7 @@ public interface ICourseService {
 
 	List<CourseDTO.Info> list();
 	List<CourseDTO.Info> preCourseList(Long id);
+	List<Map> equalCourseList(Long id);
 
 	CourseDTO.Info create(CourseDTO.Create request);
 
