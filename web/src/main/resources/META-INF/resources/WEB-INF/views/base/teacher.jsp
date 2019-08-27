@@ -190,6 +190,7 @@
                 align: "center",
                 filterOperator: "contains"
             },
+            {name: "personality.contactInfo.workAdress.city.stateId", hidden:"true"}
         ],
         // sortField: 1,
         // sortDirection: "descending",
@@ -837,7 +838,7 @@
             },
 
             {
-                name: "personality.contactInfo.workAdress.stateId",
+                name: "personality.contactInfo.workAdress.city.stateId",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -939,7 +940,7 @@
             },
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "personality.contactInfo.workAdress.stateId") {
+            if (item.name == "personality.contactInfo.workAdress.city.stateId") {
                 if (newValue == undefined) {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
@@ -955,14 +956,14 @@
                 if (newValue == true) {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
-                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.stateId");
-                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.stateId").disabled = true;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.city.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.city.stateId").disabled = true;
                 }
                 else {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.cityId").disabled = true;
-                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.stateId");
-                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.stateId").disabled = false;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAdress.city.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAdress.city.stateId").disabled = false;
                 }
             }
         }
@@ -1059,7 +1060,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "personality.contactInfo.homeAdress.stateId",
+                name: "personality.contactInfo.homeAdress.city.stateId",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 width: "*",
@@ -1162,7 +1163,7 @@
 
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "personality.contactInfo.homeAdress.stateId") {
+            if (item.name == "personality.contactInfo.homeAdress.city.stateId") {
                 if (newValue == undefined) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
@@ -1178,14 +1179,14 @@
                 if (newValue == true) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
-                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.stateId");
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.stateId").disabled = true;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.city.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.city.stateId").disabled = true;
                 }
                 else {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.cityId").disabled = true;
-                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.stateId");
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.stateId").disabled = false;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAdress.city.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAdress.city.stateId").disabled = false;
                 }
             }
         }

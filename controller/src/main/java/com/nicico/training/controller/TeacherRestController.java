@@ -57,10 +57,6 @@ public class TeacherRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
 
-    private final CityDAO cityDAO;
-    private final StateDAO stateDAO;
-
-
     @Value("${nicico.teacher.upload.dir}")
     private String teacherUploadDir;
 
