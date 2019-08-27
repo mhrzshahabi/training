@@ -575,6 +575,17 @@
     });
 
 
+ var memberButton = isc.IconButton.create({
+        title: "اعضا",
+        icon: "pieces/512/term.png",
+        largeIcon: "pieces/512/term.png",
+        orientation: "vertical",
+        click: function () {
+
+            createTab("اعضا", "<spring:url value="/user/show-form"/>", false);
+        }
+    });
+
       var committeeButton = isc.IconButton.create({
         title: "کمیته تخصصی",
         icon: "pieces/512/committee.png",
@@ -753,6 +764,7 @@
             classButton,
             courseButton,
             termButton,
+            memberButton,
             committeeButton,
             studentButton,
         ],

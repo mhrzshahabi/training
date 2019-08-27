@@ -30,6 +30,9 @@ public class CommitteeDTO implements Serializable {
     @ApiModelProperty
     private Long subCategoryId;
 
+     @ApiModelProperty
+    private Long categoryId;
+
     @ApiModelProperty
     private List<User> members;
 
@@ -50,6 +53,7 @@ public class CommitteeDTO implements Serializable {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
+        private CategoryDTO.CategoryInfoTuple category;
     }
 
     @Getter

@@ -13,9 +13,9 @@ var committee_method = "POST";
 
 //************************************************************************************
     // RestDataSource & ListGrid
- //************************************************************************************
+//************************************************************************************
  	var RestDataSource_committee = isc.MyRestDataSource.create({
-        ID: "CommitteeDS",
+
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"
             };
@@ -23,9 +23,8 @@ var committee_method = "POST";
         },
         fields: [{name: "id", primaryKey: true},
          {name: "titleFa"},
-			{name:"subCategory.category.titleFa"},
-         {name: "subCategory.titleFa"},
-         // {name: "members"},
+		 {name:"category.titleFa"},
+		 {name: "subCategory.titleFa"},
          {name: "tasks"},
          {name: "description"},
         ], dataFormat: "json",
@@ -33,41 +32,40 @@ var committee_method = "POST";
         autoFetchData: true,
     });
      var RestDataSource_category = isc.MyRestDataSource.create({
-        ID: "category",
-        transformRequest: function (dsRequest) {
+               transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {    "Authorization": "Bearer <%= accessToken %>"
             };
             return this.Super("transformRequest", arguments);
         },
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+        fields: [{name: "id", primaryKey: true},{name: "titleFa"}
         ], dataFormat: "json",
+
         fetchDataURL: categoryUrl + "spec-list",
+        autoFetchData: true,
       });
 
 
     var RestDataSourceSubCategory = isc.MyRestDataSource.create({
-         ID: "subcategory",
-        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}
+         fields: [{name: "id",primaryKey: true},{name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
     });
 	var ListGrid_Committee = isc.MyListGrid.create({
 		  dataSource: RestDataSource_committee,
-		  canAddFormulaFields: true,
-		 //پ contextMenu: Menu_ListGrid_term,
+		  //پ contextMenu: Menu_ListGrid_term,
           autoFetchData: true,
 		  doubleClick: function () {
 	    },
 		fields: [
 			{name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
 			{name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
-			{name: "subCategory.category.titleFa", title: "گروه", align: "center", filterOperator: "contains"},
+			{name: "category.titleFa", title: "گروه", align: "center", filterOperator: "contains"},
 			{name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "contains"},
 		    {name: "tasks", title: "وظایف", align: "center", filterOperator: "contains"},
 			{name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
 		],
-		 showFilterEditor: true,
+		showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
@@ -78,7 +76,7 @@ var committee_method = "POST";
 			//DynamicForm & Window
 //*************************************************************************************
 	var DynamicForm_Committee = isc.MyDynamicForm.create({
-		 ID: "DynamicForm_Committee",
+		 // ID: "DynamicForm_Committee",
 			fields: [{name: "id", hidden: true},
 		 {
 			name: "titleFa",
@@ -90,24 +88,24 @@ var committee_method = "POST";
 					},
 
 		 {
-                name: "category",
+                name: "categoryId",
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_category,
-                autoFetchData: true,
+                autoFetchData:true,
                 required: true,
                 width: "*",
                 changeOnKeypress: true,
                 filterOnKeypress: true,
-                valueField: "id",
                 displayField: "titleFa",
+                valueField: "id",
                 filterFields: ["titleFa"],
-                sortField: ["id"],
-                changed: function (form, item, value) {
-                    DynamicForm_Committee.getItem("subCategoryId").setValue();
+                  changed: function (form, item, value) {
+                  DynamicForm_Committee.getItem("subCategoryId").setValue();
 		    	  RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
 		    	  DynamicForm_Committee.getItem("subCategoryId").fetchData();
-		    	  DynamicForm_Committee.getItem("subCategoryId").setDisabled(false);
+		    	//  DynamicForm_Committee.getItem("subCategoryId").setDisabled("false");
+
                 },
             },
 
@@ -115,15 +113,15 @@ var committee_method = "POST";
                 name: "subCategoryId",
                 title: "<spring:message code="course_subcategory"/>",
                 editorType: "MyComboBoxItem",
-                prompt: "ابتدا گروه را انتخاب کنید",
+               // prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
                 width: "*",
-                valueField: "id",
                 optionDataSource: RestDataSourceSubCategory,
                 displayField: "titleFa",
+                valueField: "id",
                 filterFields: ["titleFa"],
-                sortField: ["id"],
+                // sortField: ["id"],
                 changed: function (form, item, value) {
                 },
             },
@@ -192,8 +190,9 @@ var committee_method = "POST";
 		icon: "[SKIN]/actions/add.png",
 		title: "ایجاد",
 		click: function () {
+
 			committee_method = "POST";
-		   show_CommitteeNewForm();
+		    show_CommitteeNewForm();
 
 		}
 	});
@@ -201,7 +200,7 @@ var committee_method = "POST";
 		icon: "[SKIN]/actions/remove.png",
 		title: "حذف",
 		click: function () {
-	//		show_TermRemoveForm()
+	    show_CommitteeRemoveForm();
 		}
 	});
 	var ToolStripButton_Print = isc.ToolStripButton.create({
@@ -249,11 +248,9 @@ var committee_method = "POST";
 	{
         committee_method = "POST";
        	DynamicForm_Committee.clearValues();
-        DynamicForm_Committee.getItem("subCategoryId").setDisabled(true);
-       	Window_Committee.show();
+     	Window_Committee.show();
     };
      function  save_Committee() {
-
         if (!DynamicForm_Committee.validate()) {
             return;
         }
@@ -266,6 +263,67 @@ var committee_method = "POST";
         isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
 
     };
+
+
+      function   show_CommitteEditForm() {
+        var record = ListGrid_Committee.getSelectedRecord();
+        if (record == null || record.id == null)
+      {
+            isc.Dialog.create({
+                message: "<spring:message code="msg.record.not.selected"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                   this.close();
+                }
+            });
+        }
+            else
+                {
+
+
+                committee_method = "PUT";
+                DynamicForm_Committee.clearValues();
+                DynamicForm_Committee.redraw();
+              //  var catid = ListGrid_Committee.getSelectedRecord().subCategory.category.id;
+             //   RestDataSourceSubCategory.fetchDataURL = categoryUrl + catid + "/sub-categories";
+             //   RestDataSourceSubCategory.fetchData();
+                DynamicForm_Committee.editRecord(record);
+                Window_Committee.show();
+
+                } };
+
+        function show_CommitteeRemoveForm() {
+               var record = ListGrid_Committee.getSelectedRecord();
+               if (record == null || record.id == null)
+      {
+
+<%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
+            isc.Dialog.create({
+                message: "<spring:message code="msg.record.not.selected"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        }
+        else{
+            isc.MyYesNoDialog.create({
+                message: "آیا رکورد انتخاب شده حذف گردد؟",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index == 0) {
+                        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
+                    }
+                }
+            });
+        }
+
+    };
+
      function  show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
@@ -277,11 +335,9 @@ var committee_method = "POST";
 
             setTimeout(function () {
                 MyOkDialog_job.close();
-
             }, 3000);
 
          Window_Committee.close();
-
         } else {
             var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
@@ -292,32 +348,3 @@ var committee_method = "POST";
             }, 3000);
         }
     };
-
-      function   show_CommitteEditForm() {
-
-        var record = ListGrid_Committee.getSelectedRecord();
-
-        if (record == null || record.id == null)
-      {
-
-
-            isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                   this.close();
-                }
-            });
-        }
-
-            else
-                {
-
-                committee_method = "PUT";
-                DynamicForm_Committee.clearValues();
-                // DynamicForm_Committee.editRecord(record);
-                Window_Committee.show();
-
-                } };
