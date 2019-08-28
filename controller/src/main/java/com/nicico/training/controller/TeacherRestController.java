@@ -106,12 +106,6 @@ public class TeacherRestController {
 //    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         try {
-            final Optional<Teacher> cById = teacherDAO.findById(id);
-            final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-//            if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
-//                File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
-//                file1.delete();
-//            }
             teacherService.delete(id);
             return new ResponseEntity(true, HttpStatus.OK);
         } catch (Exception ex) {

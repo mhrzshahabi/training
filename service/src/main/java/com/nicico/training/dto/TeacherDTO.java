@@ -33,7 +33,7 @@ public class TeacherDTO {
 	private String economicalCode;
 	private String economicalRecordNumber;
 
-	private Long pesronalityId;
+	private Long peronalityId;
 
 	// ------------------------------
 
@@ -75,6 +75,7 @@ public class TeacherDTO {
 	@Accessors(chain = true)
 	@ApiModel("TeacherUpdateRq")
 	public static class Update extends TeacherDTO {
+		private PersonalInfoDTO.Update personality;
 	}
 
 	// ------------------------------
