@@ -10,14 +10,49 @@
 //<script>
 
     var methodEducationLevel = "GET";
-    var urlEducationLevel = educationLevelUrl;
-
+    
+    //////////////////////////////////////////////////////////
+    ///////////////////////DataSource/////////////////////////
+    /////////////////////////////////////////////////////////
+    
     var RestDataSourceEducationLevel = isc.MyRestDataSource.create({
         fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         fetchDataURL: educationLevelUrl + "spec-list"});
+    
+    var RestDataSourceEducationMajor = isc.MyRestDataSource.create({
+        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        fetchDataURL: educationMajorUrl + "spec-list"});
+    
+    var RestDataSourceEducationOrientation = isc.MyRestDataSource.create({
+        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
+        ], dataFormat: "json",
+        jsonPrefix: "",
+        jsonSuffix: "",
+        fetchDataURL: educationOrientationUrl + "spec-list"});
+
+
+    //////////////////////////////////////////////////////////
+    ///////////////////Education Orientation//////////////////
+    /////////////////////////////////////////////////////////
+    
+
+
+    //////////////////////////////////////////////////////////
+    ///////////////////Education Major////////////////////////
+    /////////////////////////////////////////////////////////
+
+    
+    
+    //////////////////////////////////////////////////////////
+    ///////////////////Education Level////////////////////////
+    /////////////////////////////////////////////////////////
+
 
     var ListGrid_EducationLevel = isc.ListGrid.create({
         width: "100%",
@@ -51,7 +86,7 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
-
+    
     var DynamicForm_EducationLevel = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -74,16 +109,16 @@
             }
         ],
     });
-
+    
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
         title: "<spring:message code="refresh"/> ",
-
+    
         click: function () {
             ListGrid_EducationLevel_refresh();
         }
     });
-
+    
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
@@ -117,8 +152,8 @@
         width: "100%",
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
     });
-
-
+    
+    
     var IButton_EducationLevel_Save = isc.IButton.create({
         top: 260, title: "ذخیره",
         icon: "pieces/16/save.png",
@@ -150,10 +185,10 @@
                     } else {
                         simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
                     }
-
+    
                 }
             });
-
+    
         }
     });
     var Hlayout_EducationLevel_SaveOrExit = isc.MyHLayoutButtons.create({
@@ -196,8 +231,6 @@
         })]
     });
 
-
-
     var HLayout_Actions_EducationLevel = isc.HLayout.create({
         width: "100%",
         members: [ToolStrip_Actions]
@@ -209,16 +242,48 @@
         height: "100%",
         members: [ListGrid_EducationLevel]
     });
-
+    
     var VLayout_Body_EducationLevel = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [
-            HLayout_Actions_EducationLevel
-            , HLayout_Grid_EducationLevel
-        ]
+        members: [HLayout_Actions_EducationLevel,
+                    HLayout_Grid_EducationLevel
+                ]
+    });
+ 
+    
+    //////////////////////////////////////////////////////////
+    ///////////////////Main Layout////////////////////////////
+    /////////////////////////////////////////////////////////
+
+    var VLayout_Tabset_Education = isc.TabSet.create({
+    tabBarPosition: "top",
+    // tabBarAlign: "center",
+    width: "100%",
+    height: "100%",
+    tabs: [
+        {title: "مقطع", pane:VLayout_Body_EducationLevel},
+        {title: "رشته"},
+        {title: "گرایش"}
+    ]
     });
 
+    var VLayout_Tab_Education = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        border: "2px solid blue",
+        members: [VLayout_Tabset_Education]
+    });
+    
+    var VLayout_Body_Education = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [VLayout_Tab_Education]
+    });
+
+    //////////////////////////////////////////////////////////
+    ///////////////////function//////////////////////////////
+    /////////////////////////////////////////////////////////
 
     function ListGrid_EducationLevel_Remove() {
         var record = ListGrid_EducationLevel.getSelectedRecord();
@@ -274,7 +339,7 @@
             ListGrid_Syllabus_EducationLevel_refresh();
         }
     };
-
+    
     function ListGrid_EducationLevel_Edit() {
         var record = ListGrid_EducationLevel.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -296,7 +361,7 @@
             Window_EducationLevel.show();
         }
     };
-
+    
     function ListGrid_EducationLevel_refresh() {
         var record = ListGrid_EducationLevel.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -305,12 +370,12 @@
         }
         ListGrid_EducationLevel.invalidateCache();
     };
-
+    
     function ListGrid_EducationLevel_Add() {
             methodEducationLevel = "POST";
             urlEducationLevel = educationLevelUrl + "create/";
             DynamicForm_EducationLevel.clearValues();
             Window_EducationLevel.setTitle("ایجاد مقطع تحصیلی");
             Window_EducationLevel.show();
-
+    
     };
