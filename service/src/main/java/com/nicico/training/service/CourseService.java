@@ -118,11 +118,9 @@ public class CourseService implements ICourseService {
             for (Long j : x) {
                 Optional<Course> pById = courseDAO.findById(j);
                 Course equalCourse = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-                if (x.size() == 1)
-                    nameEQ1 = "'"+equalCourse.getTitleFa()+"'";
-                else
                     nameEQ1 = nameEQ1+" و "+"'"+equalCourse.getTitleFa()+"'";
             }
+            nameEQ1 = nameEQ1.substring(3);
             Map<String,String> map = new HashMap<>();
             map.put("idEC",idEQ1);
             map.put("nameEC",nameEQ1);
