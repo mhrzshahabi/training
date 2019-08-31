@@ -1,0 +1,23 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="poursalehi_mos (generated)" id="1567226119273-90">
+        <addColumn tableName="tbl_education_orientation">
+            <column name="f_education_level" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1567226119273-94">
+        <addForeignKeyConstraint baseColumnNames="f_education_level" baseTableName="tbl_education_orientation" constraintName="FKhwdtgrdd4rr5diipoe8jiek6m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1567226119273-7">
+        <dropForeignKeyConstraint baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1"/>
+        <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" referencedColumnNames="id" referencedTableName="tbl_education_major"/>
+    </changeSet>
+
+
+</databaseChangeLog>
