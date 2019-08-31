@@ -577,8 +577,8 @@
 
  var memberButton = isc.IconButton.create({
         title: "اعضا",
-        icon: "pieces/512/term.png",
-        largeIcon: "pieces/512/term.png",
+        icon: "pieces/512/member.png",
+        largeIcon: "pieces/512/member.png",
         orientation: "vertical",
         click: function () {
 
