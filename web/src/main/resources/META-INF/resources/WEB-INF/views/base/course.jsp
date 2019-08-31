@@ -102,7 +102,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        fetchDataURL: goalUrl + "spec-list"
+        // fetchDataURL: courseUrl + courseId.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -435,7 +435,6 @@
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
     });
 
-
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
     isc.ListGridItem.addProperties({
         height: "*", width: "*",
@@ -485,28 +484,31 @@
                         }
                     }
                     if (this.ID == "equalCourseGrid") {
-                        if (courseAllGrid.getSelectedRecord() != null) {
+                        if ((courseAllGrid.getSelectedRecord() != null) &&(equalCourseGrid.getSelectedRecord() != null)) {
                             andBtn.enable();
                             andBtn.setTitle("افزودن " + "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + record.nameEC + " به معادل های دوره")
                         } else {
                             andBtn.disable();
                         }
                     }
-                }
+                },
 
 // dropComplete: function() {
 // equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
 // equalCourseGrid.refreshFields();
 // }
-                // removeRecordClick : function (rowNum) {
-                //     var record = this.getRecord(rowNum);
-                //     this.removeData(record, function (dsResponse, data, dsRequest) {
-                //         // Update `employeesGrid` now that an employee has been removed from
-                //         // the selected team.  This will add the employee back to `employeesGrid`,
-                //         // the list of employees who are not in the team.
-                //         // mockAddEmployeesFromTeamMemberRecords(record);
-                //     });
-                // },
+                removeRecordClick : function (rowNum) {
+                    if(this.ID == "equalCourseGrid"){
+                        andBtn.disable();
+                    }
+                    var record = this.getRecord(rowNum);
+                    this.removeData(record, function (dsResponse, data, dsRequest) {
+                    //     // Update `employeesGrid` now that an employee has been removed from
+                    //     // the selected team.  This will add the employee back to `employeesGrid`,
+                    //     // the list of employees who are not in the team.
+                    //     // mockAddEmployeesFromTeamMemberRecords(record);
+                    });
+                },
 
 
                 // dataArrived : function () {
@@ -528,7 +530,6 @@
         //     else this.canvas.selection.deselectAll();
         // }
     });
-
 
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
@@ -1068,7 +1069,6 @@
         ],
     });
 
-
     var IButton_course_Save = isc.IButton.create({
         title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -1191,7 +1191,6 @@
         })]
     });
 
-
     isc.DataSource.create({
         ID: "preCourseDS",
         clientOnly: true,
@@ -1288,7 +1287,6 @@
     //     height: 160,
     //     members: [vStack, arrowImg, vStack2]
     // });
-
 
     var Window_course = isc.Window.create({
         width: "90%",
@@ -1580,7 +1578,8 @@
                 }
             });
         } else {
-            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form" , false);
+            RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         }
     }
 
@@ -1600,7 +1599,6 @@
         criteriaForm_course.submitForm();
     };
 
-
     function mockRemoveEmployees(employeeRecords) {
         if (employeeRecords.length == 0) {
             return;
@@ -1614,7 +1612,6 @@
         teamMembersGrid.invalidateCache();
         // employeesByTeam.updateCaches(dsRequest);
     }
-
 
     function mappedByListId(listId, listGrid, DS) {
         var listGridRecord = listGrid.getData().allRows;
