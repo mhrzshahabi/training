@@ -23,7 +23,6 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -64,7 +63,7 @@ public class CommitteeRestController {
 
  @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CommitteeDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<CommitteeDTO.Info> update(@PathVariable Long id, @RequestBody CommitteeDTO.Update request) {
         CommitteeDTO.Update update = (new ModelMapper()).map(request, CommitteeDTO.Update.class);
         return new ResponseEntity<>(committeeService.update(id, update), HttpStatus.OK);
     }

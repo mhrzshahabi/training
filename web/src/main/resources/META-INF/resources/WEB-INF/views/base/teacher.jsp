@@ -1469,11 +1469,13 @@
             // showAttach();
             vm.clearValues();
             vm.clearErrors(true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
-            DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
+            // DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
+            // DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
+            // DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
+
             teacherMethod = "PUT";
             vm.editRecord(record);
+
             <%--var eduMajorValue = record.educationMajorId;--%>
 
             <%--var eduOrientationValue = record.educationOrientationId;--%>

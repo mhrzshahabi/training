@@ -128,6 +128,8 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @ApiModel("PersonalInfoUpdateRq")
     public static class Update extends PersonalInfoDTO {
+        private ContactInfoDTO.Update contactInfo;
+        private AccountInfoDTO.Update accountInfo;
     }
 
     // ------------------------------

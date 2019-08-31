@@ -34,7 +34,7 @@ public class Teacher extends Auditable{
 	private PersonalInfo personality;
 
 	@Column(name = "f_personality")
-	private Long pesronalityId;
+	private Long peronalityId;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category",

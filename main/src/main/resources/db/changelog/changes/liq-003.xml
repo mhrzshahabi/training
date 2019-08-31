@@ -12,11 +12,4 @@
     </addColumn>
     </changeSet>
 
-	<changeSet author="rrazmnoush" id="1566729078270-121">
-		<addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_address"
-								 constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false"
-								 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city"
-								 validate="true"/>
-	</changeSet>
-
 </databaseChangeLog>
