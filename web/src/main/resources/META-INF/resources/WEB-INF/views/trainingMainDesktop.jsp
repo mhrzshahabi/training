@@ -864,6 +864,7 @@
             if(tabTitle.substr(0,5) == "اهداف"){
                 setTimeout(function () {
 
+                   RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id +"/goal";
                    ListGrid_Goal.fetchData();
                    ListGrid_Goal.invalidateCache();
                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;

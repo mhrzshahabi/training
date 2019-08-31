@@ -10,7 +10,7 @@
 
     var testData = [];
     var equalCourse = [];
-    var preCourseIdList=[];
+    var preCourseIdList = [];
     var equalCourseIdList = [];
     // var test1;
     // var courseCacheData = [];
@@ -102,7 +102,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        fetchDataURL: goalUrl + "spec-list"
+        // fetchDataURL: courseUrl + courseId.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -155,7 +155,7 @@
                 ListGrid_CourseJob.setData([]);
                 ListGrid_CourseSkill.setData([]);
                 ListGrid_CourseSyllabus.setData([]);
-                ListGrid_CourseGoal.setData([]);
+                // ListGrid_CourseGoal.setData([]);
                 ListGrid_CourseCompetence.setData([]);
             }
         }, {
@@ -164,33 +164,31 @@
             }
         }, {
             title: "<spring:message code="edit"/>", icon: "pieces/16/icon_edit.png", click: function () {
-
-                DynamicForm_course.clearValues();
                 ListGrid_Course_Edit();
             }
         }, {
             title: "<spring:message code="remove"/>", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Course_remove()
             }
-        },
-            // {
-            // title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
-            // openTabGoal();
-            // }
-            //        },
-            {isSeparator: true}, {
-                title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
-                    print_CourseListGrid("pdf");
-                }
-            }, {
-                title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
-                    print_CourseListGrid("excel");
-                }
-            }, {
-                title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
-                    print_CourseListGrid("html");
-                }
-            }]
+        }, {
+            title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+                openTabGoal();
+            }
+        }, {
+            isSeparator: true
+        }, {
+            title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
+                print_CourseListGrid("pdf");
+            }
+        }, {
+            title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
+                print_CourseListGrid("excel");
+            }
+        }, {
+            title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
+                print_CourseListGrid("html");
+            }
+        }]
     });
     var ListGrid_Course = isc.MyListGrid.create({
         ID: "gridCourse",
@@ -290,15 +288,16 @@
                 name: "minTeacherEvalScore", title: "<spring:message
         code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
             },
-            {name: "knowledge", title: "دانشی", align:"center",filterOperator: "greaterThan", format: "%"
+            {
+                name: "knowledge", title: "دانشی", align: "center", filterOperator: "greaterThan", format: "%"
                 // formatCellValue: function (value, record) {
                 //     // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
                 //     var gdpPerCapita = Math.round(record.theoryDuration/10);
                 //     return isc.NumberUtil.format(gdpPerCapita, "%");
                 // }
             },
-            {name: "skill", title: "مهارتی", align:"center",filterOperator: "greaterThan", format: "%"},
-            {name: "attitude", title: "نگرشی", align:"center",filterOperator: "greaterThan", format: "%"},
+            {name: "skill", title: "مهارتی", align: "center", filterOperator: "greaterThan", format: "%"},
+            {name: "attitude", title: "نگرشی", align: "center", filterOperator: "greaterThan", format: "%"},
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
         ],
@@ -356,16 +355,23 @@
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
         dataSource: RestDataSource_Syllabus,
-        groupByField:"goal.titleFa", groupStartOpen:"none",
-        showGridSummary:true,
-        showGroupSummary:true,
+        groupByField: "goal.titleFa", groupStartOpen: "none",
+        showGridSummary: true,
+        showGroupSummary: true,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "goal.titleFa", title: "نام هدف", align: "center"},
             {name: "titleFa", title: "<spring:message code="course_syllabus_name"/>", align: "center"},
             {name: "edomainType.titleFa", title: "<spring:message code="course_domain"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden:true},
-            {name: "practicalDuration", title: "<spring:message code="course_Running_time"/>", align: "center", summaryFunction:"sum",type:"integer", format: "# ساعت "},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center", hidden: true},
+            {
+                name: "practicalDuration",
+                title: "<spring:message code="course_Running_time"/>",
+                align: "center",
+                summaryFunction: "sum",
+                type: "integer",
+                format: "# ساعت "
+            },
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "single",
@@ -392,12 +398,6 @@
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
         click: function () {
-            DynamicForm_course.getItem("category.id").setDisabled(true);
-            DynamicForm_course.getItem("subCategory.id").setDisabled(true);
-            DynamicForm_course.getItem("erunType.id").setDisabled(true);
-            DynamicForm_course.getItem("elevelType.id").setDisabled(true);
-            DynamicForm_course.getItem("etheoType.id").setDisabled(true);
-            DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         }
     });
@@ -435,32 +435,28 @@
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
     });
 
-
-
-
-
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
     isc.ListGridItem.addProperties({
-        height:"*", width:"*",
-        colSpan:this.colSpan, endRow:this.endRow, startRow:this.startRow,
+        height: "*", width: "*",
+        colSpan: this.colSpan, endRow: this.endRow, startRow: this.startRow,
 
         // this is going to be an editable data item
-        shouldSaveValue:true,
+        shouldSaveValue: true,
 
         // Implement 'createCanvas' to build a ListGrid from which the user may
         // select items.
-        createCanvas : function () {
+        createCanvas: function () {
             return isc.ListGrid.create({
-                ID : this.ID,
-                autoDraw:false,
+                ID: this.ID,
+                autoDraw: false,
                 // fill the space the form allocates to the item
-                width:this.width, height:this.height,
-                leaveScrollbarGaps:false,
+                width: this.width, height: this.height,
+                leaveScrollbarGaps: false,
                 // dataSource and fields to use, provided to a listGridItem as
                 // listGridItem.gridDataSource and optional gridFields
-                dataSource:this.gridDataSource,
-                fields:this.gridFields,
-                autoFetchData:true,
+                dataSource: this.gridDataSource,
+                fields: this.gridFields,
+                autoFetchData: true,
 
 
                 canAcceptDroppedRecords: this.canAcceptDroppedRecords,
@@ -477,36 +473,42 @@
                 sortFieldAscendingText: "مرتب سازي صعودي",
                 sortFieldDescendingText: "مرتب سازي نزولي",
                 selectionChanged: function (record, state) {
-                    if(this.ID == "courseAllGrid"){
-                        orBtn.setTitle("افزودن دوره "+"'"+record.titleFa+"'"+" به معادل های دوره");
-                        addPreCourseBtn.setTitle("افزودن دوره "+"'"+record.titleFa+"'"+" به پیش نیازهای دوره");
-                        if(equalCourseGrid.getSelectedRecord() != null){
-                        andBtn.enable();
-                        andBtn.setTitle("افزودن "+"'"+record.titleFa+"'"+" و "+equalCourseGrid.getSelectedRecord().nameEC+" به معادل های دوره")}
-                        else{andBtn.disable();}
+                    if (this.ID == "courseAllGrid") {
+                        orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
+                        addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
+                        if (equalCourseGrid.getSelectedRecord() != null) {
+                            andBtn.enable();
+                            andBtn.setTitle("افزودن " + "'" + record.titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC + " به معادل های دوره")
+                        } else {
+                            andBtn.disable();
+                        }
                     }
-                    if(this.ID == "equalCourseGrid"){
-                        if(courseAllGrid.getSelectedRecord() != null){
-                        andBtn.enable();
-                        andBtn.setTitle("افزودن "+"'"+courseAllGrid.getSelectedRecord().titleFa+"'"+" و "+record.nameEC+" به معادل های دوره")}
-                        else{andBtn.disable();}
+                    if (this.ID == "equalCourseGrid") {
+                        if ((courseAllGrid.getSelectedRecord() != null) &&(equalCourseGrid.getSelectedRecord() != null)) {
+                            andBtn.enable();
+                            andBtn.setTitle("افزودن " + "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + record.nameEC + " به معادل های دوره")
+                        } else {
+                            andBtn.disable();
+                        }
                     }
-                }
+                },
 
 // dropComplete: function() {
 // equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
 // equalCourseGrid.refreshFields();
 // }
-                // removeRecordClick : function (rowNum) {
-                //     var record = this.getRecord(rowNum);
-                //     this.removeData(record, function (dsResponse, data, dsRequest) {
-                //         // Update `employeesGrid` now that an employee has been removed from
-                //         // the selected team.  This will add the employee back to `employeesGrid`,
-                //         // the list of employees who are not in the team.
-                //         // mockAddEmployeesFromTeamMemberRecords(record);
-                //     });
-                // },
-
+                removeRecordClick : function (rowNum) {
+                    if(this.ID == "equalCourseGrid"){
+                        andBtn.disable();
+                    }
+                    var record = this.getRecord(rowNum);
+                    this.removeData(record, function (dsResponse, data, dsRequest) {
+                    //     // Update `employeesGrid` now that an employee has been removed from
+                    //     // the selected team.  This will add the employee back to `employeesGrid`,
+                    //     // the list of employees who are not in the team.
+                    //     // mockAddEmployeesFromTeamMemberRecords(record);
+                    });
+                },
 
 
                 // dataArrived : function () {
@@ -529,13 +531,10 @@
         // }
     });
 
-
-
-
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
         // sectionVisibilityMode: "mutex",
-        canTabToSectionHeaders:true,
+        canTabToSectionHeaders: true,
         colWidths: [200, "*"],
         // height: "90%",
         // align: "center",
@@ -547,16 +546,17 @@
             {
                 name: "code",
                 title: "<spring:message code="corse_code"/>",
-                colSpan:3,
+                colSpan: 3,
                 type: 'text',
                 width: "*",
                 // height: "30",
                 hidden: true,
             },
-            {name: "id", hidden: true, colSpan:3, width:"*"},
+            {name: "id", hidden: true, colSpan: 3, width: "*"},
+
             {
                 defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
-                itemIds: ["titleFa", "titleEn", "theoryDuration","category.id","subCategory.id","erunType.id","elevelType.id","etheoType.id","etechnicalType.id","description","mainObjective"]
+                itemIds: ["titleFa", "titleEn", "theoryDuration", "category.id", "subCategory.id", "erunType.id", "elevelType.id", "etheoType.id", "etechnicalType.id", "description", "mainObjective"]
             },
             {
                 colSpan: 3,
@@ -570,7 +570,6 @@
                 // height: "30",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
-
             {
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
@@ -586,7 +585,7 @@
             {
                 name: "theoryDuration",
                 colSpan: 1,
-                endRow: true,
+                // endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
                 prompt: "لطفا طول دوره را به صورت یک عدد وارد کنید",
                 // height: "30",
@@ -601,7 +600,12 @@
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
                 }],
                 width: "*",
-            },
+change:function(form, item, value, oldValue) {
+if(value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration){item.setErrors("salam")}
+else{item.clearErrors()}
+}
+},
+            {name: "domainPercent", type: "StaticTextItem",colSpan:2,titleOrientation: "top",title:"درصد حیطه",endRow:true,align:"center"},
             {
                 name: "category.id",
                 colSpan: 1,
@@ -812,7 +816,7 @@
 
             {
                 defaultValue: "شرایط مدرس دوره", type: "section", sectionExpanded: false,
-                itemIds: ["minTeacherDegree","minTeacherExpYears","minTeacherEvalScore"]
+                itemIds: ["minTeacherDegree", "minTeacherExpYears", "minTeacherEvalScore"]
             },
             {
                 name: "minTeacherDegree",
@@ -874,22 +878,23 @@
             },
             {
                 defaultValue: "پیشنیاز دوره", type: "section", sectionExpanded: false,
-                itemIds: ["orBtn","andBtn","equalCourseGrid","courseAllGrid","imgMove","preCourseGrid"]
+                itemIds: ["orBtn", "andBtn", "equalCourseGrid", "courseAllGrid", "imgMove", "preCourseGrid"]
             },
-            {name:"equalCourseGrid",
-                ID : "equalCourseGrid",
-                title:"معادل های دوره",
-                colSpan:2,
+            {
+                name: "equalCourseGrid",
+                ID: "equalCourseGrid",
+                title: "معادل های دوره",
+                colSpan: 2,
                 align: "center",
-                rowSpan:3,
+                rowSpan: 3,
                 // startRow:true,
                 titleOrientation: "top",
-                editorType:"ListGridItem",
+                editorType: "ListGridItem",
                 // height: "400",
                 width: "*",
-                gridDataSource:"equalCourseDS",
-                gridFields:[ {name:"nameEC",title:"نام دوره"}],
-                canRemoveRecords:true,
+                gridDataSource: "equalCourseDS",
+                gridFields: [{name: "nameEC", title: "نام دوره"}],
+                canRemoveRecords: true,
                 canDragRecordsOut: false,
                 selectionType: "single",
                 // showFilterEditor:true,
@@ -900,22 +905,23 @@
                 //     orBtn.setTitle(record.titleFa);
                 // }
             },
-            {name:"courseAllGrid",
+            {
+                name: "courseAllGrid",
                 ID: "courseAllGrid",
-                title:"دوره ها",
+                title: "دوره ها",
                 align: "center",
-                colSpan:4,
-                rowSpan:3,
+                colSpan: 4,
+                rowSpan: 3,
                 width: "*",
                 titleOrientation: "top",
-                editorType:"ListGridItem",
+                editorType: "ListGridItem",
                 // height: "400",
                 allowAdvancedCriteria: true,
-                filterOnKeypress:true,
-                showFilterEditor:true,
-                gridDataSource:"courseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
-                canRemoveRecords:false,
+                filterOnKeypress: true,
+                showFilterEditor: true,
+                gridDataSource: "courseDS",
+                gridFields: [{name: "titleFa", title: "نام دوره"}],
+                canRemoveRecords: false,
                 canDragRecordsOut: true,
                 selectionType: "single",
                 dragDataAction: "none",
@@ -923,40 +929,41 @@
                 //     orBtn.setTitle(record.titleFa);
                 // }
             },
-            {name:"preCourseGrid",
-                ID : "preCourseGrid",
-                title:"پیش نیازهای دوره",
-                colSpan:2,
+            {
+                name: "preCourseGrid",
+                ID: "preCourseGrid",
+                title: "پیش نیازهای دوره",
+                colSpan: 2,
                 align: "center",
-                rowSpan:3,
+                rowSpan: 3,
                 titleOrientation: "top",
-                editorType:"ListGridItem",
+                editorType: "ListGridItem",
                 // height: "400",
                 width: "*",
-                gridDataSource:"preCourseDS",
-                gridFields:[ {name:"titleFa",title:"نام دوره"}],
-                canRemoveRecords:true,
+                gridDataSource: "preCourseDS",
+                gridFields: [{name: "titleFa", title: "نام دوره"}],
+                canRemoveRecords: true,
                 canDragRecordsOut: false,
                 // showFilterEditor:true,
                 // filterOnKeypress:true,
                 canAcceptDroppedRecords: true,
                 dragDataAction: "none"
             },
-            {name:"andBtn",
-                ID:"andBtn",
+            {
+                name: "andBtn",
+                ID: "andBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
-                endRow:false,
-                title:"",
-                width:"*",
-                type:"button",
+                endRow: false,
+                title: "",
+                width: "*",
+                type: "button",
                 // icon:"pieces/512/back2.png",
-                click:function() {
-                    if(courseAllGrid.getSelectedRecord() == null){
+                click: function () {
+                    if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
-                    }
-                    else {
+                    } else {
                         equalCourseGrid.addData({
                             nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
                             idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC
@@ -964,44 +971,44 @@
                     }
                 }
             },
-            {name:"imgMove",
-                ID:"addPreCourseBtn",
+            {
+                name: "imgMove",
+                ID: "addPreCourseBtn",
                 colSpan: 6,
                 align: "left",
                 // rowSpan:4,
-                title:"",
-                width:"350",
-                type:"button",
-                startRow:false,
-                icon:"pieces/512/back2.png",
-                click:function() {
-                    if(courseAllGrid.getSelectedRecord() == null){
+                title: "",
+                width: "350",
+                type: "button",
+                startRow: false,
+                icon: "pieces/512/back2.png",
+                click: function () {
+                    if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
-                    }
-                    else {
+                    } else {
                         preCourseGrid.transferSelectedData(courseAllGrid);
                     }
                 }
             },
-            {name:"orBtn",
-                ID:"orBtn",
+            {
+                name: "orBtn",
+                ID: "orBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
-                title:"",
-                startRow:true,
+                title: "",
+                startRow: true,
                 // endRow:false,
-                width:"*",
-                type:"button",
+                width: "*",
+                type: "button",
                 // icon:"pieces/512/back2.png",
-                click:function() {
-                    if(courseAllGrid.getSelectedRecord() == null){
+                click: function () {
+                    if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
-                    }
-                    else {
+                    } else {
                         equalCourseGrid.addData({
                             // id: courseAllGrid.getSelectedRecord().id,
-                            nameEC: "'"+courseAllGrid.getSelectedRecord().titleFa+"'",
+                            nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
                             idEC: courseAllGrid.getSelectedRecord().id.toString()
                         });
                     }
@@ -1067,7 +1074,6 @@
         ],
     });
 
-
     var IButton_course_Save = isc.IButton.create({
         title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -1094,8 +1100,8 @@
                         DynamicForm_course.getItem('code').setValue(x);
                         var data1 = DynamicForm_course.getValues();
 
-                        preCourseIdList=[];
-                        for (var i = 0; i <testData.length ; i++) {
+                        preCourseIdList = [];
+                        for (var i = 0; i < testData.length; i++) {
                             preCourseIdList.add(testData[i].id);
                         }
                         data1.preCourseListId = preCourseIdList;
@@ -1127,12 +1133,12 @@
             else if (course_method == "PUT") {
                 var data1 = DynamicForm_course.getValues();
                 ChangeEtechnicalType = false;
-                preCourseIdList=[];
-                equalCourseIdList=[];
-                for (let i = 0; i <testData.length ; i++) {
+                preCourseIdList = [];
+                equalCourseIdList = [];
+                for (let i = 0; i < testData.length; i++) {
                     preCourseIdList.add(testData[i].id);
                 }
-                for (let i = 0; i <equalCourse.length ; i++) {
+                for (let i = 0; i < equalCourse.length; i++) {
                     equalCourseIdList.add(equalCourse[i].idEC);
                 }
                 data1.equalCourseListId = equalCourseIdList;
@@ -1190,57 +1196,25 @@
         })]
     });
 
-
     isc.DataSource.create({
-        ID:"preCourseDS",
-        clientOnly:true,
-        testData:testData,
-        fields:[
-            {name: "id",type: "integer", primaryKey:true},
-            // {name: "code"},
-            {name: "titleFa", type: "text", title:"نام دوره"}
-            // {name: "titleEn"},
-            // {name: "category.titleFa"},
-            // {name: "subCategory.titleFa"},
-            // {name: "erunType.titleFa"},
-            // {name: "elevelType.titleFa"},
-            // {name: "etheoType.titleFa"},
-            // {name: "theoryDuration"},
-            // {name: "etechnicalType.titleFa"},
-            // {name: "minTeacherDegree"},
-            // {name: "minTeacherExpYears"},
-            // {name: "minTeacherEvalScore"},
-            // {name: "knowledge"},
-            // {name: "skill"},
-            // {name: "attitude"},
+        ID: "preCourseDS",
+        clientOnly: true,
+        testData: testData,
+        fields: [
+            {name: "id", type: "integer", primaryKey: true},
+            {name: "titleFa", type: "text", title: "نام دوره"}
         ]
     });
     isc.DataSource.create({
-        ID:"equalCourseDS",
-        clientOnly:true,
-        testData:equalCourse,
-        fields:[
-            {name: "id",type: "sequence", primaryKey:true},
-            // {name: "code"},
-            {name: "nameEC", type: "text", title:"نام دوره"},
-            {name: "idEC", type: "text", hidden:true}
-            // {name: "titleEn"},
-            // {name: "category.titleFa"},
-            // {name: "subCategory.titleFa"},
-            // {name: "erunType.titleFa"},
-            // {name: "elevelType.titleFa"},
-            // {name: "etheoType.titleFa"},
-            // {name: "theoryDuration"},
-            // {name: "etechnicalType.titleFa"},
-            // {name: "minTeacherDegree"},
-            // {name: "minTeacherExpYears"},
-            // {name: "minTeacherEvalScore"},
-            // {name: "knowledge"},
-            // {name: "skill"},
-            // {name: "attitude"},
+        ID: "equalCourseDS",
+        clientOnly: true,
+        testData: equalCourse,
+        fields: [
+            {name: "id", type: "sequence", primaryKey: true},
+            {name: "nameEC", type: "text", title: "نام دوره"},
+            {name: "idEC", type: "text", hidden: true}
         ]
     });
-
 
 
     // isc.ListGrid.create({
@@ -1319,8 +1293,6 @@
     //     members: [vStack, arrowImg, vStack2]
     // });
 
-
-
     var Window_course = isc.Window.create({
         width: "90%",
         autoSize: true,
@@ -1341,7 +1313,7 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_course,courseSaveOrExitHlayout]
+            members: [DynamicForm_course, courseSaveOrExitHlayout]
         })]
     });
     // var VLayout_Grid_Goal = isc.VLayout.create({
@@ -1532,20 +1504,12 @@
     function ListGrid_Course_Edit() {
         testData.length = 0;
         equalCourse.length = 0;
-        // preCourseDS.invalidateCache();
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
-        DynamicForm_course.getItem("category.id").setDisabled(true);
-        DynamicForm_course.getItem("subCategory.id").setDisabled(true);
-        DynamicForm_course.getItem("erunType.id").setDisabled(true);
-        DynamicForm_course.getItem("elevelType.id").setDisabled(true);
-        DynamicForm_course.getItem("etheoType.id").setDisabled(true);
 
         var sRecord = ListGrid_Course.getSelectedRecord();
 
         if (sRecord == null || sRecord.id == null) {
-
-// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");
             isc.Dialog.create({
                 message: "<spring:message code="msg.record.not.selected"/>",
                 icon: "[SKIN]ask.png",
@@ -1556,58 +1520,55 @@
                 }
             });
         } else {
-
             isc.RPCManager.sendRequest({
-            actionURL: courseUrl + "preCourse/" + ListGrid_Course.getSelectedRecord().id,
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                // preCourseDS.setTestData(JSON.parse(resp.data));
-                // for(var i = 0; i <testData.length ; i++) {
-                //     preCourseDS.removeData(testData[i]);
-                // }
-                // console.log(resp.data.length);
-                for(var i = 0; i <JSON.parse(resp.data).length ; i++) {
-                    // console.log(JSON.parse(resp.data)[i]);
-                    preCourseDS.addData(JSON.parse(resp.data)[i]);
+                actionURL: courseUrl + "preCourse/" + ListGrid_Course.getSelectedRecord().id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    console.log('*****1' + resp);
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+
+                         preCourseDS.addData(JSON.parse(resp.data)[i]);
+                    }
                 }
-                isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + "equalCourse/" + ListGrid_Course.getSelectedRecord().id,
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        // preCourseDS.setTestData(JSON.parse(resp.data));
-                        // for(var i = 0; i <testData.length ; i++) {
-                        //     preCourseDS.removeData(testData[i]);
-                        // }
-                        // console.log(resp.data.length);
-                        for(var i = 0; i <JSON.parse(resp.data).length ; i++) {
-                            // console.log(JSON.parse(resp.data)[i]);
-                            equalCourseDS.addData(JSON.parse(resp.data)[i]);
-                        }}})
+            });
+            isc.RPCManager.sendRequest({
+                actionURL: courseUrl + "equalCourse/" + ListGrid_Course.getSelectedRecord().id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    console.log('*****2' + resp);
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                         equalCourseDS.addData(JSON.parse(resp.data)[i]);
+                    }
+                }
+            });
 
-}})
+            // isc.RPCManager.sendRequest({ data: "different callback", callback: "myCallback2(data)", actionURL: "/rpcHandler.jsp"});
 
-
-
-
+            DynamicForm_course.getItem("category.id").setDisabled(true);
+            DynamicForm_course.getItem("subCategory.id").setDisabled(true);
+            DynamicForm_course.getItem("erunType.id").setDisabled(true);
+            DynamicForm_course.getItem("elevelType.id").setDisabled(true);
+            DynamicForm_course.getItem("etheoType.id").setDisabled(true);
+            DynamicForm_course.clearValues();
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
-            DynamicForm_course.clearValues();
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
             DynamicForm_course.getItem("subCategory.id").fetchData();
+            sRecord.domainPercent = "دانشی " +sRecord.knowledge+"%"+"، مهارتی "+sRecord.skill+"%"+"، نگرشی "+sRecord.attitude+"%";
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
-            DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها "+(ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString()+" ساعت می باشد."
+            DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها " + (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString() + " ساعت می باشد."
         }
     };
 
@@ -1623,7 +1584,8 @@
                 }
             });
         } else {
-            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form" , false);
+            RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         }
     }
 
@@ -1643,9 +1605,7 @@
         criteriaForm_course.submitForm();
     };
 
-
-
-    function mockRemoveEmployees (employeeRecords) {
+    function mockRemoveEmployees(employeeRecords) {
         if (employeeRecords.length == 0) {
             return;
         }
@@ -1659,12 +1619,11 @@
         // employeesByTeam.updateCaches(dsRequest);
     }
 
-
-    function mappedByListId(listId,listGrid,DS) {
+    function mappedByListId(listId, listGrid, DS) {
         var listGridRecord = listGrid.getData().allRows;
-        for (var i = 0; i < listId.length ; i++) {
-            for(var j = 0; j < listGridRecord.length ; i++) {
-                if(listId[i] == listGridRecord[j].id){
+        for (var i = 0; i < listId.length; i++) {
+            for (var j = 0; j < listGridRecord.length; i++) {
+                if (listId[i] == listGridRecord[j].id) {
                     DS.addData(listGridRecord[j]);
                     break;
                 }
@@ -1676,4 +1635,5 @@
         console.log(data);
         test = data;
     }
-//</script>
+
+    //</script>
