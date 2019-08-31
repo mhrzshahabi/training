@@ -71,6 +71,8 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
+        private AddressDTO.Update homeAdress;
+        private AddressDTO.Update workAdress;
     }
 
     // ------------------------------

@@ -3,8 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.*;
@@ -17,6 +16,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.swing.text.html.Option;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -72,9 +73,9 @@ public class TeacherService implements ITeacherService {
 		teacher = modelMapper.map(request, Teacher.class);
 		personalInfo = modelMapper.map(request.getPersonality(),PersonalInfo.class);
 
-		List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(personalInfo.getNationalCode());
+		List<Teacher> teachers = teacherDAO.findByTeacherCode(teacher.getTeacherCode());
 
-		if(personalInfoList==null || personalInfoList.size()==0) {
+		if(teachers==null || teachers.size()==0) {
 
 			if (request.getPersonality().getAccountInfo() != null) {
 				accountInfo = modelMapper.map(request.getPersonality().getAccountInfo(), AccountInfo.class);
@@ -117,7 +118,7 @@ public class TeacherService implements ITeacherService {
 
 			personalInfoDAO.saveAndFlush(personalInfo);
 			teacher.setPersonality(personalInfo);
-			teacher.setPesronalityId(personalInfo.getId());
+			teacher.setPeronalityId(personalInfo.getId());
 			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
 		}
 		else
@@ -128,35 +129,213 @@ public class TeacherService implements ITeacherService {
 	@Transactional
 	@Override
 	public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
-		final Optional<Teacher> cById = teacherDAO.findById(id);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        Teacher updating = new Teacher();
-        modelMapper.map(teacher, updating);
-        modelMapper.map(request, updating);
-//
-//		if(request.getEMarriedId() != null) {
-////			updating.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-////			updating.setEMarriedTitleFa(updating.getEMarried().getTitleFa());
-//		}
-//        if(request.getEMilitaryId() != null) {
-////			updating.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-////			updating.setEMilitaryTitleFa(updating.getEMilitary().getTitleFa());
-//		}
-//        if(request.getEGenderId() != null) {
-////			updating.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-////			updating.setEGenderTitleFa(updating.getEGender().getTitleFa());
-//		}
-////        List<Teacher> teacherList = teacherDAO.findByNationalCode(id,request.getNationalCode());
-//		if(teacherList==null || teacherList.size()==0)
-//			   return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
-//		else
-			return null;
+		Teacher teacher = null;
+		PersonalInfo personalInfo = null;
+		ContactInfo contactInfo = null;
+		AccountInfo accountInfo = null;
+		Address homeAddress = null;
+		Address workAddress = null;
+
+		Long teacherId = null;
+		Long personalInfoId = null;
+		Long contactInfoId = null;
+		Long accountInfoId = null;
+		Long homeAddressId = null;
+		Long workAddressId = null;
+
+		teacherId = id;
+		final Optional<Teacher> tById = teacherDAO.findById(teacherId);
+        teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+		personalInfoId = teacher.getPeronalityId();
+        final Optional<PersonalInfo> pById = personalInfoDAO.findById(personalInfoId);
+        personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+		/////////////////////////////////////////////////////Account////////////////////////////////////////////////////
+        if(personalInfo.getAccountInfoId() != null && request.getPersonality().getAccountInfo()!=null) {
+ 			final Optional<AccountInfo> aById = accountInfoDAO.findById(personalInfo.getAccountInfoId());
+			accountInfo = aById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+			AccountInfo aupdating = new AccountInfo();
+			modelMapper.map(accountInfo,aupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getAccountInfo(), AccountInfoDTO.Update.class),aupdating);
+			accountInfoDAO.saveAndFlush(aupdating);
+			accountInfo = aupdating;
+			accountInfoId = aupdating.getId();
+		}
+
+		if(personalInfo.getAccountInfoId() == null && request.getPersonality().getAccountInfo()!=null) {
+        		accountInfo = modelMapper.map(request.getPersonality().getAccountInfo(), AccountInfo.class);
+				accountInfoDAO.saveAndFlush(accountInfo);
+				accountInfoId = accountInfo.getId();
+		}
+
+		if(personalInfo.getAccountInfoId() != null && request.getPersonality().getAccountInfo()==null) {
+			accountInfoId = personalInfo.getAccountInfoId();
+        	final Optional<AccountInfo> aById = accountInfoDAO.findById(accountInfoId);
+			accountInfoDAO.deleteById(accountInfoId);
+			accountInfo = null;
+			accountInfoId = null;
+		}
+		////////////////////////////////////HomeAddress/////////////////////////////////////////////////////////////////////
+		   if(personalInfo.getContactInfo().getHomeAdress() != null && request.getPersonality().getContactInfo().getHomeAdress()!=null) {
+ 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getHomeAdressId());
+			homeAddress = haById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+			Address haupdating = new Address();
+			modelMapper.map(homeAddress,haupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getHomeAdress(), AddressDTO.Update.class),haupdating);
+			addressDAO.saveAndFlush(haupdating);
+			homeAddress = haupdating;
+			homeAddressId = haupdating.getId();
+		}
+
+		if(personalInfo.getContactInfo().getHomeAdress() == null && request.getPersonality().getContactInfo().getHomeAdress() != null) {
+        		homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAdress(), Address.class);
+				addressDAO.saveAndFlush(homeAddress);
+				homeAddressId = homeAddress.getId();
+		}
+
+		if(personalInfo.getContactInfo().getHomeAdress() != null && request.getPersonality().getContactInfo().getHomeAdress() == null) {
+			homeAddressId = personalInfo.getContactInfo().getHomeAdressId();
+			addressDAO.deleteById(homeAddressId);
+			homeAddress = null;
+			homeAddressId = null;
+		}
+			////////////////////////////////////WorkAddress/////////////////////////////////////////////////////////////////////
+	if(personalInfo.getContactInfo().getWorkAdress() != null && request.getPersonality().getContactInfo().getWorkAdress()!=null) {
+ 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getWorkAdressId());
+			workAddress = haById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+			Address waupdating = new Address();
+			modelMapper.map(workAddress,waupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getWorkAdress(), AddressDTO.Update.class),waupdating);
+			addressDAO.saveAndFlush(waupdating);
+			workAddress = waupdating;
+			workAddressId = waupdating.getId();
+		}
+
+		if(personalInfo.getContactInfo().getWorkAdress() == null && request.getPersonality().getContactInfo().getWorkAdress() != null) {
+        		workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAdress(), Address.class);
+				addressDAO.saveAndFlush(workAddress);
+				workAddressId = workAddress.getId();
+		}
+
+		if(personalInfo.getContactInfo().getWorkAdress() != null && request.getPersonality().getContactInfo().getWorkAdress() == null) {
+			workAddressId = personalInfo.getContactInfo().getWorkAdressId();
+			addressDAO.deleteById(workAddressId);
+			workAddress = null;
+			workAddressId = null;
+		}
+		/////////////////////////////////////////////////////////Contact////////////////////////////////////////////////
+		if(personalInfo.getContactInfo() != null && request.getPersonality().getContactInfo()!=null) {
+ 			final Optional<ContactInfo> cById = contactInfoDAO.findById(personalInfo.getContactInfoId());
+			contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+			ContactInfo cupdating = new ContactInfo();
+			modelMapper.map(contactInfo,cupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo(), ContactInfoDTO.Update.class),cupdating);
+
+			cupdating.setWorkAdressId(workAddressId);
+			cupdating.setWorkAdress(workAddress);
+			cupdating.setHomeAdressId(homeAddressId);
+			cupdating.setHomeAdress(homeAddress);
+
+			contactInfoDAO.saveAndFlush(cupdating);
+			contactInfo = cupdating;
+			contactInfoId = contactInfo.getId();
+		}
+
+		if(personalInfo.getContactInfoId() == null && request.getPersonality().getContactInfo()!=null) {
+        		contactInfo = modelMapper.map(request.getPersonality().getContactInfo(), ContactInfo.class);
+
+        		contactInfo.setWorkAdressId(workAddressId);
+				contactInfo.setWorkAdress(workAddress);
+				contactInfo.setHomeAdressId(homeAddressId);
+				contactInfo.setHomeAdress(homeAddress);
+
+				contactInfoDAO.saveAndFlush(contactInfo);
+				contactInfoId = contactInfo.getId();
+		}
+
+		if(personalInfo.getContactInfoId() != null && request.getPersonality().getContactInfo()==null) {
+			contactInfoId = personalInfo.getContactInfoId();
+        	final Optional<ContactInfo> cById = contactInfoDAO.findById(contactInfoId);
+			contactInfoDAO.deleteById(contactInfoId);
+			contactInfo = null;
+			contactInfoId = null;
+		}
+		////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+        PersonalInfo pupdating = new PersonalInfo();
+        modelMapper.map(personalInfo,pupdating);
+        modelMapper.map((new ModelMapper()).map(request.getPersonality(), PersonalInfoDTO.Update.class),pupdating);
+        pupdating.setAccountInfo(accountInfo);
+        pupdating.setAccountInfoId(accountInfoId);
+        pupdating.setContactInfo(contactInfo);
+        pupdating.setContactInfoId(contactInfoId);
+        personalInfoDAO.saveAndFlush(pupdating);
+
+        Teacher tupdating = new Teacher();
+        modelMapper.map(teacher, tupdating);
+        modelMapper.map(request, tupdating);
+        return modelMapper.map(teacherDAO.saveAndFlush(tupdating), TeacherDTO.Info.class);
 	}
 
 	@Transactional
 	@Override
 	public void delete(Long id) {
-		teacherDAO.deleteById(id);
+//		Teacher teacher;
+//		PersonalInfo personalInfo;
+//		ContactInfo contactInfo;
+//		AccountInfo accountInfo;
+//		Address homeAddress;
+//		Address workAddress;
+
+		Long teacherId;
+//		Long personalInfoId;
+//		Long contactInfoId;
+//		Long accountInfoId;
+//		Long homeAddressId;
+//		Long workAddressId;
+
+//		final Optional<Teacher> teacherById = teacherDAO.findById(id);
+//		teacher = teacherById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+		teacherId = id;
+//		personalInfoId = teacher.getPeronalityId();
+		teacherDAO.deleteById(teacherId);
+
+//		final Optional<PersonalInfo> personalInfoById = personalInfoDAO.findById(personalInfoId);
+//		personalInfo = personalInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//		contactInfoId = personalInfo.getContactInfoId();
+//		accountInfoId = personalInfo.getAccountInfoId();
+//		if (personalInfo.getAttachPhoto() != null && personalInfo.getAttachPhoto()!= "") {
+//                File file1 = new File(teacherUploadDir + "/" + personalInfo.getAttachPhoto());
+//                file1.delete();
+//                }
+//		personalInfoDAO.deleteById(personalInfoId);
+//
+//		if(accountInfoId != null) {
+//			final Optional<AccountInfo> accountInfoById = accountInfoDAO.findById(accountInfoId);
+//			accountInfo = accountInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//			accountInfoDAO.deleteById(accountInfoId);
+//		}
+//
+//		if(contactInfoId != null){
+//			final Optional<ContactInfo> contactInfoById = contactInfoDAO.findById(contactInfoId);
+//			contactInfo = contactInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//			homeAddressId = contactInfo.getHomeAdressId();
+//			workAddressId = contactInfo.getWorkAdressId();
+//			contactInfoDAO.deleteById(contactInfoId);
+//
+//			if(homeAddressId != null) {
+//				final Optional<Address> homeAddressById = addressDAO.findById(homeAddressId);
+//				homeAddress = homeAddressById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//				addressDAO.deleteById(homeAddressId);
+//			}
+//			if(workAddressId !=null) {
+//				final Optional<Address> workAddressById = addressDAO.findById(workAddressId);
+//				workAddress = workAddressById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+//				addressDAO.deleteById(workAddressId);
+//			}
+//		}
+
 	}
 
 	@Transactional
