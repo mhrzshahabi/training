@@ -585,7 +585,7 @@
             {
                 name: "theoryDuration",
                 colSpan: 1,
-                endRow: true,
+                // endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
                 prompt: "لطفا طول دوره را به صورت یک عدد وارد کنید",
                 // height: "30",
@@ -600,7 +600,12 @@
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
                 }],
                 width: "*",
-            },
+change:function(form, item, value, oldValue) {
+if(value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration){item.setErrors("salam")}
+else{item.clearErrors()}
+}
+},
+            {name: "domainPercent", type: "StaticTextItem",colSpan:2,titleOrientation: "top",title:"درصد حیطه",endRow:true,align:"center"},
             {
                 name: "category.id",
                 colSpan: 1,
@@ -1559,6 +1564,7 @@
             course_url = courseUrl + sRecord.id;
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
             DynamicForm_course.getItem("subCategory.id").fetchData();
+            sRecord.domainPercent = "دانشی " +sRecord.knowledge+"%"+"، مهارتی "+sRecord.skill+"%"+"، نگرشی "+sRecord.attitude+"%";
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();

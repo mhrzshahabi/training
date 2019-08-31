@@ -486,7 +486,7 @@
         sortField: "goalId",
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
