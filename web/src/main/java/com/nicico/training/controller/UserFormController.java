@@ -13,6 +13,6 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 
 	@RequestMapping("/show-form")
 	public String showForm() {
-		return "base/term";
+		return "base/user";
 	}
 }
