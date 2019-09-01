@@ -74,8 +74,5 @@ public class Skill extends Auditable{
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet" )
     private Set<SkillGroup> skillGroupSet;
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet")
-    private Set<Competence> competenceSet;
-
 
 }

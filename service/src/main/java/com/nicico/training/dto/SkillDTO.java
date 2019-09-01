@@ -76,12 +76,7 @@ public class SkillDTO {
     @ApiModel("SkillCreateRq")
     public static class Create extends SkillDTO {
         Set<Long> courseIds;
-        Set<Long> competenceIds;
         Set<Long> skillGroupIds;
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Long defaultCompetenceId;
 
     }
 
@@ -94,7 +89,6 @@ public class SkillDTO {
     public static class Update extends SkillDTO {
 
         Set<Long> courseIds;
-        Set<Long> competenceIds;
         Set<Long> skillGroupIds;
 
         // ------------------------------
