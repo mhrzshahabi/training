@@ -27,12 +27,12 @@ import javax.servlet.http.HttpServletResponse;
 @Controller
 @RequestMapping("/goal")
 public class GoalFormController {
-    private final OAuth2AuthorizedClientService authorizedClientService;
+//    private final OAuth2AuthorizedClientService authorizedClientService;
 
     @RequestMapping("/show-form")
     public String showForm(HttpServletRequest req, HttpServletResponse rsp) {
-        String courseId = req.getParameter("courseId");
-        req.setAttribute("courseId",courseId);
+//        String courseId = req.getParameter("courseId");
+//        req.setAttribute("courseId",courseId);
         return "base/goal";
     }
 

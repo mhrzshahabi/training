@@ -11,6 +11,7 @@
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
+    var equalPreCourse = [];
     var equalCourseIdList = [];
     // var test1;
     // var courseCacheData = [];
@@ -102,7 +103,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        fetchDataURL: goalUrl + "spec-list"
+        // fetchDataURL: courseUrl + courseId.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -147,6 +148,7 @@
 
         fetchDataURL: educationLevelUrl + "spec-list",
     });
+
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
@@ -196,6 +198,35 @@
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
+        hoverWidth: "30%",
+        hoverHeight: "30%",
+        hoverMoveWithMouse: true,
+        canHover: false,
+        showHover: true,
+        showHoverComponents: true,
+        getCellHoverComponent: function (record, rowNum, colNum) {
+            equalPreCourse.length = 0;
+            isc.RPCManager.sendRequest({
+                actionURL: courseUrl + "equalCourse/" + record.id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                        equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
+                    }
+                }
+            });
+            this.rowHoverComponent = isc.ListGrid.create({
+                dataSource: equalPreCourseDS,
+                autoFetchData: true,
+            });
+            return this.rowHoverComponent;
+        },
+
         doubleClick: function () {
             DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
@@ -435,7 +466,6 @@
         members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
     });
 
-
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
     isc.ListGridItem.addProperties({
         height: "*", width: "*",
@@ -459,7 +489,7 @@
                 fields: this.gridFields,
                 autoFetchData: true,
 
-
+//hamed
                 canAcceptDroppedRecords: this.canAcceptDroppedRecords,
                 canDragRecordsOut: this.canDragRecordsOut,
                 dragDataAction: this.dragDataAction,
@@ -485,28 +515,60 @@
                         }
                     }
                     if (this.ID == "equalCourseGrid") {
-                        if (courseAllGrid.getSelectedRecord() != null) {
+                        if ((courseAllGrid.getSelectedRecord() != null) && (equalCourseGrid.getSelectedRecord() != null)) {
                             andBtn.enable();
                             andBtn.setTitle("افزودن " + "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + record.nameEC + " به معادل های دوره")
                         } else {
                             andBtn.disable();
                         }
                     }
-                }
+                },
 
 // dropComplete: function() {
 // equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
 // equalCourseGrid.refreshFields();
 // }
-                // removeRecordClick : function (rowNum) {
-                //     var record = this.getRecord(rowNum);
-                //     this.removeData(record, function (dsResponse, data, dsRequest) {
-                //         // Update `employeesGrid` now that an employee has been removed from
-                //         // the selected team.  This will add the employee back to `employeesGrid`,
-                //         // the list of employees who are not in the team.
-                //         // mockAddEmployeesFromTeamMemberRecords(record);
-                //     });
-                // },
+                removeRecordClick: function (rowNum) {
+                    if (this.ID == "equalCourseGrid") {
+                        andBtn.disable();
+                    }
+                    var record = this.getRecord(rowNum);
+                    this.removeData(record, function (dsResponse, data, dsRequest) {
+                        //     // Update `employeesGrid` now that an employee has been removed from
+                        //     // the selected team.  This will add the employee back to `employeesGrid`,
+                        //     // the list of employees who are not in the team.
+                        //     // mockAddEmployeesFromTeamMemberRecords(record);
+                    });
+                },
+
+                hoverWidth: "30%",
+                hoverHeight: "30%",
+                hoverMoveWithMouse: true,
+                canHover: this.canHover,
+                showHover: true,
+                showHoverComponents: true,
+                getCellHoverComponent: function (record, rowNum, colNum) {
+                    equalPreCourse.length = 0;
+                    isc.RPCManager.sendRequest({
+                        actionURL: courseUrl + "equalCourse/" + record.id,
+                        httpMethod: "GET",
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        serverOutputAsString: false,
+                        callback: function (resp) {
+                            for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                                equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
+                            }
+                        }
+                    });
+                    this.rowHoverComponent = isc.ListGrid.create({
+                        dataSource: equalPreCourseDS,
+                        autoFetchData: true,
+                    });
+                    return this.rowHoverComponent;
+                },
 
 
                 // dataArrived : function () {
@@ -528,7 +590,6 @@
         //     else this.canvas.selection.deselectAll();
         // }
     });
-
 
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
@@ -584,7 +645,7 @@
             {
                 name: "theoryDuration",
                 colSpan: 1,
-                endRow: true,
+                // endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
                 prompt: "لطفا طول دوره را به صورت یک عدد وارد کنید",
                 // height: "30",
@@ -599,6 +660,22 @@
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
                 }],
                 width: "*",
+                change: function (form, item, value, oldValue) {
+                    if (value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
+                        item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
+                    } else {
+                        item.clearErrors()
+                    }
+                }
+            },
+            {
+                name: "domainPercent",
+                type: "StaticTextItem",
+                colSpan: 2,
+                titleOrientation: "top",
+                title: "درصد حیطه",
+                endRow: true,
+                align: "center"
             },
             {
                 name: "category.id",
@@ -895,6 +972,7 @@
                 // filterOnKeypress:true,
                 // canAcceptDroppedRecords: true,
                 dragDataAction: "none",
+                canHover: false
                 // selectionChanged : function(record, state) {
                 //     orBtn.setTitle(record.titleFa);
                 // }
@@ -919,6 +997,7 @@
                 canDragRecordsOut: true,
                 selectionType: "single",
                 dragDataAction: "none",
+                canHover: false
                 // selectionChanged : function(record, state) {
                 //     orBtn.setTitle(record.titleFa);
                 // }
@@ -941,7 +1020,10 @@
                 // showFilterEditor:true,
                 // filterOnKeypress:true,
                 canAcceptDroppedRecords: true,
-                dragDataAction: "none"
+                dragDataAction: "none",
+                canHover: true
+
+
             },
             {
                 name: "andBtn",
@@ -1068,7 +1150,6 @@
         ],
     });
 
-
     var IButton_course_Save = isc.IButton.create({
         title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -1191,7 +1272,6 @@
         })]
     });
 
-
     isc.DataSource.create({
         ID: "preCourseDS",
         clientOnly: true,
@@ -1208,6 +1288,16 @@
         fields: [
             {name: "id", type: "sequence", primaryKey: true},
             {name: "nameEC", type: "text", title: "نام دوره"},
+            {name: "idEC", type: "text", hidden: true}
+        ]
+    });
+    isc.DataSource.create({
+        ID: "equalPreCourseDS",
+        clientOnly: true,
+        testData: equalPreCourse,
+        fields: [
+            {name: "id", type: "sequence", primaryKey: true, hidden: true},
+            {name: "nameEC", type: "text", title: "دوره های معادل", align: "center"},
             {name: "idEC", type: "text", hidden: true}
         ]
     });
@@ -1288,7 +1378,6 @@
     //     height: 160,
     //     members: [vStack, arrowImg, vStack2]
     // });
-
 
     var Window_course = isc.Window.create({
         width: "90%",
@@ -1526,10 +1615,9 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    console.log('*****1' + resp);
                     for (var i = 0; i < JSON.parse(resp.data).length; i++) {
 
-                         preCourseDS.addData(JSON.parse(resp.data)[i]);
+                        preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
             });
@@ -1542,9 +1630,8 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    console.log('*****2' + resp);
                     for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                         equalCourseDS.addData(JSON.parse(resp.data)[i]);
+                        equalCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
             });
@@ -1561,6 +1648,7 @@
             course_url = courseUrl + sRecord.id;
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
             DynamicForm_course.getItem("subCategory.id").fetchData();
+            sRecord.domainPercent = "دانشی " + sRecord.knowledge + "%" + "، مهارتی " + sRecord.skill + "%" + "، نگرشی " + sRecord.attitude + "%";
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
@@ -1580,7 +1668,8 @@
                 }
             });
         } else {
-            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form?courseId=" + courseId.id, false);
+            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form", false);
+            RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         }
     }
 
@@ -1600,7 +1689,6 @@
         criteriaForm_course.submitForm();
     };
 
-
     function mockRemoveEmployees(employeeRecords) {
         if (employeeRecords.length == 0) {
             return;
@@ -1614,7 +1702,6 @@
         teamMembersGrid.invalidateCache();
         // employeesByTeam.updateCaches(dsRequest);
     }
-
 
     function mappedByListId(listId, listGrid, DS) {
         var listGridRecord = listGrid.getData().allRows;
