@@ -68,22 +68,16 @@ public class CourseRestController {
     @GetMapping(value = "/preCourse/{courseId}")
 //	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<List<CourseDTO.Info>> preCourseList(@PathVariable Long courseId) {
-//                if(courseService.equalCourseList(courseId).size()>0)
         List<CourseDTO.Info> list = courseService.preCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
-//                else
-//                    return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/equalCourse/{courseId}")
 //	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<List<Map>> equalCourseList(@PathVariable Long courseId) {
-//        if(courseService.equalCourseList(courseId).size()>0)
         List<Map> list = courseService.equalCourseList(courseId);
         return new ResponseEntity<>(list, HttpStatus.OK);
-//        else
-//            return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
