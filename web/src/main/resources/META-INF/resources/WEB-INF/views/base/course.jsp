@@ -198,13 +198,13 @@
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
-hoverWidth:"30%",
-hoverHeight:"30%",
-hoverMoveWithMouse:true,
-canHover: false,
-showHover: true,
-showHoverComponents: true,
-getCellHoverComponent: function (record, rowNum, colNum) {
+        hoverWidth: "30%",
+        hoverHeight: "30%",
+        hoverMoveWithMouse: true,
+        canHover: false,
+        showHover: true,
+        showHoverComponents: true,
+        getCellHoverComponent: function (record, rowNum, colNum) {
             equalPreCourse.length = 0;
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "equalCourse/" + record.id,
@@ -541,35 +541,34 @@ getCellHoverComponent: function (record, rowNum, colNum) {
                     });
                 },
 
-hoverWidth:"30%",
-hoverHeight:"30%",
-hoverMoveWithMouse:true,
-canHover: this.canHover,
-showHover: true,
-showHoverComponents: true,
-getCellHoverComponent: function (record, rowNum, colNum) {
-equalPreCourse.length = 0;
-isc.RPCManager.sendRequest({
-actionURL: courseUrl + "equalCourse/" + record.id,
-httpMethod: "GET",
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-useSimpleHttp: true,
-contentType: "application/json; charset=utf-8",
-showPrompt: false,
-serverOutputAsString: false,
-callback: function (resp) {
-for (let i = 0; i < JSON.parse(resp.data).length; i++) {
-equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
-}
-}
-});
-this.rowHoverComponent = isc.ListGrid.create({
-dataSource: equalPreCourseDS,
-autoFetchData: true,
-});
-return this.rowHoverComponent;
-},
-
+                hoverWidth: "30%",
+                hoverHeight: "30%",
+                hoverMoveWithMouse: true,
+                canHover: this.canHover,
+                showHover: true,
+                showHoverComponents: true,
+                getCellHoverComponent: function (record, rowNum, colNum) {
+                    equalPreCourse.length = 0;
+                    isc.RPCManager.sendRequest({
+                        actionURL: courseUrl + "equalCourse/" + record.id,
+                        httpMethod: "GET",
+                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                        useSimpleHttp: true,
+                        contentType: "application/json; charset=utf-8",
+                        showPrompt: false,
+                        serverOutputAsString: false,
+                        callback: function (resp) {
+                            for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                                equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
+                            }
+                        }
+                    });
+                    this.rowHoverComponent = isc.ListGrid.create({
+                        dataSource: equalPreCourseDS,
+                        autoFetchData: true,
+                    });
+                    return this.rowHoverComponent;
+                },
 
 
                 // dataArrived : function () {
@@ -663,7 +662,7 @@ return this.rowHoverComponent;
                 width: "*",
                 change: function (form, item, value, oldValue) {
                     if (value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
-                        item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: "+ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration+" است.");
+                        item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
                     } else {
                         item.clearErrors()
                     }
@@ -973,7 +972,7 @@ return this.rowHoverComponent;
                 // filterOnKeypress:true,
                 // canAcceptDroppedRecords: true,
                 dragDataAction: "none",
-                canHover:false
+                canHover: false
                 // selectionChanged : function(record, state) {
                 //     orBtn.setTitle(record.titleFa);
                 // }
@@ -998,7 +997,7 @@ return this.rowHoverComponent;
                 canDragRecordsOut: true,
                 selectionType: "single",
                 dragDataAction: "none",
-                canHover:false
+                canHover: false
                 // selectionChanged : function(record, state) {
                 //     orBtn.setTitle(record.titleFa);
                 // }
@@ -1022,7 +1021,7 @@ return this.rowHoverComponent;
                 // filterOnKeypress:true,
                 canAcceptDroppedRecords: true,
                 dragDataAction: "none",
-                canHover:true
+                canHover: true
 
 
             },
@@ -1297,8 +1296,8 @@ return this.rowHoverComponent;
         clientOnly: true,
         testData: equalPreCourse,
         fields: [
-            {name: "id", type: "sequence", primaryKey: true, hidden:true},
-            {name: "nameEC", type: "text", title: "دوره های معادل",align:"center"},
+            {name: "id", type: "sequence", primaryKey: true, hidden: true},
+            {name: "nameEC", type: "text", title: "دوره های معادل", align: "center"},
             {name: "idEC", type: "text", hidden: true}
         ]
     });
