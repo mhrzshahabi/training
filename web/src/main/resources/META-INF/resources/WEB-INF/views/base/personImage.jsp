@@ -5,11 +5,11 @@
 
 <%--<script>--%>
 
-	teacherImage = isc.Img.create({
+	personImage = isc.Img.create({
 		height: "130px",
         width: "120px",
 		align: "center",
-		src: "data:image/jpeg;base64, ${teacherImg}",
+		src: "data:image/jpeg;base64, ${personImg}",
 		overflow: "hidden",
 		imageHeight:130,
 		imageWidth:120,
@@ -18,7 +18,7 @@
 	});
 
 	isc.VLayout.create({
-		ID: "teacherPhotoVLayout",
+		ID: "personPhotoVLayout",
 		layoutMargin: 5,
 		membersMargin: 10,
 		showEdges: false,
@@ -29,7 +29,7 @@
 		height: "100%",
 		alignLayout: "center",
 		members: [
-			teacherImage
+			personImage
 		]
 	});
 
