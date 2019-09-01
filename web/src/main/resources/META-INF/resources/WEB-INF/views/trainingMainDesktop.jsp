@@ -69,6 +69,9 @@
     const cityUrl=rootUrl + "/city/";
     const stateUrl=rootUrl + "/state/";
     const committeeUrl=rootUrl + "/committee/";
+    const skillGroupUrl=rootUrl + "/skill-group/";
+    const skillUrl=rootUrl + "/skill/";
+
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -664,7 +667,7 @@
         largeIcon: "pieces/512/ssg.png",
         orientation: "vertical",
         click: function () {
-            createTab("گروه مهارت", "/skill-group/show-form", false);
+            createTab("گروه مهارت", "<spring:url value="/skill-group/show-form"/>", false);
         }
     })
 
