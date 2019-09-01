@@ -1,5 +1,5 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
@@ -9,7 +9,8 @@
 
 //<script>
 
-    var methodEducationLevel = "GET";
+    var methodEducation = "GET";
+    var urlEducation = educationLevelUrl;
     
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
@@ -46,14 +47,14 @@
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=20",
-        autoFetchData: true,
+        autoFetchData: true
     });
 
         var RestDataSource_eduMajor = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
-        autoFetchData: true,
+        autoFetchData: true
     });
 
 
@@ -68,7 +69,9 @@
         dataSource: RestDataSourceEducationOrientation,
         // contextMenu: Menu_ListGrid_EducationOrientation,
         doubleClick: function () {
-            ListGrid_EducationOrientation_Edit();
+            ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
+                                    "<spring:message code='education.edit.orientation'/>",
+                                    DynamicForm_EducationOrientation, Window_EducationOrientation);
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
@@ -109,7 +112,7 @@
                 type: 'text',
                 length: "100",
                 readonly: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]"
             },
             {
                 name: "titleEn",
@@ -117,7 +120,7 @@
                 type: 'text',
                 required: true,
                 length: "100",
-                keyPressFilter: "[a-z|A-Z|0-9]",
+                keyPressFilter: "[a-z|A-Z|0-9]"
             },
             {
                 name: "educationLevelId",
@@ -142,7 +145,7 @@
                 valueField:"id",
                 filterFields:["titleFa"],
                 pickListFields:[ {name:"titleFa"} ]
-            },
+            }
         ]
     });
     
@@ -151,7 +154,7 @@
         title: "<spring:message code="refresh"/> ",
     
         click: function () {
-            ListGrid_EducationOrientation_refresh();
+            ListGrid_Education_refresh(ListGrid_EducationOrientation);
         }
     });
     
@@ -160,14 +163,17 @@
         title: "<spring:message code="edit"/> ",
         click: function () {
             DynamicForm_EducationOrientation.clearValues();
-            ListGrid_EducationOrientation_Edit()
+            ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
+                                    "<spring:message code='education.edit.orientation'/>",
+                                    DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
     var ToolStripButton_Add_EducationOrientation = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
-            ListGrid_EducationOrientation_Add();
+            ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.add.orientation'/>",
+                                    DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
     var ToolStripButton_Remove_EducationOrientation = isc.ToolStripButton.create({
@@ -204,8 +210,8 @@
             }
             var data = DynamicForm_EducationOrientation.getValues();
             isc.RPCManager.sendRequest({
-                actionURL: urlEducationOrientation,
-                httpMethod: methodEducationOrientation,
+                actionURL: urlEducation,
+                httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
@@ -213,11 +219,11 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
-                        ListGrid_EducationOrientation_refresh();
+                        ListGrid_Education_refresh(ListGrid_EducationOrientation);
                         setTimeout(function () {
                             ListGrid_EducationOrientation.setSelectedState(gridState);
                         }, 1000);
@@ -231,7 +237,7 @@
     
         }
     });
-    var Hlayout_EducationOrientation_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationOrientation_SaveOrExit = isc.MyHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -267,7 +273,7 @@
         items: [isc.VLayout.create({
             width: "300",
             height: "120",
-            members: [DynamicForm_EducationOrientation, Hlayout_EducationOrientation_SaveOrExit]
+            members: [DynamicForm_EducationOrientation, HLayout_EducationOrientation_SaveOrExit]
         })]
     });
 
@@ -303,7 +309,9 @@
         dataSource: RestDataSourceEducationMajor,
         // contextMenu: Menu_ListGrid_EducationMajor,
         doubleClick: function () {
-            ListGrid_EducationMajor_Edit();
+            ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
+                                    "<spring:message code='education.edit.major'/>",
+                                    DynamicForm_EducationMajor, Window_EducationMajor);
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
@@ -340,7 +348,7 @@
                 type: 'text',
                 length: "100",
                 readonly: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]"
             },
             {
                 name: "titleEn",
@@ -348,9 +356,9 @@
                 type: 'text',
 
                 length: "100",
-                keyPressFilter: "[a-z|A-Z|0-9]",
+                keyPressFilter: "[a-z|A-Z|0-9]"
             }
-        ],
+        ]
     });
     
     var ToolStripButton_Refresh_EducationMajor = isc.ToolStripButton.create({
@@ -358,7 +366,7 @@
         title: "<spring:message code="refresh"/> ",
     
         click: function () {
-            ListGrid_EducationMajor_refresh();
+            ListGrid_Education_refresh(ListGrid_EducationMajor);
         }
     });
     
@@ -367,14 +375,17 @@
         title: "<spring:message code="edit"/> ",
         click: function () {
             DynamicForm_EducationMajor.clearValues();
-            ListGrid_EducationMajor_Edit()
+            ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
+                                    "<spring:message code='education.edit.major'/>",
+                                    DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
     var ToolStripButton_Add_EducationMajor = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
-            ListGrid_EducationMajor_Add();
+            ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.add.major'/>",
+                                    DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
     var ToolStripButton_Remove_EducationMajor = isc.ToolStripButton.create({
@@ -411,8 +422,8 @@
             }
             var data = DynamicForm_EducationMajor.getValues();
             isc.RPCManager.sendRequest({
-                actionURL: urlEducationMajor,
-                httpMethod: methodEducationMajor,
+                actionURL: urlEducation,
+                httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
@@ -420,11 +431,11 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
-                        ListGrid_EducationMajor_refresh();
+                        ListGrid_Education_refresh(ListGrid_EducationMajor);
                         setTimeout(function () {
                             ListGrid_EducationMajor.setSelectedState(gridState);
                         }, 1000);
@@ -438,7 +449,7 @@
     
         }
     });
-    var Hlayout_EducationMajor_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationMajor_SaveOrExit = isc.MyHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -474,7 +485,7 @@
         items: [isc.VLayout.create({
             width: "300",
             height: "120",
-            members: [DynamicForm_EducationMajor, Hlayout_EducationMajor_SaveOrExit]
+            members: [DynamicForm_EducationMajor, HLayout_EducationMajor_SaveOrExit]
         })]
     });
 
@@ -509,7 +520,9 @@
         dataSource: RestDataSourceEducationLevel,
         // contextMenu: Menu_ListGrid_EducationLevel,
         doubleClick: function () {
-            ListGrid_EducationLevel_Edit();
+            ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
+                                    "<spring:message code='education.edit.level'/>",
+                                    DynamicForm_EducationLevel, Window_EducationLevel);
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
@@ -546,16 +559,16 @@
                 type: 'text',
                 length: "100",
                 readonly: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
                 type: 'text',
                 length: "100",
-                keyPressFilter: "[a-z|A-Z|0-9]",
+                keyPressFilter: "[a-z|A-Z|0-9]"
             }
-        ],
+        ]
     });
     
     var ToolStripButton_Refresh_EducationLevel = isc.ToolStripButton.create({
@@ -563,7 +576,7 @@
         title: "<spring:message code="refresh"/> ",
     
         click: function () {
-            ListGrid_EducationLevel_refresh();
+            ListGrid_Education_refresh(ListGrid_EducationLevel);
         }
     });
     
@@ -572,14 +585,17 @@
         title: "<spring:message code="edit"/> ",
         click: function () {
             DynamicForm_EducationLevel.clearValues();
-            ListGrid_EducationLevel_Edit()
+            ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
+                                    "<spring:message code='education.edit.level'/>",
+                                    DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
     var ToolStripButton_Add_EducationLevel = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
-            ListGrid_EducationLevel_Add();
+            ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.add.level'/>",
+                                    DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
     var ToolStripButton_Remove_EducationLevel = isc.ToolStripButton.create({
@@ -616,8 +632,8 @@
             }
             var data = DynamicForm_EducationLevel.getValues();
             isc.RPCManager.sendRequest({
-                actionURL: urlEducationLevel,
-                httpMethod: methodEducationLevel,
+                actionURL: urlEducation,
+                httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
@@ -625,11 +641,11 @@
                 data: JSON.stringify(data),
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
-                        ListGrid_EducationLevel_refresh();
+                        ListGrid_Education_refresh(ListGrid_EducationLevel);
                         setTimeout(function () {
                             ListGrid_EducationLevel.setSelectedState(gridState);
                         }, 1000);
@@ -643,7 +659,7 @@
     
         }
     });
-    var Hlayout_EducationLevel_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationLevel_SaveOrExit = isc.MyHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -679,7 +695,7 @@
         items: [isc.VLayout.create({
             width: "300",
             height: "120",
-            members: [DynamicForm_EducationLevel, Hlayout_EducationLevel_SaveOrExit]
+            members: [DynamicForm_EducationLevel, HLayout_EducationLevel_SaveOrExit]
         })]
     });
 
@@ -734,7 +750,7 @@
     });
 
     //////////////////////////////////////////////////////////
-    ///////////////////Education Level functions//////////////
+    ////////////////////////Functions/////////////////////////
     /////////////////////////////////////////////////////////
     
     function ListGrid_Education_Remove(EducationListGrid, Url, msg) {
@@ -746,7 +762,7 @@
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function (button, index) {
+                buttonClick: function () {
                     this.close();
                 }
             });
@@ -760,7 +776,7 @@
                 })],
                 buttonClick: function (button, index) {
                     this.close();
-                    if (index == 0) {
+                    if (index === 0) {
                         var wait = isc.Dialog.create({
                             message: "<spring:message code='msg.waiting'/>",
                             icon: "[SKIN]say.png",
@@ -776,258 +792,59 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.httpResponseCode == 200) {
+                                if (resp.httpResponseCode === 200) {
                                     EducationListGrid.invalidateCache();
                                     simpleDialog("<spring:message code='msg.command.done'/>",
-                                                    "<spring:message code="msg.operation.successful"/>", 3000, "say");
+                                                    "<spring:message code='msg.operation.successful'/>", 3000, "say");
                                 } else {
-                                    simpleDialog("<spring:message code="message"/>",
-                                                    "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                    simpleDialog("<spring:message code='message'/>",
+                                                    "<spring:message code='msg.operation.error'/>", 2000, "stop");
                                 }
                             }
                         });
                     }
                 }
             });
-                EducationListGrid.refresh();
-                // ListGrid_EducationLevel_refresh();
+            ListGrid_Education_refresh(EducationListGrid);
         }
-    };
+    }
     
-    function ListGrid_EducationLevel_Edit() {
-        var record = ListGrid_EducationLevel.getSelectedRecord();
+    function ListGrid_Education_Edit(EducationListGrid, Url, title, EducationDynamicForm, EducationWindows) {
+        var record = EducationListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
+                message: "<spring:message code='global.grid.record.not.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
+                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function () {
                     this.close();
                 }
             });
         } else {
-            methodEducationLevel = "PUT";
-            urlEducationLevel = educationLevelUrl + record.id;
-            DynamicForm_EducationLevel.clearValues();
-            DynamicForm_EducationLevel.editRecord(record);
-            Window_EducationLevel.setTitle("ویرایش مقطع تحصیلی");
-            Window_EducationLevel.show();
+            methodEducation = "PUT";
+            urlEducation = Url + record.id;
+            EducationDynamicForm.clearValues();
+            EducationDynamicForm.editRecord(record);
+            EducationWindows.setTitle(title);
+            EducationWindows.show();
         }
-    };
+    }
     
-    function ListGrid_EducationLevel_refresh() {
-        var record = ListGrid_EducationLevel.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_EducationLevel.selectRecord(record);
+    function ListGrid_Education_refresh(EducationListGrid) {
+        var record = EducationListGrid.getSelectedRecord();
+        if (record != null && record.id != null) {
+            EducationListGrid.selectRecord(record);
         }
-        ListGrid_EducationLevel.invalidateCache();
-    };
+            EducationListGrid.invalidateCache();
+    }
     
-    function ListGrid_EducationLevel_Add() {
-            methodEducationLevel = "POST";
-            urlEducationLevel = educationLevelUrl + "create/";
-            DynamicForm_EducationLevel.clearValues();
-            Window_EducationLevel.setTitle("ایجاد مقطع تحصیلی");
-            Window_EducationLevel.show();
-    
-    };
-    
-    //////////////////////////////////////////////////////////
-    ///////////////////Education Major functions//////////////
-    /////////////////////////////////////////////////////////
+    function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
+            methodEducation = "POST";
+            urlEducation = Url + "create/";
+            EducationDynamicForm.clearValues();
+            EducationWindows.setTitle(title);
+            EducationWindows.show();
+    }
 
-    function ListGrid_EducationMajor_Remove() {
-        var record = ListGrid_EducationMajor.getSelectedRecord();
-        // console.log(record);
-        if (record == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آیا رشته تحصیلی انتخاب شده حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "اخطار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خیر"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='msg.waiting'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: educationMajorUrl + "delete/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_EducationMajor.invalidateCache();
-                                    simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message
-        code="msg.operation.successful"/>", 3000, "say");
-                                } else {
-                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-            ListGrid_EducationMajor_refresh();
-        }
-    };
-    
-    function ListGrid_EducationMajor_Edit() {
-        var record = ListGrid_EducationMajor.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            methodEducationMajor = "PUT";
-            urlEducationMajor = educationMajorUrl + record.id;
-            DynamicForm_EducationMajor.clearValues();
-            DynamicForm_EducationMajor.editRecord(record);
-            Window_EducationMajor.setTitle("ویرایش رشته تحصیلی");
-            Window_EducationMajor.show();
-        }
-    };
-    
-    function ListGrid_EducationMajor_refresh() {
-        var record = ListGrid_EducationMajor.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_EducationMajor.selectRecord(record);
-        }
-        ListGrid_EducationMajor.invalidateCache();
-    };
-    
-    function ListGrid_EducationMajor_Add() {
-            methodEducationMajor = "POST";
-            urlEducationMajor = educationMajorUrl + "create/";
-            DynamicForm_EducationMajor.clearValues();
-            Window_EducationMajor.setTitle("ایجاد رشته تحصیلی");
-            Window_EducationMajor.show();
-    
-    };
-
-    //////////////////////////////////////////////////////////
-    //////////////Education Orientation functions/////////////
-    /////////////////////////////////////////////////////////
-
-    function ListGrid_EducationOrientation_Remove() {
-        var record = ListGrid_EducationOrientation.getSelectedRecord();
-        // console.log(record);
-        if (record == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آیا گرایش تحصیلی انتخاب شده حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "اخطار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خیر"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='msg.waiting'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: educationOrientationUrl + "delete/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_EducationOrientation.invalidateCache();
-                                    simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message
-        code="msg.operation.successful"/>", 3000, "say");
-                                } else {
-                                    simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-            ListGrid_EducationOrientation_refresh();
-        }
-    };
-    
-    function ListGrid_EducationOrientation_Edit() {
-        var record = ListGrid_EducationOrientation.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            methodEducationOrientation = "PUT";
-            urlEducationOrientation = educationOrientationUrl + record.id;
-            DynamicForm_EducationOrientation.clearValues();
-            DynamicForm_EducationOrientation.editRecord(record);
-            Window_EducationOrientation.setTitle("ویرایش گرایش تحصیلی");
-            Window_EducationOrientation.show();
-        }
-    };
-    
-    function ListGrid_EducationOrientation_refresh() {
-        var record = ListGrid_EducationOrientation.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_EducationOrientation.selectRecord(record);
-        }
-        ListGrid_EducationOrientation.invalidateCache();
-    };
-    
-    function ListGrid_EducationOrientation_Add() {
-            methodEducationOrientation = "POST";
-            urlEducationOrientation = educationOrientationUrl + "create/";
-            DynamicForm_EducationOrientation.clearValues();
-            Window_EducationOrientation.setTitle("ایجاد گرایش تحصیلی");
-            Window_EducationOrientation.show();
-    
-    };
+//</script>
