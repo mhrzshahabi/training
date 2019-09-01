@@ -10,7 +10,7 @@
 
 <html>
 <head>
-    <title>سیستم آموزش </title>
+    <title>سیستم آموزش     </title>
 
     <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
     <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
@@ -47,7 +47,7 @@
 
     <%--<script>--%>
 
-    <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
+	<spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
@@ -65,11 +65,14 @@
     const educationLevelUrl = rootUrl + "/educationLevel/";
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
+    const stateUrl=rootUrl + "/state/";
+    const committeeUrl=rootUrl + "/committee/";
     const termUrl = rootUrl + "/term/";
     const cityUrl = rootUrl + "/city/";
-    const stateUrl = rootUrl + "/state/";
-    const committeeUrl = rootUrl + "/committee/";
     const personalInfoUrl = rootUrl + "/personalInfo/"
+    const skillGroupUrl=rootUrl + "/skill-group/";
+    const skillUrl=rootUrl + "/skill/";
+
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -85,7 +88,9 @@
         }
     };
 
-    function TrnXmlHttpRequest(formData1, url, method, cFunction) {
+
+
+ function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -96,7 +101,7 @@
         xhttp.open(method, url, true);
         xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttp.send(formData1);
-    }
+    };
 
     isc.defineClass("MyRestDataSource", RestDataSource);
     isc.MyRestDataSource.addProperties({
@@ -115,21 +120,21 @@
         }
     });
 
-    <%--isc.RestDataSource.addProperties({--%>
-    <%--dataFormat: "json",--%>
-    <%--jsonSuffix: "",--%>
-    <%--jsonPrefix: "",--%>
-    <%--transformRequest: function (dsRequest) {--%>
-    <%--dsRequest.httpHeaders = {--%>
-    <%--"Authorization": "Bearer <%= accessToken %>"--%>
-    <%--};--%>
-    <%--return this.Super("transformRequest", arguments);--%>
-    <%--},--%>
+	<%--isc.RestDataSource.addProperties({--%>
+		<%--dataFormat: "json",--%>
+		<%--jsonSuffix: "",--%>
+		<%--jsonPrefix: "",--%>
+		<%--transformRequest: function (dsRequest) {--%>
+			<%--dsRequest.httpHeaders = {--%>
+				<%--"Authorization": "Bearer <%= accessToken %>"--%>
+			<%--};--%>
+			<%--return this.Super("transformRequest", arguments);--%>
+		<%--},--%>
 
-    <%--transformResponse: function (dsResponse, dsRequest, data) {--%>
-    <%--return this.Super("transformResponse", arguments);--%>
-    <%--}--%>
-    <%--});--%>
+		<%--transformResponse: function (dsResponse, dsRequest, data) {--%>
+			<%--return this.Super("transformResponse", arguments);--%>
+		<%--}--%>
+	<%--});--%>
 
     isc.defineClass("MyListGrid", ListGrid);
     isc.MyListGrid.addProperties({
@@ -218,22 +223,22 @@
             errorMessage: "فيلد اجباري است.",
             expression: /^(?!\s*$).+/
         },
-        NotStartWithNumber: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با عدد شروع شود.",
-            expression: /^(?!([0-9]))/,
+    NotStartWithNumber:{
+        type:"regexp",
+        errorMessage:"این فیلد نباید با عدد شروع شود.",
+        expression:/^(?!([0-9]))/,
+    },
+        NotStartWithSpecialChar:{
+            type:"regexp",
+            errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
+            expression:/^(?!([!@#$%^&*~';:.{}_]))/,
         },
-        NotStartWithSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
+        NotContainSpecialChar:{
+            type:"regexp",
+            errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
+            expression:/^((?![~!@#$%^&*()+='"?]).)*$/,
         },
-        NotContainSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید شامل حروف خاص باشد.",
-            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
-        },
-    };
+       };
 
     isc.defineClass("MyButton", Button);
 
@@ -370,9 +375,12 @@
             for (i = 0; i < mainTabSet.tabs.length; i++) {
 
                 if (title == mainTabSet.getTab(i).title) {
-                    if (title == "دوره") {
-                        for (j = 0; j < mainTabSet.tabs.length; j++) {
-                            if (mainTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
+                    if(title == "دوره")
+                    {
+                        for (j = 0; j < mainTabSet.tabs.length; j++)
+                        {
+                            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
+                            {
                                 mainTabSet.removeTab(j);
                             }
                         }
@@ -585,7 +593,7 @@
     });
 
 
-    var memberButton = isc.IconButton.create({
+ var memberButton = isc.IconButton.create({
         title: "اعضا",
         icon: "pieces/512/term.png",
         largeIcon: "pieces/512/term.png",
@@ -596,7 +604,7 @@
         }
     });
 
-    var committeeButton = isc.IconButton.create({
+      var committeeButton = isc.IconButton.create({
         title: "کمیته تخصصی",
         icon: "pieces/512/committee.png",
         largeIcon: "pieces/512/committee.png",
@@ -654,7 +662,7 @@
         largeIcon: "pieces/512/skill-level.png",
         orientation: "vertical",
         click: function () {
-            createTab("سطح مهارت", "<spring:url value="/skill-level/show-form"/>", false);
+            createTab("سطح مهارت",  "<spring:url value="/skill-level/show-form"/>", false);
         }
     })
 
@@ -664,7 +672,7 @@
         largeIcon: "pieces/512/skill.png",
         orientation: "vertical",
         click: function () {
-            createTab("مهارت", "<spring:url value="/skill/show-form"/>", false)
+            createTab("مهارت",  "<spring:url value="/skill/show-form"/>", false)
         }
     })
 
@@ -869,26 +877,26 @@
             this.Super("closeClick", arguments);
         },
 
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
             var tabTitle = ID.title;
-            if (tabTitle.substr(0, 5) == "اهداف") {
+            if(tabTitle.substr(0,5) == "اهداف"){
                 setTimeout(function () {
 
-                    ListGrid_Goal.fetchData();
-                    ListGrid_Goal.invalidateCache();
-                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
-                    ListGrid_Syllabus_Goal.fetchData();
-                    ListGrid_Syllabus_Goal.invalidateCache();
+                   ListGrid_Goal.fetchData();
+                   ListGrid_Goal.invalidateCache();
+                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
+                   ListGrid_Syllabus_Goal.fetchData();
+                   ListGrid_Syllabus_Goal.invalidateCache();
 
                 }, 100);
             }
-            if (tabTitle.substr(0, 4) == "دوره") {
+            if(tabTitle.substr(0,4) == "دوره"){
                 setTimeout(function () {
                     ListGrid_CourseCompetence.invalidateCache();
                     ListGrid_CourseSkill.invalidateCache();
                     ListGrid_CourseJob.invalidateCache();
                     ListGrid_CourseGoal.invalidateCache();
-                    if (courseId != "") {
+                    if(courseId != ""){
                         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
@@ -932,6 +940,7 @@
         backgroundColor: "",
         members: [headerLayout, ribbonHLayout, mainTabSet]
     });
+
 
 
 </script>

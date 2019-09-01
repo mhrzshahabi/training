@@ -40,7 +40,7 @@ import java.util.Map;
 @RequestMapping(value = "/api/course")
 public class CourseRestController {
     private final HttpServletRequest request;
-    private  final HttpServletResponse response;
+    private final HttpServletResponse response;
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
@@ -48,13 +48,15 @@ public class CourseRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final EducationLicenseService educationLicenseService;
+
     // ---------------------------------
     @Loggable
     @GetMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('r_course')")
+    //@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<CourseDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(courseService.get(id), HttpStatus.OK);
     }
+
     @Loggable
     @GetMapping(value = "/list")
 //	@PreAuthorize("hasAuthority('r_course')")
@@ -66,14 +68,16 @@ public class CourseRestController {
     @GetMapping(value = "/preCourse/{courseId}")
 //	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<List<CourseDTO.Info>> preCourseList(@PathVariable Long courseId) {
-        return new ResponseEntity<>(courseService.preCourseList(courseId), HttpStatus.OK);
+        List<CourseDTO.Info> list = courseService.preCourseList(courseId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/equalCourse/{courseId}")
 //	@PreAuthorize("hasAuthority('r_course')")
     public ResponseEntity<List<Map>> equalCourseList(@PathVariable Long courseId) {
-        return new ResponseEntity<>(courseService.equalCourseList(courseId), HttpStatus.OK);
+        List<Map> list = courseService.equalCourseList(courseId);
+        return new ResponseEntity<>(list, HttpStatus.OK);
     }
 
     @Loggable
@@ -85,7 +89,7 @@ public class CourseRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-	//@PreAuthorize("hasAuthority('u_course')")
+    //@PreAuthorize("hasAuthority('u_course')")
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
 //		return new ResponseEntity<>(courseService.update(id, request), HttpStatus.OK);
     public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
@@ -95,19 +99,18 @@ public class CourseRestController {
 
     @Loggable
     @DeleteMapping(value = "deleteCourse/{id}")
-	//@PreAuthorize("hasAuthority('d_course')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id){
-      boolean check=courseService.checkForDelete(id);
-        if(check)
-        {
+    //@PreAuthorize("hasAuthority('d_course')")
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        boolean check = courseService.checkForDelete(id);
+        if (check) {
             courseService.deletGoal(id);
             courseService.delete(id);
 
         }
 
-   // courseService.delete(id);
-    return new ResponseEntity<>(check,HttpStatus.OK);
-   }
+        // courseService.delete(id);
+        return new ResponseEntity<>(check, HttpStatus.OK);
+    }
 
     @Loggable
     @DeleteMapping(value = "/list")
@@ -135,7 +138,7 @@ public class CourseRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -187,8 +190,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/skill/{courseId}")
-    public ResponseEntity<SkillDTO.SkillSpecRs> getSkill(@PathVariable Long courseId)
-    {
+    public ResponseEntity<SkillDTO.SkillSpecRs> getSkill(@PathVariable Long courseId) {
         List<SkillDTO.Info> skill = courseService.getSkill(courseId);
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
         specResponse.setData(skill)
@@ -197,13 +199,12 @@ public class CourseRestController {
                 .setTotalRows(skill.size());
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTO.IscRes> getJob(@PathVariable Long courseId)
-    {
+    public ResponseEntity<JobDTO.IscRes> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
         specResponse.setData(job)
@@ -212,7 +213,7 @@ public class CourseRestController {
                 .setTotalRows(job.size());
         final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable
@@ -249,39 +250,36 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/getmaxcourse/{str}")
-    public ResponseEntity<String> getMaxCourseCode(@PathVariable String str)
-    {
-       return new ResponseEntity<>(courseService.getMaxCourseCode(str),HttpStatus.OK);
+    public ResponseEntity<String> getMaxCourseCode(@PathVariable String str) {
+        return new ResponseEntity<>(courseService.getMaxCourseCode(str), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/getcompetence/{courseId}")
-    public  ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId)
-    {
-        List <CompetenceDTO.Info> comList=courseService.getCompetence(courseId);
-        final  CompetenceDTO.SpecRs specResponse=new CompetenceDTO.SpecRs();
+    public ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId) {
+        List<CompetenceDTO.Info> comList = courseService.getCompetence(courseId);
+        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
         specResponse.setData(comList)
                 .setStartRow(0)
                 .setEndRow(comList.size())
                 .setTotalRows(comList.size());
-        final CompetenceDTO.CompetenceSpecRs competenceSpecRs=new CompetenceDTO.CompetenceSpecRs();
+        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
         competenceSpecRs.setResponse(specResponse);
-        return  new ResponseEntity(competenceSpecRs,HttpStatus.OK);
+        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
     }
 
     @Loggable
-    @GetMapping(value ="/getcompetencequery/{courseId}")
-    public  ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId)
-    {
-        List <CompetenceDTO.Info> comList=courseService.getCompetenceQuery(courseId);
-        final  CompetenceDTO.SpecRs specResponse=new CompetenceDTO.SpecRs();
+    @GetMapping(value = "/getcompetencequery/{courseId}")
+    public ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId) {
+        List<CompetenceDTO.Info> comList = courseService.getCompetenceQuery(courseId);
+        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
         specResponse.setData(comList)
                 .setStartRow(0)
                 .setEndRow(comList.size())
                 .setTotalRows(comList.size());
-        final CompetenceDTO.CompetenceSpecRs competenceSpecRs=new CompetenceDTO.CompetenceSpecRs();
+        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
         competenceSpecRs.setResponse(specResponse);
-        return  new ResponseEntity(comList,HttpStatus.OK);
+        return new ResponseEntity(comList, HttpStatus.OK);
     }
 
 
@@ -334,13 +332,11 @@ public class CourseRestController {
     }
 
 
-
-
     @Loggable
     @PostMapping(value = {"/GoalsAndSyllabus/{type}"})
     public void printGoalsAndSyllabus(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+                                      @PathVariable String type,
+                                      @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
         final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         final SearchDTO.SearchRs<CourseDTO.GoalsWithSyllabus> searchRs = iCourseService.searchDetails(searchRq);
