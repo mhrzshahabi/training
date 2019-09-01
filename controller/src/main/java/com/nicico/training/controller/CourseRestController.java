@@ -20,7 +20,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,15 +38,12 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/course")
 public class CourseRestController {
-    private final HttpServletRequest request;
-    private final HttpServletResponse response;
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
     private final ICourseService iCourseService;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
-    private final EducationLicenseService educationLicenseService;
 
     // ---------------------------------
     @Loggable
