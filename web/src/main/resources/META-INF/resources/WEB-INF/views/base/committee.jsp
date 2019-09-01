@@ -193,7 +193,7 @@
             {
                 name: "sgTitle",
                 type: "staticText",
-                title: "افزودن اعضا به کمیته:",
+                title: "افزودن اعضا به کمیته",
                 wrapTitle: false,
                 width: 250
             }
@@ -221,7 +221,8 @@
         width: "50%",
         sections: [
             {
-                title: "لیست اعضای کمیته مورد نظر",
+                name: "sTitle",
+              //  title: "لیست اعضای کمیته مورد نظر",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -262,9 +263,7 @@
         height: "300",
         autoDraw: false,
         border: "3px solid gray", layoutMargin: 5,
-        members: [
-
-           HLayOut_thisCommittee_AddUsers_Jsp,
+        members: [ HLayOut_thisCommittee_AddUsers_Jsp,
             HStack_Committee_AddUsers_Jsp,
           ]
     });
@@ -311,7 +310,12 @@
                 });
 
             } else {
-                Window_Add_User_TO_Committee.show();
+
+              DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
+              SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
+              Window_Add_User_TO_Committee.show();
+
+
             }
         }
     });
