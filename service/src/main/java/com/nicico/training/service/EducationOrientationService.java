@@ -50,7 +50,7 @@ public class EducationOrientationService implements IEducationOrientationService
     @Override
     public EducationOrientationDTO.Info update(Long id, EducationOrientationDTO.Update request) {
         final Optional<EducationOrientation> cById = educationOrientationDAO.findById(id);
-        final EducationOrientation educationOrientation = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationOrientation educationOrientation = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
         EducationOrientation updating = new EducationOrientation();
         modelMapper.map(educationOrientation, updating);
         modelMapper.map(request, updating);
@@ -61,7 +61,7 @@ public class EducationOrientationService implements IEducationOrientationService
     @Override
     public void delete(Long id) {
         final Optional<EducationOrientation> one = educationOrientationDAO.findById(id);
-        final EducationOrientation educationOrientation = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationOrientation educationOrientation = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
         educationOrientationDAO.delete(educationOrientation);
     }
 
