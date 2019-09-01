@@ -1,13 +1,7 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
 
-
-//<script>
+// <script>
 
     var committee_method = "POST";
 
@@ -15,81 +9,64 @@
     // RestDataSource & ListGrid
     //************************************************************************************
     var RestDataSource_committee = isc.MyRestDataSource.create({
-
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fields: [{name: "id", primaryKey: true},
-            {name: "titleFa"},
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "titleFa", title: "نام ", filterOperator: "contains"},
             {name: "subCategoryId", hidden: true},
             {name: "categoryId", hidden: true},
-            {name: "category.titleFa"},
-            {name: "subCategory.titleFa"},
-            {name: "tasks"},
-            {name: "description"},
+            {name: "category.titleFa", title: "گروه", filterOperator: "contains"},
+            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "contains"},
+            {name: "tasks", title: "وظایف", filterOperator: "contains"},
+            {name: "description", title: "توضیحات", filterOperator: "contains"},
         ],
         fetchDataURL: committeeUrl + "spec-list",
-        autoFetchData: true,
     });
-    var RestDataSource_category = isc.MyRestDataSource.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+
+    var DsCategory_committee = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"}
         ],
         fetchDataURL: categoryUrl + "spec-list?_startRow=0&_endRow=55",
-        autoFetchData: true,
-    });
+       });
 
-
-    var RestDataSourceSubCategoryc = isc.MyRestDataSource.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
+    var DsSubCategory_committee = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"}
         ],
-
     });
+
     var ListGrid_Committee = isc.MyListGrid.create({
         dataSource: RestDataSource_committee,
-        //پ contextMenu: Menu_ListGrid_term,
         autoFetchData: true,
         doubleClick: function () {
         },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
-            {name: "subCategoryId", hidden: true},
-            {name: "categoryId", hidden: true},
-            {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "contains"},
-            {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "contains"},
-            {name: "tasks", title: "وظایف", align: "center", filterOperator: "contains"},
-            {name: "description", title: "توضیحات", align: "center", filterOperator: "contains"},
-        ],
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
-        sortField: 0,
+        sortField: 1,
     });
 
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
     var DynamicForm_Committee = isc.MyDynamicForm.create({
+
         // ID: "DynamicForm_Committee",
-        fields: [{name: "id", hidden: true},
+        fields: [
+            {name: "id", hidden: true},
             {
                 name: "titleFa",
-                title: "نام فارسی",
-                type: 'text',
-                required: true, keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
-                width: "*", height: 27, hint: "Persian/فارسی", showHintInField: true,
-                validators: [MyValidators.NotEmpty]
+                title: "<spring:message code="title"/>",
+                required: true,
+                //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "250",
+                width: "*",
+                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
             },
-
             {
                 name: "categoryId",
                 title: "<spring:message code="course_category"/>",
                 textAlign: "center",
-                optionDataSource: RestDataSource_category,
+                optionDataSource: DsCategory_committee,
                 required: true,
                 width: "*",
                 changeOnKeypress: true,
@@ -98,65 +75,61 @@
                 valueField: "id",
                 filterFields: ["titleFa"],
                 changed: function (form, item, value) {
+                    DynamicForm_Committee.getItem("subCategoryId").clearValue();
                     DynamicForm_Committee.getItem("subCategoryId").setValue();
-                    RestDataSourceSubCategoryc.fetchDataURL = categoryUrl + value + "/sub-categories?_startRow=0&_endRow=55";
+                    DsSubCategory_committee.fetchDataURL = categoryUrl + value + "/sub-categories?_startRow=0&_endRow=55";
+                    DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
                     DynamicForm_Committee.getItem("subCategoryId").fetchData();
-                    //  DynamicForm_Committee.getItem("subCategoryId").setDisabled("false");
-
                 },
             },
-
             {
                 name: "subCategoryId",
                 title: "<spring:message code="course_subcategory"/>",
+                prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
+                destroyed:true,
                 required: true,
                 width: "*",
                 displayField: "titleFa",
                 valueField: "id",
                 filterFields: ["titleFa"],
-                changed: function (form, item, value) {
-                },
             },
             {
                 name: "tasks",
                 title: "وظایف",
                 type: "textArea",
-                height: "50",
-                length: "250", width: "*",
-
+                height: "40",
+                length: "350", width: "*",
             },
             {
                 name: "description",
                 title: "توضیحات",
                 type: "textArea",
-                colSpan: 3,
-                height: "50",
-                length: "250", width: "*",
-
+                height: "40",
+                length: "350", width: "*",
             }
-
         ]
     });
     var Window_Committee = isc.MyWindow.create({
-        title: "ایجاد",
-        width: 500,
-        items: [DynamicForm_Committee, isc.MyHLayoutButtons.create({
-            members: [isc.MyButton.create({
-                title: "ذخیره",
-                icon: "pieces/16/save.png",
-                click: function () {
-                    save_Committee();
+        width: 600,
+        items: [
+            DynamicForm_Committee,
+            isc.MyHLayoutButtons.create({
+                members: [isc.MyButton.create({
+                    title: "<spring:message code="save"/>",
+                    icon: "pieces/16/save.png",
+                    click: function () {
+                        save_Committee();
 
-                }
-            }), isc.MyButton.create({
-                title: "لغو",
-                icon: "pieces/16/icon_delete.png",
-                click: function () {
-                    Window_Committee.close();
-                }
-            })],
-        }),]
+                    }
+                }), isc.MyButton.create({
+                    title: "<spring:message code="cancel"/>",
+                    icon: "pieces/16/icon_delete.png",
+                    click: function () {
+                        Window_Committee.close();
+                    }
+                })],
+            }),]
     });
 
 
@@ -165,39 +138,38 @@
     //**********************************************************************************
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
-        title: "بازخوانی اطلاعات",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Committee.invalidateCache();
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+        title: "<spring:message code="edit"/>",
         click: function () {
-
             show_CommitteEditForm();
         }
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+        title: "<spring:message code="create"/>",
         click: function () {
-
             committee_method = "POST";
-            show_CommitteeNewForm();
+            DynamicForm_Committee.getItem("subCategoryId").setOptionDataSource(null);
+           show_CommitteeNewForm();
 
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+        title: "<spring:message code="remove"/>",
         click: function () {
             show_CommitteeRemoveForm();
         }
     });
     var ToolStripButton_Print = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
+        title:"<spring:message code="print"/>",
         click: function () {
             //    print_TermListGrid("pdf");
         }
@@ -238,8 +210,10 @@
 
     function show_CommitteeNewForm() {
         committee_method = "POST";
+        Window_Committee.setTitle("ایجاد"),
         DynamicForm_Committee.clearValues();
         Window_Committee.show();
+        DynamicForm_Committee.clearValues();
     };
 
     function save_Committee() {
@@ -257,10 +231,7 @@
     };
 
     function show_CommitteEditForm() {
-
-        DynamicForm_Committee.clearValues();
         var record = ListGrid_Committee.getSelectedRecord();
-
         if (record == null || record.id == null) {
             isc.Dialog.create({
                 message: "<spring:message code="msg.record.not.selected"/>",
@@ -273,11 +244,13 @@
             });
         } else {
             committee_method = "PUT";
-            DynamicForm_Committee.editRecord(record);
+            Window_Committee.setTitle("ویرایش");
             Window_Committee.show();
-            RestDataSourceSubCategoryc.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
-            DynamicForm_Committee.getItem("subCategoryId").fetchData();
-            DynamicForm_Committee.getItem("subCategoryId").optionDataSource = RestDataSourceSubCategoryc;
+            DynamicForm_Committee.clearValues();
+            DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
+            DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
+            DynamicForm_Committee.editRecord(record);
+
         }
     };
 

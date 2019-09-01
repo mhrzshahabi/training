@@ -94,22 +94,29 @@
 			title: "کد",
 			type: 'text',
 			required: true,
-			 required: true, keyPressFilter: "[/|0-9]", length: "15",
+			  requiredMessage:"کد می تواند شامل عدد , حروف فارسی و انگلیسی باشد",
+		 //  titleOrientation: "top",
+			//keyPressFilter: "[/|0-9]",
+			 // length: "15",
               width: "*",
-              height: 27
+              height: 35
 		}, {
 			name: "titleFa",
 			title: "نام فارسی",
 			required: true,
 			type: 'text',
 			readonly: true,
-		   required: true, keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
-                width: "*", height: 27, hint: "Persian/فارسی", showHintInField: true,
-                validators: [MyValidators.NotEmpty]
+		   required: true,
+		    height: 35,
+		      requiredMessage:"در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
+		   // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
+                width: "*", hint: "Persian/فارسی", showHintInField: true,
+               validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
 					},
 
 			  {
                 name: "startDate",
+                  height: 35,
                 title: "تاریخ شروع",
                 ID: "startDate_jspTerm",
                 type: 'text', required: true,
@@ -134,10 +141,21 @@
                         DynamicForm_Term.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     if (dateCheck == true)
                        DynamicForm_Term.clearFieldErrors("startDate", true);
+
+                       var endDate = DynamicForm_Term.getValue("endDate");
+                       var  startDate=DynamicForm_Term.getValue("startDate");
+                       if (endDate != undefined && startDate > endDate)
+                        {
+                        //  DynamicForm_Term.clearFieldErrors("endDate", true);
+                          DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
+                          DynamicForm_Term.getItem("endDate").setValue();
+                          endDateCheckTerm = false;
+                        }
                 }
             },
 		 {
                 name: "endDate",
+                  height: 35,
                 title: "تاریخ پایان",
                 ID: "endDate_jspTerm",
                 type: 'text', required: true,
@@ -290,6 +308,7 @@
 {
         term_method = "POST";
       	DynamicForm_Term.clearValues();
+        Window_term.setTitle("<spring:message code="create"/>");
        	Window_term.show();
     };
     function  show_TermEditForm() {
@@ -317,13 +336,25 @@
                 term_method = "PUT";
                 DynamicForm_Term.clearValues();
                 DynamicForm_Term.editRecord(record);
+                Window_term.setTitle("<spring:message code="edit"/>");
                 Window_term.show();
 
                 } };
     function  save_Term() {
+      <%--var endDate = DynamicForm_Term.getValue("endDate");--%>
+      <%--var startDate = DynamicForm_Term.getValue("startDate");--%>
+      <%-- if(startDate != undefined && startDate > endDate){--%>
+      <%--                      DynamicForm_Term.clearFieldErrors("endDate", true);--%>
+      <%--                      DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);--%>
+      <%--                      DynamicForm_Term.getItem("endDate").setValue();--%>
+      <%--                      endDateCheckTerm = false;--%>
+      <%--                      simpleDialog("<spring:message code="message"/>", "تاریخ شروع باید کمتر از تاریخ پایان باشد مجددا وارد کنید", 4000, "say");--%>
+      <%--        }--%>
 
       if (endDateCheckTerm == false)
                 return;
+
+
 
         if (!DynamicForm_Term.validate()) {
             return;
