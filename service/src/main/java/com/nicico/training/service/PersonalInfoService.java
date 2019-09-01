@@ -30,6 +30,19 @@ public class PersonalInfoService implements IPersonalInfoService {
         return modelMapper.map(personalInfo, PersonalInfoDTO.Info.class);
     }
 
+   @Transactional(readOnly = true)
+   @Override
+   public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
+        List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
+        PersonalInfo personalInfo = null;
+        if(personalInfoList != null && personalInfoList.size() != 0) {
+            personalInfo = personalInfoList.get(0);
+            return modelMapper.map(personalInfo, PersonalInfoDTO.Info.class);
+        }
+        else
+            return null;
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<PersonalInfoDTO.Info> list() {

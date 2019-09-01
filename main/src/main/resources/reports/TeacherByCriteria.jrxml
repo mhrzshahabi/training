@@ -39,12 +39,13 @@
 		<field name="DEPTCODE" class="java.lang.String">
 			<fieldDescription><![CDATA[deptCode]]></fieldDescription>
 		</field>
-		<field name="educationMajor.titleFa" class="java.lang.String"/>
-		<field name="educationLevel.titleFa" class="java.lang.String"/>
+		<field name="personality.educationLevel.titleFa" class="java.lang.String"/>
+		<field name="personality.lastNameFa" class="java.lang.String"/>
 		<field name="teacherCode" class="java.lang.String"/>
-		<field name="mobile" class="java.lang.String"/>
-		<field name="fullNameFa" class="java.lang.String"/>
+		<field name="personality.educationMajor.titleFa" class="java.lang.String"/>
+		<field name="personality.firstNameFa" class="java.lang.String"/>
 		<field name="enableStatus" class="java.lang.Boolean"/>
+		<field name="personality.contactInfo.mobile" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -81,7 +82,7 @@
 	<detail>
 		<band height="80">
 			<componentElement>
-				<reportElement key="" style="Table_CH" x="31" y="10" width="480" height="60" uuid="ffefe320-675c-40cd-af1c-80c00f7923cd">
+				<reportElement key="" style="Table_CH" x="12" y="10" width="530" height="60" uuid="ffefe320-675c-40cd-af1c-80c00f7923cd">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -92,6 +93,33 @@
 					<datasetRun subDataset="content" uuid="0f1ff13a-c7a4-4f00-b68e-15e46e4bf9db">
 						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
 					</datasetRun>
+					<jr:column width="50" uuid="579ab70d-7338-4448-b5e9-128d66ee4a51">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="50" height="30" uuid="3bed059b-c3e8-4910-9636-1b395aa65c69"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[وضعیت]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField isBlankWhenNull="true">
+								<reportElement x="0" y="0" width="50" height="30" uuid="60443c2f-53a2-4c2b-ba29-9c4ba005f4b7"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<textFieldExpression><![CDATA[($F{enableStatus}) ? "فعال" : "غیرفعال"]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
 					<jr:columnGroup width="80" uuid="5c90987d-086f-4098-847e-394e14b64941">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
 						<jr:columnHeader height="30" rowSpan="1">
@@ -106,24 +134,21 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[وضعیت]]></text>
+								<text><![CDATA[تماس]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="166e79cb-867a-4ca9-91f6-f9c1fa4faf2e">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
 								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="273fe532-7b50-4594-b4ad-dd806805ec40"/>
-									<box>
-										<pen lineWidth="0.5"/>
-									</box>
+									<reportElement x="0" y="0" width="80" height="30" uuid="1a6ab2b9-632b-4206-a622-2d3ef3a10ad7"/>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[($F{enableStatus}) ? "فعال" : "غیرفعال"]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{personality.contactInfo.mobile}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -142,11 +167,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[تماس]]></text>
+								<text><![CDATA[رشته تحصیلی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="395e5180-1f37-4473-8942-9dc118c76bed">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<box>
 									<pen lineWidth="0.5"/>
@@ -159,7 +184,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{mobile}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{personality.educationMajor.titleFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -181,11 +206,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[رشته تحصیلی]]></text>
+								<text><![CDATA[مقطع تحصیلی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="d25ec15f-f74a-455b-b8dd-e2f8b1fc78b6">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<box>
 									<pen lineWidth="0.5"/>
@@ -201,7 +226,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{educationMajor.titleFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{personality.educationLevel.titleFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -223,11 +248,11 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[مقطع تحصیلی]]></text>
+								<text><![CDATA[نام خانوادگی]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="981f1830-ba41-4353-bfd8-a918c76ca6de">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<box>
 									<pen lineWidth="0.5"/>
@@ -243,7 +268,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{educationLevel.titleFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{personality.lastNameFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -266,7 +291,7 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="8228c44c-ab6c-4370-82f3-e17f1f1978ef">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
 							<jr:detailCell style="Table_TD" height="30">
 								<box>
 									<pen lineWidth="0.5"/>
@@ -279,13 +304,13 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{fullNameFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{personality.firstNameFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
 					</jr:columnGroup>
 					<jr:column width="80" uuid="5ad8d6f9-7ddb-4558-ac47-7a874ca28db0">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
 						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
 							<box>
 								<pen lineWidth="0.5"/>
@@ -298,7 +323,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[کد]]></text>
+								<text><![CDATA[کد مدرس]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">
