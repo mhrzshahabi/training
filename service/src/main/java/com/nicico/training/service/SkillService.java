@@ -11,7 +11,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -31,13 +30,12 @@ public class SkillService implements ISkillService {
     private final ModelMapper modelMapper;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
-    private final JobDAO jobDAO;
+//    private final JobDAO jobDAO;
     private final SkillGroupDAO skillGroupDAO;
-    private final CompetenceDAO competenceDAO;
+//    private final CompetenceDAO competenceDAO;
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
-    private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter= new EnumsConverter.EDomainTypeConverter();
     private String saveType="";
     @Transactional(readOnly = true)
     @Override
@@ -60,14 +58,13 @@ public class SkillService implements ISkillService {
     public SkillDTO.Info create(SkillDTO.Create request) {
         final Skill skill = modelMapper.map(request, Skill.class);
         Set<Long> competences= new HashSet<Long>();
-        Long defaultCompetence=request.getDefaultCompetenceId();
-        if(defaultCompetence!=null && defaultCompetence>0){
-            competences.add(defaultCompetence);
-            request.setCompetenceIds(competences);
-        }
-        skill.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEdomainTypeId()));
+//        Long defaultCompetence=request.getDefaultCompetenceId();
+//        if(defaultCompetence!=null && defaultCompetence>0){
+//            competences.add(defaultCompetence);
+//            request.setCompetenceIds(competences);
+//        }
         saveType="create";
-        return save(skill, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
+        return save(skill, request.getCourseIds(),request.getSkillGroupIds());
     }
 
     @Transactional
@@ -114,7 +111,7 @@ public class SkillService implements ISkillService {
     // ---------------
 
     @Transactional
-    SkillDTO.Info save(Skill skill, Set<Long> courseIds, Set<Long> competenceIds, Set<Long> skillGroupIds) {
+    SkillDTO.Info save(Skill skill, Set<Long> courseIds, Set<Long> skillGroupIds) {
         final Set<Course> courses = new HashSet<>();
         final Set<Competence> competences = new HashSet<>();
         final Set<SkillGroup> skillGroups = new HashSet<>();
@@ -125,12 +122,12 @@ public class SkillService implements ISkillService {
                                 courses.add(courseDAO.findById(courseId)
                                         .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound)))
                         ));
-        Optional.ofNullable(competenceIds)
-                .ifPresent(competenceIdSet -> competenceIdSet
-                        .forEach(competenceId ->
-                                competences.add(competenceDAO.findById(competenceId)
-                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound)))
-                        ));
+//        Optional.ofNullable(competenceIds)
+//                .ifPresent(competenceIdSet -> competenceIdSet
+//                        .forEach(competenceId ->
+//                                competences.add(competenceDAO.findById(competenceId)
+//                                        .orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound)))
+//                        ));
         Optional.ofNullable(skillGroupIds)
                 .ifPresent(skillGroupIdSet -> skillGroupIdSet
                         .forEach(skillGroupId ->
@@ -148,17 +145,17 @@ public class SkillService implements ISkillService {
         final SubCategory subCategory = subCategoryById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
         skill.setCourseSet(courses);
-        skill.setCompetenceSet(competences);
+//        skill.setCompetenceSet(competences);
         skill.setSkillGroupSet(skillGroups);
         skill.setSkillLevel(skillLevel);
         skill.setCategory(category);
         skill.setSubCategory(subCategory);
 
         final Skill saved = skillDAO.saveAndFlush(skill);
-        if(saveType.equals("create") && competenceIds!=null && competenceIds.size()>0) {
-            Long[] cids= (Long[]) competenceIds.toArray(new Long[competenceIds.size()]);
-            addCompetence(cids[0], saved.getId());
-        }
+//        if(saveType.equals("create") && competenceIds!=null && competenceIds.size()>0) {
+//            Long[] cids= (Long[]) competenceIds.toArray(new Long[competenceIds.size()]);
+//            addCompetence(cids[0], saved.getId());
+//        }
         saveType="";
         return modelMapper.map(saved, SkillDTO.Info.class);
     }
@@ -194,44 +191,44 @@ public class SkillService implements ISkillService {
         return  courseDAO.getUnAttachedCoursesCountBySkillId(skillID);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<CompetenceDTO.Info> getCompetences(Long skillID) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<CompetenceDTO.Info> getCompetences(Long skillID) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//
+//
+//        return modelMapper.map( skill.getCompetenceSet(),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
+//    }
+
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<JobDTO.Info> getJobs(Long skillID) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        List<Job> jobs=jobDAO.getJobsBySkillId(skillID);
+//        return modelMapper.map( jobs,new TypeToken<List<JobDTO.Info>>(){}.getType());
+//    }
 
 
-        return modelMapper.map( skill.getCompetenceSet(),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<JobDTO.Info> getJobs(Long skillID) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        List<Job> jobs=jobDAO.getJobsBySkillId(skillID);
-        return modelMapper.map( jobs,new TypeToken<List<JobDTO.Info>>(){}.getType());
-    }
-
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-
-
-        return modelMapper.map( competenceDAO.getUnAttachedCompetencesBySkillId(skillID,pageable),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
-    }
-
-    @Override
-    public Integer getUnAttachedCompetencesCount(Long skillID) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-
-
-        return  competenceDAO.getUnAttachedCompetencesCountBySkillId(skillID);
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//
+//
+//        return modelMapper.map( competenceDAO.getUnAttachedCompetencesBySkillId(skillID,pageable),new TypeToken<List<CompetenceDTO.Info>>(){}.getType());
+//    }
+//
+//    @Override
+//    public Integer getUnAttachedCompetencesCount(Long skillID) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//
+//
+//        return  competenceDAO.getUnAttachedCompetencesCountBySkillId(skillID);
+//    }
 
     @Transactional(readOnly = true)
     @Override
@@ -334,51 +331,51 @@ public class SkillService implements ISkillService {
         }
     }
 
-    @Transactional
-    @Override
-    public void removeCompetence(Long competenceId, Long skillId) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        final Optional<Competence> optionalCompetence=competenceDAO.findById(competenceId)  ;
-        final Competence competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        competence.getSkillSet().remove(skill);
-
-    }
-
-    @Transactional
-    @Override
-    public void removeCompetences(List<Long> competenceIds, Long skillId) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        List<Competence> gAllById = competenceDAO.findAllById(competenceIds);
-        for (Competence competence : gAllById) {
-            competence.getSkillSet().remove(skill);
-        }
-
-    }
-
-    @Transactional
-    @Override
-    public void addCompetence(Long competenceId, Long skillId) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        final Optional<Competence> optionalCompetence=competenceDAO.findById(competenceId)  ;
-        final Competence competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        competence.getSkillSet().add(skill);
-
-    }
-
-    @Transactional
-    @Override
-    public void addCompetences(List<Long> ids, Long skillId) {
-        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
-        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        List<Competence> gAllById = competenceDAO.findAllById(ids);
-        for (Competence competence : gAllById) {
-            competence.getSkillSet().add(skill);
-        }
-
-    }
+//    @Transactional
+//    @Override
+//    public void removeCompetence(Long competenceId, Long skillId) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        final Optional<Competence> optionalCompetence=competenceDAO.findById(competenceId)  ;
+//        final Competence competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+//        competence.getSkillSet().remove(skill);
+//
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void removeCompetences(List<Long> competenceIds, Long skillId) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        List<Competence> gAllById = competenceDAO.findAllById(competenceIds);
+//        for (Competence competence : gAllById) {
+//            competence.getSkillSet().remove(skill);
+//        }
+//
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void addCompetence(Long competenceId, Long skillId) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        final Optional<Competence> optionalCompetence=competenceDAO.findById(competenceId)  ;
+//        final Competence competence=optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+//        competence.getSkillSet().add(skill);
+//
+//    }
+//
+//    @Transactional
+//    @Override
+//    public void addCompetences(List<Long> ids, Long skillId) {
+//        final Optional<Skill> optionalSkill=skillDAO.findById(skillId)  ;
+//        final Skill skill=optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+//        List<Competence> gAllById = competenceDAO.findAllById(ids);
+//        for (Competence competence : gAllById) {
+//            competence.getSkillSet().add(skill);
+//        }
+//
+//    }
 
     @Transactional
     @Override
