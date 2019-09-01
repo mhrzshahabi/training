@@ -61,14 +61,14 @@ nicico:
     password:
   upload:
     dir: /var/nicico/${spring.application.name}/
-  teacher:
+  person:
     upload:
       dir: /var/nicico/${spring.application.name}/
   temp:
     upload:
       dir: /var/nicico/${spring.application.name}/
   rest-api:
-    url: /var/nicico/${spring.application.name}/
+      url: /var/nicico/${spring.application.name}/
   workflow:
     update:
       mode: false
