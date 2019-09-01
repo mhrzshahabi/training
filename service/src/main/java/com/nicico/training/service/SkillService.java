@@ -11,7 +11,6 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ISkillService;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -37,7 +36,6 @@ public class SkillService implements ISkillService {
     private final SkillLevelDAO skillLevelDAO;
     private final CategoryDAO categoryDAO;
     private final SubCategoryDAO subCategoryDAO;
-    private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter= new EnumsConverter.EDomainTypeConverter();
     private String saveType="";
     @Transactional(readOnly = true)
     @Override
@@ -65,7 +63,6 @@ public class SkillService implements ISkillService {
             competences.add(defaultCompetence);
             request.setCompetenceIds(competences);
         }
-        skill.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEdomainTypeId()));
         saveType="create";
         return save(skill, request.getCourseIds(),request.getCompetenceIds(),request.getSkillGroupIds());
     }

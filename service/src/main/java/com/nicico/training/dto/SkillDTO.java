@@ -7,7 +7,6 @@ com.nicico.training.dto
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.enums.EDomainType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -49,10 +48,6 @@ public class SkillDTO {
     @ApiModelProperty(required = true)
     private Long subCategoryId;
 
-    @NotNull
-    @ApiModelProperty(required = true)
-    private Integer edomainTypeId;
-
     @ApiModelProperty()
     private String description;
 
@@ -65,7 +60,6 @@ public class SkillDTO {
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-        private EDomainType eDomainType;
 
         private Date createdDate;
         private String createdBy;
