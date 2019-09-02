@@ -513,12 +513,49 @@
     /////////////////////////Education Level/////////////////
     /////////////////////////////////////////////////////////
 
+    Menu_ListGrid_EducationLevel = isc.Menu.create({
+        data: [
+            {
+                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+                    ListGrid_Education_refresh(ListGrid_EducationLevel);
+                }
+            }, {
+                title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+                     ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.add.level'/>",
+                                            DynamicForm_EducationLevel, Window_EducationLevel);
+                }
+            }, {
+                title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+                    DynamicForm_EducationLevel.clearValues();
+                    ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
+                                            "<spring:message code='education.edit.level'/>",
+                                            DynamicForm_EducationLevel, Window_EducationLevel);
+                }
+            }, {
+                title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+                    ListGrid_Education_Remove(ListGrid_EducationLevel,educationLevelUrl,
+                                                "<spring:message code='msg.education.level.remove'/>");
+                }
+            }, {isSeparator: true}, {
+                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "pdf");
+                 }
+             }, {
+                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "excel");
+                 }
+             }, {
+                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "html");
+                 }
+            }]
+    });
 
     var ListGrid_EducationLevel = isc.ListGrid.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationLevel,
-        // contextMenu: Menu_ListGrid_EducationLevel,
+         contextMenu: Menu_ListGrid_EducationLevel,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                                     "<spring:message code='education.edit.level'/>",
@@ -609,7 +646,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            // print_EducationLevel("pdf");
+            print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "pdf");
         }
     });
     var ToolStrip_Actions_EducationLevel = isc.ToolStrip.create({
@@ -845,6 +882,39 @@
             EducationDynamicForm.clearValues();
             EducationWindows.setTitle(title);
             EducationWindows.show();
+    }
+    
+    function print_EducationListGrid(EducationListGrid, Url, type) {
+        var advancedCriteria =EducationListGrid.getCriteria();
+        if(Url == educationLevelUrl){
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/educationLevel/printWithCriteria/"/>" + type,
+                target: "_Blank",
+                canSubmit: true,
+                fields: [ {name: "CriteriaStr", type: "hidden"} ]
+            })
+        }
+        else if(Url == educationMajorUrl){
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/educationMajor/printWithCriteria/"/>" + type,
+                target: "_Blank",
+                canSubmit: true,
+                fields: [ {name: "CriteriaStr", type: "hidden"} ]
+            })
+        }
+        else if(Url == educationOrientationUrl){
+            var criteriaForm = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/educationOrientation/printWithCriteria/"/>" + type,
+                target: "_Blank",
+                canSubmit: true,
+                fields: [ {name: "CriteriaStr", type: "hidden"} ]
+            })
+        }
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
     }
 
 //</script>

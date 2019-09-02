@@ -686,7 +686,7 @@
         largeIcon: "pieces/512/education.png",
         orientation: "vertical",
         click: function () {
-            createTab("تحصیلات", "<spring:url value="/education/show-form"/>", false)
+            createTab("تحصیلات", "<spring:url value="/educationLevel/show-form"/>", false)
         }
     })
 
