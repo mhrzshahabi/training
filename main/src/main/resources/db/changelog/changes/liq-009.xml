@@ -19,5 +19,15 @@
         <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" referencedColumnNames="id" referencedTableName="tbl_education_major"/>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1567237508374-32">
+        <dropForeignKeyConstraint baseTableName="tbl_education_orientation" constraintName="FKhwdtgrdd4rr5diipoe8jiek6m"/>
+        <addForeignKeyConstraint baseColumnNames="f_education_level" baseTableName="tbl_education_orientation" constraintName="FKhwdtgrdd4rr5diipoe8jiek6m" referencedColumnNames="id" referencedTableName="tbl_education_level"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1567237508374-7">
+        <dropForeignKeyConstraint baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1"/>
+        <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" referencedColumnNames="id" referencedTableName="tbl_education_major"/>
+    </changeSet>
+
 
 </databaseChangeLog>

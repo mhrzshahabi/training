@@ -53,7 +53,7 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public EducationMajorDTO.Info update(Long id, EducationMajorDTO.Update request) {
         final Optional<EducationMajor> cById = educationMajorDAO.findById(id);
-        final EducationMajor educationMajor = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationMajor educationMajor = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
         EducationMajor updating = new EducationMajor();
         modelMapper.map(educationMajor, updating);
         modelMapper.map(request, updating);
@@ -64,7 +64,7 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public void delete(Long id) {
         final Optional<EducationMajor> one = educationMajorDAO.findById(id);
-        final EducationMajor educationMajor = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationMajor educationMajor = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
         educationMajorDAO.delete(educationMajor);
     }
 
@@ -92,7 +92,7 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public List<EducationOrientationDTO.Info> listByMajorId(Long majorId) {
         final Optional<EducationMajor> cById = educationMajorDAO.findById(majorId);
-        final EducationMajor one = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationMajor one = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
         List<EducationOrientation> educationOrientations = one.getEducationOrientationList();
         List<EducationOrientationDTO.Info> eduOrientationInfo = new ArrayList<>();
         Optional.ofNullable(educationOrientations)

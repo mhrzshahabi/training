@@ -19,12 +19,22 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EducationOrientationDTO {
-    @NotEmpty
+
+
     @ApiModelProperty(required = true)
     private String titleFa;
-    @NotNull
+
+
     @ApiModelProperty(required = true)
     private String titleEn;
+
+
+    @ApiModelProperty(required = true)
+    private Long educationLevelId;
+
+
+    @ApiModelProperty(required = true)
+    private Long educationMajorId;
 
     // ------------------------------
 
@@ -39,6 +49,8 @@ public class EducationOrientationDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private Integer version;
+        private EducationLevelDTO.Info educationLevel;
+        private EducationMajorDTO.Info educationMajor;
     }
 
     //-------------------------------
