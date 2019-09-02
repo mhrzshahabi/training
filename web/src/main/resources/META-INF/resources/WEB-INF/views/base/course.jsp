@@ -214,7 +214,7 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
                         equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }
@@ -558,7 +558,7 @@
                         showPrompt: false,
                         serverOutputAsString: false,
                         callback: function (resp) {
-                            for (let i = 0; i < JSON.parse(resp.data).length; i++) {
+                            for (var i = 0; i < JSON.parse(resp.data).length; i++) {
                                 equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
                             }
                         }
@@ -619,7 +619,7 @@
 
             {
                 defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
-                itemIds: ["titleFa", "titleEn", "theoryDuration", "category.id", "subCategory.id", "erunType.id", "elevelType.id", "etheoType.id", "etechnicalType.id", "description", "mainObjective"]
+                itemIds: ["titleFa", "titleEn", "theoryDuration", "category.id", "subCategory.id", "erunType.id", "elevelType.id", "etheoType.id", "etechnicalType.id", "description", "mainObjective","domainPercent"]
             },
             {
                 colSpan: 3,
@@ -1180,7 +1180,7 @@
                         DynamicForm_course.getItem('code').setValue(x);
                         var data1 = DynamicForm_course.getValues();
 
-                        preCourseIdList = [];
+                        preCourseIdList.length = 0;
                         for (var i = 0; i < testData.length; i++) {
                             preCourseIdList.add(testData[i].id);
                         }
@@ -1196,9 +1196,9 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    let responseID = JSON.parse(resp.data).id;
+                                    var responseID = JSON.parse(resp.data).id;
                                     console.log(responseID);
-                                    let gridState = "[{id:" + responseID + "}]";
+                                    var gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     Window_course.close();
                                     ListGrid_Course_refresh();
@@ -1222,11 +1222,11 @@
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
-                for (let i = 0; i < testData.length; i++) {
+                for (var i = 0; i < testData.length; i++) {
                     preCourseIdList.add(testData[i].id);
                 }
-                for (let i = 0; i < equalCourse.length; i++) {
-                    equalCourseIdList.add(equalCourse[i].idEC);
+                for (var j = 0; j < equalCourse.length; j++) {
+                    equalCourseIdList.add(equalCourse[j].idEC);
                 }
                 data1.equalCourseListId = equalCourseIdList;
                 data1.preCourseListId = preCourseIdList;
@@ -1242,8 +1242,8 @@
                     callback: function (resp) {
 
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            let responseID = JSON.parse(resp.data).id;
-                            let gridState = "[{id:" + responseID + "}]";
+                            var responseID = JSON.parse(resp.data).id;
+                            var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
 
                             Window_course.close();
@@ -1528,7 +1528,10 @@
         DynamicForm_course.clearValues();
         DynamicForm_course.getItem("subCategory.id").setDisabled(true);
         Window_course.setTitle("<spring:message code="create"/>");
-
+        equalCourse.length = 0;
+        testData.length = 0;
+        preCourseGrid.invalidateCache();
+        equalCourseGrid.invalidateCache();
         Window_course.show();
         DynamicForm_course.getFields().get(5).prompt = "لطفا طول دوره را به صورت یک عدد وارد کنید";
     };

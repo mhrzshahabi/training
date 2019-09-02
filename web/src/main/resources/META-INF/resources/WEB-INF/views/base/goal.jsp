@@ -167,7 +167,7 @@
                 step: 2,
 change:function(form, item, value, oldValue) {
 
-                    let sumSyllabus = (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration)-(ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration)+value;
+                    var sumSyllabus = (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration)-(ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration)+value;
 Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord().theoryDuration)+" ساعت"+" و جمع مدت زمان سرفصل ها "+sumSyllabus+" ساعت می باشد.");
 // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
 },
