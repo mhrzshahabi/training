@@ -2452,7 +2452,7 @@ isc.loadSkin = function (theWindow) {
                 fontSize: 11
             });
             isc.Gauge.changeDefaults("valueLabelDefaults", {
-                fontFamily: "Arial",
+                fontFamily: "IRANSans",
                 fontWeight: "normal",
                 lineColor: "#000000"
             });

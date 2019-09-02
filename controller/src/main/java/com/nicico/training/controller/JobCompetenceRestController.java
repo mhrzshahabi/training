@@ -13,9 +13,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.JobCompetenceDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.JobDTOOld;
 import com.nicico.training.service.JobCompetenceService;
-import com.nicico.training.service.JobService;
+import com.nicico.training.service.JobServiceOld;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -39,7 +39,7 @@ import java.util.Map;
 public class JobCompetenceRestController {
 
     private final JobCompetenceService jobCompetenceService;
-    private final JobService jobService;
+    private final JobServiceOld jobService;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
@@ -133,7 +133,7 @@ public class JobCompetenceRestController {
                                   @PathVariable Long jobId) throws Exception {
 
         List<JobCompetenceDTO.Info> list = jobService.getJobCompetence(jobId);
-        JobDTO.Info info = jobService.get(jobId);
+        JobDTOOld.Info info = jobService.get(jobId);
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
         params.put("jobName", info.getTitleFa());

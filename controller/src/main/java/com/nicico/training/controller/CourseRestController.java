@@ -11,7 +11,6 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.service.CourseService;
-import com.nicico.training.service.EducationLicenseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -23,7 +22,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -200,14 +198,14 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTO.IscRes> getJob(@PathVariable Long courseId) {
-        List<JobDTO.Info> job = courseService.getJob(courseId);
-        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
+    public ResponseEntity<JobDTOOld.IscRes> getJob(@PathVariable Long courseId) {
+        List<JobDTOOld.Info> job = courseService.getJob(courseId);
+        final JobDTOOld.SpecRs specResponse = new JobDTOOld.SpecRs();
         specResponse.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        final JobDTO.IscRes specRs = new JobDTO.IscRes();
+        final JobDTOOld.IscRes specRs = new JobDTOOld.IscRes();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
