@@ -28,7 +28,6 @@
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
-
 </head>
 
 <body dir="rtl">
@@ -331,6 +330,8 @@
         }
     });
 
+    isc.ListGridField
+
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         width: "100%",
@@ -350,7 +351,6 @@
             headerTitle: "<spring:message code="row.number"/>",
             width: 100,
         },
-
     });
 
     isc.defineClass("TrImg", Img);
@@ -706,8 +706,6 @@
             createTab(title, url);
         }
     };
-
-    createTab("<spring:message code="job"/>", "<spring:url value="/job/show-form"/>");
 
 </script>
 </body>

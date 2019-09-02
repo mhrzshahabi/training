@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//<script>
+// <script>
 
     // -------------------------------------------  Menu -------------------------------------------
     JobMenu_job = isc.TrMenu.create({
@@ -42,8 +42,8 @@
     JobDS_job = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>"},
-            {name: "titleFa", title: "<spring:message code="job.title"/>"},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
         ],
         fetchDataURL: jobUrl + "iscList"
     });
@@ -51,14 +51,13 @@
     JobLG_job = isc.TrLG.create({
         dataSource: JobDS_job,
         fields: [
-            {name: "id",},
             {name: "code",},
             {name: "titleFa",},
         ],
         autoFetchData: true,
         gridComponents: [JobTS_job, "header", "filterEditor", "body",],
         contextMenu: JobMenu_job,
-        sortField: 1,
+        sortField: 0,
     });
 
     // -------------------------------------------  Page UI -------------------------------------------

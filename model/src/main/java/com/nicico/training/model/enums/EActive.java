@@ -3,7 +3,7 @@ package com.nicico.training.model.enums;
 /*
 AUTHOR: ghazanfari_f
 DATE: 6/2/2019
-TIME: 11:13 AM
+TIME: 10:58 AM
 */
 
 import com.fasterxml.jackson.annotation.JsonFormat;
@@ -15,10 +15,10 @@ import lombok.ToString;
 @Getter
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-public enum EDeleted {
+public enum EActive {
 
-    Deleted(1, "حذف شده"),
-    UnDeleted(0,"حذف نشده");
+    Active(1, "فعال"),
+    Inactive(0, "غیرفعال");
 
     private final Integer id;
     private final String titleFa;
