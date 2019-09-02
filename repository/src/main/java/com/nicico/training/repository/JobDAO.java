@@ -15,8 +15,8 @@ import java.util.List;
 
 @Repository
 public interface JobDAO extends JpaRepository<Job, Long>, JpaSpecificationExecutor<Job> {
-
+/*
 
     @Query(value = "select j.* from training.tbl_job_new j where j.e_enabled =1 and j.e_deleted = 0")
-    List<Job> findAllEnabledNotDeleted();
+    List<Job> findAllEnabledNotDeleted();*/
 }
