@@ -1,48 +1,37 @@
+/*
+ghazanfari_f, 8/29/2019, 9:11 AM
+*/
 package com.nicico.training.model;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/2/2019
-TIME: 10:30 AM
-*/
+import com.nicico.training.model.enums.EDeleted;
+import com.nicico.training.model.enums.EEnabled;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 
-import lombok.*;
-import lombok.experimental.Accessors;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
-import javax.persistence.*;
-import java.util.Set;
-
-@Getter
-@Setter
-@AllArgsConstructor
-@NoArgsConstructor
-@Accessors(chain = true)
-@EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
-@Table(name = "tbl_job")
-public class Job extends Auditable {
+@Table(name = "tbl_job_new")
+@Getter
+@EqualsAndHashCode(of = "id")
+public class Job {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_job_id")
-    @SequenceGenerator(name = "seq_job_id", sequenceName = "seq_job_id", allocationSize = 1)
-    @Column(name = "id", precision = 10)
+    @Column(name = "id")
     private Long id;
 
-	@Column(name = "c_title_fa", nullable = false)
-    private String titleFa;
-
-	@Column(name = "c_title_en")
-    private String titleEn;
-
-	@Column(name = "c_code", nullable = false)
+    @Column(name = "c_code")
     private String code;
 
-	@Column(name = "c_cost_center")
-    private String costCenter;
+    @Column(name = "c_title_fa")
+    private String titleFa;
 
-	@Column(name = "c_description")
-    private String description;
+    @Column(name = "e_enabled")
+    EEnabled eEnabled;
 
-    @OneToMany(mappedBy = "job", cascade = CascadeType.REMOVE)
-    private Set<JobCompetence> jobCompetenceSet;
+    @Column(name = "e_deleted")
+    EDeleted eDeleted;
 }

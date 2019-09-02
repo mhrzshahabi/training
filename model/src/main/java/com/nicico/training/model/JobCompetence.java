@@ -30,7 +30,7 @@ public class JobCompetence {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("f_job_id")
     @JoinColumn(name = "f_job_id")
-    private Job job;
+    private JobOld job;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("f_competence_id")
@@ -43,7 +43,7 @@ public class JobCompetence {
     @Column(name = "e_job_competence_type")
     private Integer eJobCompetenceTypeId;
 
-    public JobCompetence(Job job, Competence competence) {
+    public JobCompetence(JobOld job, Competence competence) {
         this.job = job;
         this.competence = competence;
         this.id = new JobCompetenceKey(job.getId(), competence.getId());

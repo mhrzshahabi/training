@@ -113,7 +113,7 @@ public class JobCompetenceDTO implements Serializable {
         private Integer version;
 
         private CompetenceDTO.Info competence;
-        private JobDTO.Info job;
+        private JobDTOOld.Info job;
         private EJobCompetenceType eJobCompetenceType;
         private Integer eJobCompetenceTypeId;
     }
