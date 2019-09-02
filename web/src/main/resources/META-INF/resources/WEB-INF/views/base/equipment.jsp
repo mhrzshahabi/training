@@ -9,7 +9,6 @@
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     %>
 
-
     var equipmentMethod = "get";
     var equipmentHomeUrl = rootUrl + "/equipment";
     var equipmentActionUrl = equipmentHomeUrl;
@@ -87,19 +86,11 @@
             {
                 name: "code",
                 title: "کد",
-                required: true,
                 type: 'text',
                 hint: "Persian/فارسی",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "50",
-                validators: [{
-                    validateOnExit: true,
-                    type: "lengthRange",
-                    min: 1,
-                    max: 20,
-                    stopOnError: true,
-                    errorMessage: "تعداد کاراکتر مجاز بین 1 تا 20 می باشد. "
-                }]
+                length: "20",
+                width:"300"
             },
             {
                 name: "titleFa",
@@ -108,15 +99,16 @@
                 type: 'text',
                 hint: "Persian/فارسی",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z ]",
-                length: "50",
+                length: "255",
                 validators: [{
                     validateOnExit: true,
                     type: "lengthRange",
                     min: 1,
-                    max: 50,
+                    max: 255,
                     stopOnError: true,
                     errorMessage: "تعداد کاراکتر مجاز بین 1 تا 250 می باشد. "
-                }]
+                }],
+                width:"300"
             },
 
             {
@@ -124,7 +116,7 @@
                 title: "نام لاتین ",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "50",
+                length: "255",
                 hint: "Latin",
                 validators: [{
                     validateOnExit: true,
@@ -133,20 +125,19 @@
                     max: 250,
                     stopOnError: true,
                     errorMessage: "تعداد کاراکتر مجاز بین 0 تا 250 می باشد. "
-                }]
-
+                }],
+                width:"300"
             },
             {
                 name: "description",
                 showHintInField: true,
                 title: "توضيحات",
                 length: "500",
-                width: "700",
+                width:"300",
                 type: 'areaText'
             }
         ]
     });
-
 
     var IButton_Equipment_Save = isc.IButton.create({
         top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
@@ -240,7 +231,6 @@
         }
         ListGrid_Equipment.invalidateCache();
     };
-
     function ListGrid_Equipment_remove() {
 
 
@@ -248,7 +238,7 @@
 //console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "سطح مهارتی برای حذف انتخاب نشده است!",
+                message: "هیچ تجهیز کمک آموزشی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
@@ -258,7 +248,7 @@
             });
         } else {
             var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين سطح مهارت حذف گردد؟",
+                message: "آيا مي خواهيد اين تجهیز کمک آموزشی حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -286,7 +276,7 @@
                                 if (resp.data == "true") {
                                     ListGrid_Equipment.invalidateCache();
                                     var OK = isc.Dialog.create({
-                                        message: "سطح مهارت با موفقيت حذف گرديد",
+                                        message: "تجهیز کمک آموزشی با موفقيت حذف گرديد",
                                         icon: "[SKIN]say.png",
                                         title: "انجام شد"
                                     });
@@ -312,17 +302,13 @@
 
 
     };
-
-
     function ListGrid_Equipment_Add() {
         equipmentMethod = "POST";
         equipmentActionUrl = equipmentHomeUrl;
         DynamicForm_Equipment.clearValues();
-        Window_Equipment.setTitle("ایجاد سطح مهارت جدید");
+        Window_Equipment.setTitle("ایجاد تجهیز کمک آموزشی جدید");
         Window_Equipment.show();
     };
-
-
     function ListGrid_Equipment_edit() {
         var record = ListGrid_Equipment.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -339,11 +325,10 @@
             equipmentMethod = "PUT";
             equipmentActionUrl = equipmentHomeUrl + "/" + record.id;
             DynamicForm_Equipment.editRecord(record);
-            Window_Equipment.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
+            Window_Equipment.setTitle("ویرایش تجهیز کمک آموزشی '" + record.titleFa + "'");
             Window_Equipment.show();
         }
     };
-
 
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",

@@ -651,6 +651,16 @@
         }
     })
 
+    var equipmentButton = isc.IconButton.create({
+        title: "تجهیزات کمک آموزشی",
+        icon: "pieces/512/equipment.png",
+        largeIcon: "pieces/512/equipment.png",
+        orientation: "vertical",
+        click: function () {
+            createTab("تجهیزات کمک آموزشی",  "<spring:url value="/equipment/show-form"/>", false);
+        }
+    })
+
     var skillButton = isc.IconButton.create({
         title: "مهارت",
         icon: "pieces/512/skill.png",
@@ -709,6 +719,7 @@
             jobButton,
             categoryButton,
             skillLevelButton,
+            equipmentButton,
             instituteButton,
             teacherButton,
             educationButton
