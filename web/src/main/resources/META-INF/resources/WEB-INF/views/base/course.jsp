@@ -441,7 +441,7 @@
         }
     });
     var ToolStripButton_OpenTabGoal = isc.ToolStripButton.create({
-        icon: "pieces/16/goal.png",
+        icon: "[SKIN]/actions/goal.png",
         title: "<spring:message code="create_Goal_Syllabus"/>",
         click: function () {
             openTabGoal();
@@ -593,7 +593,7 @@
 
     var DynamicForm_course = isc.MyDynamicForm.create({
         ID: "DF_course",
-        // sectionVisibilityMode: "mutex",
+        sectionVisibilityMode: "mutex",
         canTabToSectionHeaders: true,
         colWidths: [200, "*"],
         // height: "90%",
@@ -631,7 +631,11 @@
                 type: 'text',
                 width: "*",
                 // height: "30",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
+                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber],
+                change: function(form, item, value, oldValue) {
+                    form.getField("preCourseGrid").title = "پیش نیازهای دوره " + value;
+                    form.getField("equalCourseGrid").title = "معادلهای دوره " + value;
+                }
             },
             {
                 name: "titleEn",
@@ -951,8 +955,12 @@
                 }]
             },
             {
-                defaultValue: "پیشنیاز دوره", type: "section", sectionExpanded: false,
-                itemIds: ["orBtn", "andBtn", "equalCourseGrid", "courseAllGrid", "imgMove", "preCourseGrid"]
+                defaultValue: "پیشنیاز و معادل دوره", type: "section", sectionExpanded: false,
+                itemIds: ["orBtn", "andBtn", "equalCourseGrid", "courseAllGrid", "imgMove", "preCourseGrid"],
+                click: function(form) {
+                    form.getField("preCourseGrid").title = "پیش نیازهای دوره " + form.getField("titleFa").getValue();
+                    form.getField("equalCourseGrid").title = "معادلهای دوره " + form.getField("titleFa").getValue();
+                }
             },
             {
                 name: "equalCourseGrid",
@@ -1038,7 +1046,7 @@
                 title: "",
                 width: "*",
                 type: "button",
-                // icon:"pieces/512/back2.png",
+                icon:"[SKIN]/actions/configure.png",
                 click: function () {
                     if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
@@ -1061,7 +1069,7 @@
                 width: "350",
                 type: "button",
                 startRow: false,
-                icon: "pieces/512/back2.png",
+                icon: "[SKIN]/actions/back.png",
                 click: function () {
                     if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
@@ -1081,7 +1089,7 @@
                 // endRow:false,
                 width: "*",
                 type: "button",
-                // icon:"pieces/512/back2.png",
+                icon:"[SKIN]/actions/forward.png",
                 click: function () {
                     if (courseAllGrid.getSelectedRecord() == null) {
                         isc.say("دوره ای انتخاب نشده است");
