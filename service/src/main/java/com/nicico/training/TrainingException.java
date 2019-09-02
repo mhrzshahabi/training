@@ -44,7 +44,9 @@ public class TrainingException extends NICICOException {
 		AccountInfoNotFound(404),
 		ContactInfoNotFound(404),
 		PersonalInfoNotFound(404),
+		CommitteeNotFound(404),
 		TermNotFound(404);
+
 		private final Integer httpStatusCode;
 
 		@Override

@@ -10,6 +10,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.model.Category;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.CommitteeDAO;
@@ -30,6 +31,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RestController
@@ -164,6 +166,72 @@ public class CommitteeRestController {
 //        Category category = categoryDAO.getOne(id);
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
+
+
+    @Loggable
+    @PostMapping(value = "/addmember/{personId}/{committeeId}")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Void>  addMember(@PathVariable Long committeeId,@PathVariable Long personId) {
+
+        committeeService.addMember(committeeId,personId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping(value = "/addmembers/{personIds}/{committeeId}")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Void>  addMembers(@PathVariable Long committeeId,@PathVariable Set<Long> personIds) {
+
+        committeeService.addMembers(committeeId,personIds);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+     @Loggable
+    @DeleteMapping(value = "/removeMember/{committeeId}/{personId}")
+    //    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Void> removeMember(@PathVariable Long committeeId,@PathVariable Long personId) {
+
+         committeeService.removeMember(committeeId,personId);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/removeMembers/{committeeId}/{personIds}")
+    //    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId,@PathVariable Set<Long> personIds) {
+        committeeService.removeMembers(committeeId,personIds);
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/{committeeId}/getMembers")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs>  getMember(@PathVariable Long committeeId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<PersonalInfoDTO.Info> list = committeeService.getMembers(committeeId);
+
+        final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow( list.size())
+                .setTotalRows(list.size());
+
+
+        final PersonalInfoDTO.CompetenceSpecRs specRs=new PersonalInfoDTO.CompetenceSpecRs();
+        specRs.setResponse(specResponse);
+
+
+
+//        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
+//        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs,HttpStatus.OK);
+
+    }
 
 
 }

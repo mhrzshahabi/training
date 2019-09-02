@@ -71,6 +71,7 @@
     const committeeUrl=rootUrl + "/committee/";
     const skillGroupUrl=rootUrl + "/skill-group/";
     const skillUrl=rootUrl + "/skill/";
+    const personalInfoUrl=rootUrl +"/personalInfo/";
 
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
