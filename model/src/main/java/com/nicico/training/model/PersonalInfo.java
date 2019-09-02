@@ -130,4 +130,15 @@ public class PersonalInfo extends Auditable {
 
 	@Column(name = "f_edu_orientation")
 	private Long educationOrientationId;
+
+
+//     @ManyToOne(fetch = FetchType.LAZY)
+//     @JoinColumn(name = "f_committee_id",insertable = false,updatable = false)
+//     private Committee committee;
+//
+//     @Column(name = "f_committee_id")
+//     private Long committeeId;
+
+
+
 }
