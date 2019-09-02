@@ -203,28 +203,28 @@
         canHover: false,
         showHover: true,
         showHoverComponents: true,
-        getCellHoverComponent: function (record, rowNum, colNum) {
-            equalPreCourse.length = 0;
-            isc.RPCManager.sendRequest({
-                actionURL: courseUrl + "equalCourse/" + record.id,
-                httpMethod: "GET",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                        equalPreCourseDS.addData(JSON.parse(resp.data)[i]);
-                    }
-                }
-            });
-            this.rowHoverComponent = isc.ListGrid.create({
-                dataSource: equalPreCourseDS,
-                autoFetchData: true,
-            });
-            return this.rowHoverComponent;
-        },
+        <%--getCellHoverComponent: function (record, rowNum, colNum) {--%>
+            <%--equalPreCourse.length = 0;--%>
+            <%--isc.RPCManager.sendRequest({--%>
+                <%--actionURL: courseUrl + "equalCourse/" + record.id,--%>
+                <%--httpMethod: "GET",--%>
+                <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--useSimpleHttp: true,--%>
+                <%--contentType: "application/json; charset=utf-8",--%>
+                <%--showPrompt: false,--%>
+                <%--serverOutputAsString: false,--%>
+                <%--callback: function (resp) {--%>
+                    <%--for (var i = 0; i < JSON.parse(resp.data).length; i++) {--%>
+                        <%--equalPreCourseDS.addData(JSON.parse(resp.data)[i]);--%>
+                    <%--}--%>
+                <%--}--%>
+            <%--});--%>
+            <%--this.rowHoverComponent = isc.ListGrid.create({--%>
+                <%--dataSource: equalPreCourseDS,--%>
+                <%--autoFetchData: true,--%>
+            <%--});--%>
+            <%--return this.rowHoverComponent;--%>
+        <%--},--%>
 
         doubleClick: function () {
             DynamicForm_course.clearValues();
@@ -238,18 +238,18 @@
             RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
-            ListGrid_CourseSkill.fetchData();
-            ListGrid_CourseSkill.invalidateCache();
+            // RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
+            // ListGrid_CourseSkill.fetchData();
+            // ListGrid_CourseSkill.invalidateCache();
             // RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
             // ListGrid_CourseJob.fetchData();
             // ListGrid_CourseJob.invalidateCache();
             // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
             // ListGrid_CourseCompetence.fetchData();
             // ListGrid_CourseCompetence.invalidateCache();
-            for (i = 0; i < mainTabSet.tabs.length; i++) {
-                if ("اهداف" == (mainTabSet.getTab(i).title).substr(0, 5)) {
-                    mainTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
+            for (i = 0; i < trainingTabSet.tabs.length; i++) {
+                if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
+                    trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
                 }
             }
             // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
@@ -1510,9 +1510,9 @@
 
     function ListGrid_Course_refresh() {
         ListGrid_Course.invalidateCache();
-        for (j = 0; j < mainTabSet.tabs.length; j++) {
-            if (mainTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
-                mainTabSet.removeTab(j);
+        for (j = 0; j < trainingTabSet.tabs.length; j++) {
+            if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
+                trainingTabSet.removeTab(j);
             }
         }
     };
