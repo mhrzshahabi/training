@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -132,12 +133,11 @@ public class PersonalInfo extends Auditable {
 	private Long educationOrientationId;
 
 
-//     @ManyToOne(fetch = FetchType.LAZY)
-//     @JoinColumn(name = "f_committee_id",insertable = false,updatable = false)
-//     private Committee committee;
-//
-//     @Column(name = "f_committee_id")
-//     private Long committeeId;
+@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(name = "tbl_committee_personalInfo",
+            joinColumns = {@JoinColumn(name = "f_personalinfo_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")})
+    private Set<Committee> committeeSet;
 
 
 
