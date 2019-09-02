@@ -1,27 +1,15 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+<%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 <html>
 <head>
-    <title>سیستم آموزش     </title>
-
-    <link rel="stylesheet" href="<spring:url value='/static/css/smartStyle.css' />"/>
-    <link rel="shortcut icon" href="<spring:url value='/static/img/icon/nicico.ico' />"/>
-
-    <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/all.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
-    <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
-
+    <title><spring:message code="nicico.training.system"/></title>
+    <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -30,25 +18,29 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Forms.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/system/modules/ISC_Charts.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
+    // <SCRIPT SRC=isomorphic/skins/EnterpriseBlue/load_skin.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
+
+    <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
+    <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
+    <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
+    <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
+    <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
+    <script src="<spring:url value='/static/script/js/all.js'/>"></script>
+    <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
+    <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 
 </head>
 
 <body dir="rtl">
 
-<form action="<spring:url value='/logout' />" method="get" id="logoutForm">
-</form>
-
 <script type="application/javascript">
 
-    <%--<script>--%>
-
-	<spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
+    // -------------------------------------------  URLs   -----------------------------------------------
+    <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
+
+    // ---------------------------------------- Not Ok - Start ----------------------------------------
     const jobUrl = rootUrl + "/job/";
     const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
@@ -65,14 +57,15 @@
     const educationLevelUrl = rootUrl + "/educationLevel/";
     const educationMajorUrl = rootUrl + "/educationMajor/";
     const educationOrientationUrl = rootUrl + "/educationOrientation/";
-    const termUrl=rootUrl + "/term/";
-    const cityUrl=rootUrl + "/city/";
-    const stateUrl=rootUrl + "/state/";
-    const committeeUrl=rootUrl + "/committee/";
-    const skillGroupUrl=rootUrl + "/skill-group/";
-    const skillUrl=rootUrl + "/skill/";
+    const termUrl = rootUrl + "/term/";
+    const cityUrl = rootUrl + "/city/";
+    const stateUrl = rootUrl + "/state/";
+    const committeeUrl = rootUrl + "/committee/";
+    const skillGroupUrl = rootUrl + "/skill-group/";
+    const skillUrl = rootUrl + "/skill/";
+    // ---------------------------------------- Not Ok - End ----------------------------------------
 
-
+    // ---------------------------------------- Not Ok - Start ----------------------------------------
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -88,7 +81,6 @@
     };
 
     isc.defineClass("MyRestDataSource", RestDataSource);
-
     isc.MyRestDataSource.addProperties({
         dataFormat: "json",
         jsonSuffix: "",
@@ -99,27 +91,10 @@
             };
             return this.Super("transformRequest", arguments);
         },
-
         transformResponse: function (dsResponse, dsRequest, data) {
             return this.Super("transformResponse", arguments);
         }
     });
-
-	<%--isc.RestDataSource.addProperties({--%>
-		<%--dataFormat: "json",--%>
-		<%--jsonSuffix: "",--%>
-		<%--jsonPrefix: "",--%>
-		<%--transformRequest: function (dsRequest) {--%>
-			<%--dsRequest.httpHeaders = {--%>
-				<%--"Authorization": "Bearer <%= accessToken %>"--%>
-			<%--};--%>
-			<%--return this.Super("transformRequest", arguments);--%>
-		<%--},--%>
-
-		<%--transformResponse: function (dsResponse, dsRequest, data) {--%>
-			<%--return this.Super("transformResponse", arguments);--%>
-		<%--}--%>
-	<%--});--%>
 
     isc.defineClass("MyListGrid", ListGrid);
     isc.MyListGrid.addProperties({
@@ -208,22 +183,22 @@
             errorMessage: "فيلد اجباري است.",
             expression: /^(?!\s*$).+/
         },
-    NotStartWithNumber:{
-        type:"regexp",
-        errorMessage:"این فیلد نباید با عدد شروع شود.",
-        expression:/^(?!([0-9]))/,
-    },
-        NotStartWithSpecialChar:{
-            type:"regexp",
-            errorMessage:"این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression:/^(?!([!@#$%^&*~';:.{}_]))/,
+        NotStartWithNumber: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید با عدد شروع شود.",
+            expression: /^(?!([0-9]))/,
         },
-        NotContainSpecialChar:{
-            type:"regexp",
-            errorMessage:"این فیلد نباید شامل حروف خاص باشد.",
-            expression:/^((?![~!@#$%^&*()+='"?]).)*$/,
+        NotStartWithSpecialChar: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
+            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
         },
-       };
+        NotContainSpecialChar: {
+            type: "regexp",
+            errorMessage: "این فیلد نباید شامل حروف خاص باشد.",
+            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
+        },
+    };
 
     isc.defineClass("MyButton", Button);
 
@@ -317,11 +292,6 @@
         autoDraw: false,
     });
 
-
-    isc.RPCManager.allowCrossDomainCalls = true;
-    isc.FileLoader.loadLocale("fa");
-    isc.FileLoader.cacheLocale("fa");
-
     isc.RPCManager.addClassProperties({
         defaultTimeout: 60000,
         willHandleError: true,
@@ -330,620 +300,415 @@
         }
     });
 
-    Page.setAppImgDir("static/img/");
-    var headerLayout;
+    // ---------------------------------------- Not Ok - End ----------------------------------------
 
-    function getIconButton(title, props) {
-        return isc.IconButton.create(isc.addProperties({
-                title: title
-                // icon: "pieces/16/cube_blue.png",
-                //largeIcon: "pieces/48/cube_blue.png",
-                /*                click: "isc.say(this.title + ' button clicked');"*/
-            }, props)
-        );
-    }
+    // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
+    isc.RPCManager.allowCrossDomainCalls = true;
 
-
-    function createTab(title, url, canRefresh) {
-        var localViewLoder = isc.ViewLoader.create({
-            width: "100%",
-            height: "100%",
-            autoDraw: true,
-            viewURL: url,
-            loadingMessage: " در حال بارگذاری ..."
-        });
-
-        var flagTabExist = false;
-
-        if (mainTabSet.tabs != null) {
-            //alert(mainTabSet.tabs.length);
-            for (i = 0; i < mainTabSet.tabs.length; i++) {
-
-                if (title == mainTabSet.getTab(i).title) {
-                    if(title == "دوره")
-                    {
-                        for (j = 0; j < mainTabSet.tabs.length; j++)
-                        {
-                            if(mainTabSet.getTab(j).title.substr(0,5)=="اهداف")
-                            {
-                                mainTabSet.removeTab(j);
-                            }
-                        }
-                    }
-                    if (!canRefresh) {
-                        mainTabSet.selectTab(i);
-                        mainTabSet.setTabPane(i, localViewLoder);
-                        flagTabExist = true;
-                        break;
-
-                    } else {
-                        //mainTabSet.setTabPane(i,"");
-                        mainTabSet.setTabPane(i, localViewLoder);
-                        flagTabExist = true;
-                        break;
-
-                    }
-
-                }
-
-            }
-
+    var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+        return {
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true,
+            showPrompt: false,
+            httpMethod: httpMethodParam,
+            actionURL: actionURLParam,
+            data: dataParam,
+            callback: callbackParam
         }
-        if (!flagTabExist)
-            mainTabSet.selectTab(mainTabSet.addTab({
-                    title: title,
-                    canClose: true,
-                    pane: localViewLoder
-                })
-            );
-
-    }
-
-    var languageForm = isc.DynamicForm.create({
-        width: 120,
-        height: 30,
-        wrapItemTitles: true,
-
-        fields: [{
-            name: "languageName", title: "<span style=\"color:white\">زبان</span>",
-
-            type: "select",
-            width: 100,
-            height: 30,
-
-            wrapHintText: false,
-            valueMap: {
-                "fa": "پارسی",
-                "en": "English"
-            },
-            imageURLPrefix: "flags/16/",
-            imageURLSuffix: ".png",
-            valueIcons: {
-                "fa": "fa",
-                "en": "en"
-            },
-
-            changed: function () {
-                var newUrl = window.location.href;
-                var selLocale = languageForm.getValue("languageName");
-
-                if (newUrl.indexOf("lang") > 0) {
-
-                    var regex = new RegExp("lang=[a-zA-Z_]+");
-                    newUrl = newUrl.replace(regex, "lang=" + selLocale);
-                } else {
-
-                    if (newUrl.indexOf("?") > 0) {
-                        if (newUrl.indexOf("#") > 0) {
-                            newUrl = newUrl.replace("#", "&lang=" + selLocale + "#")
-                        } else {
-                            newUrl += "&lang=" + selLocale;
-                        }
-                    } else {
-                        //newUrl = newUrl.replace("#", "?lang=" + selLocale )
-                        newUrl = newUrl + "?lang=" + selLocale;
-
-                    }
-                }
-                window.location.href = newUrl;
-            }
-        }]
-    });
-
-    languageForm.setValue("languageName", "<c:out value='${pageContext.response.locale}'/>");
-
-    var userCartableButton = isc.IconButton.create({
-
-
-        title: "شخصی (${cartableCount})",
-        icon: "pieces/512/userCartable.png",
-        largeIcon: "pieces/512/userCartable.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("شخصی  ", "<spring:url value='/web/workflow/userCartable/showForm'/>", true);
-            isc.RPCManager.sendRequest({
-                /*willHandleError: true,
-                timeout: 500,*/
-                actionURL: "<spring:url value='${contextPath}/api/workflow/userTask/count/' />" + "${username}",
-                httpMethod: "GET",
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                serverOutputAsString: false,
-                callback: function (RpcResponse_o) {
-                    if (RpcResponse_o.status < 0) {
-                        isc.say('خطا در اتصال به سرور !!!');
-                    }
-                    // isc.say(RpcResponse_o);
-                    if (RpcResponse_o.data != 'failed') {
-
-
-                        cartableCount = RpcResponse_o.data;
-                        console.log("${cartableCount}", cartableCount);
-                        if (userCartableButton != null)
-                            userCartableButton.setTitle("شخصی (" + cartableCount + "   )");
-                    } else if (RpcResponse_o.data == 'failed') {
-                        isc.say(RpcResponse_o.data);
-                    }
-                }
-            });
-
-        }
-
-    });
-
-    var groupCartableButton = isc.IconButton.create({
-        title: "گروهی (0)",
-        icon: "pieces/512/groupCartable.png",
-        largeIcon: "pieces/512/groupCartable.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("گروهی", "<spring:url value='/web/workflow/groupCartable/showForm'/>", true)
-        }
-
-    });
-
-    var Menu_Workflow_Util = {
-        _constructor: "Menu",
-        autoDraw: true,
-        showShadow: true,
-        shadowDepth: 10,
-        data: [
-            {
-                title: "تعریف فرایندها", icon: "pieces/512/processDefinition.png", click: function () {
-                    createTab("تعریف فرایندها", "<spring:url value='/web/workflow/processDefinition/showForm'/>", true);
-
-                }
-            },
-            {
-                title: "همه فرایندها", icon: "pieces/512/processList.png", click: function () {
-                    createTab("همه فرآیندها", "<spring:url value='/web/workflow/processInstance/showForm'/>", true)
-                }
-            }
-        ]
     };
 
-
-    var workflowUtilMenuButton = isc.IconMenuButton.create({
-        title: "فرآیند",
-        orientation: "vertical",
-        menu: Menu_Workflow_Util,
-        showMenuIconOver: false,
-        showMenuOnClick: true,
-        icon: "pieces/512/processDefinition.png"
-    });
-
-    var classButton = isc.IconButton.create({
-        title: "کلاس",
-        icon: "pieces/512/class.png",
-        largeIcon: "pieces/512/class.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("کلاس", "<spring:url value="/tclass/show-form"/>", false)
+    isc.defineClass("TrDS", RestDataSource);
+    isc.TrDS.addProperties({
+        dataFormat: "json",
+        jsonSuffix: "",
+        jsonPrefix: "",
+        defaultTextMatchStyle: "substring",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"};
+            return this.Super("transformRequest", arguments);
+        },
+        transformResponse: function (dsResponse, dsRequest, data) {
+            return this.Super("transformResponse", arguments);
         }
     });
 
-    var studentButton = isc.IconButton.create({
-        title: "دانشجو",
-        icon: "pieces/512/student.png",
-        largeIcon: "pieces/512/student.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("دانشجو", "<spring:url value="/student/show-form"/>", false)
-        }
-    });
-
-
-    var courseButton = isc.IconButton.create({
-        title: "<spring:message code="course"/>",
-        icon: "pieces/512/course.png",
-        largeIcon: "pieces/512/course.png",
-        orientation: "vertical",
-        click: function () {
-
-            createTab("<spring:message code="course"/>", "<spring:url value="/course/show-form"/>", false);
-        }
-    });
-
-    var termButton = isc.IconButton.create({
-        title: "ترم",
-        icon: "pieces/512/term.png",
-        largeIcon: "pieces/512/term.png",
-        orientation: "vertical",
-        click: function () {
-
-            createTab("ترم", "<spring:url value="/term/show-form"/>", false);
-        }
-    });
-
-
- var memberButton = isc.IconButton.create({
-        title: "اعضا",
-        icon: "pieces/512/member.png",
-        largeIcon: "pieces/512/member.png",
-        orientation: "vertical",
-        click: function () {
-
-            createTab("اعضا", "<spring:url value="/user/show-form"/>", false);
-        }
-    });
-
-      var committeeButton = isc.IconButton.create({
-        title: "کمیته تخصصی",
-        icon: "pieces/512/committee.png",
-        largeIcon: "pieces/512/committee.png",
-        orientation: "vertical",
-        click: function () {
-
-            createTab("کمیته تخصصی", "<spring:url value="/committee/show-form"/>", false);
-        }
-    });
-
-
-    var jobButton = isc.IconButton.create({
-        title: "شغل",
-        icon: "pieces/512/job.png",
-        largeIcon: "pieces/512/job.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("شغل", "<spring:url value="/job/show-form"/>", false);
-        }
-    });
-
-    var instituteButton = isc.IconButton.create({
-        title: "مراکز آموزشي",
-        icon: "pieces/512/institute.png",
-        largeIcon: "pieces/512/institute.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("مراکز آموزشي", "<spring:url value="/institute/show-form"/>", false);
-        }
-    })
-
-    var competenceButton = isc.IconButton.create({
-        title: "شايستگي شغلي",
-        icon: "pieces/512/competence.png",
-        largeIcon: "pieces/512/competence.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("شايستگي شغلي", "/competence/show-form", false);
-        }
-    })
-
-    var categoryButton = isc.IconButton.create({
-        title: "گروه بندی",
-        icon: "pieces/512/category.png",
-        largeIcon: "pieces/512/category.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("گروه بندي", "<spring:url value="/category/show-form"/>", false);
-        }
-    })
-
-    var skillLevelButton = isc.IconButton.create({
-        title: "سطح مهارت",
-        icon: "pieces/512/skill-level.png",
-        largeIcon: "pieces/512/skill-level.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("سطح مهارت",  "<spring:url value="/skill-level/show-form"/>", false);
-        }
-    })
-
-    var equipmentButton = isc.IconButton.create({
-        title: "تجهیزات کمک آموزشی",
-        icon: "pieces/512/equipment.png",
-        largeIcon: "pieces/512/equipment.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("تجهیزات کمک آموزشی",  "<spring:url value="/equipment/show-form"/>", false);
-        }
-    })
-
-    var skillButton = isc.IconButton.create({
-        title: "مهارت",
-        icon: "pieces/512/skill.png",
-        largeIcon: "pieces/512/skill.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("مهارت",  "<spring:url value="/skill/show-form"/>", false)
-        }
-    })
-
-    var skillStandardGroupButton = isc.IconButton.create({
-        title: "گروه مهارت",
-        icon: "pieces/512/ssg.png",
-        largeIcon: "pieces/512/ssg.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("گروه مهارت", "<spring:url value="/skill-group/show-form"/>", false);
-        }
-    })
-
-    var teacherButton = isc.IconButton.create({
-        title: "اساتید",
-        icon: "pieces/512/teacher.png",
-        largeIcon: "pieces/512/teacher.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("استاد", "<spring:url value="/teacher/show-form"/>", false)
-        }
-    })
-    var educationButton = isc.IconButton.create({
-        title: "تحصیلات",
-        icon: "pieces/512/education.png",
-        largeIcon: "pieces/512/education.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("تحصیلات", "<spring:url value="/education/show-form"/>", false)
-        }
-    })
-
-    var competencyReportButton = isc.IconButton.create({
-        title: "گزارش کلاس ها",
-        icon: "pieces/512/repo1.png",
-        largeIcon: "pieces/512/repo1.png",
-        orientation: "vertical",
-        click: function () {
-            createTab("گزارش کلاس ها", "<spring:url value="/classReport/show-form"/>", false)
-        }
-    })
-    var baseRibbon = isc.RibbonGroup.create({
-        title: "<spring:message code='base.system.info'/>",
-        numRows: 3,
-        colWidths: [40, "*"],
-        showTitle: true,
-        titleAlign: "center",
-        controls: [
-            jobButton,
-            categoryButton,
-            skillLevelButton,
-            equipmentButton,
-            instituteButton,
-            teacherButton,
-            educationButton
-        ],
-        autoDraw: true
-    });
-
-    var reqRibbon = isc.RibbonGroup.create({
-        title: "نیازسنجی",
-        numRows: 3,
-        colWidths: [40, "*"],
-        showTitle: true,
-        titleAlign: "center",
-        controls: [
-            competenceButton,
-            skillButton,
-            skillStandardGroupButton
-
-        ],
-        autoDraw: true
-    });
-
-    var cartableRibbon = isc.RibbonGroup.create({
-        title: "کارتابل",
-        numRows: 3,
-        colWidths: [40, "*"],
-        showTitle: true,
-        titleAlign: "center",
-        controls: [
-            userCartableButton,
-            groupCartableButton,
-            workflowUtilMenuButton
-        ],
-        autoDraw: true
-    });
-
-    var reportRibbon = isc.RibbonGroup.create({
-        title: "گزارشات",
-        numRows: 3,
-        colWidths: [40, "*"],
-        showTitle: true,
-        titleAlign: "center",
-        controls: [
-            competencyReportButton,
-        ],
-        autoDraw: true
-    });
-
-    var trainingRibbon = isc.RibbonGroup.create({
-        title: "آموزش",
-        numRows: 3,
-        colWidths: [40, "*"],
-        showTitle: true,
-        titleAlign: "center",
-        controls: [
-            classButton,
-            courseButton,
-            termButton,
-            memberButton,
-            committeeButton,
-            studentButton,
-        ],
-        autoDraw: true
-    });
-
-
-    var headerFlow = isc.HTMLFlow.create({
-        width: "20%",
-        height: "100%",
-        styleName: "mainHeaderStyleOnline",
-        contents: "سیستم آموزش"
-
-    });
-
-    var label_Username = isc.Label.create({
-        width: "30%",
-        height: "100%",
-        align: "left",
-        styleName: "mainHeaderStyleOnline",
-        contents: "کاربر : ${userFullName}",
-        dynamicContents: true
-    });
-
-
-    var logoutButton = isc.IButton.create({
-        width: "100",
-        height: "100%",
-        title: "خروج",
-        icon: "pieces/512/logout.png",
-        click: function () {
-            document.getElementById("logoutForm").submit();
-        }
-    });
-
-    var headerExitHLayout = isc.HLayout.create({
-        width: "40%",
-        height: "30",
-        align: "left",
-        backgroundColor: "#2319ff",
-        members: [
-            languageForm, label_Username, logoutButton]
-    });
-
-
-    headerLayout = isc.HLayout.create({
+    isc.defineClass("TrLG", ListGrid);
+    isc.TrLG.addProperties({
         width: "100%",
-        height: "30",
-        // border: "1px solid black",
-        backgroundColor: "#2319ff",
-        // styleName:"mainHeaderStyleOnline",
-        members: [headerFlow, headerExitHLayout]
-    });
-
-
-    var ribbonBar = isc.RibbonBar.create({
-        backgroundColor: "#f0f0f0",
-        groupTitleAlign: "center",
-        groupTitleOrientation: "top"
-    });
-
-    ribbonBar.addGroup(baseRibbon, 0);
-    ribbonBar.addGroup(reqRibbon, 1);
-    ribbonBar.addGroup(trainingRibbon, 2)
-    ribbonBar.addGroup(cartableRibbon, 3);
-    ribbonBar.addGroup(reportRibbon, 3);
-
-
-    var ribbonHLayout = isc.HLayout.create({
-        width: "100%",
-        height: "60",
-        // border: "2px solid green",
+        height: "100%",
+        selectionType: "single",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        alternateRecordStyles: true,
+        autoDraw: false,
         showResizeBar: true,
-        showShadow: false,
-        backgroundColor: "#2319ff",
-        members: [ribbonBar]
+        leaveScrollbarGap: false,
+        allowAdvancedCriteria: true,
+        showRowNumbers: true,
+        AutoFitWidthApproach: "both",
+        canDragResize: true,
+        rowNumberFieldProperties: {
+            headerTitle: "<spring:message code="row.number"/>",
+            width: 100,
+        },
+
     });
 
+    isc.defineClass("TrImg", Img);
+    isc.TrImg.addProperties({
+        autoDraw: false,
+    });
 
-    var mainTabSet = isc.TabSet.create({
-        tabBarPosition: "top",
+    isc.defineClass("TrLabel", Label);
+    isc.TrLabel.addProperties({
+        autoDraw: false,
+        wrap: false,
+    });
+
+    isc.defineClass("TrHLayout", HLayout);
+    isc.TrHLayout.addProperties({
         width: "100%",
         height: "100%",
-        tabs: [],
-        closeClick: function (tab) {
-            var tTitle = tab.ID;
+        defaultLayoutAlign: "center",
+        autoDraw: false,
+    });
 
-            if (tTitle.startsWith("tabDocument")) {
-                //alert("test");
-            }
+    isc.defineClass("TrVLayout", VLayout);
+    isc.TrVLayout.addProperties({
+        width: "100%",
+        height: "100%",
+        defaultLayoutAlign: "center",
+        autoDraw: false,
+        overflow: "auto",
+    });
 
-            this.Super("closeClick", arguments);
-        },
+    isc.defineClass("TrTS", ToolStrip);
+    isc.TrTS.addProperties({
+        border: "0px",
+        autoDraw: false,
+    });
 
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
-            var tabTitle = ID.title;
-            if(tabTitle.substr(0,5) == "اهداف"){
-                setTimeout(function () {
+    isc.defineClass("TrTSMB", ToolStripMenuButton);
+    isc.TrTSMB.addProperties({
+        autoDraw: false,
+        showMenuOnRollOver: true,
+        click() {
+            return false;
+        }
+    });
 
-                   RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id +"/goal";
-                   ListGrid_Goal.fetchData();
-                   ListGrid_Goal.invalidateCache();
-                   RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
-                   ListGrid_Syllabus_Goal.fetchData();
-                   ListGrid_Syllabus_Goal.invalidateCache();
+    isc.defineClass("TrTSB", ToolStripButton);
+    isc.TrTSB.addProperties({
+        autoDraw: false,
+    });
 
-                }, 100);
-            }
-            if(tabTitle.substr(0,4) == "دوره"){
-                setTimeout(function () {
-                    ListGrid_CourseCompetence.invalidateCache();
-                    ListGrid_CourseSkill.invalidateCache();
-                    ListGrid_CourseJob.invalidateCache();
-                    ListGrid_CourseGoal.invalidateCache();
-                    if(courseId != ""){
-                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
-                        ListGrid_CourseSyllabus.fetchData();
-                        ListGrid_CourseSyllabus.invalidateCache();
+    isc.defineClass("TrMenu", Menu);
+
+    isc.defineClass("TrTabSet", TabSet);
+    isc.TrTabSet.addProperties({
+        autoDraw: false,
+        width: "100%",
+        height: "100%",
+    });
+
+    isc.defineClass("TrViewLoader", ViewLoader);
+    isc.TrViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        autoDraw: false,
+        loadingMessage: "<spring:message code="loading"/>",
+    });
+
+    isc.defineClass("TrRefreshBtn", TrTSB);
+    isc.TrRefreshBtn.addProperties({
+        icon: "<spring:url value="refresh.png"/>",
+        title: "<spring:message code="refresh"/>",
+    });
+
+    isc.defineClass("TrPrintBtn", TrTSMB);
+    isc.TrPrintBtn.addProperties({
+        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>"},
+                {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>"},
+                {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>"},
+            ]
+        }),
+    });
+
+    // -------------------------------------------  Page UI                          -----------------------------------------------
+
+    systemImg = isc.TrImg.create({
+        src: "<spring:url value="training.png"/>",
+        width: 24,
+        height: 24,
+        imageType: "stretch",
+        padding: 5,
+    });
+
+    systemLabel = isc.TrLabel.create({
+        contents: "<spring:message code="nicico.training.system"/>",
+        styleName: "normalBold",
+        padding: 5,
+    });
+
+    systemHLayout = isc.TrHLayout.create({
+        align: "right",
+        padding: 5,
+        members: [systemImg, systemLabel],
+    });
+
+    userTSMB = isc.TrTSMB.create({
+        title: "${username}",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="personalization"/>",
+                    icon: "<spring:url value="personalization.png"/>"
+                },
+                {
+                    title: "<spring:message code="logout"/>",
+                    icon: "<spring:url value="logout.png"/>",
+                    click: function () {
+                        logout();
                     }
-                }, 100);
-            }
-        },
+                },
+            ]
+        }),
+    });
 
-        tabBarControls: [
-            isc.IButton.create({
-                title: "بستن همه",
-                icon: "icon/closeAllTabs.png",
-                width: 100, height: 20,
-                click: function () {
-                    isc.Dialog.create({
-                        message: "آیا شما برای بستن همه تبها مطمئن هستید؟",
-                        icon: "[SKIN]ask.png",
-                        title: "تائید",
-                        isModal: true,
-                        buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
-                        buttonClick: function (button, index) {
-                            this.hide();
-                            if (index == 0) {
-                                mainTabSet.removeTabs(mainTabSet.tabs);
-                            }
-                        }
-                    });
+    userHLayout = isc.TrHLayout.create({
+        align: "left",
+        members: [userTSMB],
+    });
 
-                }
+    basicTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="basic.information"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="skill.categorize"/>", icon: "<spring:url value="categorize.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/category/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="skill.level"/>", icon: "<spring:url value="level.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/skill-level/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="education"/>", icon: "<spring:url value="education.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/education/show-form"/>");
+                    }
+                },
+            ]
+        }),
+    });
 
-            }),
-            "tabScroller", "tabPicker"
+    needAssessmentTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="training.need.assessment"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/job/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/post/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="job.competence"/>", icon: "<spring:url value="competence.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/competence/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="skill"/>", icon: "<spring:url value="skill.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/skill/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="skill.group"/>", icon: "<spring:url value="skillGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
+                    }
+                },
+            ]
+        }),
+    });
+
+    designingTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="training.designing.and.planning"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="course"/>", icon: "<spring:url value="course.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/course/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/syllabus/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/goal/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/term/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="specialized.committee"/>",
+                    icon: "<spring:url value="committee.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/committee/show-form"/>");
+                    }
+                },
+
+            ]
+        }),
+    });
+
+    runTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="training.run"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="class"/>", icon: "<spring:url value="class.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/tclass/show-form"/>");
+                    },
+                },
+                {
+                    title: "<spring:message code="student"/>", icon: "<spring:url value="student.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/student/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="teacher"/>", icon: "<spring:url value="teacher.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/teacher/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="institute"/>", icon: "<spring:url value="institute.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/institute/show-form"/>");
+                    }
+                },
+
+            ]
+        }),
+    });
+
+    evaluationTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="training.evaluation"/>",
+        menu: isc.TrMenu.create({
+            data: []
+        }),
+    });
+
+    cartableTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="cartable"/>",
+        menu: isc.TrMenu.create({
+            data: [
+                {
+                    title: "<spring:message code="personal"/>", icon: "<spring:url value="personal.png"/>",
+                    click: function () {
+                    }
+                },
+                {
+                    title: "<spring:message code="group"/>", icon: "<spring:url value="group.png"/>",
+                    click: function () {
+                    }
+                },
+                {
+                    title: "<spring:message code="workflow"/>", icon: "<spring:url value="workflow.png"/>",
+                    click: function () {
+                    }
+                },
+            ]
+        }),
+    });
+
+    reportTSMB = isc.TrTSMB.create({
+        title: "<spring:message code="report"/>",
+        menu: isc.TrMenu.create({
+            data: []
+        }),
+    });
+
+    trainingToolStrip = isc.TrTS.create({
+        members: [
+            basicTSMB,
+            needAssessmentTSMB,
+            designingTSMB,
+            runTSMB,
+            evaluationTSMB,
+            cartableTSMB,
+            reportTSMB
         ]
     });
-    isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        // border: "2px solid red",
-        overflow: "auto",
 
-        backgroundColor: "",
-        members: [headerLayout, ribbonHLayout, mainTabSet]
+    trainingTabSet = isc.TrTabSet.create({
+        tabs: [],
     });
 
+    isc.TrVLayout.create({
+        autoDraw: true,
+        members: [
+            isc.TrHLayout.create({height: "1%", members: [systemHLayout, userHLayout],}),
+            isc.TrHLayout.create({height: "1%", members: [trainingToolStrip]}),
+            trainingTabSet,
+        ]
+    });
 
+    // -------------------------------------------  Functions                          -----------------------------------------------
+
+    function logout() {
+        document.location.href = "logout";
+    };
+
+    function createTab(title, url, autoRefresh) {
+        var tab = trainingTabSet.getTabObject(title);
+        if (tab !== undefined) {
+            if ((autoRefresh !== undefined) && (autoRefresh == true)) {
+                trainingTabSet.setTabPane(tab, isc.TrViewLoader.create({viewURL: url}));
+            }
+            trainingTabSet.selectTab(tab);
+            return;
+        } else {
+            trainingTabSet.addTab({
+                title: title,
+                ID: title,
+                pane: isc.TrViewLoader.create({viewURL: url}),
+                canClose: true,
+            });
+            createTab(title, url);
+        }
+    };
 
 </script>
-
 </body>
 </html>
-
-
-
