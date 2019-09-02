@@ -32,49 +32,6 @@ public class TeacherFormController {
 		return "base/teacher";
 	}
 
-   	@GetMapping(value = {"/getTempAttach/{fileName}"})
-	public String getTempAttach(ModelMap modelMap, Authentication authentication,@PathVariable String fileName) {
-		String token = "";
-		if (authentication instanceof OAuth2AuthenticationToken) {
-			OAuth2AuthorizedClient client = authorizedClientService
-					.loadAuthorizedClient(
-							((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-							authentication.getName());
-			token = client.getAccessToken().getTokenValue();
-		}
-        HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-        HttpEntity<String> request = new HttpEntity<String>(headers);
-
-		String restApiUrl="htttp:localhost:8080/training";
-
-        RestTemplate restTemplate = new RestTemplate();
-		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getTempAttach/"+fileName , HttpMethod.GET, request, byte[].class);
-		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
-
-        return "base/teacherImage";
-    }
-
-
-   	@GetMapping(value = {"/getAttach/{Id}"})
-	public String getAttach(ModelMap modelMap, final HttpServletRequest request,@PathVariable Long Id) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
-
-        HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-
-		String restApiUrl="htttp:localhost:8080/training";
-
-        RestTemplate restTemplate = new RestTemplate();
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
-		ResponseEntity<byte[]> teacherImg = restTemplate.exchange(restApiUrl + "/api/teacher/getAttach/"+Id , HttpMethod.GET, entity, byte[].class);
-		modelMap.addAttribute("teacherImg", Base64.getEncoder().encodeToString(teacherImg.getBody()));
-
-        return "base/teacherImage";
-    }
-
-
     @PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("AccessToken");

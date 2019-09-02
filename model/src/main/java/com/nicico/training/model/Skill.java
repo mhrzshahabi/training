@@ -64,13 +64,6 @@ public class Skill extends Auditable{
     @Column(name = "f_sub_category")
     private Long subCategoryId;
 
-//  نوع غالب مهارت(دانشی، مهارتی و نگرشی)
-    @Column(name = "e_domain_type", insertable = false, updatable = false)
-    private EDomainType eDomainType;
-
-    @Column(name = "e_domain_type")
-    private Integer edomainTypeId;
-
     //-------------------------------------------------
     @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
 	@JoinTable(name = "tbl_skill_course",
@@ -80,9 +73,6 @@ public class Skill extends Auditable{
 
     @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet" )
     private Set<SkillGroup> skillGroupSet;
-
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet")
-    private Set<Competence> competenceSet;
 
 
 }

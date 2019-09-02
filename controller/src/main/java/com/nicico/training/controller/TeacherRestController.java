@@ -11,16 +11,9 @@ import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.AccountInfo;
-import com.nicico.training.model.City;
-import com.nicico.training.model.State;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.repository.CityDAO;
-import com.nicico.training.repository.StateDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -57,11 +50,7 @@ public class TeacherRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
 
-    @Value("${nicico.teacher.upload.dir}")
-    private String teacherUploadDir;
 
-    @Value("${nicico.temp.upload.dir}")
-    private String tempUploadDir;
 
     private final TeacherDAO teacherDAO;
 
@@ -192,133 +181,6 @@ public class TeacherRestController {
         List<Long> categorySet = teacherService.getCategories(teacherId);
         return new ResponseEntity(categorySet, HttpStatus.OK);
     }
-
-
-    @Loggable
-    @Transactional
-    @PostMapping(value = "/addAttach/{Id}")
-    public ResponseEntity<String> addAttach(@RequestParam("file") MultipartFile file, @PathVariable Long Id) {
-        FileInfo fileInfo = new FileInfo();
-        File destinationFile = null;
-        String changedFileName = "";
-        try {
-            if (!file.isEmpty()) {
-                final Optional<Teacher> cById = teacherDAO.findById(Id);
-                final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-//                if (teacher.getAttachPhoto() != null && teacher.getAttachPhoto() != "") {
-//                    File file1 = new File(teacherUploadDir + "/" + teacher.getAttachPhoto());
-//                    file1.delete();
-//                }
-                String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
-//        			changedFileName = file.getOriginalFilename().replace(file.getOriginalFilename(), Id.toString() + "_" +currentDate + "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
-                changedFileName = Id.toString() + "_" + currentDate + "_" + file.getOriginalFilename();
-                destinationFile = new File(teacherUploadDir + File.separator + changedFileName);
-                file.transferTo(destinationFile);
-                fileInfo.setFileName(destinationFile.getPath());
-                fileInfo.setFileSize(file.getSize());
-//                teacher.setAttachPhoto(changedFileName);
-            } else
-                return new ResponseEntity<>(changedFileName, HttpStatus.NO_CONTENT);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(changedFileName, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(changedFileName, HttpStatus.OK);
-    }
-
-
-    @Loggable
-    @Transactional
-    @PostMapping(value = "/addTempAttach")
-    public ResponseEntity<String> addTempAttach(@RequestParam("file") MultipartFile file) throws IOException {
-        FileInfo fileInfo = new FileInfo();
-        File destinationFile = null;
-        String changedFileName = "";
-        String fileName = "";
-        double fileSize = file.getSize() / 1000.0;
-
-        String[] tempFiles = new File(tempUploadDir).list();
-        for (String tempFile : tempFiles) {
-            File file1 = new File(tempUploadDir + "/" + tempFile);
-            file1.delete();
-        }
-
-        try {
-            if (!file.isEmpty() && fileSize < 1000.0 && fileSize > 5.0) {
-                destinationFile = new File(tempUploadDir + File.separator + file.getOriginalFilename());
-                changedFileName = file.getOriginalFilename().replace(file.getOriginalFilename(), "." + FilenameUtils.getExtension(file.getOriginalFilename())).toUpperCase();
-                file.transferTo(destinationFile);
-                fileInfo.setFileName(destinationFile.getPath());
-                fileInfo.setFileSize(file.getSize());
-                fileName = file.getOriginalFilename();
-
-                BufferedImage readImage = null;
-                readImage = ImageIO.read(new File(tempUploadDir + "/" + file.getOriginalFilename()));
-                int h = readImage.getHeight();
-                int w = readImage.getWidth();
-                if (100 > h || h > 500 || 100 > w || w > 500) {
-                    return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
-                }
-            } else
-                return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
-
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return new ResponseEntity<>(fileName, HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-        return new ResponseEntity<>(fileName, HttpStatus.OK);
-    }
-
-    @RequestMapping(value = {"/getTempAttach/{fileName}"}, method = RequestMethod.GET)
-    public ResponseEntity<InputStreamResource> getTempAttach(ModelMap modelMap, @PathVariable String fileName) {
-        File file = new File(tempUploadDir + "/" + fileName);
-        try {
-            return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-
-    @RequestMapping(value = {"/getAttach/{Id}"}, method = RequestMethod.GET)
-    @Transactional
-    public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap, @PathVariable Long Id) {
-        final Optional<Teacher> cById = teacherDAO.findById(Id);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-//        String fileName = teacher.getAttachPhoto();
-//        File file = new File(teacherUploadDir + "/" + fileName);
-//        try {
-//            return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
-//
-//        } catch (FileNotFoundException e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-return null;
-    }
-
-
-    @RequestMapping(value = {"/checkAttach/{Id}"}, method = RequestMethod.GET)
-    @Transactional
-    public ResponseEntity<Boolean> checkAttach(@PathVariable Long Id) {
-        final Optional<Teacher> cById = teacherDAO.findById(Id);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-//        String fileName = teacher.getAttachPhoto();
-//        try {
-//            if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
-//                return new ResponseEntity<Boolean>(false, HttpStatus.OK);
-//            else
-//                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//            return null;
-//        }
-return null;
-    }
-
 
 	@Loggable
 	@PostMapping(value = {"/printWithCriteria/{type}"})

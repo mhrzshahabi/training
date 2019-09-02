@@ -19,4 +19,6 @@ public interface IPersonalInfoService {
     void delete(PersonalInfoDTO.Delete request);
 
     SearchDTO.SearchRs<PersonalInfoDTO.Info> search(SearchDTO.SearchRq request);
+
+    PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
 }

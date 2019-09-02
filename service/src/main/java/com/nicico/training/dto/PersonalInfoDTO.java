@@ -98,6 +98,9 @@ public class PersonalInfoDTO {
         private String attachPhoto;
         private String workName;
         private String workJob;
+        private Integer eMilitaryId;
+	    private Integer eMarriedId;
+	    private Integer eGenderId;
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;

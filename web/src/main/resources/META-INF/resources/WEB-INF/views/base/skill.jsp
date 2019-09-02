@@ -13,11 +13,9 @@ var skill_Level_Symbol = ""
     var skill_Method = "GET";
     var skill_SkillHomeUrl = rootUrl + "/skill";
     var skill_CategoryHomeUrl = rootUrl + "/category";
-    var skill_CompetenceHomeUrl=rootUrl + "/competence";
     var skill_ActionUrl = rootUrl + "/skill";
     var skill_CategoryUrl = rootUrl + "/category/spec-list";
     var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
-    var skill_EnumDomainTypeUrl = rootUrl + "/enum/eDomainType";
     var skill_selectedSkillId = -1;
 
     // Start Block Of Combo And List Data Sources ----------------------------------------------------------
@@ -53,13 +51,6 @@ var skill_Level_Symbol = ""
         ]
     });
 
-    var RestDataSource_Skill_EDomainType = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id", primaryKey: true, canEdit: false,},
-            {name: "titleFa"}
-        ],
-        fetchDataURL: skill_EnumDomainTypeUrl
-    });
 
     //End Block Of Combo And List Data Sources ----------------------------------------------------------
 
@@ -75,7 +66,6 @@ var skill_Level_Symbol = ""
             {name: "category.titleFa"},
             {name: "subCategory.titleFa"},
             {name: "skillLevel.titleFa"},
-            {name: "edomainType.titleFa"},
             {name: "description"},
         ],
         fetchDataURL: skill_SkillHomeUrl + "/spec-list"
@@ -97,42 +87,6 @@ var skill_Level_Symbol = ""
             {name: "titleEn"}
         ],
         fetchDataURL: skill_SkillHomeUrl +"/skill-group-dummy"
-    });
-
-    var RestDataSource_Skill_Attached_Competences = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "etechnicalType.titleFa"},
-            {name: "ecompetenceInputType.titleFa"}
-
-        ],
-        fetchDataURL: skill_SkillHomeUrl +"/competence-dummy"
-    });
-
-    var RestDataSource_Skill_All_Competences = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "etechnicalType.titleFa"},
-            {name: "ecompetenceInputType.titleFa"}
-
-        ],
-        fetchDataURL:skill_CompetenceHomeUrl+ "/spec-list"
-    });
-
-    var RestDataSource_Skill_UnAttached_Competences = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "etechnicalType.titleFa"},
-            {name: "ecompetenceInputType.titleFa"}
-
-        ],
-        fetchDataURL: skill_SkillHomeUrl+"/competence-dummy"
     });
 
     var RestDataSource_Skill_Attached_Courses = isc.MyRestDataSource.create({
@@ -165,140 +119,9 @@ var skill_Level_Symbol = ""
         fetchDataURL: skill_SkillHomeUrl+"/course-dummy"
     });
 
-    var RestDataSource_Skill_Attached_Jobs = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد شغل", align: "center"},
-            {name: "costCenter", title: "مرکز هزينه", align: "center"},
-            {name: "titleFa", title: "عنوان شغل", align: "center"},
-            {name: "titleEn", title: "عنوان انگليسي", align: "center"},
-            {name: "description", title: "توضيحات", align: "center"}
-        ],
-        fetchDataURL: skill_SkillHomeUrl+"/job-dummy"
-    });
 
 
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
-    //Start Competence PickList
-
-    var ListGrid_Skill_All_Competences = isc.MyListGrid.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Skill_All_Competences,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
-            {name: "ecompetenceInputType.titleFa", title: "مرجع تعریف", align: "center"}
-        ],
-        sortDirection: "descending",
-        dataPageSize: 50,
-        showFilterEditor: true,
-        filterOnKeypress: false,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
-        autoFetchData: false,
-        doubleClick: function () {
-            if (method_Skill_Select_Competence() == 1) {
-                Window_Skill_All_Competence.close();
-            }
-        },
-        sortField: 0,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        selectionType: "single"
-    });
-
-    function method_skill_Show_Competences() {
-        ListGrid_Skill_All_Competences.fetchData();
-        Window_Skill_All_Competence.show();
-    }
-
-    function method_Skill_Select_Competence(record) {
-        var record = ListGrid_Skill_All_Competences.getSelectedRecord()
-        if (record == null) {
-            isc.Dialog.create({
-                message: "هیچ شایستگی انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                    return 0;
-                }
-            });
-        }
-        DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setValue(record.id);
-        DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setValue(record.titleFa);
-        return 1;
-    }
-
-    var HLayout_Skill_All_Competence_Action = isc.HLayout.create({
-        width: "100%",
-        height: "30",
-        align: "center",
-        padding: 10,
-        membersMargin: 10,
-        members: [
-            isc.MyButton.create({
-                title: "انتخاب",
-                icon: "pieces/16/ok.png",
-
-                prompt: "",
-                width: 100,
-                orientation: "vertical",
-                click: function () {
-                    if (method_Skill_Select_Competence() == 1) {
-                        Window_Skill_All_Competence.close();
-                    }
-                }
-            }),
-            isc.MyButton.create({
-                title: "لغو",
-                icon: "pieces/16/icon_delete.png",
-                prompt: "",
-                width: 100,
-                orientation: "vertical",
-                click: function () {
-                    Window_Skill_All_Competence.close();
-                }
-            })
-        ]
-    });
-
-    var VLayout_Skill_All_Competence_Grid = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [ListGrid_Skill_All_Competences]
-    });
-
-    var Window_Skill_All_Competence = isc.Window.create({
-        title: "شایستگی ها",
-        width: "1000",
-        height: "500",
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: false,
-        border: "1px solid gray",
-        items: [isc.VLayout.create({
-            width: "100%",
-            height: "100%",
-            align: "center",
-            members: [VLayout_Skill_All_Competence_Grid, HLayout_Skill_All_Competence_Action]
-        })]
-    });
-
-    //End Competence PickList
 
     var DynamicForm_Skill_Skill = isc.MyDynamicForm.create({
         width: "100%",
@@ -493,65 +316,6 @@ var skill_Level_Symbol = ""
                 ],
             },
             {
-                name: "edomainTypeId",
-                type: "IntegerItem",
-                title: "نوع مهارت",
-                hint: " نوع مهارت",
-                showHintInField: true,
-                width: "300",
-                required: true,
-                textAlign: "right",
-                editorType: "ComboBoxItem",
-                pickListWidth: 300,
-                addUnknownValues: false,
-                useClientFiltering: true,
-                cachePickListResults: true,
-                changeOnKeypress: false,
-                filterOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Skill_EDomainType,
-                autoFetchData: false,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    }
-                ],
-            },
-            {
-                name: "defaultCompetenceId",
-                hidden: true
-            },
-            {
-                name: "defaultCompetenceTitle",
-                title: "شایستگی",
-                icons: [{
-                    name: "add",
-                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
-                    inline: true
-                }],
-                iconWidth: 16,
-                iconHeight: 16,
-                width: "317",
-                colSpan: 3,
-                canEdit: false,
-                textAlign: "right",
-                click: function (form, item, icon) {
-// item.clearValue();
-                    method_skill_Show_Competences();
-                },
-                editorType: "text"
-            },
-            {
                 name: "description",
                 colSpan: 4,
                 hint: " توضیحات",
@@ -691,37 +455,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var ListGrid_Skill_Attached_Competences = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Skill_Attached_Competences,
-// contextMenu: Menu_ListGrid_Skill_Skill,
-        doubleClick: function () {
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
-            {name: "ecompetenceInputType.titleFa", title: "مرجع تعریف", align: "center"}
-        ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-    });
-
     var ListGrid_Skill_Attached_Courses = isc.ListGrid.create({
         width: "100%",
         height: "100%",
@@ -758,35 +491,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var ListGrid_Skill_Attached_Jobs = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Skill_Attached_Jobs,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد شغل", align: "center"},
-            {name: "costCenter", title: "مرکز هزينه", align: "center"},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "description", title: "توضيحات", align: "center"}
-        ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        showFilterEditor: true,
-        filterOnKeypress: false,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-    });
-
 
     var ToolStripButton__Action_Skill_SkillGroups_Select = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
@@ -808,25 +512,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         }
 
 
-    });
-    var ToolStripButton__Action_Skill_SkillCompetences_Select = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        click: function () {
-            var record = ListGrid_Skill_Skill.getSelectedRecord();
-            if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "لطفا یک مهارت را انتخاب کنید.",
-                    icon: "[SKIN]ask.png",
-                    title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-                // Skill_Add_Competence();
-            }
-        }
     });
     var ToolStripButton__Action_Skill_SkillCourses_Select = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
@@ -855,13 +540,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         members: [
             ToolStripButton__Action_Skill_SkillGroups_Select
         ]
-    });
-    var ToolStrip_Action_Skill_SkillCompetences = isc.ToolStrip.create({
-        width: "100%",
-        vertical: true,
-        center: true,
-        members: [
-            ToolStripButton__Action_Skill_SkillCompetences_Select]
     });
     var ToolStrip_Action_Skill_SkillCourses = isc.ToolStrip.create({
         width: "100%",
@@ -971,9 +649,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("code").visible = true;
-            DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = false;
-            DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(false);
-            DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(false);
             Window_Skill_Skill.setTitle(" ویرایش مهارت " + getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
             Window_Skill_Skill.show();
 
@@ -988,9 +663,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
         DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("code").visible = false;
-        DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").visible = true;
-        DynamicForm_Skill_Skill.getItem("defaultCompetenceId").setRequired(true);
-        DynamicForm_Skill_Skill.getItem("defaultCompetenceTitle").setRequired(true);
         Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
         Window_Skill_Skill.show();
     };
@@ -1062,7 +734,6 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
             {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
             {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
             {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
-            {name: "edomainType.titleFa", title: "نوع مهارت", align: "center", canFilter: false, canSort: false},//filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
@@ -1070,20 +741,14 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
             if (record == null) {
                 skill_selectedSkillId = -1;
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/skill-group-dummy";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl+"/competence-dummy";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/course-dummy";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl+"/job-dummy";
             } else {
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/competences";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/courses";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/jobs";
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-            // ListGrid_Skill_Attached_Competences.invalidateCache();
             ListGrid_Skill_Attached_Courses.invalidateCache();
-            // ListGrid_Skill_Attached_Jobs.invalidateCache();
         },
         sortField: 1,
         sortDirection: "descending",
@@ -1102,20 +767,14 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
             record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null) {
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/skill-group-dummy";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/competence-dummy";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/course-dummy";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl + "/job-dummy";
             } else {
                 RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/competences";
                 RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/courses";
-                RestDataSource_Skill_Attached_Jobs.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/jobs";
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
-            // ListGrid_Skill_Attached_Competences.invalidateCache();
             ListGrid_Skill_Attached_Courses.invalidateCache();
-            // ListGrid_Skill_Attached_Jobs.invalidateCache();
 
 
         },
@@ -1613,439 +1272,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
 
     // End Block Add Skill Groups To Skill ---------------------------------------------------------------
 
-    // Start Block Add Competence To Skill ---------------------------------------------------------------
-    var ToolStripButton_Skill_AddCompetence_Select_Single = isc.ToolStripButton.create({
-        width: 300,
-        title: getFormulaMessage(">", "5", "blue", "B"),
-        click: function () {
-            if (ListGrid_Skill_UnAttached_Competence.getSelectedRecord() != null) {
-                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                var skillId = skillRecord.id;
-                var competenceRecord = ListGrid_Skill_UnAttached_Competence.getSelectedRecord();
-                var competenceId = competenceRecord.id;
-                isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-competence/" + competenceId + "/" + skillId,
-                    httpMethod: "POST",
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Skill_Selected_Competence.invalidateCache();
-                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-            }
-        }
-    });
-    var ToolStripButton_Skill_AddCompetence_Select_Multiple = isc.ToolStripButton.create({
-        title: getFormulaMessage(">>", "5", "blue", "B"),
-        click: function () {
-            if (ListGrid_Skill_UnAttached_Competence.getSelectedRecord() != null) {
-                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                var skillId = skillRecord.id;
-                var skilGroupRecords = ListGrid_Skill_UnAttached_Competence.getSelectedRecords();
-                var competenceIds = new Array();
-                for (i = 0; i < skilGroupRecords.getLength(); i++) {
-                    competenceIds.add(skilGroupRecords[i].id);
-                }
-                var JSONObj = {"ids": competenceIds};
-                isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-competence-list/" + skillId,
-                    httpMethod: "POST",
-                    data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Skill_Selected_Competence.invalidateCache();
-                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-            }
-        }
-    });
-    var ToolStripButton_Skill_AddCompetence_Deselect_Single = isc.ToolStripButton.create({
-// icon: "pieces/512/left-arrow.png",
-        title: getFormulaMessage("<", "5", "blue", "B"),
-        click: function () {
-            if (ListGrid_Skill_Selected_Competence.getSelectedRecords() != null) {
-                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                var skillId = skillRecord.id;
-                var competenceRecord = ListGrid_Skill_Selected_Competence.getSelectedRecord();
-                var competenceId = competenceRecord.id;
-                isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-competence/" + competenceId + "/" + skillId,
-                    httpMethod: "DELETE",
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Skill_Selected_Competence.invalidateCache();
-                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-
-            }
-
-        }
-    });
-    var ToolStripButton_Skill_AddCompetence_Deselect_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
-        title: getFormulaMessage("<<", "5", "blue", "B"),
-        click: function () {
-            if (ListGrid_Skill_Selected_Competence.getSelectedRecords() != null) {
-                var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-                var skillId = skillRecord.id;
-                var competenceRecords = ListGrid_Skill_Selected_Competence.getSelectedRecords();
-                var competenceIds = new Array();
-                for (i = 0; i < competenceRecords.getLength(); i++) {
-                    competenceIds.add(competenceRecords[i].id);
-                }
-// var JSONObj = {"ids": competenceIds};
-                isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-competence-list/" + competenceIds + "/" + skillId,
-                    httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Skill_Selected_Competence.invalidateCache();
-                            ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-
-
-            }
-        }
-    });
-    var ToolStrip_Skill_AddCompetence = isc.ToolStrip.create({
-        height: "100%",
-        vertical: true,
-        align: "center",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
-
-        members: [
-            ToolStripButton_Skill_AddCompetence_Select_Single,
-            ToolStripButton_Skill_AddCompetence_Deselect_Single,
-            ToolStripButton_Skill_AddCompetence_Select_Multiple,
-            ToolStripButton_Skill_AddCompetence_Deselect_Multiple
-        ]
-    });
-
-    var DynamicForm_Skill_SkillData_Add_Competence = isc.MyDynamicForm.create({
-        titleWidth: 400,
-// border:2,
-        width: "100%",
-        height: "100%",
-        align: "right",
-        titleAlign: "left",
-        numCols: "6",
-        fields: [
-            {name: "id", hidden: true},
-            {
-                name: "code",
-                title: "کد مهارت",
-                type: 'staticText',
-                width: "100"
-            },
-            {
-                name: "titleFa",
-                title: "عنوان فارسی",
-                type: 'staticText',
-                length: "200",
-                width: "150"
-            },
-            {
-                name: "titleEn",
-                title: "عنوان لاتین ",
-                type: 'staticText',
-                length: "200",
-                width: "150"
-            },
-        ]
-    });
-
-    var ListGrid_Skill_UnAttached_Competence = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        canReorderRecords: true,
-        dataSource: RestDataSource_Skill_UnAttached_Competences,
-        showRowNumbers: true,
-        autoFetchData: false,
-        border: "0px solid green",
-        selectionType: "multiple",
-        rowNumberFieldProperties: {
-//          autoFitWidthApproach: "both",
-//           canDragResize: true,
-            autoFitWidth: false,
-            headerTitle: "<spring:message code='global.grid.row'/>",
-            width: 50
-        },
-        fields: [
-            {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"}
-        ],
-        recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            var competenceRecord = record;
-            var competenceId = competenceRecord.id;
-            var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-            var skillId = skillRecord.id;
-            isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/add-competence/" + competenceId + "/" + skillId,
-                httpMethod: "POST",
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_Selected_Competence.invalidateCache();
-                        ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                    } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
-                    }
-                }
-            });
-        },
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        sortField: 0,
-        sortDirection: "descending",
-        dataPageSize: 50,
-    });
-
-    var ListGrid_Skill_Selected_Competence = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        selectionType: "multiple",
-        canReorderRecords: true,
-        alternateRecordStyles: true,
-        alternateFieldStyles: false,
-        dataSource: RestDataSource_Skill_Attached_Competences,
-        autoFetchData: false,
-        showRowNumbers: true,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
-        rowNumberFieldProperties: {
-            autoFitWidthApproach: "both",
-            canDragResize: true,
-            autoFitWidth: false,
-            headerTitle: "<spring:message code='global.grid.row'/>",
-            width: 50
-        },
-        canEdit: false,
-        fields: [
-            {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
-            {name: "OnDelete", title: "حذف", align: "center"}
-
-        ],
-        recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
-            var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
-            var skillId = skillRecord.id;
-            var competenceRecord = record;
-            var competenceId = competenceRecord.id;
-
-            isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/remove-competence/" + competenceId + "/" + skillId,
-                httpMethod: "DELETE",
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Skill_UnAttached_Competence.invalidateCache();
-                        ListGrid_Skill_Selected_Competence.invalidateCache();
-                    } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
-                    }
-                }
-            });
-
-        },
-        dataPageSize: 50
-    });
-
-    var SectionStack_Skill_UnAttached_Competence = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "45%",
-        sections: [
-            {
-                title: "شایستگیهای انتخاب نشده",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_Skill_UnAttached_Competence
-                ]
-            }
-        ]
-    });
-
-    var SectionStack_Skill_Attached_Competence = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "45%",
-        sections: [
-            {
-                title: "شایستگیهای انتخاب شده",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_Skill_Selected_Competence
-                ]
-            }
-        ]
-    });
-
-    var VLayOut_Skill_Competence_Add_Action = isc.VLayout.create({
-        width: "10%",
-        height: "100%",
-        autoDraw: false,
-// border: "0px solid red", layoutMargin: 5,
-        align: "center",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
-
-        members: [ToolStrip_Skill_AddCompetence
-        ]
-    });
-
-    var HStack_Skill_AddCompetence = isc.HStack.create({
-        width: "100%",
-        height: "100%",
-        members: [
-            SectionStack_Skill_UnAttached_Competence,
-            VLayOut_Skill_Competence_Add_Action,
-            SectionStack_Skill_Attached_Competence
-        ]
-    });
-
-    var HLayOut_Skill_AddCompetence_Header = isc.HLayout.create({
-        width: "100%",
-        height: 30,
-//autoDraw: true,
-        autoSize: false,
-        border: "0px solid yellow",
-        backgroundColor: "lightgray",
-
-        layoutMargin: 5,
-        align: "center",
-        members: [
-            DynamicForm_Skill_SkillData_Add_Competence
-        ]
-    });
-
-    var VLayOut_Skill_Competence_Add_Main = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-        border: "0px solid red", layoutMargin: 5,
-        members: [
-            HLayOut_Skill_AddCompetence_Header,
-            isc.HLayout.create({
-                width: "100%",
-                height: 10,
-                backgroundColor: "blue",
-                autoDraw: false,
-                border: "0px solid red", layoutMargin: 5,
-                members: []
-            }),
-
-            HStack_Skill_AddCompetence
-        ]
-    });
-
-    var Window_Skill_AddCompetence = isc.Window.create({
-        title: "مرتبط کردن/حذف ارتباط شایستگی با مهارت",
-        width: "80%",
-        height: "80%",
-        autoSize: false,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-        closeClick: function () {
-            this.hide();
-            Skill_Finish_Competence();
-        },
-        items: [
-            VLayOut_Skill_Competence_Add_Main
-        ]
-    });
-
-    function Skill_Add_Competence() {
-
-        var record = ListGrid_Skill_Skill.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "لطفا یک مهارت را انتخاب کنید.",
-                icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تایید"})],
-                buttonClick: function () {
-                    this.close();
-                }
-            });
-        } else {
-            RestDataSource_Skill_UnAttached_Competences.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/unattached-competences";
-            RestDataSource_Skill_Attached_Competences.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/competences";
-            ListGrid_Skill_UnAttached_Competence.invalidateCache();
-            ListGrid_Skill_Selected_Competence.invalidateCache();
-            DynamicForm_Skill_SkillData_Add_Competence.invalidateCache();
-            DynamicForm_Skill_SkillData_Add_Competence.setValue("titleFa", record.titleFa);
-            DynamicForm_Skill_SkillData_Add_Competence.setValue("titleEn", record.titleEn);
-            DynamicForm_Skill_SkillData_Add_Competence.setValue("code", record.code);
-            ListGrid_Skill_UnAttached_Competence.fetchData();
-            ListGrid_Skill_Selected_Competence.fetchData();
-            Window_Skill_AddCompetence.show();
-        }
-
-    };
-
-    function Skill_Finish_Competence() {
-        var record = ListGrid_Skill_Skill.getSelectedRecord();
-        if (record == null) {
-            skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/competence-dummy";
-        } else {
-            RestDataSource_Skill_Attached_Competences.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/competences";
-            selectedSkillId = record.id;
-        }
-        ListGrid_Skill_Attached_Competences.invalidateCache();
-    };
-
-    // End Block Add Competences To Skill ---------------------------------------------------------------
 
     // Start Block Add Courses To Skill ---------------------------------------------------------------
     var ToolStripButton_Skill_AddCourse_Select_Single = isc.ToolStripButton.create({
@@ -2521,21 +1747,8 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         <%--border: "2px solid blue",--%>
         members: [ToolStrip_Action_Skill_SkillGroups]
     });
-    var VLayout_Action_Skill_SkillCompetences = isc.VLayout.create({
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [ToolStrip_Action_Skill_SkillCompetences]
-    });
 
 
-    var HLayout_Skill_SkillJobs_Grid = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            ListGrid_Skill_Attached_Jobs
-        ]
-    });
     var HLayout_Skill_SkillCourses_Grid = isc.HLayout.create({
         width: "100%",
         height: "100%",
@@ -2552,23 +1765,7 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             ListGrid_Skill_Attached_SkillGroups
         ]
     });
-    var HLayout_Skill_SkillCompetences_Grid = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            ListGrid_Skill_Attached_Competences
-        ]
-    });
 
-    var HLayout_Tab_Skill_Competences = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            HLayout_Skill_SkillCompetences_Grid, VLayout_Action_Skill_SkillCompetences
-        ]
-    });
     var HLayout_Tab_Skill_SkillGroups = isc.HLayout.create({
         width: "100%",
         height: "100%",
@@ -2585,14 +1782,6 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             HLayout_Skill_SkillCourses_Grid, VLayout_Action_Skill_SkillCourses
         ]
     });
-    var HLayout_Tab_Skill_Jobs = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            HLayout_Skill_SkillJobs_Grid
-        ]
-    });
 
 
     var Detail_Tab_Skill = isc.TabSet.create({
@@ -2607,21 +1796,9 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
 
             },
             {
-                id: "TabPane_Skill_Competence",
-                title: "لیست شایستگی ها",
-                pane: HLayout_Tab_Skill_Competences,
-visible:false
-            },
-            {
                 id: "TabPane_Skill_Course",
                 title: "لیست دوره ها",
                 pane: HLayout_Tab_Skill_Courses
-            },
-            {
-                id: "TabPane_Skill_Job",
-                title: "لیست مشاغل",
-                pane: HLayout_Tab_Skill_Jobs,
-visible:false
             }
         ]
     });
