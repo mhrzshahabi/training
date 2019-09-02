@@ -27,7 +27,5 @@ public class User {
     @Column(name = "c_lname")
     private String Lname;
 
-    @ManyToMany(mappedBy = "members")
-    private List<Committee> committeeSet;
 
 }

@@ -27,10 +27,16 @@ public class EducationOrientation extends Auditable {
     private String titleEn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_education_level")
+    @JoinColumn(name = "f_education_level", insertable = false, updatable = false)
     private EducationLevel educationLevel;
 
+    @Column(name = "f_education_level")
+    private Long educationLevelId;
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_education_major")
+    @JoinColumn(name = "f_education_major", insertable = false, updatable = false)
     private EducationMajor educationMajor;
+
+    @Column(name = "f_education_major")
+    private Long educationMajorId;
 }

@@ -50,7 +50,7 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public EducationLevelDTO.Info update(Long id, EducationLevelDTO.Update request) {
         final Optional<EducationLevel> cById = educationLevelDAO.findById(id);
-        final EducationLevel educationLevel = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationLevel educationLevel = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
         EducationLevel updating = new EducationLevel();
         modelMapper.map(educationLevel, updating);
         modelMapper.map(request, updating);
@@ -61,7 +61,7 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public void delete(Long id) {
         final Optional<EducationLevel> one = educationLevelDAO.findById(id);
-        final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
         educationLevelDAO.delete(educationLevel);
     }
 
