@@ -38,9 +38,10 @@
     // -------------------------------------------  URLs   -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
+    const jobUrl = rootUrl + "/job/";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobUrl = rootUrl + "/job/";
+
     const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
@@ -62,9 +63,7 @@
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
     const skillUrl = rootUrl + "/skill/";
-    // ---------------------------------------- Not Ok - End ----------------------------------------
 
-    // ---------------------------------------- Not Ok - Start ----------------------------------------
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -707,6 +706,8 @@
             createTab(title, url);
         }
     };
+
+    createTab("<spring:message code="job"/>", "<spring:url value="/job/show-form"/>");
 
 </script>
 </body>
