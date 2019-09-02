@@ -101,7 +101,6 @@ public class CommitteeDTO implements Serializable {
         private CommitteeDTO.SpecRs response;
     }
 
-
     @Getter
     @Setter
     @Accessors(chain = true)

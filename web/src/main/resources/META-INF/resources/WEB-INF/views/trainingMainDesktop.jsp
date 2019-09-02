@@ -28,7 +28,6 @@
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
-
 </head>
 
 <body dir="rtl">
@@ -54,9 +53,7 @@
     const classUrl = rootUrl + "/tclass/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
-    const educationLevelUrl = rootUrl + "/educationLevel/";
-    const educationMajorUrl = rootUrl + "/educationMajor/";
-    const educationOrientationUrl = rootUrl + "/educationOrientation/";
+    const educationUrl = rootUrl + "/education/";
     const termUrl = rootUrl + "/term/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
@@ -331,6 +328,8 @@
         }
     });
 
+    isc.ListGridField
+
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         width: "100%",
@@ -350,7 +349,6 @@
             headerTitle: "<spring:message code="row.number"/>",
             width: 100,
         },
-
     });
 
     isc.defineClass("TrImg", Img);
@@ -502,7 +500,7 @@
                 {
                     title: "<spring:message code="education"/>", icon: "<spring:url value="education.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/education/show-form"/>");
+                        createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
             ]
@@ -707,8 +705,6 @@
             createTab(title, url);
         }
     };
-
-    createTab("<spring:message code="job"/>", "<spring:url value="/job/show-form"/>");
 
 </script>
 </body>

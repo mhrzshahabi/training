@@ -1,6 +1,9 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 // <script>
 
     var committee_method = "POST";
@@ -22,6 +25,28 @@
         ],
         fetchDataURL: committeeUrl + "spec-list",
     });
+
+    var RestDataSource_All_Person =isc.MyRestDataSource.create({
+    fields:[ {name: "id", primaryKey: true,hidden: true},
+             {name: "firstNameFa",width:"35%",title:"نام",align:"center"},
+              {name: "lastNameFa",width:"35%",align:"center",title: "نام خانوادگی"},
+               {name: "nationalCode",align:"center",width:"30%",title:"کد ملی"}
+            ],
+      fetchDataURL:personalInfoUrl + "spec-list",
+    });
+
+      var RestDataSource_ThisCommittee_Person =isc.MyRestDataSource.create({
+
+    fields:[ {name: "id", primaryKey: true,hidden: true},
+             {name: "firstNameFa",width:"35%",title:"نام",align:"center"},
+              {name: "lastNameFa",width:"35%",align:"center",title: "نام خانوادگی"},
+               {name: "nationalCode",align:"center",width:"30%",title:"کد ملی"}
+            ],
+      // fetchDataURL:
+    });
+
+
+
 
     var DsCategory_committee = isc.MyRestDataSource.create({
         fields: [
@@ -50,6 +75,148 @@
          },
         sortField: 1,
     });
+
+
+
+ var ListGrid_All_Person = isc.MyListGrid.create({
+        //title:"تمام مهارت ها",
+        width: "100%",
+        height: "100%", canDragResize: true,
+
+        canDragRecordsOut: true,
+        canAcceptDroppedRecords: true,
+        autoFetchData: true,
+        dataSource: RestDataSource_All_Person,
+        selectionType:"multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 22,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        dragTrackerMode: "title",
+        canDrag: true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+
+
+
+        var activeCommittee =ListGrid_Committee.getSelectedRecord();
+
+            var memberIds = new Array();
+            for (i = 0; i < dropRecords.getLength(); i++) {
+                memberIds.add(dropRecords[i].id);
+            }
+            ;
+
+
+
+            var JSONObj = {"ids": memberIds};
+            isc.RPCManager.sendRequest({
+         // isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+               actionURL:committeeUrl+"removeMembers/" +activeCommittee.id+"/"+memberIds,
+                httpMethod: "DELETE",
+                data: JSON.stringify(JSONObj),
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                 ListGrid_All_Person.invalidateCache();
+                 ListGrid_ThisCommittee_Person.invalidateCache();
+
+
+                    } else {
+                        isc.say("خطا");
+                    }
+                }
+            });
+        }
+
+    });
+
+
+
+
+
+
+ var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
+        //title:"تمام مهارت ها",
+        width: "100%",
+        height: "100%", canDragResize: true,
+        selectionType:"multiple",
+        canDragRecordsOut: true,
+        canAcceptDroppedRecords: true,
+        autoFetchData: false,
+        dataSource: RestDataSource_ThisCommittee_Person,
+
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 22,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        dragTrackerMode: "title",
+        canDrag: true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+
+
+
+            // alert(dropRecords[0].titleFa);
+
+            var activeCommittee=ListGrid_Committee.getSelectedRecord();
+
+            //  alert(skillGroupId);
+            // var skillId=dropRecords[0].id;
+            var personIds = new Array();
+            for (i = 0; i < dropRecords.getLength(); i++) {
+                personIds.add(dropRecords[i].id);
+            };
+            var JSONObj = {"ids": personIds};
+
+
+            // MyDsRequest()
+
+
+
+            isc.RPCManager.sendRequest({
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                actionURL:committeeUrl+"addmembers/" + personIds+"/" +activeCommittee.id,     //localhost:8080/training/api/committee/addmember/141/104
+                httpMethod: "POST",
+                data: JSON.stringify(JSONObj),
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                        ListGrid_ThisCommittee_Person.invalidateCache();
+                        ListGrid_All_Person.invalidateCache();
+
+                        // var OK = isc.Dialog.create({
+                        //     message: "عملیات با موفقیت انجام شد",
+                        //     icon: "[SKIN]say.png",
+                        //     title: "پیام موفقیت"
+                        // });
+                        // setTimeout(function () {
+                        //     // OK.close();
+                        // }, 3000);
+                    } else {
+                        isc.say("خطا");
+                    }
+                }
+            });
+        }
+
+    });
+
+
+
+
+
+
+
+
+
 
     //*************************************************************************************
     //DynamicForm & Window
@@ -210,7 +377,7 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                  //  ListGrid_AllSkills
+                 ListGrid_All_Person
                 ]
             }
         ]
@@ -227,7 +394,7 @@
                 canCollapse: false,
                 align: "center",
                 items: [
-                 //   ListGrid_ForThisSkillGroup_GetSkills
+                   ListGrid_ThisCommittee_Person
                 ]
             }
         ]
@@ -310,13 +477,16 @@
                 });
 
             } else {
-
+                RestDataSource_ThisCommittee_Person.fetchDataURL=committeeUrl +record.id+"/getMembers";
+                ListGrid_ThisCommittee_Person.invalidateCache();
+                ListGrid_ThisCommittee_Person.fetchData();
               DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
               SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
               Window_Add_User_TO_Committee.show();
 
 
             }
+
         }
     });
 

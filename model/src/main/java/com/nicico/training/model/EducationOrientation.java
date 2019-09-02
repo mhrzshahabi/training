@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Setter
 @Getter
@@ -39,4 +40,7 @@ public class EducationOrientation extends Auditable {
 
     @Column(name = "f_education_major")
     private Long educationMajorId;
+
+    @OneToMany(mappedBy = "educationOrientation",fetch = FetchType.LAZY)
+    private List<PersonalInfo> personalInfoList;
 }

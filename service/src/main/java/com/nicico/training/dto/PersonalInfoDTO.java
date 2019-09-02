@@ -71,7 +71,7 @@ public class PersonalInfoDTO {
 		private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
 		private EMarriedDTO.EMarriedInfoTuple eMarried;
 		private EGenderDTO.EGenderInfoTuple eGender;
-		private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
+		private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
 		private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
 		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
 		private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
@@ -104,7 +104,7 @@ public class PersonalInfoDTO {
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;
-        private EducationLevelDTO.EducationLeveInfoTuple educationLevel;
+        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
         private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
         private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
@@ -159,6 +159,16 @@ public class PersonalInfoDTO {
     }
 
     // ---------------
+
+     @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("CompetenceSpecRs")
+    public static class CompetenceSpecRs {
+        private SpecRs response;
+    }
+
 
     @Getter
     @Setter
