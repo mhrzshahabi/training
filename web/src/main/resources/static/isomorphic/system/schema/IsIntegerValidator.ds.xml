@@ -1,2 +1,0 @@
-<Object ID="IsIntegerValidator" __autoConstruct="DataSource" inheritsFrom="Validator" Constructor="isInteger"
-		addGlobalId="false"/>
