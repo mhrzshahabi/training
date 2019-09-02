@@ -2,8 +2,11 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CommitteeDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.model.PersonalInfo;
 
 import java.util.List;
+import java.util.Set;
 
 public interface ICommitteeService {
 
@@ -20,4 +23,9 @@ public interface ICommitteeService {
     void delete(CommitteeDTO.Delete request);
 
     SearchDTO.SearchRs<CommitteeDTO.Info> search(SearchDTO.SearchRq request);
+     void addMember(Long committeeId, Long personInfiId);
+     void removeMember(Long committeeId, Long personInfiId);
+     void removeMembers(Long committeeId,Set<Long> personIds);
+      void addMembers(Long committeeId, Set<Long> personInfiIds);
+     List<PersonalInfoDTO.Info> getMembers(Long committeeId);
 }

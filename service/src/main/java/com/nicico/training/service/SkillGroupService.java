@@ -9,7 +9,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.JobDTOOld;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillGroupService;
@@ -170,11 +170,11 @@ public class SkillGroupService implements ISkillGroupService {
 
     @Override
     @Transactional
-    public List<JobDTO.Info> getJobs(Long skillGroupID) {
+    public List<JobDTOOld.Info> getJobs(Long skillGroupID) {
         final Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupID);
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
          Set<Competence> competenceSet=skillGroup.getCompetenceSet();
-         Set<Job> jobs=new HashSet<>();
+         Set<JobOld> jobs=new HashSet<>();
         for (Competence competence:skillGroup.getCompetenceSet()
              ) {
 
@@ -184,7 +184,7 @@ public class SkillGroupService implements ISkillGroupService {
 
             }
         }
-        return modelMapper.map(jobs, new TypeToken<List<JobDTO.Info>>() {
+        return modelMapper.map(jobs, new TypeToken<List<JobDTOOld.Info>>() {
         }.getType());
     }
 

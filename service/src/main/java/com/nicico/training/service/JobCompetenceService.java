@@ -12,13 +12,13 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.JobCompetenceDTO;
 import com.nicico.training.iservice.IJobCompetenceService;
 import com.nicico.training.model.Competence;
-import com.nicico.training.model.Job;
+import com.nicico.training.model.JobOld;
 import com.nicico.training.model.JobCompetence;
 import com.nicico.training.model.JobCompetenceKey;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.CompetenceDAO;
 import com.nicico.training.repository.JobCompetenceDAO;
-import com.nicico.training.repository.JobDAO;
+import com.nicico.training.repository.JobDAOOld;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -34,7 +34,7 @@ import java.util.Set;
 public class JobCompetenceService implements IJobCompetenceService {
 
     private final JobCompetenceDAO jobCompetenceDAO;
-    private final JobDAO jobDAO;
+    private final JobDAOOld jobDAO;
     private final CompetenceDAO competenceDAO;
     private final ModelMapper mapper;
     private final EnumsConverter.EJobCompetenceTypeConverter eJobCompetenceTypeConverter = new EnumsConverter.EJobCompetenceTypeConverter();
@@ -59,8 +59,8 @@ public class JobCompetenceService implements IJobCompetenceService {
     @Override
     public void createForJob(JobCompetenceDTO.CreateForJob request) {
 
-        Optional<Job> optionalJob = jobDAO.findById(request.getJobId());
-        Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+        Optional<JobOld> optionalJob = jobDAO.findById(request.getJobId());
+        JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         Set<Long> competenceIds = request.getCompetenceIds();
         for (Long id : competenceIds) {
@@ -84,8 +84,8 @@ public class JobCompetenceService implements IJobCompetenceService {
 
         Set<Long> jobIds = request.getJobIds();
         for (Long id : jobIds) {
-            Optional<Job> optionalJob = jobDAO.findById(id);
-            Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+            Optional<JobOld> optionalJob = jobDAO.findById(id);
+            JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
             JobCompetenceKey jobCompetenceKey = new JobCompetenceKey(job.getId(), competence.getId());
 
             JobCompetence jobCompetence = new JobCompetence();
@@ -99,8 +99,8 @@ public class JobCompetenceService implements IJobCompetenceService {
     @Override
     public void update(JobCompetenceDTO.Update request) {
 
-        Optional<Job> optionalJob = jobDAO.findById(request.getJobId());
-        Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+        Optional<JobOld> optionalJob = jobDAO.findById(request.getJobId());
+        JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         Optional<Competence> optionalCompetence = competenceDAO.findById(request.getCompetenceId());
         Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
@@ -114,8 +114,8 @@ public class JobCompetenceService implements IJobCompetenceService {
     @Transactional
     @Override
     public void delete(Long jobId, Long competenceId) {
-        Optional<Job> optionalJob = jobDAO.findById(jobId);
-        Job job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
+        Optional<JobOld> optionalJob = jobDAO.findById(jobId);
+        JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
         Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));

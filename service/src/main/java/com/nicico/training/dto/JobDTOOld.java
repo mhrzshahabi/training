@@ -1,14 +1,19 @@
 package com.nicico.training.dto;
+
+/*
+AUTHOR: ghazanfari_f
+DATE: 6/3/2019
+TIME: 1:07 PM
+*/
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.SubCategory;
-import com.nicico.training.model.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;
@@ -19,25 +24,21 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class CommitteeDTO implements Serializable {
+public class JobDTOOld implements Serializable {
 
-    @ApiModelProperty
+    @NotNull
+    @ApiModelProperty(required = true)
     private String titleFa;
 
     @ApiModelProperty
     private String titleEn;
 
-    @ApiModelProperty
-    private Long subCategoryId;
-
-     @ApiModelProperty
-    private Long categoryId;
+    @NotNull
+    @ApiModelProperty(required = true)
+    private String code;
 
     @ApiModelProperty
-    private List<User> members;
-
-    @ApiModelProperty
-    private String tasks;
+    private String costCenter;
 
     @ApiModelProperty
     private String description;
@@ -45,60 +46,51 @@ public class CommitteeDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("CommitteeInfo")
-    public static class Info extends CommitteeDTO {
+    @ApiModel("Job DTO Create Req")
+    public static class Create extends JobDTOOld {
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Job DTO Update Req")
+    public static class Update extends JobDTOOld.Create {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Job DTO Delete Req")
+    public static class Delete {
+        @NotNull
+        @ApiModelProperty(required = true)
+        List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Job DTO Info Req")
+    public static class Info extends JobDTOOld {
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-        private CategoryDTO.CategoryInfoTuple category;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("CommitteeCreateRq")
-    public static class Create extends CommitteeDTO {
-
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("CommitteeUpdateRq")
-    public static class Update extends CommitteeDTO {
-
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("CommitteeDeleteRq")
-    public static class Delete {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private List<Long> ids;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("CommitteeIdListRq")
-    public static class CommitteeIdList {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private List<Long> ids;
+        private Integer version;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("CommitteeSpecRs")
-    public static class CommitteeSpecRs {
-        private CommitteeDTO.SpecRs response;
+    @ApiModel("Job ISC Res")
+    public static class IscRes {
+        private SpecRs response;
     }
 
     @Getter
@@ -106,15 +98,10 @@ public class CommitteeDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<CommitteeDTO.Info> data;
+        private List<JobDTOOld.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
-
-
-
 }
-

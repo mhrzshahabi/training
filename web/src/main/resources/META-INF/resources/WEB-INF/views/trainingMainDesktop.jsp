@@ -28,7 +28,6 @@
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
-
 </head>
 
 <body dir="rtl">
@@ -38,9 +37,10 @@
     // -------------------------------------------  URLs   -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
+    const jobUrl = rootUrl + "/job/";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobUrl = rootUrl + "/job/";
+
     const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
@@ -60,9 +60,7 @@
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
     const skillUrl = rootUrl + "/skill/";
-    // ---------------------------------------- Not Ok - End ----------------------------------------
 
-    // ---------------------------------------- Not Ok - Start ----------------------------------------
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -330,6 +328,8 @@
         }
     });
 
+    isc.ListGridField
+
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         width: "100%",
@@ -349,7 +349,6 @@
             headerTitle: "<spring:message code="row.number"/>",
             width: 100,
         },
-
     });
 
     isc.defineClass("TrImg", Img);
@@ -670,6 +669,7 @@
 
     trainingTabSet = isc.TrTabSet.create({
         tabs: [],
+
     });
 
     isc.TrVLayout.create({

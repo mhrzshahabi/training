@@ -149,8 +149,7 @@ public class WorkflowRestController {
 			else endRow = 80;
 
 			List<Object[]> list = businessWorkflowEngine.getHistoryVar(documentId);
-			List<JsonObject> jsonArr = null;
-//			List<JsonObject> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"id", "crDate", "assignee", "recom", "documentId"});
+			List<Map<String, Object>> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"id", "crDate", "assignee", "recom", "documentId"});
 
 			if (list != null && !list.isEmpty()) {
 				totalRowsCount = list.size();
@@ -195,8 +194,7 @@ public class WorkflowRestController {
 			else endRow = 8000;
 
 			List<Object[]> list = businessWorkflowEngine.findUserRoles(roleName);
-			List<JsonObject> jsonArr = null;
-//			List<JsonObject> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"assignee", "name", "roleDesc", "roleName", "id"});
+			List<Map<String, Object>> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"assignee", "name", "roleDesc", "roleName", "id"});
 
 			if (list != null && !list.isEmpty()) {
 				totalRowsCount = list.size();

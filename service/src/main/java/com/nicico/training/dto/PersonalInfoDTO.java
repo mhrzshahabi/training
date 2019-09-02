@@ -160,6 +160,16 @@ public class PersonalInfoDTO {
 
     // ---------------
 
+     @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("CompetenceSpecRs")
+    public static class CompetenceSpecRs {
+        private SpecRs response;
+    }
+
+
     @Getter
     @Setter
     @Accessors(chain = true)
