@@ -29,4 +29,8 @@ public class EducationMajor extends Auditable {
 
     @OneToMany(mappedBy = "educationMajor",fetch = FetchType.LAZY)
     private List<EducationOrientation> educationOrientationList;
+
+    @OneToMany(mappedBy = "educationMajor",fetch = FetchType.LAZY)
+    private List<PersonalInfo> personalInfoList;
+
 }

@@ -44,7 +44,7 @@
 				<reportElement x="392" y="28" width="137" height="1" uuid="64f87f22-2af9-44fa-ab24-d70015befcca"/>
 			</line>
 			<staticText>
-				<reportElement x="405" y="3" width="118" height="30" uuid="674ea84a-a5bc-4122-be55-12a153cef2fa"/>
+				<reportElement x="380" y="3" width="143" height="30" uuid="674ea84a-a5bc-4122-be55-12a153cef2fa"/>
 				<box>
 					<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -54,7 +54,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Titr" size="14" isBold="true"/>
 				</textElement>
-				<text><![CDATA[لیست مقاطع تحصیلی]]></text>
+				<text><![CDATA[لیست رشته های تحصیلی]]></text>
 			</staticText>
 			<line>
 				<reportElement x="20" y="89" width="508" height="1" uuid="23413f0b-d55c-4d16-bedf-d5bf6d58141e"/>
@@ -93,7 +93,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[نام لاتین مقطع تحصیلی]]></text>
+								<text><![CDATA[نام لاتین رشته]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="250" uuid="8228c44c-ab6c-4370-82f3-e17f1f1978ef">
@@ -131,7 +131,7 @@
 								<textElement textAlignment="Center" verticalAlignment="Middle">
 									<font fontName="Shabnam-FD" size="8" isBold="true"/>
 								</textElement>
-								<text><![CDATA[مقطع تحصیلی]]></text>
+								<text><![CDATA[رشته]]></text>
 							</staticText>
 						</jr:columnHeader>
 						<jr:detailCell style="Table_TD" height="30">

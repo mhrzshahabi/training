@@ -15,16 +15,18 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/educationLevel")
+@RequestMapping("/education")
 public class EducationFormController {
 
-    @RequestMapping(value = "/show-form")
+    @RequestMapping(value = "/level/show-form")
     public String showForm() {
         return "base/education";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+    @PostMapping("/{educationType}/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,
+                                               @PathVariable String educationType,
+                                               @PathVariable String type) {
         String token = (String) request.getSession().getAttribute("AccessToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -41,14 +43,10 @@ public class EducationFormController {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
-
-        if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/educationLevel/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/educationLevel/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/educationLevel/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-        else
-            return null;
+        type = type.toUpperCase();
+        return restTemplate.exchange(restApiUrl + "/api/education/" + educationType + "/printWithCriteria/" + type,
+                HttpMethod.POST,
+                entity,
+                byte[].class);
     }
 }

@@ -26,7 +26,7 @@ import java.util.Map;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/educationLevel")
+@RequestMapping(value = "/api/education/level")
 public class EducationLevelRestController {
     private final IEducationLevelService educationLevelService;
     private final ObjectMapper objectMapper;
