@@ -1008,11 +1008,13 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
     };
 
     function ListGrid_Goal_refresh() {
-        var record = ListGrid_Goal.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_Goal.selectRecord(record);
-        }
+        // var record = ListGrid_Goal.getSelectedRecord();
+        // if (record == null || record.id == null) {
+        // } else {
+        //     ListGrid_Goal.selectRecord(record);
+        // }
+        // RestDataSource_CourseGoal.fetchDataURL = courseUrl + ""
+        RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         ListGrid_Goal.invalidateCache();
         ListGrid_Syllabus_Goal.invalidateCache();
     }
