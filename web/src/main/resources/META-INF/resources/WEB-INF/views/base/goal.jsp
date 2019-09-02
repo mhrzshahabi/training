@@ -153,7 +153,7 @@
                     showFilterEditor: false
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%"}]
+                    {name: "titleFa", width: "30%"}],
             },
             {
                 name: "practicalDuration",
@@ -164,8 +164,14 @@
                 keyPressFilter: "^[0-9]",
                 min: 1,
                 max: 300,
-                step: 2
+                step: 2,
+change:function(form, item, value, oldValue) {
+// Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord().theoryDuration)+" ساعت می باشد.");
+Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
+},
+
             }],
+
         keyPress: function () {
             if (isc.EventHandler.getKey() == "Enter") {
                 DynamicForm_Syllabus.focusInNextTabElement();
@@ -313,6 +319,7 @@
         autoDraw: false,
         dismissOnEscape: false,
         border: "1px solid gray",
+        showFooter: true,
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
@@ -442,7 +449,7 @@
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: false,
+        autoFetchData: true,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         filterOnKeypress: true,
@@ -486,7 +493,7 @@
         sortField: "goalId",
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: false,
+        autoFetchData: true,
         showFilterEditor: true,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",

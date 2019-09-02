@@ -7,7 +7,6 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 //<script>
-
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -600,6 +599,9 @@
         // align: "center",
         titleAlign: "left",
         showInlineErrors: true,
+        show: function(){
+
+},
         numCols: 8,
         // isGroup: true,
         fields: [
@@ -1389,6 +1391,7 @@
         showModalMask: true,
         autoDraw: false,
         dismissOnEscape: false,
+
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
@@ -1636,6 +1639,8 @@
                 }
             });
 
+
+
             // isc.RPCManager.sendRequest({ data: "different callback", callback: "myCallback2(data)", actionURL: "/rpcHandler.jsp"});
 
             DynamicForm_course.getItem("category.id").setDisabled(true);
@@ -1652,6 +1657,11 @@
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
+
+if (ListGrid_Course.getSelectedRecord().theoryDuration != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration){
+    // isc.say("salam");
+DynamicForm_course.getItem("theoryDuration").setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");}
+
             DynamicForm_course.getFields().get(5).prompt = "  جمع مدت زمان اجرای سرفصل ها " + (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration).toString() + " ساعت می باشد."
         }
     };
@@ -1688,36 +1698,4 @@
         criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
         criteriaForm_course.submitForm();
     };
-
-    function mockRemoveEmployees(employeeRecords) {
-        if (employeeRecords.length == 0) {
-            return;
-        }
-        // var dsRequest = {
-        //     ID: "mockRemoveResponse",
-        //     operationType: "remove",
-        //     data: employeeRecords
-        // }
-        // testData.add({id:employeesGrid.getSelectedRecord().id,titleFa:employeesGrid.getSelectedRecord().titleFa});
-        teamMembersGrid.invalidateCache();
-        // employeesByTeam.updateCaches(dsRequest);
-    }
-
-    function mappedByListId(listId, listGrid, DS) {
-        var listGridRecord = listGrid.getData().allRows;
-        for (var i = 0; i < listId.length; i++) {
-            for (var j = 0; j < listGridRecord.length; i++) {
-                if (listId[i] == listGridRecord[j].id) {
-                    DS.addData(listGridRecord[j]);
-                    break;
-                }
-            }
-        }
-    }
-
-    function x(data) {
-        console.log(data);
-        test = data;
-    }
-
     //</script>

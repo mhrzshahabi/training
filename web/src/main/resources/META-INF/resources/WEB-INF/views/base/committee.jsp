@@ -4,6 +4,7 @@
 // <script>
 
     var committee_method = "POST";
+    var committeeId;
 
     //************************************************************************************
     // RestDataSource & ListGrid
@@ -41,7 +42,12 @@
         dataSource: RestDataSource_committee,
         autoFetchData: true,
         doubleClick: function () {
+
         },
+         selectionChanged: function (record, state)
+         {
+             committeeId=record;
+         },
         sortField: 1,
     });
 
@@ -175,9 +181,149 @@
         }
 
     });
+              var  DynamicForm_thisCommitteeHeader_Jsp = isc.DynamicForm.create({
+        titleWidth: "400",
+        width: "700",
+        align: "right",
+        autoDraw: false,
+
+
+        fields: [
+
+            {
+                name: "sgTitle",
+                type: "staticText",
+                title: "افزودن اعضا به کمیته",
+                wrapTitle: false,
+                width: 250
+            }
+        ]
+    });
+
+             var SectionStack_All_Skills_Jsp = isc.SectionStack.create({
+        visibilityMode: "multiple",
+        width: "50%",
+        sections: [
+            {
+                title: "لیست اعضا",
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [
+                  //  ListGrid_AllSkills
+                ]
+            }
+        ]
+    });
+
+    var SectionStack_Current_Skill_JspClass = isc.SectionStack.create({
+        visibilityMode: "multiple",
+        width: "50%",
+        sections: [
+            {
+                name: "sTitle",
+              //  title: "لیست اعضای کمیته مورد نظر",
+                expanded: true,
+                canCollapse: false,
+                align: "center",
+                items: [
+                 //   ListGrid_ForThisSkillGroup_GetSkills
+                ]
+            }
+        ]
+    });
+
+         var  HStack_Committee_AddUsers_Jsp= isc.HStack.create({
+        membersMargin: 10,
+        height: 500,
+        members: [
+            SectionStack_All_Skills_Jsp,
+            SectionStack_Current_Skill_JspClass
+        ]
+    });
+
+
+        var HLayOut_thisCommittee_AddUsers_Jsp = isc.HLayout.create({
+        width: 700,
+        height: 30,
+        border: "0px solid yellow",
+        layoutMargin: 5,
+        align: "center",
+        onCreate: function () {
+            alert("man toye hlayout hastam");
+
+        },
+        members: [
+            DynamicForm_thisCommitteeHeader_Jsp
+        ]
+    });
+
+        var   VLayOut_User_Committee_Jsp = isc.VLayout.create({
+        width: "100%",
+        height: "300",
+        autoDraw: false,
+        border: "3px solid gray", layoutMargin: 5,
+        members: [ HLayOut_thisCommittee_AddUsers_Jsp,
+            HStack_Committee_AddUsers_Jsp,
+          ]
+    });
+
+    var Window_Add_User_TO_Committee = isc.Window.create({
+        title: "لیست اعضا",
+        width: "900",
+        height: "400",
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+
+        closeClick: function () {
+
+
+           // ListGrid_Skill_Group_Competence.invalidateCache();
+           // ListGrid_Skill_Group_Skills.invalidateCache();
+            this.hide();
+        },
+        items: [
+         VLayOut_User_Committee_Jsp
+        ]
+    });
+
+
+    var ToolStripButton_Member = isc.ToolStripButton.create({
+        icon: "pieces/512/skill-standard.png",
+        title: "لیست اعضا",
+        click: function () {
+            var record = ListGrid_Committee.getSelectedRecord();
+               if (record == null || record.id == null) {
+               isc.Dialog.create({
+                    message: "کمیته ای انتخاب نشده است",
+                    icon: "[SKIN]ask.png",
+                    title: "پیام",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+
+            } else {
+
+              DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
+              SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
+              Window_Add_User_TO_Committee.show();
+
+
+            }
+        }
+    });
+
+
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print,ToolStripButton_Member]
     });
 
     //***********************************************************************************
@@ -197,8 +343,7 @@
     var VLayout_Body_Group = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [
-            HLayout_Actions_Group
+        members: [ HLayout_Actions_Group
             , HLayout_Grid_Committee
         ]
     });
@@ -249,6 +394,7 @@
             DynamicForm_Committee.clearValues();
             DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
             DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
+            DynamicForm_Committee.getItem("subCategoryId").fetchData();
             DynamicForm_Committee.editRecord(record);
 
         }
@@ -306,3 +452,4 @@
             }, 3000);
         }
     };
+
