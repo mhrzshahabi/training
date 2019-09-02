@@ -132,13 +132,4 @@ public class PersonalInfo extends Auditable {
 	@Column(name = "f_edu_orientation")
 	private Long educationOrientationId;
 
-
-@ManyToMany(fetch = FetchType.LAZY)
-@JoinTable(name = "tbl_committee_personalInfo",
-            joinColumns = {@JoinColumn(name = "f_personalinfo_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")})
-    private Set<Committee> committeeSet;
-
-
-
 }
