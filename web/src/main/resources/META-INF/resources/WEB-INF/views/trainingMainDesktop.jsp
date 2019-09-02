@@ -671,6 +671,7 @@
 
     trainingTabSet = isc.TrTabSet.create({
         tabs: [],
+
     });
 
     isc.TrVLayout.create({
