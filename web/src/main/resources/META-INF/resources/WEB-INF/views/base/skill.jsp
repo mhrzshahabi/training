@@ -347,7 +347,7 @@ var skill_Level_Symbol = ""
             isc.RPCManager.sendRequest({
                 actionURL: skill_ActionUrl,
                 httpMethod: skill_Method,
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
                 showPrompt: false,
