@@ -261,6 +261,7 @@
                 name: "titleFa",
                 title: "<spring:message code="course_fa_name"/>",
                 align: "center",
+                autoFitWidth:true,
                 filterOperator: "contains"
             },
             {
@@ -308,26 +309,26 @@
             },
             {
                 name: "minTeacherDegree", title: "<spring:message
-        code="course_minTeacherDegree"/>", align: "center", filterOperator: "contains"
+        code="course_minTeacherDegree"/>", align: "center", filterOperator: "contains",hidden:true
             },
             {
                 name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains"
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains",hidden:true
             },
             {
                 name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains"
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains",hidden:true
             },
             {
-                name: "knowledge", title: "دانشی", align: "center", filterOperator: "greaterThan", format: "%"
+                name: "knowledge", title: "دانشی", align: "center", filterOperator: "greaterThan", format: "%", width:"50"
                 // formatCellValue: function (value, record) {
                 //     // if (!isc.isA.Number(record.gdp) || !isc.isA.Number(record.population)) return "N/A";
                 //     var gdpPerCapita = Math.round(record.theoryDuration/10);
                 //     return isc.NumberUtil.format(gdpPerCapita, "%");
                 // }
             },
-            {name: "skill", title: "مهارتی", align: "center", filterOperator: "greaterThan", format: "%"},
-            {name: "attitude", title: "نگرشی", align: "center", filterOperator: "greaterThan", format: "%"},
+            {name: "skill", title: "مهارتی", align: "center", filterOperator: "greaterThan", format: "%", width:"50"},
+            {name: "attitude", title: "نگرشی", align: "center", filterOperator: "greaterThan", format: "%", width:"50"},
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
         ],
@@ -1046,6 +1047,7 @@
                             nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
                             idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC
                         });
+                        equalCourseGrid.removeData(equalCourseGrid.getSelectedRecord());
                     }
                 }
             },
@@ -1194,9 +1196,16 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                    let responseID = JSON.parse(resp.data).id;
+                                    console.log(responseID);
+                                    let gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     Window_course.close();
                                     ListGrid_Course_refresh();
+                                    setTimeout(function () {
+                                    ListGrid_Course.setSelectedState(gridState);
+                                    }, 1000);
+
                                 } else {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
@@ -1233,11 +1242,15 @@
                     callback: function (resp) {
 
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+                            let responseID = JSON.parse(resp.data).id;
+                            let gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
 
                             Window_course.close();
                             ListGrid_Course_refresh();
+                            setTimeout(function () {
+                            ListGrid_Course.setSelectedState(gridState);
+                            }, 1000);
                         } else {
 
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
