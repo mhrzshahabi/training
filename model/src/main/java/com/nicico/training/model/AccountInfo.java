@@ -38,7 +38,4 @@ public class AccountInfo extends Auditable{
 
     @Column(name = "c_shaba_number")
 	private String shabaNumber;
-//
-//    @Column(name = "c_description")
-//    private String description;
 }

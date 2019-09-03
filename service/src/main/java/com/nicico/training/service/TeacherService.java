@@ -73,6 +73,7 @@ public class TeacherService implements ITeacherService {
 		teacher = modelMapper.map(request, Teacher.class);
 		personalInfo = modelMapper.map(request.getPersonality(),PersonalInfo.class);
 
+		List<PersonalInfo> personalInfos = personalInfoDAO.findByNationalCode(request.getPersonality().getNationalCode());
 		List<Teacher> teachers = teacherDAO.findByTeacherCode(teacher.getTeacherCode());
 
 		if(teachers==null || teachers.size()==0) {
@@ -118,7 +119,7 @@ public class TeacherService implements ITeacherService {
 
 			personalInfoDAO.saveAndFlush(personalInfo);
 			teacher.setPersonality(personalInfo);
-			teacher.setPeronalityId(personalInfo.getId());
+			teacher.setPersonalityId(personalInfo.getId());
 			return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
 		}
 		else
@@ -147,7 +148,7 @@ public class TeacherService implements ITeacherService {
 		final Optional<Teacher> tById = teacherDAO.findById(teacherId);
         teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-		personalInfoId = teacher.getPeronalityId();
+		personalInfoId = teacher.getPersonalityId();
         final Optional<PersonalInfo> pById = personalInfoDAO.findById(personalInfoId);
         personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
@@ -288,61 +289,7 @@ public class TeacherService implements ITeacherService {
 	@Transactional
 	@Override
 	public void delete(Long id) {
-		Teacher teacher;
-		PersonalInfo personalInfo;
-		ContactInfo contactInfo;
-		AccountInfo accountInfo;
-		Address homeAddress;
-		Address workAddress;
-
-		Long teacherId;
-		Long personalInfoId;
-		Long contactInfoId;
-		Long accountInfoId;
-		Long homeAddressId;
-		Long workAddressId;
-
-		final Optional<Teacher> teacherById = teacherDAO.findById(id);
-		teacher = teacherById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-		teacherId = id;
-		personalInfoId = teacher.getPeronalityId();
-		teacherDAO.deleteById(teacherId);
-
-		final Optional<PersonalInfo> personalInfoById = personalInfoDAO.findById(personalInfoId);
-		personalInfo = personalInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-		contactInfoId = personalInfo.getContactInfoId();
-		accountInfoId = personalInfo.getAccountInfoId();
-		if (personalInfo.getAttachPhoto() != null && personalInfo.getAttachPhoto()!= "") {
-                File file1 = new File(personUploadDir + "/" + personalInfo.getAttachPhoto());
-                file1.delete();
-                }
-		personalInfoDAO.deleteById(personalInfoId);
-
-		if(accountInfoId != null) {
-			final Optional<AccountInfo> accountInfoById = accountInfoDAO.findById(accountInfoId);
-			accountInfo = accountInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-			accountInfoDAO.deleteById(accountInfoId);
-		}
-
-		if(contactInfoId != null){
-			final Optional<ContactInfo> contactInfoById = contactInfoDAO.findById(contactInfoId);
-			contactInfo = contactInfoById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-			homeAddressId = contactInfo.getHomeAdressId();
-			workAddressId = contactInfo.getWorkAdressId();
-			contactInfoDAO.deleteById(contactInfoId);
-
-			if(homeAddressId != null) {
-				final Optional<Address> homeAddressById = addressDAO.findById(homeAddressId);
-				homeAddress = homeAddressById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-				addressDAO.deleteById(homeAddressId);
-			}
-			if(workAddressId !=null) {
-				final Optional<Address> workAddressById = addressDAO.findById(workAddressId);
-				workAddress = workAddressById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-				addressDAO.deleteById(workAddressId);
-			}
-		}
-
+		teacherDAO.deleteById(id);
 	}
 
 	@Transactional

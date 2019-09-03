@@ -48,4 +48,7 @@ public class Address extends Auditable {
 
     @Column(name = "f_state1")
 	private Long stateId1;
+
+	@Column(name = "b_other_country")
+	private Boolean otherCountry;
 }
