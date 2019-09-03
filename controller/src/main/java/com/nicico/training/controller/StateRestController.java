@@ -8,6 +8,7 @@ import com.nicico.training.iservice.ICityService;
 import com.nicico.training.iservice.IStateService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -69,7 +70,9 @@ public class StateRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_state')")
-    public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam("_startRow") Integer startRow,
+    @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
+    @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -98,9 +101,10 @@ public class StateRestController {
     }
 
     @Loggable
+    @Transactional
     @GetMapping(value = "/spec-list-by-stateId/{id}")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<CityDTO.CitySpecRs> listByMajorId(@RequestParam("_startRow") Integer startRow,
+    public ResponseEntity<CityDTO.CitySpecRs> listByStateId(@RequestParam("_startRow") Integer startRow,
                                                                             @RequestParam("_endRow") Integer endRow,
                                                                             @RequestParam(value = "operator", required = false) String operator,
                                                                             @RequestParam(value = "criteria", required = false) String criteria,
