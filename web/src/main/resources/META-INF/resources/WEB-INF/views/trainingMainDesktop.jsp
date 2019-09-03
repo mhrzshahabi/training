@@ -359,7 +359,7 @@
         canDragResize: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 100,
+            width: 40,
         },
     });
 

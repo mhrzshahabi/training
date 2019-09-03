@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-91">
+        <createTable tableName="tbl_post">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_postPK"/>
+            </column>
+            <column name="c_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_assistance" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_active" type="NUMBER(10, 0)"/>
+            <column name="c_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_job_id" type="NUMBER(19, 0)"/>
+            <column name="f_post_grade_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-92">
+        <createTable tableName="tbl_post_grade">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_gradePK"/>
+            </column>
+            <column name="c_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="e_active" type="NUMBER(10, 0)"/>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-93">
+        <addColumn tableName="tbl_job_new">
+            <column name="e_active" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-95">
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_id" baseTableName="tbl_post" constraintName="FKcdk3gqvhamly9n79039k44om2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_grade" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-98">
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_post" constraintName="FKqubphxonbs19tsxx3sp42y9cj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_job_new" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1567501494884-145">
+        <dropColumn columnName="E_ENABLED" tableName="TBL_JOB_NEW"/>
+    </changeSet>
+
+</databaseChangeLog>
