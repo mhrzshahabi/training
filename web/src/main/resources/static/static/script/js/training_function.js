@@ -33,7 +33,7 @@ function simpleDialog(title,message,timeout,dialogType){
 
 
 
-function yesNoDialog(title,message,timeout,dialogType,retIndex){
+function yesNoDialog(title,message,timeout,dialogType){
 
    var retIndex=6;
 
@@ -41,11 +41,14 @@ function yesNoDialog(title,message,timeout,dialogType,retIndex){
         message:message,
         icon: "[SKIN]"+dialogType+".png",
         title:title,
-        buttons: [isc.Button.create({title: "بله"}),isc.Button.create({title: "خیر"})],
+        buttons: [isc.Button.create({name:"yesBtn",title: "بله"}),isc.Button.create({name:"noBtn",title: "خیر"})],
         buttonClick: function (button, index) {
-
+            if(button.name == "yesBtn"){return 1;
+            alert("yes");
+            }
+            else{return 0;}
             retIndex=index;
-          ynd.close();
+            ynd.close();
 
 
         },

@@ -8,7 +8,7 @@
 
 //<script>
     <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
-
+    var sumSyllabus;
     var methodGoal = "GET";
     var urlGoal = goalUrl;
     var methodSyllabus = "GET";
@@ -16,7 +16,7 @@
     var selectedRecord = 0;
 
     var RestDataSourceGoalEDomainType = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}
+        fields: [{name: "id", primeryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -130,7 +130,7 @@
             },
             {
                 name: "edomainTypeId",
-                value: "",
+                // value: "",
                 type: "IntegerItem",
                 title: "حیطه",
                 width: 220,
@@ -160,17 +160,23 @@
                 title: "مدت زمان اجرا",
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
-                defaultValue: 2,
+                defaultValue: 0,
                 keyPressFilter: "^[0-9]",
                 min: 1,
                 max: 300,
                 step: 2,
-change:function(form, item, value, oldValue) {
+                change: function (form, item, value) {
 
-                    var sumSyllabus = (ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration)-(ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration)+value;
-Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord().theoryDuration)+" ساعت"+" و جمع مدت زمان سرفصل ها "+sumSyllabus+" ساعت می باشد.");
-// Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
-},
+                    if (methodSyllabus == "PUT") {
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
+                        console.log(sumSyllabus)
+                    } else {
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
+                        console.log(sumSyllabus)
+                    }
+                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                    // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
+                },
 
             }],
 
@@ -252,14 +258,17 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say")
+                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Syllabus_Goal.invalidateCache();
                         setTimeout(function () {
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
                         }, 1000);
                         Window_Syllabus.close();
+                        if(yesNoDialog("سوال؟","مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",10000,"ask")){
+                            alert("12")
+                        }
                     } else {
-                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error")
+                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
                     }
 
                 }
@@ -400,7 +409,7 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
                 Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
                 Window_AddGoal.show();
                 ListGrid_CourseGoal_Goal.invalidateCache();
-                RestDataSource_GoalAll.fetchDataURL = courseUrl +"goal/" + courseId.id;
+                RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;
                 ListGrid_GoalAll.invalidateCache();
                 <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
             }
@@ -469,7 +478,7 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
         height: "100%",
         dataSource: RestDataSource_Syllabus,
         // groupByField:"goal.titleFa", groupStartOpen:"all",
-        showGridSummary:true,
+        showGridSummary: true,
         // showGroupSummary:true,
         contextMenu: Menu_ListGrid_Syllabus_Goal,
         doubleClick: function () {
@@ -488,9 +497,9 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
             {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
             {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction:"sum"},
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction: "sum"},
             {name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "goal.titleFa",hidden: true}
+            {name: "goal.titleFa", hidden: true}
         ],
         sortField: "goalId",
         sortDirection: "descending",
@@ -709,7 +718,7 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
         }
     });
     var ToolStripButton_Add_Vertical = isc.ToolStripButton.create({
-        icon: "pieces/512/left-arrow.png",
+        icon: "[SKIN]/TransferIcons/left.png",
         title: "",
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
         click: function () {
@@ -767,7 +776,7 @@ Window_Syllabus.setStatus("طول دوره "+(ListGrid_Course.getSelectedRecord(
         }
     });
     var ToolStripButton_Remove_Vertical = isc.ToolStripButton.create({
-        icon: "pieces/512/right-arrow.png",
+        icon: "[SKIN]/TransferIcons/right.png",
         title: "",
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {

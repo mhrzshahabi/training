@@ -151,7 +151,7 @@
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code="refresh"/>", icon: "pieces/16/refresh.png", click: function () {
+            title: "<spring:message code="refresh"/>", icon: "[SKIN]/actions/refresh.png", click: function () {
                 ListGrid_Course_refresh();
                 ListGrid_CourseJob.setData([]);
                 ListGrid_CourseSkill.setData([]);
@@ -160,19 +160,19 @@
                 ListGrid_CourseCompetence.setData([]);
             }
         }, {
-            title: "<spring:message code="create"/>", icon: "pieces/16/icon_add.png", click: function () {
+            title: "<spring:message code="create"/>", icon: "[SKIN]/actions/icon_add.png", click: function () {
                 ListGrid_Course_add();
             }
         }, {
-            title: "<spring:message code="edit"/>", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "<spring:message code="edit"/>", icon: "[SKIN]/actions/icon_edit.png", click: function () {
                 ListGrid_Course_Edit();
             }
         }, {
-            title: "<spring:message code="remove"/>", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "<spring:message code="remove"/>", icon: "[SKIN]/actions/icon_delete.png", click: function () {
                 ListGrid_Course_remove()
             }
         }, {
-            title: "تعریف هدف و سرفصل", icon: "pieces/16/goal.png", click: function () {
+            title: "تعریف هدف و سرفصل", icon: "[SKIN]/action/goal.png", click: function () {
                 openTabGoal();
             }
         }, {
@@ -232,22 +232,19 @@
         },
         selectionChanged: function (record, state) {
             courseId = record;
-            // RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
-            // ListGrid_CourseGoal.fetchData();
-            // ListGrid_CourseGoal.invalidateCache();
             RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            // RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
-            // ListGrid_CourseSkill.fetchData();
-            // ListGrid_CourseSkill.invalidateCache();
-            // RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
-            // ListGrid_CourseJob.fetchData();
-            // ListGrid_CourseJob.invalidateCache();
-            // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
-            // ListGrid_CourseCompetence.fetchData();
-            // ListGrid_CourseCompetence.invalidateCache();
-            for (i = 0; i < trainingTabSet.tabs.length; i++) {
+            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
+            ListGrid_CourseSkill.fetchData();
+            ListGrid_CourseSkill.invalidateCache();
+            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
+            ListGrid_CourseJob.fetchData();
+            ListGrid_CourseJob.invalidateCache();
+            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
+            ListGrid_CourseCompetence.fetchData();
+            ListGrid_CourseCompetence.invalidateCache();
+            for (var i = 0; i < trainingTabSet.tabs.length; i++) {
                 if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                     trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
                 }
@@ -1176,7 +1173,7 @@
 
     var IButton_course_Save = isc.IButton.create({
         title: "<spring:message code="save"/>",
-        icon: "pieces/16/save.png",
+        icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_course.validate();
             if (DynamicForm_course.hasErrors()) {
@@ -1299,7 +1296,7 @@
             ID: "EditExitIButton",
             title: "<spring:message code="cancel"/>",
             prompt: "",
-            icon: "pieces/16/icon_delete.png",
+            icon: "[SKIN]/actions/icon_delete.png",
             // orientation: "vertical",
             click: function () {
                 Window_course.close();
