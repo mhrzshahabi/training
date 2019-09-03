@@ -87,17 +87,17 @@ public class TeacherService implements ITeacherService {
 
 			if (request.getPersonality().getContactInfo() != null) {
 				contactInfo = modelMapper.map(request.getPersonality().getContactInfo(), ContactInfo.class);
-				if (request.getPersonality().getContactInfo().getHomeAdress() != null) {
-					homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAdress(), Address.class);
+				if (request.getPersonality().getContactInfo().getHomeAddress() != null) {
+					homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAddress(), Address.class);
 					addressDAO.saveAndFlush(homeAddress);
-					contactInfo.setHomeAdress(homeAddress);
-					contactInfo.setHomeAdressId(homeAddress.getId());
+					contactInfo.setHomeAddress(homeAddress);
+					contactInfo.setHomeAddressId(homeAddress.getId());
 				}
-				if (request.getPersonality().getContactInfo().getWorkAdress() != null) {
-					workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAdress(), Address.class);
+				if (request.getPersonality().getContactInfo().getWorkAddress() != null) {
+					workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAddress(), Address.class);
 					addressDAO.saveAndFlush(workAddress);
-					contactInfo.setWorkAdress(workAddress);
-					contactInfo.setWorkAdressId(workAddress.getId());
+					contactInfo.setWorkAddress(workAddress);
+					contactInfo.setWorkAddressId(workAddress.getId());
 				}
 				contactInfoDAO.saveAndFlush(contactInfo);
 				personalInfo.setContactInfo(contactInfo);
@@ -179,55 +179,55 @@ public class TeacherService implements ITeacherService {
 		}
 		////////////////////////////////////HomeAddress/////////////////////////////////////////////////////////////////////
 		   if(personalInfo.getContactInfo() != null &&
-		   		personalInfo.getContactInfo().getHomeAdress() != null &&
+		   		personalInfo.getContactInfo().getHomeAddress() != null &&
 		   		request.getPersonality().getContactInfo() != null &&
-		   		request.getPersonality().getContactInfo().getHomeAdress()!=null) {
- 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getHomeAdressId());
+		   		request.getPersonality().getContactInfo().getHomeAddress()!=null) {
+ 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getHomeAddressId());
 			homeAddress = haById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 			Address haupdating = new Address();
 			modelMapper.map(homeAddress,haupdating);
-			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getHomeAdress(), AddressDTO.Update.class),haupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getHomeAddress(), AddressDTO.Update.class),haupdating);
 			addressDAO.saveAndFlush(haupdating);
 			homeAddress = haupdating;
 			homeAddressId = haupdating.getId();
 		}
 
-		if(personalInfo.getContactInfo().getHomeAdress() == null &&
+		if(personalInfo.getContactInfo().getHomeAddress() == null &&
 		 request.getPersonality().getContactInfo() != null &&
-		 request.getPersonality().getContactInfo().getHomeAdress() != null) {
-        		homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAdress(), Address.class);
+		 request.getPersonality().getContactInfo().getHomeAddress() != null) {
+        		homeAddress = modelMapper.map(request.getPersonality().getContactInfo().getHomeAddress(), Address.class);
 				addressDAO.saveAndFlush(homeAddress);
 				homeAddressId = homeAddress.getId();
 		}
 
 		if(personalInfo.getContactInfo() != null &&
-			personalInfo.getContactInfo().getHomeAdress() != null &&
-			request.getPersonality().getContactInfo().getHomeAdress() == null) {
-			homeAddressId = personalInfo.getContactInfo().getHomeAdressId();
+			personalInfo.getContactInfo().getHomeAddress() != null &&
+			request.getPersonality().getContactInfo().getHomeAddress() == null) {
+			homeAddressId = personalInfo.getContactInfo().getHomeAddressId();
 			addressDAO.deleteById(homeAddressId);
 			homeAddress = null;
 			homeAddressId = null;
 		}
 			////////////////////////////////////WorkAddress/////////////////////////////////////////////////////////////////////
-	if(personalInfo.getContactInfo().getWorkAdress() != null && request.getPersonality().getContactInfo().getWorkAdress()!=null) {
- 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getWorkAdressId());
+	if(personalInfo.getContactInfo().getWorkAddress() != null && request.getPersonality().getContactInfo().getWorkAddress()!=null) {
+ 			final Optional<Address> haById = addressDAO.findById(personalInfo.getContactInfo().getWorkAddressId());
 			workAddress = haById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 			Address waupdating = new Address();
 			modelMapper.map(workAddress,waupdating);
-			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getWorkAdress(), AddressDTO.Update.class),waupdating);
+			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo().getWorkAddress(), AddressDTO.Update.class),waupdating);
 			addressDAO.saveAndFlush(waupdating);
 			workAddress = waupdating;
 			workAddressId = waupdating.getId();
 		}
 
-		if(personalInfo.getContactInfo().getWorkAdress() == null && request.getPersonality().getContactInfo().getWorkAdress() != null) {
-        		workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAdress(), Address.class);
+		if(personalInfo.getContactInfo().getWorkAddress() == null && request.getPersonality().getContactInfo().getWorkAddress() != null) {
+        		workAddress = modelMapper.map(request.getPersonality().getContactInfo().getWorkAddress(), Address.class);
 				addressDAO.saveAndFlush(workAddress);
 				workAddressId = workAddress.getId();
 		}
 
-		if(personalInfo.getContactInfo().getWorkAdress() != null && request.getPersonality().getContactInfo().getWorkAdress() == null) {
-			workAddressId = personalInfo.getContactInfo().getWorkAdressId();
+		if(personalInfo.getContactInfo().getWorkAddress() != null && request.getPersonality().getContactInfo().getWorkAddress() == null) {
+			workAddressId = personalInfo.getContactInfo().getWorkAddressId();
 			addressDAO.deleteById(workAddressId);
 			workAddress = null;
 			workAddressId = null;
@@ -240,10 +240,10 @@ public class TeacherService implements ITeacherService {
 			modelMapper.map(contactInfo,cupdating);
 			modelMapper.map((new ModelMapper()).map(request.getPersonality().getContactInfo(), ContactInfoDTO.Update.class),cupdating);
 
-			cupdating.setWorkAdressId(workAddressId);
-			cupdating.setWorkAdress(workAddress);
-			cupdating.setHomeAdressId(homeAddressId);
-			cupdating.setHomeAdress(homeAddress);
+			cupdating.setWorkAddressId(workAddressId);
+			cupdating.setWorkAddress(workAddress);
+			cupdating.setHomeAddressId(homeAddressId);
+			cupdating.setHomeAddress(homeAddress);
 
 			contactInfoDAO.saveAndFlush(cupdating);
 			contactInfo = cupdating;
@@ -253,10 +253,10 @@ public class TeacherService implements ITeacherService {
 		if(personalInfo.getContactInfoId() == null && request.getPersonality().getContactInfo()!=null) {
         		contactInfo = modelMapper.map(request.getPersonality().getContactInfo(), ContactInfo.class);
 
-        		contactInfo.setWorkAdressId(workAddressId);
-				contactInfo.setWorkAdress(workAddress);
-				contactInfo.setHomeAdressId(homeAddressId);
-				contactInfo.setHomeAdress(homeAddress);
+        		contactInfo.setWorkAddressId(workAddressId);
+				contactInfo.setWorkAddress(workAddress);
+				contactInfo.setHomeAddressId(homeAddressId);
+				contactInfo.setHomeAddress(homeAddress);
 
 				contactInfoDAO.saveAndFlush(contactInfo);
 				contactInfoId = contactInfo.getId();

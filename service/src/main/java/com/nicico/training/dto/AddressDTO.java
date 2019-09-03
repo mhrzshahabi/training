@@ -24,6 +24,7 @@ public class AddressDTO {
     private String phone;
     private String fax;
     private String webSite;
+    private Boolean otherCountry;
 
     private Long cityId;
     private Long stateId1;
@@ -51,6 +52,7 @@ public class AddressDTO {
         private String phone;
         private String fax;
         private String webSite;
+        private Boolean otherCountry;
         private CityDTO.CityInfoTuple city;
         private StateDTO.StateInfoTuple state1;
         private Long cityId;

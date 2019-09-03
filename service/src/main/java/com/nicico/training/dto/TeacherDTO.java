@@ -33,7 +33,7 @@ public class TeacherDTO {
 	private String economicalCode;
 	private String economicalRecordNumber;
 
-	private Long peronalityId;
+	private Long personalityId;
 
 	// ------------------------------
 
