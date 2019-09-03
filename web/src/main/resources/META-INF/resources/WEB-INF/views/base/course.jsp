@@ -201,8 +201,8 @@
         hoverHeight: "30%",
         hoverMoveWithMouse: true,
         canHover: false,
-        showHover: true,
-        showHoverComponents: true,
+        showHover: false,
+        showHoverComponents: false,
         <%--getCellHoverComponent: function (record, rowNum, colNum) {--%>
         <%--equalPreCourse.length = 0;--%>
         <%--isc.RPCManager.sendRequest({--%>
