@@ -38,6 +38,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
+    const postGradeUrl = rootUrl + "/postGrade/";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
 
@@ -536,6 +537,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="job.competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
@@ -738,12 +745,14 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.TrViewLoader.create({viewURL: url}),
+                pane: isc.TrViewLoader.create({viewURL: url, }),
                 canClose: true,
             });
             createTab(title, url);
         }
     };
+
+    createTab("<spring:message code="job"/>", "<spring:url value="/job/show-form"/>");
 
 </script>
 </body>
