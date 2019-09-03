@@ -24,7 +24,7 @@ public class CityDTO {
     @ApiModelProperty(required = true)
     private String name;
 
-//    private Long stateId;
+    private Long stateId;
 
     //---------------------------
     @Getter
@@ -37,7 +37,7 @@ public class CityDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-//        private StateDTO.StateInfoTuple state;
+        private StateDTO.StateInfoTuple state;
     }
 
     @Getter
@@ -45,8 +45,8 @@ public class CityDTO {
 	@ApiModel("CityInfoTuple")
 	public static class CityInfoTuple {
 	    private String name;
-//	    private StateDTO.StateInfoTuple state;
-//	    private Long stateId;
+	    private StateDTO.StateInfoTuple state;
+	    private Long stateId;
 	}
     // ------------------------------
 

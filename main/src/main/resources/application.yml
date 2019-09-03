@@ -63,12 +63,10 @@ nicico:
     dir: /var/nicico/${spring.application.name}/
   person:
     upload:
-#      dir: /var/nicico/${spring.application.name}/
-       dir: c:/upload/person/
+      dir: /var/nicico/${spring.application.name}/
   temp:
     upload:
-#      dir: /var/nicico/${spring.application.name}/
-       dir: c:/upload/temp/
+      dir: /var/nicico/${spring.application.name}/
   rest-api:
       url: /var/nicico/${spring.application.name}/
   workflow:

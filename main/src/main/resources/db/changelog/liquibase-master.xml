@@ -5,24 +5,24 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
-    <!--<include file="classpath:/db/changelog/changes/liq-activiti.xml"/>-->
-    <!--<include file="changes/liq-001.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-002.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-003.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-004.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-005.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-006.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-007.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-008.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-009.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-010.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-011.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-012.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-013.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-014.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-015.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-016.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-017.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-018.xml" relativeToChangelogFile="true"/>-->
-    <!--<include file="changes/liq-019.xml" relativeToChangelogFile="true"/>-->
+    <include file="classpath:/db/changelog/changes/liq-activiti.xml"/>
+    <include file="changes/liq-001.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-002.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-003.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-004.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-005.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-006.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-007.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-008.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-009.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-010.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-011.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-012.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-013.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-014.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-015.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-016.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-017.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-018.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-019.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
