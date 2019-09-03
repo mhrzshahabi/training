@@ -34,30 +34,22 @@ function simpleDialog(title,message,timeout,dialogType){
 
 
 function yesNoDialog(title,message,timeout,dialogType,retIndex){
-
-   var retIndex=6;
-
+    var retIndex=6;
     var ynd=isc.Dialog.create({
         message:message,
         icon: "[SKIN]"+dialogType+".png",
         title:title,
         buttons: [isc.Button.create({title: "بله"}),isc.Button.create({title: "خیر"})],
         buttonClick: function (button, index) {
-
-            retIndex=index;
-          ynd.close();
-
-
+            retIndex = index;
+            ynd.close();
         },
-
-
     });
     if(timeout>0){
         setTimeout(function () {
             ynd.close();
         }, timeout);
-    }
-
+    };
 }
 function courseCounterCode(n) {
 
