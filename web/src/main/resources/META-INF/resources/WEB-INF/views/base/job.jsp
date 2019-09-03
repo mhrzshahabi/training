@@ -56,5 +56,5 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
-
+        JobLG_job.invalidateCache();
     }
