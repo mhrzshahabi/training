@@ -37,7 +37,7 @@ public class InstituteDTO {
     @ApiModelProperty
     private String titleEn;
 
-    private Long contactInfoId;
+    private Long addressId;
     private Long accountInfoId;
     private Long managerId;
     private Integer teacherNumPHD;
@@ -74,7 +74,7 @@ public class InstituteDTO {
         private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
         private Set<EquipmentDTO.Info> equipmentSet;
         private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-        private ContactInfo contactInfo;
+        private Address address;
         private AccountInfo accountInfo;
         private PersonalInfo manager;
         private InstituteDTO.Info  parentInstitute;

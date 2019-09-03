@@ -31,11 +31,11 @@ public class Institute {
     private String titleEn;
 
     @ManyToOne
-    @JoinColumn(name = "f_contact_info", insertable = false, updatable = false)
-    private ContactInfo contactInfo;
+    @JoinColumn(name = "f_address", insertable = false, updatable = false)
+    private Address address;
 
-    @Column(name ="f_contact_info")
-    private Long contactInfoId;
+    @Column(name ="f_address")
+    private Long addressId;
 
     @ManyToOne
     @JoinColumn(name = "f_account_info", insertable = false, updatable = false)

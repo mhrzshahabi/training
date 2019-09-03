@@ -31,7 +31,7 @@ public class InstituteService implements IInstituteService {
     private final EquipmentDAO equipmentDAO;
     private final TeacherDAO teacherDAO;
     private final AccountInfoDAO accountInfoDAO;
-    private final ContactInfoDAO contactInfoDAO;
+    private final AddressDAO addressDAO;
     private final PersonalInfoDAO personalInfoDAO;
 
     private final TrainingPlaceDAO trainingPlaceDAO;
@@ -111,18 +111,18 @@ public class InstituteService implements IInstituteService {
 
     // ------------------------------
 
-    private InstituteDTO.Info save(Institute institute, Set<Long> equpmentIds,Set<Long> teacherIds,Set<Long> trainingPleceIds) {
+    private InstituteDTO.Info save(Institute institute, Set<Long> eqiupmentIds,Set<Long> teacherIds,Set<Long> trainingPleceIds) {
 
         final Set<Equipment> equipmentSet=new HashSet<>();
         final Set<Teacher> teacherSet=new HashSet<>();
         final Set<TrainingPlace> trainingPlaceSet=new HashSet<>();
 
         AccountInfo accountInfo=null;
-        ContactInfo contactInfo=null;
+        Address address=null;
         PersonalInfo manager=null;
         Institute parentInstitute=null;
 
-        Optional.ofNullable(equpmentIds).ifPresent(equpmentIdSet->equpmentIdSet.forEach(equipmentId->equipmentSet.add(equipmentDAO.findById(equipmentId).orElseThrow(()->new TrainingException(TrainingException.ErrorType.EquipmentNotFound)))));
+        Optional.ofNullable(eqiupmentIds).ifPresent(equpmentIdSet->equpmentIdSet.forEach(equipmentId->equipmentSet.add(equipmentDAO.findById(equipmentId).orElseThrow(()->new TrainingException(TrainingException.ErrorType.EquipmentNotFound)))));
         Optional.ofNullable(teacherIds).ifPresent(teacherIdSet->teacherIdSet.forEach(teacherId->teacherSet.add(teacherDAO.findById(teacherId).orElseThrow(()->new TrainingException(TrainingException.ErrorType.TeacherNotFound)))));
         Optional.ofNullable(trainingPleceIds).ifPresent(trainingPleceIdSet->trainingPleceIdSet.forEach(trainingPleceId->trainingPlaceSet.add(trainingPlaceDAO.findById(trainingPleceId).orElseThrow(()->new TrainingException(TrainingException.ErrorType.TrainingPlaceNotFound)))));
 
@@ -131,9 +131,9 @@ public class InstituteService implements IInstituteService {
             Optional<AccountInfo> optionalAccountInfo=accountInfoDAO.findById(institute.getAccountInfoId());
             accountInfo=optionalAccountInfo.orElseThrow(()->new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
         }
-        if(institute.getContactInfoId()!=null){
-            Optional<ContactInfo> optionalContactInfo=contactInfoDAO.findById(institute.getContactInfoId());
-            contactInfo=optionalContactInfo.orElseThrow(()->new TrainingException(TrainingException.ErrorType.ContactInfoNotFound));
+        if(institute.getAddressId()!=null){
+            Optional<Address> optionalAddress=addressDAO.findById(institute.getAddressId());
+            address=optionalAddress.orElseThrow(()->new TrainingException(TrainingException.ErrorType.AddressNotFound));
 
         }
         if(institute.getManagerId()!=null){
@@ -151,7 +151,7 @@ public class InstituteService implements IInstituteService {
         institute.setTrainingPlaceSet(trainingPlaceSet);
 
         institute.setAccountInfo(accountInfo);
-        institute.setContactInfo(contactInfo);
+        institute.setAddress(address);
         institute.setManager(manager);
         institute.setParentInstitute(parentInstitute);
 
