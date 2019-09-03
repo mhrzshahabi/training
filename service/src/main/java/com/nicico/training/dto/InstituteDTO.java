@@ -89,6 +89,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
+        AddressDTO address;
+        AccountInfoDTO accountInfo;
         Set<Long> equipmentIds;
         Set<Long> trainingPlaceIds;
         Set<Long> teacherIds;
@@ -101,6 +103,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
+        AddressDTO address;
+        AccountInfoDTO accountInfo;
     }
 
     // ------------------------------

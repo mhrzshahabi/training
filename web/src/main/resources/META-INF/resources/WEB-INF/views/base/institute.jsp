@@ -1,8 +1,13 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+//<script>
+
+    <%
+   final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
 
     var instituteMethod = "POST";
     var instituteWait;
@@ -14,11 +19,9 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
 
-
     var RestDataSource_Institute_Institute = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code"},
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "teacherNumPHD"},
@@ -30,7 +33,14 @@
             {name: "empNumAssociate"},
             {name: "teacherNumDiploma"},
             {name: "empNumDiploma"},
-            {name: "contactInfo.email"},
+            {name: "address.state1.name"},
+            {name: "address.city.name"},
+            {name: "address.address"},
+            {name: "address.postCode"},
+            {name: "address.phone"},
+            {name: "address.fax"},
+            {name: "address.webSite"},
+            {name: "address.address"},
             {name: "accountInfo.bank"},
             {name: "accountInfo.bankBranch"},
             {name: "accountInfo.bankBranchCode"},
@@ -41,11 +51,6 @@
             {name: "parentInstitute.titleFa"},
             {name: "einstituteType.titleFa"},
             {name: "elicenseType.titleFa"},
-            {name: "address"},
-            {name: "address"},
-            {name: "email"},
-            {name: "postalCode"},
-            {name: "branch"},
             {name: "version"}
         ],
         fetchDataURL: instituteUrl + "spec-list"
@@ -193,22 +198,16 @@
 
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='code'/>", align: "center", filterOperator: "equals"},
-            {name: "titleFa", title: "<spring:message code='title'/>", align: "center", filterOperator: "contains"},
-            {
-                name: "telephone",
-                title: "<spring:message code='telephone'/>",
-                align: "center",
-                filterOperator: "contains"
-            },
-            {name: "branch", title: "<spring:message code='branch'/>", align: "center", filterOperator: "contains"},
-            {name: "einstituteType.titleFa", title: "", hidden: true},
-            {name: "elicenseType.titleFa", title: "", hidden: true},
-            {name: "titleEn", title: "", hidden: true},
-            {name: "address", title: "", hidden: true},
-            {name: "email", title: "", hidden: true},
-            {name: "postalCode", title: "", hidden: true},
-            {name: "version", title: "version", canEdit: false, hidden: true}
+            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "contains"},
+            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "contains"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "contains"},
+            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "contains"},
+            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "contains"},
+            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"},
+            {name: "address.state1.name", title: "استان", align: "center", filterOperator: "contains"},
+            {name: "address.city.name", title: "شهر", align: "center", filterOperator: "contains"},
+            {name: "address.address", title: "آدرس", align: "center", filterOperator: "contains"}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -268,7 +267,7 @@
             {name: "code", title: "عنوان فارسی", align: "center"},
             {name: "titleFa", title: "عنوان فارسی", align: "center"},
             {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "description", title: "رسته", align: "center"}
+            {name: "description", title: "ملاحظات", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -321,11 +320,119 @@
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
     //--------------------------------------------------------------------------------------------------------------------//
+    var ValuesManager_Institute_InstituteValue = isc.ValuesManager.create({});
+
 
     var DynamicForm_Institute_Institute = isc.DynamicForm.create({
-        width: "800",
-        titleWidth: "120",
-        height: "190",
+width: "100%",
+height: "100%",
+align: "center",
+canSubmit: true,
+titleWidth: 80,
+showInlineErrors: true,
+showErrorText: false,
+showErrorStyle: false,
+errorOrientation: "right",
+valuesManager: "vm",
+numCols: 6,
+titleAlign: "left",
+requiredMessage: "<spring:message code='msg.field.is.required'/>",
+margin: 10,
+newPadding: 5,
+fields: [
+{name: "id", hidden: true},
+{
+name: "titleFa",
+title: "عنوان فارسی",
+type: 'text',
+keyPressFilter:  "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+length: "255"
+},
+{
+name: "titleEn",
+title: "عنوان لاتین",
+type: 'text',
+keyPressFilter: "[a-z|A-Z|0-9| ]",
+length: "255"
+},
+{
+name: "parentInstituteId",
+title: "<spring:message code='bank.branch.code'/>",
+type: 'text',
+keyPressFilter: "[0-9]",
+length: "10"
+},
+{
+name: "parentInstituteTitle",
+title: "<spring:message code='bank.branch.code'/>",
+type: 'text',
+keyPressFilter: "[0-9]",
+length: "255"
+},
+
+
+{
+name: "personality.accountInfo.accountNumber",
+title: "<spring:message code='account.number'/>",
+type: 'text',
+keyPressFilter: "[0-9]",
+length: "30"
+},
+
+
+{
+name: "personality.accountInfo.cartNumber",
+title: "<spring:message code='cart.number'/>",
+type: 'text',
+keyPressFilter: "[0-9]",
+length: "30"
+},
+
+
+{
+name: "personality.accountInfo.shabaNumber",
+title: "<spring:message code='shaba.number'/>",
+type: 'text',
+keyPressFilter: "[0-9]",
+length: "30"
+}
+]
+{name: "titleFa"},
+{name: "titleEn"},
+{name: "teacherNumPHD"},
+{name: "teacherNumLicentiate"},
+{name: "empNumLicentiate"},
+{name: "teacherNumMaster"},
+{name: "empNumMaster"},
+{name: "teacherNumAssociate"},
+{name: "empNumAssociate"},
+{name: "teacherNumDiploma"},
+{name: "empNumDiploma"},
+{name: "address.state1.name"},
+{name: "address.city.name"},
+{name: "address.address"},
+{name: "address.postCode"},
+{name: "address.phone"},
+{name: "address.fax"},
+{name: "address.webSite"},
+{name: "address.address"},
+{name: "accountInfo.bank"},
+{name: "accountInfo.bankBranch"},
+{name: "accountInfo.bankBranchCode"},
+{name: "accountInfo.accountNumber"},
+{name: "manager.firstNameFa"},
+{name: "manager.lastNameFa"},
+{name: "manager.nationalCode"},
+{name: "parentInstitute.titleFa"},
+{name: "einstituteType.titleFa"},
+{name: "elicenseType.titleFa"},
+{name: "version"}
+
+    });
+    var DynamicForm_Institute_Institute_Address = isc.DynamicForm.create({
+width: "100%",
+titleWidth: "120",
+height: 150,
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
@@ -334,7 +441,7 @@
         errorOrientation: "right",
         titleAlign: "right",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        numCols: 4,
+        numCols: 6,
         margin: 50,
         padding: 5,
         fields: [
@@ -412,7 +519,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_EinstituteType_JspInstitute,
+                optionDataSource: RestDataSource_Institute_EInstituteType,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -436,7 +543,139 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_ElicenseType_JspInstitute,
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+        ]
+
+    });
+    var DynamicForm_Institute_Institute_Account = isc.DynamicForm.create({
+width: "100%",
+titleWidth: "120",
+height: 150,
+        align: "center",
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "right",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 6,
+        margin: 50,
+        padding: 5,
+        fields: [
+            {name: "id", hidden: true},
+
+            {
+                name: "code", title: "<spring:message code='code'/>",
+                type: 'text',
+                required: true,
+                keyPressFilter: "[0-9]",
+                length: "15",
+            },
+            {
+                name: "titleFa",
+                title: "<spring:message code='title'/>",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                hint: "Persian/فارسی",
+                showHintInField: true,
+                length: "30"
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code='titleEn'/>",
+                required: true,
+                keyPressFilter: "[a-z|A-Z |]",
+                hint: "English/انگليسي",
+                showHintInField: true,
+                length: "30"
+            },
+            {
+                name: "telephone",
+                title: "<spring:message code='telephone'/>",
+                keyPressFilter: "[0-9]",
+                length: "15",
+            },
+            {
+                name: "address",
+                title: "<spring:message code='address'/>"
+            },
+            {
+                name: "email",
+                title: "<spring:message code='email'/>",
+                hint: "test@nicico.com",
+                showHintInField: true,
+                length: "30"
+                , blur: function () {
+                    var emailCheck = false;
+                    emailCheck = checkEmail(DynamicForm_Institute_Institute.getValue("email"));
+                    mailCheck = emailCheck;
+                    if (emailCheck == false)
+                        DynamicForm_Institute_Institute.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
+
+                    if (emailCheck == true)
+                        DynamicForm_Institute_Institute.clearFieldErrors("email", true);
+                }
+            },
+            {
+                name: "postalCode",
+                title: "<spring:message code='postal.code'/>",
+                keyPressFilter: "[0-9]",
+                length: "15"
+            },
+            {
+                name: "branch",
+                title: "<spring:message code='branch'/>",
+                length: "15"
+            },
+            {
+                name: "einstituteTypeId",
+                type: "IntegerItem",
+                title: "<spring:message code='institute.type'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "elicenseTypeId",
+                type: "IntegerItem",
+                title: "<spring:message code='license.type'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -455,6 +694,29 @@
 
     });
 
+
+var VLayout__Institute_Institute_Val = isc.VLayout.create({
+width: "100%",
+height: "50%",
+border:"1px solid blue",
+padding:5,
+members: [DynamicForm_Institute_Institute]
+});
+
+var VLayout__Institute_Institute_Address = isc.VLayout.create({
+width: "100%",
+height: "25%",
+border:"1px solid blue",
+padding:5,
+members: [DynamicForm_Institute_Institute_Address]
+});
+var VLayout__Institute_Institute_Account = isc.VLayout.create({
+width: "100%",
+height: "25%",
+border:"1px solid blue",
+padding:5,
+members: [DynamicForm_Institute_Institute_Account]
+});
     var IButton_Institute_Institute_Exit = isc.IButton.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
@@ -490,6 +752,12 @@
         }
     });
 
+    var VLayout_Institute_Institute_Form = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [VLayout__Institute_Institute_Val, VLayout__Institute_Institute_Address, VLayout__Institute_Institute_Account]
+    });
+
     var HLayOut_Institute_InstituteSaveOrExit = isc.HLayout.create({
         layoutMargin: 5,
         showEdges: false,
@@ -506,7 +774,7 @@
     var Window_Institute_Institute = isc.Window.create({
         title: "<spring:message code='training.institute'/>",
         width: 800,
-        height: 200,
+        height: 700,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -521,122 +789,9 @@
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",
-            members: [DynamicForm_Institute_Institute, HLayOut_Institute_InstituteSaveOrExit]
+            members: [VLayout_Institute_Institute_Form, HLayOut_Institute_InstituteSaveOrExit]
         })]
     });
-
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Actions In Institute List Grid*/
-    //--------------------------------------------------------------------------------------------------------------------//
-    function ListGrid_Institute_Institute_Remove() {
-        var record = ListGrid_Institute_Institute.getSelectedRecord();
-        //console.log(record);
-        if (record == null) {
-            isc.Dialog.create({
-                message: "مهارتی برای حذف انتخاب نشده است!",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين مهارت حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خير"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='global.form.do.operation'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='global.message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: instituteUrl + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Institute_Institute.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "مهارت با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
-
-
-    };
-
-    function ListGrid_Institute_Institute_Edit() {
-        var record = ListGrid_Institute_Institute.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "مهارتی برای ویرایش انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            //console.log('record:' + JSON.stringify(record));
-            var id = record.categoryId;
-            DynamicForm_Institute_Institute.clearValues();
-            instituteMethod = "PUT";
-            DynamicForm_Institute_Institute.editRecord(record);
-            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
-            Window_Institute_Institute.show();
-
-        }
-    };
-
-    function ListGrid_Institute_Institute_Add() {
-        instituteMethod = "POST";
-        DynamicForm_Institute_Institute.clearValues();
-        Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
-        Window_Institute_Institute.show();
-    };
-
-    function ListGrid_Institute_Institute_refresh() {
-        var record = ListGrid_Institute_Institute.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_Institute_Institute.selectRecord(record);
-        }
-        ListGrid_Institute_Institute.invalidateCache();
-    };
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
@@ -767,146 +922,113 @@
     //--------------------------------------------------------------------------------------------------------------------//
     /*Functions*/
     //--------------------------------------------------------------------------------------------------------------------//
+    function ListGrid_Institute_Institute_Remove() {
+        var record = ListGrid_Institute_Institute.getSelectedRecord();
+        //console.log(record);
+        if (record == null) {
+            isc.Dialog.create({
+                message: "مهارتی برای حذف انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين مهارت حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "هشدار",
+                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
 
-    <%--function ListGrid_institute_remove() {--%>
-        <%--var record = ListGrid_Institute_JspInstitute.getSelectedRecord();--%>
-        <%--if (record == null) {--%>
-            <%--isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.record.not.selected'/>",--%>
-                <%--icon: "[SKIN]ask.png",--%>
-                <%--title: "<spring:message code='message'/>",--%>
-                <%--buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],--%>
-                <%--buttonClick: function (button, index) {--%>
-                    <%--this.close();--%>
-                <%--}--%>
-            <%--});--%>
-        <%--} else {--%>
-            <%--var Dialog_Delete = isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.record.remove.ask'/>",--%>
-                <%--icon: "[SKIN]ask.png",--%>
-                <%--title: "<spring:message code='msg.remove.title'/>",--%>
-                <%--buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({--%>
-                    <%--title: "<spring:message code='no'/>"--%>
-                <%--})],--%>
-                <%--buttonClick: function (button, index) {--%>
-                    <%--this.close();--%>
+                    if (index == 0) {
+                        var wait = isc.Dialog.create({
+                            message: "<spring:message code='global.form.do.operation'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='global.message'/>"
+                        });
+                        isc.RPCManager.sendRequest({
+                            actionURL: instituteUrl + record.id,
+                            httpMethod: "DELETE",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            showPrompt: true,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                wait.close();
+                                if (resp.data == "true") {
+                                    ListGrid_Institute_Institute.invalidateCache();
+                                    var OK = isc.Dialog.create({
+                                        message: "مهارت با موفقيت حذف گرديد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام شد"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 3000);
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "خطا"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
 
-                    <%--if (index == 0) {--%>
-                        <%--instituteWait = isc.Dialog.create({--%>
-                            <%--message: "<spring:message code='msg.waiting'/>",--%>
-                            <%--icon: "[SKIN]say.png",--%>
-                            <%--title: "<spring:message code='message'/>"--%>
-                        <%--});--%>
-                        <%--isc.RPCManager.sendRequest(MyDsRequest(instituteUrl + record.id, "DELETE", null, "callback: institute_delete_result(rpcResponse)"));--%>
-                    <%--}--%>
-                <%--}--%>
-            <%--});--%>
-        <%--}--%>
-    <%--};--%>
 
-    <%--function ListGrid_institute_edit() {--%>
-        <%--var record = ListGrid_Institute_JspInstitute.getSelectedRecord();--%>
-        <%--if (record == null || record.id == null) {--%>
-            <%--isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.record.not.selected'/>",--%>
-                <%--icon: "[SKIN]ask.png",--%>
-                <%--title: "<spring:message code='message'/>",--%>
-                <%--buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],--%>
-                <%--buttonClick: function (button, index) {--%>
-                    <%--this.close();--%>
-                <%--}--%>
-            <%--});--%>
-        <%--} else {--%>
-            <%--instituteMethod = "PUT";--%>
-            <%--DynamicForm_Institute_Institute.clearValues();--%>
-            <%--url = "${restApiUrl}/api/institute/" + record.id;--%>
-            <%--DynamicForm_Institute_Institute.editRecord(record);--%>
-            <%--Window_Institute_JspInstitute.show();--%>
-        <%--}--%>
-    <%--};--%>
+    };
 
-    <%--function ListGrid_institute_refresh() {--%>
-        <%--ListGrid_Institute_JspInstitute.invalidateCache();--%>
-    <%--};--%>
+    function ListGrid_Institute_Institute_Edit() {
+        var record = ListGrid_Institute_Institute.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "مهارتی برای ویرایش انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            //console.log('record:' + JSON.stringify(record));
+            var id = record.categoryId;
+            DynamicForm_Institute_Institute.clearValues();
+            instituteMethod = "PUT";
+            DynamicForm_Institute_Institute.editRecord(record);
+            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
+            Window_Institute_Institute.show();
 
-    <%--function ListGrid_institute_add() {--%>
-        <%--instituteMethod = "POST";--%>
-        <%--url = "${restApiUrl}/api/institute";--%>
-        <%--DynamicForm_Institute_Institute.clearValues();--%>
-        <%--Window_Institute_JspInstitute.show();--%>
-    <%--};--%>
+        }
+    };
 
-    <%--function ListGrid_institute_print(type) {--%>
-        <%--var advancedCriteria = ListGrid_Institute_JspInstitute.getCriteria();--%>
-        <%--var criteriaForm = isc.DynamicForm.create({--%>
-            <%--method: "POST",--%>
-            <%--action: "<spring:url value="/institute/printWithCriteria/"/>" + type,--%>
-            <%--target: "_Blank",--%>
-            <%--canSubmit: true,--%>
-            <%--fields:--%>
-                <%--[--%>
-                    <%--{name: "CriteriaStr", type: "hidden"}--%>
-                <%--]--%>
-        <%--});--%>
-        <%--criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-        <%--criteriaForm.submitForm();--%>
-    <%--};--%>
+    function ListGrid_Institute_Institute_Add() {
+        instituteMethod = "POST";
+        DynamicForm_Institute_Institute.clearValues();
+        Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
+        Window_Institute_Institute.show();
+    };
 
-    <%--function institute_action_result(resp) {--%>
-        <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
-            <%--var responseID = JSON.parse(resp.data).id;--%>
-            <%--var gridState = "[{id:" + responseID + "}]";--%>
-            <%--var OK = isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.operation.successful'/>",--%>
-                <%--icon: "[SKIN]say.png",--%>
-                <%--title: "<spring:message code='msg.command.done'/>"--%>
-            <%--});--%>
-            <%--setTimeout(function () {--%>
-                <%--OK.close();--%>
-                <%--ListGrid_Institute_JspInstitute.setSelectedState(gridState);--%>
-            <%--}, 1000);--%>
-            <%--ListGrid_institute_refresh();--%>
-            <%--Window_Institute_JspInstitute.close();--%>
-        <%--} else {--%>
-            <%--var ERROR = isc.Dialog.create({--%>
-                <%--message: ("<spring:message code='msg.operation.error'/>"),--%>
-                <%--icon: "[SKIN]stop.png",--%>
-                <%--title: "<spring:message code='message'/>"--%>
-            <%--});--%>
-            <%--setTimeout(function () {--%>
-                <%--ERROR.close();--%>
-            <%--}, 3000);--%>
-        <%--}--%>
+    function ListGrid_Institute_Institute_refresh() {
+        var record = ListGrid_Institute_Institute.getSelectedRecord();
+        if (record == null || record.id == null) {
+        } else {
+            ListGrid_Institute_Institute.selectRecord(record);
+        }
+        ListGrid_Institute_Institute.invalidateCache();
+    };
 
-    <%--};--%>
-
-    <%--function institute_delete_result(resp) {--%>
-        <%--instituteWait.close();--%>
-        <%--if (resp.httpResponseCode == 200) {--%>
-            <%--ListGrid_Institute_JspInstitute.invalidateCache();--%>
-            <%--var OK = isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.record.remove.successful'/>",--%>
-                <%--icon: "[SKIN]say.png",--%>
-                <%--title: "<spring:message code='msg.command.done'/>"--%>
-            <%--});--%>
-            <%--setTimeout(function () {--%>
-                <%--OK.close();--%>
-            <%--}, 3000);--%>
-        <%--} else {--%>
-            <%--var ERROR = isc.Dialog.create({--%>
-                <%--message: "<spring:message code='msg.record.remove.failed'/>",--%>
-                <%--icon: "[SKIN]stop.png",--%>
-                <%--title: "<spring:message code='message'/>"--%>
-            <%--});--%>
-            <%--setTimeout(function () {--%>
-                <%--ERROR.close();--%>
-            <%--}, 3000);--%>
-        <%--}--%>
-    <%--};--%>
-
-    <%--function checkEmail(email) {--%>
-        <%--if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))--%>
-            <%--return false;--%>
-        <%--else--%>
-            <%--return true;--%>
-    <%--};--%>
