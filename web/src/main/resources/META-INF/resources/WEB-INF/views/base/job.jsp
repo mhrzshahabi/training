@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+//<script>
 
-    // -------------------------------------------  Menu -------------------------------------------
+    // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.TrMenu.create({
         data: [
             {
@@ -12,18 +12,11 @@
                 click: function () {
                     refreshJobLG_job();
                 }
-            }, {
-                title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>",
-                submenu: [
-                    {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>"},
-                    {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>"},
-                    {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>"},
-                ],
-            }
+            },
         ]
     });
 
-    // -------------------------------------------  ToolStrip -------------------------------------------
+    // ------------------------------------------- ToolStrip -------------------------------------------
     JobTS_job = isc.TrTS.create({
         members: [
             isc.TrRefreshBtn.create({
@@ -31,14 +24,10 @@
                     refreshJobLG_job();
                 }
             }),
-            isc.TrPrintBtn.create({
-                click: function () {
-                }
-            }),
         ]
     });
 
-    // -------------------------------------------  DataSource & ListGrid -------------------------------------------
+    // ------------------------------------------- DataSource & ListGrid -------------------------------------------
     JobDS_job = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
@@ -60,7 +49,12 @@
         sortField: 0,
     });
 
-    // -------------------------------------------  Page UI -------------------------------------------
+    // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
         members: [JobTS_job, JobLG_job],
     });
+
+    // ------------------------------------------- Functions -------------------------------------------
+    function refreshJobLG_job() {
+
+    }
