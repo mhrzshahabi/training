@@ -34,7 +34,6 @@ public class StateDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
     }
 
     @Getter
@@ -59,9 +58,6 @@ public class StateDTO {
     @Accessors(chain = true)
     @ApiModel("StateUpdateRq")
     public static class Update extends StateDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

@@ -19,24 +19,23 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AccountInfoDTO {
 
-	private String accountNumber;
-	private String bank;
-	private String bankBranch;
-	private Long bankBranchCode;
-	private String cartNumber;
-	private String shabaNumber;
-    private String description;
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfo")
-    public static class Info extends AccountInfoDTO {
+    public static class Info{
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private String accountNumber;
+        private String bank;
+        private String bankBranch;
+        private Long bankBranchCode;
+        private String cartNumber;
+        private String shabaNumber;
+        private String description;
     }
 
     @Getter
@@ -51,25 +50,32 @@ public class AccountInfoDTO {
         private String shabaNumber;
         private String description;
 	}
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfoCreateRq")
-    public static class Create extends AccountInfoDTO {
+    public static class Create{
+        private String bank;
+        private String bankBranch;
+        private Long bankBranchCode;
+        private String cartNumber;
+        private String shabaNumber;
+        private String description;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfoUpdateRq")
-    public static class Update extends AccountInfoDTO {
+    public static class Update{
+        private String bank;
+        private String bankBranch;
+        private Long bankBranchCode;
+        private String cartNumber;
+        private String shabaNumber;
+        private String description;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -81,8 +87,6 @@ public class AccountInfoDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -91,8 +95,6 @@ public class AccountInfoDTO {
     public static class AccountInfoSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

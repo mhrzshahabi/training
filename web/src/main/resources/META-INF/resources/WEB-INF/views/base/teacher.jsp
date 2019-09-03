@@ -96,7 +96,7 @@
         fetchDataURL: educationUrl + "orientation/spec-list"
     });
 
-    var RestDataSource_City_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Home_City_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -104,7 +104,23 @@
         fetchDataURL: cityUrl + "spec-list"
     });
 
-    var RestDataSource_Sate_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Home_State_JspTeacher = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: stateUrl + "spec-list"
+    });
+
+    var RestDataSource_Work_City_JspTeacher = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: cityUrl + "spec-list"
+    });
+
+    var RestDataSource_Work_State_JspTeacher = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -854,7 +870,7 @@
                 width: "*",
                 displayField: "name",
                 valueField: "id",
-                optionDataSource: RestDataSource_Sate_JspTeacher,
+                optionDataSource: RestDataSource_Work_State_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -883,7 +899,7 @@
                 displayField: "name",
                 width: "*",
                 valueField: "id",
-                optionDataSource: RestDataSource_City_JspTeacher,
+                optionDataSource: RestDataSource_Work_City_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 disabled: true,
@@ -955,7 +971,7 @@
                 }
                 else {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
-                    RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    RestDataSource_Work_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = false;
                 }
@@ -1075,7 +1091,7 @@
                 changeOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
-                optionDataSource: RestDataSource_Sate_JspTeacher,
+                optionDataSource: RestDataSource_Home_State_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -1104,7 +1120,7 @@
                 changeOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
-                optionDataSource: RestDataSource_City_JspTeacher,
+                optionDataSource: RestDataSource_Home_City_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
                 disabled: true,
@@ -1177,7 +1193,7 @@
                 }
                 else {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
-                    RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = false;
                 }
@@ -1510,7 +1526,7 @@
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = true;
             }
             else if (stateValue_home != undefined) {
-                RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_home;
+                RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_home;
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = false;
             }
@@ -1524,7 +1540,7 @@
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = true;
             }
             else if (stateValue_work != undefined) {
-                RestDataSource_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_work;
+                RestDataSource_Work_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_work;
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = false;
             }

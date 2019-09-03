@@ -19,19 +19,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactInfoDTO {
 
-    private String email;
-    private String mobile;
-    private String personalWebSite;
-    private String description;
-
-    private Long homeAddressId;
-    private Long workAddressId;
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfo")
-    public static class Info extends ContactInfoDTO {
+    public static class Info{
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -39,6 +31,12 @@ public class ContactInfoDTO {
         private String lastModifiedBy;
         private AddressDTO.AddressInfoTuple homeAddress;
         private AddressDTO.AddressInfoTuple workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
 
     @Getter
@@ -53,29 +51,36 @@ public class ContactInfoDTO {
         private AddressDTO.AddressInfoTuple workAddress;
 
 	}
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfoCreateRq")
-    public static class Create extends ContactInfoDTO {
+    public static class Create{
         private AddressDTO.Create homeAddress;
         private AddressDTO.Create workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfoUpdateRq")
-    public static class Update extends ContactInfoDTO {
+    public static class Update{
         private AddressDTO.Update homeAddress;
         private AddressDTO.Update workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -87,8 +92,6 @@ public class ContactInfoDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -97,8 +100,6 @@ public class ContactInfoDTO {
     public static class ContactInfoSpecRs {
         private SpecRs response;
     }
-
-    // -------------------------------
 
     @Getter
     @Setter
