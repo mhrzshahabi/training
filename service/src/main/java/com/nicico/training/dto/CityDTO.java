@@ -24,7 +24,7 @@ public class CityDTO {
     @ApiModelProperty(required = true)
     private String name;
 
-    private Long stateId;
+//    private Long stateId;
 
     //---------------------------
     @Getter
@@ -37,8 +37,7 @@ public class CityDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private Integer version;
-        private StateDTO.StateInfoTuple state;
+//        private StateDTO.StateInfoTuple state;
     }
 
     @Getter
@@ -65,9 +64,6 @@ public class CityDTO {
     @Accessors(chain = true)
     @ApiModel("CityUpdateRq")
     public static class Update extends CityDTO {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

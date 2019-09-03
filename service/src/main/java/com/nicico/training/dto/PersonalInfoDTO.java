@@ -23,46 +23,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class PersonalInfoDTO {
 
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String firstNameFa;
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String lastNameFa;
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String nationalCode;
-
-	private String fullNameEn;
-	private String fatherName;
-	private String birthDate;
-	private String birthLocation;
-	private String birthCertificate;
-	private String birthCertificateLocation;
-	private String religion;
-	private String nationality;
-
-	private String description;
-    private String attachPhoto;
-	private String workName;
-	private String workJob;
-
-	private Integer eMilitaryId;
-	private Integer eMarriedId;
-	private Integer eGenderId;
-
-    private Long educationLevelId;
-    private Long educationMajorId;
-    private Long educationOrientationId;
-
-    private Long accountInfoId;
-    private Long contactInfoId;
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoInfo")
-    public static class Info extends PersonalInfoDTO {
+    public static class Info{
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -76,7 +41,35 @@ public class PersonalInfoDTO {
 		private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
 		private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
 		private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-
+		@NotEmpty
+        @ApiModelProperty(required = true)
+        private String firstNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String lastNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        private String fullNameEn;
+        private String fatherName;
+        private String birthDate;
+        private String birthLocation;
+        private String birthCertificate;
+        private String birthCertificateLocation;
+        private String religion;
+        private String nationality;
+        private String description;
+        private String attachPhoto;
+        private String workName;
+        private String workJob;
+        private Integer eMilitaryId;
+        private Integer eMarriedId;
+        private Integer eGenderId;
+        private Long educationLevelId;
+        private Long educationMajorId;
+        private Long educationOrientationId;
+        private Long accountInfoId;
+        private Long contactInfoId;
     }
 
     @Getter
@@ -113,29 +106,82 @@ public class PersonalInfoDTO {
         private Long educationMajorId;
         private Long educationOrientationId;
         }
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCreateRq")
-    public static class Create extends PersonalInfoDTO {
+    public static class Create{
         private ContactInfoDTO.Create contactInfo;
         private AccountInfoDTO.Create accountInfo;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String firstNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String lastNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        private String fullNameEn;
+        private String fatherName;
+        private String birthDate;
+        private String birthLocation;
+        private String birthCertificate;
+        private String birthCertificateLocation;
+        private String religion;
+        private String nationality;
+        private String description;
+        private String attachPhoto;
+        private String workName;
+        private String workJob;
+        private Integer eMilitaryId;
+        private Integer eMarriedId;
+        private Integer eGenderId;
+        private Long educationLevelId;
+        private Long educationMajorId;
+        private Long educationOrientationId;
+        private Long accountInfoId;
+        private Long contactInfoId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoUpdateRq")
-    public static class Update extends PersonalInfoDTO {
+    public static class Update{
         private ContactInfoDTO.Update contactInfo;
         private AccountInfoDTO.Update accountInfo;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String firstNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String lastNameFa;
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        private String fullNameEn;
+        private String fatherName;
+        private String birthDate;
+        private String birthLocation;
+        private String birthCertificate;
+        private String birthCertificateLocation;
+        private String religion;
+        private String nationality;
+        private String description;
+        private String attachPhoto;
+        private String workName;
+        private String workJob;
+        private Integer eMilitaryId;
+        private Integer eMarriedId;
+        private Integer eGenderId;
+        private Long educationLevelId;
+        private Long educationMajorId;
+        private Long educationOrientationId;
+        private Long accountInfoId;
+        private Long contactInfoId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -147,8 +193,6 @@ public class PersonalInfoDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -158,8 +202,6 @@ public class PersonalInfoDTO {
         private SpecRs response;
     }
 
-    // ---------------
-
      @Getter
     @Setter
     @Accessors(chain = true)
@@ -168,7 +210,6 @@ public class PersonalInfoDTO {
     public static class CompetenceSpecRs {
         private SpecRs response;
     }
-
 
     @Getter
     @Setter

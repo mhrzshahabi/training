@@ -25,6 +25,6 @@ public class State extends Auditable
 	@Column(name = "c_name")
 	private String name;
 
-	@OneToMany(mappedBy = "state", fetch = FetchType.LAZY)
+	@OneToMany(mappedBy = "province", fetch = FetchType.LAZY)
 	private Set<City> citySet;
 }

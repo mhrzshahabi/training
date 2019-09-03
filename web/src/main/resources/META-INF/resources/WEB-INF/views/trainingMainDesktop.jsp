@@ -752,8 +752,6 @@
         }
     };
 
-    createTab("<spring:message code="job"/>", "<spring:url value="/job/show-form"/>");
-
 </script>
 </body>
 </html>
