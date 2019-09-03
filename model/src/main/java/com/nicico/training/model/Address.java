@@ -43,11 +43,11 @@ public class Address extends Auditable {
 	private Long cityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_state1", insertable = false, updatable = false)
-    private State state1;
+    @JoinColumn(name = "f_state", insertable = false, updatable = false)
+    private State state;
 
-    @Column(name = "f_state1")
-	private Long stateId1;
+    @Column(name = "f_state")
+	private Long stateId;
 
 	@Column(name = "b_other_country")
 	private Boolean otherCountry;

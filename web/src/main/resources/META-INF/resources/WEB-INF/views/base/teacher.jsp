@@ -846,7 +846,7 @@
             },
 
             {
-                name: "personality.contactInfo.workAddress.stateId1",
+                name: "personality.contactInfo.workAddress.stateId",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -948,7 +948,7 @@
             },
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "personality.contactInfo.workAddress.stateId1") {
+            if (item.name == "personality.contactInfo.workAddress.stateId") {
                 if (newValue == undefined) {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = true;
@@ -964,14 +964,14 @@
                 if (newValue == true) {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = true;
-                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.stateId1");
-                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId1").disabled = true;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").disabled = true;
                 }
                 else {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").disabled = true;
-                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.stateId1");
-                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId1").disabled = false;
+                    DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.stateId");
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.stateId").disabled = false;
                 }
             }
         }
@@ -1067,7 +1067,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "personality.contactInfo.homeAddress.stateId1",
+                name: "personality.contactInfo.homeAddress.stateId",
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 width: "*",
@@ -1170,7 +1170,7 @@
 
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "personality.contactInfo.homeAddress.stateId1") {
+            if (item.name == "personality.contactInfo.homeAddress.stateId") {
                 if (newValue == undefined) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = true;
@@ -1186,14 +1186,14 @@
                 if (newValue == true) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = true;
-                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.stateId1");
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId1").disabled = true;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId").disabled = true;
                 }
                 else {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = true;
-                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.stateId1");
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId1").disabled = false;
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.stateId");
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.stateId").disabled = false;
                 }
             }
         }
@@ -1501,8 +1501,8 @@
             var stateValue_work = undefined;
             var cityValue_work = undefined;
 
-            if(record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null && record.personality.contactInfo.homeAddress.stateId1 != null)
-                stateValue_home = record.personality.contactInfo.homeAddress.stateId1;
+            if(record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null && record.personality.contactInfo.homeAddress.stateId != null)
+                stateValue_home = record.personality.contactInfo.homeAddress.stateId;
             if(record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null && record.personality.contactInfo.homeAddress.cityId != null)
                 cityValue_home = record.personality.contactInfo.homeAddress.cityId;
             if (cityValue_home == undefined && stateValue_home == undefined) {
@@ -1515,8 +1515,8 @@
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").disabled = false;
             }
 
-            if(record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null && record.personality.contactInfo.workAddress.stateId1 != null)
-                stateValue_work = record.personality.contactInfo.workAddress.stateId1;
+            if(record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null && record.personality.contactInfo.workAddress.stateId != null)
+                stateValue_work = record.personality.contactInfo.workAddress.stateId;
             if(record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null && record.personality.contactInfo.workAddress.cityId != null)
                 cityValue_work = record.personality.contactInfo.workAddress.cityId;
             if (cityValue_work == undefined && stateValue_work == undefined) {
@@ -1835,13 +1835,13 @@
             DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.fax",personality.contactInfo.workAddress.fax);
             DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.webSite",personality.contactInfo.workAddress.webSite);
             DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.cityId",personality.contactInfo.workAddress.cityId);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.stateId1",personality.contactInfo.workAddress.stateId1);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.stateId",personality.contactInfo.workAddress.stateId);
 
             DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.address",personality.contactInfo.homeAddress.address);
             DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postCode",personality.contactInfo.homeAddress.postCode);
             DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.phone",personality.contactInfo.homekAdress.phone);
             DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.fax",personality.contactInfo.homeAddress.fax);
-            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.stateId1",personality.contactInfo.homeAddress.stateId1);
+            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.stateId",personality.contactInfo.homeAddress.stateId);
             DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.cityId",personality.contactInfo.homeAddress.cityId);
 
             DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber",personality.accountInfo.accountNumber);
