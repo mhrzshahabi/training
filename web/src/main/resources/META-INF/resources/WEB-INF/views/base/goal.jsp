@@ -169,10 +169,10 @@
 
                     if (methodSyllabus == "PUT") {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
-                        console.log(sumSyllabus)
+                        // console.log(sumSyllabus)
                     } else {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
-                        console.log(sumSyllabus)
+                        // console.log(sumSyllabus)
                     }
                     Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
@@ -262,11 +262,30 @@
                         ListGrid_Syllabus_Goal.invalidateCache();
                         setTimeout(function () {
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
-                        }, 1000);
+                        }, 900);
+                        setTimeout(function() {
+                        sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration;
+                        if(sumSyllabus != (ListGrid_Course.getSelectedRecord().theoryDuration)){
+                        isc.Dialog.create({
+                            message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
+                            icon: "[SKIN]ask.png",
+                            title: "سوال؟",
+                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                            buttonClick: function (button, index) {
+                                if (index) {
+                                    this.close();
+                                } else {
+                                    this.close();
+                                    ListGrid_Course_Edit();
+                                    DynamicForm_course.getItem("theoryDuration").setValue(sumSyllabus);
+                                    setTimeout(function() {
+                                        courseSaveBtn.click();
+                                    },500)
+                                }
+                            },
+                        });}}, 1500);
                         Window_Syllabus.close();
-                        if(yesNoDialog("سوال؟","مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",10000,"ask")){
-                            alert("12")
-                        }
+
                     } else {
                         simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
                     }

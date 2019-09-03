@@ -625,7 +625,6 @@
                 hidden: true,
             },
             {name: "id", hidden: true, colSpan: 3, width: "*"},
-
             {
                 name: "mainSection", defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
                 itemIds: ["titleFa", "titleEn", "theoryDuration", "category.id", "subCategory.id", "erunType.id", "elevelType.id", "etheoType.id", "etechnicalType.id", "description", "mainObjective", "domainPercent"]
@@ -1172,6 +1171,7 @@
     });
 
     var IButton_course_Save = isc.IButton.create({
+        ID: "courseSaveBtn",
         title: "<spring:message code="save"/>",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -1221,7 +1221,7 @@
                                     ListGrid_Course_refresh();
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
-                                    }, 1000);
+                                    }, 2000);
 
                                 } else {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -1257,23 +1257,20 @@
                     data: JSON.stringify(data1),
                     serverOutputAsString: false,
                     callback: function (resp) {
-
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-
                             Window_course.close();
                             ListGrid_Course_refresh();
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
-                            }, 1000);
+                            }, 2000);
                         } else {
 
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
                         }
-
                     }
                 });
             } else {

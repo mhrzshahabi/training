@@ -33,34 +33,23 @@ function simpleDialog(title,message,timeout,dialogType){
 
 
 
-function yesNoDialog(title,message,timeout,dialogType){
-
-   var retIndex=6;
-
+function yesNoDialog(title,message,timeout,dialogType,retIndex){
+    var retIndex=6;
     var ynd=isc.Dialog.create({
         message:message,
         icon: "[SKIN]"+dialogType+".png",
         title:title,
-        buttons: [isc.Button.create({name:"yesBtn",title: "بله"}),isc.Button.create({name:"noBtn",title: "خیر"})],
+        buttons: [isc.Button.create({title: "بله"}),isc.Button.create({title: "خیر"})],
         buttonClick: function (button, index) {
-            if(button.name == "yesBtn"){return 1;
-            alert("yes");
-            }
-            else{return 0;}
-            retIndex=index;
+            retIndex = index;
             ynd.close();
-
-
         },
-
-
     });
     if(timeout>0){
         setTimeout(function () {
             ynd.close();
         }, timeout);
-    }
-
+    };
 }
 function courseCounterCode(n) {
 
