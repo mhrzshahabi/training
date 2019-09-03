@@ -53,9 +53,7 @@
     const classUrl = rootUrl + "/tclass/";
     const classReportUrl = rootUrl + "/classReport/";
     const instituteUrl = rootUrl + "/institute/";
-    const educationLevelUrl = rootUrl + "/educationLevel/";
-    const educationMajorUrl = rootUrl + "/educationMajor/";
-    const educationOrientationUrl = rootUrl + "/educationOrientation/";
+    const educationUrl = rootUrl + "/education/";
     const termUrl = rootUrl + "/term/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
@@ -329,9 +327,6 @@
             return this.Super("transformResponse", arguments);
         }
     });
-
-    isc.ListGridField
-
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         width: "100%",
@@ -502,7 +497,7 @@
                 {
                     title: "<spring:message code="education"/>", icon: "<spring:url value="education.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/education/show-form"/>");
+                        createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
             ]
@@ -671,6 +666,33 @@
 
     trainingTabSet = isc.TrTabSet.create({
         tabs: [],
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
+            var tabTitle = ID.title;
+            if(tabTitle.substr(0,5) == "اهداف"){
+                setTimeout(function () {
+                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id +"/goal";
+                    ListGrid_Goal.fetchData();
+                    ListGrid_Goal.invalidateCache();
+                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
+                    ListGrid_Syllabus_Goal.fetchData();
+                    ListGrid_Syllabus_Goal.invalidateCache();
+
+                }, 100);
+            }
+            if(tabTitle.substr(0,4) == "دوره"){
+                setTimeout(function () {
+                    ListGrid_CourseCompetence.invalidateCache();
+                    ListGrid_CourseSkill.invalidateCache();
+                    ListGrid_CourseJob.invalidateCache();
+                    // ListGrid_CourseGoal.invalidateCache();
+                    if(courseId != ""){
+                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
+                        ListGrid_CourseSyllabus.fetchData();
+                        ListGrid_CourseSyllabus.invalidateCache();
+                    }
+                }, 100);
+            }
+        },
 
     });
 
