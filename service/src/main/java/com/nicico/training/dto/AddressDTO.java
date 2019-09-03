@@ -24,9 +24,10 @@ public class AddressDTO {
     private String phone;
     private String fax;
     private String webSite;
+    private Boolean otherCountry;
 
     private Long cityId;
-    private Long stateId1;
+    private Long stateId;
 
     @Getter
     @Setter
@@ -39,7 +40,7 @@ public class AddressDTO {
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state1;
+        private StateDTO.StateInfoTuple state;
     }
 
     @Getter
@@ -51,10 +52,11 @@ public class AddressDTO {
         private String phone;
         private String fax;
         private String webSite;
+        private Boolean otherCountry;
         private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state1;
+        private StateDTO.StateInfoTuple state;
         private Long cityId;
-        private Long stateId1;
+        private Long stateId;
 	}
     // ------------------------------
 

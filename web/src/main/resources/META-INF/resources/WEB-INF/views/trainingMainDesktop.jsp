@@ -57,9 +57,24 @@
     const termUrl = rootUrl + "/term/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
+    const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
     const skillUrl = rootUrl + "/skill/";
+
+
+       function TrnXmlHttpRequest(formData1, url, method, cFunction) {
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                cFunction(this);
+            }
+        };
+        xhttp.open(method, url, true);
+        xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttp.send(formData1);
+    };
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -344,7 +359,7 @@
         canDragResize: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 100,
+            width: 40,
         },
     });
 

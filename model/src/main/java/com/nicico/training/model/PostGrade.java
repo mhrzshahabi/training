@@ -14,10 +14,10 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 @Entity
-@Table(name = "tbl_job_new")
+@Table(name = "tbl_post_grade")
 @Getter
 @EqualsAndHashCode(of = "id")
-public class Job {
+public class PostGrade {
 
     @Id
     @Column(name = "id")

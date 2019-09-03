@@ -24,8 +24,8 @@ public class ContactInfoDTO {
     private String personalWebSite;
     private String description;
 
-    private Long homeAdressId;
-    private Long workAdressId;
+    private Long homeAddressId;
+    private Long workAddressId;
 
     @Getter
     @Setter
@@ -37,8 +37,8 @@ public class ContactInfoDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private AddressDTO.AddressInfoTuple homeAdress;
-        private AddressDTO.AddressInfoTuple workAdress;
+        private AddressDTO.AddressInfoTuple homeAddress;
+        private AddressDTO.AddressInfoTuple workAddress;
     }
 
     @Getter
@@ -49,8 +49,8 @@ public class ContactInfoDTO {
         private String mobile;
         private String personalWebSite;
         private String description;
-        private AddressDTO.AddressInfoTuple homeAdress;
-        private AddressDTO.AddressInfoTuple workAdress;
+        private AddressDTO.AddressInfoTuple homeAddress;
+        private AddressDTO.AddressInfoTuple workAddress;
 
 	}
     // ------------------------------
@@ -60,8 +60,8 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoCreateRq")
     public static class Create extends ContactInfoDTO {
-        private AddressDTO.Create homeAdress;
-        private AddressDTO.Create workAdress;
+        private AddressDTO.Create homeAddress;
+        private AddressDTO.Create workAddress;
     }
 
     // ------------------------------
@@ -71,8 +71,8 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
-        private AddressDTO.Update homeAdress;
-        private AddressDTO.Update workAdress;
+        private AddressDTO.Update homeAddress;
+        private AddressDTO.Update workAddress;
     }
 
     // ------------------------------
