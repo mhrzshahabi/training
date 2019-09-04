@@ -27,12 +27,6 @@ public class PostDTO implements Serializable {
         private String titleFa;
         private JobDTO.Info job;
         private PostGradeDTO.Info postGrade;
-        private String area;
-        private String assistance;
-        private String affairs;
-        private String section;
-        private String unit;
-        private String costCenterCode;
-        private String costCenterTitleFa;
+        private DepartmentDTO.Info department;
     }
 }
