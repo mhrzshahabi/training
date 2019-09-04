@@ -1716,6 +1716,13 @@
                 }
             });
         } else {
+            for (j = 0; j < trainingTabSet.tabs.length; j++)
+            {
+                if(trainingTabSet.getTab(j).title.substr(0,5)=="اهداف")
+                {
+                    trainingTabSet.removeTab(j);
+                }
+            }
             createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form", false);
             RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         }

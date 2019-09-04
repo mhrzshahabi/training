@@ -189,7 +189,7 @@
 
     var IButton_Goal_Save = isc.IButton.create({
         top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+        icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -226,7 +226,7 @@
     });
     var IButton_Syllabus_Save = isc.IButton.create({
         top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+        icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
@@ -308,7 +308,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "[SKIN]/actions/icon_delete.png",
             orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
@@ -331,7 +331,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "[SKIN]/actions/icon_delete.png",
             orientation: "vertical",
             click: function () {
                 Window_Syllabus.close();
@@ -382,7 +382,7 @@
     var Menu_ListGrid_Syllabus_Goal = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "[SKIN]/actions/refresh.png", click: function () {
                 ListGrid_Syllabus_Goal_refresh();
             }
         }, {
