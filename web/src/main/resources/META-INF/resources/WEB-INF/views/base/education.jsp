@@ -8,7 +8,6 @@
 %>
 
 //<script>
-
     var methodEducation = "GET";
     var saveActionUrl;
     var educationLevelUrl = educationUrl + "level/";
@@ -908,13 +907,16 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.httpResponseCode === 200) {
+                                if (resp.data === true) {
                                     EducationListGrid.invalidateCache();
                                     simpleDialog("<spring:message code='msg.command.done'/>",
                                                     "<spring:message code='msg.operation.successful'/>", 3000, "say");
-                                } else {
+                                }else if(resp.data === false){
                                     simpleDialog("<spring:message code='message'/>",
-                                                    "<spring:message code='msg.operation.error'/>", 2000, "stop");
+                                                    "این عملیات امکان پذیر نمی باشد.", 3000, "stop");
+                                }else {
+                                    simpleDialog("<spring:message code='message'/>",
+                                                    "<spring:message code='msg.operation.error'/>", 3000, "stop");
                                 }
                             }
                         });

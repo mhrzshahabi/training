@@ -59,16 +59,26 @@ public class EducationLevelService implements IEducationLevelService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public boolean delete(Long id) {
         final Optional<EducationLevel> one = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
-        educationLevelDAO.delete(educationLevel);
+        if(educationLevel.getPersonalInfoList().isEmpty() && educationLevel.getEducationOrientationList().isEmpty()) {
+            educationLevelDAO.delete(educationLevel);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     @Transactional
     @Override
     public void delete(EducationLevelDTO.Delete request) {
         final List<EducationLevel> gAllById = educationLevelDAO.findAllById(request.getIds());
+        for (EducationLevel educationLevel: gAllById) {
+            if(!educationLevel.getPersonalInfoList().isEmpty() || !educationLevel.getEducationOrientationList().isEmpty())
+                gAllById.remove(educationLevel);
+        }
         educationLevelDAO.deleteAll(gAllById);
     }
 

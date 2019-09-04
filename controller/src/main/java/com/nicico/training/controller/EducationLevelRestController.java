@@ -32,6 +32,7 @@ public class EducationLevelRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private ResponseEntity resp;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -64,9 +65,12 @@ public class EducationLevelRestController {
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        educationLevelService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        if (educationLevelService.delete(id))
+            return new ResponseEntity<>(true,HttpStatus.OK);
+        else {
+            return new ResponseEntity<>(false,HttpStatus.NO_CONTENT);
+        }
     }
 
     @Loggable
