@@ -1222,8 +1222,18 @@
                         window.open('${printUrl}');
 
                     }},
+                {title: "<spring:message code="print"/>", icon: "<spring:url value="excel.png"/>" ,  click: function () {
+                        "<spring:url value="/skill-group/print/excel" var="printUrl"/>"
+                        window.open('${printUrl}');
+
+                    }},
                 {title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="pdf.png"/>",click: function () {
                         "<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
+                        window.open('${printUrl}');
+
+                    }},
+                {title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="excel.png"/>",click: function () {
+                        "<spring:url value="/skill-group/printAll/excel" var="printUrl"/>"
                         window.open('${printUrl}');
 
                     }},
@@ -1263,12 +1273,7 @@
 
                     }},
             ]
-        }),
-        click: function () {
-            "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
-            window.open('${printUrl}');
-
-        }
+        })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
         icon: "pieces/512/skill-standard.png",

@@ -85,9 +85,9 @@ public class SkillGroupFormController {
 		if(type.equals("pdf"))
 			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/pdf/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
 		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/excel", HttpMethod.GET, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/excel/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
 		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/html", HttpMethod.GET, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/html/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
 		else
 			return null;
 	}
