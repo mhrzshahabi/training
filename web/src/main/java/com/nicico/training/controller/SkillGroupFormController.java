@@ -63,6 +63,37 @@ public class SkillGroupFormController {
 
 
 
+	@RequestMapping("/printSelected/{type}/{skillGroupIds}")
+	public ResponseEntity<?> printWithSelectedSkillGroup(final HttpServletRequest request,@PathVariable String type,@PathVariable String skillGroupIds) {
+
+
+		String token = (String) request.getSession().getAttribute("AccessToken");
+
+		RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+		final HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
+
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+
+
+		HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+		if(type.equals("pdf"))
+			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/pdf/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
+		else if(type.equals("excel"))
+			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/excel", HttpMethod.GET, entity, byte[].class);
+		else if(type.equals("html"))
+			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/html", HttpMethod.GET, entity, byte[].class);
+		else
+			return null;
+	}
+
+
+
 
 	@RequestMapping("/printAll/{type}")
 	public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
