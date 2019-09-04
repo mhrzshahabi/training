@@ -27,15 +27,15 @@ public class Post {
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_job_id")
+    @JoinColumn(name = "f_job_id", nullable = true)
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_grade_id")
+    @JoinColumn(name = "f_post_grade_id", nullable = true)
     private PostGrade postGrade;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_department_id")
+    @JoinColumn(name = "f_department_id", nullable = true)
     private Department department;
 
     @Column(name = "e_active")

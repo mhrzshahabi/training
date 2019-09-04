@@ -1,0 +1,26 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="ghazanfari_f (generated)" id="1567591358368-22">
+        <dropForeignKeyConstraint baseTableName="tbl_post" constraintName="FKcdk3gqvhamly9n79039k44om2"/>
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_id" baseTableName="tbl_post"
+                                 constraintName="FKcdk3gqvhamly9n79039k44om2" referencedColumnNames="id"
+                                 referencedTableName="tbl_post_grade"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1567591358368-27">
+        <dropForeignKeyConstraint baseTableName="tbl_post" constraintName="FKeobktfgws8v7m9caex5gsvonb"/>
+        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_post"
+                                 constraintName="FKeobktfgws8v7m9caex5gsvonb" referencedColumnNames="id"
+                                 referencedTableName="tbl_department"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1567591358368-51">
+        <dropForeignKeyConstraint baseTableName="tbl_post" constraintName="FKqubphxonbs19tsxx3sp42y9cj"/>
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_post"
+                                 constraintName="FKqubphxonbs19tsxx3sp42y9cj" referencedColumnNames="id"
+                                 referencedTableName="tbl_job_new"/>
+    </changeSet>
+</databaseChangeLog>
