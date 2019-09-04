@@ -49,6 +49,25 @@ public abstract class EnumsConverter {
     }
 
     @Converter(autoApply = true)
+    public static class EActiveConverter implements AttributeConverter<EActive, Integer> {
+        @Override
+        public Integer convertToDatabaseColumn(EActive entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EActive convertToEntityAttribute(Integer id) {
+
+            for (EActive entry : EActive.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+    @Converter(autoApply = true)
     public static class ECompetenceInputTypeConverter implements AttributeConverter<ECompetenceInputType, Integer> {
 
         @Override

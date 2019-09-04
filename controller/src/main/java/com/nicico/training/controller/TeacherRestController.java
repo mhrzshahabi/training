@@ -7,36 +7,24 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.file.FileInfo;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
-import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.ui.ModelMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
-import javax.imageio.ImageIO;
 import javax.servlet.http.HttpServletResponse;
-import java.awt.image.BufferedImage;
 import java.io.*;
 import java.nio.charset.Charset;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Slf4j
@@ -49,11 +37,6 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
-
-
-
-    private final TeacherDAO teacherDAO;
-
 
     // ------------------------------
 

@@ -4,57 +4,57 @@
 //<script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    JobMenu_job = isc.TrMenu.create({
+    PostGradeMenu_postGrade = isc.TrMenu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    refreshJobLG_job();
+                    refreshPostGradeLG_postGrade();
                 }
             },
         ]
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    JobTS_job = isc.TrTS.create({
+    PostGradeTS_postGrade = isc.TrTS.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
-                    refreshJobLG_job();
+                    refreshPostGradeLG_postGrade();
                 }
             }),
         ]
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    JobDS_job = isc.TrDS.create({
+    PostGradeDS_postGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
         ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: postGradeUrl + "iscList"
     });
 
-    JobLG_job = isc.TrLG.create({
-        dataSource: JobDS_job,
+    PostGradeLG_postGrade = isc.TrLG.create({
+        dataSource: PostGradeDS_postGrade,
         fields: [
             {name: "code",},
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "header", "filterEditor", "body",],
-        contextMenu: JobMenu_job,
+        gridComponents: [PostGradeTS_postGrade, "header", "filterEditor", "body",],
+        contextMenu: PostGradeMenu_postGrade,
         sortField: 0,
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [JobTS_job, JobLG_job],
+        members: [PostGradeTS_postGrade, PostGradeLG_postGrade],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-    function refreshJobLG_job() {
-        JobLG_job.invalidateCache();
+    function refreshPostGradeLG_postGrade() {
+        PostGradeLG_postGrade.invalidateCache();
     }

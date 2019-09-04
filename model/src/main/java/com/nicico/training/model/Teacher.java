@@ -29,13 +29,12 @@ public class Teacher extends Auditable{
 	@Column(name = "b_enabled")
 	private Boolean enableStatus;
 
-	@OneToOne(fetch = FetchType.EAGER)
+	@OneToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "f_personality", nullable = false, insertable = false, updatable = false)
 	private PersonalInfo personality;
 
 	@Column(name = "f_personality")
-	private Long peronalityId;
-	//private Long personalityId;
+	private Long personalityId;
 
 	@ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
 	@JoinTable(name = "tbl_teacher_category",

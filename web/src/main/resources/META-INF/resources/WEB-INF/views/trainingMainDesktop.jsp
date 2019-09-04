@@ -38,6 +38,7 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
+    const postGradeUrl = rootUrl + "/postGrade/";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
 
@@ -57,9 +58,24 @@
     const termUrl = rootUrl + "/term/";
     const cityUrl = rootUrl + "/city/";
     const stateUrl = rootUrl + "/state/";
+    const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
     const skillUrl = rootUrl + "/skill/";
+
+
+       function TrnXmlHttpRequest(formData1, url, method, cFunction) {
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                cFunction(this);
+            }
+        };
+        xhttp.open(method, url, true);
+        xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttp.send(formData1);
+    };
 
     var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -344,7 +360,7 @@
         canDragResize: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 100,
+            width: 40,
         },
     });
 
@@ -518,6 +534,12 @@
                     title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/post/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
                     }
                 },
                 {
@@ -723,7 +745,7 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.TrViewLoader.create({viewURL: url}),
+                pane: isc.TrViewLoader.create({viewURL: url, }),
                 canClose: true,
             });
             createTab(title, url);

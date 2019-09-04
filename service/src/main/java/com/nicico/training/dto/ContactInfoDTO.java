@@ -19,26 +19,24 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class ContactInfoDTO {
 
-    private String email;
-    private String mobile;
-    private String personalWebSite;
-    private String description;
-
-    private Long homeAdressId;
-    private Long workAdressId;
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfo")
-    public static class Info extends ContactInfoDTO {
+    public static class Info{
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-        private AddressDTO.AddressInfoTuple homeAdress;
-        private AddressDTO.AddressInfoTuple workAdress;
+        private AddressDTO.AddressInfoTuple homeAddress;
+        private AddressDTO.AddressInfoTuple workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
 
     @Getter
@@ -49,33 +47,40 @@ public class ContactInfoDTO {
         private String mobile;
         private String personalWebSite;
         private String description;
-        private AddressDTO.AddressInfoTuple homeAdress;
-        private AddressDTO.AddressInfoTuple workAdress;
+        private AddressDTO.AddressInfoTuple homeAddress;
+        private AddressDTO.AddressInfoTuple workAddress;
 
 	}
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfoCreateRq")
-    public static class Create extends ContactInfoDTO {
-        private AddressDTO.Create homeAdress;
-        private AddressDTO.Create workAdress;
+    public static class Create{
+        private AddressDTO.Create homeAddress;
+        private AddressDTO.Create workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ContactInfoUpdateRq")
-    public static class Update extends ContactInfoDTO {
-        private AddressDTO.Update homeAdress;
-        private AddressDTO.Update workAdress;
+    public static class Update{
+        private AddressDTO.Update homeAddress;
+        private AddressDTO.Update workAddress;
+        private String email;
+        private String mobile;
+        private String personalWebSite;
+        private String description;
+        private Long homeAddressId;
+        private Long workAddressId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -87,8 +92,6 @@ public class ContactInfoDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -97,8 +100,6 @@ public class ContactInfoDTO {
     public static class ContactInfoSpecRs {
         private SpecRs response;
     }
-
-    // -------------------------------
 
     @Getter
     @Setter

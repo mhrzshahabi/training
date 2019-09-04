@@ -3,10 +3,6 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.dto.date.DateTimeDTO;
-import com.nicico.training.dto.enums.EGenderDTO;
-import com.nicico.training.dto.enums.EMarriedDTO;
-import com.nicico.training.dto.enums.EMilitaryDTO;
-import com.nicico.training.model.PersonalInfo;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -25,60 +21,65 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TeacherDTO {
 
-	@NotEmpty
-	@ApiModelProperty(required = true)
-	private String teacherCode;
-
-	private Boolean enableStatus;
-	private String economicalCode;
-	private String economicalRecordNumber;
-
-	private Long peronalityId;
-
-	// ------------------------------
-
 	@Getter
 	@Setter
 	@Accessors(chain = true)
 	@ApiModel("TeacherInfo")
-	public static class Info extends TeacherDTO {
+	public static class Info{
 		private Long id;
+
 		private DateTimeDTO.DateTimeRs createdDate;
 		private String createdBy;
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
 		private String lastModifiedBy;
+
+		@NotEmpty
+		@ApiModelProperty(required = true)
+		private String teacherCode;
+		private Boolean enableStatus;
+		private String economicalCode;
+		private String economicalRecordNumber;
+		private Long personalityId;
+
 		private Set<CategoryDTO.CategoryInfoTuple> categories;
 		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
 	}
 
-	//-------------------------------
 	@Getter
 	@Setter
 	@ApiModel("TeacherInfoTuple")
 	public static class TeacherInfoTuple {
 		private PersonalInfoDTO.Create personality;
 	}
-	// ------------------------------
 
 	@Getter
 	@Setter
 	@Accessors(chain = true)
 	@ApiModel("TeacherCreateRq")
-	public static class Create extends TeacherDTO {
+	public static class Create{
 		private PersonalInfoDTO.Create personality;
+		@NotEmpty
+		@ApiModelProperty(required = true)
+		private String teacherCode;
+		private Boolean enableStatus;
+		private String economicalCode;
+		private String economicalRecordNumber;
 	}
-
-	// ------------------------------
 
 	@Getter
 	@Setter
 	@Accessors(chain = true)
 	@ApiModel("TeacherUpdateRq")
-	public static class Update extends TeacherDTO {
+	public static class Update{
 		private PersonalInfoDTO.Update personality;
+		@NotEmpty
+		@ApiModelProperty(required = true)
+		private String teacherCode;
+		private Boolean enableStatus;
+		private String economicalCode;
+		private String economicalRecordNumber;
+		private Long personalityId;
 	}
-
-	// ------------------------------
 
 	@Getter
 	@Setter
@@ -90,8 +91,6 @@ public class TeacherDTO {
 		private List<Long> ids;
 	}
 
-	// ------------------------------
-
 	@Getter
 	@Setter
 	@Accessors(chain = true)
@@ -100,8 +99,6 @@ public class TeacherDTO {
 	public static class TeacherSpecRs {
 		private SpecRs response;
 	}
-
-	// ---------------
 
 	@Getter
 	@Setter

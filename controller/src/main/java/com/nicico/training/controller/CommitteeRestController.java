@@ -17,6 +17,7 @@ import com.nicico.training.repository.CommitteeDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
@@ -28,6 +29,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -231,6 +233,42 @@ public class CommitteeRestController {
 
         return new ResponseEntity<>(specRs,HttpStatus.OK);
 
+    }
+
+// @Loggable
+//    @PostMapping(value = {"/printWithCriteria/{type}/{committeeId}"})
+//    public void printWithCriteria(HttpServletResponse response,
+//                                  @PathVariable String type,@PathVariable int committeeId,
+//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+//
+//        final SearchDTO.CriteriaRq criteriaRq;
+//        final SearchDTO.SearchRq searchRq;
+//        if (criteriaStr.equalsIgnoreCase("{}")) {
+//            searchRq = new SearchDTO.SearchRq();
+//        } else {
+//            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+//            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+//        }
+//
+//        final SearchDTO.SearchRs<CommitteeDTO.Info> searchRs = committeeService.search(searchRq);
+//
+//        final Map<String, Object> params = new HashMap<>();
+//        params.put("todayDate", dateUtil.todayDate());
+//
+//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+//
+//        params.put(ConstantVARs.REPORT_TYPE, type);
+//        reportUtil.export("/reports/CommitteeByCriteria.jasper", params, jsonDataSource, response);
+//    }
+
+
+    @Loggable
+    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
+    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
     }
 
 

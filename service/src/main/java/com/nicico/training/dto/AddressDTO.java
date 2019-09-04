@@ -19,27 +19,26 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressDTO {
 
-    private String address;
-    private Long postCode;
-    private String phone;
-    private String fax;
-    private String webSite;
-
-    private Long cityId;
-    private Long stateId1;
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressInfo")
-    public static class Info extends AddressDTO {
+    public static class Info{
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
         private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state1;
+        private StateDTO.StateInfoTuple state;
+        private String address;
+        private Long postCode;
+        private String phone;
+        private String fax;
+        private String webSite;
+        private Boolean otherCountry;
+        private Long cityId;
+        private Long stateId;
     }
 
     @Getter
@@ -51,30 +50,42 @@ public class AddressDTO {
         private String phone;
         private String fax;
         private String webSite;
+        private Boolean otherCountry;
         private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state1;
+        private StateDTO.StateInfoTuple state;
         private Long cityId;
-        private Long stateId1;
+        private Long stateId;
 	}
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
-    public static class Create extends AddressDTO {
+    public static class Create{
+        private String address;
+        private Long postCode;
+        private String phone;
+        private String fax;
+        private String webSite;
+        private Boolean otherCountry;
+        private Long cityId;
+        private Long stateId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressUpdateRq")
-    public static class Update extends AddressDTO {
+    public static class Update{
+        private String address;
+        private Long postCode;
+        private String phone;
+        private String fax;
+        private String webSite;
+        private Boolean otherCountry;
+        private Long cityId;
+        private Long stateId;
     }
-
-    // ------------------------------
 
     @Getter
     @Setter
@@ -86,8 +97,6 @@ public class AddressDTO {
         private List<Long> ids;
     }
 
-    // ------------------------------
-
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -96,8 +105,6 @@ public class AddressDTO {
     public static class AddressSpecRs {
         private SpecRs response;
     }
-
-    // ---------------
 
     @Getter
     @Setter

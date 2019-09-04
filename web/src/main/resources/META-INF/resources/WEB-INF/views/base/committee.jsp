@@ -42,8 +42,7 @@
               {name: "lastNameFa",width:"35%",align:"center",title: "نام خانوادگی"},
                {name: "nationalCode",align:"center",width:"30%",title:"کد ملی"}
             ],
-      // fetchDataURL:
-    });
+        });
 
 
 
@@ -79,7 +78,7 @@
 
 
  var ListGrid_All_Person = isc.MyListGrid.create({
-        //title:"تمام مهارت ها",
+
         width: "100%",
         height: "100%", canDragResize: true,
 
@@ -141,7 +140,6 @@
 
 
  var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
-        //title:"تمام مهارت ها",
         width: "100%",
         height: "100%", canDragResize: true,
         selectionType:"multiple",
@@ -158,27 +156,13 @@
         dragTrackerMode: "title",
         canDrag: true,
         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-
-
-            // alert(dropRecords[0].titleFa);
-
             var activeCommittee=ListGrid_Committee.getSelectedRecord();
-
-            //  alert(skillGroupId);
-            // var skillId=dropRecords[0].id;
             var personIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
                 personIds.add(dropRecords[i].id);
             };
             var JSONObj = {"ids": personIds};
-
-
-            // MyDsRequest()
-
-
-
-            isc.RPCManager.sendRequest({
+                isc.RPCManager.sendRequest({
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
@@ -192,15 +176,8 @@
                         ListGrid_ThisCommittee_Person.invalidateCache();
                         ListGrid_All_Person.invalidateCache();
 
-                        // var OK = isc.Dialog.create({
-                        //     message: "عملیات با موفقیت انجام شد",
-                        //     icon: "[SKIN]say.png",
-                        //     title: "پیام موفقیت"
-                        // });
-                        // setTimeout(function () {
-                        //     // OK.close();
-                        // }, 3000);
-                    } else {
+                        } else {
+
                         isc.say("خطا");
                     }
                 }
@@ -223,14 +200,13 @@
     //*************************************************************************************
     var DynamicForm_Committee = isc.MyDynamicForm.create({
 
-        // ID: "DynamicForm_Committee",
+
         fields: [
             {name: "id", hidden: true},
             {
                 name: "titleFa",
                 title: "<spring:message code="title"/>",
                 required: true,
-                //  keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "250",
                 width: "*",
                 validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
@@ -344,7 +320,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title:"<spring:message code="print"/>",
         click: function () {
-            //    print_TermListGrid("pdf");
+           print_CommitteeListGrid();
         }
 
     });
@@ -598,7 +574,7 @@
 
     };
 
-    function show_CommitteeActionResult(resp) {
+      function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
             ListGrid_Committee.invalidateCache();
@@ -623,3 +599,19 @@
         }
     };
 
+    function  print_CommitteeListGrid() {
+    var advancedCriteria_committee =ListGrid_Committee.getCriteria();
+        var criteriaForm_committee = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/committee/printCommitteeWithMember/pdf"/>",
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        })
+        criteriaForm_committee.setValue("CriteriaStr", JSON.stringify(advancedCriteria_committee));
+        criteriaForm_committee.submitForm();
+
+}

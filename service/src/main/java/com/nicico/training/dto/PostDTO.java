@@ -15,16 +15,25 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class JobDTO implements Serializable {
+public class PostDTO implements Serializable {
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("Job - Info")
-    public static class Info extends JobDTO {
+    public static class Info extends PostDTO {
         private Long id;
         private String code;
         private String titleFa;
+        private JobDTO.Info job;
+        private PostGradeDTO.Info postGrade;
+        private String area;
+        private String assistance;
+        private String affairs;
+        private String section;
+        private String unit;
+        private String costCenterCode;
+        private String costCenterTitleFa;
         EActive eActive;
         EDeleted eDeleted;
     }
