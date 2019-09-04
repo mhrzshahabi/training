@@ -39,6 +39,7 @@
     const rootUrl = "${contextPath}/api";
     const jobUrl = rootUrl + "/job/";
     const postGradeUrl = rootUrl + "/postGrade/";
+    const postUrl = rootUrl + "/post/";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
 
@@ -438,6 +439,12 @@
 
     isc.defineClass("TrPrintBtn", TrTSMB);
     isc.TrPrintBtn.addProperties({
+        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
+    });
+
+
+    isc.defineClass("TrPrintBtnCommon", TrTSMB);
+    isc.TrPrintBtnCommon.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
         menu: isc.TrMenu.create({
             data: [
