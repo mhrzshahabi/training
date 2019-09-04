@@ -62,16 +62,25 @@ public class EducationMajorService implements IEducationMajorService {
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public Boolean delete(Long id) {
         final Optional<EducationMajor> one = educationMajorDAO.findById(id);
         final EducationMajor educationMajor = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
-        educationMajorDAO.delete(educationMajor);
+        if (educationMajor.getPersonalInfoList().isEmpty() && educationMajor.getEducationOrientationList().isEmpty()) {
+            educationMajorDAO.delete(educationMajor);
+            return true;
+        } else {
+            return false;
+        }
     }
 
     @Transactional
     @Override
     public void delete(EducationMajorDTO.Delete request) {
         final List<EducationMajor> gAllById = educationMajorDAO.findAllById(request.getIds());
+        for (EducationMajor educationMajor: gAllById) {
+            if(!educationMajor.getPersonalInfoList().isEmpty() || !educationMajor.getEducationOrientationList().isEmpty())
+                gAllById.remove(educationMajor);
+        }
         educationMajorDAO.deleteAll(gAllById);
     }
 
@@ -79,7 +88,7 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public SearchDTO.SearchRs<EducationMajorDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(educationMajorDAO, request, educationMajor -> modelMapper.map(educationMajor, EducationMajorDTO.Info.class));
-    }   
+    }
 
     // ------------------------------
 

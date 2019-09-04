@@ -14,7 +14,7 @@ public interface IEducationLevelService {
 
     EducationLevelDTO.Info update(Long id, EducationLevelDTO.Update request);
 
-    boolean delete(Long id);
+    Boolean delete(Long id);
 
     void delete(EducationLevelDTO.Delete request);
 

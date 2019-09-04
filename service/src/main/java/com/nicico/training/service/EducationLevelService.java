@@ -59,7 +59,7 @@ public class EducationLevelService implements IEducationLevelService {
 
     @Transactional
     @Override
-    public boolean delete(Long id) {
+    public Boolean delete(Long id) {
         final Optional<EducationLevel> one = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
         if(educationLevel.getPersonalInfoList().isEmpty() && educationLevel.getEducationOrientationList().isEmpty()) {
