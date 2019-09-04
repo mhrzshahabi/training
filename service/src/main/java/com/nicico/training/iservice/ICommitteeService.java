@@ -28,4 +28,5 @@ public interface ICommitteeService {
      void removeMembers(Long committeeId,Set<Long> personIds);
       void addMembers(Long committeeId, Set<Long> personInfiIds);
      List<PersonalInfoDTO.Info> getMembers(Long committeeId);
+     Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
 }

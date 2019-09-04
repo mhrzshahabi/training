@@ -453,12 +453,17 @@
                 });
 
             } else {
+
+               RestDataSource_All_Person.fetchDataURL=committeeUrl + record.id +"/unAttachMember";
+               ListGrid_All_Person.invalidateCache();
+               ListGrid_All_Person.fetchData();
+
                 RestDataSource_ThisCommittee_Person.fetchDataURL=committeeUrl +record.id+"/getMembers";
                 ListGrid_ThisCommittee_Person.invalidateCache();
                 ListGrid_ThisCommittee_Person.fetchData();
-              DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
-              SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
-              Window_Add_User_TO_Committee.show();
+                DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
+                SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
+                Window_Add_User_TO_Committee.show();
 
 
             }
