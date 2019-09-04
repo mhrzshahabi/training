@@ -34,7 +34,5 @@ public class PostDTO implements Serializable {
         private String unit;
         private String costCenterCode;
         private String costCenterTitleFa;
-        EActive eActive;
-        EDeleted eDeleted;
     }
 }

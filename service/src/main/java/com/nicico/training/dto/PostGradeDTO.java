@@ -25,7 +25,5 @@ public class PostGradeDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
-        EActive eActive;
-        EDeleted eDeleted;
     }
 }
