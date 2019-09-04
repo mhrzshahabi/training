@@ -30,7 +30,6 @@ import java.util.Map;
 public class EducationLevelRestController {
     private final IEducationLevelService educationLevelService;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
     @Loggable
@@ -64,9 +63,12 @@ public class EducationLevelRestController {
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        educationLevelService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        if (educationLevelService.delete(id))
+            return new ResponseEntity<>(true,HttpStatus.OK);
+        else {
+            return new ResponseEntity<>(false,HttpStatus.OK);
+        }
     }
 
     @Loggable
@@ -74,13 +76,13 @@ public class EducationLevelRestController {
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
     public ResponseEntity<Void> delete(@Validated @RequestBody EducationLevelDTO.Delete request) {
         educationLevelService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<EducationLevelDTO.EducationLevelSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<EducationLevelDTO.EducationLevelSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -124,7 +126,7 @@ public class EducationLevelRestController {
         final SearchDTO.SearchRs<EducationLevelDTO.Info> searchRs = educationLevelService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
+        params.put("todayDate", DateUtil.todayDate());
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

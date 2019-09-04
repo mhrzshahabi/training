@@ -30,7 +30,6 @@ import java.util.Map;
 public class EducationOrientationRestController {
     private final IEducationOrientationService educationOrientationService;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
     @Loggable
@@ -64,9 +63,12 @@ public class EducationOrientationRestController {
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        educationOrientationService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        if (educationOrientationService.delete(id))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        else {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
     }
 
     @Loggable
@@ -74,13 +76,13 @@ public class EducationOrientationRestController {
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
     public ResponseEntity<Void> delete(@Validated @RequestBody EducationOrientationDTO.Delete request) {
         educationOrientationService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -124,7 +126,7 @@ public class EducationOrientationRestController {
         final SearchDTO.SearchRs<EducationOrientationDTO.Info> searchRs = educationOrientationService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
+        params.put("todayDate", DateUtil.todayDate());
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

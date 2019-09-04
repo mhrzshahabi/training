@@ -59,16 +59,26 @@ public class EducationOrientationService implements IEducationOrientationService
 
     @Transactional
     @Override
-    public void delete(Long id) {
+    public Boolean delete(Long id) {
         final Optional<EducationOrientation> one = educationOrientationDAO.findById(id);
         final EducationOrientation educationOrientation = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
-        educationOrientationDAO.delete(educationOrientation);
+        if(educationOrientation.getPersonalInfoList().isEmpty()) {
+            educationOrientationDAO.delete(educationOrientation);
+            return true;
+        }
+        else{
+            return false;
+        }
     }
 
     @Transactional
     @Override
     public void delete(EducationOrientationDTO.Delete request) {
         final List<EducationOrientation> gAllById = educationOrientationDAO.findAllById(request.getIds());
+        for (EducationOrientation educationOrientation: gAllById) {
+            if(!educationOrientation.getPersonalInfoList().isEmpty())
+                gAllById.remove(educationOrientation);
+        }
         educationOrientationDAO.deleteAll(gAllById);
     }
 

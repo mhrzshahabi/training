@@ -8,7 +8,6 @@
 %>
 
 //<script>
-
     var methodEducation = "GET";
     var saveActionUrl;
     var educationLevelUrl = educationUrl + "level/";
@@ -855,7 +854,6 @@
     var VLayout_Tab_Education = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        border: "2px solid blue",
         members: [VLayout_Tabset_Education]
     });
     
@@ -908,13 +906,16 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.httpResponseCode === 200) {
+                                if (resp.data === "true") {
                                     EducationListGrid.invalidateCache();
                                     simpleDialog("<spring:message code='msg.command.done'/>",
                                                     "<spring:message code='msg.operation.successful'/>", 3000, "say");
-                                } else {
+                                }else if(resp.data === "false"){
                                     simpleDialog("<spring:message code='message'/>",
-                                                    "<spring:message code='msg.operation.error'/>", 2000, "stop");
+                                                    "<spring:message code='msg.record.cannot.deleted'/>", 3000, "stop");
+                                }else {
+                                    simpleDialog("<spring:message code='message'/>",
+                                                    "<spring:message code='msg.operation.error'/>", 3000, "stop");
                                 }
                             }
                         });

@@ -14,7 +14,7 @@ public interface IEducationOrientationService {
 
     EducationOrientationDTO.Info update(Long id, EducationOrientationDTO.Update request);
 
-    void delete(Long id);
+    Boolean delete(Long id);
 
     void delete(EducationOrientationDTO.Delete request);
 
