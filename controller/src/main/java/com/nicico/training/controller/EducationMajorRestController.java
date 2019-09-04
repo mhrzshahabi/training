@@ -31,7 +31,6 @@ import java.util.Map;
 public class EducationMajorRestController {
     private final IEducationMajorService educationMajorService;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
     @Loggable
@@ -65,9 +64,12 @@ public class EducationMajorRestController {
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationMajor')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        educationMajorService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        if (educationMajorService.delete(id))
+            return new ResponseEntity<>(true, HttpStatus.OK);
+        else {
+            return new ResponseEntity<>(false, HttpStatus.OK);
+        }
     }
 
     @Loggable
@@ -75,13 +77,13 @@ public class EducationMajorRestController {
 //    @PreAuthorize("hasAuthority('d_educationMajor')")
     public ResponseEntity<Void> delete(@Validated @RequestBody EducationMajorDTO.Delete request) {
         educationMajorService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationMajor')")
-    public ResponseEntity<EducationMajorDTO.EducationMajorSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<EducationMajorDTO.EducationMajorSpecRs> list(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -114,11 +116,7 @@ public class EducationMajorRestController {
            @Loggable
     @GetMapping(value = "/spec-list-by-majorId/{id}")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> listByMajorId(@RequestParam("_startRow") Integer startRow,
-                                                                                            @RequestParam("_endRow") Integer endRow,
-                                                                                            @RequestParam(value = "operator", required = false) String operator,
-                                                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                            @PathVariable Long id) {
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> listByMajorId(@PathVariable Long id) {
         List<EducationOrientationDTO.Info> eduOrientation = educationMajorService.listByMajorId(id);
         final EducationOrientationDTO.SpecRs specResponse = new EducationOrientationDTO.SpecRs();
         specResponse.setData(eduOrientation)
@@ -148,7 +146,7 @@ public class EducationMajorRestController {
         final SearchDTO.SearchRs<EducationMajorDTO.Info> searchRs = educationMajorService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
+        params.put("todayDate", DateUtil.todayDate());
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -57,7 +56,7 @@ public class EducationOrientationDTO {
     @Getter
     @Setter
     @ApiModel("EducationOrientationInfoTuple")
-    public static class EducationOrientationInfoTuple {
+    static class EducationOrientationInfoTuple {
         private String titleFa;
         private String titleEn;
     }

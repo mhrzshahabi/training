@@ -30,10 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 @Slf4j
 @RestController
@@ -232,6 +229,29 @@ public class CommitteeRestController {
 //        specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs,HttpStatus.OK);
+
+    }
+
+    @Loggable
+    @GetMapping(value="/{committeeId}/unAttachMember")
+    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> unAttachMember(@PathVariable Long committeeId)
+    {
+        Set<PersonalInfoDTO.Info>persInfoSet=  committeeService.unAttachMember(committeeId);
+
+         List<PersonalInfoDTO.Info> arrayList=new ArrayList<>();
+        for (PersonalInfoDTO.Info personDTOInfo:persInfoSet)
+        {
+            arrayList.add(personDTOInfo);
+
+        }
+         final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
+        specResponse.setData(arrayList)
+                .setStartRow(0)
+                .setEndRow( persInfoSet.size())
+                .setTotalRows(persInfoSet.size());
+        final PersonalInfoDTO.CompetenceSpecRs specRs=new PersonalInfoDTO.CompetenceSpecRs();
+        specRs.setResponse(specResponse);
+          return new ResponseEntity<>(specRs,HttpStatus.OK);
 
     }
 
