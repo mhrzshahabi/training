@@ -514,21 +514,23 @@
                 sortFieldDescendingText: "مرتب سازي نزولي",
                 selectionChanged: function (record, state) {
                     if (this.ID == "courseAllGrid") {
+                        orBtn.show();
+                        addPreCourseBtn.show();
                         orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
                         addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
                         if (equalCourseGrid.getSelectedRecord() != null) {
-                            andBtn.enable();
+                            andBtn.show();
                             andBtn.setTitle("افزودن " + "'" + record.titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC + " به معادل های دوره")
                         } else {
-                            andBtn.disable();
+                            andBtn.hide();
                         }
                     }
                     if (this.ID == "equalCourseGrid") {
                         if ((courseAllGrid.getSelectedRecord() != null) && (equalCourseGrid.getSelectedRecord() != null)) {
-                            andBtn.enable();
+                            andBtn.show();
                             andBtn.setTitle("افزودن " + "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + record.nameEC + " به معادل های دوره")
                         } else {
-                            andBtn.disable();
+                            andBtn.hide();
                         }
                     }
                 },
@@ -539,7 +541,7 @@
 // }
                 removeRecordClick: function (rowNum) {
                     if (this.ID == "equalCourseGrid") {
-                        andBtn.disable();
+                        andBtn.hide();
                     }
                     var record = this.getRecord(rowNum);
                     this.removeData(record, function (dsResponse, data, dsRequest) {
@@ -966,6 +968,10 @@
                 defaultValue: "پیشنیاز و معادل دوره", type: "section", sectionExpanded: false,
                 itemIds: ["orBtn", "andBtn", "equalCourseGrid", "courseAllGrid", "imgMove", "preCourseGrid"],
                 click: function (form) {
+                    courseAllGrid.invalidateCache();
+                    andBtn.hide();
+                    orBtn.hide();
+                    addPreCourseBtn.hide();
                     form.getField("preCourseGrid").title = "پیش نیازهای دوره " + form.getField("titleFa").getValue();
                     form.getField("equalCourseGrid").title = "معادلهای دوره " + form.getField("titleFa").getValue();
                 }
@@ -1040,16 +1046,16 @@
                 // filterOnKeypress:true,
                 canAcceptDroppedRecords: true,
                 dragDataAction: "none",
-                canHover: true
-
-
+                canHover: true,
+                endRow: true
             },
             {
                 name: "andBtn",
                 ID: "andBtn",
-                colSpan: 2,
+                colSpan: 3,
                 align: "center",
                 // rowSpan:1,
+                startRow:true,
                 endRow: false,
                 title: "",
                 width: "*",
@@ -1068,33 +1074,14 @@
                 }
             },
             {
-                name: "imgMove",
-                ID: "addPreCourseBtn",
-                colSpan: 6,
-                align: "left",
-                // rowSpan:4,
-                title: "",
-                width: "350",
-                type: "button",
-                startRow: false,
-                icon: "[SKIN]/actions/back.png",
-                click: function () {
-                    if (courseAllGrid.getSelectedRecord() == null) {
-                        isc.say("دوره ای انتخاب نشده است");
-                    } else {
-                        preCourseGrid.transferSelectedData(courseAllGrid);
-                    }
-                }
-            },
-            {
                 name: "orBtn",
                 ID: "orBtn",
                 colSpan: 2,
                 align: "center",
                 // rowSpan:1,
                 title: "",
-                startRow: true,
-                // endRow:false,
+                startRow: false,
+                endRow:false,
                 width: "*",
                 type: "button",
                 icon: "[SKIN]/actions/forward.png",
@@ -1107,6 +1094,26 @@
                             nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
                             idEC: courseAllGrid.getSelectedRecord().id.toString()
                         });
+                    }
+                }
+            },
+            {
+                name: "imgMove",
+                ID: "addPreCourseBtn",
+                colSpan: 3,
+                align: "center",
+                // rowSpan:4,
+                title: "",
+                width: "*",
+                type: "button",
+                startRow: false,
+                endRow:true,
+                icon: "[SKIN]/actions/back.png",
+                click: function () {
+                    if (courseAllGrid.getSelectedRecord() == null) {
+                        isc.say("دوره ای انتخاب نشده است");
+                    } else {
+                        preCourseGrid.transferSelectedData(courseAllGrid);
                     }
                 }
             },
