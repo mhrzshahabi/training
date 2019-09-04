@@ -3,6 +3,8 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
+import com.nicico.training.model.enums.EActive;
+import com.nicico.training.model.enums.EDeleted;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,5 +25,7 @@ public class PostGradeDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        EActive eActive;
+        EDeleted eDeleted;
     }
 }
