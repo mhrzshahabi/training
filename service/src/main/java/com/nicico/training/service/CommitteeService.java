@@ -16,6 +16,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +28,7 @@ public class CommitteeService implements ICommitteeService {
    private final PersonalInfoDAO personalInfoDAO;
 //   private final PersonalInfoService;
    private final ModelMapper mapper;
+
 
 
  @Transactional(readOnly = true)
@@ -154,5 +156,32 @@ public class CommitteeService implements ICommitteeService {
     }
 
 //end add members functions
+
+    @Override
+    @Transactional
+    public Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId)
+ {
+       final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
+        final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
+        Set<PersonalInfo> acctivePersonalInfoSet=committee.getCommitteeMmembers();
+        List<PersonalInfo> personalInfoList=personalInfoDAO.findAll();
+        Set<PersonalInfo> unAttach=new HashSet<>();
+        for (PersonalInfo personalInfo : personalInfoList) {
+         if(!acctivePersonalInfoSet.contains(personalInfo))
+            unAttach.add(personalInfo);
+     }
+
+      Set<PersonalInfoDTO.Info> personInfoSet = new HashSet<>();
+        Optional.ofNullable(unAttach)
+                .ifPresent(person ->
+                        person.forEach(personal ->
+                                personInfoSet.add(mapper.map(personal,PersonalInfoDTO.Info.class))
+                        ));
+
+        return personInfoSet;
+     //  return mapper.map( unAttach, new TypeToken<List<PersonalInfoDTO.Info>>() {
+     //   }.getType());
+
+ }
 
 }
