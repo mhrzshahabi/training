@@ -4,6 +4,7 @@ ghazanfari_f, 8/29/2019, 9:11 AM
 package com.nicico.training.model;
 
 import com.nicico.training.model.enums.EActive;
+import com.nicico.training.model.enums.EDeleted;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 
@@ -17,7 +18,7 @@ public class Post {
 
     @Id
     @Column(name = "id")
-    private Long id;
+    private String id;
 
     @Column(name = "c_code")
     private String code;
@@ -30,11 +31,8 @@ public class Post {
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_grade_id")
+    @JoinColumn(name = "f_post_garde_id")
     private PostGrade postGrade;
-
-    @Column(name = "e_active")
-    EActive eActive;
 
     @Column(name = "c_area")
     private String area;
@@ -56,4 +54,10 @@ public class Post {
 
     @Column(name = "c_cost_center_title_fa")
     private String costCenterTitleFa;
+
+    @Column(name = "e_active")
+    EActive eActive;
+
+    @Column(name = "e_deleted")
+    EDeleted eDeleted;
 }
