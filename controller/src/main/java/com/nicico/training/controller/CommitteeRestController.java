@@ -71,9 +71,12 @@ public class CommitteeRestController {
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        committeeService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    boolean check=committeeService.checkForDelete(id);
+      if(check) {
+          committeeService.delete(id);
+      }
+        return new ResponseEntity<>(check,HttpStatus.OK);
     }
 
      @Loggable

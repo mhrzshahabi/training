@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.model.PersonalInfo;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -29,4 +30,5 @@ public interface ICommitteeService {
       void addMembers(Long committeeId, Set<Long> personInfiIds);
      List<PersonalInfoDTO.Info> getMembers(Long committeeId);
      Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
+      boolean checkForDelete(Long CommitteeId);
 }
