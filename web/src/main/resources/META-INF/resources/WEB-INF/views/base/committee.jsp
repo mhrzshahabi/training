@@ -62,12 +62,42 @@
         ],
     });
 
+      Menu_ListGrid_committee = isc.Menu.create({
+        data: [
+            {
+                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+             ListGrid_Committee.invalidateCache();
+                                   }
+            }, {
+                title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+                           show_CommitteeNewForm();
+                                  }
+            }, {
+                title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+                          show_CommitteEditForm();      }
+            }, {
+                title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+                           show_CommitteeRemoveForm();     }
+            }, {isSeparator: true}, {
+                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                              print_CommitteeListGrid("pdf")   }
+             }, {
+                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                               print_CommitteeListGrid("excel")  }
+             }, {
+                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+                            print_CommitteeListGrid("html")     }
+            }]
+    });
+
     var ListGrid_Committee = isc.MyListGrid.create({
         dataSource: RestDataSource_committee,
+         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
         doubleClick: function () {
-
+            show_CommitteEditForm();
         },
+
          selectionChanged: function (record, state)
          {
              committeeId=record;
@@ -75,13 +105,9 @@
         sortField: 1,
     });
 
-
-
  var ListGrid_All_Person = isc.MyListGrid.create({
-
         width: "100%",
         height: "100%", canDragResize: true,
-
         canDragRecordsOut: true,
         canAcceptDroppedRecords: true,
         autoFetchData: true,
@@ -320,7 +346,7 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title:"<spring:message code="print"/>",
         click: function () {
-           print_CommitteeListGrid();
+           print_CommitteeListGrid("pdf");
         }
 
     });
@@ -552,6 +578,7 @@
     };
 
     function show_CommitteeRemoveForm() {
+        committee_method="DELETE";
         var record = ListGrid_Committee.getSelectedRecord();
         if (record == null || record.id == null) {
 
@@ -571,7 +598,9 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
+
                         isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
+
                     }
                 }
             });
@@ -579,36 +608,103 @@
 
     };
 
-      function show_CommitteeActionResult(resp) {
+       function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
+
         if (respCode == 200 || respCode == 201) {
-            ListGrid_Committee.invalidateCache();
-            var MyOkDialog_job = isc.MyOkDialog.create({
+
+            if((committee_method=="POST" || committee_method=="PUT") || (committee_method=="DELETE" && resp.data=="true"))
+            {
+              ListGrid_Committee.invalidateCache();
+            var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
 
             });
 
             setTimeout(function () {
-                MyOkDialog_job.close();
+                MyOkDialog_committee.close();
             }, 3000);
 
-            Window_Committee.close();
+           Window_Committee.close();
+        }
+        else
+        {
+          var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "کمیته مورد نظر دارای عضو می باشد. قابل حذف نیست",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_committee.close();
+            }, 3000);
+        }
         } else {
-            var MyOkDialog_job = isc.MyOkDialog.create({
+            var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
             });
 
             setTimeout(function () {
-                MyOkDialog_job.close();
+                MyOkDialog_committee.close();
             }, 3000);
         }
     };
 
-    function  print_CommitteeListGrid() {
+
+   function show_CommitteeActionResultyutyuiuyi(resp) {
+        var respCode = resp.httpResponseCode;
+
+        if (respCode == 200 || respCode == 201) {
+              if(resp.httpMethod=="POST" || resp.httpMethod=="GET")
+		  {
+            alert(resp.httpMethod);
+            var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_committee.close();
+            }, 3000);
+            ListGrid_Committee.invalidateCache();
+            ListGrid_Committee.fetchData();
+		}
+		 if(resp.httpMethod=="DELETE" && resp.data=="true")
+              {
+               var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_committee.close();
+            }, 3000);
+              }
+              else
+               { var MyOkDialog_committee = isc.MyOkDialog.create({
+                       message: "کمیته مورد نظر دارای عضو می باشد قابل حذف نیست",  });
+                            setTimeout(function () {
+                             MyOkDialog_committee.close(); }, 3000);
+                 }
+
+        } else {
+            var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+
+            setTimeout(function () {
+                MyOkDialog_committee.close();
+            }, 3000);
+        }
+          };
+
+
+
+
+    function  print_CommitteeListGrid(type) {
     var advancedCriteria_committee =ListGrid_Committee.getCriteria();
         var criteriaForm_committee = isc.DynamicForm.create({
             method: "POST",
-            action: "<spring:url value="/committee/printCommitteeWithMember/pdf"/>",
+            action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:

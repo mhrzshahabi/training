@@ -184,4 +184,15 @@ public class CommitteeService implements ICommitteeService {
 
  }
 
+     @Override
+    @Transactional
+    public boolean checkForDelete(Long CommitteeId)
+  {
+  Optional<Committee> committee=committeeDAO.findById(CommitteeId);
+  final Committee committee1=committee.orElseThrow(()->new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
+  Set<PersonalInfo> personalInfoSet=committee1.getCommitteeMmembers();
+  return ((personalInfoSet != null && personalInfoSet.size()>0 ?false:true));
+  }
+
 }
+
