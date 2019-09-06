@@ -581,18 +581,18 @@
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/syllabus/show-form"/>");
-                    }
-                },
-                {
-                    title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/goal/show-form"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="/syllabus/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
+                <%--{--%>
+                    <%--title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="/goal/show-form"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
                     click: function () {
