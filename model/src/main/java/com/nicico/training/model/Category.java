@@ -34,7 +34,7 @@ public class Category extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @Column(name = "c_code", length = 2, nullable = false,unique = true)
+    @Column(name = "c_code", length = 2, nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_desc")

@@ -18,7 +18,7 @@ public class Post {
 
     @Id
     @Column(name = "id")
-    private String id;
+    private Long id;
 
     @Column(name = "c_code")
     private String code;
@@ -27,37 +27,17 @@ public class Post {
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_job_id")
+    @JoinColumn(name = "f_job_id", nullable = true)
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_garde_id")
+    @JoinColumn(name = "f_post_grade_id", nullable = true)
     private PostGrade postGrade;
 
-    @Column(name = "c_area")
-    private String area;
-
-    @Column(name = "c_assistance")
-    private String assistance;
-
-    @Column(name = "c_affairs")
-    private String affairs;
-
-    @Column(name = "c_section")
-    private String section;
-
-    @Column(name = "c_unit")
-    private String unit;
-
-    @Column(name = "c_cost_center_code")
-    private String costCenterCode;
-
-    @Column(name = "c_cost_center_title_fa")
-    private String costCenterTitleFa;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_department_id", nullable = true)
+    private Department department;
 
     @Column(name = "e_active")
     EActive eActive;
-
-    @Column(name = "e_deleted")
-    EDeleted eDeleted;
 }

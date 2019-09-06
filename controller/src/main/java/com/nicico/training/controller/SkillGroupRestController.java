@@ -101,10 +101,6 @@ public class SkillGroupRestController {
                                                                @RequestParam(value = "operator", required = false) String operator,
                                                                @RequestParam(value = "criteria", required = false) String criteria,
                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
-
-
-
-
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -325,6 +321,15 @@ public class SkillGroupRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/skillgroupwithskills.jasper", params, response);
+    }
+
+    @Loggable
+    @GetMapping(value = {"/printSelected/{type}/{skillGroupIds}"})
+    public void printWithSelectedSkillGroup(HttpServletResponse response, @PathVariable String type,@PathVariable String skillGroupIds) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put("skillGroupIds",skillGroupIds);
+        reportUtil.export("/reports/selectedSkillGroup.jasper", params, response);
     }
 
 

@@ -37,10 +37,10 @@ public class EducationFormController {
 
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
         map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
         type = type.toUpperCase();

@@ -8,7 +8,6 @@
 %>
 
 //<script>
-
     var methodEducation = "GET";
     var saveActionUrl;
     var educationLevelUrl = educationUrl + "level/";
@@ -104,7 +103,7 @@
             }]
     });
     
-    var ListGrid_EducationOrientation = isc.ListGrid.create({
+    var ListGrid_EducationOrientation = isc.MyListGrid.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationOrientation,
@@ -116,12 +115,12 @@
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center"},
-            {name: "educationLevelId", hidden: true},
-            {name: "educationMajorId", hidden: true},
-            {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center"},
-            {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center"}
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"},
+            {name: "educationLevelId", hidden: true, filterOperator: "contains"},
+            {name: "educationMajorId", hidden: true, filterOperator: "contains"},
+            {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center", filterOperator: "contains"},
+            {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center", filterOperator: "contains"}
         ],
         // selectionType: "multiple",
         selectionChanged: function (record, state) {
@@ -382,7 +381,7 @@
             }]
     });
 
-     var ListGrid_EducationMajor = isc.ListGrid.create({
+     var ListGrid_EducationMajor = isc.MyListGrid.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationMajor,
@@ -394,8 +393,8 @@
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center"}
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
         ],
         // selectionType: "multiple",
         selectionChanged: function (record, state) {
@@ -630,7 +629,7 @@
             }]
     });
 
-    var ListGrid_EducationLevel = isc.ListGrid.create({
+    var ListGrid_EducationLevel = isc.MyListGrid.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationLevel,
@@ -642,8 +641,8 @@
         },
         fields: [
             {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center"}
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
         ],
         // selectionType: "multiple",
         selectionChanged: function (record, state) {
@@ -855,7 +854,6 @@
     var VLayout_Tab_Education = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        border: "2px solid blue",
         members: [VLayout_Tabset_Education]
     });
     
@@ -908,13 +906,16 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.httpResponseCode === 200) {
+                                if (resp.data === "true") {
                                     EducationListGrid.invalidateCache();
                                     simpleDialog("<spring:message code='msg.command.done'/>",
                                                     "<spring:message code='msg.operation.successful'/>", 3000, "say");
-                                } else {
+                                }else if(resp.data === "false"){
                                     simpleDialog("<spring:message code='message'/>",
-                                                    "<spring:message code='msg.operation.error'/>", 2000, "stop");
+                                                    "<spring:message code='msg.record.cannot.deleted'/>", 3000, "stop");
+                                }else {
+                                    simpleDialog("<spring:message code='message'/>",
+                                                    "<spring:message code='msg.operation.error'/>", 3000, "stop");
                                 }
                             }
                         });
@@ -967,8 +968,6 @@
         var advancedCriteria = EducationListGrid.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
                 method: "POST",
-                <%--action: "<spring:url value="education/orientation/printWithCriteria/"/>" + type,--%>
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 target: "_Blank",
                 canSubmit: true,
                 fields: [ {name: "CriteriaStr", type: "hidden"} ]

@@ -7,9 +7,9 @@
 
 
 	<changeSet author="rrazmnoush" id="1569029078270-121">
-	<addColumn tableName="tbl_address">
+		<addColumn tableName="tbl_address">
         	<column name="f_state" type="NUMBER(19, 0)"/>
-    </addColumn>
+    	</addColumn>
     </changeSet>
 
 </databaseChangeLog>
