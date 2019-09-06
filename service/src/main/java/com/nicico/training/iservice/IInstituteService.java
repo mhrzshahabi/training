@@ -14,7 +14,7 @@ public interface IInstituteService {
 
     List<InstituteDTO.Info> list();
 
-    InstituteDTO.Info create(InstituteDTO.Create request);
+    InstituteDTO.Info create(Object request);
 
     InstituteDTO.Info update(Long id, InstituteDTO.Update request);
 

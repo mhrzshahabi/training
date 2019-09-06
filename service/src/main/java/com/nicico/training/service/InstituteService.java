@@ -6,6 +6,8 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AccountInfoDTO;
+import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.iservice.IInstituteService;
 import com.nicico.training.model.*;
@@ -56,16 +58,47 @@ public class InstituteService implements IInstituteService {
 
     @Transactional
     @Override
-    public InstituteDTO.Info create(InstituteDTO.Create request) {
-        final Institute institute = modelMapper.map(request, Institute.class);
-        if(request.getEInstituteTypeId() != null) {
-            institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(request.getEInstituteTypeId()));
+    public InstituteDTO.Info create(Object request) {
+        PersonalInfo manager=null;
+        Institute parentInstitute=null;
+        final InstituteDTO.Create create=modelMapper.map(request,InstituteDTO.Create.class);
+        AddressDTO.Create addressCreate=modelMapper.map(create.getAddress(),AddressDTO.Create.class);
+        AccountInfoDTO.Create accountCreate=modelMapper.map(create.getAccountInfo(),AccountInfoDTO.Create.class);
+
+        final Address address= modelMapper.map(addressCreate, Address.class);
+        final AccountInfo accountInfo= modelMapper.map(accountCreate, AccountInfo.class);
+
+        final Institute institute = modelMapper.map(create, Institute.class);
+
+        if(create.getEInstituteTypeId() != null) {
+            institute.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(create.getEInstituteTypeId()));
 //            institute.setEInstituteTypeTitleFa(institute.getEInstituteType().getTitleFa());
         }
-        if(request.getELicenseTypeId() != null) {
-            institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(request.getELicenseTypeId()));
+        if(create.getELicenseTypeId() != null) {
+            institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(create.getELicenseTypeId()));
 //            institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
         }
+        addressDAO.save(address);
+        accountInfoDAO.save(accountInfo);
+
+        institute.setAccountInfoId(accountInfo.getId());
+        institute.setAddressId(address.getId());
+        institute.setAddress(address);
+        institute.setAccountInfo(accountInfo);
+
+        if(institute.getParentInstituteId()!=null){
+            Optional<Institute> optionalInstitute=instituteDAO.findById(institute.getParentInstituteId());
+            parentInstitute=optionalInstitute.orElseThrow(()->new TrainingException(TrainingException.ErrorType.InstituteNotFound));
+        }
+
+        if(institute.getManagerId()!=null){
+            Optional<PersonalInfo> optionalPersonalInfo=personalInfoDAO.findById(institute.getManagerId());
+            manager=optionalPersonalInfo.orElseThrow(()->new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
+        }
+
+        institute.setManager(manager);
+        institute.setParentInstitute(parentInstitute);
+
         return modelMapper.map(instituteDAO.saveAndFlush(institute), InstituteDTO.Info.class);
     }
 

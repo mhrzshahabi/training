@@ -33,6 +33,7 @@
             {name: "empNumAssociate"},
             {name: "teacherNumDiploma"},
             {name: "empNumDiploma"},
+            {name: "addressId"},
             {name: "address.state1.name"},
             {name: "address.city.name"},
             {name: "address.address"},
@@ -41,13 +42,16 @@
             {name: "address.fax"},
             {name: "address.webSite"},
             {name: "address.address"},
+            {name: "accountInfoId"},
             {name: "accountInfo.bank"},
             {name: "accountInfo.bankBranch"},
             {name: "accountInfo.bankBranchCode"},
             {name: "accountInfo.accountNumber"},
+            {name: "managerId"},
             {name: "manager.firstNameFa"},
             {name: "manager.lastNameFa"},
             {name: "manager.nationalCode"},
+            {name: "parentInstituteId"},
             {name: "parentInstitute.titleFa"},
             {name: "einstituteType.titleFa"},
             {name: "elicenseType.titleFa"},
@@ -122,6 +126,21 @@
             {name: "economicalRecordNumber"}
         ],
         fetchDataURL: instituteUrl + "un-attached-teacher/0"
+    });
+    var RestDataSource_Institute_City = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: cityUrl + "spec-list"
+    });
+
+    var RestDataSource_Institute_State = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: stateUrl + "spec-list"
     });
 
     var RestDataSource_Institute_EPlaceType = isc.MyRestDataSource.create({
@@ -205,7 +224,7 @@
             {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "contains"},
             {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "contains"},
             {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"},
-            {name: "address.state1.name", title: "استان", align: "center", filterOperator: "contains"},
+            {name: "address.state.name", title: "استان", align: "center", filterOperator: "contains"},
             {name: "address.city.name", title: "شهر", align: "center", filterOperator: "contains"},
             {name: "address.address", title: "آدرس", align: "center", filterOperator: "contains"}
         ],
@@ -324,271 +343,396 @@
 
 
     var DynamicForm_Institute_Institute = isc.DynamicForm.create({
-width: "100%",
-height: "100%",
-align: "center",
-canSubmit: true,
-titleWidth: 80,
-showInlineErrors: true,
-showErrorText: false,
-showErrorStyle: false,
-errorOrientation: "right",
-valuesManager: "vm",
-numCols: 6,
-titleAlign: "left",
-requiredMessage: "<spring:message code='msg.field.is.required'/>",
-margin: 10,
-newPadding: 5,
-fields: [
-{name: "id", hidden: true},
-{
-name: "titleFa",
-title: "عنوان فارسی",
-type: 'text',
-keyPressFilter:  "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-length: "255"
-},
-{
-name: "titleEn",
-title: "عنوان لاتین",
-type: 'text',
-keyPressFilter: "[a-z|A-Z|0-9| ]",
-length: "255"
-},
-{
-name: "parentInstituteId",
-title: "<spring:message code='bank.branch.code'/>",
-type: 'text',
-keyPressFilter: "[0-9]",
-length: "10"
-},
-{
-name: "parentInstituteTitle",
-title: "<spring:message code='bank.branch.code'/>",
-type: 'text',
-keyPressFilter: "[0-9]",
-length: "255"
-},
-
-
-{
-name: "personality.accountInfo.accountNumber",
-title: "<spring:message code='account.number'/>",
-type: 'text',
-keyPressFilter: "[0-9]",
-length: "30"
-},
-
-
-{
-name: "personality.accountInfo.cartNumber",
-title: "<spring:message code='cart.number'/>",
-type: 'text',
-keyPressFilter: "[0-9]",
-length: "30"
-},
-
-
-{
-name: "personality.accountInfo.shabaNumber",
-title: "<spring:message code='shaba.number'/>",
-type: 'text',
-keyPressFilter: "[0-9]",
-length: "30"
-}
-]
-{name: "titleFa"},
-{name: "titleEn"},
-{name: "teacherNumPHD"},
-{name: "teacherNumLicentiate"},
-{name: "empNumLicentiate"},
-{name: "teacherNumMaster"},
-{name: "empNumMaster"},
-{name: "teacherNumAssociate"},
-{name: "empNumAssociate"},
-{name: "teacherNumDiploma"},
-{name: "empNumDiploma"},
-{name: "address.state1.name"},
-{name: "address.city.name"},
-{name: "address.address"},
-{name: "address.postCode"},
-{name: "address.phone"},
-{name: "address.fax"},
-{name: "address.webSite"},
-{name: "address.address"},
-{name: "accountInfo.bank"},
-{name: "accountInfo.bankBranch"},
-{name: "accountInfo.bankBranchCode"},
-{name: "accountInfo.accountNumber"},
-{name: "manager.firstNameFa"},
-{name: "manager.lastNameFa"},
-{name: "manager.nationalCode"},
-{name: "parentInstitute.titleFa"},
-{name: "einstituteType.titleFa"},
-{name: "elicenseType.titleFa"},
-{name: "version"}
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 150,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "ValuesManager_Institute_InstituteValue",
+        numCols: 6,
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 2,
+        newPadding: 5,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "titleFa",
+                title: "عنوان فارسی",
+                colSpan: 2,
+                width: 250,
+                type: 'text',
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "255"
+            },
+            {
+                name: "titleEn",
+                title: "عنوان لاتین",
+                colSpan: 2,
+                width: 250,
+                type: 'text',
+                keyPressFilter: "[a-z|A-Z|0-9| ]",
+                length: "255"
+            },
+            {
+                name: "addressId",
+                hidden: true
+            },
+            {
+                name: "accountInfoId",
+                hidden: true
+            },
+            {
+                name: "parentInstituteId",
+                title: "موسسه مادر",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                width: 250,
+                length: "10"
+            },
+            {
+                name: "parentInstitute.titleFa",
+                title: "عنوان موسسه مادر",
+                showTitle: false,
+                colSpan: 4,
+                width: 500,
+                type: 'text',
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "255"
+            },
+            {
+                name: "managerId", hidden: true
+            },
+            {
+                name: "manager.nationalCode",
+                title: "مدیر موسسه",
+                width: 250,
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "manager.firstNameFa",
+                title: "<spring:message code='account.number'/>",
+                showTitle: false,
+                colSpan: 2,
+                width: 250,
+                type: 'text',
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "30"
+            },
+            {
+                name: "manager.lastNameFa",
+                title: "<spring:message code='cart.number'/>",
+                showTitle: false,
+                colSpan: 2,
+                width: 250,
+                type: 'text',
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "30"
+            },
+            {
+                name: "eInstituteTypeId",
+                type: "IntegerItem",
+                colSpan: 2,
+                title: "نوع موسسه",
+                width: 250,
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EInstituteType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "eLicenseTypeId",
+                type: "IntegerItem",
+                title: "نوع مدرک",
+                colSpan: 2,
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: 250,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_ELicenseType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            }
+        ]
 
     });
+    var DynamicForm_Institute_InstituteTeacherNum = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 150,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "ValuesManager_Institute_InstituteValue",
+        numCols: 2,
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 2,
+        newPadding: 5,
+        fields: [
+            {
+                name: "teacherNumPHD",
+                title: "استاد دکتری",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "teacherNumLicentiate",
+                title: "استاد لیسانس",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "teacherNumMaster",
+                title: "استاد فوق لیسانس",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "teacherNumAssociate",
+                title: "استاد فوق دیپلم",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "teacherNumDiploma",
+                title: "استاد دیپلم/زیردیپلم",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            }
+        ]
+
+    });
+    var DynamicForm_Institute_InstituteEmpNum = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 150,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "ValuesManager_Institute_InstituteValue",
+        numCols: 2,
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 2,
+        newPadding: 5,
+        fields: [
+            {
+                name: "empNumPHD",
+                title: " کارمند دکتری",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "empNumLicentiate",
+                title: "کارمند لیسانس",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "empNumMaster",
+                title: "کارمند فوق  لیسانس",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "empNumAssociate",
+                title: " کارمند فوق دیپلم",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+            {
+                name: "empNumDiploma",
+                title: "کارمند  دیپلم/زیردیپلم",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            }
+        ]
+
+    });
+
     var DynamicForm_Institute_Institute_Address = isc.DynamicForm.create({
-width: "100%",
-titleWidth: "120",
-height: 150,
+        width: "100%",
+        titleWidth: "120",
+        height: "100%",
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
+        valuesManager: "ValuesManager_Institute_InstituteValue",
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 6,
-        margin: 50,
-        padding: 5,
         fields: [
-            {name: "id", hidden: true},
-
             {
-                name: "code", title: "<spring:message code='code'/>",
-                type: 'text',
-                required: true,
+                name: "address.id",
+                hidden: true
+            },
+            {
+                name: "address.stateId",
+                type: "IntegerItem",
+                title: "استان",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultToFirstOption: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_State,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "address.cityId",
+                type: "IntegerItem",
+                title: "شهر",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultToFirstOption: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_City,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "address.postCode",
+                title: "کد پستی",
                 keyPressFilter: "[0-9]",
                 length: "15",
             },
             {
-                name: "titleFa",
-                title: "<spring:message code='title'/>",
+                name: "address.address",
+                title: "آدرس",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
-                showHintInField: true,
-                length: "30"
-            },
-            {
-                name: "titleEn",
-                title: "<spring:message code='titleEn'/>",
-                required: true,
+                colSpan: 5,
                 keyPressFilter: "[a-z|A-Z |]",
                 hint: "English/انگليسي",
                 showHintInField: true,
-                length: "30"
+                width: 600,
+                length: "255"
             },
             {
-                name: "telephone",
-                title: "<spring:message code='telephone'/>",
-                keyPressFilter: "[0-9]",
-                length: "15",
+                name: "address.phone",
+                title: "تلفن"
             },
             {
-                name: "address",
-                title: "<spring:message code='address'/>"
-            },
-            {
-                name: "email",
-                title: "<spring:message code='email'/>",
+                name: "address.fax",
+                title: "فکس",
                 hint: "test@nicico.com",
                 showHintInField: true,
                 length: "30"
-                , blur: function () {
-                    var emailCheck = false;
-                    emailCheck = checkEmail(DynamicForm_Institute_Institute.getValue("email"));
-                    mailCheck = emailCheck;
-                    if (emailCheck == false)
-                        DynamicForm_Institute_Institute.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
-
-                    if (emailCheck == true)
-                        DynamicForm_Institute_Institute.clearFieldErrors("email", true);
-                }
             },
             {
-                name: "postalCode",
-                title: "<spring:message code='postal.code'/>",
-                keyPressFilter: "[0-9]",
-                length: "15"
-            },
-            {
-                name: "branch",
-                title: "<spring:message code='branch'/>",
-                length: "15"
-            },
-            {
-                name: "einstituteTypeId",
-                type: "IntegerItem",
-                title: "<spring:message code='institute.type'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_EInstituteType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            },
-            {
-                name: "elicenseTypeId",
-                type: "IntegerItem",
-                title: "<spring:message code='license.type'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_ELicenseType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            },
-        ]
-
+                name: "address.webSite",
+                title: "وب سایت",
+                hint: "test@nicico.com",
+                showHintInField: true,
+                length: "30"
+            }]
     });
+
     var DynamicForm_Institute_Institute_Account = isc.DynamicForm.create({
-width: "100%",
-titleWidth: "120",
-height: 150,
+        width: "100%",
+        titleWidth: "120",
+        height: "100%",
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        valuesManager: "ValuesManager_Institute_InstituteValue",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        numCols: 6,
-        margin: 50,
-        padding: 5,
+        numCols: 4,
         fields: [
             {name: "id", hidden: true},
 
             {
-                name: "code", title: "<spring:message code='code'/>",
-                type: 'text',
-                required: true,
-                keyPressFilter: "[0-9]",
-                length: "15",
+                name: "accountInfo.id",
+                hidden: true
             },
             {
-                name: "titleFa",
-                title: "<spring:message code='title'/>",
+                name: "accountInfo.bank",
+                title: "بانک",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 hint: "Persian/فارسی",
@@ -596,127 +740,123 @@ height: 150,
                 length: "30"
             },
             {
-                name: "titleEn",
-                title: "<spring:message code='titleEn'/>",
+                name: "accountInfo.bankBranch",
+                title: "شعبه",
                 required: true,
-                keyPressFilter: "[a-z|A-Z |]",
+                keyPressFilter: "[a-z|A-Z |0-9]",
                 hint: "English/انگليسي",
                 showHintInField: true,
                 length: "30"
             },
             {
-                name: "telephone",
-                title: "<spring:message code='telephone'/>",
+                name: "accountInfo.bankBranchCode",
+                title: "کد شعبه",
+                required: true,
                 keyPressFilter: "[0-9]",
-                length: "15",
-            },
-            {
-                name: "address",
-                title: "<spring:message code='address'/>"
-            },
-            {
-                name: "email",
-                title: "<spring:message code='email'/>",
-                hint: "test@nicico.com",
+                hint: "English/انگليسي",
                 showHintInField: true,
                 length: "30"
-                , blur: function () {
-                    var emailCheck = false;
-                    emailCheck = checkEmail(DynamicForm_Institute_Institute.getValue("email"));
-                    mailCheck = emailCheck;
-                    if (emailCheck == false)
-                        DynamicForm_Institute_Institute.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
-
-                    if (emailCheck == true)
-                        DynamicForm_Institute_Institute.clearFieldErrors("email", true);
-                }
             },
             {
-                name: "postalCode",
-                title: "<spring:message code='postal.code'/>",
+                name: "accountInfo.accountNumber",
+                title: "شماره حساب",
+                required: true,
                 keyPressFilter: "[0-9]",
-                length: "15"
-            },
-            {
-                name: "branch",
-                title: "<spring:message code='branch'/>",
-                length: "15"
-            },
-            {
-                name: "einstituteTypeId",
-                type: "IntegerItem",
-                title: "<spring:message code='institute.type'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_EInstituteType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            },
-            {
-                name: "elicenseTypeId",
-                type: "IntegerItem",
-                title: "<spring:message code='license.type'/>",
-                textAlign: "center",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_Institute_ELicenseType,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
-            },
+                hint: "English/انگليسي",
+                showHintInField: true,
+                length: "30"
+            }
         ]
 
     });
 
+    var TabSet_Institute_InstituteTeacherNum = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset: 2,
+        height: "100%",
+        width: "48%",
+        margin: 20,
+        newPadding: 5,
+        tabs: [
+            {
+                title: "تعداد اساتید", canClose: false,
+                pane: DynamicForm_Institute_InstituteTeacherNum
+            }
+        ]
+    });
+    var TabSet_Institute_InstituteEmpNum = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset: 2,
+        height: "100%",
+        width: "48%",
+        margin: 20,
+        newPadding: 5,
+        tabs: [
+            {
+                title: "تعداد کارمندان", canClose: false,
+                pane: DynamicForm_Institute_InstituteEmpNum
+            }
+        ]
+    });
+    var TabSet_Institute_InstituteAddress = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset: 2,
+        height: "100%",
+        width: "100%",
+        margin: 20,
+        newPadding: 5,
+        tabs: [
+            {
+                title: "ارتباط با موسسه", canClose: false,
+                pane: DynamicForm_Institute_Institute_Address
+            }
+        ]
+    });
+    var TabSet_Institute_InstituteAccount = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset: 2,
+        height: "100%",
+        width: "100%",
+        margin: 20,
+        newPadding: 5,
+        tabs: [
+            {
+                title: "حساب بانکی", canClose: false,
+                pane: DynamicForm_Institute_Institute_Account
+            }
+        ]
+    });
 
-var VLayout__Institute_Institute_Val = isc.VLayout.create({
-width: "100%",
-height: "50%",
-border:"1px solid blue",
-padding:5,
-members: [DynamicForm_Institute_Institute]
-});
+    var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
+        width: "100%",
+        height: 200,
+        margin: 2,
+        newPadding: 5,
 
-var VLayout__Institute_Institute_Address = isc.VLayout.create({
-width: "100%",
-height: "25%",
-border:"1px solid blue",
-padding:5,
-members: [DynamicForm_Institute_Institute_Address]
-});
-var VLayout__Institute_Institute_Account = isc.VLayout.create({
-width: "100%",
-height: "25%",
-border:"1px solid blue",
-padding:5,
-members: [DynamicForm_Institute_Institute_Account]
-});
+        members: [TabSet_Institute_InstituteEmpNum, TabSet_Institute_InstituteTeacherNum]
+    });
+
+
+    var VLayout__Institute_Institute_Val = isc.VLayout.create({
+        width: "100%",
+        height: "50%",
+        // border: "1px solid blue",
+        padding: 5,
+        members: [DynamicForm_Institute_Institute, HLayout_Institute_InstituteTeacherAndEmp]
+    });
+    var VLayout__Institute_Institute_Address = isc.VLayout.create({
+        width: "100%",
+        height: "25%",
+        // border: "1px solid blue",
+        members: [TabSet_Institute_InstituteAddress]
+    });
+    var VLayout__Institute_Institute_Account = isc.VLayout.create({
+        width: "100%",
+        height: "25%",
+        // border: "1px solid blue",
+        members: [TabSet_Institute_InstituteAccount]
+    });
+
     var IButton_Institute_Institute_Exit = isc.IButton.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
@@ -734,18 +874,16 @@ members: [DynamicForm_Institute_Institute_Account]
         icon: "pieces/16/save.png",
         click: function () {
 
-            if (mailCheck == false)
-                return;
 
-            DynamicForm_Institute_Institute.validate();
-            if (DynamicForm_Institute_Institute.hasErrors()) {
+            ValuesManager_Institute_InstituteValue.validate();
+            if (ValuesManager_Institute_InstituteValue.hasErrors()) {
                 return;
             }
-            var data = DynamicForm_Institute_Institute.getValues();
 
+            var data = ValuesManager_Institute_InstituteValue.getValues();
             var instituteSaveUrl = instituteUrl;
             if (instituteMethod.localeCompare("PUT") == 0) {
-                var instituteRecord = ListGrid_Institute_JspInstitute.getSelectedRecord();
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
             isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_action_result(rpcResponse)"));
@@ -754,7 +892,7 @@ members: [DynamicForm_Institute_Institute_Account]
 
     var VLayout_Institute_Institute_Form = isc.VLayout.create({
         width: "100%",
-        height: "100%",
+        height: "690",
         members: [VLayout__Institute_Institute_Val, VLayout__Institute_Institute_Address, VLayout__Institute_Institute_Account]
     });
 
@@ -762,7 +900,7 @@ members: [DynamicForm_Institute_Institute_Account]
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "800",
+        width: "100%",
         height: "10",
         alignLayout: "center",
         align: "center",
@@ -1017,10 +1155,18 @@ members: [DynamicForm_Institute_Institute_Account]
     };
 
     function ListGrid_Institute_Institute_Add() {
+        ValuesManager_Institute_InstituteValue.clearValues();
+        ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
         DynamicForm_Institute_Institute.clearValues();
+        // DynamicForm_Institute_Institute.getField("addressId").setValue(0);
+        // DynamicForm_Institute_Institute.getField("accountInfoId").setValue(0);
+        //
+        // DynamicForm_Institute_Institute_Account.getField("accountInfo.id").setValue(0)
+        // DynamicForm_Institute_Institute_Address.getField("address.id").setValue(0)
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
         Window_Institute_Institute.show();
+        Window_Institute_Institute.bringToFront();
     };
 
     function ListGrid_Institute_Institute_refresh() {

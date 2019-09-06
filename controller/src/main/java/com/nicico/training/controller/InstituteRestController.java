@@ -57,8 +57,8 @@ public class InstituteRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
     public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request) {
-        InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(create), HttpStatus.CREATED);
+ //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
+        return new ResponseEntity<>(instituteService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
@@ -114,17 +114,23 @@ public class InstituteRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        SearchDTO.SearchRs<InstituteDTO.Info> response;
+         InstituteDTO.SpecRs specResponse;
+         InstituteDTO.InstituteSpecRs specRs=null;
+        try {
+     response = instituteService.search(request);
 
-        SearchDTO.SearchRs<InstituteDTO.Info> response = instituteService.search(request);
+    specResponse = new InstituteDTO.SpecRs();
+    specRs = new InstituteDTO.InstituteSpecRs();
+    specResponse.setData(response.getList())
+            .setStartRow(startRow)
+            .setEndRow(startRow + response.getTotalCount().intValue())
+            .setTotalRows(response.getTotalCount().intValue());
 
-        final InstituteDTO.SpecRs specResponse = new InstituteDTO.SpecRs();
-        final InstituteDTO.InstituteSpecRs specRs = new InstituteDTO.InstituteSpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        specRs.setResponse(specResponse);
+    specRs.setResponse(specResponse);
+}catch (Exception e){
+    e.printStackTrace();
+}
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
