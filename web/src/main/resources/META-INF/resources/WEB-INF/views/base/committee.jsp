@@ -608,7 +608,7 @@
 
     };
 
-      function show_CommitteeActionResult(resp) {
+       function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
 
         if (respCode == 200 || respCode == 201) {
