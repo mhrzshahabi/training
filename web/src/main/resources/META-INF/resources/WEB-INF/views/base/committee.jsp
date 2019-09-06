@@ -578,6 +578,7 @@
     };
 
     function show_CommitteeRemoveForm() {
+        committee_method="DELETE";
         var record = ListGrid_Committee.getSelectedRecord();
         if (record == null || record.id == null) {
 
@@ -597,7 +598,8 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResultRemove(rpcResponse)"));
+
+                        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
 
                     }
                 }
@@ -608,10 +610,12 @@
 
       function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
-       
+
         if (respCode == 200 || respCode == 201) {
-        
-            ListGrid_Committee.invalidateCache();
+
+            if((committee_method=="POST" || committee_method=="PUT") || (committee_method=="DELETE" && resp.data=="true"))
+            {
+              ListGrid_Committee.invalidateCache();
             var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
 
@@ -621,7 +625,19 @@
                 MyOkDialog_committee.close();
             }, 3000);
 
-            Window_Committee.close();
+           Window_Committee.close();
+        }
+        else
+        {
+          var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "کمیته مورد نظر دارای عضو می باشد. قابل حذف نیست",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_committee.close();
+            }, 3000);
+        }
         } else {
             var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
@@ -634,13 +650,13 @@
     };
 
 
-   function show_CommitteeActionResultRemove(resp) {
+   function show_CommitteeActionResultyutyuiuyi(resp) {
         var respCode = resp.httpResponseCode;
 
-        if (respCode == 200 || respCode == 201 ) {
-              if(resp.data =="true")
+        if (respCode == 200 || respCode == 201) {
+              if(resp.httpMethod=="POST" || resp.httpMethod=="GET")
 		  {
-
+            alert(resp.httpMethod);
             var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
 
@@ -652,16 +668,24 @@
             ListGrid_Committee.invalidateCache();
             ListGrid_Committee.fetchData();
 		}
-		else{
-		 var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "کمیته مورد نظر دارای عضو می باشد  . قابل حذف نیست.",
+		 if(resp.httpMethod=="DELETE" && resp.data=="true")
+              {
+               var MyOkDialog_committee = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
 
             });
-		 setTimeout(function () {
+
+            setTimeout(function () {
                 MyOkDialog_committee.close();
             }, 3000);
-		}
-         //   Window_Committee.close();
+              }
+              else
+               { var MyOkDialog_committee = isc.MyOkDialog.create({
+                       message: "کمیته مورد نظر دارای عضو می باشد قابل حذف نیست",  });
+                            setTimeout(function () {
+                             MyOkDialog_committee.close(); }, 3000);
+                 }
+
         } else {
             var MyOkDialog_committee = isc.MyOkDialog.create({
                 message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
