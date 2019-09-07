@@ -319,13 +319,16 @@ public class CourseService implements ICourseService {
             Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
             for (SkillGroup skillGroup : skillGroupSet) {
                 Set<Competence> competenceSet = skillGroup.getCompetenceSet();
-                for (Competence competence : competenceSet) {
-                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
-                    for (JobCompetence jobCompetence : jobCompetenceSet) {
-                        JobOld job = jobCompetence.getJob();
-                        jobSet.add(job);
-                    }
-                }
+                //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
+//                for (Competence competence : competenceSet) {
+//                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
+//                    for (JobCompetence jobCompetence : jobCompetenceSet) {
+//                        JobOld job = jobCompetence.getJob();
+//                        jobSet.add(job);
+//                    }
+//                }
+                //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
+
             }
 //            Set<Competence> competenceSet = skill.getCompetenceSet();
 //            for (Competence competence : competenceSet) {
@@ -365,12 +368,14 @@ public class CourseService implements ICourseService {
     @Override
     public List<CompetenceDTO.Info> getCompetenceQuery(Long courseId) {
         List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
-        List<Competence> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
-        Optional.ofNullable(competenceList)
-                .ifPresent(competence ->
-                        competence.forEach(comp ->
-                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
-                        ));
+        //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
+//        List<Competence> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
+//        Optional.ofNullable(competenceList)
+//                .ifPresent(competence ->
+//                        competence.forEach(comp ->
+//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+//                        ));
+//      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return compeInfoList;
     }
 

@@ -1,15 +1,8 @@
+/*
+ghazanfari_f, 9/7/2019, 10:50 AM
+*/
 package com.nicico.training.dto;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/8/2019
-TIME: 12:02 PM
-*/
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.enums.ECompetenceInputType;
-import com.nicico.training.model.enums.ETechnicalType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -18,14 +11,11 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class CompetenceDTO implements Serializable {
 
     @NotNull
@@ -38,39 +28,24 @@ public class CompetenceDTO implements Serializable {
     @ApiModelProperty
     private String description;
 
-    @NotNull
-    @ApiModelProperty(required = true)
-    private Integer eTechnicalTypeId;
-
-    @NotNull
-    @ApiModelProperty(required = true)
-    private Integer eCompetenceInputTypeId;
-
-    @ApiModelProperty
-    private Integer wfStatus;
-
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence DTO Create Req")
+    @ApiModel("Competence - Create")
     public static class Create extends CompetenceDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence DTO Update Req")
+    @ApiModel("Competence - Update")
     public static class Update extends CompetenceDTO {
-
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence DTO Delete Req")
+    @ApiModel("Competence - Delete")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -80,49 +55,11 @@ public class CompetenceDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Competence DTO Id List Req")
-    public static class CompetenceIdList {
-        @NotNull
-        @ApiModelProperty(required = true)
-        List<Long> ids;
-    }
-
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("Competence DTO Info Req")
+    @ApiModel("Competence - Info")
     public static class Info extends CompetenceDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-        private Integer version;
-        private ETechnicalType eTechnicalType;
-        private ECompetenceInputType eCompetenceInputType;
-       /* private Set<SkillDTO> skillSet;
-        private Set<SkillGroupDTO> skillGroupSet;*/
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("CompetenceSpecRs")
-    public static class CompetenceSpecRs {
-        private CompetenceDTO.SpecRs response;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<CompetenceDTO.Info> data;
-        private Integer status;
-        private Integer startRow;
-        private Integer endRow;
-        private Integer totalRows;
+        private String titleFa;
+        private String titleEn;
+        private String description;
     }
 }

@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1567842639362-95">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UK4xey8vae2fbk68w1yn6jbprdd" tableName="tbl_education_major"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1567842639362-96">
+        <addUniqueConstraint columnNames="c_title_fa, f_education_level, f_education_major" constraintName="UKj8d72jr6muer25rvkgytmc4vq" tableName="tbl_education_orientation"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1567842639362-97">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UKnwverl8h7fjs8vsrwtan645gs" tableName="tbl_education_level"/>
+    </changeSet>
+
+
+</databaseChangeLog>

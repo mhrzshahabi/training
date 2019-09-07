@@ -173,17 +173,19 @@ public class SkillGroupService implements ISkillGroupService {
     public List<JobDTOOld.Info> getJobs(Long skillGroupID) {
         final Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupID);
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
-         Set<Competence> competenceSet=skillGroup.getCompetenceSet();
-         Set<JobOld> jobs=new HashSet<>();
-        for (Competence competence:skillGroup.getCompetenceSet()
-             ) {
-
-            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
-                 ) {
-                jobs.add(jobCompetence.getJob());
-
-            }
-        }
+        Set<Competence> competenceSet = skillGroup.getCompetenceSet();
+        Set<JobOld> jobs = new HashSet<>();
+//      --------------------------------------- By f.ghazanfari - start ---------------------------------------
+//        for (Competence competence:skillGroup.getCompetenceSet()
+//             ) {
+//
+//            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
+//                 ) {
+//                jobs.add(jobCompetence.getJob());
+//
+//            }
+//        }
+//      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return modelMapper.map(jobs, new TypeToken<List<JobDTOOld.Info>>() {
         }.getType());
     }
@@ -191,9 +193,9 @@ public class SkillGroupService implements ISkillGroupService {
     @Override
     @Transactional
     public boolean canDelete(Long skillGroupId) {
-        List<CompetenceDTO.Info> competences=getCompetence(skillGroupId);
-        if(competences.isEmpty() || competences.size()==0)
-        return true;
+        List<CompetenceDTO.Info> competences = getCompetence(skillGroupId);
+        if (competences.isEmpty() || competences.size() == 0)
+            return true;
         else
             return false;
     }
@@ -236,11 +238,11 @@ public class SkillGroupService implements ISkillGroupService {
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
 
         Set<Skill> activeSkills = skillGroup.getSkillSet();
-        List<Skill> allSkills=  skillDAO.findAll();
-        Set<Skill> unAttachSkills=new HashSet<>();
+        List<Skill> allSkills = skillDAO.findAll();
+        Set<Skill> unAttachSkills = new HashSet<>();
 
         for (Skill skill : allSkills) {
-            if(!activeSkills.contains(skill))
+            if (!activeSkills.contains(skill))
                 unAttachSkills.add(skill);
         }
 
