@@ -13,7 +13,8 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_education_orientation")
+@Table(name = "tbl_education_orientation",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa", "f_education_level","f_education_major"})})
 public class EducationOrientation extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_orientation_seq")
