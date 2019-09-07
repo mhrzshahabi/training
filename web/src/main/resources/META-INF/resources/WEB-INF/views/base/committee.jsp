@@ -163,13 +163,11 @@
             var memberIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
                 memberIds.add(dropRecords[i].id);
-            }
-            ;
-
-
+            };
 
             var JSONObj = {"ids": memberIds};
             isc.RPCManager.sendRequest({
+
          // isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -497,7 +495,7 @@
 
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "pieces/512/skill-standard.png",
+            icon: "[SKIN]/actions/members.png",
         title: "لیست اعضا",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
