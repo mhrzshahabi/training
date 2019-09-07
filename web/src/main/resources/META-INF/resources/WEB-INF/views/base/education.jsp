@@ -49,14 +49,14 @@
     var RestDataSource_eduLevel = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=20",
+        fetchDataURL: educationLevelUrl + "spec-list",
         autoFetchData: true
     });
 
         var RestDataSource_eduMajor = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
+        fetchDataURL: educationMajorUrl + "spec-list",
         autoFetchData: true
     });
 
@@ -158,7 +158,6 @@
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
                 type: 'text',
-                required: true,
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             },
