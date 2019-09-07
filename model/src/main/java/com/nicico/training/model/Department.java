@@ -10,10 +10,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "tbl_department")
 @Getter
 @EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "tbl_department")
 public class Department {
 
     @Id
