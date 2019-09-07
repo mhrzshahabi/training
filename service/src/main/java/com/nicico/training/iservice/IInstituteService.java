@@ -16,7 +16,7 @@ public interface IInstituteService {
 
     InstituteDTO.Info create(Object request);
 
-    InstituteDTO.Info update(Long id, InstituteDTO.Update request);
+    InstituteDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 

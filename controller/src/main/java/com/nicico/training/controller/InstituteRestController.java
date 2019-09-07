@@ -65,24 +65,41 @@ public class InstituteRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
     public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id,@RequestBody Object request) {
-        InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-        return new ResponseEntity<>(instituteService.update(id, update), HttpStatus.OK);
+        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
+        return new ResponseEntity<>(instituteService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_institute')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        instituteService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        boolean flag=true;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.delete(id);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_institute')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody InstituteDTO.Delete request) {
-        instituteService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@Validated @RequestBody InstituteDTO.Delete request) {
+        boolean flag=true;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.delete(request);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable

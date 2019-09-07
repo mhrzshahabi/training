@@ -34,7 +34,7 @@
             {name: "teacherNumDiploma"},
             {name: "empNumDiploma"},
             {name: "addressId"},
-            {name: "address.state1.name"},
+            {name: "address.state.name"},
             {name: "address.city.name"},
             {name: "address.address"},
             {name: "address.postCode"},
@@ -165,6 +165,31 @@
         fetchDataURL: enumUrl + "eLicenseType/spec-list"
     });
 
+    var RestDataSource_Institute_PersonalInfo_List = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "firstNameFa"},
+            {name: "lastNameFa"},
+            {name: "fatherName"},
+            {name: "nationalCode"},
+            {name: "birthDate"}
+        ],
+        fetchDataURL: personalInfoUrl + "spec-list"
+    });
+    var RestDataSource_Institute_Institute_List = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+            {name: "titleEn"},
+            {name: "manager.firstNameFa"},
+            {name: "manager.lastNameFa"},
+            {name: "parentInstitute.titleFa"},
+            {name: "einstituteType.titleFa"},
+            {name: "elicenseType.titleFa"}
+        ],
+        fetchDataURL: instituteUrl + "spec-list"
+    });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -226,7 +251,23 @@
             {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"},
             {name: "address.state.name", title: "استان", align: "center", filterOperator: "contains"},
             {name: "address.city.name", title: "شهر", align: "center", filterOperator: "contains"},
-            {name: "address.address", title: "آدرس", align: "center", filterOperator: "contains"}
+            {name: "address.address", title: "آدرس", align: "center", filterOperator: "contains"},
+            {name: "teacherNumPHD", hidden: true},
+            {name: "teacherNumLicentiate", hidden: true},
+            {name: "empNumLicentiate", hidden: true},
+            {name: "teacherNumMaster", hidden: true},
+            {name: "empNumMaster", hidden: true},
+            {name: "teacherNumAssociate", hidden: true},
+            {name: "empNumAssociate", hidden: true},
+            {name: "teacherNumDiploma", hidden: true},
+            {name: "empNumDiploma", hidden: true},
+            {name: "addressId", hidden: true},
+            {name: "address.stateId", hidden: true},
+            {name: "address.cityId", hidden: true},
+            {name: "accountInfoId", hidden: true},
+            {name: "managerId", hidden: true},
+            {name: "parentInstituteId", hidden: true},
+            {name: "version", hidden: true}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -336,6 +377,102 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
+
+    var ListGrid_Institute_Institute_List = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_Institute_List,
+        doubleClick: function () {
+            Function_Institute_InstituteList_Selected();
+        },
+
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "contains"},
+            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "contains"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "contains"},
+            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "contains"},
+            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "contains"},
+            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"}
+        ],
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+    });
+
+    var ListGrid_Institute_PersonalInfo_List = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_PersonalInfo_List,
+        doubleClick: function () {
+            Function_Institute_InstituteList_Selected
+        },
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {
+                name: "firstNameFa",
+                title: "نام",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "lastNameFa",
+                title: "نام خانوادگی",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "fatherName",
+                title: "نام پدر",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "nationalCode",
+                title: "کد ملی",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "birthDate",
+                title: "تاریخ تولد",
+                align: "center",
+                filterOperator: "contains"
+            }
+
+        ],
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+
+    });
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -392,6 +529,10 @@
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 width: 250,
+                click: function (form, item, icon) {
+
+                    ListGrid_Institute_InstituteList_Select();
+                },
                 length: "10"
             },
             {
@@ -413,6 +554,11 @@
                 width: 250,
                 type: 'text',
                 keyPressFilter: "[0-9]",
+                click: function (form, item, icon) {
+
+                    ListGrid_Institute_PersonalList_Select();
+                },
+
                 length: "30"
             },
             {
@@ -436,7 +582,7 @@
                 length: "30"
             },
             {
-                name: "eInstituteTypeId",
+                name: "einstituteTypeId",
                 type: "IntegerItem",
                 colSpan: 2,
                 title: "نوع موسسه",
@@ -462,7 +608,7 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}],
             },
             {
-                name: "eLicenseTypeId",
+                name: "elicenseTypeId",
                 type: "IntegerItem",
                 title: "نوع مدرک",
                 colSpan: 2,
@@ -629,7 +775,7 @@
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
-                displayField: "titleFa",
+                displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_State,
                 autoFetchData: false,
@@ -644,7 +790,7 @@
                     showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "name", width: "30%", filterOperator: "iContains"}],
             },
             {
                 name: "address.cityId",
@@ -655,7 +801,7 @@
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 defaultToFirstOption: true,
-                displayField: "titleFa",
+                displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_City,
                 autoFetchData: false,
@@ -670,7 +816,7 @@
                     showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                    {name: "name", width: "30%", filterOperator: "iContains"}],
             },
             {
                 name: "address.postCode",
@@ -886,9 +1032,37 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
         }
     });
+
+    function institute_Save_action_result(resp) {
+        var respCode = resp.httpResponseCode;
+        if (respCode == 200 || respCode == 201) {
+            ListGrid_Institute_Institute.invalidateCache();
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+
+            }, 3000);
+
+            Window_Institute_Institute.close();
+
+        } else {
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+        }
+    };
+
 
     var VLayout_Institute_Institute_Form = isc.VLayout.create({
         width: "100%",
@@ -930,6 +1104,202 @@
             members: [VLayout_Institute_Institute_Form, HLayOut_Institute_InstituteSaveOrExit]
         })]
     });
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*picklist ...*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    var IButton_Institute_InstituteList_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "pieces/16/icon_delete.png",
+        click: function () {
+            Window_Institute_InstituteList.close();
+        }
+    });
+
+    var IButton_Institute_InstituteList_Choose = isc.IButton.create({
+        top: 260,
+        title: "انتخاب",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_InstituteList_Selected();
+        }
+    });
+
+
+    var VLayout_Institute_InstituteList = isc.VLayout.create({
+        width: "100%",
+        height: "690",
+        members: [ListGrid_Institute_Institute_List]
+    });
+
+    var HLayOut_Institute_InstituteList_Select = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_InstituteList_Choose, IButton_Institute_InstituteList_Exit]
+    });
+
+    var Window_Institute_InstituteList = isc.Window.create({
+        title: "انتخاب موسسه آموزشی مادر",
+        width: 800,
+        height: 700,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_InstituteList, HLayOut_Institute_InstituteList_Select]
+        })]
+    });
+
+    function ListGrid_Institute_InstituteList_Select() {
+        ListGrid_Institute_Institute_List.invalidateCache();
+        ListGrid_Institute_Institute_List.fetchData();
+        Window_Institute_InstituteList.show();
+        Window_Institute_InstituteList.bringToFront();
+    };
+
+    function Function_Institute_InstituteList_Selected() {
+        var record = ListGrid_Institute_Institute_List.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "هیچ مرکز آموزشی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+//console.log('record:' + JSON.stringify(record));
+            var id = record.id;
+            var name = record.titleFa;
+            DynamicForm_Institute_Institute.getItem("parentInstituteId").setValue(id);
+            DynamicForm_Institute_Institute.getItem("parentInstitute.titleFa").setValue(name);
+            Window_Institute_InstituteList.close();
+
+        }
+
+    }
+
+
+    var IButton_Institute_PersonalList_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "pieces/16/icon_delete.png",
+        click: function () {
+            Window_Institute_PersonalList.close();
+        }
+    });
+
+    var IButton_Institute_PersonalList_Choose = isc.IButton.create({
+        top: 260,
+        title: "انتخاب",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_PersonalList_Selected();
+        }
+    });
+
+
+    var VLayout_Institute_PersonalList = isc.VLayout.create({
+        width: "100%",
+        height: "690",
+        members: [ListGrid_Institute_PersonalInfo_List]
+    });
+
+    var HLayOut_Institute_PersonalList_Select = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_PersonalList_Choose, IButton_Institute_PersonalList_Exit]
+    });
+
+    var Window_Institute_PersonalList = isc.Window.create({
+        title: "انتخاب موسسه آموزشی مادر",
+        width: 800,
+        height: 700,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_PersonalList, HLayOut_Institute_PersonalList_Select]
+        })]
+    });
+
+    function ListGrid_Institute_PersonalList_Select() {
+        ListGrid_Institute_PersonalInfo_List.invalidateCache();
+        ListGrid_Institute_PersonalInfo_List.fetchData();
+        Window_Institute_PersonalList.show();
+        Window_Institute_PersonalList.bringToFront();
+    };
+
+    function Function_Institute_PersonalList_Selected() {
+        var record = ListGrid_Institute_PersonalInfo_List.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "هیچ فردی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+//console.log('record:' + JSON.stringify(record));
+            var id = record.id;
+            var nc = record.nationalCode;
+            var fName = record.firstNameFa;
+            var lName = record.lastNameFa;
+            DynamicForm_Institute_Institute.getItem("managerId").setValue(id);
+            DynamicForm_Institute_Institute.getItem("manager.nationalCode").setValue(nc);
+            DynamicForm_Institute_Institute.getItem("manager.firstNameFa").setValue(fName);
+            DynamicForm_Institute_Institute.getItem("manager.lastNameFa").setValue(lName);
+            Window_Institute_PersonalList.close();
+
+        }
+
+    }
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
@@ -1065,7 +1435,7 @@
         //console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "مهارتی برای حذف انتخاب نشده است!",
+                message: "مرکز آموزشی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
@@ -1075,9 +1445,9 @@
             });
         } else {
             var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين مهارت حذف گردد؟",
+                message: "آيا مي خواهيد اين مرکز آموزشی حذف گردد؟",
                 icon: "[SKIN]ask.png",
-                title: "هشدار",
+                title: "توجه",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
                     title: "خير"
                 })],
@@ -1103,7 +1473,7 @@
                                 if (resp.data == "true") {
                                     ListGrid_Institute_Institute.invalidateCache();
                                     var OK = isc.Dialog.create({
-                                        message: "مهارت با موفقيت حذف گرديد",
+                                        message: "مرکز آموزشی با موفقيت حذف گرديد",
                                         icon: "[SKIN]say.png",
                                         title: "انجام شد"
                                     });
@@ -1134,7 +1504,7 @@
         var record = ListGrid_Institute_Institute.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "مهارتی برای ویرایش انتخاب نشده است.",
+                message: "مرکز آموزشی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
                 buttons: [isc.Button.create({title: "تائید"})],
@@ -1144,10 +1514,9 @@
             });
         } else {
             //console.log('record:' + JSON.stringify(record));
-            var id = record.categoryId;
             DynamicForm_Institute_Institute.clearValues();
             instituteMethod = "PUT";
-            DynamicForm_Institute_Institute.editRecord(record);
+            ValuesManager_Institute_InstituteValue.editRecord(record);
             Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
             Window_Institute_Institute.show();
 

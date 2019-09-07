@@ -50,11 +50,11 @@ public class InstituteDTO {
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eInstituteTypeId;
+    private Integer einstituteTypeId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eLicenseTypeId;
+    private Integer elicenseTypeId;
 
     private Long parentInstituteId;
 

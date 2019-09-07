@@ -48,7 +48,7 @@ public class Institute {
     @JoinColumn(name = "f_manager", insertable = false, updatable = false)
     private PersonalInfo manager;
 
-    @Column(name ="f_manager", insertable = false, updatable = false)
+    @Column(name ="f_manager")
     private Long managerId;
 
     @ManyToMany(fetch = FetchType.LAZY)
@@ -101,13 +101,13 @@ public class Institute {
     private EInstituteType eInstituteType;
 
     @Column(name = "e_institute_type")
-    private Integer eInstituteTypeId;
+    private Integer einstituteTypeId;
 
     @Column(name = "e_license_type", insertable = false, updatable = false)
     private ELicenseType eLicenseType;
 
     @Column(name = "e_license_type")
-    private Integer eLicenseTypeId;
+    private Integer elicenseTypeId;
 
 
     @ManyToOne
