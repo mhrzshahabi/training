@@ -107,7 +107,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationOrientation,
-        // contextMenu: Menu_ListGrid_EducationOrientation,
+        contextMenu: Menu_ListGrid_EducationOrientation,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                                     "<spring:message code='education.edit.orientation'/>",
@@ -122,7 +122,7 @@
             {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center", filterOperator: "contains"},
             {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center", filterOperator: "contains"}
         ],
-        // selectionType: "multiple",
+        selectionType: "multiple",
         selectionChanged: function (record, state) {
         },
         sortField: 1,
@@ -385,7 +385,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationMajor,
-        // contextMenu: Menu_ListGrid_EducationMajor,
+        contextMenu: Menu_ListGrid_EducationMajor,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                                     "<spring:message code='education.edit.major'/>",
@@ -633,7 +633,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationLevel,
-         contextMenu: Menu_ListGrid_EducationLevel,
+        contextMenu: Menu_ListGrid_EducationLevel,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                                     "<spring:message code='education.edit.level'/>",

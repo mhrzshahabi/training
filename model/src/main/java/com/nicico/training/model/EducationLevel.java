@@ -2,6 +2,7 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.List;
@@ -13,7 +14,8 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_education_level")
+@Table(name = "tbl_education_level",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa"})})
 public class EducationLevel extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_level_seq")
@@ -21,7 +23,8 @@ public class EducationLevel extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @UniqueElements
+    @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
 
     @Column(name = "c_title_en")
