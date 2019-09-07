@@ -84,12 +84,105 @@
 
 
             }
-        }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
-            }
-        }, {
+        }, {isSeparator: true},
+            {title:"<spring:message code="print.SelectedRecords"/>", icon: "<spring:url value="print.png"/>",submenu:[
+            {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
+                        click: function () {
+                            var strSkillrecords="";
+                            var selectedSkillGroup=new Array();
+                            var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                            for(i=0;i<selectedSkillGroup.length;i++)
+                                if(i==0)
+                                    strSkillrecords+=selectedSkillGroup[i].id;
+                                else
+                                    strSkillrecords+=","+selectedSkillGroup[i].id
+
+                            if(strSkillrecords==""){
+                                isc.Dialog.create({
+
+                                    message: "گروه مهارتی انتخاب نشده است",
+                                    icon: "[SKIN]ask.png",
+                                    title: "پیام",
+                                    buttons: [isc.Button.create({title: "تائید"})],
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                    }
+                                });
+
+                            }
+                            else{
+
+
+                                "<spring:url value="/skill-group/printSelected/pdf/" var="printUrl"/>"
+                                window.open('${printUrl}'+strSkillrecords);
+                            }
+
+                        }},
+                    {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
+                        click: function () {
+                            var strSkillrecords="";
+                            var selectedSkillGroup=new Array();
+                            var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                            for(i=0;i<selectedSkillGroup.length;i++)
+                                if(i==0)
+                                    strSkillrecords+=selectedSkillGroup[i].id;
+                                else
+                                    strSkillrecords+=","+selectedSkillGroup[i].id
+
+                            if(strSkillrecords==""){
+                                isc.Dialog.create({
+
+                                    message: "گروه مهارتی انتخاب نشده است",
+                                    icon: "[SKIN]ask.png",
+                                    title: "پیام",
+                                    buttons: [isc.Button.create({title: "تائید"})],
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                    }
+                                });
+
+                            }
+                            else{
+
+
+                                "<spring:url value="/skill-group/printSelected/excel/" var="printUrl"/>"
+                                window.open('${printUrl}'+strSkillrecords);
+                            }
+
+                        }},
+                    {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
+                        click: function () {
+                            var strSkillrecords="";
+                            var selectedSkillGroup=new Array();
+                            var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                            for(i=0;i<selectedSkillGroup.length;i++)
+                                if(i==0)
+                                    strSkillrecords+=selectedSkillGroup[i].id;
+                                else
+                                    strSkillrecords+=","+selectedSkillGroup[i].id
+
+                            if(strSkillrecords==""){
+                                isc.Dialog.create({
+
+                                    message: "گروه مهارتی انتخاب نشده است",
+                                    icon: "[SKIN]ask.png",
+                                    title: "پیام",
+                                    buttons: [isc.Button.create({title: "تائید"})],
+                                    buttonClick: function (button, index) {
+                                        this.close();
+                                    }
+                                });
+
+                            }
+                            else{
+
+
+                                "<spring:url value="/skill-group/printSelected/html/" var="printUrl"/>"
+                                window.open('${printUrl}'+strSkillrecords);
+                            }
+
+                        }}
+                ]}, {
             title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
                 "<spring:url value="/skill-group/print/excel" var="printUrl"/>"
                 window.open('${printUrl}');
@@ -1215,63 +1308,151 @@
        // icon: "[SKIN]/RichTextEditor/print.png",
        // title: "چاپ",
 
+
+
+
+        <%--click: function () {--%>
+        <%--    "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"--%>
+        <%--    window.open('${printUrl}');--%>
+
+        <%--}--%>
+
+
         menu: isc.TrMenu.create({
             data: [
-                {title: "<spring:message code="print"/>", icon: "<spring:url value="pdf.png"/>" ,  click: function () {
-                        "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
-                        window.open('${printUrl}');
+                {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
+                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,  click: function () {
+                                "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
+                                window.open('${printUrl}');
 
-                    }},
-                {title: "<spring:message code="print"/>", icon: "<spring:url value="excel.png"/>" ,  click: function () {
-                        "<spring:url value="/skill-group/print/excel" var="printUrl"/>"
-                        window.open('${printUrl}');
+                            }},
+                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>" ,  click: function () {
+                                "<spring:url value="/skill-group/print/excel" var="printUrl"/>"
+                                window.open('${printUrl}');
 
-                    }},
-                {title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="pdf.png"/>",click: function () {
-                        "<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
-                        window.open('${printUrl}');
+                            }},
+                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>" ,  click: function () {
+                                "<spring:url value="/skill-group/print/html" var="printUrl"/>"
+                                window.open('${printUrl}');
 
-                    }},
-                {title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="excel.png"/>",click: function () {
-                        "<spring:url value="/skill-group/printAll/excel" var="printUrl"/>"
-                        window.open('${printUrl}');
+                            }}
 
-                    }},
-                {title: "<spring:message code="print.SelectedRecords"/>", icon: "<spring:url value="pdf.png"/>",
-                    click: function () {
+                    ]},
+                {title:"<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu:[
+                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",click: function () {
+                                "<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
+                                window.open('${printUrl}');
 
+                            }},
+                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",click: function () {
+                                "<spring:url value="/skill-group/printAll/excel" var="printUrl"/>"
+                                window.open('${printUrl}');
 
+                            }},
+                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",click: function () {
+                                "<spring:url value="/skill-group/printAll/html" var="printUrl"/>"
+                                window.open('${printUrl}');
 
-                        var strSkillrecords="";
-                        var selectedSkillGroup=new Array();
-                        var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
-                        for(i=0;i<selectedSkillGroup.length;i++)
-                            if(i==0)
-                                strSkillrecords+=selectedSkillGroup[i].id;
-                            else
-                                strSkillrecords+=","+selectedSkillGroup[i].id
+                            }}
+                    ]},
+                {title:"<spring:message code="print.SelectedRecords"/>", icon: "<spring:url value="print.png"/>", submenu:[
+                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
+                            click: function () {
+                                var strSkillrecords="";
+                                var selectedSkillGroup=new Array();
+                                var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                                for(i=0;i<selectedSkillGroup.length;i++)
+                                    if(i==0)
+                                        strSkillrecords+=selectedSkillGroup[i].id;
+                                    else
+                                        strSkillrecords+=","+selectedSkillGroup[i].id
 
-                        if(strSkillrecords==""){
-                            isc.Dialog.create({
+                                if(strSkillrecords==""){
+                                    isc.Dialog.create({
 
-                                message: "گروه مهارتی انتخاب نشده است",
-                                icon: "[SKIN]ask.png",
-                                title: "پیام",
-                                buttons: [isc.Button.create({title: "تائید"})],
-                                buttonClick: function (button, index) {
-                                    this.close();
+                                        message: "گروه مهارتی انتخاب نشده است",
+                                        icon: "[SKIN]ask.png",
+                                        title: "پیام",
+                                        buttons: [isc.Button.create({title: "تائید"})],
+                                        buttonClick: function (button, index) {
+                                            this.close();
+                                        }
+                                    });
+
                                 }
-                            });
-
-                        }
-                        else{
+                                else{
 
 
-                            "<spring:url value="/skill-group/printSelected/pdf/" var="printUrl"/>"
-                            window.open('${printUrl}'+strSkillrecords);
-                        }
+                                    "<spring:url value="/skill-group/printSelected/pdf/" var="printUrl"/>"
+                                    window.open('${printUrl}'+strSkillrecords);
+                                }
 
-                    }},
+                            }},
+                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
+                            click: function () {
+                                var strSkillrecords="";
+                                var selectedSkillGroup=new Array();
+                                var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                                for(i=0;i<selectedSkillGroup.length;i++)
+                                    if(i==0)
+                                        strSkillrecords+=selectedSkillGroup[i].id;
+                                    else
+                                        strSkillrecords+=","+selectedSkillGroup[i].id
+
+                                if(strSkillrecords==""){
+                                    isc.Dialog.create({
+
+                                        message: "گروه مهارتی انتخاب نشده است",
+                                        icon: "[SKIN]ask.png",
+                                        title: "پیام",
+                                        buttons: [isc.Button.create({title: "تائید"})],
+                                        buttonClick: function (button, index) {
+                                            this.close();
+                                        }
+                                    });
+
+                                }
+                                else{
+
+
+                                    "<spring:url value="/skill-group/printSelected/excel/" var="printUrl"/>"
+                                    window.open('${printUrl}'+strSkillrecords);
+                                }
+
+                            }},
+                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
+                            click: function () {
+                                var strSkillrecords="";
+                                var selectedSkillGroup=new Array();
+                                var selectedSkillGroup=ListGrid_Skill_Group_Jsp.getSelectedRecords();
+                                for(i=0;i<selectedSkillGroup.length;i++)
+                                    if(i==0)
+                                        strSkillrecords+=selectedSkillGroup[i].id;
+                                    else
+                                        strSkillrecords+=","+selectedSkillGroup[i].id
+
+                                if(strSkillrecords==""){
+                                    isc.Dialog.create({
+
+                                        message: "گروه مهارتی انتخاب نشده است",
+                                        icon: "[SKIN]ask.png",
+                                        title: "پیام",
+                                        buttons: [isc.Button.create({title: "تائید"})],
+                                        buttonClick: function (button, index) {
+                                            this.close();
+                                        }
+                                    });
+
+                                }
+                                else{
+
+
+                                    "<spring:url value="/skill-group/printSelected/html/" var="printUrl"/>"
+                                    window.open('${printUrl}'+strSkillrecords);
+                                }
+
+                            }}
+                    ]}
             ]
         })
     });

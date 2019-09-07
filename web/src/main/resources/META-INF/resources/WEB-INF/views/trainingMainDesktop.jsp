@@ -344,6 +344,7 @@
             return this.Super("transformResponse", arguments);
         }
     });
+
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         width: "100%",
@@ -360,7 +361,7 @@
         AutoFitWidthApproach: "both",
         canDragResize: true,
         rowNumberFieldProperties: {
-            headerTitle: "<spring:message code="row.number"/>",
+             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
     });

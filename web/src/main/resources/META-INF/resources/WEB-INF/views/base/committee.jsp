@@ -37,15 +37,23 @@
 
       var RestDataSource_ThisCommittee_Person =isc.MyRestDataSource.create({
 
-    fields:[ {name: "id", primaryKey: true,hidden: true},
+      fields:[ {name: "id", primaryKey: true,hidden: true},
              {name: "firstNameFa",width:"35%",title:"نام",align:"center"},
               {name: "lastNameFa",width:"35%",align:"center",title: "نام خانوادگی"},
                {name: "nationalCode",align:"center",width:"30%",title:"کد ملی"}
             ],
+
         });
 
 
-
+         var Ds_Member_Attached_Committee = isc.MyRestDataSource.create({
+                fields:[ {name: "id", primaryKey: true,hidden: true},
+                    {name: "firstNameFa",width:"35%",title:"نام",align:"center"},
+                   {name: "lastNameFa",width:"35%",align:"center",title: "نام خانوادگی"},
+                   {name: "nationalCode",align:"center",width:"30%",title:"کد ملی"}
+            ],
+            autoFetchData: false,
+         });
 
     var DsCategory_committee = isc.MyRestDataSource.create({
         fields: [
@@ -87,6 +95,13 @@
              }, {
                  title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
                             print_CommitteeListGrid("html")     }
+                 }
+               , {isSeparator: true}, {
+                 title: "لیست اعضاء", icon: "icon/pdf.png", click: function () {
+                 ToolStripButton_Member.click();
+
+             }
+
             }]
     });
 
@@ -98,11 +113,30 @@
             show_CommitteEditForm();
         },
 
-         selectionChanged: function (record, state)
+        selectionChanged: function (record, state)
          {
              committeeId=record;
+
+
+         },
+          click: function () {
+          var record1=ListGrid_Committee.getSelectedRecord();
+          Ds_Member_Attached_Committee.fetchDataURL=committeeUrl +record1.id+"/getMembers";
+          ListGrid_Member_Attached_Committee.invalidateCache();
+          ListGrid_Member_Attached_Committee.fetchData();
+
+        },
+
+         dataArrived: function (startRow, endRow) {
          },
         sortField: 1,
+    });
+
+    var  ListGrid_Member_Attached_Committee =isc.MyListGrid.create({
+            dataSource: Ds_Member_Attached_Committee,
+             selectionType: "none",
+            sortField: 1
+
     });
 
  var ListGrid_All_Person = isc.MyListGrid.create({
@@ -129,13 +163,11 @@
             var memberIds = new Array();
             for (i = 0; i < dropRecords.getLength(); i++) {
                 memberIds.add(dropRecords[i].id);
-            }
-            ;
-
-
+            };
 
             var JSONObj = {"ids": memberIds};
             isc.RPCManager.sendRequest({
+
          // isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
@@ -463,7 +495,7 @@
 
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "pieces/512/skill-standard.png",
+            icon: "[SKIN]/actions/members.png",
         title: "لیست اعضا",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
@@ -484,9 +516,9 @@
                ListGrid_All_Person.invalidateCache();
                ListGrid_All_Person.fetchData();
 
-                RestDataSource_ThisCommittee_Person.fetchDataURL=committeeUrl +record.id+"/getMembers";
-                ListGrid_ThisCommittee_Person.invalidateCache();
-                ListGrid_ThisCommittee_Person.fetchData();
+              RestDataSource_ThisCommittee_Person.fetchDataURL=committeeUrl +record.id+"/getMembers";
+              ListGrid_ThisCommittee_Person.invalidateCache();
+              ListGrid_ThisCommittee_Person.fetchData();
                 DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle",getFormulaMessage(record.titleFa, "2", "red", "B"));
                 SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle","لیست اعضای کمیته :"+" "+ getFormulaMessage(record.titleFa, "2", "red", "B"));
                 Window_Add_User_TO_Committee.show();
@@ -525,6 +557,49 @@
         ]
     });
 
+     var HLayout_Committee_Member_Grid = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+            members: [
+            ListGrid_Member_Attached_Committee
+        ]
+    });
+
+    var HLayout_Tab_Committee_Member = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+
+        members: [
+            HLayout_Committee_Member_Grid
+        ]
+    });
+    var Detail_Tab_Committee = isc.TabSet.create({
+        tabBarPosition: "top",
+        width: "100%",
+        height: "100%",
+        tabs: [
+            {
+                id: "TabPane_Committee_Member",
+                title: "لیست عضوها",
+                pane: HLayout_Tab_Committee_Member
+            }
+        ]
+    });
+
+     var VLayout_Tab_Committee = isc.VLayout.create({
+        width: "100%",
+        height: "50%",
+        <%--border: "2px solid blue",--%>
+        members: [Detail_Tab_Committee]
+    });
+
+
+     var VLayout_Committee_Body_All = isc.VLayout.create({
+        width: "100%",
+        height: "100%",
+
+        members: [VLayout_Body_Group, VLayout_Tab_Committee]
+    });
 
     //************************************************************************************
     //function
@@ -594,7 +669,7 @@
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
+                message: "<spring:message    code="committee_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message code="committee_delete1"/>",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -648,56 +723,6 @@
             }, 3000);
         }
     };
-
-
-   function show_CommitteeActionResultyutyuiuyi(resp) {
-        var respCode = resp.httpResponseCode;
-
-        if (respCode == 200 || respCode == 201) {
-              if(resp.httpMethod=="POST" || resp.httpMethod=="GET")
-		  {
-            alert(resp.httpMethod);
-            var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "عمليات با موفقيت اجرا شد.",
-
-            });
-
-            setTimeout(function () {
-                MyOkDialog_committee.close();
-            }, 3000);
-            ListGrid_Committee.invalidateCache();
-            ListGrid_Committee.fetchData();
-		}
-		 if(resp.httpMethod=="DELETE" && resp.data=="true")
-              {
-               var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "عمليات با موفقيت اجرا شد.",
-
-            });
-
-            setTimeout(function () {
-                MyOkDialog_committee.close();
-            }, 3000);
-              }
-              else
-               { var MyOkDialog_committee = isc.MyOkDialog.create({
-                       message: "کمیته مورد نظر دارای عضو می باشد قابل حذف نیست",  });
-                            setTimeout(function () {
-                             MyOkDialog_committee.close(); }, 3000);
-                 }
-
-        } else {
-            var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
-            });
-
-            setTimeout(function () {
-                MyOkDialog_committee.close();
-            }, 3000);
-        }
-          };
-
-
 
 
     function  print_CommitteeListGrid(type) {

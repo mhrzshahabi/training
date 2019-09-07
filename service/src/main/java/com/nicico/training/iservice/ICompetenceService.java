@@ -1,14 +1,10 @@
+/*
+ghazanfari_f, 9/7/2019, 10:55 AM
+*/
 package com.nicico.training.iservice;
 
-/*
-AUTHOR: ghazanfari_f
-DATE: 6/8/2019
-TIME: 12:21 PM
-*/
-
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.*;
-import org.springframework.transaction.annotation.Transactional;
+import com.nicico.training.dto.CompetenceDTO;
 
 import java.util.List;
 
@@ -27,17 +23,4 @@ public interface ICompetenceService {
     void delete(CompetenceDTO.Delete request);
 
     SearchDTO.SearchRs<CompetenceDTO.Info> search(SearchDTO.SearchRq request);
-
-    List<CompetenceDTO.Info> getOtherCompetence(Long jobId);
-
-    List<JobCompetenceDTO.Info> getJobCompetence(Long competenceId);
-
-    @Transactional(readOnly = true)
-    List<SkillDTO.Info> getSkills(Long competenceId);
-
-    @Transactional(readOnly = true)
-    List<SkillGroupDTO.Info> getSkillGroups(Long competenceId);
-
-    @Transactional(readOnly = true)
-    List<CourseDTO.Info> getCourses(Long competenceId);
 }

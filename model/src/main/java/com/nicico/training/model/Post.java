@@ -10,10 +10,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
-@Entity
-@Table(name = "tbl_post")
 @Getter
 @EqualsAndHashCode(of = "id")
+@Entity
+@Table(name = "tbl_post")
 public class Post {
 
     @Id
@@ -40,4 +40,7 @@ public class Post {
 
     @Column(name = "e_active")
     EActive eActive;
+
+    @Column(name = "e_deleted")
+    EDeleted eDeleted;
 }

@@ -114,13 +114,13 @@ public class JobServiceOld implements IJobServiceOld {
         final JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
-        Set<Competence> competenceSet = new HashSet<>();
+        Set<CompetenceOld> competenceSet = new HashSet<>();
         Set<Skill> skillSet = new HashSet<>();
 
         for (JobCompetence jobCompetence : jobCompetenceSet) {
             competenceSet.add(jobCompetence.getCompetence());
         }
-        for (Competence competence : competenceSet) {
+        for (CompetenceOld competence : competenceSet) {
             skillSet.addAll(competence.getSkillSet());
             for (SkillGroup skillGroup : competence.getSkillGroupSet()) {
                 skillSet.addAll(skillGroup.getSkillSet());
@@ -137,14 +137,14 @@ public class JobServiceOld implements IJobServiceOld {
         final JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
-        Set<Competence> competenceSet = new HashSet<>();
+        Set<CompetenceOld> competenceSet = new HashSet<>();
         Set<SkillGroup> skillGroupSet = new HashSet<>();
 
         for (JobCompetence jobCompetence : jobCompetenceSet) {
             competenceSet.add(jobCompetence.getCompetence());
         }
 
-        for (Competence competence : competenceSet) {
+        for (CompetenceOld competence : competenceSet) {
             skillGroupSet.addAll(competence.getSkillGroupSet());
         }
         return mapper.map(skillGroupSet, new TypeToken<List<SkillGroupDTO.Info>>() {
@@ -158,7 +158,7 @@ public class JobServiceOld implements IJobServiceOld {
         final JobOld job = optionalJob.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobNotFound));
 
         final Set<JobCompetence> jobCompetenceSet = job.getJobCompetenceSet();
-        Set<Competence> competenceSet = new HashSet<>();
+        Set<CompetenceOld> competenceSet = new HashSet<>();
         Set<SkillGroup> skillGroupSet = new HashSet<>();
         Set<Skill> skillSet = new HashSet<>();
         Set<Course> courseSet = new HashSet<>();
@@ -166,7 +166,7 @@ public class JobServiceOld implements IJobServiceOld {
         for (JobCompetence jobCompetence : jobCompetenceSet) {
             competenceSet.add(jobCompetence.getCompetence());
         }
-        for (Competence competence : competenceSet) {
+        for (CompetenceOld competence : competenceSet) {
             skillSet.addAll(competence.getSkillSet());
             for (SkillGroup skillGroup : competence.getSkillGroupSet()) {
                 skillSet.addAll(skillGroup.getSkillSet());

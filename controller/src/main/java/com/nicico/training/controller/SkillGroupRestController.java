@@ -153,27 +153,27 @@ public class SkillGroupRestController {
 
     // ------------------------------
 
-    @Loggable
-    @GetMapping(value = "/{skillGroupId}/getCompetences")
-//    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        List<CompetenceDTO.Info> list = skillGroupService.getCompetence(skillGroupId);
-
-        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
-        specResponse.setData(list)
-                .setStartRow(0)
-                .setEndRow( list.size())
-                .setTotalRows(list.size());
-
-        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
-
-
-    }
+//    @Loggable
+//    @GetMapping(value = "/{skillGroupId}/getCompetences")
+////    @PreAuthorize("hasAnyAuthority('r_skill_group')")
+//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillGroupId) {
+//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+//
+//        List<CompetenceDTO.Info> list = skillGroupService.getCompetence(skillGroupId);
+//
+//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        specResponse.setData(list)
+//                .setStartRow(0)
+//                .setEndRow( list.size())
+//                .setTotalRows(list.size());
+//
+//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs,HttpStatus.OK);
+//
+//
+//    }
 
 
     @Loggable

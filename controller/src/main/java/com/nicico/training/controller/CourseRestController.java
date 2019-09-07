@@ -248,33 +248,33 @@ public class CourseRestController {
         return new ResponseEntity<>(courseService.getMaxCourseCode(str), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/getcompetence/{courseId}")
-    public ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId) {
-        List<CompetenceDTO.Info> comList = courseService.getCompetence(courseId);
-        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
-        specResponse.setData(comList)
-                .setStartRow(0)
-                .setEndRow(comList.size())
-                .setTotalRows(comList.size());
-        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
-        competenceSpecRs.setResponse(specResponse);
-        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/getcompetence/{courseId}")
+//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId) {
+//        List<CompetenceDTO.Info> comList = courseService.getCompetence(courseId);
+//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        specResponse.setData(comList)
+//                .setStartRow(0)
+//                .setEndRow(comList.size())
+//                .setTotalRows(comList.size());
+//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        competenceSpecRs.setResponse(specResponse);
+//        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
+//    }
 
-    @Loggable
-    @GetMapping(value = "/getcompetencequery/{courseId}")
-    public ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId) {
-        List<CompetenceDTO.Info> comList = courseService.getCompetenceQuery(courseId);
-        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
-        specResponse.setData(comList)
-                .setStartRow(0)
-                .setEndRow(comList.size())
-                .setTotalRows(comList.size());
-        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
-        competenceSpecRs.setResponse(specResponse);
-        return new ResponseEntity(comList, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/getcompetencequery/{courseId}")
+//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId) {
+//        List<CompetenceDTO.Info> comList = courseService.getCompetenceQuery(courseId);
+//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        specResponse.setData(comList)
+//                .setStartRow(0)
+//                .setEndRow(comList.size())
+//                .setTotalRows(comList.size());
+//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        competenceSpecRs.setResponse(specResponse);
+//        return new ResponseEntity(comList, HttpStatus.OK);
+//    }
 
 
 //    @Loggable

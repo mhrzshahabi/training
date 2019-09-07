@@ -49,14 +49,14 @@
     var RestDataSource_eduLevel = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=20",
+        fetchDataURL: educationLevelUrl + "spec-list",
         autoFetchData: true
     });
 
         var RestDataSource_eduMajor = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
+        fetchDataURL: educationMajorUrl + "spec-list",
         autoFetchData: true
     });
 
@@ -107,7 +107,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationOrientation,
-        // contextMenu: Menu_ListGrid_EducationOrientation,
+        contextMenu: Menu_ListGrid_EducationOrientation,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                                     "<spring:message code='education.edit.orientation'/>",
@@ -122,7 +122,7 @@
             {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center", filterOperator: "contains"},
             {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center", filterOperator: "contains"}
         ],
-        // selectionType: "multiple",
+        selectionType: "multiple",
         selectionChanged: function (record, state) {
         },
         sortField: 1,
@@ -158,7 +158,6 @@
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
                 type: 'text',
-                required: true,
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             },
@@ -385,7 +384,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationMajor,
-        // contextMenu: Menu_ListGrid_EducationMajor,
+        contextMenu: Menu_ListGrid_EducationMajor,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                                     "<spring:message code='education.edit.major'/>",
@@ -633,7 +632,7 @@
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationLevel,
-         contextMenu: Menu_ListGrid_EducationLevel,
+        contextMenu: Menu_ListGrid_EducationLevel,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                                     "<spring:message code='education.edit.level'/>",
