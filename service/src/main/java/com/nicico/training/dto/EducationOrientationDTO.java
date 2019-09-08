@@ -8,6 +8,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
@@ -19,19 +20,18 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EducationOrientationDTO {
 
-
+    @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
 
     @ApiModelProperty(required = true)
     private String titleEn;
 
-
+    @NotNull
     @ApiModelProperty(required = true)
     private Long educationLevelId;
 
-
+    @NotNull
     @ApiModelProperty(required = true)
     private Long educationMajorId;
 
