@@ -46,195 +46,13 @@
     const EnNumSpcFilter = "[a-zA-Z0-9 ]";
     const NumFilter = "[0-9]";
 
-    // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobCompetenceUrl = rootUrl + "/job-competence/";
-    const enumUrl = rootUrl + "/enum/";
-    const goalUrl = rootUrl + "/goal/";
-    const syllabusUrl = rootUrl + "/syllabus/";
-    const courseUrl = rootUrl + "/course/";
-    const categoryUrl = rootUrl + "/category/";
-    const teacherUrl = rootUrl + "/teacher/";
-    const studentUrl = rootUrl + "/student/";
-    const classUrl = rootUrl + "/tclass/";
-    const classReportUrl = rootUrl + "/classReport/";
-    const instituteUrl = rootUrl + "/institute/";
-    const educationUrl = rootUrl + "/education/";
-    const termUrl = rootUrl + "/term/";
-    const cityUrl = rootUrl + "/city/";
-    const stateUrl = rootUrl + "/state/";
-    const personalInfoUrl = rootUrl + "/personalInfo/";
-    const committeeUrl = rootUrl + "/committee/";
-    const skillGroupUrl = rootUrl + "/skill-group/";
-    const skillUrl = rootUrl + "/skill/";
-
-    function TrnXmlHttpRequest(formData1, url, method, cFunction) {
-        var xhttp;
-        xhttp = new XMLHttpRequest();
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 && this.status == 200) {
-                cFunction(this);
-            }
-        };
-        xhttp.open(method, url, true);
-        xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
-        xhttp.send(formData1);
-    };
-
-    var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
-        return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true,
-            showPrompt: false,
-            serverOutputAsString: false,
-            httpMethod: httpMethodParam,
-            actionURL: actionURLParam,
-            data: dataParam,
-            callback: callbackParam
-        }
-    };
-
-    isc.defineClass("MyRestDataSource", RestDataSource);
-    isc.MyRestDataSource.addProperties({
-        dataFormat: "json",
-        jsonSuffix: "",
-        jsonPrefix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        transformResponse: function (dsResponse, dsRequest, data) {
-            return this.Super("transformResponse", arguments);
-        }
-    });
-
-    isc.defineClass("MyListGrid", ListGrid);
-    isc.MyListGrid.addProperties({
-        width: "100%",
-        height: "100%",
-        dataPageSize: 50,
-        useAllDataSourceFields: true,
-        selectionType: "single",
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        alternateRecordStyles: true,
-        sortFieldAscendingText: "مرتب سازي صعودي",
-        sortFieldDescendingText: "مرتب سازي نزولي",
-        autoDraw: true,
-        showResizeBar: true,
-        sortField: 0
-    });
-
-
-    isc.defineClass("MyDynamicForm", DynamicForm);
-    isc.MyDynamicForm.addProperties({
-        width: "100%",
-        align: "center",
-        margin: 10,
-        cellPadding: 3,
-        wrapItemTitles: false,
-        titleAlign: "right",
-        requiredMessage: "فیلد اجباری است.",
-        showInlineErrors: true,
-        showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
-        canSubmit: true,
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyButton", Button);
-    isc.MyButton.addProperties({
-        width: 100,
-        height: 27,
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyHLayoutButtons", HLayout);
-
-    isc.MyHLayoutButtons.addProperties({
-        width: "100%",
-        height: 50,
-        align: "center",
-        verticalAlign: "center",
-        membersMargin: 15,
-        autoDraw: false,
-        defaultLayoutAlign: "center",
-    });
-
-    isc.defineClass("TrWindow", Window);
-
-    isc.TrWindow.addProperties({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        autoDraw: false,
-        canFocus: true,
-        dismissOnEscape: true,
-    });
-
-    isc.defineClass("MyComboBoxItem", ComboBoxItem);
-
-    isc.MyComboBoxItem.addProperties({
-        addUnknownValues: false,
-        useClientFiltering: false,
-        cachePickListResults: true,
-        changeOnKeypress: false,
-        useClientFiltering: true,
-        width: "*"
-    });
-
-    isc.defineClass("MyOkDialog", Dialog);
-
-    isc.MyOkDialog.addProperties({
-        title: "<spring:message code='message'/>",
-        isModal: true,
-        buttons: [isc.MyButton.create({title: "تائید"})],
-        icon: "[SKIN]say.png",
-        buttonClick: function (button, index) {
-            this.close();
-        }
-    });
-
-    isc.defineClass("MyYesNoDialog", Dialog);
-
-    isc.MyYesNoDialog.addProperties({
-        isModal: true,
-        icon: "[SKIN]say.png",
-        title: "<spring:message code='message'/>",
-        buttons: [
-            isc.MyButton.create({title: "بله",}),
-            isc.MyButton.create({title: "خير",})],
-        buttonClick: function (button, index) {
-            this.close();
-        }
-    });
-
-    isc.defineClass("MyTabSet", TabSet);
-    isc.TabSet.addProperties({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-    });
-
-    isc.RPCManager.addClassProperties({
-        defaultTimeout: 60000,
-        willHandleError: true,
-        handleError: function (response, request) {
-            isc.say('ارتباط با سرور قطع شده است.');
-        }
-    });
-
-    // ---------------------------------------- Not Ok - End ----------------------------------------
-
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
     isc.FormItem.changeDefaults({redrawOnChange: true, width: "*",});
-    isc.TextItem.changeDefaults({height: 27, length: 255});
-    isc.TextAreaItem.changeDefaults({height: 40, length: 400});
+    isc.TextItem.changeDefaults({height: 27, length: 255, width: "*",});
+    isc.TextAreaItem.changeDefaults({height: 40, length: 400, width: "*",});
     isc.Validator.changeDefaults({requiredField: "<spring:message code="msg.required"/>"});
+    isc.Button.changeDefaults({height: 27});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -380,7 +198,6 @@
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
     });
 
-
     isc.defineClass("TrPrintBtnCommon", TrTSMB);
     isc.TrPrintBtnCommon.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
@@ -442,6 +259,20 @@
         canFocus: true,
         dismissOnEscape: true,
     });
+
+    isc.defineClass("TrHLayoutButtons", TrHLayout);
+    isc.TrHLayoutButtons.addProperties({
+        height: 50,
+        // align: "center",
+        // membersMargin: 15,
+    });
+
+    /*isc.defineClass("TrButton", Button);
+    isc.TrButton.addProperties({
+        width: 100,
+        height: 27,
+        autoDraw: false,
+    });*/
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 
@@ -748,6 +579,174 @@
     };
 
     createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
+
+
+    // ---------------------------------------- Not Ok - Start ----------------------------------------
+    const jobCompetenceUrl = rootUrl + "/job-competence/";
+    const enumUrl = rootUrl + "/enum/";
+    const goalUrl = rootUrl + "/goal/";
+    const syllabusUrl = rootUrl + "/syllabus/";
+    const courseUrl = rootUrl + "/course/";
+    const categoryUrl = rootUrl + "/category/";
+    const teacherUrl = rootUrl + "/teacher/";
+    const studentUrl = rootUrl + "/student/";
+    const classUrl = rootUrl + "/tclass/";
+    const classReportUrl = rootUrl + "/classReport/";
+    const instituteUrl = rootUrl + "/institute/";
+    const educationUrl = rootUrl + "/education/";
+    const termUrl = rootUrl + "/term/";
+    const cityUrl = rootUrl + "/city/";
+    const stateUrl = rootUrl + "/state/";
+    const personalInfoUrl = rootUrl + "/personalInfo/";
+    const committeeUrl = rootUrl + "/committee/";
+    const skillGroupUrl = rootUrl + "/skill-group/";
+    const skillUrl = rootUrl + "/skill/";
+
+    function TrnXmlHttpRequest(formData1, url, method, cFunction) {
+        var xhttp;
+        xhttp = new XMLHttpRequest();
+        xhttp.onreadystatechange = function () {
+            if (this.readyState == 4 && this.status == 200) {
+                cFunction(this);
+            }
+        };
+        xhttp.open(method, url, true);
+        xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttp.send(formData1);
+    };
+
+    var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+        return {
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true,
+            showPrompt: false,
+            serverOutputAsString: false,
+            httpMethod: httpMethodParam,
+            actionURL: actionURLParam,
+            data: dataParam,
+            callback: callbackParam
+        }
+    };
+
+    isc.defineClass("MyRestDataSource", RestDataSource);
+    isc.MyRestDataSource.addProperties({
+        dataFormat: "json",
+        jsonSuffix: "",
+        jsonPrefix: "",
+        transformRequest: function (dsRequest) {
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer <%= accessToken %>"
+            };
+            return this.Super("transformRequest", arguments);
+        },
+        transformResponse: function (dsResponse, dsRequest, data) {
+            return this.Super("transformResponse", arguments);
+        }
+    });
+
+    isc.defineClass("MyListGrid", ListGrid);
+    isc.MyListGrid.addProperties({
+        width: "100%",
+        height: "100%",
+        dataPageSize: 50,
+        useAllDataSourceFields: true,
+        selectionType: "single",
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        alternateRecordStyles: true,
+        sortFieldAscendingText: "مرتب سازي صعودي",
+        sortFieldDescendingText: "مرتب سازي نزولي",
+        autoDraw: true,
+        showResizeBar: true,
+        sortField: 0
+    });
+
+    isc.defineClass("MyDynamicForm", DynamicForm);
+    isc.MyDynamicForm.addProperties({
+        width: "100%",
+        align: "center",
+        margin: 10,
+        cellPadding: 3,
+        wrapItemTitles: false,
+        titleAlign: "right",
+        requiredMessage: "فیلد اجباری است.",
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        canSubmit: true,
+        autoDraw: false,
+    });
+
+    isc.defineClass("MyButton", Button);
+    isc.MyButton.addProperties({
+        width: 100,
+        height: 27,
+        autoDraw: false,
+    });
+
+    isc.defineClass("MyHLayoutButtons", HLayout);
+    isc.MyHLayoutButtons.addProperties({
+        width: "100%",
+        height: 50,
+        align: "center",
+        verticalAlign: "center",
+        membersMargin: 15,
+        autoDraw: false,
+        defaultLayoutAlign: "center",
+    });
+
+    isc.defineClass("MyComboBoxItem", ComboBoxItem);
+    isc.MyComboBoxItem.addProperties({
+        addUnknownValues: false,
+        useClientFiltering: false,
+        cachePickListResults: true,
+        changeOnKeypress: false,
+        useClientFiltering: true,
+        width: "*"
+    });
+
+    isc.defineClass("MyOkDialog", Dialog);
+    isc.MyOkDialog.addProperties({
+        title: "<spring:message code='message'/>",
+        isModal: true,
+        buttons: [isc.MyButton.create({title: "تائید"})],
+        icon: "[SKIN]say.png",
+        buttonClick: function (button, index) {
+            this.close();
+        }
+    });
+
+    isc.defineClass("MyYesNoDialog", Dialog);
+    isc.MyYesNoDialog.addProperties({
+        isModal: true,
+        icon: "[SKIN]say.png",
+        title: "<spring:message code='message'/>",
+        buttons: [
+            isc.MyButton.create({title: "بله",}),
+            isc.MyButton.create({title: "خير",})],
+        buttonClick: function (button, index) {
+            this.close();
+        }
+    });
+
+    isc.defineClass("MyTabSet", TabSet);
+    isc.TabSet.addProperties({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+    });
+
+    isc.RPCManager.addClassProperties({
+        defaultTimeout: 60000,
+        willHandleError: true,
+        handleError: function (response, request) {
+            isc.say('ارتباط با سرور قطع شده است.');
+        }
+    });
+
+    // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
 </body>
