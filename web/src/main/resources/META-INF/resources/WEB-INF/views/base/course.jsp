@@ -592,6 +592,7 @@
                 // }
             });
         },
+            autoDraw: false,
 
         // implement showValue to update the ListGrid selection
         // showValue : function (displayValue, dataValue) {
@@ -638,7 +639,7 @@
                 type: 'text',
                 width: "*",
                 // height: "30",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
                 change: function (form, item, value) {
                     if(value != null){
                         form.getItem("epSection").enable();
@@ -661,7 +662,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9|' ']",
                 // height: "30",
                 width: "*",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "theoryDuration",
