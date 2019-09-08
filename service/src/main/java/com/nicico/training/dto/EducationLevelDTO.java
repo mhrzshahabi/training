@@ -19,10 +19,11 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class EducationLevelDTO {
+
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-    @ApiModelProperty(required = true)
+
     private String titleEn;
 
     // ------------------------------

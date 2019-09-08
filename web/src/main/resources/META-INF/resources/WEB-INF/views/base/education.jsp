@@ -171,6 +171,7 @@
                 displayField:"titleFa",
                 valueField:"id",
                 filterFields:["titleFa"],
+                filterOperator: "contains",
                 pickListFields:[ {name:"titleFa"} ]
             },
             {
@@ -183,6 +184,7 @@
                 displayField:"titleFa",
                 valueField:"id",
                 filterFields:["titleFa"],
+                filterOperator: "contains",
                 pickListFields:[ {name:"titleFa"} ]
             }
         ]
