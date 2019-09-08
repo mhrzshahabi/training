@@ -56,7 +56,7 @@
                 length: "100",
                 readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                validators: [MyValidators.NotEmpty]
+                validators: [TrValidators.NotEmpty]
             },
             {
                 name: "titleEn",
@@ -345,7 +345,7 @@
         })]
     });
 
-    var Window_Syllabus = isc.MyWindow.create({
+    var Window_Syllabus = isc.TrWindow.create({
         title: "سرفصل",
         autoSize: true,
         autoCenter: true,
@@ -366,7 +366,7 @@
         })]
     });
 
-    var Window_Goal = isc.MyWindow.create({
+    var Window_Goal = isc.TrWindow.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
