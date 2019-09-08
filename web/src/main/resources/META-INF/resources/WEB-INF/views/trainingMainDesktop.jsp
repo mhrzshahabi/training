@@ -40,10 +40,13 @@
     const jobUrl = rootUrl + "/job/";
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
+    const competenceUrl = rootUrl + "/competence/";
+
+    const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
+    const EnNumSpcFilter = "[a-zA-Z0-9 ]";
+    const NumFilter = "[0-9]";
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-
-    const competenceUrl = rootUrl + "/competence/";
     const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
@@ -64,8 +67,7 @@
     const skillGroupUrl = rootUrl + "/skill-group/";
     const skillUrl = rootUrl + "/skill/";
 
-
-       function TrnXmlHttpRequest(formData1, url, method, cFunction) {
+    function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
         xhttp = new XMLHttpRequest();
         xhttp.onreadystatechange = function () {
@@ -125,54 +127,8 @@
         sortField: 0
     });
 
-    isc.defineClass("MyToolStrip", ToolStrip);
-
-    isc.MyToolStrip.addProperties({
-        border: "0px"
-    });
-
-    isc.defineClass("MyRefreshButton", ToolStripButton);
-
-    isc.MyRefreshButton.addProperties({
-        icon: "[SKIN]/actions/refresh.png",
-        title: "بازخواني اطلاعات",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyCreateButton", ToolStripButton);
-
-    isc.MyCreateButton.addProperties({
-        icon: "[SKIN]/actions/add.png",
-        title: "ايجاد",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyEditButton", ToolStripButton);
-
-    isc.MyEditButton.addProperties({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ويرايش",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyRemoveButton", ToolStripButton);
-
-    isc.MyRemoveButton.addProperties({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyPrintButton", ToolStripButton);
-
-    isc.MyPrintButton.addProperties({
-        icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
-        autoDraw: false,
-    });
 
     isc.defineClass("MyDynamicForm", DynamicForm);
-
     isc.MyDynamicForm.addProperties({
         width: "100%",
         align: "center",
@@ -189,31 +145,7 @@
         autoDraw: false,
     });
 
-    MyValidators = {
-        NotEmpty: {
-            type: "regexp",
-            errorMessage: "فيلد اجباري است.",
-            expression: /^(?!\s*$).+/
-        },
-        NotStartWithNumber: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با عدد شروع شود.",
-            expression: /^(?!([0-9]))/,
-        },
-        NotStartWithSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
-        },
-        NotContainSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید شامل حروف خاص باشد.",
-            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
-        },
-    };
-
     isc.defineClass("MyButton", Button);
-
     isc.MyButton.addProperties({
         width: 100,
         height: 27,
@@ -232,9 +164,9 @@
         defaultLayoutAlign: "center",
     });
 
-    isc.defineClass("MyWindow", Window);
+    isc.defineClass("TrWindow", Window);
 
-    isc.MyWindow.addProperties({
+    isc.TrWindow.addProperties({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -281,24 +213,7 @@
     });
 
     isc.defineClass("MyTabSet", TabSet);
-
     isc.TabSet.addProperties({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyVLayout", VLayout);
-
-    isc.MyVLayout.addProperties({
-        width: "100%",
-        height: "100%",
-        autoDraw: false,
-    });
-
-    isc.defineClass("MyHLayout", HLayout);
-
-    isc.MyHLayout.addProperties({
         width: "100%",
         height: "100%",
         autoDraw: false,
@@ -316,6 +231,10 @@
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
+    isc.FormItem.changeDefaults({redrawOnChange: true, width: "*",});
+    isc.TextItem.changeDefaults({height: 27, length: 255});
+    isc.TextAreaItem.changeDefaults({height: 40, length: 400});
+    isc.Validator.changeDefaults({requiredField: "<spring:message code="msg.required"/>"});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -326,7 +245,7 @@
             httpMethod: httpMethodParam,
             actionURL: actionURLParam,
             data: dataParam,
-            callback: callbackParam
+            callback: callbackParam,
         }
     };
 
@@ -361,7 +280,7 @@
         AutoFitWidthApproach: "both",
         canDragResize: true,
         rowNumberFieldProperties: {
-             headerTitle: "<spring:message code="row.number"/>",
+            headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
     });
@@ -438,6 +357,24 @@
         title: "<spring:message code="refresh"/>",
     });
 
+    isc.defineClass("TrCreateBtn", TrTSB);
+    isc.TrCreateBtn.addProperties({
+        icon: "<spring:url value="add.png"/>",
+        title: "<spring:message code="create"/>",
+    });
+
+    isc.defineClass("TrEditBtn", TrTSB);
+    isc.TrEditBtn.addProperties({
+        icon: "<spring:url value="edit.png"/>",
+        title: "<spring:message code="edit"/>",
+    });
+
+    isc.defineClass("TrRemoveBtn", TrTSB);
+    isc.TrRemoveBtn.addProperties({
+        icon: "<spring:url value="remove.png"/>",
+        title: "<spring:message code="remove"/>",
+    });
+
     isc.defineClass("TrPrintBtn", TrTSMB);
     isc.TrPrintBtn.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
@@ -454,6 +391,56 @@
                 {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>"},
             ]
         }),
+    });
+
+    isc.defineClass("TrDynamicForm", DynamicForm);
+    isc.TrDynamicForm.addProperties({
+        width: "100%",
+        /*  align: "center",
+            margin: 10,
+            cellPadding: 3,
+            showInlineErrors: true,
+            showErrorText: false,
+            showErrorStyle: false,
+            errorOrientation: "right",
+             canSubmit: true,
+         */
+        wrapItemTitles: false,
+        titleAlign: "right",
+        autoDraw: false,
+    });
+
+    TrValidators = {
+        NotEmpty: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.required"/>",
+            expression: /^(?!\s*$).+/
+        },
+        NotStartWithNumber: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.not.start.number"/>",
+            expression: /^(?!([0-9]))/,
+        },
+        NotStartWithSpecialChar: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.not.start.special.char"/>",
+            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
+        },
+        NotContainSpecialChar: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.not.contains.special.char"/>",
+            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
+        },
+    };
+
+    isc.defineClass("TrWindow", Window);
+    isc.TrWindow.addProperties({
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        autoDraw: false,
+        canFocus: true,
+        dismissOnEscape: true,
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
@@ -583,16 +570,16 @@
                     }
                 },
                 <%--{--%>
-                    <%--title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="/syllabus/show-form"/>");--%>
-                    <%--}--%>
+                <%--title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",--%>
+                <%--click: function () {--%>
+                <%--createTab(this.title, "<spring:url value="/syllabus/show-form"/>");--%>
+                <%--}--%>
                 <%--},--%>
                 <%--{--%>
-                    <%--title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="/goal/show-form"/>");--%>
-                    <%--}--%>
+                <%--title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",--%>
+                <%--click: function () {--%>
+                <%--createTab(this.title, "<spring:url value="/goal/show-form"/>");--%>
+                <%--}--%>
                 <%--},--%>
                 {
                     title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
@@ -696,11 +683,11 @@
 
     trainingTabSet = isc.TrTabSet.create({
         tabs: [],
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name){
+        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var tabTitle = ID.title;
-            if(tabTitle.substr(0,5) == "اهداف"){
+            if (tabTitle.substr(0, 5) == "اهداف") {
                 setTimeout(function () {
-                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id +"/goal";
+                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
                     ListGrid_Goal.fetchData();
                     ListGrid_Goal.invalidateCache();
                     RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
@@ -709,13 +696,13 @@
 
                 }, 100);
             }
-            if(tabTitle.substr(0,4) == "دوره"){
+            if (tabTitle.substr(0, 4) == "دوره") {
                 setTimeout(function () {
                     ListGrid_CourseCompetence.invalidateCache();
                     ListGrid_CourseSkill.invalidateCache();
                     ListGrid_CourseJob.invalidateCache();
                     // ListGrid_CourseGoal.invalidateCache();
-                    if(courseId != ""){
+                    if (courseId != "") {
                         RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
                         ListGrid_CourseSyllabus.fetchData();
                         ListGrid_CourseSyllabus.invalidateCache();
@@ -753,12 +740,14 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.TrViewLoader.create({viewURL: url, }),
+                pane: isc.TrViewLoader.create({viewURL: url,}),
                 canClose: true,
             });
             createTab(title, url);
         }
     };
+
+    createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
 
 </script>
 </body>

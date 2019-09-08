@@ -13,26 +13,26 @@
     var educationLevelUrl = educationUrl + "level/";
     var educationMajorUrl = educationUrl + "major/";
     var educationOrientationUrl = educationUrl + "orientation/";
-    
-    
+
+
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
     /////////////////////////////////////////////////////////
-    
+
     var RestDataSourceEducationLevel = isc.MyRestDataSource.create({
         fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         fetchDataURL: educationLevelUrl + "spec-list"});
-    
+
     var RestDataSourceEducationMajor = isc.MyRestDataSource.create({
         fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         fetchDataURL: educationMajorUrl + "spec-list"});
-    
+
     var RestDataSourceEducationOrientation = isc.MyRestDataSource.create({
         fields: [   {name: "id", primaryKey: true},
                     {name: "titleFa"},
@@ -45,7 +45,7 @@
         jsonPrefix: "",
         jsonSuffix: "",
         fetchDataURL: educationOrientationUrl + "spec-list"});
-    
+
     var RestDataSource_eduLevel = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
@@ -102,7 +102,7 @@
                  }
             }]
     });
-    
+
     var ListGrid_EducationOrientation = isc.MyListGrid.create({
         width: "100%",
         height: "100%",
@@ -141,7 +141,7 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
-    
+
     var DynamicForm_EducationOrientation = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -189,16 +189,16 @@
             }
         ]
     });
-    
+
     var ToolStripButton_Refresh_EducationOrientation = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
         title: "<spring:message code="refresh"/> ",
-    
+
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationOrientation);
         }
     });
-    
+
     var ToolStripButton_Edit_EducationOrientation = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
@@ -239,8 +239,8 @@
                     ToolStripButton_Remove_EducationOrientation,
                     ToolStripButton_Print_EducationOrientation]
     });
-    
-    
+
+
     var IButton_EducationOrientation_Save = isc.IButton.create({
         top: 260, title: "<spring:message code="global.form.save"/>",
         icon: "pieces/16/save.png",
@@ -272,10 +272,10 @@
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
-    
+
                 }
             });
-    
+
         }
     });
     var HLayout_EducationOrientation_SaveOrExit = isc.MyHLayoutButtons.create({
@@ -299,7 +299,7 @@
             }
         })]
     });
-    var Window_EducationOrientation = isc.MyWindow.create({
+    var Window_EducationOrientation = isc.TrWindow.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -329,7 +329,7 @@
         height: "100%",
         members: [ListGrid_EducationOrientation]
     });
-    
+
     var VLayout_Body_EducationOrientation = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -337,7 +337,7 @@
                     HLayout_Grid_EducationOrientation
                 ]
     });
-    
+
 
 
     //////////////////////////////////////////////////////////
@@ -416,7 +416,7 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
-    
+
     var DynamicForm_EducationMajor = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -439,16 +439,16 @@
             }
         ]
     });
-    
+
     var ToolStripButton_Refresh_EducationMajor = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
         title: "<spring:message code="refresh"/> ",
-    
+
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationMajor);
         }
     });
-    
+
     var ToolStripButton_Edit_EducationMajor = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
@@ -489,8 +489,8 @@
                     ToolStripButton_Remove_EducationMajor,
                     ToolStripButton_Print_EducationMajor]
     });
-    
-    
+
+
     var IButton_EducationMajor_Save = isc.IButton.create({
         top: 260, title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -522,10 +522,10 @@
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
-    
+
                 }
             });
-    
+
         }
     });
     var HLayout_EducationMajor_SaveOrExit = isc.MyHLayoutButtons.create({
@@ -549,7 +549,7 @@
             }
         })]
     });
-    var Window_EducationMajor = isc.MyWindow.create({
+    var Window_EducationMajor = isc.TrWindow.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -579,7 +579,7 @@
         height: "100%",
         members: [ListGrid_EducationMajor]
     });
-    
+
     var VLayout_Body_EducationMajor = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -664,7 +664,7 @@
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
-    
+
     var DynamicForm_EducationLevel = isc.MyDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
@@ -686,16 +686,16 @@
             }
         ]
     });
-    
+
     var ToolStripButton_Refresh_EducationLevel = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/refresh.png",
         title: "<spring:message code="refresh"/> ",
-    
+
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationLevel);
         }
     });
-    
+
     var ToolStripButton_Edit_EducationLevel = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
@@ -736,8 +736,8 @@
                     ToolStripButton_Remove_EducationLevel,
                     ToolStripButton_Print_EducationLevel]
     });
-    
-    
+
+
     var IButton_EducationLevel_Save = isc.IButton.create({
         top: 260, title: "<spring:message code="save"/>",
         icon: "pieces/16/save.png",
@@ -769,10 +769,10 @@
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
-    
+
                 }
             });
-    
+
         }
     });
     var HLayout_EducationLevel_SaveOrExit = isc.MyHLayoutButtons.create({
@@ -796,7 +796,7 @@
             }
         })]
     });
-    var Window_EducationLevel = isc.MyWindow.create({
+    var Window_EducationLevel = isc.TrWindow.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -826,7 +826,7 @@
         height: "100%",
         members: [ListGrid_EducationLevel]
     });
-    
+
     var VLayout_Body_EducationLevel = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -834,8 +834,8 @@
                     HLayout_Grid_EducationLevel
                 ]
     });
- 
-    
+
+
     //////////////////////////////////////////////////////////
     /////////////////////////Main Layout//////////////////////
     //////////////////////////////////////////////////////////
@@ -857,7 +857,7 @@
         height: "100%",
         members: [VLayout_Tabset_Education]
     });
-    
+
     var VLayout_Body_Education = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -867,7 +867,7 @@
     //////////////////////////////////////////////////////////
     ////////////////////////Functions/////////////////////////
     /////////////////////////////////////////////////////////
-    
+
     function ListGrid_Education_Remove(EducationListGrid, Url, msg) {
         var record = EducationListGrid.getSelectedRecord();
         // console.log(record);
@@ -926,7 +926,7 @@
             ListGrid_Education_refresh(EducationListGrid);
         }
     }
-    
+
     function ListGrid_Education_Edit(EducationListGrid, Url, title, EducationDynamicForm, EducationWindows) {
         var record = EducationListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -948,7 +948,7 @@
             EducationWindows.show();
         }
     }
-    
+
     function ListGrid_Education_refresh(EducationListGrid) {
         var record = EducationListGrid.getSelectedRecord();
         if (record != null && record.id != null) {
@@ -956,7 +956,7 @@
         }
             EducationListGrid.invalidateCache();
     }
-    
+
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
             methodEducation = "POST";
             saveActionUrl = Url + "create/";
@@ -964,7 +964,7 @@
             EducationWindows.setTitle(title);
             EducationWindows.show();
     }
-    
+
     function print_EducationListGrid(EducationListGrid, Url, type) {
         var advancedCriteria = EducationListGrid.getCriteria();
         var criteriaForm = isc.DynamicForm.create({

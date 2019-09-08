@@ -267,7 +267,7 @@
                 required: true,
                 length: "250",
                 width: "*",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "categoryId",
@@ -317,7 +317,7 @@
             }
         ]
     });
-    var Window_Committee = isc.MyWindow.create({
+    var Window_Committee = isc.TrWindow.create({
         width: 600,
         items: [
             DynamicForm_Committee,

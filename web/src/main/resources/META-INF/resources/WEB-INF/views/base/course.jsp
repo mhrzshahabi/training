@@ -641,7 +641,7 @@
                 type: 'text',
                 width: "*",
                 // height: "30",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
                 change: function (form, item, value, oldValue) {
                     form.getField("preCourseGrid").title = "پیش نیازهای دوره " + value;
                     form.getField("equalCourseGrid").title = "معادلهای دوره " + value;
@@ -657,7 +657,7 @@
                 keyPressFilter: "[a-z|A-Z|0-9|' ']",
                 // height: "30",
                 width: "*",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar, MyValidators.NotStartWithNumber]
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "theoryDuration",
