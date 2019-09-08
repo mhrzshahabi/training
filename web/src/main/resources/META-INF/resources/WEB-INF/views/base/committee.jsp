@@ -317,7 +317,7 @@
             }
         ]
     });
-    var Window_Committee = isc.MyWindow.create({
+    var Window_Committee = isc.TrWindow.create({
         width: 600,
         items: [
             DynamicForm_Committee,

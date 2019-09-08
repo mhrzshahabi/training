@@ -210,7 +210,7 @@
 
 		]
 	});
-	var Window_term = isc.MyWindow.create({
+	var Window_term = isc.TrWindow.create({
 		title: "دوره",
 		 width: 500,
 		items: [DynamicForm_Term,isc.MyHLayoutButtons.create({

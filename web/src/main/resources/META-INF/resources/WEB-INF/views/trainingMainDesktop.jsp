@@ -164,9 +164,9 @@
         defaultLayoutAlign: "center",
     });
 
-    isc.defineClass("MyWindow", Window);
+    isc.defineClass("TrWindow", Window);
 
-    isc.MyWindow.addProperties({
+    isc.TrWindow.addProperties({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -232,8 +232,8 @@
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
     isc.FormItem.changeDefaults({redrawOnChange: true, width: "*",});
-    isc.TextItem.changeDefaults({height: 27, length: 250});
-    isc.TextAreaItem.changeDefaults({height: 40});
+    isc.TextItem.changeDefaults({height: 27, length: 255});
+    isc.TextAreaItem.changeDefaults({height: 40, length: 400});
     isc.Validator.changeDefaults({requiredField: "<spring:message code="msg.required"/>"});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
@@ -432,6 +432,16 @@
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
     };
+
+    isc.defineClass("TrWindow", Window);
+    isc.TrWindow.addProperties({
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        autoDraw: false,
+        canFocus: true,
+        dismissOnEscape: true,
+    });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 

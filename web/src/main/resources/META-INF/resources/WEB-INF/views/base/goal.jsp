@@ -339,7 +339,7 @@
         })]
     });
 
-    var Window_Syllabus = isc.MyWindow.create({
+    var Window_Syllabus = isc.TrWindow.create({
         title: "سرفصل",
         autoSize: true,
         autoCenter: true,
@@ -360,7 +360,7 @@
         })]
     });
 
-    var Window_Goal = isc.MyWindow.create({
+    var Window_Goal = isc.TrWindow.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,

@@ -100,8 +100,7 @@
             {name: "id", hidden: true},
             {
                 name: "titleFa", title: "<spring:message code="competence.title"/>",
-                required: true,
-                validators: [TrValidators.NotEmpty],
+                required: true, validators: [TrValidators.NotEmpty],
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
@@ -109,11 +108,12 @@
             },
             {
                 name: "description", title: "<spring:message code="description"/>",
+                type: "TextAreaItem",
             },
         ]
     });
 
-    let Win_Job_job = isc.MyWindow.create({
+    let JobWin_job = isc.TrWindow.create({
         title: "شغل",
         width: 500,
         items: [DF_Job_job, isc.MyHLayoutButtons.create({
