@@ -142,10 +142,11 @@ public class CourseService implements ICourseService {
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
         List<Long> preCourseListId = request.getPreCourseListId();
-        List<Course> preCourseList = new ArrayList<>();
-        for (Long aLong : preCourseListId) {
-            preCourseList.add(courseDAO.getOne(aLong));
-        }
+        List<String> equalCourseListId = request.getEqualCourseListId();
+        String s = Joiner.on(',').join(preCourseListId);
+        String s1 = Joiner.on(',').join(equalCourseListId);
+        course.setPreCourse(s);
+        course.setEqualCourse(s1);
         return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
     }
 
