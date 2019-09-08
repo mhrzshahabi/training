@@ -1387,6 +1387,7 @@
 
     var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
+        title:"افزودن",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
