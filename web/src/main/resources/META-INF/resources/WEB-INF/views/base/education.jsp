@@ -49,14 +49,14 @@
     var RestDataSource_eduLevel = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationLevelUrl + "spec-list",
+        fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=55",
         autoFetchData: true
     });
 
         var RestDataSource_eduMajor = isc.MyRestDataSource.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
-        fetchDataURL: educationMajorUrl + "spec-list",
+        fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
         autoFetchData: true
     });
 

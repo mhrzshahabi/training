@@ -27,11 +27,11 @@ public class EducationOrientationDTO {
     @ApiModelProperty(required = true)
     private String titleEn;
 
-    @NotEmpty
+    @NotNull
     @ApiModelProperty(required = true)
     private Long educationLevelId;
 
-    @NotEmpty
+    @NotNull
     @ApiModelProperty(required = true)
     private Long educationMajorId;
 
