@@ -14,7 +14,6 @@
     var equalCourseIdList = [];
     // var test1;
     // var courseCacheData = [];
-
     var courseId = "";
     var runV = "";
     var eLevelTypeV = "";
@@ -235,15 +234,15 @@
             RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
-            ListGrid_CourseSkill.fetchData();
-            ListGrid_CourseSkill.invalidateCache();
-            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
-            ListGrid_CourseJob.fetchData();
-            ListGrid_CourseJob.invalidateCache();
-            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
-            ListGrid_CourseCompetence.fetchData();
-            ListGrid_CourseCompetence.invalidateCache();
+            // RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
+            // ListGrid_CourseSkill.fetchData();
+            // ListGrid_CourseSkill.invalidateCache();
+            // RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
+            // ListGrid_CourseJob.fetchData();
+            // ListGrid_CourseJob.invalidateCache();
+            // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
+            // ListGrid_CourseCompetence.fetchData();
+            // ListGrid_CourseCompetence.invalidateCache();
             for (var i = 0; i < trainingTabSet.tabs.length; i++) {
                 if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                     trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -556,8 +555,8 @@
                 hoverHeight: "30%",
                 hoverMoveWithMouse: true,
                 canHover: this.canHover,
-                showHover: true,
-                showHoverComponents: true,
+                showHover: this.showHover,
+                showHoverComponents: this.showHoverComponents,
                 getCellHoverComponent: function (record, rowNum, colNum) {
                     equalPreCourse.length = 0;
                     isc.RPCManager.sendRequest({
@@ -575,8 +574,9 @@
                         }
                     });
                     this.rowHoverComponent = isc.ListGrid.create({
-                        dataSource: equalPreCourseDS,
+                        dataSource: "equalPreCourseDS",
                         autoFetchData: true,
+                        fields:[{name:"nameEC",title:"معادل های دوره " + record.titleFa}]
                     });
                     return this.rowHoverComponent;
                 },
@@ -592,6 +592,7 @@
                 // }
             });
         },
+            autoDraw: false,
 
         // implement showValue to update the ListGrid selection
         // showValue : function (displayValue, dataValue) {
@@ -611,9 +612,6 @@
         // align: "center",
         titleAlign: "left",
         showInlineErrors: true,
-        show: function () {
-
-        },
         numCols: 8,
         // isGroup: true,
         fields: [
@@ -642,9 +640,16 @@
                 width: "*",
                 // height: "30",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
-                change: function (form, item, value, oldValue) {
-                    form.getField("preCourseGrid").title = "پیش نیازهای دوره " + value;
-                    form.getField("equalCourseGrid").title = "معادلهای دوره " + value;
+                change: function (form, item, value) {
+                    if(value != null){
+                        form.getItem("epSection").enable();
+                        form.getField("preCourseGrid").title = "پیش نیازهای دوره " + value;
+                        form.getField("equalCourseGrid").title = "معادلهای دوره " + value;
+                    }
+                    else{
+                        form.getItem("epSection").disable();
+                    }
+
                 }
             },
             {
@@ -678,10 +683,10 @@
                 }],
                 width: "*",
                 change: function (form, item, value, oldValue) {
-                    if (value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
+                    if ((value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) && (course_method == "PUT")) {
                         item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
                     } else {
-                        item.clearErrors()
+                        item.clearErrors();
                     }
                 }
             },
@@ -719,16 +724,15 @@
                     DynamicForm_course.getItem("subCategory.id").fetchData();
 
                 },
-            },
+                },
             {
                 name: "subCategory.id",
                 colSpan: 1,
-
                 title: "<spring:message code="course_subcategory"/>",
-                editorType: "MyComboBoxItem",
                 prompt: "ابتدا گروه را انتخاب کنید",
                 textAlign: "center",
                 required: true,
+                autoFetchData: false,
                 titleOrientation: "top",
                 // height: "30",
                 width: "*",
@@ -737,20 +741,17 @@
                 optionDataSource: RestDataSourceSubCategory,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
-                changed: function (form, item, value) {
-
-                },
             },
             {
                 name: "erunType.id",
                 colSpan: 1,
                 titleOrientation: "top",
                 title: "<spring:message code="course_eruntype"/>",
-                //   value: "erunTypeId",
                 required: true,
-                editorType: "MyComboBoxItem",
+                // editorType: "MyComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_e_run_type,
+                autoFetchData: false,
                 valueField: "id",
                 displayField: "titleFa",
                 sortField: ["id"],
@@ -781,10 +782,8 @@
             {
                 name: "elevelType.id",
                 colSpan: 1,
-
-                value: "eLevelTypeId",
                 title: "<spring:message code="cousre_elevelType"/>",
-                editorType: "MyComboBoxItem",
+                // editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 // height: "30",
@@ -817,10 +816,9 @@
             {
                 name: "etheoType.id",
                 colSpan: 1,
-
                 title: "<spring:message code="course_etheoType"/>",
                 required: true,
-                editorType: "MyComboBoxItem",
+                // editorType: "MyComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSourceETheoType,
                 valueField: "id",
@@ -850,7 +848,7 @@
                 colSpan: 1,
 
                 title: "<spring:message code="course_etechnicalType"/>",
-                editorType: "MyComboBoxItem",
+                // editorType: "MyComboBoxItem",
                 textAlign: "center",
                 required: true,
                 displayField: "titleFa",
@@ -901,7 +899,6 @@
                 required: true,
 
             },
-
             {
                 defaultValue: "شرایط مدرس دوره", type: "section", sectionExpanded: false,
                 itemIds: ["minTeacherDegree", "minTeacherExpYears", "minTeacherEvalScore"]
@@ -965,7 +962,7 @@
                 }]
             },
             {
-                defaultValue: "پیشنیاز و معادل دوره", type: "section", sectionExpanded: false,
+                name:"epSection", defaultValue: "پیشنیاز و معادل دوره", type: "section", sectionExpanded: false,
                 itemIds: ["orBtn", "andBtn", "equalCourseGrid", "courseAllGrid", "imgMove", "preCourseGrid"],
                 click: function (form) {
                     courseAllGrid.invalidateCache();
@@ -1047,6 +1044,8 @@
                 canAcceptDroppedRecords: true,
                 dragDataAction: "none",
                 canHover: true,
+                showHover: true,
+                showHoverComponents: true,
                 endRow: true
             },
             {
@@ -1202,13 +1201,19 @@
                         var newCourseCounter = courseCounterCode(resp.data);
                         x = x + newCourseCounter;
                         DynamicForm_course.getItem('code').setValue(x);
-                        var data1 = DynamicForm_course.getValues();
 
-                        preCourseIdList.length = 0;
+                        var data2 = DynamicForm_course.getValues();
+                        ChangeEtechnicalType = false;
+                        preCourseIdList = [];
+                        equalCourseIdList = [];
                         for (var i = 0; i < testData.length; i++) {
-                            preCourseIdList.add(testData[i].id);
+                        preCourseIdList.add(testData[i].id);
                         }
-                        data1.preCourseListId = preCourseIdList;
+                        for (var j = 0; j < equalCourse.length; j++) {
+                        equalCourseIdList.add(equalCourse[j].idEC);
+                        }
+                        data2.equalCourseListId = equalCourseIdList;
+                        data2.preCourseListId = preCourseIdList;
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             httpMethod: course_method,
@@ -1216,7 +1221,7 @@
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
                             showPrompt: false,
-                            data: JSON.stringify(data1),
+                            data: JSON.stringify(data2),
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -1554,8 +1559,11 @@
         testData.length = 0;
         preCourseGrid.invalidateCache();
         equalCourseGrid.invalidateCache();
+        DynamicForm_course.getItem("epSection").disable();
+        DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
         DynamicForm_course.getFields().get(5).prompt = "لطفا طول دوره را به صورت یک عدد وارد کنید";
+
     };
 
     function ListGrid_Course_remove() {
@@ -1688,6 +1696,7 @@
             DynamicForm_course.clearValues();
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
+            DynamicForm_course.getItem("epSection").enable();
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
             DynamicForm_course.getItem("subCategory.id").fetchData();
             sRecord.domainPercent = "دانشی " + sRecord.knowledge + "%" + "، مهارتی " + sRecord.skill + "%" + "، نگرشی " + sRecord.attitude + "%";
