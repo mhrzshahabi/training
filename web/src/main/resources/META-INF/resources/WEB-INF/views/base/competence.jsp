@@ -101,7 +101,7 @@
             {
                 name: "titleFa", title: "<spring:message code="competence.title"/>",
                 required: true,
-                validators: [MyValidators.NotEmpty],
+                validators: [TrValidators.NotEmpty],
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",

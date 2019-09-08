@@ -42,7 +42,6 @@
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
 
-
     const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const EnNumSpcFilter = "[a-zA-Z0-9 ]";
     const NumFilter = "[0-9]";
@@ -130,7 +129,6 @@
 
 
     isc.defineClass("MyDynamicForm", DynamicForm);
-
     isc.MyDynamicForm.addProperties({
         width: "100%",
         align: "center",
@@ -147,31 +145,7 @@
         autoDraw: false,
     });
 
-    MyValidators = {
-        NotEmpty: {
-            type: "regexp",
-            errorMessage: "فيلد اجباري است.",
-            expression: /^(?!\s*$).+/
-        },
-        NotStartWithNumber: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با عدد شروع شود.",
-            expression: /^(?!([0-9]))/,
-        },
-        NotStartWithSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید با حروف خاص(!و؟و..) شروع شود.",
-            expression: /^(?!([!@#$%^&*~';:.{}_]))/,
-        },
-        NotContainSpecialChar: {
-            type: "regexp",
-            errorMessage: "این فیلد نباید شامل حروف خاص باشد.",
-            expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
-        },
-    };
-
     isc.defineClass("MyButton", Button);
-
     isc.MyButton.addProperties({
         width: 100,
         height: 27,
@@ -762,6 +736,8 @@
             createTab(title, url);
         }
     };
+
+    createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
 
 </script>
 </body>
