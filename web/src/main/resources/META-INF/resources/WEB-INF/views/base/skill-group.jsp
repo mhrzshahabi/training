@@ -1008,7 +1008,7 @@
                 hint: "توضیحات",
                 showHintInField: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-                validators: [MyValidators.NotEmpty, MyValidators.NotStartWithSpecialChar],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar],
             }
         ]
     });

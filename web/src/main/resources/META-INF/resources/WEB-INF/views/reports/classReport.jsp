@@ -56,7 +56,7 @@
                 },
                 multiple: true,
                 required: true,
-                validators: [MyValidators.NotEmpty]
+                validators: [TrValidators.NotEmpty]
             },
             {
                 name: "teacher.id",
