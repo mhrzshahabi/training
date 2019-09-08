@@ -48,9 +48,9 @@
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
-    isc.FormItem.changeDefaults({redrawOnChange: true, width: "*",});
-    isc.TextItem.changeDefaults({height: 27, length: 255, width: "*",});
-    isc.TextAreaItem.changeDefaults({height: 40, length: 400, width: "*",});
+    isc.FormItem.changeDefaults({redrawOnChange: true,});
+    isc.TextItem.changeDefaults({height: 27, length: 255,});
+    isc.TextAreaItem.changeDefaults({height: 40, length: 400,});
     isc.Validator.changeDefaults({requiredField: "<spring:message code="msg.required"/>"});
     isc.Button.changeDefaults({height: 27});
 
@@ -577,8 +577,6 @@
             createTab(title, url);
         }
     };
-
-    createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
 
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
