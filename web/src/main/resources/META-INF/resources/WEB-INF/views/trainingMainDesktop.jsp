@@ -337,6 +337,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="equipment"/>", icon: "<spring:url value="equipment.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/equipment/show-form"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="education"/>", icon: "<spring:url value="education.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");

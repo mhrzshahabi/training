@@ -91,7 +91,7 @@
             {name: "titleEn"},
             {name: "description"}
         ],
-        fetchDataURL: instituteUrl + "equipment/0"
+        fetchDataURL: instituteUrl + "equipment-dummy"
     });
     var RestDataSource_Institute_Institite_UnAttachedEquipment = isc.MyRestDataSource.create({
         fields: [
@@ -101,7 +101,7 @@
             {name: "titleEn"},
             {name: "description"}
         ],
-        fetchDataURL: instituteUrl + "un-attached-equipment/0"
+        fetchDataURL: instituteUrl + "0/unattached-equipments"
     });
     var RestDataSource_Institute_Institite_Teacher = isc.MyRestDataSource.create({
         fields: [
@@ -113,7 +113,7 @@
             {name: "economicalCode"},
             {name: "economicalRecordNumber"}
         ],
-        fetchDataURL: instituteUrl + "teacher/0"
+        fetchDataURL: instituteUrl + "teacher-dummy"
     });
     var RestDataSource_Institute_Institite_UnAttachedTeacher = isc.MyRestDataSource.create({
         fields: [
@@ -125,7 +125,7 @@
             {name: "economicalCode"},
             {name: "economicalRecordNumber"}
         ],
-        fetchDataURL: instituteUrl + "un-attached-teacher/0"
+        fetchDataURL: instituteUrl + "0/unattached-teachers"
     });
     var RestDataSource_Institute_City = isc.MyRestDataSource.create({
         fields: [
@@ -239,7 +239,35 @@
         doubleClick: function () {
             ListGrid_Institute_Institute_Edit();
         },
+        selectionChanged: function (record, state) {
+            if (record == null) {
+            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl +"equipment-dummy";
+            RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl+"teacher-dummy";
+            } else {
+            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + record.id + "/equipments";
+            RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl + record.id + "/teachers";
+            }
+            ListGrid_Institute_Attached_Equipment.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Equipment.fetchData();
+            ListGrid_Institute_Attached_Teacher.fetchData();
+        },
+        dataArrived: function (startRow, endRow) {
+        record = ListGrid_Institute_Institute.getSelectedRecord();
+        if (record == null) {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl +"equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl+"teacher-dummy";
+        } else {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + record.id + "/equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl + record.id + "/teachers";
+        }
+        ListGrid_Institute_Attached_Equipment.invalidateCache();
+        ListGrid_Institute_Attached_Teacher.invalidateCache();
+        ListGrid_Institute_Attached_Equipment.fetchData();
+        ListGrid_Institute_Attached_Teacher.fetchData();
 
+
+        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "contains"},
@@ -324,7 +352,7 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "عنوان فارسی", align: "center"},
+            {name: "code", title: "کد", align: "center"},
             {name: "titleFa", title: "عنوان فارسی", align: "center"},
             {name: "titleEn", title: "عنوان لاتین ", align: "center"},
             {name: "description", title: "ملاحظات", align: "center"}
@@ -1302,6 +1330,219 @@
 
 
     //--------------------------------------------------------------------------------------------------------------------//
+    /*Edit Equipments For Institute*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    var ListGrid_Institute_Equipment_List = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_Institite_UnAttachedEquipment,
+        doubleClick: function () {
+            Function_Institute_EquipmentList_Selected();
+        },
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد", align: "center"},
+            {name: "titleFa", title: "عنوان فارسی", align: "center"},
+            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
+            {name: "description", title: "ملاحظات", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
+
+    var IButton_Institute_EquipmentList_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "pieces/16/icon_delete.png",
+        click: function () {
+            Window_Institute_EquipmentList.close();
+        }
+    });
+
+    var IButton_Institute_EquipmentList_Choose = isc.IButton.create({
+        top: 260,
+        title: "انتخاب",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_EquipmentList_Selected();
+        }
+    });
+
+
+    var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/add.png",
+        click: function () {
+            var record = ListGrid_Institute_Institute.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "لطفا یک مرکز آموزشی را انتخاب کنید.",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                Function_Institute_EquipmentList_Select(record.id);
+            }
+        }
+    });
+
+    var ToolStripButton_Institute_Equipment_Delete = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/remove.png",
+        click: function () {
+            var record = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "لطفا یک تجهیز  را انتخاب کنید.",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+
+            }
+        }
+    });
+
+    var ToolStrip_Institute_Equipment = isc.ToolStrip.create({
+        width: "20",
+        vertical: true,
+        center: true,
+        members: [
+            ToolStripButton_Institute_Equipment_Add, ToolStripButton_Institute_Equipment_Delete
+        ]
+    });
+
+
+    var VLayout_Institute_EquipmentList = isc.VLayout.create({
+        width: "100%",
+        height: "690",
+        members: [ListGrid_Institute_Equipment_List]
+    });
+
+    var HLayOut_Institute_EquipmentList_Select = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_EquipmentList_Choose, IButton_Institute_EquipmentList_Exit]
+    });
+
+    var Window_Institute_EquipmentList = isc.Window.create({
+        title: "انتخاب تجهیزات کمک آموزشی",
+        width: 800,
+        height: 700,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_EquipmentList, HLayOut_Institute_EquipmentList_Select]
+        })]
+    });
+
+    function Function_Institute_EquipmentList_Select(instituteId) {
+        RestDataSource_Institute_Institite_UnAttachedEquipment.fetchDataURL = instituteUrl + instituteId + "/unattached-equipments"
+        ListGrid_Institute_Equipment_List.invalidateCache();
+        ListGrid_Institute_Equipment_List.fetchData();
+        Window_Institute_EquipmentList.show();
+        Window_Institute_EquipmentList.bringToFront();
+    };
+
+    function Function_Institute_EquipmentList_Selected() {
+
+        if (ListGrid_Institute_Equipment_List.getSelectedRecord() != null) {
+            var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+            var instituteId = instituteRecord.id;
+            var equipmentRecord = ListGrid_Institute_Equipment_List.getSelectedRecord();
+            var equipmentId = equipmentRecord.id;
+            isc.RPCManager.sendRequest({
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                actionURL: instituteUrl + "add-equipment/" + equipmentId + "/" + instituteId,
+                httpMethod: "POST",
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.data == "true") {
+                        RestDataSource_Institute_Institite_Equipment.fetchDataURL=instituteUrl + instituteId + "/equipments"
+                        ListGrid_Institute_Attached_Equipment.invalidateCache();
+                        ListGrid_Institute_Attached_Equipment.fetchData();
+                        Window_Institute_EquipmentList.close();
+                    } else {
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+                    }
+                }
+            });
+        }
+
+    }
+
+    function Function_Institute_Equipment_Remove() {
+        if (ListGrid_Institute_Attached_Equipment.getSelectedRecords() != null) {
+            var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+            var instituteId = instituteRecord.id;
+            var equipmentRecord = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
+            var equipmentId = equipmentRecord.id;
+// var JSONObj = {"ids": courseIds};
+            isc.RPCManager.sendRequest({
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                actionURL: instituteUrl + "remove-equipment/" + equipmentId + "/" + instituteId,
+                httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.data == "true") {
+                        ListGrid_Institute_Attached_Equipment.invalidateCache();
+                        ListGrid_Institute_Attached_Equipment.fetchData();
+                    } else {
+                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+                    }
+                }
+            });
+
+        }
+
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
@@ -1374,7 +1615,7 @@
     var HLayout_Institute_Institute_Equipment = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_Institute_Attached_Equipment]
+        members: [ListGrid_Institute_Attached_Equipment, ToolStrip_Institute_Equipment]
     });
 
     var Tab_Institute_Detail = isc.TabSet.create({
