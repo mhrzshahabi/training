@@ -1,8 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//
-<script>
+//<script>
+
+    let competenceMethod_competence;
     // ------------------------------------------- Menu -------------------------------------------
     CompetenceMenu_competence = isc.TrMenu.create({
         data: [
@@ -94,8 +95,8 @@
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
-    let JobDF_job = isc.TrDynamicForm.create({
-        ID: "JobDF_job",
+    let CompetenceDF_competence = isc.TrDynamicForm.create({
+        ID: "CompetenceDF_competence",
         fields: [
             {name: "id", hidden: true},
             {
@@ -113,21 +114,20 @@
         ]
     });
 
-    let JobWin_job = isc.TrWindow.create({
-        title: "شغل",
+    let CompetenceWin_competence = isc.TrWindow.create({
         width: 500,
-        items: [DF_Job_job, isc.MyHLayoutButtons.create({
-            members: [isc.MyButton.create({
+        items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
+            members: [isc.Button.create({
                 title: "ذخیره",
-                icon: "pieces/16/save.png",
+                // icon: "pieces/16/save.png",
                 click: function () {
-                    save_Job();
+                    // save_Job();
                 }
             }), isc.MyButton.create({
                 title: "لغو",
-                icon: "pieces/16/icon_delete.png",
+                // icon: "pieces/16/icon_delete.png",
                 click: function () {
-                    Win_Job_job.close();
+                    CompetenceWin_competence.close();
                 }
             })],
         }),]
@@ -144,5 +144,8 @@
     };
 
     function createCompetence_competence() {
-
+        competenceMethod_competence = "POST";
+        // CompetenceDF_competence.clearValues();
+        // CompetenceWin_competence.setTitle("ایجاد شایستگی شغلی");
+        CompetenceWin_competence.show();
     };
