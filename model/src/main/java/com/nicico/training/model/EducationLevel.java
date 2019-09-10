@@ -23,7 +23,6 @@ public class EducationLevel extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @UniqueElements
     @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
 
