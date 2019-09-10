@@ -130,7 +130,7 @@ public class TermRestController {
     }
 
 
- @Loggable
+    @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
@@ -156,6 +156,16 @@ public class TermRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TermByCriteria.jasper", params, jsonDataSource, response);
     }
+
+
+    @Loggable
+    @GetMapping(value ={"/checkForConflict/{sData}/{eData}"})
+    public ResponseEntity<String> checkForConflict(@PathVariable String sData,@PathVariable String eData) {
+       sData= sData.substring(0,4)+"/"+sData.substring(4,6)+"/"+sData.substring(6,8);
+       eData= eData.substring(0,4)+"/"+eData.substring(4,6)+"/"+eData.substring(6,8);
+       return new ResponseEntity<>(termService.checkForConflict(sData, eData),HttpStatus.OK);
+        }
+
 
 
 

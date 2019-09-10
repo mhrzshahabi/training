@@ -15,7 +15,7 @@
     var RestDataSource_committee = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "نام ", filterOperator: "contains"},
+            {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
             {name: "subCategoryId", hidden: true},
             {name: "categoryId", hidden: true},
             {name: "category.titleFa", title: "گروه", filterOperator: "contains"},
@@ -669,8 +669,8 @@
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "<spring:message    code="committee_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message code="committee_delete1"/>",
-                buttonClick: function (button, index) {
+              message: "<spring:message    code="committee_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message code="committee_delete1"/>",
+                     buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
 

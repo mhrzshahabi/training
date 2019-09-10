@@ -7,4 +7,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface CommitteeDAO extends JpaRepository<Committee, Long>, JpaSpecificationExecutor<Committee> {
+
 }
