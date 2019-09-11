@@ -3,10 +3,10 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+<%--<script>--%>
 
     <%
-   final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     %>
 
     var instituteMethod = "POST";
@@ -241,11 +241,11 @@
         },
         selectionChanged: function (record, state) {
             if (record == null) {
-            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl +"equipment-dummy";
-            RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl+"teacher-dummy";
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + "equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + "teacher-dummy";
             } else {
-            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + record.id + "/equipments";
-            RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl + record.id + "/teachers";
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + record.id + "/equipments";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + record.id + "/teachers";
             }
             ListGrid_Institute_Attached_Equipment.invalidateCache();
             ListGrid_Institute_Attached_Teacher.invalidateCache();
@@ -253,18 +253,18 @@
             ListGrid_Institute_Attached_Teacher.fetchData();
         },
         dataArrived: function (startRow, endRow) {
-        record = ListGrid_Institute_Institute.getSelectedRecord();
-        if (record == null) {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl +"equipment-dummy";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl+"teacher-dummy";
-        } else {
+            record = ListGrid_Institute_Institute.getSelectedRecord();
+            if (record == null) {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + "equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + "teacher-dummy";
+            } else {
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + record.id + "/equipment-dummy";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL =  instituteUrl + record.id + "/teachers";
-        }
-        ListGrid_Institute_Attached_Equipment.invalidateCache();
-        ListGrid_Institute_Attached_Teacher.invalidateCache();
-        ListGrid_Institute_Attached_Equipment.fetchData();
-        ListGrid_Institute_Attached_Teacher.fetchData();
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + record.id + "/teachers";
+            }
+            ListGrid_Institute_Attached_Equipment.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Equipment.fetchData();
+            ListGrid_Institute_Attached_Teacher.fetchData();
 
 
         },
@@ -324,8 +324,7 @@
             {name: "teacherCode", title: "کد", align: "center"},
             {name: "personality.firstNameFa", title: "نام", align: "center"},
             {name: "personality.lastNameFa", title: "نام خانوادگی ", align: "center"},
-            {name: "personality.nationalCode", title: "کد ملی", align: "center"},
-            {name: "economicalCode", title: "کد اقتصادی", align: "center"}
+            {name: "personality.nationalCode", title: "کد ملی", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -554,9 +553,15 @@
             {
                 name: "parentInstituteId",
                 title: "موسسه مادر",
+                icons: [{
+                    name: "add",
+                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
+                    inline: true
+                }],
+                canEdit: false,
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                width: 250,
+                width: 200,
                 click: function (form, item, icon) {
 
                     ListGrid_Institute_InstituteList_Select();
@@ -567,6 +572,7 @@
                 name: "parentInstitute.titleFa",
                 title: "عنوان موسسه مادر",
                 showTitle: false,
+                canEdit: false,
                 colSpan: 4,
                 width: 500,
                 type: 'text',
@@ -579,20 +585,26 @@
             {
                 name: "manager.nationalCode",
                 title: "مدیر موسسه",
-                width: 250,
+                icons: [{
+                    name: "add",
+                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
+                    inline: true
+                }],
+                canEdit: false,
+                width: 200,
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 click: function (form, item, icon) {
 
                     ListGrid_Institute_PersonalList_Select();
                 },
-
                 length: "30"
             },
             {
                 name: "manager.firstNameFa",
                 title: "<spring:message code='account.number'/>",
                 showTitle: false,
+                canEdit: false,
                 colSpan: 2,
                 width: 250,
                 type: 'text',
@@ -602,6 +614,7 @@
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='cart.number'/>",
+                canEdit: false,
                 showTitle: false,
                 colSpan: 2,
                 width: 250,
@@ -686,35 +699,35 @@
                 title: "استاد دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "teacherNumLicentiate",
                 title: "استاد لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "teacherNumMaster",
                 title: "استاد فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "teacherNumAssociate",
                 title: "استاد فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "teacherNumDiploma",
                 title: "استاد دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             }
         ]
 
@@ -741,35 +754,35 @@
                 title: " کارمند دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "empNumLicentiate",
                 title: "کارمند لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "empNumMaster",
-                title: "کارمند فوق  لیسانس",
+                title: "کارمند فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "empNumAssociate",
                 title: " کارمند فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             },
             {
                 name: "empNumDiploma",
-                title: "کارمند  دیپلم/زیردیپلم",
+                title: "کارمند دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "5"
             }
         ]
 
@@ -844,12 +857,12 @@
                     showFilterEditor: true,
                 },
                 pickListFields: [
-                    {name: "name", width: "30%", filterOperator: "iContains"}],
+                    {name: "name", width: "30%", filterOperator: "iContains"}]
             },
             {
                 name: "address.postCode",
                 title: "کد پستی",
-                keyPressFilter: "[0-9]",
+                keyPressFilter: "[0-9|-| ]",
                 length: "15",
             },
             {
@@ -857,30 +870,40 @@
                 title: "آدرس",
                 required: true,
                 colSpan: 5,
-                keyPressFilter: "[a-z|A-Z |]",
-                hint: "English/انگليسي",
-                showHintInField: true,
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: 600,
                 length: "255"
             },
             {
                 name: "address.phone",
-                title: "تلفن"
+                keyPressFilter: "[0-9|-]",
+                title: "تلفن",
+                length: "12"
             },
             {
                 name: "address.fax",
                 title: "فکس",
-                hint: "test@nicico.com",
-                showHintInField: true,
-                length: "30"
+                keyPressFilter: "[0-9|-]",
+                length: "12"
             },
             {
                 name: "address.webSite",
                 title: "وب سایت",
-                hint: "test@nicico.com",
-                showHintInField: true,
-                length: "30"
-            }]
+                length: "100"
+            }],
+        itemChanged: function (item, newValue) {
+            if (item.name == "address.stateId") {
+                if (newValue == undefined) {
+                    DynamicForm_Institute_Institute_Address.clearValue("address.cityId");
+                } else {
+                    RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    DynamicForm_Institute_Institute_Address.getField("address.cityId").optionDataSource = RestDataSource_Institute_City;
+                    DynamicForm_Institute_Institute_Address.getField("address.cityId").fetchData();
+                    DynamicForm_Institute_Institute_Address.clearValue("address.cityId");
+                }
+            }
+        }
+
     });
 
     var DynamicForm_Institute_Institute_Account = isc.DynamicForm.create({
@@ -908,36 +931,28 @@
                 name: "accountInfo.bank",
                 title: "بانک",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
-                showHintInField: true,
-                length: "30"
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "100"
             },
             {
                 name: "accountInfo.bankBranch",
                 title: "شعبه",
                 required: true,
-                keyPressFilter: "[a-z|A-Z |0-9]",
-                hint: "English/انگليسي",
-                showHintInField: true,
-                length: "30"
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "100"
             },
             {
                 name: "accountInfo.bankBranchCode",
                 title: "کد شعبه",
                 required: true,
                 keyPressFilter: "[0-9]",
-                hint: "English/انگليسي",
-                showHintInField: true,
                 length: "30"
             },
             {
                 name: "accountInfo.accountNumber",
                 title: "شماره حساب",
                 required: true,
-                keyPressFilter: "[0-9]",
-                hint: "English/انگليسي",
-                showHintInField: true,
+                keyPressFilter: "[0-9|/| ]",
                 length: "30"
             }
         ]
@@ -1014,20 +1029,20 @@
     var VLayout__Institute_Institute_Val = isc.VLayout.create({
         width: "100%",
         height: "50%",
-        // border: "1px solid blue",
+// border: "1px solid blue",
         padding: 5,
         members: [DynamicForm_Institute_Institute, HLayout_Institute_InstituteTeacherAndEmp]
     });
     var VLayout__Institute_Institute_Address = isc.VLayout.create({
         width: "100%",
         height: "25%",
-        // border: "1px solid blue",
+// border: "1px solid blue",
         members: [TabSet_Institute_InstituteAddress]
     });
     var VLayout__Institute_Institute_Account = isc.VLayout.create({
         width: "100%",
         height: "25%",
-        // border: "1px solid blue",
+// border: "1px solid blue",
         members: [TabSet_Institute_InstituteAccount]
     });
 
@@ -1060,7 +1075,10 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
+            console.log(instituteSaveUrl);
+            console.log(instituteMethod);
+            console.log(data);
+            isc.RPCManager.sendRequest(TrDSRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
         }
     });
 
@@ -1387,7 +1405,7 @@
 
     var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title:"افزودن",
+        title: "افزودن",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1408,11 +1426,12 @@
 
     var ToolStripButton_Institute_Equipment_Delete = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
         click: function () {
             var record = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "لطفا یک تجهیز  را انتخاب کنید.",
+                    message: "لطفا یک تجهیز را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
                     buttons: [isc.Button.create({title: "تائید"})],
@@ -1421,14 +1440,13 @@
                     }
                 });
             } else {
-
+                Function_Institute_Equipment_Remove();
             }
         }
     });
 
     var ToolStrip_Institute_Equipment = isc.ToolStrip.create({
         width: "20",
-        vertical: true,
         center: true,
         members: [
             ToolStripButton_Institute_Equipment_Add, ToolStripButton_Institute_Equipment_Delete
@@ -1488,60 +1506,404 @@
     function Function_Institute_EquipmentList_Selected() {
 
         if (ListGrid_Institute_Equipment_List.getSelectedRecord() != null) {
-            var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
-            var instituteId = instituteRecord.id;
-            var equipmentRecord = ListGrid_Institute_Equipment_List.getSelectedRecord();
-            var equipmentId = equipmentRecord.id;
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: instituteUrl + "add-equipment/" + equipmentId + "/" + instituteId,
-                httpMethod: "POST",
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.data == "true") {
-                        RestDataSource_Institute_Institite_Equipment.fetchDataURL=instituteUrl + instituteId + "/equipments"
-                        ListGrid_Institute_Attached_Equipment.invalidateCache();
-                        ListGrid_Institute_Attached_Equipment.fetchData();
-                        Window_Institute_EquipmentList.close();
-                    } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
-                    }
-                }
-            });
-        }
+// console.log(ListGrid_Institute_Equipment_List.getSelectedRecords().getLength());
+            var selectedEquipmentRecords = ListGrid_Institute_Equipment_List.getSelectedRecords();
+            if (selectedEquipmentRecords.getLength() > 1) {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
 
+                var equipmentIds = new Array();
+                for (i = 0; i < selectedEquipmentRecords.getLength(); i++) {
+                    equipmentIds.add(selectedEquipmentRecords[i].id);
+                }
+                var JSONObj = {"ids": equipmentIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "add-equipment-list/" + instituteId,
+                    httpMethod: "POST",
+                    data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + instituteId + "/equipments"
+                            ListGrid_Institute_Attached_Equipment.invalidateCache();
+                            ListGrid_Institute_Attached_Equipment.fetchData();
+                            Window_Institute_EquipmentList.close();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            } else {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var equipmentRecord = ListGrid_Institute_Equipment_List.getSelectedRecord();
+                var equipmentId = equipmentRecord.id;
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "add-equipment/" + equipmentId + "/" + instituteId,
+                    httpMethod: "POST",
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            RestDataSource_Institute_Institite_Equipment.fetchDataURL = instituteUrl + instituteId + "/equipments"
+                            ListGrid_Institute_Attached_Equipment.invalidateCache();
+                            ListGrid_Institute_Attached_Equipment.fetchData();
+                            Window_Institute_EquipmentList.close();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+
+        }
     }
 
     function Function_Institute_Equipment_Remove() {
-        if (ListGrid_Institute_Attached_Equipment.getSelectedRecords() != null) {
-            var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
-            var instituteId = instituteRecord.id;
-            var equipmentRecord = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
-            var equipmentId = equipmentRecord.id;
-// var JSONObj = {"ids": courseIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: instituteUrl + "remove-equipment/" + equipmentId + "/" + instituteId,
-                httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.data == "true") {
-                        ListGrid_Institute_Attached_Equipment.invalidateCache();
-                        ListGrid_Institute_Attached_Equipment.fetchData();
-                    } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
-                    }
+        var selectedAttachedEquipmentRecords = ListGrid_Institute_Attached_Equipment.getSelectedRecords();
+        if (selectedAttachedEquipmentRecords != null) {
+            if (selectedAttachedEquipmentRecords.getLength() > 1) {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var equipmentRecords = ListGrid_Institute_Attached_Equipment.getSelectedRecords();
+                var equipmentIds = new Array();
+                for (i = 0; i < equipmentRecords.getLength(); i++) {
+                    equipmentIds.add(equipmentRecords[i].id);
                 }
-            });
+// var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "remove-equipment-list/" + equipmentIds + "/" + instituteId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Institute_Attached_Equipment.invalidateCache();
+                            ListGrid_Institute_Attached_Equipment.fetchData();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            } else {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var equipmentRecord = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
+                var equipmentId = equipmentRecord.id;
+// var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "remove-equipment/" + equipmentId + "/" + instituteId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Institute_Attached_Equipment.invalidateCache();
+                            ListGrid_Institute_Attached_Equipment.fetchData();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
 
         }
 
     }
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*Edit Teachers For Institute*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    var ListGrid_Institute_Teacher_List = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_Institite_UnAttachedTeacher,
+        doubleClick: function () {
+            Function_Institute_TeacherList_Selected();
+        },
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "teacherCode", title: "کد", align: "center"},
+            {name: "personality.firstNameFa", title: "نام", align: "center"},
+            {name: "personality.lastNameFa", title: "نام خانوادگی ", align: "center"},
+            {name: "personality.nationalCode", title: "کد ملی", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
+
+    var IButton_Institute_TeacherList_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "pieces/16/icon_delete.png",
+        click: function () {
+            Window_Institute_TeacherList.close();
+        }
+    });
+
+    var IButton_Institute_TeacherList_Choose = isc.IButton.create({
+        top: 260,
+        title: "انتخاب",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_TeacherList_Selected();
+        }
+    });
+
+
+    var ToolStripButton_Institute_Teacher_Add = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/add.png",
+        title: "افزودن",
+        click: function () {
+            var record = ListGrid_Institute_Institute.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "لطفا یک مرکز آموزشی را انتخاب کنید.",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                Function_Institute_TeacherList_Select(record.id);
+            }
+        }
+    });
+
+    var ToolStripButton_Institute_Teacher_Delete = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "لطفا یک استاد را انتخاب کنید.",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                Function_Institute_Teacher_Remove();
+            }
+        }
+    });
+
+    var ToolStrip_Institute_Teacher = isc.ToolStrip.create({
+        width: "20",
+        center: true,
+        members: [
+            ToolStripButton_Institute_Teacher_Add, ToolStripButton_Institute_Teacher_Delete
+        ]
+    });
+
+
+    var VLayout_Institute_TeacherList = isc.VLayout.create({
+        width: "100%",
+        height: "690",
+        members: [ListGrid_Institute_Teacher_List]
+    });
+
+    var HLayOut_Institute_TeacherList_Select = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_TeacherList_Choose, IButton_Institute_TeacherList_Exit]
+    });
+
+    var Window_Institute_TeacherList = isc.Window.create({
+        title: "انتخاب اساتید",
+        width: 800,
+        height: 700,
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [
+                VLayout_Institute_TeacherList,
+                HLayOut_Institute_TeacherList_Select
+            ]
+        })]
+    });
+
+    function Function_Institute_TeacherList_Select(instituteId) {
+        RestDataSource_Institute_Institite_UnAttachedTeacher.fetchDataURL = instituteUrl + instituteId + "/unattached-teachers"
+        ListGrid_Institute_Teacher_List.invalidateCache();
+        ListGrid_Institute_Teacher_List.fetchData();
+        Window_Institute_TeacherList.show();
+        Window_Institute_TeacherList.bringToFront();
+    };
+
+    function Function_Institute_TeacherList_Selected() {
+
+        if (ListGrid_Institute_Teacher_List.getSelectedRecord() != null) {
+// console.log(ListGrid_Institute_Teacher_List.getSelectedRecords().getLength());
+            var selectedTeacherRecords = ListGrid_Institute_Teacher_List.getSelectedRecords();
+            if (selectedTeacherRecords.getLength() > 1) {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+
+                var teacherIds = new Array();
+                for (i = 0; i < selectedTeacherRecords.getLength(); i++) {
+                    teacherIds.add(selectedTeacherRecords[i].id);
+                }
+                var JSONObj = {"ids": teacherIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "add-teacher-list/" + instituteId,
+                    httpMethod: "POST",
+                    data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + instituteId + "/teachers"
+                            ListGrid_Institute_Attached_Teacher.invalidateCache();
+                            ListGrid_Institute_Attached_Teacher.fetchData();
+                            Window_Institute_TeacherList.close();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+
+
+            } else {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var teacherRecord = ListGrid_Institute_Teacher_List.getSelectedRecord();
+                var teacherId = teacherRecord.id;
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "add-teacher/" + teacherId + "/" + instituteId,
+                    httpMethod: "POST",
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            RestDataSource_Institute_Institite_Teacher.fetchDataURL = instituteUrl + instituteId + "/teachers"
+                            ListGrid_Institute_Attached_Teacher.invalidateCache();
+                            ListGrid_Institute_Attached_Teacher.fetchData();
+                            Window_Institute_TeacherList.close();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+
+        }
+    }
+
+    function Function_Institute_Teacher_Remove() {
+        var selectedAttachedTeacherRecords = ListGrid_Institute_Attached_Teacher.getSelectedRecords();
+        if (selectedAttachedTeacherRecords != null) {
+            if (selectedAttachedTeacherRecords.getLength() > 1) {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var teacherRecords = ListGrid_Institute_Attached_Teacher.getSelectedRecords();
+                var teacherIds = new Array();
+                for (i = 0; i < teacherRecords.getLength(); i++) {
+                    teacherIds.add(teacherRecords[i].id);
+                }
+// var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "remove-teacher-list/" + teacherIds + "/" + instituteId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Institute_Attached_Teacher.invalidateCache();
+                            ListGrid_Institute_Attached_Teacher.fetchData();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            } else {
+                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
+                var instituteId = instituteRecord.id;
+                var teacherRecord = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
+                var teacherId = teacherRecord.id;
+// var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest({
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    actionURL: instituteUrl + "remove-teacher/" + teacherId + "/" + instituteId,
+                    httpMethod: "DELETE",
+// data: JSON.stringify(JSONObj),
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.data == "true") {
+                            ListGrid_Institute_Attached_Teacher.invalidateCache();
+                            ListGrid_Institute_Attached_Teacher.fetchData();
+                        } else {
+                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                        }
+                    }
+                });
+            }
+
+        }
+
+    }
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
@@ -1608,15 +1970,15 @@
         height: "100%",
         members: [ListGrid_Institute_TrainingPlace]
     });
-    var HLayout_Institute_Institute_Teacher = isc.HLayout.create({
+    var VLayout_Institute_Institute_Teacher = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_Institute_Attached_Teacher]
+        members: [ToolStrip_Institute_Teacher, ListGrid_Institute_Attached_Teacher]
     });
-    var HLayout_Institute_Institute_Equipment = isc.HLayout.create({
+    var VLayout_Institute_Institute_Equipment = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_Institute_Attached_Equipment, ToolStrip_Institute_Equipment]
+        members: [ToolStrip_Institute_Equipment, ListGrid_Institute_Attached_Equipment]
     });
 
     var Tab_Institute_Detail = isc.TabSet.create({
@@ -1633,13 +1995,13 @@
             {
                 id: "TabPane_Institute_Teacher",
                 title: "لیست اساتید",
-                pane: HLayout_Institute_Institute_Teacher
+                pane: VLayout_Institute_Institute_Teacher
 
             },
             {
                 id: "TabPane_Institute_Equipment",
                 title: "لیست تجهیزات کمک آموزشی",
-                pane: HLayout_Institute_Institute_Equipment
+                pane: VLayout_Institute_Institute_Equipment
             }
         ]
     });
@@ -1671,10 +2033,11 @@
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Functions*/
+
     //--------------------------------------------------------------------------------------------------------------------//
     function ListGrid_Institute_Institute_Remove() {
         var record = ListGrid_Institute_Institute.getSelectedRecord();
-        //console.log(record);
+//console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "مرکز آموزشی برای حذف انتخاب نشده است!",
@@ -1755,10 +2118,31 @@
                 }
             });
         } else {
-            //console.log('record:' + JSON.stringify(record));
+//console.log('record:' + JSON.stringify(record));
+
             DynamicForm_Institute_Institute.clearValues();
-            instituteMethod = "PUT";
+            DynamicForm_Institute_Institute_Address.getItem("address.cityId").setOptionDataSource(null);
+
             ValuesManager_Institute_InstituteValue.editRecord(record);
+
+            var stateValue = undefined;
+            var cityValue = undefined;
+
+            if (record != null && record.address != null && record.address.stateId != null)
+                stateValue = record.address.stateId;
+            if (record != null && record.address != null && record.address.cityId != null)
+                cityValue = record.address.cityId;
+            if (cityValue == undefined) {
+                DynamicForm_Institute_Institute_Address.clearValue("address.cityId");
+            }
+            if (stateValue != undefined) {
+                RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
+                DynamicForm_Institute_Institute_Address.getField("address.cityId").optionDataSource = RestDataSource_Institute_City;
+                DynamicForm_Institute_Institute_Address.getField("address.cityId").fetchData();
+            }
+
+
+            instituteMethod = "PUT";
             Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
             Window_Institute_Institute.show();
 
@@ -1769,12 +2153,9 @@
         ValuesManager_Institute_InstituteValue.clearValues();
         ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
-        DynamicForm_Institute_Institute.clearValues();
-        // DynamicForm_Institute_Institute.getField("addressId").setValue(0);
-        // DynamicForm_Institute_Institute.getField("accountInfoId").setValue(0);
-        //
-        // DynamicForm_Institute_Institute_Account.getField("accountInfo.id").setValue(0)
-        // DynamicForm_Institute_Institute_Address.getField("address.id").setValue(0)
+        // DynamicForm_Institute_Institute.clearValues();
+        DynamicForm_Institute_Institute_Address.getItem("address.cityId").setOptionDataSource(null);
+        ;
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
         Window_Institute_Institute.show();
         Window_Institute_Institute.bringToFront();
@@ -1788,4 +2169,11 @@
         }
         ListGrid_Institute_Institute.invalidateCache();
     };
+
+    // function checkMobile(mobile) {
+    //     if (mobile[0] == "0" && mobile[1] == "9")
+    //         return true;
+    //     else
+    //         return false;
+    // };
 

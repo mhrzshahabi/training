@@ -51,7 +51,7 @@
     // isc.FormItem.addProperties({redrawOnChange: true,});
     isc.TextItem.addProperties({height: 27, length: 255,});
     isc.TextAreaItem.addProperties({height: 54, length: 400,});
-    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
+    isc.Validator.addProperties({requiredField: "<spring:message code="msg.required"/>"});
     isc.Button.addProperties({height: 27, autoDraw: false});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
@@ -229,13 +229,13 @@
         titleSuffix: "",
         requiredTitlePrefix: "<span style='color:red;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.field.is.required"/>",
+        requiredMessage: "<spring:message code="msg.required"/>",
     });
 
     TrValidators = {
         NotEmpty: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.field.is.required"/>",
+            errorMessage: "<spring:message code="msg.required"/>",
             expression: /^(?!\s*$).+/
         },
         NotStartWithNumber: {
@@ -680,7 +680,8 @@
             actionURL: actionURLParam,
             httpMethod: httpMethodParam,
             data: dataParam,
-            callback: callbackParam
+            callback: callbackParam,
+            willHandleError: true,
         }
     };
 
@@ -795,7 +796,7 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
-            isc.say("خطا درا تصال به سرور!");
+            isc.say("<spring:message code="msg.error.connecting.to.server"/>");
         }
     });
 
