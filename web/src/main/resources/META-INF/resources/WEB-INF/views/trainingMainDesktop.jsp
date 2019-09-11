@@ -795,20 +795,11 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+            isc.say("خطا درا تصال به سرور!");
         }
     });
 
-    function showOkDialog(msg, iconName) {
-        iconName = iconName ? iconName : 'say';
-        dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
-        Timer.setTimeout(function () {
-            dialog.close();
-        }, 2500);
-    };
-
     // ---------------------------------------- Not Ok - End ----------------------------------------
-
 
 </script>
 </body>
