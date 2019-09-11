@@ -24,6 +24,12 @@
                     refreshPostGradeLG_postGrade();
                 }
             }),
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                ID: "totalsLabel_postGrade"
+            }),
         ]
     });
 
@@ -47,6 +53,15 @@
         gridComponents: [PostGradeTS_postGrade, "header", "filterEditor", "body",],
         contextMenu: PostGradeMenu_postGrade,
         sortField: 0,
+        dataChanged : function () {
+            this.Super("dataChanged", arguments);
+            var totalRows = this.data.getLength();
+            if (totalRows > 0 && this.data.lengthIsKnown()) {
+                totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+            } else {
+                totalsLabel_postGrade.setContents("&nbsp;");
+            }
+        }
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -57,4 +72,4 @@
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostGradeLG_postGrade() {
         PostGradeLG_postGrade.invalidateCache();
-    }
+    };

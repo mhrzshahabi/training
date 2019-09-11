@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//<script>
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.TrMenu.create({
@@ -23,6 +23,12 @@
                 click: function () {
                     refreshJobLG_job();
                 }
+            }),
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                ID: "totalsLabel_job"
             }),
         ]
     });
@@ -47,6 +53,15 @@
         gridComponents: [JobTS_job, "header", "filterEditor", "body",],
         contextMenu: JobMenu_job,
         sortField: 0,
+        dataChanged : function () {
+            this.Super("dataChanged", arguments);
+            var totalRows = this.data.getLength();
+            if (totalRows > 0 && this.data.lengthIsKnown()) {
+                totalsLabel_job.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+            } else {
+                totalsLabel_job.setContents("&nbsp;");
+            }
+        }
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -57,4 +72,4 @@
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.invalidateCache();
-    }
+    };
