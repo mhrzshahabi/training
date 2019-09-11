@@ -62,4 +62,13 @@ public class CompetenceDTO implements Serializable {
         private String titleEn;
         private String description;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Competence - Info")
+    public static class MinInfo extends CompetenceDTO {
+        private Long id;
+        private String titleFa;
+    }
 }

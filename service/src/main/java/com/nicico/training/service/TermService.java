@@ -13,6 +13,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 @Service
 @RequiredArgsConstructor
@@ -74,4 +75,10 @@ public class TermService implements ITermService {
        return SearchUtil.search(termDAO, request, term -> mapper.map(term, TermDTO.Info.class));
     }
 
+    @Transactional
+    @Override
+    public String checkForConflict(String sData,String eData)
+    {
+            return (termDAO.findsDateANDeDate(sData,eData));
+    }
 }
