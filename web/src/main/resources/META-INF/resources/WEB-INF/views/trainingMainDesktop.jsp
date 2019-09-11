@@ -270,7 +270,7 @@
         return value.trim();
     }
 
-    isc.FormItem.addProperties({validators: [TrValidators.Trimmer]});
+    // isc.FormItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
@@ -709,8 +709,6 @@
         showFilterEditor: true,
         filterOnKeypress: true,
         alternateRecordStyles: true,
-        sortFieldAscendingText: "مرتب سازي صعودي",
-        sortFieldDescendingText: "مرتب سازي نزولي",
         autoDraw: true,
         showResizeBar: true,
         sortField: 0,
