@@ -48,11 +48,11 @@
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
-    isc.FormItem.changeDefaults({redrawOnChange: true,});
-    isc.TextItem.changeDefaults({height: 27, length: 255,});
-    isc.TextAreaItem.changeDefaults({height: 40, length: 400,});
-    isc.Validator.changeDefaults({requiredField: "<spring:message code="msg.required"/>"});
-    isc.Button.changeDefaults({height: 27});
+    // isc.FormItem.addProperties({redrawOnChange: true,});
+    isc.TextItem.addProperties({height: 27, length: 255,});
+    isc.TextAreaItem.addProperties({height: 54, length: 400,});
+    isc.Validator.addProperties({requiredField: "<spring:message code="msg.required"/>"});
+    isc.Button.addProperties({height: 27, autoDraw: false});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -60,8 +60,9 @@
             contentType: "application/json; charset=utf-8",
             useSimpleHttp: true,
             showPrompt: false,
-            httpMethod: httpMethodParam,
+            willHandleError: true,
             actionURL: actionURLParam,
+            httpMethod: httpMethodParam,
             data: dataParam,
             callback: callbackParam,
         }
@@ -97,6 +98,7 @@
         showRowNumbers: true,
         AutoFitWidthApproach: "both",
         canDragResize: true,
+        progressiveLoading: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
@@ -213,18 +215,20 @@
     isc.defineClass("TrDynamicForm", DynamicForm);
     isc.TrDynamicForm.addProperties({
         width: "100%",
-        /*  align: "center",
-            margin: 10,
-            cellPadding: 3,
-            showInlineErrors: true,
-            showErrorText: false,
-            showErrorStyle: false,
-            errorOrientation: "right",
-             canSubmit: true,
-         */
+        margin: 5,
+        canDragResize: true,
+        errorOrientation: "right",
+        showInlineErrors: true,
+        showErrorStyle: false,
+        showErrorText: false,
         wrapItemTitles: false,
-        titleAlign: "right",
+        titleAlign: "left",
         autoDraw: false,
+        titlePrefix: "",
+        titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:red;font-size:140%;'>* </span>",
+        requiredTitleSuffix: "",
+        requiredMessage: "<spring:message code="msg.required"/>",
     });
 
     TrValidators = {
@@ -248,31 +252,85 @@
             errorMessage: "<spring:message code="msg.not.contains.special.char"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
+        Trimmer: {
+            type: "custom",
+            condition: function (item, validator, value) {
+                if (value !== undefined) {
+                    var trimmed = trTrim(value);
+                    validator.resultingValue = trimmed;
+                    item.setValue(trimmed);
+                }
+                return true;
+            }
+        }
     };
+
+    function trTrim(value) {
+        return value.trim();
+    }
+
+    isc.FormItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
         autoSize: true,
         autoCenter: true,
         isModal: true,
+        showModalMask: true,
         autoDraw: false,
         canFocus: true,
         dismissOnEscape: true,
+        canDragReposition: true,
+        showHeaderIcon: false,
+        width: 800,
+        showMaximizeButton: true,
     });
 
     isc.defineClass("TrHLayoutButtons", TrHLayout);
     isc.TrHLayoutButtons.addProperties({
-        height: 50,
-        // align: "center",
-        // membersMargin: 15,
+        align: "center",
+        height: 34,
+        defaultLayoutAlign: "top",
+        membersMargin: 10,
     });
 
-    /*isc.defineClass("TrButton", Button);
-    isc.TrButton.addProperties({
-        width: 100,
-        height: 27,
-        autoDraw: false,
-    });*/
+    isc.defineClass("TrSaveButton", Button);
+    isc.TrSaveButton.addProperties({
+        title: "<spring:message code="save"/>",
+    });
+
+    isc.defineClass("TrSaveNextButton", Button);
+    isc.TrSaveNextButton.addProperties({
+        title: "<spring:message code="save.and.next"/>",
+    });
+
+    isc.defineClass("TrCancelButton", Button);
+    isc.TrCancelButton.addProperties({
+        title: "<spring:message code="cancel"/>",
+    });
+
+    isc.defineClass("TrOkDialog", Dialog);
+    isc.TrOkDialog.addProperties({
+        title: "<spring:message code='message'/>",
+        icon: "[SKIN]say.png",
+        isModal: true,
+        buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
+        buttonClick: function (button, index) {
+            this.close();
+        }
+    });
+
+    isc.defineClass("TrYesNoDialog", Dialog);
+    isc.TrYesNoDialog.addProperties({
+        title: "<spring:message code='message'/>",
+        icon: "[SKIN]ask.png",
+        isModal: true,
+        buttons: [
+            isc.Button.create({title: "<spring:message code="yes"/>",}),
+            isc.Button.create({title: "<spring:message code="no"/>",})
+        ],
+    });
+
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 
@@ -547,7 +605,6 @@
                 }, 100);
             }
         },
-
     });
 
     isc.TrVLayout.create({
@@ -583,7 +640,6 @@
             createTab(title, url);
         }
     };
-
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const jobCompetenceUrl = rootUrl + "/job-competence/";
@@ -626,8 +682,8 @@
             useSimpleHttp: true,
             showPrompt: false,
             serverOutputAsString: false,
+
             httpMethod: httpMethodParam,
-            actionURL: actionURLParam,
             data: dataParam,
             callback: callbackParam
         }
@@ -663,7 +719,7 @@
         sortFieldDescendingText: "مرتب سازي نزولي",
         autoDraw: true,
         showResizeBar: true,
-        sortField: 0
+        sortField: 0,
     });
 
     isc.defineClass("MyDynamicForm", DynamicForm);
@@ -742,15 +798,17 @@
         autoDraw: false,
     });
 
-    isc.RPCManager.addClassProperties({
-        defaultTimeout: 60000,
-        willHandleError: true,
-        handleError: function (response, request) {
-            isc.say('ارتباط با سرور قطع شده است.');
-        }
-    });
+    /* isc.RPCManager.addClassProperties({
+         defaultTimeout: 60000,
+         willHandleError: true,
+         handleError: function (response, request) {
+             isc.say('ارتباط با سرور قطع شده است.');
+         }
+     });*/
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
+
+    createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
 
 </script>
 </body>

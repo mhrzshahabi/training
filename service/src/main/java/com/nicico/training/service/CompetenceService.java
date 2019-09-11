@@ -28,11 +28,11 @@ public class CompetenceService implements ICompetenceService {
 
     @Transactional(readOnly = true)
     @Override
-    public CompetenceDTO.Info get(Long id) {
+    public CompetenceDTO.MinInfo get(Long id) {
 
         final Optional<Competence> optionalCompetence = competenceDAO.findById(id);
         final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        return modelMapper.map(competence, CompetenceDTO.Info.class);
+        return modelMapper.map(competence, CompetenceDTO.MinInfo.class);
     }
 
     @Transactional(readOnly = true)
@@ -45,9 +45,9 @@ public class CompetenceService implements ICompetenceService {
 
     @Transactional
     @Override
-    public CompetenceDTO.Info create(CompetenceDTO.Create request) {
+    public CompetenceDTO.MinInfo create(CompetenceDTO.Create request) {
         Competence competence = modelMapper.map(request, Competence.class);
-        return modelMapper.map(competenceDAO.saveAndFlush(competence), CompetenceDTO.Info.class);
+        return modelMapper.map(competenceDAO.saveAndFlush(competence), CompetenceDTO.MinInfo.class);
     }
 
     @Transactional

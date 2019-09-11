@@ -12,8 +12,6 @@
 
 
 
-
-
     var RestDataSource_Skill_Group_Jsp = isc.MyRestDataSource.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -53,6 +51,7 @@
                     simpleDialog("پیغام", "گروه مهارتی انتخاب نشده است.", 0, "stop");
 
                 } else {
+
 
 
                     isc.RPCManager.sendRequest({
@@ -183,13 +182,13 @@
 
                         }}
                 ]}, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                "<spring:url value="/skill-group/print/excel" var="printUrl"/>"
+            title: "چاپ همه گروه مهارت ها", icon: "icon/pdf.png", click: function () {
+                "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                "<spring:url value="/skill-group/print/html" var="printUrl"/>"
+            title: "چاپ همه با جزئیات", icon: "icon/pdf.png", click: function () {
+                "<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {isSeparator: true}, {
@@ -230,7 +229,7 @@
                     });
 
 
-                    ListGrid_Skill_Group_Competence.invalidateCache();
+                   // ListGrid_Skill_Group_Competence.invalidateCache();
 
                 }
             }
@@ -286,16 +285,16 @@
             record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
             if (record == null || record.id == null) {
             } else {
-                RestDataSource_Skill_Group_Competencies_Jsp.fetchDataURL = skillGroupUrl + record.id + "/getCompetences"
+                // RestDataSource_Skill_Group_Competencies_Jsp.fetchDataURL = skillGroupUrl + record.id + "/getCompetences"
                 RestDataSource_Skill_Group_Skills_Jsp.fetchDataURL = skillGroupUrl + record.id + "/getSkills"
                 ListGrid_Skill_Group_Skills.invalidateCache();
                 ListGrid_Skill_Group_Skills.fetchData();
-                RestDataSource_Skill_Group_Competencies_Jsp.invalidateCache();
-                RestDataSource_Skill_Group_Competencies_Jsp.fetchData();
+                // RestDataSource_Skill_Group_Competencies_Jsp.invalidateCache();
+                // RestDataSource_Skill_Group_Competencies_Jsp.fetchData();
                 RestDataSource_Skill_Group_Skills_Jsp.invalidateCache();
                 RestDataSource_Skill_Group_Skills_Jsp.fetchData();
-                ListGrid_Skill_Group_Competence.invalidateCache();
-                ListGrid_Skill_Group_Competence.fetchData();
+                // ListGrid_Skill_Group_Competence.invalidateCache();
+                // ListGrid_Skill_Group_Competence.fetchData();
             }
         },
         doubleClick: function () {
@@ -1466,6 +1465,7 @@
 
             if (record == null || record.id == null) {
 
+
                 isc.Dialog.create({
 
                     message: "گروه مهارتی انتخاب نشده است",
@@ -1534,8 +1534,15 @@
             ,{
                 id: "TabPane_Skill_Group_Competence",
                 title: "لیست شایستگی ها",
+                visable:false,
                 pane: ListGrid_Skill_Group_Competence
             }
+            // ,{
+            //     id: "TabPane_Skill_Group_Competence",
+            //     title: "لیست پستهای این گروه مهارت",
+            //     visable:false,
+            //     pane: ListGrid_Skill_Group_Competence
+            // }
         ]
     });
 

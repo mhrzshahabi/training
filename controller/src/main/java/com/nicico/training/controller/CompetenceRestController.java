@@ -35,7 +35,7 @@ public class CompetenceRestController {
 
     @Loggable
     @GetMapping("/{id}")
-    public ResponseEntity<CompetenceDTO.Info> get(@PathVariable long id) {
+    public ResponseEntity<CompetenceDTO.MinInfo> get(@PathVariable long id) {
         return new ResponseEntity<>(competenceService.get(id), HttpStatus.OK);
     }
 
@@ -47,9 +47,9 @@ public class CompetenceRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CompetenceDTO.Info> create(@RequestBody Object req) {
-        CompetenceDTO.Create create = (new ModelMapper()).map(req, CompetenceDTO.Create.class);
-        return new ResponseEntity<>(competenceService.create(create), HttpStatus.CREATED);
+    public ResponseEntity<CompetenceDTO.MinInfo> create(@RequestBody CompetenceDTO.Create req) {
+//        CompetenceDTO.Create create = (new ModelMapper()).map(req, CompetenceDTO.Create.class);
+        return new ResponseEntity<>(competenceService.create(req), HttpStatus.OK);
     }
 
     @Loggable
