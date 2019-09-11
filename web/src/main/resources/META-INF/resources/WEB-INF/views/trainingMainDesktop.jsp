@@ -799,6 +799,14 @@
         }
     });
 
+    function showOkDialog(msg, iconName) {
+        iconName = iconName ? iconName : 'say';
+        dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
+        Timer.setTimeout(function () {
+            dialog.close();
+        }, 2500);
+    };
+
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 
