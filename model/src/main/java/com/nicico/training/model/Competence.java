@@ -24,14 +24,14 @@ public class Competence extends Auditable {
     @SequenceGenerator(name = "seq_competence_id", sequenceName = "seq_competence_id", allocationSize = 1)
     private Long id;
 
-	@Column(name = "c_title_fa", nullable = false, unique = true)
+    @Column(name = "c_title_fa", nullable = false, unique = true)
     @NotBlank
     private String titleFa;
 
-	@Column(name = "c_title_en")
+    @Column(name = "c_title_en")
     private String titleEn;
 
-	@Column(name = "c_description")
+    @Column(name = "c_description")
     private String description;
 
 }

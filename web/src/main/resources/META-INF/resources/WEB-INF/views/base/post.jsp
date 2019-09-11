@@ -13,12 +13,6 @@
                     refreshPostLG_post();
                 }
             },
-            isc.LayoutSpacer.create({
-                width: "*"
-            }),
-            isc.Label.create({
-                ID: "totalsLabel_post"
-            }),
         ]
     });
 
@@ -29,6 +23,15 @@
                 click: function () {
                     refreshPostLG_post();
                 }
+            }),
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                ID: "totalsLabel_post"
+            }),
+            isc.LayoutSpacer.create({
+                width: 40
             }),
         ]
     });
@@ -68,9 +71,9 @@
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_post.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
             } else {
-                totalsLabel_postGrade.setContents("&nbsp;");
+                totalsLabel_post.setContents("&nbsp;");
             }
         }
     });

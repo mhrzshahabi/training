@@ -10,11 +10,9 @@ import java.util.List;
 
 public interface ICompetenceService {
 
-    CompetenceDTO.MinInfo get(Long id);
+    CompetenceDTO.Info get(Long id);
 
-    List<CompetenceDTO.Info> list();
-
-    CompetenceDTO.MinInfo create(CompetenceDTO.Create request);
+    CompetenceDTO.Info create(CompetenceDTO.Create request);
 
     CompetenceDTO.Info update(Long id, CompetenceDTO.Update request);
 
@@ -22,5 +20,8 @@ public interface ICompetenceService {
 
     void delete(CompetenceDTO.Delete request);
 
+    List<CompetenceDTO.Info> list();
+
     SearchDTO.SearchRs<CompetenceDTO.Info> search(SearchDTO.SearchRq request);
+
 }

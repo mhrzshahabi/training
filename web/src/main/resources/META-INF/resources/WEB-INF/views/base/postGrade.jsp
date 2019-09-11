@@ -30,6 +30,9 @@
             isc.Label.create({
                 ID: "totalsLabel_postGrade"
             }),
+            isc.LayoutSpacer.create({
+                width: 40
+            }),
         ]
     });
 

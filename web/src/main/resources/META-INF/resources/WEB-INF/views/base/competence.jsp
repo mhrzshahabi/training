@@ -3,6 +3,7 @@
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 // <script>
+
     let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
@@ -72,7 +73,7 @@
             }),
             isc.Label.create({
                 padding: 5,
-                ID: "totalsLabel"
+                ID: "totalsLabel_competence"
             }),
             isc.LayoutSpacer.create({
                 width: "40"
@@ -102,13 +103,13 @@
         gridComponents: [CompetenceTS_competence, "header", "filterEditor", "body",],
         contextMenu: CompetenceMenu_competence,
         sortField: 0,
-        dataChanged : function () {
+        dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
             } else {
-                totalsLabel.setContents("&nbsp;");
+                totalsLabel_competence.setContents("&nbsp;");
             }
         }
     });
@@ -190,14 +191,38 @@
         );
     };
 
-    function studyRcpResponse(resp, entityType, action) {
+
+    function showRemoveForm_competence() {
+        let record = CompetenceLG_competence.getSelectedRecord();
+        if (checkRecordAsSelected(record, true)) {
+            isc.TrYesNoDialog.create({
+                message: "<spring:message code="msg.record.remove.ask"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index == 0) {
+                        alert(name);
+                        isc.RPCManager.sendRequest(
+                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="job.competence"/>', '<spring:message code="removed"/>', " + record.titleFa + ")")
+                        );
+                    }
+                }
+            });
+        }
+    };
+
+    function studyRcpResponse(resp, entityType, action, entityName) {
         let respCode = resp.httpResponseCode;
-        let data = resp.data;
         if (respCode == 200) {
-            let msg = entityType + ' \'<b>' + JSON.parse(data).titleFa + '</b>\' ' + action;
+            let name;
+            if (entityName && (entityName !== 'undefined')) {
+                name = entityName;
+            } else {
+                name = JSON.parse(resp.data).titleFa;
+            }
+            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action;
             showOkDialog(msg);
         } else {
-            alert('error');
+            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
             switch (respCode) {
                 case 0:
                     break;
@@ -215,24 +240,7 @@
         }, 2500);
     };
 
-    function showRemoveForm_competence() {
-        let record = CompetenceLG_competence.getSelectedRecord();
-        if (checkRecordAsSelected(record, true)) {
-            isc.TrYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        isc.RPCManager.sendRequest(
-                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="job.competence"/>', '<spring:message code="removed"/>')")
-                        );
-                    }
-                }
-            });
-        }
-    };
-
-    function checkRecordAsSelected(record, showDialog, msg,) {
+    function checkRecordAsSelected(record, showDialog, msg) {
         if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {
             return true;
         }
