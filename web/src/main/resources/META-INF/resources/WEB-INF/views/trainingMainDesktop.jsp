@@ -677,7 +677,7 @@
             useSimpleHttp: true,
             showPrompt: false,
             serverOutputAsString: false,
-
+            actionURL: actionURLParam,
             httpMethod: httpMethodParam,
             data: dataParam,
             callback: callbackParam
