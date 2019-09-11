@@ -51,7 +51,7 @@
     // isc.FormItem.addProperties({redrawOnChange: true,});
     isc.TextItem.addProperties({height: 27, length: 255,});
     isc.TextAreaItem.addProperties({height: 54, length: 400,});
-    isc.Validator.addProperties({requiredField: "<spring:message code="msg.required"/>"});
+    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.Button.addProperties({height: 27, autoDraw: false});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
@@ -229,13 +229,13 @@
         titleSuffix: "",
         requiredTitlePrefix: "<span style='color:red;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.required"/>",
+        requiredMessage: "<spring:message code="msg.field.is.required"/>",
     });
 
     TrValidators = {
         NotEmpty: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.required"/>",
+            errorMessage: "<spring:message code="msg.field.is.required"/>",
             expression: /^(?!\s*$).+/
         },
         NotStartWithNumber: {
@@ -270,7 +270,8 @@
         return value.trim();
     }
 
-    // isc.FormItem.addProperties({validators: [TrValidators.Trimmer]});
+    isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
+    isc.RichTextItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
@@ -676,7 +677,7 @@
             useSimpleHttp: true,
             showPrompt: false,
             serverOutputAsString: false,
-
+            actionURL: actionURLParam,
             httpMethod: httpMethodParam,
             data: dataParam,
             callback: callbackParam
@@ -794,13 +795,11 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+            isc.say("خطا درا تصال به سرور!");
         }
     });
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
-
-    createTab("شایستگی شغلی", "<spring:url value="/competence/show-form"/>");
 
 </script>
 </body>
