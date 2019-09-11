@@ -29,7 +29,7 @@ import java.util.List;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/competence")
+@RequestMapping("/api/competence1")
 public class CompetenceRestControllerOld {
 
 //    private final CompetenceServiceOld competenceService;
