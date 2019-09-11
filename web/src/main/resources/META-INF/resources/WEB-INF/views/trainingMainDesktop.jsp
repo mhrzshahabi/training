@@ -396,13 +396,7 @@
                     }
                 },
                 {
-                    title: "<spring:message code="equipment"/>", icon: "<spring:url value="equipment.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/equipment/show-form"/>");
-                    }
-                },
-                {
-                    title: "<spring:message code="education"/>", icon: "<spring:url value="education.png"/>",
+                    title: "<spring:message code="education.degree"/>", icon: "<spring:url value="education.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
@@ -434,7 +428,7 @@
                     }
                 },
                 {
-                    title: "<spring:message code="job.competence"/>", icon: "<spring:url value="competence.png"/>",
+                    title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
                     }
@@ -490,7 +484,6 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
-
             ]
         }),
     });
