@@ -43,6 +43,9 @@
         jsonSuffix: "",
     });
     var DynamicForm_Goal = isc.MyDynamicForm.create({
+        titleAlign: "left",
+        showInlineErrors: true,
+
         fields: [
             {name: "id", hidden: true},
             {
@@ -66,6 +69,9 @@
     });
     var DynamicForm_Syllabus = isc.MyDynamicForm.create({
         ID: "formSyllabus",
+        colWidths: [250, "*"],
+        titleAlign: "left",
+        numCols: 1,
         fields: [
             {name: "id", hidden: true},
             {
@@ -95,6 +101,8 @@
             },
             {
                 name: "titleFa",
+                colSpan:1,
+                width: "250",
                 title: "نام فارسی",
                 required: true,
                 type: 'text',
@@ -113,6 +121,7 @@
             {
                 name: "titleEn",
                 title: "نام لاتین ",
+                width: "250",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "200",
@@ -130,18 +139,17 @@
             },
             {
                 name: "edomainTypeId",
-                // value: "",
-                type: "IntegerItem",
+                // type: "IntegerItem",
                 title: "حیطه",
                 width: 220,
                 required: true,
                 textAlign: "center",
-                editorType: "MyComboBoxItem",
+                // editorType: "MyComboBoxItem",
                 pickListWidth: 210,
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSourceGoalEDomainType,
-                autoFetchData: false,
+                autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 // filterOnKeypress: true,
@@ -160,13 +168,12 @@
                 title: "مدت زمان اجرا",
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
-                defaultValue: 0,
+                defaultValue: 2,
                 keyPressFilter: "^[0-9]",
                 min: 1,
                 max: 300,
-                step: 2,
+                step: 1,
                 change: function (form, item, value) {
-
                     if (methodSyllabus == "PUT") {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
                         // console.log(sumSyllabus)
@@ -179,7 +186,6 @@
                 },
 
             }],
-
         keyPress: function () {
             if (isc.EventHandler.getKey() == "Enter") {
                 DynamicForm_Syllabus.focusInNextTabElement();
@@ -1146,6 +1152,7 @@
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.setTitle("ایجاد سرفصل");
+            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration+2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
     };
@@ -1167,6 +1174,7 @@
             urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
+            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
             Window_Syllabus.setTitle("ویرایش سرفصل");
             Window_Syllabus.show();
         }

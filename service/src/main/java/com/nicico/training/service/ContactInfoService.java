@@ -25,6 +25,9 @@ import java.util.Optional;
 public class ContactInfoService implements IContactInfoService {
     private final ModelMapper modelMapper;
     private final ContactInfoDAO contactInfoDAO;
+    private final AddressDAO addressDAO;
+
+    private final AddressService addressService;
 
     @Transactional(readOnly = true)
     @Override
@@ -45,19 +48,88 @@ public class ContactInfoService implements IContactInfoService {
     @Transactional
     @Override
     public ContactInfoDTO.Info create(ContactInfoDTO.Create request) {
-        final ContactInfo contactInfo = modelMapper.map(request, ContactInfo.class);
-        return save(contactInfo);
+        ContactInfo contactInfo;
+		Address homeAddress;
+		Address workAddress;
+
+		contactInfo = modelMapper.map(request,ContactInfo.class);;
+
+		if (request.getHomeAddress() != null) {
+				homeAddress = modelMapper.map(request.getHomeAddress(), Address.class);
+				addressDAO.saveAndFlush(homeAddress);
+				contactInfo.setHomeAddress(homeAddress);
+				contactInfo.setHomeAddressId(homeAddress.getId());
+		}
+
+		if (request.getWorkAddress() != null) {
+				workAddress = modelMapper.map(request.getWorkAddress(), Address.class);
+				addressDAO.saveAndFlush(workAddress);
+				contactInfo.setWorkAddress(workAddress);
+				contactInfo.setWorkAddressId(workAddress.getId());
+		}
+
+
+		return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
     }
 
     @Transactional
     @Override
     public ContactInfoDTO.Info update(Long id, ContactInfoDTO.Update request) {
+		ContactInfo contactInfo = null;
+		Address homeAddress = null;
+		Address workAddress = null;
+
+		Long homeAddressId = null;
+		Long workAddressId = null;
+
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
-        final ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        ContactInfo updating = new ContactInfo();
-        modelMapper.map(contactInfo, updating);
-        modelMapper.map(request, updating);
-        return save(updating);
+        contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+
+   		if(contactInfo.getHomeAddressId() != null && request.getHomeAddress() != null) {
+			AddressDTO.Info addressDto = addressService.update(contactInfo.getHomeAddressId(),request.getHomeAddress());
+			homeAddress = modelMapper.map(addressDto,Address.class);
+			homeAddressId = homeAddress.getId();
+		}
+
+		if(contactInfo.getHomeAddressId() == null && request.getHomeAddress() != null) {
+				AddressDTO.Info addressDto = addressService.create(modelMapper.map(request.getHomeAddress(),AddressDTO.Create.class));
+				homeAddress = modelMapper.map(addressDto,Address.class);
+				homeAddressId = homeAddress.getId();
+		}
+
+		if(contactInfo.getHomeAddressId() != null && request.getHomeAddress()==null) {
+			addressService.delete(contactInfo.getHomeAddressId());
+			homeAddress = null;
+			homeAddressId = null;
+		}
+
+		if(contactInfo.getWorkAddressId() != null && request.getWorkAddress() != null) {
+			AddressDTO.Info addressDto = addressService.update(contactInfo.getWorkAddressId(),request.getWorkAddress());
+			workAddress = modelMapper.map(addressDto,Address.class);
+			workAddressId = workAddress.getId();
+		}
+
+		if(contactInfo.getWorkAddressId() == null && request.getWorkAddress() != null) {
+				AddressDTO.Info addressDto = addressService.create(modelMapper.map(request.getWorkAddress(),AddressDTO.Create.class));
+				workAddress = modelMapper.map(addressDto,Address.class);
+				workAddressId = workAddress.getId();
+		}
+
+		if(contactInfo.getWorkAddressId() != null && request.getWorkAddress()==null) {
+			addressService.delete(contactInfo.getWorkAddressId());
+			workAddress = null;
+			workAddressId = null;
+		}
+
+        ContactInfo cupdating = new ContactInfo();
+        modelMapper.map(contactInfo, cupdating);
+        modelMapper.map(request, cupdating);
+        cupdating.setHomeAddressId(homeAddressId);
+        cupdating.setHomeAddress(homeAddress);
+        cupdating.setWorkAddressId(workAddressId);
+        cupdating.setWorkAddress(workAddress);
+        return save(cupdating);
     }
 
     @Transactional
