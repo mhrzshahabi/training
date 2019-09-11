@@ -28,26 +28,17 @@ public class CompetenceService implements ICompetenceService {
 
     @Transactional(readOnly = true)
     @Override
-    public CompetenceDTO.MinInfo get(Long id) {
-
+    public CompetenceDTO.Info get(Long id) {
         final Optional<Competence> optionalCompetence = competenceDAO.findById(id);
         final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
-        return modelMapper.map(competence, CompetenceDTO.MinInfo.class);
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<CompetenceDTO.Info> list() {
-        List<Competence> competenceList = competenceDAO.findAll();
-        return modelMapper.map(competenceList, new TypeToken<List<CompetenceDTO.Info>>() {
-        }.getType());
+        return modelMapper.map(competence, CompetenceDTO.Info.class);
     }
 
     @Transactional
     @Override
-    public CompetenceDTO.MinInfo create(CompetenceDTO.Create request) {
+    public CompetenceDTO.Info create(CompetenceDTO.Create request) {
         Competence competence = modelMapper.map(request, Competence.class);
-        return modelMapper.map(competenceDAO.saveAndFlush(competence), CompetenceDTO.MinInfo.class);
+        return modelMapper.map(competenceDAO.saveAndFlush(competence), CompetenceDTO.Info.class);
     }
 
     @Transactional
@@ -77,7 +68,16 @@ public class CompetenceService implements ICompetenceService {
 
     @Transactional(readOnly = true)
     @Override
+    public List<CompetenceDTO.Info> list() {
+        List<Competence> competenceList = competenceDAO.findAll();
+        return modelMapper.map(competenceList, new TypeToken<List<CompetenceDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
     public SearchDTO.SearchRs<CompetenceDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(competenceDAO, request, competence -> modelMapper.map(competence, CompetenceDTO.Info.class));
     }
+
 }

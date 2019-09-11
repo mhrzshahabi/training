@@ -96,13 +96,14 @@
         leaveScrollbarGap: false,
         allowAdvancedCriteria: true,
         showRowNumbers: true,
-        AutoFitWidthApproach: "both",
         canDragResize: true,
         progressiveLoading: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
+        wrapCells: true,
+        canEdit: true,
     });
 
     isc.defineClass("TrImg", Img);
@@ -249,7 +250,7 @@
         },
         NotContainSpecialChar: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.not.contains.special.char"/>",
+            errorMessage: "<spring:message code="msg.not.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
         Trimmer: {
@@ -792,13 +793,13 @@
         autoDraw: false,
     });
 
-    /* isc.RPCManager.addClassProperties({
-         defaultTimeout: 60000,
-         willHandleError: true,
-         handleError: function (response, request) {
-             isc.say('ارتباط با سرور قطع شده است.');
-         }
-     });*/
+    isc.RPCManager.addClassProperties({
+        defaultTimeout: 60000,
+        willHandleError: true,
+        handleError: function (response, request) {
+            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+        }
+    });
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

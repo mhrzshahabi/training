@@ -30,6 +30,9 @@
             isc.Label.create({
                 ID: "totalsLabel_job"
             }),
+            isc.LayoutSpacer.create({
+                width: 40
+            }),
         ]
     });
 
