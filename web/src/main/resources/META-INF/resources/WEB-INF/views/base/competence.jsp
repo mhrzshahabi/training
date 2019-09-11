@@ -3,8 +3,7 @@
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
 // <script>
-
-    var competenceMethod_competence;
+    let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
     CompetenceMenu_competence = isc.TrMenu.create({
@@ -68,6 +67,16 @@
                     printCompetence_competence();
                 }
             }),
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                padding: 5,
+                ID: "totalsLabel"
+            }),
+            isc.LayoutSpacer.create({
+                width: "40"
+            }),
         ]
     });
 
@@ -93,6 +102,15 @@
         gridComponents: [CompetenceTS_competence, "header", "filterEditor", "body",],
         contextMenu: CompetenceMenu_competence,
         sortField: 0,
+        dataChanged : function () {
+            this.Super("dataChanged", arguments);
+            var totalRows = this.data.getLength();
+            if (totalRows > 0 && this.data.lengthIsKnown()) {
+                totalsLabel.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+            } else {
+                totalsLabel.setContents("&nbsp;");
+            }
+        }
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -146,6 +164,9 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refresh_competence() {
+        if (CompetenceWin_competence.isDrawn()) {
+            CompetenceWin_competence.close();
+        }
         CompetenceLG_competence.invalidateCache();
     };
 
@@ -163,19 +184,17 @@
         if (!CompetenceDF_competence.validate()) {
             return;
         }
-        var data = CompetenceDF_competence.getValues();
+        let data = CompetenceDF_competence.getValues();
         isc.RPCManager.sendRequest(
             TrDSRequest(competenceUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="job.competence"/>', '<spring:message code="created"/>')")
         );
-        CompetenceWin_competence.close();
-        refresh_competence();
     };
 
     function studyRcpResponse(resp, entityType, action) {
-        var respCode = resp.httpResponseCode;
-        var data = resp.data;
+        let respCode = resp.httpResponseCode;
+        let data = resp.data;
         if (respCode == 200) {
-            var msg = entityType + ' \'<b>' + JSON.parse(data).titleFa + '</b>\' ' + action;
+            let msg = entityType + ' \'<b>' + JSON.parse(data).titleFa + '</b>\' ' + action;
             showOkDialog(msg);
         } else {
             alert('error');
@@ -185,6 +204,7 @@
                 default:
             }
         }
+        refresh_competence();
     };
 
     function showOkDialog(msg, iconName) {
@@ -194,7 +214,6 @@
             dialog.close();
         }, 2500);
     };
-
 
     function showRemoveForm_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();

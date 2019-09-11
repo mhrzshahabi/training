@@ -13,6 +13,12 @@
                     refreshPostLG_post();
                 }
             },
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                ID: "totalsLabel_post"
+            }),
         ]
     });
 
@@ -58,6 +64,15 @@
         gridComponents: [PostTS_post, "header", "filterEditor", "body",],
         contextMenu: PostMenu_post,
         sortField: 0,
+        dataChanged : function () {
+            this.Super("dataChanged", arguments);
+            var totalRows = this.data.getLength();
+            if (totalRows > 0 && this.data.lengthIsKnown()) {
+                totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+            } else {
+                totalsLabel_postGrade.setContents("&nbsp;");
+            }
+        }
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -68,4 +83,4 @@
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostLG_post() {
         PostLG_post.invalidateCache();
-    }
+    };
