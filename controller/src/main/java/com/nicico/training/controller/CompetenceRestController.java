@@ -32,6 +32,7 @@ public class CompetenceRestController {
 
     private final CompetenceService competenceService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping("/list")
@@ -49,8 +50,16 @@ public class CompetenceRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CompetenceDTO.Info> create(@RequestBody CompetenceDTO.Create req) {
-        return new ResponseEntity<>(competenceService.create(req), HttpStatus.OK);
+    public ResponseEntity<CompetenceDTO.Info> create(@RequestBody Object req) {
+        CompetenceDTO.Create create = modelMapper.map(req, CompetenceDTO.Create.class);
+        return new ResponseEntity<>(competenceService.create(create), HttpStatus.OK);
+    }
+
+    @Loggable
+    @PutMapping("/{id}")
+    public ResponseEntity<CompetenceDTO.Info> update(@PathVariable Long id, @RequestBody Object req) {
+        CompetenceDTO.Update update = modelMapper.map(req, CompetenceDTO.Update.class);
+        return new ResponseEntity<>(competenceService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
@@ -67,15 +76,6 @@ public class CompetenceRestController {
     }
 
 
-
-
-
-    @Loggable
-    @PutMapping("/{id}")
-    public ResponseEntity<CompetenceDTO.Info> update(@PathVariable Long id, @RequestBody Object req) {
-        CompetenceDTO.Update update = (new ModelMapper()).map(req, CompetenceDTO.Update.class);
-        return new ResponseEntity<>(competenceService.update(id, update), HttpStatus.OK);
-    }
 
 
 

@@ -56,9 +56,9 @@
         gridComponents: [JobTS_job, "header", "filterEditor", "body",],
         contextMenu: JobMenu_job,
         sortField: 0,
-        dataChanged : function () {
+        dataChanged: function () {
             this.Super("dataChanged", arguments);
-            var totalRows = this.data.getLength();
+            let totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
                 totalsLabel_job.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
             } else {

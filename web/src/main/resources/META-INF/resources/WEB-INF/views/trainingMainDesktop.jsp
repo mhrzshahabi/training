@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -103,7 +103,6 @@
             width: 40,
         },
         wrapCells: true,
-        canEdit: true,
     });
 
     isc.defineClass("TrImg", Img);
@@ -180,7 +179,7 @@
 
     isc.defineClass("TrCreateBtn", TrTSB);
     isc.TrCreateBtn.addProperties({
-        icon: "<spring:url value="add.png"/>",
+        icon: "<spring:url value="create.png"/>",
         title: "<spring:message code="create"/>",
     });
 
@@ -240,17 +239,17 @@
         },
         NotStartWithNumber: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.not.start.number"/>",
+            errorMessage: "<spring:message code="msg.field.can't.start.number"/>",
             expression: /^(?!([0-9]))/,
         },
         NotStartWithSpecialChar: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.not.start.special.char"/>",
+            errorMessage: "<spring:message code="msg.field.can't.start.special.char"/>",
             expression: /^(?!([!@#$%^&*~';:.{}_]))/,
         },
         NotContainSpecialChar: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.not.contains.special.chars"/>",
+            errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
         Trimmer: {
@@ -271,7 +270,6 @@
     }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
-    isc.RichTextItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
@@ -795,7 +793,7 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
-            isc.say("خطا درا تصال به سرور!");
+            isc.say("خطا در اتصال به سرور!");
         }
     });
 

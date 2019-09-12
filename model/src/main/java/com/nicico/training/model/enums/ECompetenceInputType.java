@@ -17,9 +17,10 @@ import lombok.ToString;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ECompetenceInputType {
 
-    TaskDescription(1, "شرح وظيفه"),
-    OrganizationalGoals(2, "اهداف سازماني"),
-    OccupationalComplications(3, "عارضه يابي شغل");
+    PerformanceEvaluation(1, "ارزیابی عملکرد"),
+    OrganizationalGoals(2, "استراتژی و اهداف سازماني"),
+    TaskDescription(3, "شرح وظيفه"),
+    OccupationalComplications(4, "عارضه يابي شغل");
 
     private final Integer id;
     private final String titleFa;
