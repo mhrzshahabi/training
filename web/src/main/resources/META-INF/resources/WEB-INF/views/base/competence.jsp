@@ -2,8 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-//
-<script>
+// <script>
 
     let competenceMethod_competence;
 
@@ -242,7 +241,7 @@
         }
         let data = CompetenceDF_competence.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '<spring:message code="created"/>')")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '" + competenceAction + "')")
         );
     };
 
@@ -272,7 +271,7 @@
             } else {
                 name = JSON.parse(resp.data).titleFa;
             }
-            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action;
+            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action + '.';
             showOkDialog(msg);
         } else {
             showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");

@@ -358,7 +358,7 @@
             },
             {
                 name: "titleEn",
-                title: "<spring:message code='titleEn'/>",
+                title: "<spring:message code='title.en'/>",
                 required: true,
                 keyPressFilter: "[a-z|A-Z |]",
                 hint: "English/انگليسي",
