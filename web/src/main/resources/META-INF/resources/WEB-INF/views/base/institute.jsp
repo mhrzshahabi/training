@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%--<script>--%>
+    //<script>
 
     <%
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -212,19 +212,21 @@
             title: "<spring:message code='remove'/>", icon: "pieces/16/icon_delete.png", click: function () {
                 ListGrid_Institute_Institute_Remove();
             }
-        }, {isSeparator: true}, {
-            title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
-                ListGrid_institute_print("pdf");
-            }
-        }, {
-            title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
-                ListGrid_institute_print("excel");
-            }
-        }, {
-            title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
-                ListGrid_institute_print("html");
-            }
-        }]
+        }, {isSeparator: true}]
+               <%--{title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {--%>
+                <%--ListGrid_institute_print("pdf");--%>
+            <%--}},--%>
+               <%--{--%>
+            <%--title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {--%>
+                <%--ListGrid_institute_print("excel");--%>
+            <%--}--%>
+        <%--},--%>
+               <%--{--%>
+            <%--title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {--%>
+                <%--ListGrid_institute_print("html");--%>
+            <%--}--%>
+        <%--}]--%>
+
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -373,37 +375,37 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var ListGrid_Institute_TrainingPlace = isc.ListGrid.create({
-        width: "100%",
-        height: "100%",
-        dataSource: RestDataSource_Institute_TrainingPlace,
-        doubleClick: function () {
-
-        },
-        fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "capacity", title: "ظرفیت", align: "center"},
-            {name: "ePlaceType.titleFa", title: "نوع محل", align: "center"},
-            {name: "eArrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
-        ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
-    });
+    // var ListGrid_Institute_TrainingPlace = isc.ListGrid.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     dataSource: RestDataSource_Institute_TrainingPlace,
+    //     doubleClick: function () {
+    //
+    //     },
+    //     fields: [
+    //         {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+    //         {name: "titleFa", title: "عنوان فارسی", align: "center"},
+    //         {name: "titleEn", title: "عنوان لاتین ", align: "center"},
+    //         {name: "capacity", title: "ظرفیت", align: "center"},
+    //         {name: "ePlaceType.titleFa", title: "نوع محل", align: "center"},
+    //         {name: "eArrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
+    //     ],
+    //     selectionType: "multiple",
+    //     sortField: 1,
+    //     sortDirection: "descending",
+    //     dataPageSize: 50,
+    //     autoFetchData: false,
+    //     showFilterEditor: true,
+    //     filterOnKeypress: true,
+    //     sortFieldAscendingText: "مرتب سازی صعودی ",
+    //     sortFieldDescendingText: "مرتب سازی نزولی",
+    //     configureSortText: "تنظیم مرتب سازی",
+    //     autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+    //     autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+    //     filterUsingText: "فیلتر کردن",
+    //     groupByText: "گروه بندی",
+    //     freezeFieldText: "ثابت نگه داشتن"
+    // });
 
     var ListGrid_Institute_Institute_List = isc.ListGrid.create({
         width: "100%",
@@ -1934,13 +1936,14 @@
             ListGrid_Institute_Institute_Remove();
         }
     });
-    var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
-        title: "<spring:message code='print'/>",
-        click: function () {
-            ListGrid_institute_print("pdf");
-        }
-    });
+
+    <%--var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({--%>
+        <%--icon: "[SKIN]/RichTextEditor/print.png",--%>
+        <%--title: "<spring:message code='print'/>",--%>
+        <%--click: function () {--%>
+            <%--ListGrid_institute_print("pdf");--%>
+        <%--}--%>
+    <%--});--%>
 
     var ToolStrip_Institute_Institute_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -1948,8 +1951,8 @@
             ToolStripButton_Institute_Institute_Refresh,
             ToolStripButton_Institute_Institute_Add,
             ToolStripButton_Institute_Institute_Edit,
-            ToolStripButton_Institute_Institute_Remove,
-            ToolStripButton_Institute_Institute_Print]
+            ToolStripButton_Institute_Institute_Remove]//,
+            // ToolStripButton_Institute_Institute_Print]
     });
 
     var HLayout_Institute_Institute_Action = isc.HLayout.create({
@@ -1962,11 +1965,12 @@
         members: [ListGrid_Institute_Institute]
     });
 
-    var HLayout_Institute__Institute_TrainingPlace = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [ListGrid_Institute_TrainingPlace]
-    });
+    // var HLayout_Institute__Institute_TrainingPlace = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [ListGrid_Institute_TrainingPlace]
+    // });
+
     var VLayout_Institute_Institute_Teacher = isc.VLayout.create({
         width: "100%",
         height: "100%",
@@ -1983,12 +1987,13 @@
         width: "100%",
         height: "100%",
         tabs: [
-            {
-                id: "TabPane_Institute_TrainingPlace",
-                title: "لیست محل های آموزشی",
-                pane: HLayout_Institute__Institute_TrainingPlace
+            // {
+            //     id: "TabPane_Institute_TrainingPlace",
+            //     title: "لیست محل های آموزشی",
+            //     pane: HLayout_Institute__Institute_TrainingPlace
+            //
+            // },
 
-            },
             {
                 id: "TabPane_Institute_Teacher",
                 title: "لیست اساتید",
