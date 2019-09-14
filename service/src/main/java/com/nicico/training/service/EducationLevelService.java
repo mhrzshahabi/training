@@ -43,7 +43,10 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public EducationLevelDTO.Info create(EducationLevelDTO.Create request) {
         final EducationLevel educationLevel = modelMapper.map(request, EducationLevel.class);
-        return save(educationLevel);
+        if(educationLevelDAO.findByTitleFa(educationLevel.getTitleFa()).isEmpty())
+            return save(educationLevel);
+        else
+            return null;
     }
 
     @Transactional

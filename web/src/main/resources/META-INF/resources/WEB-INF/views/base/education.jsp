@@ -251,6 +251,7 @@
             }
             var data = DynamicForm_EducationOrientation.getValues();
             isc.RPCManager.sendRequest({
+                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -269,7 +270,9 @@
                             ListGrid_EducationOrientation.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationOrientation.close();
-                    } else {
+                    }else if(resp.httpResponseCode === 406){
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
+                    }else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
 
@@ -501,6 +504,7 @@
             }
             var data = DynamicForm_EducationMajor.getValues();
             isc.RPCManager.sendRequest({
+                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -519,6 +523,8 @@
                             ListGrid_EducationMajor.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationMajor.close();
+                    }else if(resp.httpResponseCode === 406){
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
                     } else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
@@ -748,6 +754,7 @@
             }
             var data = DynamicForm_EducationLevel.getValues();
             isc.RPCManager.sendRequest({
+                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -766,7 +773,11 @@
                             ListGrid_EducationLevel.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationLevel.close();
-                    } else {
+                    }
+                    else if(resp.httpResponseCode === 406){
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
+                    }
+                    else {
                         simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
                     }
 
