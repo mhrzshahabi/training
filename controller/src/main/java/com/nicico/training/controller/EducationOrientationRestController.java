@@ -65,9 +65,9 @@ public class EducationOrientationRestController {
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         if (educationOrientationService.delete(id))
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         else {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

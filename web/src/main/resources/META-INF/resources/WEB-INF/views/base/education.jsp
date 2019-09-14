@@ -873,7 +873,7 @@
         // console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
+                message: "<spring:message code='msg.not.selected.record'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
@@ -898,6 +898,7 @@
                             title: "<spring:message code='message'/>"
                         });
                         isc.RPCManager.sendRequest({
+                            willHandleError: true,
                             actionURL: Url + "delete/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
@@ -907,11 +908,11 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 wait.close();
-                                if (resp.data === "true") {
+                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     EducationListGrid.invalidateCache();
                                     simpleDialog("<spring:message code='msg.command.done'/>",
                                                     "<spring:message code='msg.operation.successful'/>", 3000, "say");
-                                }else if(resp.data === "false"){
+                                }else if(resp.httpResponseCode === 406){
                                     simpleDialog("<spring:message code='message'/>",
                                                     "<spring:message code='msg.record.cannot.deleted'/>", 3000, "stop");
                                 }else {
