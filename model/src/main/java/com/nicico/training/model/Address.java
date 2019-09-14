@@ -21,7 +21,7 @@ public class Address extends Auditable {
     private Long id;
 
     @Column(name = "c_address")
-    private String address;
+    private String restAddr;
 
     @Column(name = "n_post_code")
     private Long postCode;
