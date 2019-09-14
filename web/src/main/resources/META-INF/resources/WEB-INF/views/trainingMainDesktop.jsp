@@ -665,7 +665,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
-    const skillUrl = rootUrl + "/skill/";
+
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;

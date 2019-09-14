@@ -26,16 +26,25 @@ public class NeedAssessment extends Auditable {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_id")
+    @JoinColumn(name = "f_post_id", insertable = false, updatable = false)
     private Post post;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_competence_id")
-    private Competence competence;
+    @Column(name = "f_post_id")
+    private Long postId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_skill_id")
+    @JoinColumn(name = "f_competence_id", insertable = false, updatable = false)
+    private Competence competence;
+
+    @Column(name = "f_competence_id")
+    private Long competenceId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_skill_id", insertable = false, updatable = false)
     private Skill skill;
+
+    @Column(name = "f_skill_id")
+    private Long skillId;
 
     @Column(name = "e_domain_type", insertable = false, updatable = false)
     private EDomainType eDomainType;
