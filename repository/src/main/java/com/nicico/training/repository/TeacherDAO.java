@@ -2,6 +2,7 @@ package com.nicico.training.repository;
 
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Modifying;
@@ -23,5 +24,13 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     @Query(value = "select * from TBL_TEACHER where C_TEACHER_CODE = :teacherCode and ID != :id",nativeQuery = true)
     @Transactional
     public List<Teacher> findByTeacherCode(@Param("id") Long id, @Param("teacherCode") String teacherCode);
+
+
+    @Query(value = "select tt.* from training.TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from training.TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
+    List<Teacher> getUnAttachedTeachersByInstituteId(Long instituteID, Pageable pageable);
+
+    @Query(value = "select count(*) from training.TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from training.TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
+    Integer getUnAttachedTeachersCountByInstituteId(Long instituteID);
+
 
 }

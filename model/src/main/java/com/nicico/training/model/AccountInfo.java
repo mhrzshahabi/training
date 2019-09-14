@@ -28,10 +28,10 @@ public class AccountInfo extends Auditable{
 	private String bank;
 
     @Column(name = "c_bank_branch")
-	private String bankBranch;
+	private String bBranch;
 
 	@Column(name = "c_bank_branch_code")
-	private Long bankBranchCode;
+	private Long bCode;
 
     @Column(name = "c_cart_number")
 	private String cartNumber;

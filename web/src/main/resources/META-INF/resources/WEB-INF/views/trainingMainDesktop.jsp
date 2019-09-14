@@ -41,18 +41,22 @@
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
+    const needAssessmentUrl = rootUrl + "/needAssessment/";
 
     const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const EnNumSpcFilter = "[a-zA-Z0-9 ]";
     const NumFilter = "[0-9]";
 
+    const okDialogShowTime = 3000;
+
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
-    // isc.FormItem.addProperties({redrawOnChange: true,});
-    isc.TextItem.addProperties({height: 27, length: 255,});
-    isc.TextAreaItem.addProperties({height: 54, length: 400,});
-    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
+    // isc.FormItem.addProperties({});
+    isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
+    isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27, autoDraw: false});
+    isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
+    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -226,7 +230,7 @@
         autoDraw: false,
         titlePrefix: "",
         titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:red;font-size:140%;'>* </span>",
+        requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
         requiredMessage: "<spring:message code="msg.field.is.required"/>",
     });
@@ -266,10 +270,11 @@
     };
 
     function trTrim(value) {
-        return value.trim();
+        return value.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
+    isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
@@ -408,6 +413,12 @@
         title: "<spring:message code="training.need.assessment"/>",
         menu: isc.TrMenu.create({
             data: [
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
+                    }
+                },
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
@@ -678,7 +689,8 @@
             actionURL: actionURLParam,
             httpMethod: httpMethodParam,
             data: dataParam,
-            callback: callbackParam
+            callback: callbackParam,
+            willHandleError: true,
         }
     };
 

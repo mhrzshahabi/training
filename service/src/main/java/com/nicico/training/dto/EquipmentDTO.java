@@ -79,7 +79,27 @@ public class EquipmentDTO {
         private List<Long> ids;
     }
 
+
+
+
+
     // ------------------------------
+
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("EquipmentIdListRq")
+    public static class EquipmentIdList {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private List<Long> ids;
+    }
+
+    // ------------------------------
+
+
     @Getter
     @Setter
     @Accessors(chain = true)
