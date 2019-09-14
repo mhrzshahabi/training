@@ -51,7 +51,11 @@ public class EducationMajorRestController {
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationMajor')")
     public ResponseEntity<EducationMajorDTO.Info> create(@Validated @RequestBody EducationMajorDTO.Create request) {
-        return new ResponseEntity<>(educationMajorService.create(request), HttpStatus.CREATED);
+        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);
+        if (educationMajorInfo != null)
+            return new ResponseEntity<>(educationMajorInfo, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
