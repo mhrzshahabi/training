@@ -31,8 +31,8 @@ public class AccountInfoDTO {
         private String lastModifiedBy;
         private String accountNumber;
         private String bank;
-        private String bankBranch;
-        private Long bankBranchCode;
+        private String bBranch;
+        private Long bCode;
         private String cartNumber;
         private String shabaNumber;
         private String description;
@@ -44,8 +44,8 @@ public class AccountInfoDTO {
 	public static class AccountInfoInfoTuple {
         private String accountNumber;
         private String bank;
-        private String bankBranch;
-        private Long bankBranchCode;
+        private String bBranch;
+        private Long bCode;
         private String cartNumber;
         private String shabaNumber;
         private String description;
@@ -57,8 +57,8 @@ public class AccountInfoDTO {
     @ApiModel("AccountInfoCreateRq")
     public static class Create{
         private String bank;
-        private String bankBranch;
-        private Long bankBranchCode;
+        private String bBranch;
+        private Long bCode;
         private String cartNumber;
         private String shabaNumber;
         private String description;
@@ -70,8 +70,8 @@ public class AccountInfoDTO {
     @ApiModel("AccountInfoUpdateRq")
     public static class Update{
         private String bank;
-        private String bankBranch;
-        private Long bankBranchCode;
+        private String bBranch;
+        private Long bCode;
         private String cartNumber;
         private String shabaNumber;
         private String description;

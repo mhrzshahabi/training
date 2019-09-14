@@ -31,7 +31,7 @@ public class AddressDTO {
         private String lastModifiedBy;
         private CityDTO.CityInfoTuple city;
         private StateDTO.StateInfoTuple state;
-        private String address;
+        private String restAddr;
         private Long postCode;
         private String phone;
         private String fax;
@@ -45,7 +45,7 @@ public class AddressDTO {
 	@Setter
 	@ApiModel("AddressInfoTuple")
 	public static class AddressInfoTuple {
-        private String address;
+        private String restAddr;
         private Long postCode;
         private String phone;
         private String fax;
@@ -62,7 +62,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
     public static class Create{
-        private String address;
+        private String restAddr;
         private Long postCode;
         private String phone;
         private String fax;
@@ -77,7 +77,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressUpdateRq")
     public static class Update{
-        private String address;
+        private String restAddr;
         private Long postCode;
         private String phone;
         private String fax;
