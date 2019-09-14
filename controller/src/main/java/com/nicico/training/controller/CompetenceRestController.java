@@ -3,25 +3,20 @@ ghazanfari_f, 9/7/2019, 10:59 AM
 */
 package com.nicico.training.controller;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.service.CompetenceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -49,6 +44,12 @@ public class CompetenceRestController {
     }
 
     @Loggable
+    @GetMapping("/{id}")
+    public ResponseEntity<CompetenceDTO.Info> get(@PathVariable long id) {
+        return new ResponseEntity<>(competenceService.get(id), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping
     public ResponseEntity<CompetenceDTO.Info> create(@RequestBody Object req) {
         CompetenceDTO.Create create = modelMapper.map(req, CompetenceDTO.Create.class);
@@ -68,22 +69,4 @@ public class CompetenceRestController {
         competenceService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
-
-   /* @Loggable
-    @GetMapping("/{id}")
-    public ResponseEntity<CompetenceDTO.MinInfo> get(@PathVariable long id) {
-        return new ResponseEntity<>(competenceService.get(id), HttpStatus.OK);
-    }
-
-
-
-
-
-    @Loggable
-    @DeleteMapping("/list")
-    public ResponseEntity<Void> delete(@Validated @RequestBody CompetenceDTO.Delete req) {
-        competenceService.delete(req);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }*/
-
 }
