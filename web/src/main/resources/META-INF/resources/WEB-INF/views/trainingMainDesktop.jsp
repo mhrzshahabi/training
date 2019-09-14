@@ -270,7 +270,8 @@
     };
 
     function trTrim(value) {
-        return value.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+        var trimmed = (value || "").replace( /^(\s|\u00A0)+|(\s|\u00A0)+$/g, "" );
+        return trimmed.replace(/\s\s+/g, ' ');
     }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
