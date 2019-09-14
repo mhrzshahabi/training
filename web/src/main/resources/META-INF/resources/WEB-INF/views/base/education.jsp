@@ -873,7 +873,7 @@
         // console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
+                message: "<spring:message code='msg.not.selected.record'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
