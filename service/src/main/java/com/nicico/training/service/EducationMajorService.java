@@ -46,7 +46,10 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public EducationMajorDTO.Info create(EducationMajorDTO.Create request) {
         final EducationMajor educationMajor = modelMapper.map(request, EducationMajor.class);
-        return save(educationMajor);
+        if(educationMajorDAO.findByTitleFa(educationMajor.getTitleFa()).isEmpty())
+            return save(educationMajor);
+        else
+            return null;
     }
 
     @Transactional

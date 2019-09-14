@@ -18,7 +18,6 @@ public interface IEducationLevelService {
 
     void delete(EducationLevelDTO.Delete request);
 
-
     SearchDTO.SearchRs<EducationLevelDTO.Info> search(SearchDTO.SearchRq request);
 
     //------------------------
