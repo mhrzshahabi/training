@@ -247,7 +247,7 @@ public abstract class EnumsConverter {
         }
     }
 
-	@Converter(autoApply = true)
+    @Converter(autoApply = true)
     public static class EMilitaryConverter implements AttributeConverter<EMilitary, Integer> {
 
         @Override
@@ -267,7 +267,7 @@ public abstract class EnumsConverter {
         }
     }
 
-     @Converter(autoApply = true)
+    @Converter(autoApply = true)
     public static class EMarriedConverter implements AttributeConverter<EMarried, Integer> {
 
         @Override
@@ -287,7 +287,7 @@ public abstract class EnumsConverter {
         }
     }
 
-     @Converter(autoApply = true)
+    @Converter(autoApply = true)
     public static class EGenderConverter implements AttributeConverter<EGender, Integer> {
 
         @Override
@@ -347,34 +347,23 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class ENeedAssessmentPriorityConverter implements AttributeConverter<ENeedAssessmentPriority, Integer> {
 
+        @Override
+        public Integer convertToDatabaseColumn(ENeedAssessmentPriority entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public ENeedAssessmentPriority convertToEntityAttribute(Integer id) {
+
+            for (ENeedAssessmentPriority entry : ENeedAssessmentPriority.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
