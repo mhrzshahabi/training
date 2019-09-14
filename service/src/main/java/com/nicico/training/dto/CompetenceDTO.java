@@ -3,6 +3,8 @@ ghazanfari_f, 9/7/2019, 10:50 AM
 */
 package com.nicico.training.dto;
 
+import com.nicico.training.model.enums.ECompetenceInputType;
+import com.nicico.training.model.enums.ETechnicalType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -24,6 +26,14 @@ public class CompetenceDTO implements Serializable {
 
     @ApiModelProperty
     private String titleEn;
+
+    @NotNull
+    @ApiModelProperty(required = true)
+    private Integer etechnicalTypeId;
+
+    @NotNull
+    @ApiModelProperty(required = true)
+    private Integer ecompetenceInputTypeId;
 
     @ApiModelProperty
     private String description;
@@ -58,8 +68,7 @@ public class CompetenceDTO implements Serializable {
     @ApiModel("Competence - Info")
     public static class Info extends CompetenceDTO {
         private Long id;
-        private String titleFa;
-        private String titleEn;
-        private String description;
+        private ETechnicalType eTechnicalType;
+        private ECompetenceInputType eCompetenceInputType;
     }
 }

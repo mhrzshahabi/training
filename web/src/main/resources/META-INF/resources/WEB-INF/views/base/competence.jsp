@@ -87,6 +87,16 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "contains"},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "contains"},
+            {
+                name: "etechnicalType.titleFa",
+                title: "<spring:message code="technical.type"/>",
+                filterOperator: "contains"
+            },
+            {
+                name: "ecompetenceInputType.titleFa",
+                title: "<spring:message code="input.type"/>",
+                filterOperator: "contains"
+            },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
         ],
         fetchDataURL: competenceUrl + "iscList"
@@ -97,6 +107,8 @@
         fields: [
             {name: "titleFa",},
             {name: "titleEn",},
+            {name: "etechnicalType.titleFa",},
+            {name: "ecompetenceInputType.titleFa",},
             {name: "description",},
         ],
         autoFetchData: true,
@@ -111,7 +123,24 @@
             } else {
                 totalsLabel_competence.setContents("&nbsp;");
             }
-        }
+        },
+        doubleClick: function () {
+            showEditForm_competence();
+        },
+    });
+
+    let ETechnicalTypeDS_competence = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "titleFa"},],
+        fetchDataURL: enumUrl + "eTechnicalType/spec-list"
+    });
+
+    let ECompetenceInputTypeDS_competence = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "titleFa"},],
+        fetchDataURL: enumUrl + "eCompetenceInputType/spec-list"
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -130,6 +159,20 @@
                 width: "*",
             },
             {
+                name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
+                optionDataSource: ETechnicalTypeDS_competence,
+                valueField: "id", displayField: "titleFa", sortField: "titleFa",
+                required: true,
+                width: "*",
+            },
+            {
+                name: "ecompetenceInputTypeId", title: "<spring:message code="input.type"/>",
+                optionDataSource: ECompetenceInputTypeDS_competence,
+                valueField: "id", displayField: "titleFa", sortField: "titleFa",
+                required: true,
+                width: "*",
+            },
+            {
                 name: "description", title: "<spring:message code="description"/>",
                 type: "TextAreaItem",
                 width: "*",
@@ -143,10 +186,6 @@
                 isc.TrSaveButton.create({
                     click: function () {
                         saveCompetence_competence();
-                    }
-                }),
-                isc.TrSaveNextButton.create({
-                    click: function () {
                     }
                 }),
                 isc.TrCancelButton.create({
@@ -174,35 +213,48 @@
     function showNewForm_competence() {
         competenceMethod_competence = "POST";
         CompetenceDF_competence.clearValues();
-        CompetenceWin_competence.setTitle("<spring:message code="create"/> " + "<spring:message code="job.competence"/>");
+        CompetenceWin_competence.setTitle("<spring:message code="create"/> " + "<spring:message code="competence"/>");
         CompetenceWin_competence.show();
     };
 
     function showEditForm_competence() {
+        let record = CompetenceLG_competence.getSelectedRecord();
+        if (checkRecordAsSelected(record, true)) {
+            competenceMethod_competence = "PUT";
+            CompetenceDF_competence.clearValues();
+            CompetenceDF_competence.editRecord(record);
+            CompetenceWin_competence.setTitle("<spring:message code="edit"/> " + "<spring:message code="competence"/>");
+            CompetenceWin_competence.show();
+        }
     };
 
     function saveCompetence_competence() {
         if (!CompetenceDF_competence.validate()) {
             return;
         }
+        let competenceSaveUrl = competenceUrl;
+        let competenceAction = '<spring:message code="created"/>';
+        if (competenceMethod_competence.localeCompare("PUT") == 0) {
+            let record = CompetenceLG_competence.getSelectedRecord();
+            competenceSaveUrl += record.id;
+            competenceAction = '<spring:message code="edited"/>';
+        }
         let data = CompetenceDF_competence.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="job.competence"/>', '<spring:message code="created"/>')")
+            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '" + competenceAction + "')")
         );
     };
-
 
     function showRemoveForm_competence() {
         let record = CompetenceLG_competence.getSelectedRecord();
         if (checkRecordAsSelected(record, true)) {
             isc.TrYesNoDialog.create({
-                message: "<spring:message code="msg.record.remove.ask"/>",
+                message: "<spring:message code="msg.ask.record.remove"/>",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        alert(name);
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="job.competence"/>', '<spring:message code="removed"/>', " + record.titleFa + ")")
+                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
                         );
                     }
                 }
@@ -219,7 +271,7 @@
             } else {
                 name = JSON.parse(resp.data).titleFa;
             }
-            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action;
+            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action + '.';
             showOkDialog(msg);
         } else {
             showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
@@ -237,7 +289,7 @@
         dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
         Timer.setTimeout(function () {
             dialog.close();
-        }, 2500);
+        }, 3500);
     };
 
     function checkRecordAsSelected(record, showDialog, msg) {
@@ -245,72 +297,8 @@
             return true;
         }
         if (showDialog) {
-            msg = msg ? msg : "<spring:message code="msg.not.selected.record"/>";
+            msg = msg ? msg : "<spring:message code="msg.no.records.selected"/>";
             showOkDialog(msg, 'notify');
         }
         return false;
     };
-
-
-    /*
-
-function show_CompetenceEditForm_competence() {
-let record = LG_Competence_competence.getSelectedRecord();
-if (checkRecord_competence(record, true)) {
-competenceMethod_competence = "PUT";
-DF_Competence_competence.clearValues();
-DF_Competence_competence.editRecord(record);
-Win_Competence_competence.setTitle("ویرایش شایستگی شغلی");
-Win_Competence_competence.show();
-}
-};
-
-
-        function show_CompetenceRemoveForm_competence() {
-            let record = LG_Competence_competence.getSelectedRecord();
-            if (checkRecord_competence(record, true)) {
-                isc.MyYesNoDialog.create({
-                    message: "آیا رکورد انتخاب شده حذف گردد؟",
-                    buttonClick: function (button, index) {
-                        this.close();
-                        if (index == 0) {
-                            isc.RPCManager.sendRequest(MyDsRequest(competenceUrl + record.id, "DELETE", null, "callback: show_CompetenceActionResult_competence(rpcResponse)"));
-                        }
-                    }
-                });
-            }
-        };
-    */
-
-
-    //     MyOkDialog_job = isc.MyOkDialog.create({
-    //         message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
-    //     });
-
-
-    /* if (competenceMethod_competence.localeCompare("PUT") == 0) {
-         let competenceRecord = LG_Competence_competence.getSelectedRecord();
-         competenceSaveUrl += competenceRecord.id;
-     }*/
-
-
-    // function save_JobCompetence_competence() {
-    //
-    //     competenceId = DF_CompetenceInfo_competence.getValue('id');
-    //     eJobCompetenceTypeId = DF_JobCompetenceType_competence.getValue('ejobCompetenceType.id');
-    //     if (jobCompetenceMethod_competence.localeCompare("POST") == 0) {
-    //         let jobRecords = LG_Job_competence.getSelectedRecords();
-    //         if (checkRecord_competence(jobRecords, true, 'حداقل يک شغل را انتخاب نمائيد.')) {
-    //             let data = {
-    //                     "competenceId": competenceId, "jobIds": jobRecords.map(r => r.id), "eJobCompetenceTypeId":
-    //                     eJobCompetenceTypeId
-    //                 }
-    //             ;
-    //             isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "competence", jobCompetenceMethod_competence, JSON.stringify(data), "callback: show_JobCompetenceActionResult_competence(rpcResponse)"));
-    //         }
-    //     } else {
-    //         let jobId = DF_JobInfo_competence.getValue('job.id');
-    //         let data = {"competenceId": competenceId, "jobId": jobId, "eJobCompetenceTypeId": eJobCompetenceTypeId};
-    //         isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl, jobCompetenceMethod_competence, JSON.stringify(data), "callback: show_JobCompetenceActionResult_competence(rpcResponse)"));
-    //     }
-    // };

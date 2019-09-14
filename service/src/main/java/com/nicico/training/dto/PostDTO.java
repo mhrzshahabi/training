@@ -18,7 +18,7 @@ public class PostDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Job - Info")
+    @ApiModel("Post - Info")
     public static class Info extends PostDTO {
         private Long id;
         private String code;

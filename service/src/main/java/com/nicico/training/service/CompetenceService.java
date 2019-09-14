@@ -9,6 +9,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTO;
 import com.nicico.training.iservice.ICompetenceService;
 import com.nicico.training.model.Competence;
+import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.CompetenceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -25,6 +26,8 @@ public class CompetenceService implements ICompetenceService {
 
     private final CompetenceDAO competenceDAO;
     private final ModelMapper modelMapper;
+    private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
+    private final EnumsConverter.ECompetenceInputTypeConverter eCompetenceInputTypeConverter = new EnumsConverter.ECompetenceInputTypeConverter();
 
     @Transactional(readOnly = true)
     @Override
@@ -38,6 +41,8 @@ public class CompetenceService implements ICompetenceService {
     @Override
     public CompetenceDTO.Info create(CompetenceDTO.Create request) {
         Competence competence = modelMapper.map(request, Competence.class);
+        competence.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getEtechnicalTypeId()));
+        competence.setECompetenceInputType(eCompetenceInputTypeConverter.convertToEntityAttribute(request.getEcompetenceInputTypeId()));
         return modelMapper.map(competenceDAO.saveAndFlush(competence), CompetenceDTO.Info.class);
     }
 

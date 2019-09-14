@@ -1075,10 +1075,7 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
-            console.log(instituteSaveUrl);
-            console.log(instituteMethod);
-            console.log(data);
-            isc.RPCManager.sendRequest(TrDSRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_action_result(rpcResponse)"));
         }
     });
 
