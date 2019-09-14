@@ -270,7 +270,7 @@
     };
 
     function trTrim(value) {
-        return value.trim();
+        return value.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
     }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});

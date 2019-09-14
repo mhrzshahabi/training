@@ -85,18 +85,19 @@
     NeedAssessmentDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="needAssessment.title"/>", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "contains"},
+            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "contains"},
+            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "contains"},
             {
-                name: "etechnicalType.titleFa",
-                title: "<spring:message code="technical.type"/>",
+                name: "edomainType.titleFa",
+                title: "<spring:message code="domain"/>",
                 filterOperator: "contains"
             },
             {
-                name: "eneedAssessmentInputType.titleFa",
-                title: "<spring:message code="input.type"/>",
+                name: "eneedAssessmentPriority.titleFa",
+                title: "<spring:message code="priority"/>",
                 filterOperator: "contains"
             },
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "contains"},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
         ],
         fetchDataURL: needAssessmentUrl + "iscList"
@@ -105,10 +106,11 @@
     NeedAssessmentLG_needAssessment = isc.TrLG.create({
         dataSource: NeedAssessmentDS_needAssessment,
         fields: [
-            {name: "titleFa",},
-            {name: "titleEn",},
-            {name: "etechnicalType.titleFa",},
-            {name: "eneedAssessmentInputType.titleFa",},
+            {name: "post.titleFa",},
+            {name: "competence.titleFa",},
+            {name: "edomainType.titleFa",},
+            {name: "eneedAssessmentPriority.titleFa",},
+            {name: "skill.titleFa",},
             {name: "description",},
         ],
         autoFetchData: true,
@@ -129,22 +131,22 @@
         },
     });
 
-    let ETechnicalTypeDS_needAssessment = isc.TrDS.create({
+    let EDomainTypeDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa"},],
-        fetchDataURL: enumUrl + "eTechnicalType/spec-list"
+        fetchDataURL: enumUrl + "eDomainType/spec-list"
     });
 
     let ENeedAssessmentInputTypeDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa"},],
-        fetchDataURL: enumUrl + "eNeedAssessmentInputType/spec-list"
+        fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    let NeedAssessmentDF_needAssessment = isc.TrDynamicForm.create({
+    /*let NeedAssessmentDF_needAssessment = isc.TrDynamicForm.create({
         ID: "NeedAssessmentDF_needAssessment",
         fields: [
             {name: "id", hidden: true},
@@ -163,7 +165,7 @@
                 required: true,
             },
             {
-                name: "eneedAssessmentInputTypeId", title: "<spring:message code="input.type"/>",
+                name: "eneedAssessmentInputTypeId", title: "<spring:message code="input"/>",
                 optionDataSource: ENeedAssessmentInputTypeDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
@@ -190,7 +192,7 @@
                 }),
             ],
         }),]
-    });
+    });*/
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({

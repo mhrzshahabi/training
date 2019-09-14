@@ -48,36 +48,41 @@ public class EnumsRestController {
 
     @GetMapping("eJobCompetenceType/spec-list")
     public ResponseEntity<EJobCompetenceTypeDTO.EJobCompetenceTypeSpecRs> getEJobCompetenceType() {
-        return  new ResponseEntity<>(new EJobCompetenceTypeDTO.EJobCompetenceTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new EJobCompetenceTypeDTO.EJobCompetenceTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eDomainType")
-    public ResponseEntity<EDomainTypeDTO.EDomainTypeSpecRs> getEDomainType(){
-        return new ResponseEntity<>(new EDomainTypeDTO.EDomainTypeSpecRs(),HttpStatus.OK);
+    public ResponseEntity<EDomainTypeDTO.EDomainTypeSpecRs> getEDomainType() {
+        return new ResponseEntity<>(new EDomainTypeDTO.EDomainTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eInstituteType/spec-list")
     public ResponseEntity<EInstituteTypeDTO.EInstituteTypeSpecRs> getEInstituteType() {
-        return  new ResponseEntity<>(new EInstituteTypeDTO.EInstituteTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new EInstituteTypeDTO.EInstituteTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eLicenseType/spec-list")
     public ResponseEntity<ELicenseTypeDTO.ELicenseTypeSpecRs> getELicenseType() {
-        return  new ResponseEntity<>(new ELicenseTypeDTO.ELicenseTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ELicenseTypeDTO.ELicenseTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eGender/spec-list")
     public ResponseEntity<EGenderDTO.EGenderSpecRs> getEGender() {
-        return  new ResponseEntity<>(new EGenderDTO.EGenderSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new EGenderDTO.EGenderSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eMilitary/spec-list")
     public ResponseEntity<EMilitaryDTO.EMilitarySpecRs> getEMilitary() {
-        return  new ResponseEntity<>(new EMilitaryDTO.EMilitarySpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new EMilitaryDTO.EMilitarySpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eMarried/spec-list")
     public ResponseEntity<EMarriedDTO.EMarriedSpecRs> getEMarried() {
-        return  new ResponseEntity<>(new EMarriedDTO.EMarriedSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new EMarriedDTO.EMarriedSpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping("eNeedAssessmentPriority/spec-list")
+    public ResponseEntity<ENeedAssessmentPriorityDTO.ENeedAssessmentPrioritySpecRs> getENeedAssessmentPriority() {
+        return new ResponseEntity<>(new ENeedAssessmentPriorityDTO.ENeedAssessmentPrioritySpecRs(), HttpStatus.OK);
     }
 }

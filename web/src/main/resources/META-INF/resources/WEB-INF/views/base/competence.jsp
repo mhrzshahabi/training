@@ -94,7 +94,7 @@
             },
             {
                 name: "ecompetenceInputType.titleFa",
-                title: "<spring:message code="input.type"/>",
+                title: "<spring:message code="input"/>",
                 filterOperator: "contains"
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
@@ -163,7 +163,7 @@
                 required: true,
             },
             {
-                name: "ecompetenceInputTypeId", title: "<spring:message code="input.type"/>",
+                name: "ecompetenceInputTypeId", title: "<spring:message code="input"/>",
                 optionDataSource: ECompetenceInputTypeDS_competence,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
