@@ -270,7 +270,7 @@
     };
 
     function trTrim(value) {
-        var trimmed = (value || "").replace( /^(\s|\u00A0)+|(\s|\u00A0)+$/g, "" );
+        var trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
     }
 
