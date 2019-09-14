@@ -8,13 +8,17 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.EquipmentDTO;
 import com.nicico.training.dto.InstituteDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IInstituteService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -57,32 +61,49 @@ public class InstituteRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_institute')")
     public ResponseEntity<InstituteDTO.Info> create(@RequestBody Object request) {
-        InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
-        return new ResponseEntity<>(instituteService.create(create), HttpStatus.CREATED);
+ //       InstituteDTO.Create create = (new ModelMapper()).map(request, InstituteDTO.Create.class);
+        return new ResponseEntity<>(instituteService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_institute')")
     public ResponseEntity<InstituteDTO.Info> update(@PathVariable Long id,@RequestBody Object request) {
-        InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
-        return new ResponseEntity<>(instituteService.update(id, update), HttpStatus.OK);
+        //InstituteDTO.Update update = (new ModelMapper()).map(request, InstituteDTO.Update.class);
+        return new ResponseEntity<>(instituteService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_institute')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        instituteService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+        boolean flag=true;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.delete(id);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_institute')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody InstituteDTO.Delete request) {
-        instituteService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity<Boolean> delete(@Validated @RequestBody InstituteDTO.Delete request) {
+        boolean flag=true;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.delete(request);
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
     }
 
     @Loggable
@@ -114,17 +135,23 @@ public class InstituteRestController {
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
+        SearchDTO.SearchRs<InstituteDTO.Info> response;
+         InstituteDTO.SpecRs specResponse;
+         InstituteDTO.InstituteSpecRs specRs=null;
+        try {
+     response = instituteService.search(request);
 
-        SearchDTO.SearchRs<InstituteDTO.Info> response = instituteService.search(request);
+    specResponse = new InstituteDTO.SpecRs();
+    specRs = new InstituteDTO.InstituteSpecRs();
+    specResponse.setData(response.getList())
+            .setStartRow(startRow)
+            .setEndRow(startRow + response.getTotalCount().intValue())
+            .setTotalRows(response.getTotalCount().intValue());
 
-        final InstituteDTO.SpecRs specResponse = new InstituteDTO.SpecRs();
-        final InstituteDTO.InstituteSpecRs specRs = new InstituteDTO.InstituteSpecRs();
-        specResponse.setData(response.getList())
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.getTotalCount().intValue())
-                .setTotalRows(response.getTotalCount().intValue());
-
-        specRs.setResponse(specResponse);
+    specRs.setResponse(specResponse);
+}catch (Exception e){
+    e.printStackTrace();
+}
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
@@ -162,6 +189,357 @@ public class InstituteRestController {
 		params.put(ConstantVARs.REPORT_TYPE, type);
 		reportUtil.export("/reports/InstituteByCriteria.jasper", params, jsonDataSource, response);
 	}
+
+
+
+    @Loggable
+    @GetMapping(value = "{instituteId}/equipments")
+//    @PreAuthorize("hasAnyAuthority('r_equipment')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getEquipments(@PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<EquipmentDTO.Info> equipments = instituteService.getEquipments(instituteId);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(0)
+                .setEndRow(equipments.size())
+                .setTotalRows(equipments.size());
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "{instituteId}/unattached-equipments")
+//    @PreAuthorize("hasAnyAuthority('r_equipment')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getUnAttachedEquipments(@RequestParam("_startRow") Integer startRow,
+                                                                       @RequestParam("_endRow") Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                       @PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<EquipmentDTO.Info> equipments  =instituteService.getUnAttachedEquipments(instituteId,pageable);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(instituteService.getUnAttachedEquipmentsCount(instituteId));
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/equipments")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getAttachedEquipments(@RequestParam("instituteId") String instituteID) {
+        Long instituteId = Long.parseLong(instituteID);
+
+        List<EquipmentDTO.Info> equipments = instituteService.getEquipments(instituteId);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(0)
+                .setEndRow(equipments.size())
+                .setTotalRows(equipments.size());
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/unattached-equipments")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getOtherEquipments(@RequestParam("_startRow") Integer startRow,
+                                                                  @RequestParam("_endRow") Integer endRow,
+                                                                  @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                  @RequestParam(value = "operator", required = false) String operator,
+                                                                  @RequestParam(value = "criteria", required = false) String criteria,
+                                                                  @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                  @RequestParam("instituteId") String instituteID) {
+        Long instituteId = Long.parseLong(instituteID);
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+
+        List<EquipmentDTO.Info> equipments = instituteService.getUnAttachedEquipments(instituteId,pageable);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows( instituteService.getUnAttachedEquipmentsCount(instituteId));
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-equipment/{equipmentId}/{instituteId}")
+    public ResponseEntity<Boolean> removeEquipment(@PathVariable Long equipmentId, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.removeEquipment(equipmentId, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-equipment-list/{equipmentIds}/{instituteId}")
+    public ResponseEntity<Boolean> removeEquipments(@PathVariable List<Long> equipmentIds, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.removeEquipments(equipmentIds, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-equipment/{equipmentId}/{instituteId}")
+    public ResponseEntity<Boolean> addEquipment(@PathVariable Long equipmentId, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.addEquipment(equipmentId, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-equipment-list/{instituteId}")
+    public ResponseEntity<Boolean> addEquipments(@Validated @RequestBody EquipmentDTO.EquipmentIdList request, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.addEquipments(request.getIds(), instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @GetMapping(value = "{instituteId}/teachers")
+//    @PreAuthorize("hasAnyAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getTeachers(@PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<TeacherDTO.Info> teachers = instituteService.getTeachers(instituteId);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        specResponse.setData(teachers)
+                .setStartRow(0)
+                .setEndRow(teachers.size())
+                .setTotalRows(teachers.size());
+
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "{instituteId}/unattached-teachers")
+//    @PreAuthorize("hasAnyAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getUnAttachedTeachers(@RequestParam("_startRow") Integer startRow,
+                                                                       @RequestParam("_endRow") Integer endRow,
+                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                       @PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<TeacherDTO.Info> teachers = instituteService.getUnAttachedTeachers(instituteId,pageable);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        specResponse.setData(teachers)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(instituteService.getUnAttachedTeachersCount(instituteId));
+
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/teachers")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getAttachedTeachers(@RequestParam("instituteId") String instituteID) {
+        Long instituteId = Long.parseLong(instituteID);
+
+        List<TeacherDTO.Info> teachers = instituteService.getTeachers(instituteId);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        specResponse.setData(teachers)
+                .setStartRow(0)
+                .setEndRow(teachers.size())
+                .setTotalRows(teachers.size());
+
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/unattached-teachers")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getOtherTeachers(@RequestParam("_startRow") Integer startRow,
+                                                                     @RequestParam("_endRow") Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                     @RequestParam("instituteId") String instituteID) {
+        Long instituteId = Long.parseLong(instituteID);
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+
+        List<TeacherDTO.Info> teachers = instituteService.getUnAttachedTeachers(instituteId,pageable);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        specResponse.setData(teachers)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(instituteService.getUnAttachedTeachersCount(instituteId));
+
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-teacher/{teacherId}/{instituteId}")
+    public ResponseEntity<Boolean> removeTeacher(@PathVariable Long teacherId, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.removeTeacher(teacherId, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-teacher-list/{teacherIds}/{instituteId}")
+    public ResponseEntity<Boolean> removeTeachers(@PathVariable List<Long> teacherIds, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.removeTeachers(teacherIds, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-teacher/{teacherId}/{instituteId}")
+    public ResponseEntity<Boolean> addTeacher(@PathVariable Long teacherId, @PathVariable Long instituteId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            instituteService.addTeacher(teacherId, instituteId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @GetMapping(value = "/teacher-dummy")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> teacherDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<TeacherDTO.TeacherSpecRs>(new TeacherDTO.TeacherSpecRs(), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/equipment-dummy")
+//    @PreAuthorize("hasAuthority('r_equipment')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> equipmentDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<EquipmentDTO.EquipmentSpecRs>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
+    }
+
+
+//    @Loggable
+//    @PostMapping(value = "/add-teacher-list/{instituteId}")
+//    public ResponseEntity<Boolean> addTeachers(@Validated @RequestBody TeacherDTO.TeacherIdList request, @PathVariable Long instituteId) {
+//        boolean flag=false;
+//        HttpStatus httpStatus=HttpStatus.OK;
+//
+//        try {
+//            instituteService.addTeachers(request.getIds(), instituteId);
+//            flag=true;
+//        } catch (Exception e) {
+//            httpStatus=HttpStatus.NO_CONTENT;
+//            flag=false;
+//        }
+//        return new ResponseEntity<>(flag,httpStatus);
+//    }
 
 
 }

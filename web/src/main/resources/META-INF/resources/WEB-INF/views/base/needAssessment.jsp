@@ -4,68 +4,68 @@
 
 //<script>
 
-    let competenceMethod_competence;
+    let needAssessmentMethod_needAssessment;
 
     // ------------------------------------------- Menu -------------------------------------------
-    CompetenceMenu_competence = isc.TrMenu.create({
+    NeedAssessmentMenu_needAssessment = isc.TrMenu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    refresh_competence();
+                    refresh_needAssessment();
                 }
             },
             {
                 title: "<spring:message code="create"/>",
                 icon: "<spring:url value="create.png"/>",
                 click: function () {
-                    showNewForm_competence();
+                    showNewForm_needAssessment();
                 }
             },
             {
                 title: "<spring:message code="edit"/>",
                 icon: "<spring:url value="edit.png"/>",
                 click: function () {
-                    showEditForm_competence();
+                    showEditForm_needAssessment();
                 }
             },
             {
                 title: "<spring:message code="remove"/>",
                 icon: "<spring:url value="remove.png"/>",
                 click: function () {
-                    showRemoveForm_competence();
+                    showRemoveForm_needAssessment();
                 }
             },
         ]
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_competence = isc.TrTS.create({
+    NeedAssessmentTS_needAssessment = isc.TrTS.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
-                    refresh_competence();
+                    refresh_needAssessment();
                 }
             }),
             isc.TrCreateBtn.create({
                 click: function () {
-                    showNewForm_competence();
+                    showNewForm_needAssessment();
                 }
             }),
             isc.TrEditBtn.create({
                 click: function () {
-                    showEditForm_competence();
+                    showEditForm_needAssessment();
                 }
             }),
             isc.TrRemoveBtn.create({
                 click: function () {
-                    showRemoveForm_competence();
+                    showRemoveForm_needAssessment();
                 }
             }),
             isc.TrPrintBtnCommon.create({
                 click: function () {
-                    printCompetence_competence();
+                    printNeedAssessment_needAssessment();
                 }
             }),
             isc.LayoutSpacer.create({
@@ -73,7 +73,7 @@
             }),
             isc.Label.create({
                 padding: 5,
-                ID: "totalsLabel_competence"
+                ID: "totalsLabel_needAssessment"
             }),
             isc.LayoutSpacer.create({
                 width: "40"
@@ -82,10 +82,10 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    CompetenceDS_competence = isc.TrDS.create({
+    NeedAssessmentDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="needAssessment.title"/>", filterOperator: "contains"},
             {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "contains"},
             {
                 name: "etechnicalType.titleFa",
@@ -93,63 +93,63 @@
                 filterOperator: "contains"
             },
             {
-                name: "ecompetenceInputType.titleFa",
+                name: "eneedAssessmentInputType.titleFa",
                 title: "<spring:message code="input.type"/>",
                 filterOperator: "contains"
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
         ],
-        fetchDataURL: competenceUrl + "iscList"
+        fetchDataURL: needAssessmentUrl + "iscList"
     });
 
-    CompetenceLG_competence = isc.TrLG.create({
-        dataSource: CompetenceDS_competence,
+    NeedAssessmentLG_needAssessment = isc.TrLG.create({
+        dataSource: NeedAssessmentDS_needAssessment,
         fields: [
             {name: "titleFa",},
             {name: "titleEn",},
             {name: "etechnicalType.titleFa",},
-            {name: "ecompetenceInputType.titleFa",},
+            {name: "eneedAssessmentInputType.titleFa",},
             {name: "description",},
         ],
         autoFetchData: true,
-        gridComponents: [CompetenceTS_competence, "header", "filterEditor", "body",],
-        contextMenu: CompetenceMenu_competence,
+        gridComponents: [NeedAssessmentTS_needAssessment, "header", "filterEditor", "body",],
+        contextMenu: NeedAssessmentMenu_needAssessment,
         sortField: 0,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                totalsLabel_needAssessment.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                totalsLabel_competence.setContents("&nbsp;");
+                totalsLabel_needAssessment.setContents("&nbsp;");
             }
         },
         doubleClick: function () {
-            showEditForm_competence();
+            showEditForm_needAssessment();
         },
     });
 
-    let ETechnicalTypeDS_competence = isc.TrDS.create({
+    let ETechnicalTypeDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa"},],
         fetchDataURL: enumUrl + "eTechnicalType/spec-list"
     });
 
-    let ECompetenceInputTypeDS_competence = isc.TrDS.create({
+    let ENeedAssessmentInputTypeDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa"},],
-        fetchDataURL: enumUrl + "eCompetenceInputType/spec-list"
+        fetchDataURL: enumUrl + "eNeedAssessmentInputType/spec-list"
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    let CompetenceDF_competence = isc.TrDynamicForm.create({
-        ID: "CompetenceDF_competence",
+    let NeedAssessmentDF_needAssessment = isc.TrDynamicForm.create({
+        ID: "NeedAssessmentDF_needAssessment",
         fields: [
             {name: "id", hidden: true},
             {
-                name: "titleFa", title: "<spring:message code="competence.title"/>",
+                name: "titleFa", title: "<spring:message code="needAssessment.title"/>",
                 required: true, validators: [TrValidators.NotEmpty],
             },
             {
@@ -158,13 +158,13 @@
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
-                optionDataSource: ETechnicalTypeDS_competence,
+                optionDataSource: ETechnicalTypeDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
             },
             {
-                name: "ecompetenceInputTypeId", title: "<spring:message code="input.type"/>",
-                optionDataSource: ECompetenceInputTypeDS_competence,
+                name: "eneedAssessmentInputTypeId", title: "<spring:message code="input.type"/>",
+                optionDataSource: ENeedAssessmentInputTypeDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
             },
@@ -175,17 +175,17 @@
         ]
     });
 
-    let CompetenceWin_competence = isc.TrWindow.create({
-        items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
+    let NeedAssessmentWin_needAssessment = isc.TrWindow.create({
+        items: [NeedAssessmentDF_needAssessment, isc.TrHLayoutButtons.create({
             members: [
                 isc.TrSaveButton.create({
                     click: function () {
-                        saveCompetence_competence();
+                        saveNeedAssessment_needAssessment();
                     }
                 }),
                 isc.TrCancelButton.create({
                     click: function () {
-                        CompetenceWin_competence.close();
+                        NeedAssessmentWin_needAssessment.close();
                     }
                 }),
             ],
@@ -194,54 +194,54 @@
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [CompetenceTS_competence, CompetenceLG_competence],
+        members: [NeedAssessmentTS_needAssessment, NeedAssessmentLG_needAssessment],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-    function refresh_competence() {
-        if (CompetenceWin_competence.isDrawn()) {
-            CompetenceWin_competence.close();
+    function refresh_needAssessment() {
+        if (NeedAssessmentWin_needAssessment.isDrawn()) {
+            NeedAssessmentWin_needAssessment.close();
         }
-        CompetenceLG_competence.invalidateCache();
+        NeedAssessmentLG_needAssessment.invalidateCache();
     };
 
-    function showNewForm_competence() {
-        competenceMethod_competence = "POST";
-        CompetenceDF_competence.clearValues();
-        CompetenceWin_competence.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="competence"/>");
-        CompetenceWin_competence.show();
+    function showNewForm_needAssessment() {
+        needAssessmentMethod_needAssessment = "POST";
+        NeedAssessmentDF_needAssessment.clearValues();
+        NeedAssessmentWin_needAssessment.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="needAssessment"/>");
+        NeedAssessmentWin_needAssessment.show();
     };
 
-    function showEditForm_competence() {
-        let record = CompetenceLG_competence.getSelectedRecord();
+    function showEditForm_needAssessment() {
+        let record = NeedAssessmentLG_needAssessment.getSelectedRecord();
         if (checkRecordAsSelected(record, true)) {
-            competenceMethod_competence = "PUT";
-            CompetenceDF_competence.clearValues();
-            CompetenceDF_competence.editRecord(record);
-            CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>" + '&nbsp;\'' + record.titleFa + '\'');
-            CompetenceWin_competence.show();
+            needAssessmentMethod_needAssessment = "PUT";
+            NeedAssessmentDF_needAssessment.clearValues();
+            NeedAssessmentDF_needAssessment.editRecord(record);
+            NeedAssessmentWin_needAssessment.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="needAssessment"/>" + '&nbsp;\'' + record.titleFa + '\'');
+            NeedAssessmentWin_needAssessment.show();
         }
     };
 
-    function saveCompetence_competence() {
-        if (!CompetenceDF_competence.validate()) {
+    function saveNeedAssessment_needAssessment() {
+        if (!NeedAssessmentDF_needAssessment.validate()) {
             return;
         }
-        let competenceSaveUrl = competenceUrl;
-        let competenceAction = '<spring:message code="created"/>';
-        if (competenceMethod_competence.localeCompare("PUT") == 0) {
-            let record = CompetenceLG_competence.getSelectedRecord();
-            competenceSaveUrl += record.id;
-            competenceAction = '<spring:message code="edited"/>';
+        let needAssessmentSaveUrl = needAssessmentUrl;
+        let needAssessmentAction = '<spring:message code="created"/>';
+        if (needAssessmentMethod_needAssessment.localeCompare("PUT") == 0) {
+            let record = NeedAssessmentLG_needAssessment.getSelectedRecord();
+            needAssessmentSaveUrl += record.id;
+            needAssessmentAction = '<spring:message code="edited"/>';
         }
-        let data = CompetenceDF_competence.getValues();
+        let data = NeedAssessmentDF_needAssessment.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(competenceSaveUrl, competenceMethod_competence, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '" + competenceAction + "')")
+            TrDSRequest(needAssessmentSaveUrl, needAssessmentMethod_needAssessment, JSON.stringify(data), "callback: studyRcpResponse(rpcResponse, '<spring:message code="needAssessment"/>', '" + needAssessmentAction + "')")
         );
     };
 
-    function showRemoveForm_competence() {
-        let record = CompetenceLG_competence.getSelectedRecord();
+    function showRemoveForm_needAssessment() {
+        let record = NeedAssessmentLG_needAssessment.getSelectedRecord();
         if (checkRecordAsSelected(record, true)) {
             isc.TrYesNoDialog.create({
                 message: "<spring:message code="msg.ask.record.remove"/>",
@@ -249,7 +249,7 @@
                     this.close();
                     if (index == 0) {
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(competenceUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="competence"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
+                            TrDSRequest(needAssessmentUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="needAssessment"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
                         );
                     }
                 }
@@ -276,7 +276,7 @@
                 default:
             }
         }
-        refresh_competence();
+        refresh_needAssessment();
     };
 
     // To check the 'record' argument is a valid selected record of list grid

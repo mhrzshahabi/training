@@ -4,7 +4,10 @@ package com.nicico.training.iservice;
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EquipmentDTO;
 import com.nicico.training.dto.InstituteDTO;
+import com.nicico.training.dto.TeacherDTO;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
@@ -14,13 +17,35 @@ public interface IInstituteService {
 
     List<InstituteDTO.Info> list();
 
-    InstituteDTO.Info create(InstituteDTO.Create request);
+    InstituteDTO.Info create(Object request);
 
-    InstituteDTO.Info update(Long id, InstituteDTO.Update request);
+    InstituteDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 
     void delete(InstituteDTO.Delete request);
 
     SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<EquipmentDTO.Info> getEquipments(Long instituteId);
+
+    List<TeacherDTO.Info> getTeachers(Long instituteId);
+
+    void removeEquipment (Long equipmentId,Long instituteId);
+    void removeEquipments (List<Long> equipmentIds,Long instituteId);
+
+    void addEquipment (Long equipmentId,Long instituteId);
+    void addEquipments (List<Long> equipmentIds,Long instituteId);
+
+    void removeTeacher (Long teacherId,Long instituteId);
+    void removeTeachers (List<Long> teacherIds,Long instituteId);
+
+    void addTeacher (Long teacherId,Long instituteId);
+    void addTeachers (List<Long> teacherIds,Long instituteId);
+
+    List<TeacherDTO.Info> getUnAttachedTeachers(Long instituteId, Pageable pageable);
+    Integer getUnAttachedTeachersCount(Long instituteId);
+
+    List<EquipmentDTO.Info> getUnAttachedEquipments(Long instituteId, Pageable pageable);
+    Integer getUnAttachedEquipmentsCount(Long instituteId);
 }

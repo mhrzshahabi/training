@@ -7,15 +7,14 @@ import com.nicico.training.model.enums.ECompetenceInputType;
 import com.nicico.training.model.enums.ETechnicalType;
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 
 @Getter
 @Setter
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(of = "id", callSuper = false)
 @Entity
