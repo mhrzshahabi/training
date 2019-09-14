@@ -408,7 +408,6 @@
                 title: "<spring:message code="course_Running_time"/>",
                 align: "center",
                 summaryFunction: "sum",
-                type: "integer",
                 format: "# ساعت "
             },
             {name: "version", title: "version", canEdit: false, hidden: true}
@@ -603,7 +602,7 @@
         // }
     });
 
-    var DynamicForm_course = isc.MyDynamicForm.create({
+    var DynamicForm_course = isc.TrDynamicForm.create({
         ID: "DF_course",
         sectionVisibilityMode: "mutex",
         canTabToSectionHeaders: true,
@@ -660,7 +659,7 @@
                 type: 'text',
                 titleOrientation: "top",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']",
-                // height: "30",
+                height: "30",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
@@ -673,12 +672,11 @@
                 // height: "30",
                 required: true,
                 titleOrientation: "top",
-                type: "integer",
                 textAlign: "center",
                 keyPressFilter: "[0-9]",
                 requiredMessage: "لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
                 validators: [{
-                    type: "integerRange", min: 1, max: 999,
+                    type: "integerRange", min: 0, max: 999,
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
                 }],
                 width: "*",
@@ -879,7 +877,7 @@
                 type: "textArea",
                 colSpan: 2,
                 rowSpan: 2,
-                // height: "50",
+                height: "110",
                 titleOrientation: "top",
                 title: "<spring:message code="course_description"/>",
                 width: "*",
@@ -908,7 +906,6 @@
                 colSpan: 1,
 
                 title: "<spring:message code="course_minTeacherDegree"/>",
-                editorType: "MyComboBoxItem",
                 autoFetchData: true,
                 required: true,
                 // height: "30",
@@ -930,7 +927,6 @@
                 prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                 // shouldSaveValue: true,
                 textAlign: "center",
-                type: "integer",
                 required: true,
                 validators: [{
                     type: "integerRange", min: 1, max: 15,
@@ -949,7 +945,6 @@
                 prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
                 shouldSaveValue: true,
                 textAlign: "center",
-                type: "integer",
                 writeStackedIcons: true,
                 // height: "30",
                 required: true,
@@ -1225,15 +1220,14 @@
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                    ListGrid_Course_refresh();
                                     var responseID = JSON.parse(resp.data).id;
-                                    console.log(responseID);
                                     var gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     Window_course.close();
-                                    ListGrid_Course_refresh();
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
-                                    }, 2000);
+                                    }, 3000);
 
                                 } else {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -1270,16 +1264,15 @@
                     serverOutputAsString: false,
                     callback: function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            ListGrid_Course_refresh();
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                             Window_course.close();
-                            ListGrid_Course_refresh();
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
-                            }, 2000);
+                            }, 3000);
                         } else {
-
                             simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
 
                         }
@@ -1420,7 +1413,7 @@
     //     members: [vStack, arrowImg, vStack2]
     // });
 
-    var Window_course = isc.Window.create({
+    var Window_course = isc.TrWindow.create({
         width: "90%",
         autoSize: true,
         canDragReposition: false,
@@ -1570,7 +1563,7 @@
         var record = ListGrid_Course.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -1646,7 +1639,7 @@
 
         if (sRecord == null || sRecord.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -1685,9 +1678,6 @@
                     }
                 }
             });
-
-            // isc.RPCManager.sendRequest({ data: "different callback", callback: "myCallback2(data)", actionURL: "/rpcHandler.jsp"});
-
             DynamicForm_course.getItem("category.id").setDisabled(true);
             DynamicForm_course.getItem("subCategory.id").setDisabled(true);
             DynamicForm_course.getItem("erunType.id").setDisabled(true);
@@ -1699,13 +1689,12 @@
             DynamicForm_course.getItem("epSection").enable();
             RestDataSourceSubCategory.fetchDataURL = categoryUrl + sRecord.category.id + "/sub-categories";
             DynamicForm_course.getItem("subCategory.id").fetchData();
-            sRecord.domainPercent = "دانشی " + sRecord.knowledge + "%" + "، مهارتی " + sRecord.skill + "%" + "، نگرشی " + sRecord.attitude + "%";
+            sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             DynamicForm_course.editRecord(sRecord);
             Window_course.setTitle("<spring:message code="edit"/>");
             Window_course.show();
 
             if (ListGrid_Course.getSelectedRecord().theoryDuration != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
-                // isc.say("salam");
                 DynamicForm_course.getItem("theoryDuration").setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
             }
 
@@ -1716,7 +1705,7 @@
     function openTabGoal() {
         if (ListGrid_Course.getSelectedRecord() == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],

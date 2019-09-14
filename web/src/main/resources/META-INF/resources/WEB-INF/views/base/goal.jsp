@@ -42,47 +42,34 @@
         jsonPrefix: "",
         jsonSuffix: "",
     });
-    var DynamicForm_Goal = isc.MyDynamicForm.create({
-        titleAlign: "left",
-        showInlineErrors: true,
-
+    var DynamicForm_Goal = isc.TrDynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
                 name: "titleFa",
                 title: "نام فارسی",
                 required: true,
-                type: 'text',
-                length: "100",
                 readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                validators: [TrValidators.NotEmpty]
+                validators: [TrValidators.NotEmpty],
             },
             {
                 name: "titleEn",
                 title: "نام لاتین ",
-                type: 'text',
-                length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
             }
         ],
     });
-    var DynamicForm_Syllabus = isc.MyDynamicForm.create({
+    var DynamicForm_Syllabus = isc.TrDynamicForm.create({
         ID: "formSyllabus",
-        colWidths: [250, "*"],
-        titleAlign: "left",
-        numCols: 1,
         fields: [
             {name: "id", hidden: true},
             {
                 name: "goalId",
                 title: "شماره هدف",
                 required: true,
-                type: 'text',
                 readonly: true,
                 keyPressFilter: "[0-9]",
-                length: "200",
-                width: "150",
                 hidden: true,
                 validators: [{
                     type: "isString",
@@ -94,23 +81,18 @@
             {
                 name: "code",
                 title: "کد",
-                type: 'text',
                 required: true,
                 hidden: true,
                 length: "7"
             },
             {
                 name: "titleFa",
-                colSpan:1,
-                width: "250",
                 title: "نام فارسی",
                 required: true,
-                type: 'text',
                 readonly: true,
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                length: "200",
                 validators: [{
                     type: "isString",
                     validateOnExit: true,
@@ -121,10 +103,7 @@
             {
                 name: "titleEn",
                 title: "نام لاتین ",
-                width: "250",
-                type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
-                length: "200",
                 hint: "Latin",
                 showHintInField: true,
                 validators: [{
@@ -139,12 +118,8 @@
             },
             {
                 name: "edomainTypeId",
-                // type: "IntegerItem",
                 title: "حیطه",
-                width: 220,
                 required: true,
-                textAlign: "center",
-                // editorType: "MyComboBoxItem",
                 pickListWidth: 210,
                 displayField: "titleFa",
                 valueField: "id",
@@ -176,15 +151,12 @@
                 change: function (form, item, value) {
                     if (methodSyllabus == "PUT") {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
-                        // console.log(sumSyllabus)
                     } else {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
-                        // console.log(sumSyllabus)
                     }
                     Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
                 },
-
             }],
         keyPress: function () {
             if (isc.EventHandler.getKey() == "Enter") {
@@ -193,7 +165,7 @@
         }
     });
 
-    var IButton_Goal_Save = isc.IButton.create({
+    var IButton_Goal_Save = isc.MyButton.create({
         top: 260, title: "ذخیره",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -230,7 +202,7 @@
 
         }
     });
-    var IButton_Syllabus_Save = isc.IButton.create({
+    var IButton_Syllabus_Save = isc.MyButton.create({
         top: 260, title: "ذخیره",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -238,11 +210,11 @@
             if (DynamicForm_Syllabus.hasErrors()) {
                 return;
             }
-            titleFa = DynamicForm_Syllabus.getValue('titleFa')
-            titleEn = DynamicForm_Syllabus.getValue('titleEn')
-            goalId = DynamicForm_Syllabus.getValue('goalId')
-            practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration')
-            eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId')
+            titleFa = DynamicForm_Syllabus.getValue('titleFa');
+            titleEn = DynamicForm_Syllabus.getValue('titleEn');
+            goalId = DynamicForm_Syllabus.getValue('goalId');
+            practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration');
+            eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId');
             var data = {
                 "titleFa": titleFa,
                 "titleEn": titleEn,
@@ -301,19 +273,12 @@
         }
     });
 
-    var Hlayout_Goal_SaveOrExit = isc.MyHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        align: "center",
-        padding: 10,
-        membersMargin: 10,
-        members: [IButton_Goal_Save, isc.IButton.create({
+    var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
+        members: [IButton_Goal_Save, isc.MyButton.create({
             ID: "IButton_Goal_Exit",
             title: "لغو",
             prompt: "",
-            width: 100,
+            // width: 100,
             icon: "[SKIN]/actions/icon_delete.png",
             orientation: "vertical",
             click: function () {
@@ -323,16 +288,15 @@
         })]
     });
 
-    var Hlayout_Syllabus_SaveOrExit = isc.MyHLayoutButtons.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        align: "center",
-        padding: 10,
-        membersMargin: 10,
-        members: [IButton_Syllabus_Save, isc.IButton.create({
+    var Hlayout_Syllabus_SaveOrExit = isc.TrHLayoutButtons.create({
+        // layoutMargin: 5,
+        // showEdges: false,
+        // edgeImage: "",
+        // width: "100%",
+        // align: "center",
+        // padding: 10,
+        // membersMargin: 10,
+        members: [IButton_Syllabus_Save, isc.MyButton.create({
             ID: "IButton_Syllabus_Exit",
             title: "لغو",
             prompt: "",
@@ -360,29 +324,21 @@
             this.Super("closeClick", arguments);
         },
         items: [isc.VLayout.create({
-            width: "350",
-            height: "150",
+            width: "100%",
+            height: "100%",
             members: [DynamicForm_Syllabus, Hlayout_Syllabus_SaveOrExit]
-        })]
+        })],
+        width: "400",
     });
 
     var Window_Goal = isc.TrWindow.create({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: false,
-        border: "1px solid gray",
-        closeClick: function () {
-            this.Super("closeClick", arguments);
-        },
         items: [isc.VLayout.create({
-            width: "300",
-            height: "120",
+            width: "100%",
+            height: "100%",
             members: [DynamicForm_Goal, Hlayout_Goal_SaveOrExit]
-        })]
+        })],
+        width: "400",
+        height: "150",
     });
 
     var Menu_ListGrid_Syllabus_Goal = isc.Menu.create({
@@ -965,10 +921,9 @@
 
     function ListGrid_Goal_Remove() {
         var record = ListGrid_Goal.getSelectedRecord();
-        // console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
+                message: "<spring:message code='msg.no.records.selected'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
@@ -1075,10 +1030,9 @@
 
     function ListGrid_Syllabus_Goal_Remove() {
         var record = ListGrid_Syllabus_Goal.getSelectedRecord();
-        //console.log(record);
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.record.not.selected'/> !",
+                message: "<spring:message code='msg.no.records.selected'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
