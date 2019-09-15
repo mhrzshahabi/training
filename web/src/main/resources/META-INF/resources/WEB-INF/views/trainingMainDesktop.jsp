@@ -435,7 +435,6 @@
             ]
         }),
     });
-
     needAssessmentTSMB = isc.TrTSMB.create({
         title: "<spring:message code="training.need.assessment"/>",
         menu: isc.TrMenu.create({
