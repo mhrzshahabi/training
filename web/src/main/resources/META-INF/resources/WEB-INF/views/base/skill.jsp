@@ -585,7 +585,7 @@ var skill_Level_Symbol = ""
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: skill_ActionUrl + "/" + record.id,
+                            actionURL: skill_SkillHomeUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
