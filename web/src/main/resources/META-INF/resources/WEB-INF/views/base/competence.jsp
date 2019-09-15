@@ -2,7 +2,7 @@
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sprig" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-//<script>
+// <script>
 
     let competenceMethod_competence;
 
@@ -85,17 +85,27 @@
     CompetenceDS_competence = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "contains"},
+            {
+                name: "titleFa",
+                title: "<spring:message code="competence.title"/>",
+                filterOperator: "contains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code="title.en"/>",
+                filterOperator: "contains",
+                autoFitWidth: true
+            },
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains"
+                filterOperator: "contains", autoFitWidth: true
             },
             {
                 name: "ecompetenceInputType.titleFa",
                 title: "<spring:message code="input"/>",
-                filterOperator: "contains"
+                filterOperator: "contains", autoFitWidth: true
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
         ],
@@ -292,7 +302,7 @@
     };
 
     // To show an ok dialog
-     function showOkDialog(msg, iconName) {
+    function showOkDialog(msg, iconName) {
         iconName = iconName ? iconName : 'say';
         let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
         Timer.setTimeout(function () {

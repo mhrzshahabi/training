@@ -197,32 +197,32 @@
     var Menu_ListGrid_Institute_Institute = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code='refresh'/>", icon: "pieces/16/refresh.png", click: function () {
+            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Institute_Institute_refresh();
             }
         }, {
-            title: "<spring:message code='create'/>", icon: "pieces/16/icon_add.png", click: function () {
+            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Institute_Institute_Add();
             }
         }, {
-            title: "<spring:message code='edit'/>", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_Institute_Institute_Edit();
             }
         }, {
-            title: "<spring:message code='remove'/>", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Institute_Institute_Remove();
             }
         }, {isSeparator: true}]
-               <%--{title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {--%>
+               <%--{title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
                 <%--ListGrid_institute_print("pdf");--%>
             <%--}},--%>
                <%--{--%>
-            <%--title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {--%>
+            <%--title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
                 <%--ListGrid_institute_print("excel");--%>
             <%--}--%>
         <%--},--%>
                <%--{--%>
-            <%--title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {--%>
+            <%--title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
                 <%--ListGrid_institute_print("html");--%>
             <%--}--%>
         <%--}]--%>
@@ -1052,7 +1052,7 @@
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "pieces/16/icon_delete.png",
+        icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_Institute.close();
         }
@@ -1158,7 +1158,7 @@
         top: 260,
         title: "لغو",
         align: "center",
-        icon: "pieces/16/icon_delete.png",
+        icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_InstituteList.close();
         }
@@ -1252,7 +1252,7 @@
         top: 260,
         title: "لغو",
         align: "center",
-        icon: "pieces/16/icon_delete.png",
+        icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_PersonalList.close();
         }
@@ -1385,7 +1385,7 @@
         top: 260,
         title: "لغو",
         align: "center",
-        icon: "pieces/16/icon_delete.png",
+        icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_EquipmentList.close();
         }
@@ -1662,7 +1662,7 @@
         top: 260,
         title: "لغو",
         align: "center",
-        icon: "pieces/16/icon_delete.png",
+        icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Institute_TeacherList.close();
         }
@@ -1909,7 +1909,7 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ToolStripButton_Institute_Institute_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code='refresh'/>",
         click: function () {
             ListGrid_Institute_Institute_refresh();

@@ -42,6 +42,7 @@
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
     const needAssessmentUrl = rootUrl + "/needAssessment/";
+    const skillUrl = rootUrl + "/skill/";
 
     const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const EnNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -89,24 +90,22 @@
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        width: "100%",
-        height: "100%",
         selectionType: "single",
         showFilterEditor: true,
         filterOnKeypress: true,
         alternateRecordStyles: true,
         autoDraw: false,
         showResizeBar: true,
-        leaveScrollbarGap: false,
         allowAdvancedCriteria: true,
         showRowNumbers: true,
         canDragResize: true,
-        progressiveLoading: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
-        wrapCells: true,
+        autoFetchData: false,
+        autoFitWidth: true,
+        autoFitWidthApproach: "both",
     });
 
     isc.defineClass("TrImg", Img);
@@ -220,7 +219,6 @@
     isc.TrDynamicForm.addProperties({
         width: "100%",
         margin: 5,
-        canDragResize: true,
         errorOrientation: "right",
         showInlineErrors: true,
         showErrorStyle: false,
@@ -287,9 +285,14 @@
         canFocus: true,
         dismissOnEscape: true,
         canDragReposition: true,
+        canDragResize: true,
         showHeaderIcon: false,
+        showFooter: true,
+        animateMinimize: true,
         width: 800,
         showMaximizeButton: true,
+        defaultMinimizeHeight: 500,
+
     });
 
     isc.defineClass("TrHLayoutButtons", TrHLayout);
@@ -335,6 +338,23 @@
             isc.Button.create({title: "<spring:message code="yes"/>",}),
             isc.Button.create({title: "<spring:message code="no"/>",})
         ],
+    });
+
+    isc.defineClass("TrComboBoxItem", ComboBoxItem);
+    isc.TrComboBoxItem.addProperties({
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+        allowAdvancedCriteria: true,
+        textMatchStyle: "substring",
+        pickListProperties: {
+            showFilterEditor: true
+        },
+        wrapTitle: false,
+        /*useClientFiltering: false,
+        cachePickListResults: true,
+        changeOnKeypress: false,
+        useClientFiltering: true,
+        width: "*"*/
     });
 
 

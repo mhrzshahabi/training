@@ -29,20 +29,20 @@
     var Menu_ListGrid_Skill_Group_Jsp = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Skill_Group_refresh();
             }
         }, {
-            title: " ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+            title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Skill_Group_add();
             }
         }, {
-            title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 // alert(ListGrid_Skill_Group_Competence.getData().size());
                 ListGrid_Skill_Group_edit();
             }
         }, {
-            title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
 
 
                 var skillGrouprecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
@@ -182,17 +182,17 @@
 
                         }}
                 ]}, {
-            title: "چاپ همه گروه مهارت ها", icon: "icon/pdf.png", click: function () {
+            title: "چاپ همه گروه مهارت ها", icon: "<spring:url value="pdf.png"/>", click: function () {
                 "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "چاپ همه با جزئیات", icon: "icon/pdf.png", click: function () {
+            title: "چاپ همه با جزئیات", icon: "<spring:url value="pdf.png"/>", click: function () {
                 "<spring:url value="/skill-group/printAll/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {isSeparator: true}, {
-            title: "حذف گروه مهارت از تمام شایستگی ها", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف گروه مهارت از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
                 var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 
 
@@ -310,11 +310,11 @@
     var Menu_ListGrid_Skill_Group_Competences = isc.Menu.create({
             width: 150,
             data: [{
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                     ListGrid_Skill_Group_Competence_refresh();
                 }
             }, {
-                title: " حذف گروه مهارت از  شایستگی مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
+                title: " حذف گروه مهارت از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
                     activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
                     activeCompetence = ListGrid_Skill_Group_Competence.getSelectedRecord();
                     if (activeSkillGroup == null || activeCompetence == null) {
@@ -349,11 +349,11 @@
     var Menu_ListGrid_Skill_Group_Skills = isc.Menu.create({
             width: 150,
             data: [{
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                     ListGrid_Skill_Group_Skills_refresh();
                 }
             }, {
-                title: " حذف مهارت از گروه مهارت مربوطه", icon: "pieces/16/icon_delete.png", click: function () {
+                title: " حذف مهارت از گروه مهارت مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
                     activeSkillGroup = ListGrid_Skill_Group_Jsp.getSelectedRecord();
                     activeSkill = ListGrid_Skill_Group_Skills.getSelectedRecord();
                     if (activeSkillGroup == null || activeSkill == null) {
@@ -1014,7 +1014,7 @@
 
 
     var IButton_Skill_Group_Exit_Jsp = isc.IButton.create({
-        top: 260, title: "لغو", icon: "pieces/16/icon_delete.png", align: "center",
+        top: 260, title: "لغو", icon: "<spring:url value="remove.png"/>", align: "center",
         click: function () {
             Window_Skill_Group_Jsp.close();
         }
@@ -1172,7 +1172,7 @@
 
 
     var ToolStripButton_Refresh_Skill_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             //  var xx;
