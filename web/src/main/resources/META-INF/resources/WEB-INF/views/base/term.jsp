@@ -107,6 +107,7 @@
                 //  hidden: true,
                 type: 'text',
                 required: true,
+                canEdit:false,
                 requiredMessage: "کد می تواند شامل عدد , حروف فارسی و انگلیسی باشد",
                 //  titleOrientation: "top",
                 //keyPressFilter: "[/|0-9]",
@@ -132,7 +133,9 @@
                 height: 35,
                 title: "تاریخ شروع",
                 ID: "startDate_jspTerm",
-                type: 'text', required: true,
+                type: 'text',
+                enabled:false,
+                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -171,7 +174,9 @@
                 height: 35,
                 title: "تاریخ پایان",
                 ID: "endDate_jspTerm",
-                type: 'text', required: true,
+                type: 'text',
+                enabled:false,
+                required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -188,7 +193,7 @@
                             if (term_method == "POST")
                                 getTermCodeRequest(startdate.substr(0, 4));
                         } else
-                            alert("start date is empty");
+                            simpleDialog("پیام","تاریخ شروع وارد نشده است.",3000,"say");
                     }
                 }],
                 blur: function () {
@@ -237,9 +242,13 @@
                 title: "ذخیره",
                 icon: "pieces/16/save.png",
                 click: function () {
+
+
                     if (term_method == "PUT") {
                         edit_Term();
                     } else {
+
+
 
 
                         save_Term();
@@ -443,10 +452,10 @@
                     termCode = "0";
                 }
 
-                 DynamicForm_Term.setValue("code",termCode);
+                 DynamicForm_Term.setValue("code",termYear +"-"+(parseInt(termCode)+1));
 
             } else {
-                alert("khata");
+                simpleDialog("خطا","پاسخی از سرور دریافت نشد.",3000,"error");
             }
 
             },
@@ -459,8 +468,16 @@
         var selectTerm = ListGrid_Term.getSelectedRecord();
         if (endDateCheckTerm == false)
             return;
-        var startDate1 = DynamicForm_Term.getValue("startDate");
-        var endDate1 = DynamicForm_Term.getValue("endDate");
+         var startDate1 = DynamicForm_Term.getValue("startDate");
+         var endDate1 = DynamicForm_Term.getValue("endDate");
+         var termCode1 = DynamicForm_Term.getValue("code");
+
+            if(startDate1.substr(0,4)!=termCode1.substr(0,4))
+            {
+            simpleDialog("پیام","کد با تاریخ شروع همخوانی ندارد.",3000,"say");
+            return;
+            }
+
 
         if (!DynamicForm_Term.validate()) {
 
