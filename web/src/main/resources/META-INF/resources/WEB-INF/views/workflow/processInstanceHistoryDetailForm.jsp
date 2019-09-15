@@ -13,7 +13,7 @@
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
 	var activitiRefreshButton = isc.ToolStripButton.create({
-		icon: "pieces/16/refresh.png",
+		icon: "<spring:url value="refresh.png"/>",
 		prompt: "بازخوانی اطلاعات",
 		click: function () {
 			ListGrid_DocumentActivity.invalidateCache();

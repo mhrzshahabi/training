@@ -20,52 +20,46 @@
     Menu_ListGrid_term = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
-                    ListGrid_Term.invalidateCache();
-                }
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                ListGrid_Term.invalidateCache();
+                                   }
             }, {
-                title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
-                    show_TermNewForm();
-                }
+                title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                 show_TermNewForm();
+                                  }
             }, {
-                title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
-                    show_TermEditForm();
-                }
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+                             show_TermEditForm();      }
             }, {
-                title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
-                    show_TermRemoveForm();
-                }
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                           show_TermRemoveForm();       }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
-                    print_TermListGrid("pdf");
-                }
-            }, {
-                title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
-                    print_TermListGrid("excel")
-                }
-            }, {
-                title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
-                    print_TermListGrid("html");
-                }
+                 title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                          print_TermListGrid("pdf") ;        }
+             }, {
+                 title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                                 print_TermListGrid("excel")  }
+             }, {
+                 title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                       print_TermListGrid("html");           }
             }]
     });
 
-    //************************************************************************************
+ //************************************************************************************
     // RestDataSource & ListGrid
-    //************************************************************************************
-    var RestDataSource_term = isc.MyRestDataSource.create({
+ //************************************************************************************
+ 	var RestDataSource_term = isc.MyRestDataSource.create({
         ID: "termDS",
         transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
+            dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"
             };
             return this.Super("transformRequest", arguments);
         },
         fields: [{name: "id", primaryKey: true},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "startDate"},
-            {name: "endDate"},
+         {name: "code"},
+         {name: "titleFa"},
+         {name: "startDate"},
+         {name: "endDate"},
         ], dataFormat: "json",
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
@@ -263,7 +257,7 @@
                 }
             }), isc.MyButton.create({
                 title: "لغو",
-                icon: "pieces/16/icon_delete.png",
+                icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     Window_term.close();
                 }
@@ -271,20 +265,20 @@
         }),]
     });
 
-    //**********************************************************************************
-    //ToolStripButton
-    //**********************************************************************************
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
-        title: "بازخوانی اطلاعات",
-        click: function () {
-            ListGrid_Term.invalidateCache();
-        }
-    });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
-        click: function () {
+//**********************************************************************************
+                                //ToolStripButton
+//**********************************************************************************
+	var ToolStripButton_Refresh = isc.ToolStripButton.create({
+		icon: "<spring:url value="refresh.png"/>",
+		title: "بازخوانی اطلاعات",
+		click: function () {
+			ListGrid_Term.invalidateCache();
+		}
+	});
+	var ToolStripButton_Edit = isc.ToolStripButton.create({
+		icon: "[SKIN]/actions/edit.png",
+		title: "ویرایش",
+		click: function () {
 
             show_TermEditForm();
         }
@@ -388,7 +382,6 @@
         var endDate1 = DynamicForm_Term.getValue("endDate");
 
         if (!DynamicForm_Term.validate()) {
-
             return;
         }
 
@@ -553,12 +546,11 @@
         }
 
     };
-
-    function show_TermActionResult(resp) {
+    function  show_TermActionResult(resp) {
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            ListGrid_Term.invalidateCache();
-            var MyOkDialog_term = isc.MyOkDialog.create({
+                ListGrid_Term.invalidateCache();
+            var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
 
             });

@@ -63,11 +63,11 @@
                     showRemoveForm_competence();
                 }
             }),
-            isc.TrPrintBtnCommon.create({
+            /*isc.TrPrintBtnCommon.create({
                 click: function () {
                     printCompetence_competence();
                 }
-            }),
+            }),*/
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -85,17 +85,27 @@
     CompetenceDS_competence = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="title.en"/>", filterOperator: "contains"},
+            {
+                name: "titleFa",
+                title: "<spring:message code="competence.title"/>",
+                filterOperator: "contains",
+                autoFitWidth: true
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code="title.en"/>",
+                filterOperator: "contains",
+                autoFitWidth: true
+            },
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains"
+                filterOperator: "contains", autoFitWidth: true
             },
             {
                 name: "ecompetenceInputType.titleFa",
-                title: "<spring:message code="input.type"/>",
-                filterOperator: "contains"
+                title: "<spring:message code="input"/>",
+                filterOperator: "contains", autoFitWidth: true
             },
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
         ],
@@ -119,7 +129,7 @@
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_competence.setContents("&nbsp;");
             }
@@ -151,31 +161,26 @@
             {
                 name: "titleFa", title: "<spring:message code="competence.title"/>",
                 required: true, validators: [TrValidators.NotEmpty],
-                width: "*",
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
                 keyPressFilter: EnNumSpcFilter,
-                width: "*",
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
                 optionDataSource: ETechnicalTypeDS_competence,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
-                width: "*",
             },
             {
-                name: "ecompetenceInputTypeId", title: "<spring:message code="input.type"/>",
+                name: "ecompetenceInputTypeId", title: "<spring:message code="input"/>",
                 optionDataSource: ECompetenceInputTypeDS_competence,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
-                width: "*",
             },
             {
                 name: "description", title: "<spring:message code="description"/>",
                 type: "TextAreaItem",
-                width: "*",
             },
         ]
     });
@@ -213,7 +218,7 @@
     function showNewForm_competence() {
         competenceMethod_competence = "POST";
         CompetenceDF_competence.clearValues();
-        CompetenceWin_competence.setTitle("<spring:message code="create"/> " + "<spring:message code="competence"/>");
+        CompetenceWin_competence.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="competence"/>");
         CompetenceWin_competence.show();
     };
 
@@ -223,7 +228,7 @@
             competenceMethod_competence = "PUT";
             CompetenceDF_competence.clearValues();
             CompetenceDF_competence.editRecord(record);
-            CompetenceWin_competence.setTitle("<spring:message code="edit"/> " + "<spring:message code="competence"/>");
+            CompetenceWin_competence.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="competence"/>" + '&nbsp;\'' + record.titleFa + '\'');
             CompetenceWin_competence.show();
         }
     };
@@ -271,7 +276,7 @@
             } else {
                 name = JSON.parse(resp.data).titleFa;
             }
-            let msg = entityType + ' \'<b>' + name + '</b>\' ' + action + '.';
+            let msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
             showOkDialog(msg);
         } else {
             showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
@@ -284,21 +289,23 @@
         refresh_competence();
     };
 
-    function showOkDialog(msg, iconName) {
-        iconName = iconName ? iconName : 'say';
-        dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
-        Timer.setTimeout(function () {
-            dialog.close();
-        }, 3500);
-    };
-
-    function checkRecordAsSelected(record, showDialog, msg) {
+    // To check the 'record' argument is a valid selected record of list grid
+    function checkRecordAsSelected(record, flagShowDialog, dialogMsg) {
         if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {
             return true;
         }
-        if (showDialog) {
-            msg = msg ? msg : "<spring:message code="msg.no.records.selected"/>";
-            showOkDialog(msg, 'notify');
+        if (flagShowDialog) {
+            dialogMsg = dialogMsg ? dialogMsg : "<spring:message code="msg.no.records.selected"/>";
+            showOkDialog(dialogMsg, 'notify');
         }
         return false;
+    };
+
+    // To show an ok dialog
+    function showOkDialog(msg, iconName) {
+        iconName = iconName ? iconName : 'say';
+        let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
+        Timer.setTimeout(function () {
+            dialog.close();
+        }, okDialogShowTime);
     };

@@ -51,7 +51,11 @@ public class EducationMajorRestController {
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationMajor')")
     public ResponseEntity<EducationMajorDTO.Info> create(@Validated @RequestBody EducationMajorDTO.Create request) {
-        return new ResponseEntity<>(educationMajorService.create(request), HttpStatus.CREATED);
+        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);
+        if (educationMajorInfo != null)
+            return new ResponseEntity<>(educationMajorInfo, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -66,9 +70,9 @@ public class EducationMajorRestController {
 //    @PreAuthorize("hasAuthority('d_educationMajor')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         if (educationMajorService.delete(id))
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         else {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -113,7 +117,7 @@ public class EducationMajorRestController {
 
     // ------------------------------
 
-           @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list-by-majorId/{id}")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
     public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> listByMajorId(@PathVariable Long id) {
@@ -125,7 +129,7 @@ public class EducationMajorRestController {
                 .setTotalRows(eduOrientation.size());
         final EducationOrientationDTO.EducationOrientationSpecRs specRs = new EducationOrientationDTO.EducationOrientationSpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable

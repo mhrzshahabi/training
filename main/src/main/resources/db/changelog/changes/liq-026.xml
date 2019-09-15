@@ -1,0 +1,64 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-98">
+        <createSequence sequenceName="seq_need_assessment_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-99">
+        <createTable tableName="tbl_need_assessment">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessmentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_domain_type" type="NUMBER(10, 0)"/>
+            <column name="e_need_assessment_priority" type="NUMBER(10, 0)"/>
+            <column name="f_competence_id" type="NUMBER(19, 0)"/>
+            <column name="f_post_id" type="NUMBER(19, 0)"/>
+            <column name="f_skill_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-101">
+        <addUniqueConstraint columnNames="f_post_id, f_competence_id, e_domain_type, e_need_assessment_priority"
+                             constraintName="UK1wn0dehcq9hle4j9gr62qwuir" tableName="tbl_need_assessment"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-103">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment"
+                                 constraintName="FK76pahjakrkwesqehd2msdmikh" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill"
+                                 validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-104">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_need_assessment"
+                                 constraintName="FKbefrjw4gc5j8b47ljio9byj8w" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="tbl_competence_new" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1568283741539-105">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_need_assessment"
+                                 constraintName="FKe5j8fy4gln39viprda644lnp9" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post"
+                                 validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1568432258140-103">
+        <addColumn tableName="tbl_need_assessment">
+            <column name="c_description" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+</databaseChangeLog>

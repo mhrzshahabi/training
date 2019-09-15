@@ -395,7 +395,7 @@ var skill_Level_Symbol = ""
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Skill_Skill.close();
@@ -679,35 +679,35 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
     var Menu_ListGrid_Skill_Skill = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Skill_Skill_refresh();
             }
         }, {
-            title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Skill_Skill_Add();
             }
         }, {
-            title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Skill_Skill_Edit();
 
             }
         }, {
-            title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Skill_Skill_Remove();
             }
         }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+            title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
 window.open(skill_SkillHomeUrl+"/print-all/pdf");
             }
         }, {
-            title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+            title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/excel" var="printUrl"/>"--%>
 window.open(skill_SkillHomeUrl+"/print-all/excel");
             }
         }, {
-            title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+            title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/html" var="printUrl"/>"--%>
                 window.open(skill_SkillHomeUrl+"/print-all/html");
             }
@@ -782,7 +782,7 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
 
 
     var ToolStripButton_Skill_Skill_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Skill_Skill_refresh();

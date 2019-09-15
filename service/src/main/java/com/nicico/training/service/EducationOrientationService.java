@@ -43,7 +43,13 @@ public class EducationOrientationService implements IEducationOrientationService
     @Override
     public EducationOrientationDTO.Info create(EducationOrientationDTO.Create request) {
         final EducationOrientation educationOrientation = modelMapper.map(request, EducationOrientation.class);
-        return save(educationOrientation);
+        if(educationOrientationDAO.findByTitleFaAndEducationLevelIdAAndEducationMajorId(
+                educationOrientation.getTitleFa(),
+                educationOrientation.getEducationLevelId(),
+                educationOrientation.getEducationMajorId()).isEmpty())
+            return save(educationOrientation);
+        else
+            return null;
     }
 
     @Transactional

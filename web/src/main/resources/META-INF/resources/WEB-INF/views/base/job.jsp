@@ -40,7 +40,7 @@
     JobDS_job = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
         ],
         fetchDataURL: jobUrl + "iscList"
@@ -60,7 +60,7 @@
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_job.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_job.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_job.setContents("&nbsp;");
             }

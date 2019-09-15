@@ -16,19 +16,19 @@
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_skill_level_refresh();
             }
         }, {
-            title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_skill_level_Add();
             }
         }, {
-            title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_skill_level_edit();
             }
         }, {
-            title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_skill_level_remove();
             }
         },]
@@ -175,7 +175,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_skill_level.close();
@@ -317,7 +317,7 @@
 
 
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_skill_level_refresh();

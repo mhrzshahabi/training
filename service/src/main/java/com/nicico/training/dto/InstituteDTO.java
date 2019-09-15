@@ -27,9 +27,6 @@ import java.util.Set;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class InstituteDTO {
     
-    @ApiModelProperty(required = true)
-    private String code;
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
@@ -53,11 +50,11 @@ public class InstituteDTO {
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eInstituteTypeId;
+    private Integer einstituteTypeId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer eLicenseTypeId;
+    private Integer elicenseTypeId;
 
     private Long parentInstituteId;
 
@@ -74,9 +71,9 @@ public class InstituteDTO {
         private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
         private Set<EquipmentDTO.Info> equipmentSet;
         private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-        private Address address;
-        private AccountInfo accountInfo;
-        private PersonalInfo manager;
+        private AddressDTO.Info address;
+        private AccountInfoDTO.Info accountInfo;
+        private PersonalInfoDTO.Info manager;
         private InstituteDTO.Info  parentInstitute;
         private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
         private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
@@ -89,6 +86,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
+        AddressDTO.Create address;
+        AccountInfoDTO.Create accountInfo;
         Set<Long> equipmentIds;
         Set<Long> trainingPlaceIds;
         Set<Long> teacherIds;
@@ -101,6 +100,8 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
+        AddressDTO address;
+        AccountInfoDTO accountInfo;
     }
 
     // ------------------------------

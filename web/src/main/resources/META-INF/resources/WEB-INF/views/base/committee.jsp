@@ -73,31 +73,31 @@
       Menu_ListGrid_committee = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
              ListGrid_Committee.invalidateCache();
                                    }
             }, {
-                title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+                title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                            show_CommitteeNewForm();
                                   }
             }, {
-                title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
                           show_CommitteEditForm();      }
             }, {
-                title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                            show_CommitteeRemoveForm();     }
             }, {isSeparator: true}, {
-                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                 title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
                               print_CommitteeListGrid("pdf")   }
              }, {
-                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                 title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
                                print_CommitteeListGrid("excel")  }
              }, {
-                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+                 title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
                             print_CommitteeListGrid("html")     }
                  }
                , {isSeparator: true}, {
-                 title: "لیست اعضاء", icon: "icon/pdf.png", click: function () {
+                 title: "لیست اعضاء", icon: "<spring:url value="pdf.png"/>", click: function () {
                  ToolStripButton_Member.click();
 
              }
@@ -331,7 +331,7 @@
                     }
                 }), isc.MyButton.create({
                     title: "<spring:message code="cancel"/>",
-                    icon: "pieces/16/icon_delete.png",
+                    icon: "<spring:url value="remove.png"/>",
                     click: function () {
                         Window_Committee.close();
                     }
@@ -344,7 +344,7 @@
     //ToolStripButton
     //**********************************************************************************
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Committee.invalidateCache();

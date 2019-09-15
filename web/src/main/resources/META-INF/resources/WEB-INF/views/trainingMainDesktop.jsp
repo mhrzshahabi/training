@@ -41,18 +41,23 @@
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
+    const needAssessmentUrl = rootUrl + "/needAssessment/";
+    const skillUrl = rootUrl + "/skill/";
 
     const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const EnNumSpcFilter = "[a-zA-Z0-9 ]";
     const NumFilter = "[0-9]";
 
+    const okDialogShowTime = 3000;
+
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.RPCManager.allowCrossDomainCalls = true;
-    // isc.FormItem.addProperties({redrawOnChange: true,});
-    isc.TextItem.addProperties({height: 27, length: 255,});
-    isc.TextAreaItem.addProperties({height: 54, length: 400,});
-    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
+    // isc.FormItem.addProperties({});
+    isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
+    isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27, autoDraw: false});
+    isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
+    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -85,24 +90,22 @@
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        width: "100%",
-        height: "100%",
         selectionType: "single",
         showFilterEditor: true,
         filterOnKeypress: true,
         alternateRecordStyles: true,
         autoDraw: false,
         showResizeBar: true,
-        leaveScrollbarGap: false,
         allowAdvancedCriteria: true,
         showRowNumbers: true,
         canDragResize: true,
-        progressiveLoading: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
-        wrapCells: true,
+        autoFetchData: false,
+        autoFitWidth: true,
+        autoFitWidthApproach: "both",
     });
 
     isc.defineClass("TrImg", Img);
@@ -216,7 +219,6 @@
     isc.TrDynamicForm.addProperties({
         width: "100%",
         margin: 5,
-        canDragResize: true,
         errorOrientation: "right",
         showInlineErrors: true,
         showErrorStyle: false,
@@ -226,7 +228,7 @@
         autoDraw: false,
         titlePrefix: "",
         titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:red;font-size:140%;'>* </span>",
+        requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
         requiredMessage: "<spring:message code="msg.field.is.required"/>",
     });
@@ -266,10 +268,12 @@
     };
 
     function trTrim(value) {
-        return value.trim();
+        var trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
+        return trimmed.replace(/\s\s+/g, ' ');
     }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
+    isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrWindow", Window);
     isc.TrWindow.addProperties({
@@ -281,9 +285,14 @@
         canFocus: true,
         dismissOnEscape: true,
         canDragReposition: true,
+        canDragResize: true,
         showHeaderIcon: false,
+        showFooter: true,
+        animateMinimize: true,
         width: 800,
         showMaximizeButton: true,
+        defaultMinimizeHeight: 500,
+
     });
 
     isc.defineClass("TrHLayoutButtons", TrHLayout);
@@ -329,6 +338,23 @@
             isc.Button.create({title: "<spring:message code="yes"/>",}),
             isc.Button.create({title: "<spring:message code="no"/>",})
         ],
+    });
+
+    isc.defineClass("TrComboBoxItem", ComboBoxItem);
+    isc.TrComboBoxItem.addProperties({
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+        allowAdvancedCriteria: true,
+        textMatchStyle: "substring",
+        pickListProperties: {
+            showFilterEditor: true
+        },
+        wrapTitle: false,
+        /*useClientFiltering: false,
+        cachePickListResults: true,
+        changeOnKeypress: false,
+        useClientFiltering: true,
+        width: "*"*/
     });
 
 
@@ -400,6 +426,12 @@
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
+                 {
+                    title: "<spring:message code="equipment.plural"/>", icon: "<spring:url value="equipment.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/equipment/show-form"/>");
+                    }
+                },
             ]
         }),
     });
@@ -408,6 +440,12 @@
         title: "<spring:message code="training.need.assessment"/>",
         menu: isc.TrMenu.create({
             data: [
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
+                    }
+                },
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
@@ -653,7 +691,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
-    const skillUrl = rootUrl + "/skill/";
+
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
@@ -678,7 +716,8 @@
             actionURL: actionURLParam,
             httpMethod: httpMethodParam,
             data: dataParam,
-            callback: callbackParam
+            callback: callbackParam,
+            willHandleError: true,
         }
     };
 
@@ -798,6 +837,7 @@
     });
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
+
 
 </script>
 </body>

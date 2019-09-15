@@ -54,7 +54,11 @@ public class EducationLevelRestController {
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationLevel')")
     public ResponseEntity<EducationLevelDTO.Info> create(@Validated @RequestBody EducationLevelDTO.Create request) {
-        return new ResponseEntity<>(educationLevelService.create(request), HttpStatus.CREATED);
+        EducationLevelDTO.Info educationLevelInfo = educationLevelService.create(request);
+        if (educationLevelInfo != null)
+            return new ResponseEntity<>(educationLevelInfo, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -69,9 +73,9 @@ public class EducationLevelRestController {
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         if (educationLevelService.delete(id))
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         else {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

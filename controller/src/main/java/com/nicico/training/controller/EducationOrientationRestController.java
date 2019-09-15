@@ -50,7 +50,11 @@ public class EducationOrientationRestController {
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationOrientation')")
     public ResponseEntity<EducationOrientationDTO.Info> create(@Validated @RequestBody EducationOrientationDTO.Create request) {
-        return new ResponseEntity<>(educationOrientationService.create(request), HttpStatus.CREATED);
+        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.create(request);
+        if (educationOrientationInfo != null)
+            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -65,9 +69,9 @@ public class EducationOrientationRestController {
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         if (educationOrientationService.delete(id))
-            return new ResponseEntity<>(true, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.OK);
         else {
-            return new ResponseEntity<>(false, HttpStatus.OK);
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

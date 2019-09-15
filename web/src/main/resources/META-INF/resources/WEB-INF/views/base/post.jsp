@@ -40,12 +40,12 @@
     PostDS_post = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "contains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
-            {name: "department.area", title: "<spring:message code="area"/>", filterOperator: "contains"},
-            {name: "department.assistance", title: "<spring:message code="assistance"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "department.area", title: "<spring:message code="area"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "department.assistance", title: "<spring:message code="assistance"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "department.affairs", title: "<spring:message code="affairs"/>", filterOperator: "contains"},
 
         ],
@@ -71,7 +71,7 @@
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_post.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_post.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_post.setContents("&nbsp;");
             }

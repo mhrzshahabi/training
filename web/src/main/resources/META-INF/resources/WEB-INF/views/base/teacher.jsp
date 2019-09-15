@@ -131,31 +131,31 @@ var dummy;
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code='refresh'/>", icon: "pieces/16/refresh.png", click: function () {
+            title: "<spring:message code='refresh'/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_teacher_refresh();
             }
         }, {
-            title: "<spring:message code='create'/>", icon: "pieces/16/icon_add.png", click: function () {
+            title: "<spring:message code='create'/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_teacher_add();
             }
         }, {
-            title: "<spring:message code='edit'/>", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "<spring:message code='edit'/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_teacher_edit();
             }
         }, {
-            title: "<spring:message code='remove'/>", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_teacher_remove();
             }
         }, {isSeparator: true}, {
-            title: "<spring:message code='print.pdf'/>", icon: "icon/pdf.png", click: function () {
+            title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                 ListGrid_teacher_print("pdf");
             }
         }, {
-            title: "<spring:message code='print.excel'/>", icon: "icon/excel.png", click: function () {
+            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
                 ListGrid_teacher_print("excel");
             }
         }, {
-            title: "<spring:message code='print.html'/>", icon: "icon/html.jpg", click: function () {
+            title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
                 ListGrid_teacher_print("html");
             }
         }]
@@ -923,7 +923,7 @@ var dummy;
                 showValueIconFocused: true
             },
             {
-                name: "personality.contactInfo.workAddress.address",
+                name: "personality.contactInfo.workAddress.restAddr",
                 title: "<spring:message code='address.rest'/>",
                 colSpan: 6,
                 width: "*",
@@ -1004,7 +1004,7 @@ var dummy;
                 length: "30"
             },
             {
-                name: "personality.accountInfo.bankBranch",
+                name: "personality.accountInfo.bBranch",
                 title: "<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
@@ -1012,7 +1012,7 @@ var dummy;
             },
 
             {
-                name: "personality.accountInfo.bankBranchCode",
+                name: "personality.accountInfo.bCode",
                 title: "<spring:message code='bank.branch.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
@@ -1134,7 +1134,7 @@ var dummy;
                 showValueIconFocused: true,
             },
             {
-                name: "personality.contactInfo.homeAddress.address",
+                name: "personality.contactInfo.homeAddress.restAddr",
                 title: "<spring:message code='address.rest'/>",
                 width: "*",
                 colSpan: 6,
@@ -1172,10 +1172,10 @@ var dummy;
                 if (newValue == undefined) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                 } else {
-                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
-                    RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
+                    // DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
+                    // RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    // DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
+                    // // DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
             if (item.name == "personality.contactInfo.homeAddress.otherCountry") {
@@ -1195,18 +1195,15 @@ var dummy;
         title: "<spring:message code='save'/>",
         icon: "pieces/16/save.png",
         click: function () {
-
-            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false || persianDateCheck == false)
+            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false || persianDateCheck == false) {
                 return;
-
+            }
             vm.validate();
             if (vm.hasErrors()) {
                 return;
             }
-
             var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
             DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
-
             var data = vm.getValues();
             var teacherSaveUrl = teacherUrl;
             if (teacherMethod.localeCompare("PUT") == 0) {
@@ -1217,9 +1214,9 @@ var dummy;
         }
     });
 
-    var IButton_Teacher_Exit_JspTeacher = isc.IButton.create({
-        title: "<spring:message code='cancel'/>",
-        icon: "pieces/16/icon_delete.png",
+var IButton_Teacher_Exit_JspTeacher = isc.IButton.create({
+    title: "<spring:message code='cancel'/>",
+        icon: "<spring:url value="remove.png"/>",
         prompt: "",
         width: 100,
         orientation: "vertical",
@@ -1370,7 +1367,7 @@ var dummy;
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code='refresh'/>",
         click: function () {
             ListGrid_teacher_refresh();
@@ -1793,9 +1790,8 @@ var dummy;
     };
 
     function personalInfo_findOne_result(resp) {
-        if (resp != null && resp != undefined) {
+        if (resp != null && resp != undefined && resp.data!="") {
             var personality = JSON.parse(resp.data);
-            dummy = personality;
             showAttach(personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
@@ -1824,7 +1820,7 @@ var dummy;
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
 
                 if (personality.contactInfo.workAddress != null && personality.contactInfo.workAddress != undefined) {
-                    DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.address", personality.contactInfo.workAddress.address);
+                    DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", personality.contactInfo.workAddress.restAddr);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.postCode", personality.contactInfo.workAddress.postCode);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.phone", personality.contactInfo.workAddress.phone);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.fax", personality.contactInfo.workAddress.fax);
@@ -1835,7 +1831,7 @@ var dummy;
                 }
                 if (personality.contactInfo.homeAddress != null && personality.contactInfo.homeAddress != undefined) {
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.stateId", personality.contactInfo.homeAddress.stateId);
-                    DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.address", personality.contactInfo.homeAddress.address);
+                    DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.restAddr", personality.contactInfo.homeAddress.restAddr);
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postCode", personality.contactInfo.homeAddress.postCode);
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.phone", personality.contactInfo.homekAdress.phone);
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.fax", personality.contactInfo.homeAddress.fax);
@@ -1846,8 +1842,8 @@ var dummy;
             if (personality.accountInfo != null && personality.accountInfo != undefined) {
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bBranch", personality.accountInfo.bBranch);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bCode", personality.accountInfo.bCode);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }

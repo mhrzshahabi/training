@@ -40,7 +40,7 @@
     PostGradeDS_postGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
         ],
         fetchDataURL: postGradeUrl + "iscList"
@@ -60,7 +60,7 @@
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
             if (totalRows > 0 && this.data.lengthIsKnown()) {
-                totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ": <b>" + totalRows + "</b>");
+                totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_postGrade.setContents("&nbsp;");
             }
