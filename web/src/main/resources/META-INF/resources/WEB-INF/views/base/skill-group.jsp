@@ -980,6 +980,7 @@
                 type: "text",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 length: "250",
@@ -995,7 +996,8 @@
                 title: "نام لاتین گروه مهارت ",
                 hint: "English/انگلیسی",
                 showHintInField: true,
-                keyPressFilter: "[a-z|A-Z|0-9 |]"
+                keyPressFilter: "[a-z|A-Z|0-9 |]",
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
             },
             {
                 name: "description",
@@ -1007,7 +1009,7 @@
                 hint: "توضیحات",
                 showHintInField: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
             }
         ]
     });
