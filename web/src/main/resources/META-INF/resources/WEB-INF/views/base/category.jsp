@@ -169,7 +169,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Category.close();
@@ -376,7 +376,7 @@
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "pieces/16/icon_delete.png",
+            icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Sub_Category.close();
@@ -567,21 +567,21 @@
     var Menu_ListGrid_Sub_Category = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Sub_Category_refresh();
             }
         }, {
-            title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Sub_Category_Add()
             }
         }, {
-            title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Sub_Category_Edit();
 
             }
         }, {
-            title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Sub_Category_Remove();
             }
         },]
@@ -736,21 +736,21 @@
     var Menu_ListGrid_Category = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "pieces/16/refresh.png", click: function () {
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Category_refresh();
             }
         }, {
-            title: "ایجاد", icon: "pieces/16/icon_add.png", click: function () {
+            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Category_Add();
             }
         }, {
-            title: "ویرایش", icon: "pieces/16/icon_edit.png", click: function () {
+            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Category_Edit();
 
             }
         }, {
-            title: "حذف", icon: "pieces/16/icon_delete.png", click: function () {
+            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Category_Remove();
             }
         },]
@@ -806,7 +806,7 @@
     });
 
     var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Sub_Category_refresh();
@@ -842,7 +842,7 @@
 
 
     var ToolStripButton_Category_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Category_refresh();

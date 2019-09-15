@@ -40,7 +40,7 @@
     PostGradeDS_postGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
         ],
         fetchDataURL: postGradeUrl + "iscList"

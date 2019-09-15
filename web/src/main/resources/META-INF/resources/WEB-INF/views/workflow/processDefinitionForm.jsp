@@ -25,7 +25,7 @@
 
 
             {
-                title: "حذف رکورد", icon: "pieces/16/icon_delete.png",
+                title: "حذف رکورد", icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     ListGrid_ProcessDefinition_remove();
                 }
@@ -229,7 +229,7 @@ workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
     var ToolStripButton_deleteProcessDefinitionForm = isc.ToolStripButton.create({
 
 
-        title: "حذف فرایند", icon: "pieces/16/icon_delete.png",
+        title: "حذف فرایند", icon: "<spring:url value="remove.png"/>",
         click: function () {
             ListGrid_ProcessDefinition_remove();
         }

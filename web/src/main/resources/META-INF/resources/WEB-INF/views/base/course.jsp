@@ -150,7 +150,7 @@
     var Menu_ListGrid_course = isc.Menu.create({
         width: 150,
         data: [{
-            title: "<spring:message code="refresh"/>", icon: "[SKIN]/actions/refresh.png", click: function () {
+            title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Course_refresh();
                 ListGrid_CourseJob.setData([]);
                 ListGrid_CourseSkill.setData([]);
@@ -159,33 +159,33 @@
                 ListGrid_CourseCompetence.setData([]);
             }
         }, {
-            title: "<spring:message code="create"/>", icon: "[SKIN]/actions/icon_add.png", click: function () {
+            title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Course_add();
             }
         }, {
-            title: "<spring:message code="edit"/>", icon: "[SKIN]/actions/icon_edit.png", click: function () {
+            title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                 ListGrid_Course_Edit();
             }
         }, {
-            title: "<spring:message code="remove"/>", icon: "[SKIN]/actions/icon_delete.png", click: function () {
+            title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Course_remove()
             }
         }, {
-            title: "تعریف هدف و سرفصل", icon: "[SKIN]/action/goal.png", click: function () {
+            title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {
                 openTabGoal();
             }
         }, {
             isSeparator: true
         }, {
-            title: "<spring:message code="print.pdf"/>", icon: "icon/pdf.png", click: function () {
+            title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                 print_CourseListGrid("pdf");
             }
         }, {
-            title: "<spring:message code="print.excel"/>", icon: "icon/excel.png", click: function () {
+            title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
                 print_CourseListGrid("excel");
             }
         }, {
-            title: "<spring:message code="print.html"/>", icon: "icon/html.jpg", click: function () {
+            title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
                 print_CourseListGrid("html");
             }
         }]
@@ -420,7 +420,7 @@
         filterOnKeypress: true,
     });
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+        icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/> ",
 
         click: function () {
@@ -1298,7 +1298,7 @@
             ID: "EditExitIButton",
             title: "<spring:message code="cancel"/>",
             prompt: "",
-            icon: "[SKIN]/actions/icon_delete.png",
+            icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
                 Window_course.close();
