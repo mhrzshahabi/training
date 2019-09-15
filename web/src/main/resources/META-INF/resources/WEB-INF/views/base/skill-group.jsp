@@ -99,8 +99,8 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
-                                    icon: "[SKIN]ask.png",
+                                    message:"<spring:message code="msg.skillGroup.notFound"/>",
+                                    icon:"[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
                                     buttonClick: function (button, index) {
@@ -131,7 +131,7 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
+                                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                                     icon: "[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
@@ -163,7 +163,7 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
+                                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                                     icon: "[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
@@ -200,7 +200,7 @@
 
                     isc.Dialog.create({
 
-                        message: "گروه مهارتی انتخاب نشده است",
+                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                         icon: "[SKIN]ask.png",
                         title: "پیام",
                         buttons: [isc.Button.create({title: "تائید"})],
@@ -235,7 +235,7 @@
             }
         },
             {isSeparator: true}, {
-                title: "لیست مهارت ها", icon: "pieces/512/skill-standard.png", click: function () {
+                title: "لیست مهارت ها", icon: "<spring:url value="skill.png"/>", click: function () {
                     var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 
 
@@ -243,7 +243,7 @@
 
                         isc.Dialog.create({
 
-                            message: "گروه مهارتی انتخاب نشده است",
+                            message: "<spring:message code="msg.skillGroup.notFound"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
                             buttons: [isc.Button.create({title: "تائید"})],
@@ -732,10 +732,7 @@
         border: "0px solid yellow",
         layoutMargin: 5,
         align: "center",
-        onCreate: function () {
-            alert("man toye hlayout hastam");
 
-        },
         members: [
             DynamicForm_thisSkillGroupHeader_Jsp
         ]
@@ -1371,7 +1368,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1403,7 +1400,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1435,7 +1432,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1458,7 +1455,7 @@
         })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
-        icon: "pieces/512/skill-standard.png",
+        icon: "<spring:url value="skill.png"/>",
         title: "لیست مهارت ها",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
@@ -1470,7 +1467,7 @@
 
                 isc.Dialog.create({
 
-                    message: "گروه مهارتی انتخاب نشده است",
+                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
                     buttons: [isc.Button.create({title: "تائید"})],
