@@ -11,6 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.TermDTO;
+import com.nicico.training.model.Term;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -166,8 +167,19 @@ public class TermRestController {
        return new ResponseEntity<>(termService.checkForConflict(sData, eData),HttpStatus.OK);
         }
 
+ @Loggable
+    @GetMapping(value ={"/checkForConflict/{sData}/{eData}/{id}"})
+    public ResponseEntity<String> checkConflictWithoutThisTerm(@PathVariable String sData,@PathVariable String eData,@PathVariable Long id) {
+       sData= sData.substring(0,4)+"/"+sData.substring(4,6)+"/"+sData.substring(6,8);
+       eData= eData.substring(0,4)+"/"+eData.substring(4,6)+"/"+eData.substring(6,8);
+       return new ResponseEntity<>(termService.checkConflictWithoutThisTerm(sData, eData,id),HttpStatus.OK);
+        }
 
-
-
+        @Loggable
+        @GetMapping(value = {"/getCode/{code}"})
+        public  ResponseEntity<String> getCode(@PathVariable String code)
+        {
+        return new ResponseEntity<>(termService.LastCreatedCode(code),HttpStatus.OK);
+        }
 
 }
