@@ -429,7 +429,7 @@
                  {
                     title: "<spring:message code="equipment.plural"/>", icon: "<spring:url value="equipment.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/education/level/show-form"/>");
+                        createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
                 },
             ]
@@ -838,7 +838,6 @@
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
-    createTab("نیازسنجی", "<spring:url value="/needAssessment/show-form"/>");
 
 </script>
 </body>

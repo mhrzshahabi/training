@@ -63,11 +63,11 @@
                     showRemoveForm_competence();
                 }
             }),
-            isc.TrPrintBtnCommon.create({
+            /*isc.TrPrintBtnCommon.create({
                 click: function () {
                     printCompetence_competence();
                 }
-            }),
+            }),*/
             isc.LayoutSpacer.create({
                 width: "*"
             }),

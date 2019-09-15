@@ -63,11 +63,11 @@
                     showRemoveForm_needAssessment();
                 }
             }),
-            isc.TrPrintBtnCommon.create({
+           /* isc.TrPrintBtnCommon.create({
                 click: function () {
                     printNeedAssessment_needAssessment();
                 }
-            }),
+            }),*/
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -300,7 +300,7 @@
                     this.close();
                     if (index == 0) {
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(needAssessmentUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="need.assessment"/>', '<spring:message code="removed"/>', '" + record.titleFa + "')")
+                            TrDSRequest(needAssessmentUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="need.assessment"/>', '<spring:message code="removed"/>')")
                         );
                     }
                 }
@@ -311,18 +311,7 @@
     function studyRcpResponse(resp, entityType, action, entityName) {
         let respCode = resp.httpResponseCode;
         if (respCode == 200) {
-            let name;
-            let msg;
-            if (entityName && (entityName !== 'undefined')) {
-                name = entityName;
-            } else {
-                name = JSON.parse(resp.data).titleFa;
-            }
-            if (name) {
-                msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
-            } else {
-                msg = entityType + '&nbsp;' + action + '.';
-            }
+            msg = entityType + '&nbsp;' + action + '.';
             showOkDialog(msg);
         } else {
             showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
