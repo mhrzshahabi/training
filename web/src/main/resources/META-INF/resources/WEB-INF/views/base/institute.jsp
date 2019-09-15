@@ -36,16 +36,16 @@
             {name: "addressId"},
             {name: "address.state.name"},
             {name: "address.city.name"},
-            {name: "address.address"},
+            {name: "address.restAddr"},
             {name: "address.postCode"},
             {name: "address.phone"},
             {name: "address.fax"},
             {name: "address.webSite"},
-            {name: "address.address"},
+            {name: "address.restAddr"},
             {name: "accountInfoId"},
             {name: "accountInfo.bank"},
-            {name: "accountInfo.bankBranch"},
-            {name: "accountInfo.bankBranchCode"},
+            {name: "accountInfo.bbranch"},
+            {name: "accountInfo.bcode"},
             {name: "accountInfo.accountNumber"},
             {name: "managerId"},
             {name: "manager.firstNameFa"},
@@ -281,7 +281,7 @@
             {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"},
             {name: "address.state.name", title: "استان", align: "center", filterOperator: "contains"},
             {name: "address.city.name", title: "شهر", align: "center", filterOperator: "contains"},
-            {name: "address.address", title: "آدرس", align: "center", filterOperator: "contains"},
+            {name: "address.restAddr", title: "آدرس", align: "center", filterOperator: "contains"},
             {name: "teacherNumPHD", hidden: true},
             {name: "teacherNumLicentiate", hidden: true},
             {name: "empNumLicentiate", hidden: true},
@@ -295,6 +295,10 @@
             {name: "address.stateId", hidden: true},
             {name: "address.cityId", hidden: true},
             {name: "accountInfoId", hidden: true},
+            {name: "accountInfo.bank", hidden: true},
+            {name: "accountInfo.bbranch", hidden: true},
+            {name: "accountInfo.bcode", hidden: true},
+            {name: "accountInfo.accountNumber", hidden: true},
             {name: "managerId", hidden: true},
             {name: "parentInstituteId", hidden: true},
             {name: "version", hidden: true}
@@ -530,7 +534,8 @@
                 name: "titleFa",
                 title: "عنوان فارسی",
                 colSpan: 2,
-                width: 250,
+required:true,
+width: 250,
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255"
@@ -555,19 +560,24 @@
             {
                 name: "parentInstituteId",
                 title: "موسسه مادر",
+iconWidth: 16,
+iconHeight: 16,
+suppressBrowserClearIcon:true,
                 icons: [{
                     name: "add",
-                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
-                    inline: true
+                    src: "[SKIN]/actions/add.png",
+                    click: function (form, item, icon) {
+                        ListGrid_Institute_InstituteList_Select();
+                    },
                 }],
-                canEdit: false,
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                width: 200,
+                // canEdit: false,
                 click: function (form, item, icon) {
-
-                    ListGrid_Institute_InstituteList_Select();
+                     ListGrid_Institute_InstituteList_Select();
                 },
+                readOnly:true,
+                type: 'text',
+                keyPressFilter: "[]",
+                width: 300,
                 length: "10"
             },
             {
@@ -589,13 +599,16 @@
                 title: "مدیر موسسه",
                 icons: [{
                     name: "add",
-                    src: "[SKIN]/actions/add.png", // if inline icons are not supported by the browser, revert to a blank icon
-                    inline: true
+                    src: "[SKIN]/actions/add.png",
+                    align:"right", // if inline icons are not supported by the browser, revert to a blank icon
+                    click: function (form, item, icon) {
+                        ListGrid_Institute_PersonalList_Select();
+                    }
                 }],
-                canEdit: false,
-                width: 200,
+                width: 300,
                 type: 'text',
-                keyPressFilter: "[0-9]",
+required:true,
+keyPressFilter: "[0-9]",
                 click: function (form, item, icon) {
 
                     ListGrid_Institute_PersonalList_Select();
@@ -641,6 +654,7 @@
                 cachePickListResults: false,
                 useClientFiltering: true,
                 filterFields: ["titleFa"],
+required:true,
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
@@ -661,7 +675,8 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Institute_ELicenseType,
+required:true,
+optionDataSource: RestDataSource_Institute_ELicenseType,
                 autoFetchData: false,
                 addUnknownValues: false,
                 cachePickListResults: false,
@@ -817,11 +832,11 @@
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_State,
-                autoFetchData: false,
+                autoFetchData: true,
                 addUnknownValues: false,
                 cachePickListResults: false,
                 useClientFiltering: true,
@@ -843,7 +858,7 @@
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
-                defaultToFirstOption: true,
+                // defaultToFirstOption: true,
                 displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_City,
@@ -868,7 +883,7 @@
                 length: "15",
             },
             {
-                name: "address.address",
+                name: "address.restAddr",
                 title: "آدرس",
                 required: true,
                 colSpan: 5,
@@ -937,14 +952,14 @@
                 length: "100"
             },
             {
-                name: "accountInfo.bankBranch",
+                name: "accountInfo.bbranch",
                 title: "شعبه",
                 required: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "100"
             },
             {
-                name: "accountInfo.bankBranchCode",
+                name: "accountInfo.bcode",
                 title: "کد شعبه",
                 required: true,
                 keyPressFilter: "[0-9]",
@@ -1077,7 +1092,7 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
         }
     });
 
@@ -2130,6 +2145,10 @@
             var stateValue = undefined;
             var cityValue = undefined;
 
+//            DynamicForm_Institute_Institute_Address.getField("address.stateId").invalidateCache();
+//             DynamicForm_Institute_Institute_Address.getField("address.stateId").fetchData();
+
+
             if (record != null && record.address != null && record.address.stateId != null)
                 stateValue = record.address.stateId;
             if (record != null && record.address != null && record.address.cityId != null)
@@ -2138,7 +2157,9 @@
                 DynamicForm_Institute_Institute_Address.clearValue("address.cityId");
             }
             if (stateValue != undefined) {
+                // RestDataSource_Institute_State.fetchDataURL=stateUrl + "spec-list";
                 RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
+                // DynamicForm_Institute_Institute_Address.getField("address.stateId").optionDataSource = RestDataSource_Institute_State;
                 DynamicForm_Institute_Institute_Address.getField("address.cityId").optionDataSource = RestDataSource_Institute_City;
                 DynamicForm_Institute_Institute_Address.getField("address.cityId").fetchData();
             }

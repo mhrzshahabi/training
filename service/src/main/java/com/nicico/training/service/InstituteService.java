@@ -110,7 +110,6 @@ public class InstituteService implements IInstituteService {
         modelMapper.map(request, updating);
 
         Address address = new Address();
-        PersonalInfo manager = null;
         Institute parentInstitute = null;
         AccountInfo accountInfo = new AccountInfo();
 
@@ -139,12 +138,12 @@ public class InstituteService implements IInstituteService {
             parentInstitute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
         }
 
-        if (updating.getManagerId() != null) {
+        /*if (updating.getManagerId() != null) {
             Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(updating.getManagerId());
-            manager = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
+            PersonalInfo manager = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
+            updating.setManagerId(updating.getManagerId());
         }
-
-        updating.setManager(manager);
+*/
         updating.setParentInstitute(parentInstitute);
 
         return modelMapper.map(instituteDAO.saveAndFlush(updating), InstituteDTO.Info.class);
@@ -346,6 +345,10 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
+        int b=1;
+        Institute i=new Institute();
+        InstituteDTO.Info info=new InstituteDTO.Info();
+        modelMapper.map(i,info);
         return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
     }
 

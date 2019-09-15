@@ -87,7 +87,6 @@
                 name: "code",
                 title: "کد",
                 type: 'text',
-                hint: "Persian/فارسی",
                 keyPressFilter: "[a-z|A-Z|0-9 ]",
                 length: "20",
                 width:"300"

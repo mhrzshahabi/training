@@ -31,8 +31,8 @@ public class AccountInfoDTO {
         private String lastModifiedBy;
         private String accountNumber;
         private String bank;
-        private String bBranch;
-        private Long bCode;
+        private String bbranch;
+        private Long bcode;
         private String cartNumber;
         private String shabaNumber;
         private String description;
