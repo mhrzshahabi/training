@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_institute")
-public class Institute {
+public class Institute  {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_seq")
@@ -27,7 +27,7 @@ public class Institute {
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
-    @Column(name = "c_title_en", nullable = false)
+    @Column(name = "c_title_en")
     private String titleEn;
 
     @ManyToOne
@@ -44,7 +44,7 @@ public class Institute {
     @Column(name ="f_account_info")
     private Long accountInfoId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
     @JoinColumn(name = "f_manager", insertable = false, updatable = false)
     private PersonalInfo manager;
 
