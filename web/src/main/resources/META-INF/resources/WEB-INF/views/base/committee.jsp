@@ -102,7 +102,7 @@
                 }
             }
             , {isSeparator: true}, {
-                title: "لیست اعضاء", icon: "[SKIN]/actions/members.png", click: function () {
+                title: "لیست اعضاء", icon: "<spring:url value="CommitteeMembers.png"/>", click: function () {
                     ToolStripButton_Member.click();
 
                 }
@@ -399,7 +399,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست اعضا",
+                title: "لیست اعضاء",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -463,7 +463,7 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
-        title: "لیست اعضا",
+        title: "لیست اعضاء",
         width: "900",
         height: "400",
         autoSize: true,
@@ -488,8 +488,8 @@
 
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/members.png",
-        title: "لیست اعضا",
+        icon: "<spring:url value="CommitteeMembers.png"/>",
+        title: "لیست اعضاء",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -624,7 +624,7 @@
         var record = ListGrid_Committee.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -652,7 +652,7 @@
 
             <%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
