@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_institute")
-public class Institute  {
+public class Institute  extends  Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_seq")
