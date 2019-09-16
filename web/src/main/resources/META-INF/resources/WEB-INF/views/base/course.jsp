@@ -101,7 +101,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
-        // fetchDataURL: courseUrl + courseId.id + "/goal"
+            // fetchDataURL: courseUrl + courseId.id + "/goal"
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
@@ -234,6 +234,9 @@
             RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
+            RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
+            ListGrid_Goal.fetchData();
+            ListGrid_Goal.invalidateCache();
             // RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
             // ListGrid_CourseSkill.fetchData();
             // ListGrid_CourseSkill.invalidateCache();
@@ -607,12 +610,9 @@
         sectionVisibilityMode: "mutex",
         canTabToSectionHeaders: true,
         colWidths: [200, "*"],
-        // height: "90%",
-        // align: "center",
         titleAlign: "left",
         showInlineErrors: true,
         numCols: 8,
-        // isGroup: true,
         fields: [
             {
                 name: "code",
@@ -1437,6 +1437,30 @@
             members: [DynamicForm_course, courseSaveOrExitHlayout]
         })]
     });
+    // var Window_goal_syllabus = isc.TrWindow.create({
+    //     width: "100%",
+    //     autoSize: true,
+    //     canDragReposition: false,
+    //     autoCenter: true,
+    //     align: "center",
+    //     isModal: true,
+    //     showModalMask: true,
+    //     autoDraw: false,
+    //     dismissOnEscape: false,
+    //
+    //     border: "1px solid gray",
+    //     closeClick: function () {
+    //         this.Super("closeClick", arguments);
+    //         // for(var i = 0; i <testData.length ; i++) {
+    //         // preCourseDS.removeData(testData[i]);
+    //         // }
+    //     },
+    //     items: [isc.VLayout.create({
+    //         width: "100%",
+    //         height: "100%",
+    //         members: [DynamicForm_course, courseSaveOrExitHlayout]
+    //     })]
+    // });
     // var VLayout_Grid_Goal = isc.VLayout.create({
     //     width: "30%",
     //     height: "100%",
@@ -1492,6 +1516,12 @@
         width: "100%",
         height: "100%",
         tabs: [
+            {
+                id: "TabPane_Goal_Syllabus1",
+                title: "<spring:message code="course_syllabus_goal"/>",
+                // pane: HLayout_Tab_Course_Goal
+                pane: isc.TrViewLoader.create({viewURL: "goal/show-form"})
+            },
             {
                 id: "TabPane_Goal_Syllabus",
                 title: "<spring:message code="course_syllabus_goal"/>",
@@ -1724,7 +1754,7 @@
             createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form", false);
             RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
         }
-    }
+    };
 
     function print_CourseListGrid(type) {
         var advancedCriteria_course = ListGrid_Course.getCriteria();
