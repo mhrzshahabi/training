@@ -6,13 +6,13 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+//<script>
 
     var term_method = "POST";
     var startDateCheckTerm = true;
     var endDateCheckTerm = true;
     var checkConflict = false;
-    var  termCode="0";
+    var termCode = "0";
 
     //******************************
     //Menu
@@ -21,45 +21,51 @@
         data: [
             {
                 title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                ListGrid_Term.invalidateCache();
-                                   }
+                    ListGrid_Term.invalidateCache();
+                }
             }, {
                 title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
-                 show_TermNewForm();
-                                  }
+                    show_TermNewForm();
+                }
             }, {
                 title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-                             show_TermEditForm();      }
+                    show_TermEditForm();
+                }
             }, {
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                           show_TermRemoveForm();       }
+                    show_TermRemoveForm();
+                }
             }, {isSeparator: true}, {
-                 title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                          print_TermListGrid("pdf") ;        }
-             }, {
-                 title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                                 print_TermListGrid("excel")  }
-             }, {
-                 title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                       print_TermListGrid("html");           }
+                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                    print_TermListGrid("pdf");
+                }
+            }, {
+                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                    print_TermListGrid("excel")
+                }
+            }, {
+                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                    print_TermListGrid("html");
+                }
             }]
     });
 
- //************************************************************************************
+    //************************************************************************************
     // RestDataSource & ListGrid
- //************************************************************************************
- 	var RestDataSource_term = isc.MyRestDataSource.create({
+    //************************************************************************************
+    var RestDataSource_term = isc.MyRestDataSource.create({
         ID: "termDS",
         transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"
+            dsRequest.httpHeaders = {
+                "Authorization": "Bearer <%= accessToken %>"
             };
             return this.Super("transformRequest", arguments);
         },
         fields: [{name: "id", primaryKey: true},
-         {name: "code"},
-         {name: "titleFa"},
-         {name: "startDate"},
-         {name: "endDate"},
+            {name: "code"},
+            {name: "titleFa"},
+            {name: "startDate"},
+            {name: "endDate"},
         ], dataFormat: "json",
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
@@ -99,13 +105,15 @@
                 name: "code",
                 title: "کد",
                 //  hidden: true,
-                type: 'text',
-                required: true,
-                canEdit:false,
-                requiredMessage: "کد می تواند شامل عدد , حروف فارسی و انگلیسی باشد",
+               // type: 'text',
+                //required: true,
+                 disabled:true,
+                canEdit: false,
+             // requiredMessage: "کد می تواند شامل عدد , حروف فارسی و انگلیسی باشد",
                 //  titleOrientation: "top",
                 //keyPressFilter: "[/|0-9]",
                 // length: "15",
+                hint: "کد به صورت اتوماتیک ایجاد می شود", showHintInField: true,
                 width: "*",
                 height: 35
             }, {
@@ -118,7 +126,7 @@
                 height: 35,
                 requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
-                width: "*", hint: "Persian/فارسی", showHintInField: true,
+                width: "*",// hint: "Persian/فارسی", showHintInField: true,
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
 
@@ -128,8 +136,8 @@
                 title: "تاریخ شروع",
                 ID: "startDate_jspTerm",
                 type: 'text',
-                enabled:false,
-                 required: true,
+                enabled: false,
+                required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
@@ -158,7 +166,6 @@
                         //  DynamicForm_Term.clearFieldErrors("endDate", true);
                         DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                         DynamicForm_Term.getItem("endDate").setValue();
-
                         endDateCheckTerm = false;
                     }
                 }
@@ -169,7 +176,7 @@
                 title: "تاریخ پایان",
                 ID: "endDate_jspTerm",
                 type: 'text',
-                enabled:false,
+                enabled: false,
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
@@ -187,7 +194,7 @@
                             if (term_method == "POST")
                                 getTermCodeRequest(startdate.substr(0, 4));
                         } else
-                            simpleDialog("پیام","تاریخ شروع وارد نشده است.",3000,"say");
+                            simpleDialog("پیام", "تاریخ شروع وارد نشده است.", 3000, "say");
                     }
                 }],
                 blur: function () {
@@ -241,20 +248,10 @@
                     if (term_method == "PUT") {
                         edit_Term();
                     } else {
-
-
-
-
                         save_Term();
                     }
-
                 }
-                ,
-                focus:function f() {
 
-                 //  DynamicForm_Term.setValue("code",termCode);//salam
-
-                }
             }), isc.MyButton.create({
                 title: "لغو",
                 icon: "<spring:url value="remove.png"/>",
@@ -265,20 +262,20 @@
         }),]
     });
 
-//**********************************************************************************
-                                //ToolStripButton
-//**********************************************************************************
-	var ToolStripButton_Refresh = isc.ToolStripButton.create({
-		icon: "<spring:url value="refresh.png"/>",
-		title: "بازخوانی اطلاعات",
-		click: function () {
-			ListGrid_Term.invalidateCache();
-		}
-	});
-	var ToolStripButton_Edit = isc.ToolStripButton.create({
-		icon: "[SKIN]/actions/edit.png",
-		title: "ویرایش",
-		click: function () {
+    //**********************************************************************************
+    //ToolStripButton
+    //**********************************************************************************
+    var ToolStripButton_Refresh = isc.ToolStripButton.create({
+        icon: "<spring:url value="refresh.png"/>",
+        title: "بازخوانی اطلاعات",
+        click: function () {
+            ListGrid_Term.invalidateCache();
+        }
+    });
+    var ToolStripButton_Edit = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/edit.png",
+        title: "ویرایش",
+        click: function () {
 
             show_TermEditForm();
         }
@@ -388,142 +385,127 @@
 
         var strsData = startDate1.replace(/(\/)/g, "");
         var streData = endDate1.replace(/\//g, "");
+        isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
 
-
-        isc.RPCManager.sendRequest({
-            actionURL: termUrl + "checkForConflict/" + strsData + "/" + streData,
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    if (resp.data.length > 0) {
-                        var OK = isc.Dialog.create({
-                            message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
-                            icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                        }, 3000);
-
-                    } else {
-                        var termData = DynamicForm_Term.getValues();
-                        var termSaveUrl = termUrl;
-                        if (term_method.localeCompare("PUT") == 0) {
-                            var jobRecord = ListGrid_Term.getSelectedRecord();
-                            termSaveUrl += jobRecord.id;
-                        }
-                        isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
-                    }
-                }
-            }
-        });
     };
 
+
+    function conflictReq(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+            if (resp.data.length > 0) {
+                var OK = isc.Dialog.create({
+                    message: getFormulaMessage(resp.data, 2, "red", "I") + " با ترم وارد شده تداخل دارد",
+                    icon: "[SKIN]say.png",
+                    title: "انجام فرمان"
+                });
+                setTimeout(function () {
+                    OK.close();
+                }, 3000);
+
+            } else {
+                var termData = DynamicForm_Term.getValues();
+                var termSaveUrl = termUrl;
+                if (term_method.localeCompare("PUT") == 0) {
+                    var jobRecord = ListGrid_Term.getSelectedRecord();
+                    termSaveUrl += jobRecord.id;
+                }
+                isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
+            }
+        } else {
+            var OK = isc.Dialog.create({
+                message: "ارتباط با سرور قطع می باشد",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+
+    };
+
+    //===================================================================================
+
+
     function getTermCodeRequest(termYear) {
-
-
         isc.RPCManager.sendRequest({
-            actionURL: " http://localhost:8080/training/api/term/getCode/"+termYear,//termUrl + "checkForConflict/" + strsData + "/" + streData,
+            actionURL: " http://localhost:8080/training/api/term/getCode/" + termYear,
             httpMethod: "GET",
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
             showPrompt: false,
             serverOutputAsString: false,
-            callback: function f(resp){
+            callback: function f(resp) {
 
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-                if (resp.data != null) {
-                    termCode = resp.data;
+                    if (resp.data != null) {
+                        termCode = resp.data;
+                    } else {
+                        termCode = "0";
+                    }
+
+                    DynamicForm_Term.setValue("code", termYear + "-" + (parseInt(termCode) + 1));
+
                 } else {
-                    termCode = "0";
+                    simpleDialog("خطا", "پاسخی از سرور دریافت نشد.", 3000, "error");
                 }
-
-                 DynamicForm_Term.setValue("code",termYear +"-"+(parseInt(termCode)+1));
-
-            } else {
-                simpleDialog("خطا","پاسخی از سرور دریافت نشد.",3000,"error");
-            }
 
             },
         });
     };
 
 
-
     function edit_Term() {
         var selectTerm = ListGrid_Term.getSelectedRecord();
         if (endDateCheckTerm == false)
             return;
-         var startDate1 = DynamicForm_Term.getValue("startDate");
-         var endDate1 = DynamicForm_Term.getValue("endDate");
-         var termCode1 = DynamicForm_Term.getValue("code");
+        var startDate1 = DynamicForm_Term.getValue("startDate");
+        var endDate1 = DynamicForm_Term.getValue("endDate");
+        var termCode1 = DynamicForm_Term.getValue("code");
 
-            if(startDate1.substr(0,4)!=termCode1.substr(0,4))
-            {
-            simpleDialog("پیام","کد با تاریخ شروع همخوانی ندارد.",3000,"say");
-            return;
-            }
-
-
-        if (!DynamicForm_Term.validate()) {
-
+        if (startDate1.substr(0, 4) != termCode1.substr(0, 4)) {
+            simpleDialog("پیام", "کد با تاریخ شروع همخوانی ندارد.", 3000, "say");
             return;
         }
-
-
+        if (!DynamicForm_Term.validate()) {
+            return;
+        }
         var strsData = startDate1.replace(/(\/)/g, "");
         var streData = endDate1.replace(/\//g, "");
-
-
-        isc.RPCManager.sendRequest({
-            actionURL: termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id,
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                    if (resp.data.length > 0) {
-                        var OK = isc.Dialog.create({
-                            message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
-                            icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                        }, 3000);
-
-                    } else {
-                        var termData = DynamicForm_Term.getValues();
-                        var termSaveUrl = termUrl;
-                        if (term_method.localeCompare("PUT") == 0) {
-                            var jobRecord = ListGrid_Term.getSelectedRecord();
-                            termSaveUrl += jobRecord.id;
-                        }
-                        isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
-
-                    }
+        //=================================================================
+         isc.RPCManager.sendRequest(MyDsRequest( termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id, "GET", null, "callback:ConflictWhenEdit(rpcResponse)"));
+       };
+                function ConflictWhenEdit(resp) {
+                  if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                if (resp.data.length > 0) {
+                                    var OK = isc.Dialog.create({
+                                        message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام فرمان"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 3000);
+                                } else {
+                                    var termData = DynamicForm_Term.getValues();
+                                    var termSaveUrl = termUrl;
+                                    if (term_method.localeCompare("PUT") == 0) {
+                                        var jobRecord = ListGrid_Term.getSelectedRecord();
+                                        termSaveUrl += jobRecord.id;
+                                    }
+                                    isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
+                                }
+                            }
 
                 }
-
-            }
-        });
-    };
 
     function show_TermRemoveForm() {
         var record = ListGrid_Term.getSelectedRecord();
         if (record == null || record.id == null) {
 
-            <%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
@@ -546,10 +528,11 @@
         }
 
     };
-    function  show_TermActionResult(resp) {
+
+    function show_TermActionResult(resp) {
         var respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-                ListGrid_Term.invalidateCache();
+            ListGrid_Term.invalidateCache();
             var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
 
