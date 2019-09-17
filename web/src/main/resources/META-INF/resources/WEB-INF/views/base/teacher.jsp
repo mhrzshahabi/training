@@ -35,6 +35,7 @@ var dummy;
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
+            {name: "personality.nameFa"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "personality.educationLevel.titleFa"},
@@ -176,6 +177,12 @@ var dummy;
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
+            {
+                name: "personality.nameFa",
+                title: "<spring:message code='firstName'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
