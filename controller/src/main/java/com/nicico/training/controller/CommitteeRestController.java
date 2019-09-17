@@ -294,5 +294,17 @@ public class CommitteeRestController {
         reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
     }
 
+    @Loggable
+    @GetMapping(value = {"/findConflictCommittee/{category}/{subcategory}"})
+      public  ResponseEntity<String> findConflictCommittee(@PathVariable Long category,@PathVariable Long subcategory)
+     {
+     return  new ResponseEntity<>(committeeService.findConflictCommittee(category,subcategory),HttpStatus.OK);
+     }
 
+       @Loggable
+    @GetMapping(value = {"/findConflictWhenEdit/{category}/{subcategory}/{id}"})
+      public  ResponseEntity<String> fincConflictWhenEdit(@PathVariable Long category,@PathVariable Long subcategory,@PathVariable Long id)
+     {
+     return  new ResponseEntity<>(committeeService.findConflictWhenEdit(category,subcategory,id),HttpStatus.OK);
+     }
 }

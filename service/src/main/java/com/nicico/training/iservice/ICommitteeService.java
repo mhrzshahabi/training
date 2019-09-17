@@ -31,4 +31,6 @@ public interface ICommitteeService {
      List<PersonalInfoDTO.Info> getMembers(Long committeeId);
      Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
       boolean checkForDelete(Long CommitteeId);
+    String findConflictCommittee(Long category, Long subcategory);
+    String findConflictWhenEdit(Long category, Long subcategory, Long id);
 }
