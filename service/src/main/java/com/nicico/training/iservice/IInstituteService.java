@@ -5,6 +5,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EquipmentDTO;
+import com.nicico.training.dto.InstituteAccountDTO;
 import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.TeacherDTO;
 import org.springframework.data.domain.Pageable;
@@ -30,6 +31,8 @@ public interface IInstituteService {
     List<EquipmentDTO.Info> getEquipments(Long instituteId);
 
     List<TeacherDTO.Info> getTeachers(Long instituteId);
+
+    List<InstituteAccountDTO.Info> getInstituteAccounts(Long instituteId);
 
     void removeEquipment (Long equipmentId,Long instituteId);
     void removeEquipments (List<Long> equipmentIds,Long instituteId);

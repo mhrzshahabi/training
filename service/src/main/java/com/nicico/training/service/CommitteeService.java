@@ -194,5 +194,27 @@ public class CommitteeService implements ICommitteeService {
   return ((personalInfoSet != null && personalInfoSet.size()>0 ?false:true));
   }
 
+    @Override
+    @Transactional
+    public String findConflictCommittee(Long category,Long subcategory)
+    {
+    List<String> list=committeeDAO.findConflictCommittee(category,subcategory);
+    if(list.size()>0)
+    return (list.get(0));
+    else
+    return (null);
+    }
+
+    @Override
+    @Transactional
+    public String findConflictWhenEdit(Long category,Long subcategory,Long id)
+    {
+     List<String> list=committeeDAO.findConflictWhenEdit(category,subcategory,id);
+    if(list.size()>0)
+    return (list.get(0));
+    else
+    return (null);
+    }
+
 }
 

@@ -366,4 +366,25 @@ public abstract class EnumsConverter {
             return null;
         }
     }
+
+    @Converter(autoApply = true)
+    public static class EBankTypeConverter implements AttributeConverter<EBankType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EBankType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EBankType convertToEntityAttribute(Integer id) {
+
+            for (EBankType entry : EBankType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }

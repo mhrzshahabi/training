@@ -7,7 +7,6 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.dto.enums.EInstituteTypeDTO;
 import com.nicico.training.dto.enums.ELicenseTypeDTO;
-import com.nicico.training.model.*;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -34,8 +33,33 @@ public class InstituteDTO {
     @ApiModelProperty
     private String titleEn;
 
-    private Long addressId;
-    private Long accountInfoId;
+    @ApiModelProperty
+    private Long stateId;
+
+    @ApiModelProperty
+    private Long cityId;
+
+    @ApiModelProperty
+    private String postCode;
+
+    @ApiModelProperty
+    private String phone;
+
+    @ApiModelProperty
+    private String mobile;
+
+    @ApiModelProperty
+    private String fax;
+
+    @ApiModelProperty
+    private String webSite;
+
+    @ApiModelProperty
+    private String e_mail;
+
+    @ApiModelProperty
+    private String restAddress;
+
     private Long managerId;
     private Integer teacherNumPHD;
     private Integer empNumPHD;
@@ -71,12 +95,13 @@ public class InstituteDTO {
         private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
         private Set<EquipmentDTO.Info> equipmentSet;
         private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-        private AddressDTO.Info address;
-        private AccountInfoDTO.Info accountInfo;
+        private Set<InstituteAccountDTO.Info> instituteAccountSet;
         private PersonalInfoDTO.Info manager;
         private InstituteDTO.Info  parentInstitute;
         private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;
         private ELicenseTypeDTO.ELicenseTypeInfoTuple eLicenseType;
+        private CityDTO.Info city;
+        private StateDTO.Info state;
     }
 
     // ------------------------------
@@ -86,8 +111,6 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {
-        AddressDTO.Create address;
-        AccountInfoDTO.Create accountInfo;
         Set<Long> equipmentIds;
         Set<Long> trainingPlaceIds;
         Set<Long> teacherIds;
@@ -100,8 +123,6 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @ApiModel("InstituteUpdateRq")
     public static class Update extends InstituteDTO {
-        AddressDTO address;
-        AccountInfoDTO accountInfo;
     }
 
     // ------------------------------

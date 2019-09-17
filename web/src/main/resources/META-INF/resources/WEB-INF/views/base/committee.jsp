@@ -4,7 +4,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//<script>
 
     var committee_method = "POST";
     var committeeId;
@@ -102,7 +102,7 @@
                 }
             }
             , {isSeparator: true}, {
-                title: "لیست اعضاء", icon: "[SKIN]/actions/members.png", click: function () {
+                title: "لیست اعضاء", icon: "<spring:url value="CommitteeMembers.png"/>", click: function () {
                     ToolStripButton_Member.click();
 
                 }
@@ -278,6 +278,7 @@
                     DynamicForm_Committee.getItem("subCategoryId").clearValue();
                     DynamicForm_Committee.getItem("subCategoryId").setValue();
                     DsSubCategory_committee.fetchDataURL = categoryUrl + value + "/sub-categories?_startRow=0&_endRow=55";
+               //    DsSubCategory_committee.fetchDataURL = categoryUrl + value;
                     DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
                     DynamicForm_Committee.getItem("subCategoryId").fetchData();
                 },
@@ -319,7 +320,12 @@
                     title: "<spring:message code="save"/>",
                     icon: "pieces/16/save.png",
                     click: function () {
+                     if (committee_method == "PUT") {
+                       edit_Committee();
+                    } else {
                         save_Committee();
+                    }
+
 
                     }
                 }), isc.MyButton.create({
@@ -399,7 +405,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست اعضا",
+                title: "لیست اعضاء",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -463,7 +469,7 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
-        title: "لیست اعضا",
+        title: "لیست اعضاء",
         width: "900",
         height: "400",
         autoSize: true,
@@ -488,8 +494,8 @@
 
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/members.png",
-        title: "لیست اعضا",
+        icon: "<spring:url value="CommitteeMembers.png"/>",
+        title: "لیست اعضاء",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -610,21 +616,17 @@
         if (!DynamicForm_Committee.validate()) {
             return;
         }
-        var committeeData = DynamicForm_Committee.getValues();
-        var committeeSaveUrl = committeeUrl;
-        if (committee_method.localeCompare("PUT") == 0) {
-            var committeeRecord = ListGrid_Committee.getSelectedRecord();
-            committeeSaveUrl += committeeRecord.id;
-        }
-        isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
-
+        var cate = DynamicForm_Committee.getValue("categoryId");
+        var subCate = DynamicForm_Committee.getValue("subCategoryId");
+        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
     };
+
 
     function show_CommitteEditForm() {
         var record = ListGrid_Committee.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -652,7 +654,7 @@
 
             <%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
             isc.Dialog.create({
-                message: "<spring:message code="msg.record.not.selected"/>",
+                message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -675,8 +677,82 @@
         }
 
     };
+            function edit_Committee() {
+             var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
+             var cateEdit = DynamicForm_Committee.getValue("categoryId");
+             var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
+             isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
 
-    function show_CommitteeActionResult(resp) {
+            };
+
+             function  findConflictWhenEdit(resp)
+            {
+              if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.data.length > 0) {
+                var committeeDataEdit = DynamicForm_Committee.getValues();
+                 var committeeSaveUrlEdit = committeeUrl;
+                 var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
+                 committeeSaveUrlEdit += committeeEditRecord1.id;
+              isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
+
+            } else {
+
+             var cate2 = DynamicForm_Committee.getValue("categoryId");
+             var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
+             var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
+              var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
+             isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'"+ cate3+"','"+ sc+ "')"));
+
+            }
+        } else {
+            var OK = isc.Dialog.create({
+                message: "پاسخی از سمت سرور دریافت نشد",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+            };
+
+
+
+
+ function show_ConflictCommittee(resp,cat,subcat) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.data.length > 0) {
+                var OK = isc.Dialog.create({
+                    message: "گروه "+  cat+  " و زیر گروه " + subcat+  " وارد شده با کمیته تخصصی " + getFormulaMessage(resp.data, 2, "red", "I") + " تداخل دارد",
+                    icon: "[SKIN]say.png",
+                    title: "هشدار"
+                });
+                setTimeout(function () {
+                    OK.close();
+                }, 3000);
+            } else {
+
+                var committeeDataEditCreate = DynamicForm_Committee.getValues();
+                var committeeSaveUrlEditCreate = committeeUrl;
+                // if (committee_method.localeCompare("PUT") == 0) {
+                //     var committeeRecord = ListGrid_Committee.getSelectedRecord();
+                //     committeeSaveUrl += committeeRecord.id;
+                // }
+             isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+            }
+        } else {
+            var OK = isc.Dialog.create({
+                message: "پاسخی از سمت سرور دریافت نشد",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+    }
+
+ function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
 
         if (respCode == 200 || respCode == 201) {
@@ -705,7 +781,7 @@
             }
         } else {
             var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+                message: "خطا در اجراي عمليات! کد خطا: ",
             });
 
             setTimeout(function () {
@@ -713,7 +789,6 @@
             }, 3000);
         }
     };
-
 
     function print_CommitteeListGrid(type) {
         var advancedCriteria_committee = ListGrid_Committee.getCriteria();

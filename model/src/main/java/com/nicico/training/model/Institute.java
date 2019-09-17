@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_institute")
-public class Institute  {
+public class Institute  extends  Auditable{
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_seq")
@@ -30,19 +30,43 @@ public class Institute  {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @ManyToOne
-    @JoinColumn(name = "f_address", insertable = false, updatable = false)
-    private Address address;
+    @Column(name = "c_address")
+    private String restAddress;
 
-    @Column(name ="f_address")
-    private Long addressId;
+    @Column(name = "c_post_code",length = 12)
+    private String postCode;
 
-    @ManyToOne
-    @JoinColumn(name = "f_account_info", insertable = false, updatable = false)
-    private AccountInfo accountInfo;
+    @Column(name = "c_phone", length = 50)
+    private String phone;
 
-    @Column(name ="f_account_info")
-    private Long accountInfoId;
+    @Column(name = "c_mobile", length = 50)
+    private String mobile;
+
+    @Column(name = "c_fax", length = 50)
+    private String fax;
+
+    @Column(name = "c_website", length = 50)
+    private String webSite;
+
+    @Column(name = "c_email", length = 50)
+    private String e_mail;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_city", insertable = false, updatable = false)
+    private City city;
+
+    @Column(name = "f_city")
+    private Long cityId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_state", insertable = false, updatable = false)
+    private State state;
+
+    @Column(name = "f_state")
+    private Long stateId;
+
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    private Set<InstituteAccount> instituteAccountSet;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
     @JoinColumn(name = "f_manager", insertable = false, updatable = false)

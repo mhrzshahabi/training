@@ -21,10 +21,23 @@
 
     var RestDataSource_Institute_Institute = isc.MyRestDataSource.create({
         fields: [
+
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},
+            {name: "stateId"},
+            {name: "cityId"},
+            {name: "state.name"},
+            {name: "city.name"},
+            {name: "restAddress"},
+            {name: "postCode"},
+            {name: "phone"},
+            {name: "mobile"},
+            {name: "fax"},
+            {name: "email"},
+            {name: "webSite"},
             {name: "teacherNumPHD"},
+            {name: "empNumPHD"},
             {name: "teacherNumLicentiate"},
             {name: "empNumLicentiate"},
             {name: "teacherNumMaster"},
@@ -33,20 +46,6 @@
             {name: "empNumAssociate"},
             {name: "teacherNumDiploma"},
             {name: "empNumDiploma"},
-            {name: "addressId"},
-            {name: "address.state.name"},
-            {name: "address.city.name"},
-            {name: "address.restAddr"},
-            {name: "address.postCode"},
-            {name: "address.phone"},
-            {name: "address.fax"},
-            {name: "address.webSite"},
-            {name: "address.restAddr"},
-            {name: "accountInfoId"},
-            {name: "accountInfo.bank"},
-            {name: "accountInfo.bbranch"},
-            {name: "accountInfo.bcode"},
-            {name: "accountInfo.accountNumber"},
             {name: "managerId"},
             {name: "manager.firstNameFa"},
             {name: "manager.lastNameFa"},
@@ -58,6 +57,24 @@
             {name: "version"}
         ],
         fetchDataURL: instituteUrl + "spec-list"
+    });
+
+    var RestDataSource_Institute_Account = isc.MyRestDataSource.create({
+        fields: [
+        {name: "id", primaryKey: true},
+        {name: "instituteId"},
+        {name: "bank.titleFa"},
+        {name: "bankBranch.titleFa"},
+        {name: "bankId"},
+        {name: "bankBranchId"},
+        {name: "accountNumber"},
+        {name: "cartNumber"},
+        {name: "shabaNumber"},
+        {name: "accountOwnerName"},
+        {name: "isEnable"},
+        {name: "description"}
+        ],
+        fetchDataURL: instituteUrl + "account-dummy"
     });
     var RestDataSource_Institute_TrainingPlace = isc.MyRestDataSource.create({
         fields: [
@@ -134,7 +151,6 @@
         ],
         fetchDataURL: cityUrl + "spec-list"
     });
-
     var RestDataSource_Institute_State = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
@@ -153,7 +169,6 @@
         ],
         fetchDataURL: enumUrl + "eArrangementType/spec-list"
     });
-
     var RestDataSource_Institute_EInstituteType = isc.MyRestDataSource.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
@@ -272,17 +287,26 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "contains"},
-            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "contains"},
-            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "contains"},
-            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "contains"},
-            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "contains"},
-            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"},
-            {name: "address.state.name", title: "استان", align: "center", filterOperator: "contains"},
-            {name: "address.city.name", title: "شهر", align: "center", filterOperator: "contains"},
-            {name: "address.restAddr", title: "آدرس", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "iContains"},
+            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "iContains"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "iContains"},
+            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "iContains"},
+            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "iContains"},
+            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "iContains"},
+            {name: "state.name", hidden: true},
+            {name: "city.name", hidden: true},
+            {name: "restAddress", hidden: true},
+            {name: "stateId", hidden: true},
+            {name: "cityId", hidden: true},
+            {name: "postCode", hidden: true},
+            {name: "phone", hidden: true},
+            {name: "fax", hidden: true},
+            {name: "mobile", hidden: true},
+            {name: "email", hidden: true},
+            {name: "webSite", hidden: true},
             {name: "teacherNumPHD", hidden: true},
+            {name: "empNumPHD", hidden: true},
             {name: "teacherNumLicentiate", hidden: true},
             {name: "empNumLicentiate", hidden: true},
             {name: "teacherNumMaster", hidden: true},
@@ -291,17 +315,8 @@
             {name: "empNumAssociate", hidden: true},
             {name: "teacherNumDiploma", hidden: true},
             {name: "empNumDiploma", hidden: true},
-            {name: "addressId", hidden: true},
-            {name: "address.stateId", hidden: true},
-            {name: "address.cityId", hidden: true},
-            {name: "accountInfoId", hidden: true},
-            {name: "accountInfo.bank", hidden: true},
-            {name: "accountInfo.bbranch", hidden: true},
-            {name: "accountInfo.bcode", hidden: true},
-            {name: "accountInfo.accountNumber", hidden: true},
             {name: "managerId", hidden: true},
-            {name: "parentInstituteId", hidden: true},
-            {name: "version", hidden: true}
+            {name: "parentInstituteId", hidden: true}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -320,6 +335,39 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
+
+    var ListGrid_Institute_Account = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_Account,
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "bank.titleFa", title: "بانک", align: "center"},
+            {name: "bankBranch.titleFa", title: "شعبه بانک", align: "center"},
+            {name: "accountNumber", title: "شماره حساب ", align: "center"},
+            {name: "cartNumber", title: "شماره کارت", align: "center"},
+            {name: "shabaNumber", title: "شماره شبا", align: "center"},
+            {name: "accountOwnerName", title: "نام صاحب حساب", align: "center"},
+            {name: "isEnable", title: "فعال؟", align: "center"},
+            {name: "description", title: "توضیحات", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
+
 
     var ListGrid_Institute_Attached_Teacher = isc.ListGrid.create({
         width: "100%",

@@ -8,10 +8,9 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.EquipmentDTO;
-import com.nicico.training.dto.InstituteDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IInstituteService;
+import com.nicico.training.model.InstituteAccount;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -31,6 +30,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -523,6 +523,36 @@ public class InstituteRestController {
     public ResponseEntity<EquipmentDTO.EquipmentSpecRs> equipmentDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<EquipmentDTO.EquipmentSpecRs>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "{instituteId}/accounts")
+//    @PreAuthorize("hasAnyAuthority('r_teacher')")
+    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
+
+        final InstituteAccountDTO.SpecRs specResponse = new InstituteAccountDTO.SpecRs();
+        specResponse.setData(instituteAccountList)
+                .setStartRow(0)
+                .setEndRow(instituteAccountList.size())
+                .setTotalRows(instituteAccountList.size());
+
+        final InstituteAccountDTO.AccountSpecRs specRs = new InstituteAccountDTO.AccountSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/account-dummy")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<InstituteAccountDTO.AccountSpecRs> accountDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+        return new ResponseEntity<InstituteAccountDTO.AccountSpecRs>(new InstituteAccountDTO.AccountSpecRs(), HttpStatus.OK);
+    }
+
+
+
 
 
 //    @Loggable
