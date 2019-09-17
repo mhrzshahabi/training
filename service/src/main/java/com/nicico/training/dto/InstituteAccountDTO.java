@@ -2,14 +2,14 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Bank;
-import com.nicico.training.model.BankBranch;
+import com.nicico.training.model.Institute;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.persistence.Column;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -20,7 +20,12 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class AccountDTO {
+public class InstituteAccountDTO {
+
+
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private Long instituteId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -43,6 +48,10 @@ public class AccountDTO {
     @ApiModelProperty
     private String accountOwnerName;
 
+    @NotEmpty
+    @ApiModelProperty
+    private Integer isEnable;
+
     @ApiModelProperty
     private String description;
     // ------------------------------
@@ -50,8 +59,8 @@ public class AccountDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Account")
-    public static class Info extends AccountDTO{
+    @ApiModel("InstituteAccount")
+    public static class Info extends InstituteAccountDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -59,26 +68,30 @@ public class AccountDTO {
         private String lastModifiedBy;
         private BankDTO bank;
         private BankBranchDTO bankBranch;
+        private InstituteDTO institute;
     }
 
     @Getter
     @Setter
     @ApiModel("AccountInfoTuple")
-    public static class AccountInfoTuple extends AccountDTO{
+    public static class InstituteAccountInfoTuple extends InstituteAccountDTO {
+        private BankDTO bank;
+        private BankBranchDTO bankBranch;
+        private InstituteDTO institute;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountCreateRq")
-    public static class Create extends AccountDTO{
+    public static class Create extends InstituteAccountDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountUpdateRq")
-    public static class Update extends AccountDTO{
+    public static class Update extends InstituteAccountDTO {
     }
 
     @Getter
@@ -105,7 +118,7 @@ public class AccountDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<AccountDTO.Info> data;
+        private List<InstituteAccountDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;

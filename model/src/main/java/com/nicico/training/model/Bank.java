@@ -36,7 +36,7 @@ public class Bank extends Auditable {
     @Column(name = "e_bank_type")
     private Integer eBankTypeId;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "f_bank")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "bank")
     private Set<BankBranch> bankBranchSet;
 
 }

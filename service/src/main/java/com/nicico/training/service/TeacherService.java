@@ -136,7 +136,7 @@ public class TeacherService implements ITeacherService {
                 final Optional<PersonalInfo> pById = personalInfoDAO.findById(personalInfos.get(0).getId());
                 personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-                // Account
+                // InstituteAccount
                 if (personalInfo.getAccountInfoId() != null && request.getPersonality().getAccountInfo() != null) {
                     final Optional<AccountInfo> cById = accountInfoDAO.findById(personalInfo.getAccountInfoId());
                     accountInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -325,7 +325,7 @@ public class TeacherService implements ITeacherService {
         final Optional<PersonalInfo> pById = personalInfoDAO.findById(personalInfos.get(0).getId());
         personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-                // Account
+                // InstituteAccount
                 if (personalInfo.getAccountInfoId() != null && request.getPersonality().getAccountInfo() != null) {
                     final Optional<AccountInfo> cById = accountInfoDAO.findById(personalInfo.getAccountInfoId());
                     accountInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));

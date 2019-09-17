@@ -12,11 +12,11 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_account")
-public class Account extends Auditable {
+@Table(name = "tbl_institute_account")
+public class InstituteAccount extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "account_seq")
-    @SequenceGenerator(name = "account_seq", sequenceName = "seq_account_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_account_seq")
+    @SequenceGenerator(name = "institute_account_seq", sequenceName = "seq_institute_account_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
@@ -33,6 +33,13 @@ public class Account extends Auditable {
     private String accountOwnerName;
 
     @ManyToOne
+    @JoinColumn(name = "c_institute",insertable = false,updatable = false)
+    private Institute institute;
+
+    @Column(name = "c_institute")
+    private Long instituteId;
+
+    @ManyToOne
     @JoinColumn(name = "c_bank",insertable = false,updatable = false)
     private Bank bank;
 
@@ -40,11 +47,14 @@ public class Account extends Auditable {
     private Long bankId;
 
     @ManyToOne
-    @Column(name = "c_bank_branch",insertable = false,updatable = false)
+    @JoinColumn(name = "c_bank_branch",insertable = false,updatable = false)
     private BankBranch bankBranch;
 
     @Column(name = "c_bank_branch")
     private Long bankBranchId;
+
+    @Column(name = "n_is_enable")
+    private Integer isEnable;
 
     @Column(name = "c_description")
     private Long description;

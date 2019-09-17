@@ -46,7 +46,9 @@ public class TrainingException extends NICICOException {
         CommitteeNotFound(404),
         TermNotFound(404),
         PostNotFound(404),
-        NeedAssessmentNotFound(404);
+        NeedAssessmentNotFound(404),
+        BankNotFound(404),
+        BankBranchNotFound(404);
 
         private final Integer httpStatusCode;
 
