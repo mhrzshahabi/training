@@ -35,12 +35,12 @@ var dummy;
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
-            {name: "personality.nameFa"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
-            {name: "personality.contactInfo.mobile"}
+            {name: "personality.contactInfo.mobile"},
+            {name: "categories"},
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -178,22 +178,28 @@ var dummy;
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
             {
-                name: "personality.nameFa",
-                title: "<spring:message code='firstName'/>",
+                name: "personality.fullName",
+                title: "<spring:message code='firstName.lastName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "contains",
+                formatCellValue: function (value, record) {
+                    return record.personality.firstNameFa + " " + record.personality.lastNameFa;
+                }
             },
             {
-                name: "personality.firstNameFa",
-                title: "<spring:message code='firstName'/>",
+                name: "category",
+                title: "<spring:message code='education.categories'/>",
                 align: "center",
-                filterOperator: "contains"
-            },
-            {
-                name: "personality.lastNameFa",
-                title: "<spring:message code='lastName'/>",
-                align: "center",
-                filterOperator: "contains"
+                filterOperator: "contains",
+                formatCellValue: function (value, record) {
+                    if(record.categories.length == 0)
+                        return;
+                    var cat = record.categories[0].titleFa.toString();
+                    for(var i=1;i<record.categories.length;i++){
+                        cat += "، " + record.categories[i].titleFa;
+                    }
+                    return cat;
+                }
             },
             {
                 name: "personality.educationLevel.titleFa",
@@ -305,7 +311,7 @@ var dummy;
                     codeMeliCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
-        code='msg.national.code.validation'/>", true);
+                                                                        code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
                         fillPersonalInfoFiels(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));

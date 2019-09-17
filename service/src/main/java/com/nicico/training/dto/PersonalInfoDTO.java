@@ -47,7 +47,6 @@ public class PersonalInfoDTO {
         @NotEmpty
         @ApiModelProperty(required = true)
         private String lastNameFa;
-        private String nameFa = firstNameFa + " " + lastNameFa;
         @NotEmpty
         @ApiModelProperty(required = true)
         private String nationalCode;

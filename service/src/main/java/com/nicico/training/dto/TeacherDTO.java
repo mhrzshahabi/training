@@ -50,6 +50,7 @@ public class TeacherDTO {
 	@ApiModel("TeacherInfoTuple")
 	public static class TeacherInfoTuple {
 		private PersonalInfoDTO.Create personality;
+		private Set<CategoryDTO.CategoryInfoTuple> categories;
 	}
 
 	@Getter
