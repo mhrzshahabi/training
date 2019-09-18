@@ -88,26 +88,26 @@
             {
                 name: "titleFa",
                 title: "<spring:message code="competence.title"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="title.en"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
             {
                 name: "ecompetenceInputType.titleFa",
                 title: "<spring:message code="input"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "iscList"
     });
@@ -279,7 +279,7 @@
             let msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
             showOkDialog(msg);
         } else {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+            showOkDialog("این شایستگی به دلیل استفاده در نیازسنجی، قابل حذف شدن نمی باشد.");
             switch (respCode) {
                 case 0:
                     break;

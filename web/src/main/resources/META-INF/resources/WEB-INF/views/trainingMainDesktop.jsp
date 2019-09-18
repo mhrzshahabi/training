@@ -226,7 +226,6 @@
         wrapItemTitles: false,
         titleAlign: "left",
         autoDraw: false,
-        titlePrefix: "",
         titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
@@ -279,7 +278,7 @@
     isc.TrWindow.addProperties({
         autoSize: true,
         autoCenter: true,
-        isModal: true,
+        isModal: false,
         showModalMask: true,
         autoDraw: false,
         canFocus: true,
@@ -350,13 +349,15 @@
             showFilterEditor: true
         },
         wrapTitle: false,
-        /*useClientFiltering: false,
         cachePickListResults: true,
-        changeOnKeypress: false,
-        useClientFiltering: true,
-        width: "*"*/
     });
 
+    isc.defineClass("TrComboBoxItemAutoRefresh", TrComboBoxItem);
+    isc.TrComboBoxItemAutoRefresh.addProperties({
+        click: function (form, item){
+            item.fetchData();
+        }
+    });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 
