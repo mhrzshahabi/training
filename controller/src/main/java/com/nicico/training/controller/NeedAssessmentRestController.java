@@ -6,6 +6,7 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedAssessmentDTO;
 import com.nicico.training.service.NeedAssessmentService;
 import lombok.RequiredArgsConstructor;
@@ -51,9 +52,13 @@ public class NeedAssessmentRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<NeedAssessmentDTO.Info> create(@RequestBody Object req) {
-        NeedAssessmentDTO.Create create = modelMapper.map(req, NeedAssessmentDTO.Create.class);
-        return new ResponseEntity<>(needAssessmentService.create(create), HttpStatus.OK);
+    public ResponseEntity create(@RequestBody Object req) {
+        try {
+            NeedAssessmentDTO.Create create = modelMapper.map(req, NeedAssessmentDTO.Create.class);
+            return new ResponseEntity<>(needAssessmentService.create(create), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_FOUND);
+        }
     }
 
     @Loggable

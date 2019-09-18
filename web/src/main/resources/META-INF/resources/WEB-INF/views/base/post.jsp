@@ -47,7 +47,6 @@
             {name: "department.area", title: "<spring:message code="area"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "department.assistance", title: "<spring:message code="assistance"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "department.affairs", title: "<spring:message code="affairs"/>", filterOperator: "contains"},
-
         ],
         fetchDataURL: postUrl + "iscList"
     });
