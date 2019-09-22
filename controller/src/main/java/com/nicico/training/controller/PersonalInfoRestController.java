@@ -210,10 +210,10 @@ public class PersonalInfoRestController {
                 int h = readImage.getHeight();
                 int w = readImage.getWidth();
                 if (100 > h || h > 500 || 100 > w || w > 500) {
-                    return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
+                    return new ResponseEntity<>("wrong dimension", HttpStatus.NOT_ACCEPTABLE);
                 }
             } else
-                return new ResponseEntity<>(fileName, HttpStatus.NO_CONTENT);
+                return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
 
         } catch (Exception ex) {
             ex.printStackTrace();
