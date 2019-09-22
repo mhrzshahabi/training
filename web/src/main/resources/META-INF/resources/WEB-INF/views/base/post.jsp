@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    PostTS_post = isc.TrTS.create({
+    PostTS_post = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {

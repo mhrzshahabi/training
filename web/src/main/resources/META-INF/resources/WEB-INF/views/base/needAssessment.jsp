@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    NeedAssessmentTS_needAssessment = isc.TrTS.create({
+    NeedAssessmentTS_needAssessment = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {

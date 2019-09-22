@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_competence = isc.TrTS.create({
+    CompetenceTS_competence = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
