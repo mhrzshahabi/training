@@ -164,7 +164,7 @@
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
-                keyPressFilter: EnNumSpcFilter,
+                keyPressFilter: enNumSpcFilter,
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",

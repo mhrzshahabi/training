@@ -44,9 +44,9 @@
     const needAssessmentUrl = rootUrl + "/needAssessment/";
     const skillUrl = rootUrl + "/skill/";
 
-    const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
-    const EnNumSpcFilter = "[a-zA-Z0-9 ]";
-    const NumFilter = "[0-9]";
+    const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
+    const enNumSpcFilter = "[a-zA-Z0-9 ]";
+    const numFilter = "[0-9]";
 
     const okDialogShowTime = 3000;
 
