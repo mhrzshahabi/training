@@ -128,9 +128,6 @@
         }
     });
 
-    isc.defineClass("TrTSB", ToolStripButton);
-    isc.TrTSB.addProperties({});
-
     isc.defineClass("TrMenu", Menu);
 
     isc.defineClass("TrTabSet", TabSet);
