@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -51,12 +51,12 @@
     const okDialogShowTime = 3000;
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
-    isc.RPCManager.allowCrossDomainCalls = true;
-    // isc.FormItem.addProperties({});
+    isc.setAutoDraw(false);
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
-    isc.Button.addProperties({height: 27, autoDraw: false});
+    isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
+    isc.Label.addProperties({wrap: false});
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
@@ -78,7 +78,6 @@
         dataFormat: "json",
         jsonSuffix: "",
         jsonPrefix: "",
-        defaultTextMatchStyle: "substring",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"};
             return this.Super("transformRequest", arguments);
@@ -90,33 +89,16 @@
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        selectionType: "single",
-        showFilterEditor: true,
-        filterOnKeypress: true,
         alternateRecordStyles: true,
-        autoDraw: false,
         showResizeBar: true,
-        allowAdvancedCriteria: true,
+        showFilterEditor: true,
+        filterOnKeypress: false,
         showRowNumbers: true,
-        canDragResize: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
-        autoFetchData: false,
-        autoFitWidth: true,
         autoFitWidthApproach: "both",
-    });
-
-    isc.defineClass("TrImg", Img);
-    isc.TrImg.addProperties({
-        autoDraw: false,
-    });
-
-    isc.defineClass("TrLabel", Label);
-    isc.TrLabel.addProperties({
-        autoDraw: false,
-        wrap: false,
     });
 
     isc.defineClass("TrHLayout", HLayout);
@@ -124,7 +106,6 @@
         width: "100%",
         height: "100%",
         defaultLayoutAlign: "center",
-        autoDraw: false,
     });
 
     isc.defineClass("TrVLayout", VLayout);
@@ -132,19 +113,15 @@
         width: "100%",
         height: "100%",
         defaultLayoutAlign: "center",
-        autoDraw: false,
-        overflow: "auto",
     });
 
     isc.defineClass("TrTS", ToolStrip);
     isc.TrTS.addProperties({
         border: "0px",
-        autoDraw: false,
     });
 
     isc.defineClass("TrTSMB", ToolStripMenuButton);
     isc.TrTSMB.addProperties({
-        autoDraw: false,
         showMenuOnRollOver: true,
         click() {
             return false;
@@ -152,15 +129,12 @@
     });
 
     isc.defineClass("TrTSB", ToolStripButton);
-    isc.TrTSB.addProperties({
-        autoDraw: false,
-    });
+    isc.TrTSB.addProperties({});
 
     isc.defineClass("TrMenu", Menu);
 
     isc.defineClass("TrTabSet", TabSet);
     isc.TrTabSet.addProperties({
-        autoDraw: false,
         width: "100%",
         height: "100%",
     });
@@ -170,7 +144,6 @@
         width: "100%",
         height: "100%",
         border: "0px",
-        autoDraw: false,
         loadingMessage: "<spring:message code="loading"/>",
     });
 
@@ -225,7 +198,6 @@
         showErrorText: false,
         wrapItemTitles: false,
         titleAlign: "left",
-        autoDraw: false,
         titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
         requiredTitleSuffix: "",
@@ -280,7 +252,6 @@
         autoCenter: true,
         isModal: false,
         showModalMask: true,
-        autoDraw: false,
         canFocus: true,
         dismissOnEscape: true,
         canDragReposition: true,
@@ -343,25 +314,22 @@
     isc.TrComboBoxItem.addProperties({
         addUnknownValues: false,
         emptyPickListMessage: "",
-        allowAdvancedCriteria: true,
-        textMatchStyle: "substring",
         pickListProperties: {
             showFilterEditor: true
         },
         wrapTitle: false,
-        cachePickListResults: true,
     });
 
     isc.defineClass("TrComboBoxItemAutoRefresh", TrComboBoxItem);
     isc.TrComboBoxItemAutoRefresh.addProperties({
-        click: function (form, item){
+        click: function (form, item) {
             item.fetchData();
         }
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 
-    systemImg = isc.TrImg.create({
+    systemImg = isc.Img.create({
         src: "<spring:url value="training.png"/>",
         width: 24,
         height: 24,
@@ -369,26 +337,16 @@
         padding: 5,
     });
 
-    systemLabel = isc.TrLabel.create({
+    systemLabel = isc.Label.create({
         contents: "<spring:message code="nicico.training.system"/>",
         styleName: "normalBold",
         padding: 5,
-    });
-
-    systemHLayout = isc.TrHLayout.create({
-        align: "right",
-        padding: 5,
-        members: [systemImg, systemLabel],
     });
 
     userTSMB = isc.TrTSMB.create({
         title: "${username}",
         menu: isc.TrMenu.create({
             data: [
-                {
-                    title: "<spring:message code="personalization"/>",
-                    icon: "<spring:url value="personalization.png"/>"
-                },
                 {
                     title: "<spring:message code="logout"/>",
                     icon: "<spring:url value="logout.png"/>",
@@ -398,11 +356,6 @@
                 },
             ]
         }),
-    });
-
-    userHLayout = isc.TrHLayout.create({
-        align: "left",
-        members: [userTSMB],
     });
 
     basicTSMB = isc.TrTSMB.create({
@@ -427,7 +380,7 @@
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
-                 {
+                {
                     title: "<spring:message code="equipment.plural"/>", icon: "<spring:url value="equipment.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
@@ -642,7 +595,10 @@
     isc.TrVLayout.create({
         autoDraw: true,
         members: [
-            isc.TrHLayout.create({height: "1%", members: [systemHLayout, userHLayout],}),
+            isc.TrHLayout.create({
+                height: "1%",
+                members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
+            }),
             isc.TrHLayout.create({height: "1%", members: [trainingToolStrip]}),
             trainingTabSet,
         ]
@@ -699,7 +655,7 @@
         xhttp = new XMLHttpRequest();
         xhttp.willHandleError = true;
         xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 ) {
+            if (this.readyState == 4) {
                 cFunction(this);
             }
         };
@@ -768,14 +724,12 @@
         showErrorStyle: false,
         errorOrientation: "right",
         canSubmit: true,
-        autoDraw: false,
     });
 
     isc.defineClass("MyButton", Button);
     isc.MyButton.addProperties({
         width: 100,
         height: 27,
-        autoDraw: false,
     });
 
     isc.defineClass("MyHLayoutButtons", HLayout);
@@ -785,7 +739,6 @@
         align: "center",
         verticalAlign: "center",
         membersMargin: 15,
-        autoDraw: false,
         defaultLayoutAlign: "center",
     });
 
@@ -827,7 +780,6 @@
     isc.TabSet.addProperties({
         width: "100%",
         height: "100%",
-        autoDraw: false,
     });
 
     isc.RPCManager.addClassProperties({
