@@ -7,15 +7,16 @@ import lombok.experimental.Accessors;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 import javax.persistence.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"},callSuper = false)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_task")
-public class Task extends Auditable{
+public class Task extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Task_seq")

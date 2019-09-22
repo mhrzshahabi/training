@@ -1,0 +1,55 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+				   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+				   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+				   http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+	 <changeSet author="heydaripoor (generated)" id="1569139028327-109">
+        <createSequence sequenceName="seq_Company_id"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1569139028327-110">
+        <createTable tableName="tbl_company">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_companyPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_address" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_contact_info_id" type="NUMBER(19, 0)"/>
+            <column name="f_personalInfo_id" type="NUMBER(19, 0)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_work_domain" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1569139028327-111">
+        <addColumn tableName="tbl_account_info">
+            <column name="f_company_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+
+	 <changeSet author="heydaripoor (generated)" id="1569139028327-115">
+        <addForeignKeyConstraint baseColumnNames="f_company_id" baseTableName="tbl_account_info" constraintName="FKhuafk4s5fho8dirgach8jrrlv" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_company" validate="true"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1569139028327-116">
+        <addForeignKeyConstraint baseColumnNames="f_personalInfo_id" baseTableName="tbl_company" constraintName="FKiw3u8lrgtm2fc46bdudc2flnl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+
+	<changeSet author="heydaripoor (generated)" id="1569139028327-118">
+        <addForeignKeyConstraint baseColumnNames="f_contact_info_id" baseTableName="tbl_company" constraintName="FKokwrnh57yq3wltbcxlxfhfpcp" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_contact_info" validate="true"/>
+    </changeSet>
+
+
+</databaseChangeLog>
