@@ -7,7 +7,7 @@
     let needAssessmentMethod_needAssessment;
 
     // ------------------------------------------- Menu -------------------------------------------
-    NeedAssessmentMenu_needAssessment = isc.TrMenu.create({
+    NeedAssessmentMenu_needAssessment = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",

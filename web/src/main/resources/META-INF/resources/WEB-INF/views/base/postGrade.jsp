@@ -4,7 +4,7 @@
 //<script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    PostGradeMenu_postGrade = isc.TrMenu.create({
+    PostGradeMenu_postGrade = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
