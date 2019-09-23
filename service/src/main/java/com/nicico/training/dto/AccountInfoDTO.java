@@ -31,8 +31,8 @@ public class AccountInfoDTO {
         private String lastModifiedBy;
         private String accountNumber;
         private String bank;
-        private String bbranch;
-        private Long bcode;
+        private String bBranch;
+        private Long bCode;
         private String cartNumber;
         private String shabaNumber;
         private String description;
@@ -56,6 +56,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @ApiModel("AccountInfoCreateRq")
     public static class Create{
+        private String accountNumber;
         private String bank;
         private String bBranch;
         private Long bCode;
@@ -69,6 +70,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @ApiModel("AccountInfoUpdateRq")
     public static class Update{
+        private String accountNumber;
         private String bank;
         private String bBranch;
         private Long bCode;

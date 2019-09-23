@@ -1000,14 +1000,14 @@ optionDataSource: RestDataSource_Institute_ELicenseType,
                 length: "100"
             },
             {
-                name: "accountInfo.bbranch",
+                name: "accountInfo.bBranch",
                 title: "شعبه",
                 required: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "100"
             },
             {
-                name: "accountInfo.bcode",
+                name: "accountInfo.bCode",
                 title: "کد شعبه",
                 required: true,
                 keyPressFilter: "[0-9]",
