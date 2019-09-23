@@ -21,9 +21,9 @@ var dummy;
 
     var selectedRecordPersonalID = null;
 
-    var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
-        "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
-        "<spring:message code='photo.format.hint'/>";
+    <%--var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +--%>
+    <%--    "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +--%>
+    <%--    "<spring:message code='photo.format.hint'/>";--%>
 
     var teacherCategoriesID = new Array();
 
@@ -171,6 +171,7 @@ var dummy;
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
+        filterOperator: "contains",
         doubleClick: function () {
             ListGrid_teacher_edit();
         },
@@ -178,19 +179,19 @@ var dummy;
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
             {
-                name: "personality.fullName",
-                title: "<spring:message code='fullName'/>",
+                name: "personality.firstNameFa",
+                title: "<spring:message code='firstName'/>",
                 align: "center",
-                filterOperator: "contains",
-                formatCellValue: function (value, record) {
-                    return record.personality.firstNameFa + " " + record.personality.lastNameFa;
-                }
+            },
+            {
+                name: "personality.lastNameFa",
+                title: "<spring:message code='lastName'/>",
+                align: "center",
             },
             {
                 name: "category",
                 title: "<spring:message code='education.categories'/>",
                 align: "center",
-                filterOperator: "contains",
                 formatCellValue: function (value, record) {
                     if(record.categories.length == 0)
                         return;
@@ -205,19 +206,23 @@ var dummy;
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOperator: "contains"
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                filterOperator: "contains"
             },
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
-                filterOperator: "contains"
+            },
+            {
+                name: "enableStatus",
+                title: "<spring:message code='mobile.connection'/>",
+                align: "center",
+                type: "boolean",
+                canFilter: false
             }
         ],
         sortField: 1,
@@ -245,19 +250,19 @@ var dummy;
 
     var vm = isc.ValuesManager.create({});
 
-    var DynamicForm_ViewLoader_JspTeacher = isc.Label.create({
-        height: "100%",
-        width: "100%",
-        align: "center",
-        contents: photoDescription
-    });
+    // var DynamicForm_ViewLoader_JspTeacher = isc.Label.create({
+    //     height: "100%",
+    //     width: "100%",
+    //     align: "center",
+    //     contents: photoDescription
+    // });
 
     var showAttachViewLoader = isc.ViewLoader.create({
         autoDraw: false,
         viewURL: "",
         overflow: "scroll",
-        height: "140px",
-        width: "130px",
+        height: "133px",
+        width: "100px",
         border: "1px solid red",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>",
@@ -271,8 +276,7 @@ var dummy;
         align: "right",
         padding: 10,
         membersMargin: 10,
-        members: [showAttachViewLoader,
-            DynamicForm_ViewLoader_JspTeacher]
+        members: [showAttachViewLoader]
     });
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
@@ -335,11 +339,6 @@ var dummy;
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true",
-                change: "simpleDialog(\"<spring:message code='msg.command.done'/>\",\n" +
-                    "                                                    \"<spring:message code='msg.operation.successful'/>\", 3000, \"say\");"
-                // changestatete: function(){
-                //    TODO
-                // }
             },
 
             {
@@ -380,17 +379,6 @@ var dummy;
                 length: "30"
             },
 
-
-            <%--{--%>
-            <%--    name: "personality.religion",--%>
-            <%--    title: "<spring:message code='religion'/>",--%>
-            <%--    type: 'text',--%>
-            <%--    width: "*",--%>
-            <%--    defaultValue: "<spring:message code='islam'/>",--%>
-            <%--    keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",--%>
-            <%--    length: "100"--%>
-            <%--},--%>
-
             {
                 name: "personality.birthDate",
                 title: "<spring:message code='birth.date'/>",
@@ -410,14 +398,15 @@ var dummy;
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
+                //TODO
                 blur: function () {
                     var dateCheck;
                     dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
                     persianDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.birthDate", "<spring:message
-        code='msg.correct.date'/>", true);
-                    if (dateCheck === true)
+                                                                            code='msg.correct.date'/>", true);
+                    else if (dateCheck === true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
                 }
             },
@@ -710,16 +699,14 @@ var dummy;
                 width: "*",
                 length: "500",
                 colSpan: 3,
-                //height: 30
             }
 
 
         ],
         itemChanged: function (item, newValue) {
-            //TODO fix orientation
             if (item.name === "personality.nationalCode")
                 this.getItem("teacherCode").setValue(item.getValue());
-            if (item.name === "personality.educationMajorId") {
+            else if (item.name === "personality.educationMajorId") {
                 if (newValue === undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
                 } else {
@@ -729,8 +716,26 @@ var dummy;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
                 }
             }
-            if (item.name === "attachPic") {
+            else if (item.name === "attachPic") {
                 showTempAttach();
+            }
+            else if(item.name === "enableStatus"){
+                if(newValue === false){
+                    isc.Dialog.create({
+                        message: "<spring:message code='msg.teacher.enable.status.change.confirm'/>",
+                        icon: "[SKIN]ask.png",
+                        title: "<spring:message code='global.warning'/>",
+                        buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
+                            title: "<spring:message code='global.no'/>"
+                        })],
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 1) {
+                                DynamicForm_BasicInfo_JspTeacher.getField("enableStatus").setValue("true");
+                            }
+                        }
+                    })
+                }
             }
         }
     });
