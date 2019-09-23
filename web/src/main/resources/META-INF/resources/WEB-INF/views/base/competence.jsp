@@ -7,7 +7,7 @@
     let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
-    CompetenceMenu_competence = isc.TrMenu.create({
+    CompetenceMenu_competence = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_competence = isc.TrTS.create({
+    CompetenceTS_competence = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -88,26 +88,26 @@
             {
                 name: "titleFa",
                 title: "<spring:message code="competence.title"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="title.en"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
             {
                 name: "ecompetenceInputType.titleFa",
                 title: "<spring:message code="input"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "iscList"
     });
@@ -164,7 +164,7 @@
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
-                keyPressFilter: EnNumSpcFilter,
+                keyPressFilter: enNumSpcFilter,
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
@@ -279,7 +279,7 @@
             let msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
             showOkDialog(msg);
         } else {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+            showOkDialog("این شایستگی به دلیل استفاده در نیازسنجی، قابل حذف شدن نمی باشد.");
             switch (respCode) {
                 case 0:
                     break;

@@ -4,7 +4,7 @@
 // <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    JobMenu_job = isc.TrMenu.create({
+    JobMenu_job = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    JobTS_job = isc.TrTS.create({
+    JobTS_job = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -40,7 +40,7 @@
     JobDS_job = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains", autoFitWidth:true},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "contains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
         ],
         fetchDataURL: jobUrl + "iscList"

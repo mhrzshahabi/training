@@ -1316,7 +1316,7 @@
         <%--}--%>
 
 
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
                         {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,  click: function () {

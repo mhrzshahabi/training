@@ -4,7 +4,7 @@
 // <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    PostMenu_post = isc.TrMenu.create({
+    PostMenu_post = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    PostTS_post = isc.TrTS.create({
+    PostTS_post = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -47,7 +47,6 @@
             {name: "department.area", title: "<spring:message code="area"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "department.assistance", title: "<spring:message code="assistance"/>", filterOperator: "contains", autoFitWidth:true},
             {name: "department.affairs", title: "<spring:message code="affairs"/>", filterOperator: "contains"},
-
         ],
         fetchDataURL: postUrl + "iscList"
     });

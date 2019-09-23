@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -44,20 +44,29 @@
     const needAssessmentUrl = rootUrl + "/needAssessment/";
     const skillUrl = rootUrl + "/skill/";
 
-    const EnFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
-    const EnNumSpcFilter = "[a-zA-Z0-9 ]";
-    const NumFilter = "[0-9]";
+    const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
+    const enNumSpcFilter = "[a-zA-Z0-9 ]";
+    const numFilter = "[0-9]";
 
     const okDialogShowTime = 3000;
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
-    isc.RPCManager.allowCrossDomainCalls = true;
-    // isc.FormItem.addProperties({});
+    isc.setAutoDraw(false);
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
-    isc.Button.addProperties({height: 27, autoDraw: false});
+    isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
+    isc.Label.addProperties({wrap: false});
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
+    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
+    isc.TabSet.addProperties({width: "100%", height: "100%",});
+    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+
+    isc.defineClass("TrHLayout", HLayout);
+    isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
+
+    isc.defineClass("TrVLayout", VLayout);
+    isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -78,7 +87,6 @@
         dataFormat: "json",
         jsonSuffix: "",
         jsonPrefix: "",
-        defaultTextMatchStyle: "substring",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {"Authorization": "Bearer <%= accessToken %>"};
             return this.Super("transformRequest", arguments);
@@ -90,148 +98,58 @@
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
-        selectionType: "single",
-        showFilterEditor: true,
-        filterOnKeypress: true,
         alternateRecordStyles: true,
-        autoDraw: false,
         showResizeBar: true,
-        allowAdvancedCriteria: true,
+        showFilterEditor: true,
+        autoFitWidthApproach: "both",
         showRowNumbers: true,
-        canDragResize: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
-        autoFetchData: false,
-        autoFitWidth: true,
-        autoFitWidthApproach: "both",
     });
 
-    isc.defineClass("TrImg", Img);
-    isc.TrImg.addProperties({
-        autoDraw: false,
-    });
-
-    isc.defineClass("TrLabel", Label);
-    isc.TrLabel.addProperties({
-        autoDraw: false,
-        wrap: false,
-    });
-
-    isc.defineClass("TrHLayout", HLayout);
-    isc.TrHLayout.addProperties({
-        width: "100%",
-        height: "100%",
-        defaultLayoutAlign: "center",
-        autoDraw: false,
-    });
-
-    isc.defineClass("TrVLayout", VLayout);
-    isc.TrVLayout.addProperties({
-        width: "100%",
-        height: "100%",
-        defaultLayoutAlign: "center",
-        autoDraw: false,
-        overflow: "auto",
-    });
-
-    isc.defineClass("TrTS", ToolStrip);
-    isc.TrTS.addProperties({
-        border: "0px",
-        autoDraw: false,
-    });
-
-    isc.defineClass("TrTSMB", ToolStripMenuButton);
-    isc.TrTSMB.addProperties({
-        autoDraw: false,
-        showMenuOnRollOver: true,
-        click() {
-            return false;
-        }
-    });
-
-    isc.defineClass("TrTSB", ToolStripButton);
-    isc.TrTSB.addProperties({
-        autoDraw: false,
-    });
-
-    isc.defineClass("TrMenu", Menu);
-
-    isc.defineClass("TrTabSet", TabSet);
-    isc.TrTabSet.addProperties({
-        autoDraw: false,
-        width: "100%",
-        height: "100%",
-    });
-
-    isc.defineClass("TrViewLoader", ViewLoader);
-    isc.TrViewLoader.addProperties({
-        width: "100%",
-        height: "100%",
-        border: "0px",
-        autoDraw: false,
-        loadingMessage: "<spring:message code="loading"/>",
-    });
-
-    isc.defineClass("TrRefreshBtn", TrTSB);
+    isc.defineClass("TrRefreshBtn", ToolStripButton);
     isc.TrRefreshBtn.addProperties({
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
     });
 
-    isc.defineClass("TrCreateBtn", TrTSB);
+    isc.defineClass("TrCreateBtn", ToolStripButton);
     isc.TrCreateBtn.addProperties({
         icon: "<spring:url value="create.png"/>",
         title: "<spring:message code="create"/>",
     });
 
-    isc.defineClass("TrEditBtn", TrTSB);
+    isc.defineClass("TrEditBtn", ToolStripButton);
     isc.TrEditBtn.addProperties({
         icon: "<spring:url value="edit.png"/>",
         title: "<spring:message code="edit"/>",
     });
 
-    isc.defineClass("TrRemoveBtn", TrTSB);
+    isc.defineClass("TrRemoveBtn", ToolStripButton);
     isc.TrRemoveBtn.addProperties({
         icon: "<spring:url value="remove.png"/>",
         title: "<spring:message code="remove"/>",
     });
 
-    isc.defineClass("TrPrintBtn", TrTSMB);
+    isc.defineClass("TrPrintBtn", ToolStripMenuButton);
     isc.TrPrintBtn.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
     });
 
-    isc.defineClass("TrPrintBtnCommon", TrTSMB);
-    isc.TrPrintBtnCommon.addProperties({
-        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
-        menu: isc.TrMenu.create({
-            data: [
-                {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>"},
-                {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>"},
-                {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>"},
-            ]
-        }),
-    });
 
-    isc.defineClass("TrDynamicForm", DynamicForm);
-    isc.TrDynamicForm.addProperties({
+    isc.DynamicForm.addProperties({
         width: "100%",
         margin: 5,
         errorOrientation: "right",
-        showInlineErrors: true,
-        showErrorStyle: false,
-        showErrorText: false,
         wrapItemTitles: false,
-        titleAlign: "left",
-        autoDraw: false,
-        titlePrefix: "",
         titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
         requiredTitleSuffix: "",
         requiredMessage: "<spring:message code="msg.field.is.required"/>",
     });
+    isc.defineClass("TrDynamicForm", DynamicForm);
 
     TrValidators = {
         NotEmpty: {
@@ -279,9 +197,8 @@
     isc.TrWindow.addProperties({
         autoSize: true,
         autoCenter: true,
-        isModal: true,
+        isModal: false,
         showModalMask: true,
-        autoDraw: false,
         canFocus: true,
         dismissOnEscape: true,
         canDragReposition: true,
@@ -292,10 +209,9 @@
         width: 800,
         showMaximizeButton: true,
         defaultMinimizeHeight: 500,
-
     });
 
-    isc.defineClass("TrHLayoutButtons", TrHLayout);
+    isc.defineClass("TrHLayoutButtons", HLayout);
     isc.TrHLayoutButtons.addProperties({
         align: "center",
         height: 34,
@@ -344,23 +260,22 @@
     isc.TrComboBoxItem.addProperties({
         addUnknownValues: false,
         emptyPickListMessage: "",
-        allowAdvancedCriteria: true,
-        textMatchStyle: "substring",
         pickListProperties: {
             showFilterEditor: true
         },
         wrapTitle: false,
-        /*useClientFiltering: false,
-        cachePickListResults: true,
-        changeOnKeypress: false,
-        useClientFiltering: true,
-        width: "*"*/
     });
 
+    isc.defineClass("TrComboBoxItemAutoRefresh", TrComboBoxItem);
+    isc.TrComboBoxItemAutoRefresh.addProperties({
+        click: function (form, item) {
+            item.fetchData();
+        }
+    });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
 
-    systemImg = isc.TrImg.create({
+    systemImg = isc.Img.create({
         src: "<spring:url value="training.png"/>",
         width: 24,
         height: 24,
@@ -368,26 +283,16 @@
         padding: 5,
     });
 
-    systemLabel = isc.TrLabel.create({
+    systemLabel = isc.Label.create({
         contents: "<spring:message code="nicico.training.system"/>",
         styleName: "normalBold",
         padding: 5,
     });
 
-    systemHLayout = isc.TrHLayout.create({
-        align: "right",
-        padding: 5,
-        members: [systemImg, systemLabel],
-    });
-
-    userTSMB = isc.TrTSMB.create({
+    userTSMB = isc.ToolStripMenuButton.create({
         title: "${username}",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
-                {
-                    title: "<spring:message code="personalization"/>",
-                    icon: "<spring:url value="personalization.png"/>"
-                },
                 {
                     title: "<spring:message code="logout"/>",
                     icon: "<spring:url value="logout.png"/>",
@@ -399,14 +304,9 @@
         }),
     });
 
-    userHLayout = isc.TrHLayout.create({
-        align: "left",
-        members: [userTSMB],
-    });
-
-    basicTSMB = isc.TrTSMB.create({
+    basicTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="skill.categorize"/>", icon: "<spring:url value="categorize.png"/>",
@@ -426,7 +326,7 @@
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
-                 {
+                {
                     title: "<spring:message code="equipment.plural"/>", icon: "<spring:url value="equipment.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
@@ -436,9 +336,9 @@
         }),
     });
 
-    needAssessmentTSMB = isc.TrTSMB.create({
+    needAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.need.assessment"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
@@ -486,9 +386,9 @@
         }),
     });
 
-    designingTSMB = isc.TrTSMB.create({
+    designingTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.designing.and.planning"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="course"/>", icon: "<spring:url value="course.png"/>",
@@ -525,9 +425,9 @@
         }),
     });
 
-    runTSMB = isc.TrTSMB.create({
+    runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.run"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="class"/>", icon: "<spring:url value="class.png"/>",
@@ -558,16 +458,16 @@
         }),
     });
 
-    evaluationTSMB = isc.TrTSMB.create({
+    evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.evaluation"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: []
         }),
     });
 
-    cartableTSMB = isc.TrTSMB.create({
+    cartableTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="cartable"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="personal"/>", icon: "<spring:url value="personal.png"/>",
@@ -588,14 +488,14 @@
         }),
     });
 
-    reportTSMB = isc.TrTSMB.create({
+    reportTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="report"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: []
         }),
     });
 
-    trainingToolStrip = isc.TrTS.create({
+    trainingToolStrip = isc.ToolStrip.create({
         members: [
             basicTSMB,
             needAssessmentTSMB,
@@ -607,7 +507,7 @@
         ]
     });
 
-    trainingTabSet = isc.TrTabSet.create({
+    trainingTabSet = isc.TabSet.create({
         tabs: [],
         tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var tabTitle = ID.title;
@@ -641,8 +541,11 @@
     isc.TrVLayout.create({
         autoDraw: true,
         members: [
-            isc.TrHLayout.create({height: "1%", members: [systemHLayout, userHLayout],}),
-            isc.TrHLayout.create({height: "1%", members: [trainingToolStrip]}),
+            isc.HLayout.create({
+                height: "1%",
+                members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
+            }),
+            isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
             trainingTabSet,
         ]
     });
@@ -657,7 +560,7 @@
         var tab = trainingTabSet.getTabObject(title);
         if (tab !== undefined) {
             if ((autoRefresh !== undefined) && (autoRefresh == true)) {
-                trainingTabSet.setTabPane(tab, isc.TrViewLoader.create({viewURL: url}));
+                trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             trainingTabSet.selectTab(tab);
             return;
@@ -665,7 +568,7 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.TrViewLoader.create({viewURL: url,}),
+                pane: isc.ViewLoader.create({viewURL: url,}),
                 canClose: true,
             });
             createTab(title, url);
@@ -698,7 +601,7 @@
         xhttp = new XMLHttpRequest();
         xhttp.willHandleError = true;
         xhttp.onreadystatechange = function () {
-            if (this.readyState == 4 ) {
+            if (this.readyState == 4) {
                 cFunction(this);
             }
         };
@@ -767,14 +670,12 @@
         showErrorStyle: false,
         errorOrientation: "right",
         canSubmit: true,
-        autoDraw: false,
     });
 
     isc.defineClass("MyButton", Button);
     isc.MyButton.addProperties({
         width: 100,
         height: 27,
-        autoDraw: false,
     });
 
     isc.defineClass("MyHLayoutButtons", HLayout);
@@ -784,7 +685,6 @@
         align: "center",
         verticalAlign: "center",
         membersMargin: 15,
-        autoDraw: false,
         defaultLayoutAlign: "center",
     });
 
@@ -826,7 +726,6 @@
     isc.TabSet.addProperties({
         width: "100%",
         height: "100%",
-        autoDraw: false,
     });
 
     isc.RPCManager.addClassProperties({
@@ -838,7 +737,7 @@
     });
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
-
+    createTab("شایستگی", "<spring:url value="/competence/show-form"/>");
 
 </script>
 </body>

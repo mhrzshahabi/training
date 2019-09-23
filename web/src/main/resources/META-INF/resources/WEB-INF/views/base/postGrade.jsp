@@ -4,7 +4,7 @@
 //<script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    PostGradeMenu_postGrade = isc.TrMenu.create({
+    PostGradeMenu_postGrade = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    PostGradeTS_postGrade = isc.TrTS.create({
+    PostGradeTS_postGrade = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {

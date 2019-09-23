@@ -7,7 +7,7 @@
     let needAssessmentMethod_needAssessment;
 
     // ------------------------------------------- Menu -------------------------------------------
-    NeedAssessmentMenu_needAssessment = isc.TrMenu.create({
+    NeedAssessmentMenu_needAssessment = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    NeedAssessmentTS_needAssessment = isc.TrTS.create({
+    NeedAssessmentTS_needAssessment = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -63,11 +63,11 @@
                     showRemoveForm_needAssessment();
                 }
             }),
-           /* isc.TrPrintBtnCommon.create({
-                click: function () {
-                    printNeedAssessment_needAssessment();
-                }
-            }),*/
+            /* isc.TrPrintBtnCommon.create({
+                 click: function () {
+                     printNeedAssessment_needAssessment();
+                 }
+             }),*/
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -197,7 +197,7 @@
             },
             {
                 name: "competenceId", title: "<spring:message code="competence"/>",
-                editorType: "TrComboBoxItem", optionDataSource: CompetenceDS_needAssessment,
+                editorType: "TrComboBoxItemAutoRefresh", optionDataSource: CompetenceDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
             },
@@ -215,13 +215,18 @@
             },
             {
                 name: "skillId", title: "<spring:message code="skill"/>",
-                editorType: "TrComboBoxItem", optionDataSource: SkillDS_needAssessment,
+                editorType: "TrComboBoxItemAutoRefresh", optionDataSource: SkillDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
             {
                 name: "description", title: "<spring:message code="description"/>",
                 type: "TextAreaItem",
+            },
+            {
+                name: "error", title: "<spring:message code="error"/>",
+                type: "TextAreaItem",
+                visible: false,
             },
         ]
     });
@@ -313,15 +318,21 @@
         if (respCode == 200) {
             msg = entityType + '&nbsp;' + action + '.';
             showOkDialog(msg);
+            refresh_needAssessment();
         } else {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
-            switch (respCode) {
-                case 0:
-                    break;
-                default:
+            let respText = resp.httpResponseText;
+            NeedAssessmentDF_needAssessment.getItem('error').setValue('');
+            NeedAssessmentDF_needAssessment.getItem('error').show();
+            if (respText === 'CompetenceNotFound') {
+                NeedAssessmentDF_needAssessment.getItem('error').setValue('شایستگی انتخاب شده، لحظاتی قبل حذف گردیده است. مجددا شایستگی را انتخاب نمائید.');
+                NeedAssessmentDF_needAssessment.getItem('competenceId').setValue('');
+            } else if (respText === 'SkillNotFound') {
+                NeedAssessmentDF_needAssessment.getItem('error').setValue(NeedAssessmentDF_needAssessment.getItem('error').getValue() + 'مهارت انتخاب شده، لحظاتی قبل حذف گردیده است. مجددا مهارت را انتخاب نمائید.');
+            } else {
+                showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
             }
+                NeedAssessmentDF_needAssessment.validate();
         }
-        refresh_needAssessment();
     };
 
     // To check the 'record' argument is a valid selected record of list grid

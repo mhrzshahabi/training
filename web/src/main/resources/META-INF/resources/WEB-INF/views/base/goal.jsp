@@ -30,7 +30,7 @@
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        fetchDataURL: courseUrl + "goal/" + courseId.id
+        // fetchDataURL: courseUrl + "goal/" + courseId.id
     });
     var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
@@ -150,9 +150,9 @@
                 step: 1,
                 change: function (form, item, value) {
                     if (methodSyllabus == "PUT") {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
                     } else {
-                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration) + value;
                     }
                     Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
@@ -242,7 +242,7 @@
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
                         }, 900);
                         setTimeout(function() {
-                        sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration;
+                        sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration;
                         if(sumSyllabus != (ListGrid_Course.getSelectedRecord().theoryDuration)){
                         isc.Dialog.create({
                             message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
@@ -254,8 +254,7 @@
                                     this.close();
                                 } else {
                                     this.close();
-                                    ListGrid_Course_Edit();
-                                    DynamicForm_course.getItem("theoryDuration").setValue(sumSyllabus);
+                                    DynamicForm_course_MainTab.getItem("theoryDuration").setValue(sumSyllabus);
                                     setTimeout(function() {
                                         courseSaveBtn.click();
                                     },500)
@@ -422,6 +421,7 @@
     var ListGrid_Goal = isc.ListGrid.create({
         width: "100%",
         height: "100%",
+        border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
         contextMenu: Menu_ListGrid_Goal,
         doubleClick: function () {
@@ -441,7 +441,7 @@
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         filterOnKeypress: true,
@@ -457,11 +457,13 @@
     var ListGrid_Syllabus_Goal = isc.ListGrid.create({
         width: "100%",
         height: "100%",
+        border: "2px solid gray",
         dataSource: RestDataSource_Syllabus,
         // groupByField:"goal.titleFa", groupStartOpen:"all",
         showGridSummary: true,
         // showGroupSummary:true,
         contextMenu: Menu_ListGrid_Syllabus_Goal,
+
         doubleClick: function () {
             ListGrid_Syllabus_Goal_Edit();
         },
@@ -478,14 +480,14 @@
             {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
             {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction: "sum"},
+            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction: ["'جمع'","sum"]},
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goal.titleFa", hidden: true}
         ],
         sortField: "goalId",
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
@@ -526,7 +528,7 @@
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
@@ -566,7 +568,7 @@
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
-        autoFetchData: true,
+        autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
@@ -693,8 +695,10 @@
             Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
+            ListGrid_CourseGoal_Goal.fetchData();
             RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;
             ListGrid_GoalAll.invalidateCache();
+            ListGrid_GoalAll.fetchData();
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
     });
@@ -1106,7 +1110,7 @@
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.setTitle("ایجاد سرفصل");
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration+2) + " ساعت می باشد.");
+            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration+2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
     };
@@ -1128,7 +1132,7 @@
             urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
+            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration) + " ساعت می باشد.");
             Window_Syllabus.setTitle("ویرایش سرفصل");
             Window_Syllabus.show();
         }
@@ -1141,6 +1145,7 @@
             ListGrid_Syllabus_Goal.selectRecord(record);
         }
         ListGrid_Syllabus_Goal.invalidateCache();
+// ListGrid_Syllabus_Goal.getField("practicalDuration").summaryValue="Sum:" + getFormulaMessage(ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration,1,"red","B");
     };
 
     //</script>
