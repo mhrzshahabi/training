@@ -604,11 +604,26 @@
     var vm_JspCourse = isc.ValuesManager.create({});
     var DynamicForm_course_MainTab = isc.TrDynamicForm.create({
         // sectionVisibilityMode: "mutex",
-        colWidths: ["10%", "50%", "10%", "14%"],
+        colWidths: ["10%", "40%", "9%", "10%"],
         titleAlign: "left",
         showInlineErrors: true,
         numCols: 4,
         fields: [
+            {
+                name: "mainDescription",
+                 // titleOrientation: "top",
+                title: "شرح\u200cمشکل /نیاز /درخواست",
+                colSpan: 4,
+                rowSpan: 1,
+                readonly: true,
+                type: "textArea",
+                // height: "100",
+                width: "*",
+                length: "*",
+                required: false,
+                endRow: true,
+                wrapTitle:true
+            },
             {
                 name: "mainObjective",
                 // titleOrientation: "top",
@@ -622,7 +637,6 @@
                 length: "*",
                 required: true,
                 endRow: false
-
             },
             {
                 name: "code",
@@ -759,7 +773,7 @@
         valuesManager:"vm_JspCourse"
     });
     var DynamicForm_course_GroupTab = isc.TrDynamicForm.create({
-        colWidths: ["8%", "12%", "8%", "12%", "8%", "12%"],
+        colWidths: ["8%", "11%", "8%", "11%", "8%", "11%"],
         numCols: 6,
         fields: [
             {
@@ -946,14 +960,14 @@
         title: "<spring:message code="save"/>",
         icon: "[SKIN]/actions/save.png",
         click: function () {
-            DynamicForm_course_MainTab.validate();
-            if (DynamicForm_course_MainTab.hasErrors()) {
+            vm_JspCourse.validate();
+            if (vm_JspCourse.hasErrors()) {
                 return;
             }
-            var y = (DynamicForm_course_MainTab.getItem('subCategory.id').getSelectedRecord().code);
-            x = y + runV + eLevelTypeV + etheoTypeV;
 //------------------------------------
             if (course_method == "POST") {
+                var y = (DynamicForm_course_GroupTab.getItem('subCategory.id').getSelectedRecord().code);
+                x = y + runV + eLevelTypeV + etheoTypeV;
                 isc.RPCManager.sendRequest({
                     actionURL: courseUrl + "getmaxcourse/" + x,
                     httpMethod: "GET",
@@ -967,7 +981,7 @@
                         x = x + newCourseCounter;
                         DynamicForm_course_MainTab.getItem('code').setValue(x);
 
-                        var data2 = DynamicForm_course_MainTab.getValues();
+                        var data2 = vm_JspCourse.getValues();
                         ChangeEtechnicalType = false;
                         preCourseIdList = [];
                         equalCourseIdList = [];
@@ -1011,7 +1025,7 @@
             }//end if
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
-                var data1 = DynamicForm_course_MainTab.getValues();
+                var data1 = vm_JspCourse.getValues();
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
@@ -1232,6 +1246,7 @@
                         required: true,
                         // height: "30",
                         // width: "*",
+                        textAlign:"center",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
@@ -1444,7 +1459,7 @@
     });
     var VLayout_Tab_JspCourse = isc.VLayout.create({
         membersMargin: 5,
-        // width:"25%",
+        width:"17%",
         members: [
             isc.TrLabel.create({
                 ID: "lblCourse", contents: "", padding: 10,
@@ -1483,6 +1498,7 @@
     var HLayOut_Tab_JspCourse = isc.HLayout.create({
         layoutMargin: 5,
         height: "50%",
+        width: "100%",
         membersMargin: 5,
         members: [TabSet_BasicInfo_JspCourse, VLayout_Tab2_JspCourse, VLayout_Tab_JspCourse]
     })
@@ -1597,6 +1613,8 @@
     };
 
     function ListGrid_Course_add() {
+        TabSet_Goal_JspCourse.disableTab(0);
+        TabSet_Goal_JspCourse.selectTab(1);
         DynamicForm_course_GroupTab.getItem("category.id").enable();
         DynamicForm_course_GroupTab.getItem("erunType.id").enable();
         DynamicForm_course_GroupTab.getItem("elevelType.id").enable();
@@ -1711,6 +1729,7 @@
                 }
             });
         } else {
+            TabSet_Goal_JspCourse.enableTab(0);
             vm_JspCourse.clearValues();
             DynamicForm_course_GroupTab.clearValues();
             // DynamicForm_course.getItem("mainSection").expandSection();
