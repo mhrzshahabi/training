@@ -61,6 +61,7 @@
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true});
 
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
