@@ -35,7 +35,6 @@ public class AccountInfoDTO {
         private Long bCode;
         private String cartNumber;
         private String shabaNumber;
-        private String description;
     }
 
     @Getter
@@ -48,7 +47,6 @@ public class AccountInfoDTO {
         private Long bCode;
         private String cartNumber;
         private String shabaNumber;
-        private String description;
 	}
 
     @Getter
@@ -62,7 +60,6 @@ public class AccountInfoDTO {
         private Long bCode;
         private String cartNumber;
         private String shabaNumber;
-        private String description;
     }
 
     @Getter
@@ -76,7 +73,6 @@ public class AccountInfoDTO {
         private Long bCode;
         private String cartNumber;
         private String shabaNumber;
-        private String description;
     }
 
     @Getter
