@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+    //<script>
 
     <%
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
@@ -259,18 +259,18 @@
                 ListGrid_Institute_Institute_Remove();
             }
         }, {isSeparator: true}]
-        <%--{title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("pdf");--%>
-        <%--}},--%>
-        <%--{--%>
-        <%--title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("excel");--%>
-        <%--}--%>
+               <%--{title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
+                <%--ListGrid_institute_print("pdf");--%>
+            <%--}},--%>
+               <%--{--%>
+            <%--title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
+                <%--ListGrid_institute_print("excel");--%>
+            <%--}--%>
         <%--},--%>
-        <%--{--%>
-        <%--title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("html");--%>
-        <%--}--%>
+               <%--{--%>
+            <%--title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
+                <%--ListGrid_institute_print("html");--%>
+            <%--}--%>
         <%--}]--%>
 
     });
@@ -2162,11 +2162,11 @@
     });
 
     <%--var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({--%>
-    <%--icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--title: "<spring:message code='print'/>",--%>
-    <%--click: function () {--%>
-    <%--ListGrid_institute_print("pdf");--%>
-    <%--}--%>
+        <%--icon: "[SKIN]/RichTextEditor/print.png",--%>
+        <%--title: "<spring:message code='print'/>",--%>
+        <%--click: function () {--%>
+            <%--ListGrid_institute_print("pdf");--%>
+        <%--}--%>
     <%--});--%>
 
     var ToolStrip_Institute_Institute_Actions = isc.ToolStrip.create({
@@ -2176,7 +2176,7 @@
             ToolStripButton_Institute_Institute_Add,
             ToolStripButton_Institute_Institute_Edit,
             ToolStripButton_Institute_Institute_Remove]//,
-// ToolStripButton_Institute_Institute_Print]
+            // ToolStripButton_Institute_Institute_Print]
     });
 
     var HLayout_Institute_Institute_Action = isc.HLayout.create({
@@ -2190,9 +2190,9 @@
     });
 
     // var HLayout_Institute__Institute_TrainingPlace = isc.HLayout.create({
-    // width: "100%",
-    // height: "100%",
-    // members: [ListGrid_Institute_TrainingPlace]
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [ListGrid_Institute_TrainingPlace]
     // });
 
     var VLayout_Institute_Institute_Teacher = isc.VLayout.create({
@@ -2217,12 +2217,13 @@
         width: "100%",
         height: "100%",
         tabs: [
-// {
-// id: "TabPane_Institute_TrainingPlace",
-// title: "لیست محل های آموزشی",
-// pane: HLayout_Institute__Institute_TrainingPlace
-//
-// },
+            // {
+            //     id: "TabPane_Institute_TrainingPlace",
+            //     title: "لیست محل های آموزشی",
+            //     pane: HLayout_Institute__Institute_TrainingPlace
+            //
+            // },
+
             {
                 id: "TabPane_Institute_Teacher",
                 title: "لیست اساتید",
@@ -2363,8 +2364,8 @@
             var stateValue = undefined;
             var cityValue = undefined;
 
-// DynamicForm_Institute_Institute_Address.getField("address.stateId").invalidateCache();
-// DynamicForm_Institute_Institute_Address.getField("address.stateId").fetchData();
+//            DynamicForm_Institute_Institute_Address.getField("address.stateId").invalidateCache();
+//             DynamicForm_Institute_Institute_Address.getField("address.stateId").fetchData();
 
 
             if (record != null && record.address != null && record.address.stateId != null)
@@ -2375,9 +2376,9 @@
                 DynamicForm_Institute_Institute_Address.clearValue("address.cityId");
             }
             if (stateValue != undefined) {
-// RestDataSource_Institute_State.fetchDataURL=stateUrl + "spec-list";
+                // RestDataSource_Institute_State.fetchDataURL=stateUrl + "spec-list";
                 RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
-// DynamicForm_Institute_Institute_Address.getField("address.stateId").optionDataSource = RestDataSource_Institute_State;
+                // DynamicForm_Institute_Institute_Address.getField("address.stateId").optionDataSource = RestDataSource_Institute_State;
                 DynamicForm_Institute_Institute_Address.getField("address.cityId").optionDataSource = RestDataSource_Institute_City;
                 DynamicForm_Institute_Institute_Address.getField("address.cityId").fetchData();
             }

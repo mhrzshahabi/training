@@ -1,10 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//<script>
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    JobMenu_job = isc.TrMenu.create({
+    JobMenu_job = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    JobTS_job = isc.TrTS.create({
+    JobTS_job = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {

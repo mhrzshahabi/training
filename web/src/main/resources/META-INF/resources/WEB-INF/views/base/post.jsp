@@ -4,7 +4,7 @@
 // <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    PostMenu_post = isc.TrMenu.create({
+    PostMenu_post = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -17,7 +17,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    PostTS_post = isc.TrTS.create({
+    PostTS_post = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {

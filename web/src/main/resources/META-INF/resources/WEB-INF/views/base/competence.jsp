@@ -7,7 +7,7 @@
     let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
-    CompetenceMenu_competence = isc.TrMenu.create({
+    CompetenceMenu_competence = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_competence = isc.TrTS.create({
+    CompetenceTS_competence = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -164,7 +164,7 @@
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
-                keyPressFilter: EnNumSpcFilter,
+                keyPressFilter: enNumSpcFilter,
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
