@@ -317,7 +317,7 @@
     });
 
     needAssessmentTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.need.assessment"/>",
+        title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             data: [
                 {
