@@ -2,7 +2,7 @@
 
 .dpDiv {
 }
-
+/*
 @font-face {
 	font-family: 'IRANSans';
 	src: url("../font/IRANSans-web.woff") format('woff');
@@ -19,7 +19,7 @@
 	font-family: 'IRANSans';
 	src: url("../font/IRANSans-Medium-web.woff") format('woff');
 	font-weight: 500;
-}
+}*/
 
 /* the table (within the div) that holds the date picker calendar */
 

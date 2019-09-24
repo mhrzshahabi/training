@@ -154,7 +154,7 @@
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    let CompetenceDF_competence = isc.TrDynamicForm.create({
+    let CompetenceDF_competence = isc.DynamicForm.create({
         ID: "CompetenceDF_competence",
         fields: [
             {name: "id", hidden: true},
@@ -185,15 +185,15 @@
         ]
     });
 
-    let CompetenceWin_competence = isc.TrWindow.create({
+    let CompetenceWin_competence = isc.Window.create({
         items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
             members: [
-                isc.TrSaveButton.create({
+                isc.TrSaveBtn.create({
                     click: function () {
                         saveCompetence_competence();
                     }
                 }),
-                isc.TrCancelButton.create({
+                isc.TrCancelBtn.create({
                     click: function () {
                         CompetenceWin_competence.close();
                     }
@@ -303,9 +303,13 @@
 
     // To show an ok dialog
     function showOkDialog(msg, iconName) {
-        iconName = iconName ? iconName : 'say';
-        let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
-        Timer.setTimeout(function () {
-            dialog.close();
-        }, okDialogShowTime);
+        createDialog('info', 'info');
+        createDialog('ask', 'ask');
+        createDialog('confirm', 'confirm');
+        // iconName = iconName ? iconName : 'say';
+        // // let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png", autoDraw: true});
+        // let dialog = isc.TrOkDialog.create({message: msg, autoDraw: true});
+        // Timer.setTimeout(function () {
+        //     dialog.close();
+        // }, 3000);
     };

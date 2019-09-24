@@ -42,7 +42,7 @@
         jsonPrefix: "",
         jsonSuffix: "",
     });
-    var DynamicForm_Goal = isc.TrDynamicForm.create({
+    var DynamicForm_Goal = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -60,7 +60,7 @@
             }
         ],
     });
-    var DynamicForm_Syllabus = isc.TrDynamicForm.create({
+    var DynamicForm_Syllabus = isc.DynamicForm.create({
         ID: "formSyllabus",
         fields: [
             {name: "id", hidden: true},
@@ -308,7 +308,7 @@
         })]
     });
 
-    var Window_Syllabus = isc.TrWindow.create({
+    var Window_Syllabus = isc.Window.create({
         title: "سرفصل",
         autoSize: true,
         autoCenter: true,
@@ -330,7 +330,7 @@
         width: "400",
     });
 
-    var Window_Goal = isc.TrWindow.create({
+    var Window_Goal = isc.Window.create({
         items: [isc.VLayout.create({
             width: "100%",
             height: "100%",

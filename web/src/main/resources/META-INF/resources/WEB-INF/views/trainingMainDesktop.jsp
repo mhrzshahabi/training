@@ -48,8 +48,6 @@
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
     const numFilter = "[0-9]";
 
-    const okDialogShowTime = 3000;
-
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
@@ -61,7 +59,17 @@
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
-    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true});
+    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
+    isc.DynamicForm.addProperties({
+        width: "100%", margin: 5, errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>", requiredTitleSuffix: "",
+        requiredMessage: "<spring:message code="msg.field.is.required"/>", wrapItemTitles: false
+    });
+    isc.Window.addProperties({
+        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
+        showHeaderIcon: false, animateMinimize: true, width: 800, showMaximizeButton: true,
+    });
+    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
 
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
@@ -139,19 +147,6 @@
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
     });
 
-
-    isc.DynamicForm.addProperties({
-        width: "100%",
-        margin: 5,
-        errorOrientation: "right",
-        wrapItemTitles: false,
-        titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
-        requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.field.is.required"/>",
-    });
-    isc.defineClass("TrDynamicForm", DynamicForm);
-
     TrValidators = {
         NotEmpty: {
             type: "regexp",
@@ -189,30 +184,12 @@
     function trTrim(value) {
         var trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
-    }
+    };
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
     isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
 
-    isc.defineClass("TrWindow", Window);
-    isc.TrWindow.addProperties({
-        autoSize: true,
-        autoCenter: true,
-        isModal: false,
-        showModalMask: true,
-        canFocus: true,
-        dismissOnEscape: true,
-        canDragReposition: true,
-        canDragResize: true,
-        showHeaderIcon: false,
-        showFooter: true,
-        animateMinimize: true,
-        width: 800,
-        showMaximizeButton: true,
-        defaultMinimizeHeight: 500,
-    });
-
-    isc.defineClass("TrHLayoutButtons", HLayout);
+    isc.defineClass("TrHLayoutButtons", TrHLayout);
     isc.TrHLayoutButtons.addProperties({
         align: "center",
         height: 34,
@@ -220,62 +197,64 @@
         membersMargin: 10,
     });
 
-    isc.defineClass("TrSaveButton", Button);
-    isc.TrSaveButton.addProperties({
+    isc.defineClass("TrSaveBtn", Button);
+    isc.TrSaveBtn.addProperties({
         title: "<spring:message code="save"/>",
     });
 
-    isc.defineClass("TrSaveNextButton", Button);
-    isc.TrSaveNextButton.addProperties({
+    isc.defineClass("TrSaveNextBtn", Button);
+    isc.TrSaveNextBtn.addProperties({
         title: "<spring:message code="save.and.next"/>",
     });
 
-    isc.defineClass("TrCancelButton", Button);
-    isc.TrCancelButton.addProperties({
+    isc.defineClass("TrCancelBtn", Button);
+    isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
     });
 
-    isc.defineClass("TrOkDialog", Dialog);
-    isc.TrOkDialog.addProperties({
-        title: "<spring:message code='message'/>",
-        icon: "[SKIN]say.png",
-        isModal: true,
-        buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
-        buttonClick: function (button, index) {
-            this.close();
+    function createDialog(message, type, title) {
+        type = type ? type : 'info';
+        if (type == 'info') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else if (type == 'ask') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [
+                    isc.Button.create({title: "<spring:message code="yes"/>",}),
+                    isc.Button.create({title: "<spring:message code="no"/>",})
+                ],
+            });
+        } else if (type == 'confirm') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [
+                    isc.Button.create({title: "<spring:message code="yes"/>",}),
+                    isc.Button.create({title: "<spring:message code="no"/>",})
+                ],
+            });
         }
-    });
+    };
 
-    isc.defineClass("TrYesNoDialog", Dialog);
-    isc.TrYesNoDialog.addProperties({
-        title: "<spring:message code='message'/>",
-        icon: "[SKIN]ask.png",
-        isModal: true,
-        buttons: [
-            isc.Button.create({title: "<spring:message code="yes"/>",}),
-            isc.Button.create({title: "<spring:message code="no"/>",})
-        ],
-    });
-
-    isc.defineClass("TrComboBoxItem", ComboBoxItem);
-    isc.TrComboBoxItem.addProperties({
-        addUnknownValues: false,
-        emptyPickListMessage: "",
-        pickListProperties: {
-            showFilterEditor: true
-        },
-        wrapTitle: false,
-    });
-
-    isc.defineClass("TrComboBoxItemAutoRefresh", TrComboBoxItem);
-    isc.TrComboBoxItemAutoRefresh.addProperties({
+    isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
+    isc.TrComboAutoRefresh.addProperties({
         click: function (form, item) {
             item.fetchData();
         }
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
-
     systemImg = isc.Img.create({
         src: "<spring:url value="training.png"/>",
         width: 24,
@@ -397,18 +376,6 @@
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
                 },
-                <%--{--%>
-                <%--title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",--%>
-                <%--click: function () {--%>
-                <%--createTab(this.title, "<spring:url value="/syllabus/show-form"/>");--%>
-                <%--}--%>
-                <%--},--%>
-                <%--{--%>
-                <%--title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",--%>
-                <%--click: function () {--%>
-                <%--createTab(this.title, "<spring:url value="/goal/show-form"/>");--%>
-                <%--}--%>
-                <%--},--%>
                 {
                     title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
                     click: function () {
@@ -544,6 +511,7 @@
         members: [
             isc.HLayout.create({
                 height: "1%",
+                defaultLayoutAlign: "center",
                 members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
             }),
             isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
@@ -736,9 +704,7 @@
             isc.say("خطا در اتصال به سرور!");
         }
     });
-
     // ---------------------------------------- Not Ok - End ----------------------------------------
-
 
 </script>
 </body>
