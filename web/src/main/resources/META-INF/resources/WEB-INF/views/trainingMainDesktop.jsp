@@ -738,7 +738,7 @@
     });
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
-    createTab("شایستگی", "<spring:url value="/competence/show-form"/>");
+
 
 </script>
 </body>
