@@ -389,9 +389,24 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
+                 {
+                    title: "<spring:message code="company"/>",
+                    icon: "<spring:url value="company.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/company/show-form"/>");
+                    }
+                },
+                 {
+                    title: "شرح وظایف",
+                    icon: "<spring:url value="committee.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/task/show-form"/>");
+                    }
+                },
+
             ]
         }),
-    });
+     });
 
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.run"/>",
@@ -563,6 +578,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
+    const companyUrl=rootUrl +"/company/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
