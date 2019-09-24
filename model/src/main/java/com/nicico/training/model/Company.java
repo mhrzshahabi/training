@@ -25,28 +25,34 @@ public class Company extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @Column(name="c_address")
-    private String address;
+    @Column(name="c_email")
+    private String email;
 
     @Column(name="c_work_domain")
     private String workDomain;
 
-    @OneToMany(mappedBy = "company")
-    private Set<AccountInfo> accountInfoSet;
 
     @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
+    private AccountInfo accountInfo;
+    @Column(name="f_account_info_id")
+    private Long accountInfoId;
+
+
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
     @JoinColumn(name = "f_personal_info_id", nullable = false, insertable = false, updatable = false)
     private PersonalInfo manager;
-
     @Column(name = "f_personal_info_id")
     private Long managerId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="f_contact_info_id",nullable = false,insertable = false,updatable = false)
-    private ContactInfo contactInfo;
 
-    @Column(name="f_contact_info_id")
-    private Long contactInfoId;
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="f_address_id",nullable = false,insertable = false,updatable = false)
+    private Address address;
+    @Column(name="f_address_id")
+    private Long addressId;
+
+
 
 }
 

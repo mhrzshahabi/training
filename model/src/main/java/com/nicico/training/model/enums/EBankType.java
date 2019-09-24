@@ -9,10 +9,9 @@ import lombok.ToString;
 @Getter
 @ToString(of = {"titleFa"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
-
 public enum EBankType {
-    Male(1, "دولتی"),
-    Female(2, "خصوصی");
+    Governmental(1, "دولتی"),
+    Informal(2, "خصوصی");
 
     private final Integer id;
     private final String titleFa;
@@ -20,6 +19,4 @@ public enum EBankType {
     public String getLiteral() {
         return name();
     }
-
-
 }
