@@ -7,7 +7,7 @@
     let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
-    CompetenceMenu_competence = isc.TrMenu.create({
+    CompetenceMenu_competence = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",

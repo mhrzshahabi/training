@@ -4,7 +4,7 @@
 // <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    JobMenu_job = isc.TrMenu.create({
+    JobMenu_job = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",

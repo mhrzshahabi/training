@@ -58,6 +58,16 @@
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
+    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
+    isc.TabSet.addProperties({width: "100%", height: "100%",});
+    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true});
+
+    isc.defineClass("TrHLayout", HLayout);
+    isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
+
+    isc.defineClass("TrVLayout", VLayout);
+    isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
     var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
@@ -92,117 +102,55 @@
         alternateRecordStyles: true,
         showResizeBar: true,
         showFilterEditor: true,
-        filterOnKeypress: false,
+        autoFitWidthApproach: "both",
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
-        autoFitWidthApproach: "both",
     });
 
-    isc.defineClass("TrHLayout", HLayout);
-    isc.TrHLayout.addProperties({
-        width: "100%",
-        height: "100%",
-        defaultLayoutAlign: "center",
-    });
-
-    isc.defineClass("TrVLayout", VLayout);
-    isc.TrVLayout.addProperties({
-        width: "100%",
-        height: "100%",
-        defaultLayoutAlign: "center",
-    });
-
-    isc.defineClass("TrTS", ToolStrip);
-    isc.TrTS.addProperties({
-        border: "0px",
-    });
-
-    isc.defineClass("TrTSMB", ToolStripMenuButton);
-    isc.TrTSMB.addProperties({
-        showMenuOnRollOver: true,
-        click() {
-            return false;
-        }
-    });
-
-    isc.defineClass("TrTSB", ToolStripButton);
-    isc.TrTSB.addProperties({});
-
-    isc.defineClass("TrMenu", Menu);
-
-    isc.defineClass("TrTabSet", TabSet);
-    isc.TrTabSet.addProperties({
-        width: "100%",
-        height: "100%",
-    });
-
-    isc.defineClass("TrViewLoader", ViewLoader);
-    isc.TrViewLoader.addProperties({
-        width: "100%",
-        height: "100%",
-        border: "0px",
-        loadingMessage: "<spring:message code="loading"/>",
-    });
-
-    isc.defineClass("TrRefreshBtn", TrTSB);
+    isc.defineClass("TrRefreshBtn", ToolStripButton);
     isc.TrRefreshBtn.addProperties({
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
     });
 
-    isc.defineClass("TrCreateBtn", TrTSB);
+    isc.defineClass("TrCreateBtn", ToolStripButton);
     isc.TrCreateBtn.addProperties({
         icon: "<spring:url value="create.png"/>",
         title: "<spring:message code="create"/>",
     });
 
-    isc.defineClass("TrEditBtn", TrTSB);
+    isc.defineClass("TrEditBtn", ToolStripButton);
     isc.TrEditBtn.addProperties({
         icon: "<spring:url value="edit.png"/>",
         title: "<spring:message code="edit"/>",
     });
 
-    isc.defineClass("TrRemoveBtn", TrTSB);
+    isc.defineClass("TrRemoveBtn", ToolStripButton);
     isc.TrRemoveBtn.addProperties({
         icon: "<spring:url value="remove.png"/>",
         title: "<spring:message code="remove"/>",
     });
 
-    isc.defineClass("TrPrintBtn", TrTSMB);
+    isc.defineClass("TrPrintBtn", ToolStripMenuButton);
     isc.TrPrintBtn.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
     });
 
-    isc.defineClass("TrPrintBtnCommon", TrTSMB);
-    isc.TrPrintBtnCommon.addProperties({
-        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
-        menu: isc.TrMenu.create({
-            data: [
-                {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>"},
-                {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>"},
-                {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>"},
-            ]
-        }),
-    });
 
-    isc.defineClass("TrDynamicForm", DynamicForm);
-    isc.TrDynamicForm.addProperties({
+    isc.DynamicForm.addProperties({
         width: "100%",
         margin: 5,
         errorOrientation: "right",
-        showInlineErrors: true,
-        showErrorStyle: false,
-        showErrorText: false,
         wrapItemTitles: false,
-        titleAlign: "left",
         titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0c5b;font-size:140%;'>* </span>",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
         requiredTitleSuffix: "",
         requiredMessage: "<spring:message code="msg.field.is.required"/>",
     });
+    isc.defineClass("TrDynamicForm", DynamicForm);
 
     TrValidators = {
         NotEmpty: {
@@ -262,10 +210,9 @@
         width: 800,
         showMaximizeButton: true,
         defaultMinimizeHeight: 500,
-
     });
 
-    isc.defineClass("TrHLayoutButtons", TrHLayout);
+    isc.defineClass("TrHLayoutButtons", HLayout);
     isc.TrHLayoutButtons.addProperties({
         align: "center",
         height: 34,
@@ -343,9 +290,9 @@
         padding: 5,
     });
 
-    userTSMB = isc.TrTSMB.create({
+    userTSMB = isc.ToolStripMenuButton.create({
         title: "${username}",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="logout"/>",
@@ -358,9 +305,9 @@
         }),
     });
 
-    basicTSMB = isc.TrTSMB.create({
+    basicTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="skill.categorize"/>", icon: "<spring:url value="categorize.png"/>",
@@ -390,9 +337,9 @@
         }),
     });
 
-    needAssessmentTSMB = isc.TrTSMB.create({
+    needAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.need.assessment"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
@@ -440,9 +387,9 @@
         }),
     });
 
-    designingTSMB = isc.TrTSMB.create({
+    designingTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.designing.and.planning"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="course"/>", icon: "<spring:url value="course.png"/>",
@@ -479,9 +426,9 @@
         }),
     });
 
-    runTSMB = isc.TrTSMB.create({
+    runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.run"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="class"/>", icon: "<spring:url value="class.png"/>",
@@ -512,16 +459,16 @@
         }),
     });
 
-    evaluationTSMB = isc.TrTSMB.create({
+    evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="training.evaluation"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: []
         }),
     });
 
-    cartableTSMB = isc.TrTSMB.create({
+    cartableTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="cartable"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="personal"/>", icon: "<spring:url value="personal.png"/>",
@@ -542,14 +489,14 @@
         }),
     });
 
-    reportTSMB = isc.TrTSMB.create({
+    reportTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="report"/>",
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: []
         }),
     });
 
-    trainingToolStrip = isc.TrTS.create({
+    trainingToolStrip = isc.ToolStrip.create({
         members: [
             basicTSMB,
             needAssessmentTSMB,
@@ -561,7 +508,7 @@
         ]
     });
 
-    trainingTabSet = isc.TrTabSet.create({
+    trainingTabSet = isc.TabSet.create({
         tabs: [],
         tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
             var tabTitle = ID.title;
@@ -595,11 +542,11 @@
     isc.TrVLayout.create({
         autoDraw: true,
         members: [
-            isc.TrHLayout.create({
+            isc.HLayout.create({
                 height: "1%",
                 members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
             }),
-            isc.TrHLayout.create({height: "1%", members: [trainingToolStrip]}),
+            isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
             trainingTabSet,
         ]
     });
@@ -614,7 +561,7 @@
         var tab = trainingTabSet.getTabObject(title);
         if (tab !== undefined) {
             if ((autoRefresh !== undefined) && (autoRefresh == true)) {
-                trainingTabSet.setTabPane(tab, isc.TrViewLoader.create({viewURL: url}));
+                trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             trainingTabSet.selectTab(tab);
             return;
@@ -622,7 +569,7 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.TrViewLoader.create({viewURL: url,}),
+                pane: isc.ViewLoader.create({viewURL: url,}),
                 canClose: true,
             });
             createTab(title, url);

@@ -21,10 +21,6 @@ var dummy;
 
     var selectedRecordPersonalID = null;
 
-    var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
-        "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
-        "<spring:message code='photo.format.hint'/>";
-
     var teacherCategoriesID = new Array();
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -171,6 +167,7 @@ var dummy;
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
+        filterOperator: "contains",
         doubleClick: function () {
             ListGrid_teacher_edit();
         },
@@ -178,19 +175,19 @@ var dummy;
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
             {
-                name: "personality.fullName",
-                title: "<spring:message code='fullName'/>",
+                name: "personality.firstNameFa",
+                title: "<spring:message code='firstName'/>",
                 align: "center",
-                filterOperator: "contains",
-                formatCellValue: function (value, record) {
-                    return record.personality.firstNameFa + " " + record.personality.lastNameFa;
-                }
+            },
+            {
+                name: "personality.lastNameFa",
+                title: "<spring:message code='lastName'/>",
+                align: "center",
             },
             {
                 name: "category",
                 title: "<spring:message code='education.categories'/>",
                 align: "center",
-                filterOperator: "contains",
                 formatCellValue: function (value, record) {
                     if(record.categories.length == 0)
                         return;
@@ -205,19 +202,23 @@ var dummy;
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOperator: "contains"
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
-                filterOperator: "contains"
             },
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
-                filterOperator: "contains"
+            },
+            {
+                name: "enableStatus",
+                title: "<spring:message code='mobile.connection'/>",
+                align: "center",
+                type: "boolean",
+                canFilter: false
             }
         ],
         sortField: 1,
@@ -245,34 +246,15 @@ var dummy;
 
     var vm = isc.ValuesManager.create({});
 
-    var DynamicForm_ViewLoader_JspTeacher = isc.Label.create({
-        height: "100%",
-        width: "100%",
-        align: "center",
-        contents: photoDescription
-    });
-
     var showAttachViewLoader = isc.ViewLoader.create({
         autoDraw: false,
         viewURL: "",
         overflow: "scroll",
-        height: "140px",
-        width: "130px",
+        height: "133px",
+        width: "100px",
         border: "1px solid red",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>",
-    });
-
-    var VLayOut_ViewLoader_JspTeacher = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        alignLayout: "right",
-        align: "right",
-        padding: 10,
-        membersMargin: 10,
-        members: [showAttachViewLoader,
-            DynamicForm_ViewLoader_JspTeacher]
     });
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
@@ -335,11 +317,6 @@ var dummy;
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true",
-                change: "simpleDialog(\"<spring:message code='msg.command.done'/>\",\n" +
-                    "                                                    \"<spring:message code='msg.operation.successful'/>\", 3000, \"say\");"
-                // changestatete: function(){
-                //    TODO
-                // }
             },
 
             {
@@ -380,17 +357,6 @@ var dummy;
                 length: "30"
             },
 
-
-            <%--{--%>
-            <%--    name: "personality.religion",--%>
-            <%--    title: "<spring:message code='religion'/>",--%>
-            <%--    type: 'text',--%>
-            <%--    width: "*",--%>
-            <%--    defaultValue: "<spring:message code='islam'/>",--%>
-            <%--    keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",--%>
-            <%--    length: "100"--%>
-            <%--},--%>
-
             {
                 name: "personality.birthDate",
                 title: "<spring:message code='birth.date'/>",
@@ -410,14 +376,15 @@ var dummy;
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
                     }
                 }],
+                //TODO
                 blur: function () {
                     var dateCheck;
                     dateCheck = checkBirthDate(DynamicForm_BasicInfo_JspTeacher.getValue("personality.birthDate"));
                     persianDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.birthDate", "<spring:message
-        code='msg.correct.date'/>", true);
-                    if (dateCheck === true)
+                                                                            code='msg.correct.date'/>", true);
+                    else if (dateCheck === true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.birthDate", true);
                 }
             },
@@ -710,16 +677,14 @@ var dummy;
                 width: "*",
                 length: "500",
                 colSpan: 3,
-                //height: 30
             }
 
 
         ],
         itemChanged: function (item, newValue) {
-            //TODO fix orientation
             if (item.name === "personality.nationalCode")
                 this.getItem("teacherCode").setValue(item.getValue());
-            if (item.name === "personality.educationMajorId") {
+            else if (item.name === "personality.educationMajorId") {
                 if (newValue === undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
                 } else {
@@ -729,16 +694,27 @@ var dummy;
                     DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
                 }
             }
-            if (item.name === "attachPic") {
+            else if (item.name === "attachPic") {
                 showTempAttach();
+            }
+            else if(item.name === "enableStatus"){
+                if(newValue === "false"){
+                    isc.TrYesNoDialog.create({
+                        message: "<spring:message code='msg.teacher.enable.status.change.confirm'/>",
+                        buttonClick: function (button, index) {
+                            this.close();
+                            if (index === 1) {
+                                DynamicForm_BasicInfo_JspTeacher.getField("enableStatus").setValue("true");
+                            }
+                        }
+                    })
+                }
             }
         }
     });
 
 
     var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
-        width: "100%",
-        height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 0,
@@ -761,10 +737,8 @@ var dummy;
                 title: "",
                 type: "imageFile",
                 showFileInline: "true",
-                titleWidth: "80",
                 accept: ".png,.gif,.jpg, .jpeg",
                 multiple: "",
-                width: "100%",
             }
         ],
         itemChanged: function (item, newValue) {
@@ -923,7 +897,6 @@ var dummy;
             }
         ],
         itemChanged: function (item, newValue) {
-            //TODO message in change state
             if (item.name === "personality.contactInfo.workAddress.stateId") {
                 if (newValue === undefined) {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
@@ -1184,18 +1157,18 @@ var dummy;
 
         ],
         itemChanged: function (item, newValue) {
-            if (item.name == "personality.contactInfo.homeAddress.stateId") {
-                if (newValue == undefined) {
+            if (item.name === "personality.contactInfo.homeAddress.stateId") {
+                if (newValue === undefined) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                 } else {
-                    // DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
-                    // RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    // DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
-                    // // DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
+                    DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
+                    RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
-            if (item.name == "personality.contactInfo.homeAddress.otherCountry") {
-                if (newValue == true) {
+            if (item.name === "personality.contactInfo.homeAddress.otherCountry") {
+                if (newValue === true) {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.stateId")
                 } else {
@@ -1274,14 +1247,14 @@ var dummy;
         defaultLayoutAlign: "center",
         padding: 10,
         membersMargin: 10,
-        width: "95%",
-        members: [VLayOut_ViewLoader_JspTeacher, DynamicForm_Photo_JspTeacher]
+        width: "*",
+        members: [showAttachViewLoader, DynamicForm_Photo_JspTeacher]
     });
 
     var TabSet_Photo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        width: "25%",
+        width: "310px",
         alignLayout: "center",
         align: "center",
         tabs: [
@@ -1703,6 +1676,8 @@ var dummy;
                 setTimeout(function () {
                     if (categoryList != undefined)
                         addCategories(responseID, categoryList);
+                    ListGrid_Teacher_JspTeacher.invalidateCache();
+                    ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
                 showAttachViewLoader.hide();
                 ListGrid_Teacher_JspTeacher.invalidateCache();
@@ -1763,7 +1738,7 @@ var dummy;
     };
 
     function checkMobile(mobile) {
-        if (mobile[0] == "0" && mobile[1] == "9")
+        if (mobile[0] == "0" && mobile[1] == "9" && mobile.length == 11)
             return true;
         else
             return false;
@@ -1838,7 +1813,7 @@ var dummy;
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.otherCountry", personality.contactInfo.homeAddress.otherCountry);
                 }
             }
-            if (personality.accountInfo != null && personality.accountInfo != undefined) {
+            if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bBranch", personality.accountInfo.bBranch);
