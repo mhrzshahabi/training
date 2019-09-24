@@ -56,7 +56,7 @@
             {name: "knowledge"},
             {name: "skill"},
             {name: "attitude"},
-            {name: "mainDescription"},
+            {name: "needText"},
             {name: "description"}
             // {name: "version"},
         ],
@@ -338,7 +338,7 @@
                 format: "%",
                 width: "50"
             },
-            {name: "mainDescription",title:"شرح",hidden:true},
+            {name: "needText",title:"شرح",hidden:true},
             {name: "description",title:"توضیحات",hidden:true}
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
@@ -659,7 +659,7 @@
                 }
             },
             {
-                name: "mainDescription",
+                name: "needText",
                 // titleOrientation: "top",
                 title: "شرح\u200cمشکل /نیاز /درخواست",
                 colSpan: 4,

@@ -113,8 +113,8 @@ public class Course extends Auditable {
     @Column(name = "c_equal_course")
     private String equalCourse;
 
-    @Column(name = "main_description")
-    private String mainDescription;
+    @Column(name = "c_need_text")
+    private String needText;
 
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")

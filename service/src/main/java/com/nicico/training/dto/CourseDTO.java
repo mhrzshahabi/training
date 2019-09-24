@@ -60,7 +60,7 @@ public class CourseDTO implements Serializable {
     private String mainObjective;
 
     @ApiModelProperty(required = true)
-    private String mainDescription;
+    private String needText;
 
 
 //    @ApiModelProperty(required = true)
