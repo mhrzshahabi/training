@@ -56,6 +56,8 @@
             {name: "knowledge"},
             {name: "skill"},
             {name: "attitude"},
+            {name: "mainDescription"},
+            {name: "description"}
             // {name: "version"},
         ],
         fetchDataURL: courseUrl + "spec-list",
@@ -336,6 +338,8 @@
                 format: "%",
                 width: "50"
             },
+            {name: "mainDescription",title:"شرح",hidden:true},
+            {name: "description",title:"توضیحات",hidden:true}
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
         ],
@@ -611,13 +615,11 @@
         fields: [
             {
                 name: "mainObjective",
-                // titleOrientation: "top",
                 title: "<spring:message code="course_mainObjective"/>",
                 colSpan: 1,
                 rowSpan: 2,
                 readonly: true,
                 type: "textArea",
-                // height: "100",
                 width: "*",
                 length: "*",
                 required: true,
@@ -672,10 +674,6 @@
                 wrapTitle:true
             },
             {name: "id", hidden: true},
-            // {
-            //     name: "mainSection", defaultValue: "اطلاعات دوره", type: "section", sectionExpanded: true,
-            //     itemIds: ["titleFa", "titleEn", "theoryDuration", "category.id", "subCategory.id", "erunType.id", "elevelType.id", "etheoType.id", "etechnicalType.id", "description", "mainObjective", "domainPercent"]
-            // },
             {
                 colSpan: 4,
                 name: "titleFa",
@@ -1325,7 +1323,7 @@
         tabs: [
             {
                 title: "هدف و سرفصل", canClose: false,
-                pane: isc.TrViewLoader.create(
+                pane: isc.ViewLoader.create(
                     {viewURL: "goal/show-form"}
                     )
             },

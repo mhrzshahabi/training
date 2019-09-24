@@ -25,14 +25,12 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseDTO implements Serializable {
 
-
     @ApiModelProperty(required = true)
     private String code;
 
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
 
     @ApiModelProperty(required = true)
     private String titleEn;
@@ -60,6 +58,9 @@ public class CourseDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String mainObjective;
+
+    @ApiModelProperty(required = true)
+    private String mainDescription;
 
 
 //    @ApiModelProperty(required = true)
