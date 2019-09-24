@@ -795,38 +795,42 @@
                 title: "استاد دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+                width:100
             },
             {
                 name: "teacherNumLicentiate",
                 title: "استاد لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "teacherNumMaster",
                 title: "استاد فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "teacherNumAssociate",
                 title: "استاد فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "teacherNumDiploma",
                 title: "استاد دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             }
         ]
-
     });
     var DynamicForm_Institute_InstituteEmpNum = isc.DynamicForm.create({
         width: "100%",
@@ -850,35 +854,40 @@
                 title: " کارمند دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "empNumLicentiate",
                 title: "کارمند لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "empNumMaster",
                 title: "کارمند فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "empNumAssociate",
                 title: " کارمند فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             },
             {
                 name: "empNumDiploma",
                 title: "کارمند دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "5"
+                length: "5",
+width:100
             }
         ]
 
@@ -896,7 +905,7 @@
         errorOrientation: "right",
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        numCols: 6,
+        numCols:4,
         fields: [
             {
                 name: "address.id",
@@ -910,7 +919,6 @@
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
-// defaultToFirstOption: true,
                 displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_State,
@@ -961,31 +969,33 @@
                 length: "15",
             },
             {
-                name: "address.restAddr",
-                title: "آدرس",
-                required: true,
-                colSpan: 5,
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                width: 600,
-                length: "255"
+            name: "address.phone",
+            keyPressFilter: "[0-9|-]",
+            title: "تلفن",
+            length: "12"
             },
             {
-                name: "address.phone",
-                keyPressFilter: "[0-9|-]",
-                title: "تلفن",
-                length: "12"
+            name: "address.fax",
+            title: "فکس",
+            keyPressFilter: "[0-9|-]",
+            length: "12"
             },
             {
-                name: "address.fax",
-                title: "فکس",
-                keyPressFilter: "[0-9|-]",
-                length: "12"
+            name: "address.webSite",
+            title: "وب سایت",
+            length: "100"
             },
             {
-                name: "address.webSite",
-                title: "وب سایت",
-                length: "100"
-            }],
+                            name: "address.restAddr",
+                            title: "آدرس",
+                            required: true,
+                            colSpan: 3,
+                            keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                            width: 300,
+                            type: 'textArea',
+                            length: "255"
+                        }
+        ],
         itemChanged: function (item, newValue) {
             if (item.name == "address.stateId") {
                 if (newValue == undefined) {
@@ -1006,7 +1016,7 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "100%",
-        width: "48%",
+        width: "20%",
         margin: 20,
         newPadding: 5,
         tabs: [
@@ -1020,7 +1030,7 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "100%",
-        width: "48%",
+        width: "20%",
         margin: 20,
         newPadding: 5,
         tabs: [
@@ -1034,7 +1044,7 @@
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "100%",
-        width: "100%",
+        width: "60%",
         margin: 20,
         newPadding: 5,
         tabs: [
@@ -1047,11 +1057,11 @@
 
     var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
         width: "100%",
-        height: 200,
+        height: 250,
         margin: 2,
         newPadding: 5,
 
-        members: [TabSet_Institute_InstituteEmpNum, TabSet_Institute_InstituteTeacherNum]
+        members: [TabSet_Institute_InstituteEmpNum, TabSet_Institute_InstituteTeacherNum,TabSet_Institute_InstituteAddress]
     });
 
 
@@ -1066,7 +1076,7 @@
         width: "100%",
         height: "25%",
 // border: "1px solid blue",
-        members: [TabSet_Institute_InstituteAddress]
+        members: []
     });
 
     var IButton_Institute_Institute_Exit = isc.IButton.create({
