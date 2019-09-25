@@ -367,7 +367,7 @@
     });
 
     designingTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.designing.and.planning"/>",
+        title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -394,7 +394,7 @@
     });
 
     runTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.run"/>",
+        title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -427,7 +427,7 @@
     });
 
     evaluationTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.evaluation"/>",
+        title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             data: []
         }),
