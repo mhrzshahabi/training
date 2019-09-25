@@ -102,14 +102,14 @@
     });
     var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
+            {name: "id",primaryKey:true}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
 
         fetchDataURL: courseUrl + "skill/" + courseId.id
     });
     var RestDataSource_CourseJob = isc.MyRestDataSource.create({
         fields: [
-            {name: "id"}, {name: "titleFa"}, {name: "titleEn"}
+            {name: "id",primaryKey:true}, {name: "titleFa"}, {name: "titleEn"}
         ],
 
         fetchDataURL: courseUrl + "job/" + courseId.id
@@ -166,11 +166,13 @@
             title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Course_remove()
             }
-        }, {
-            title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {
-                openTabGoal();
-            }
-        }, {
+        }
+        <%--, {--%>
+            <%--title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {--%>
+                <%--openTabGoal();--%>
+            <%--}--%>
+        <%--}--%>
+        , {
             isSeparator: true
         }, {
             title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
@@ -239,12 +241,12 @@
             // ListGrid_Goal.fetchData();
             // ListGrid_Goal.invalidateCache();
             // ListGrid_Syllabus_Goal_refresh();
-            // RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
-            // ListGrid_CourseSkill.fetchData();
-            // ListGrid_CourseSkill.invalidateCache();
-            // RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
-            // ListGrid_CourseJob.fetchData();
-            // ListGrid_CourseJob.invalidateCache();
+            RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
+            ListGrid_CourseSkill.fetchData();
+            ListGrid_CourseSkill.invalidateCache();
+            RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
+            ListGrid_CourseJob.fetchData();
+            ListGrid_CourseJob.invalidateCache();
             // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
             // ListGrid_CourseCompetence.fetchData();
             // ListGrid_CourseCompetence.invalidateCache();
@@ -368,9 +370,10 @@
         allowFilterExpressions: true,
         filterOnKeypress: true,
         selectionType: "single",
+        showResizeBar: false,
+
     });
     var ListGrid_CourseJob = isc.MyListGrid.create({
-
         dataSource: RestDataSource_CourseJob,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -384,6 +387,8 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
+        showResizeBar: false,
+
     });
     var ListGrid_CourseCompetence = isc.MyListGrid.create({
         dataSource: RestDataSource_CourseCompetence,
@@ -398,6 +403,8 @@
         allowFilterExpressions: true,
         filterOnKeypress: true,
         selectionType: "single",
+        showResizeBar: false,
+
     });
     var ListGrid_CourseSyllabus = isc.MyListGrid.create({
 
@@ -426,6 +433,8 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
+        showResizeBar: false,
+
     });
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
@@ -455,13 +464,13 @@
             ListGrid_Course_add();
         }
     });
-    var ToolStripButton_OpenTabGoal = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/goal.png",
-        title: "<spring:message code="create_Goal_Syllabus"/>",
-        click: function () {
-            openTabGoal();
-        }
-    });
+    <%--var ToolStripButton_OpenTabGoal = isc.ToolStripButton.create({--%>
+        <%--icon: "[SKIN]/actions/goal.png",--%>
+        <%--title: "<spring:message code="create_Goal_Syllabus"/>",--%>
+        <%--click: function () {--%>
+            <%--openTabGoal();--%>
+        <%--}--%>
+    <%--});--%>
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
@@ -478,7 +487,7 @@
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_OpenTabGoal]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
     });
 
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
@@ -520,20 +529,20 @@
                 sortFieldDescendingText: "مرتب سازي نزولي",
                 selectionChanged: function (record, state) {
                     if (this.ID == "courseAllGrid") {
-                        orBtn.show();
+                        orBtn.enable();
                         // addPreCourseBtn.show();
                         orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
                         // addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
                         if (equalCourseGrid.getSelectedRecord() != null) {
-                            andBtn.show();
+                            andBtn.enable();
                             andBtn.setTitle("افزودن " + "'" + record.titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC + " به معادل های دوره")
                         } else {
-                            andBtn.hide();
+                            andBtn.disable();
                         }
                     }
                     if (this.ID == "courseAllGrid2") {
                         // orBtn.show();
-                        addPreCourseBtn.show();
+                        addPreCourseBtn.enable();
                         // orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
                         addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
                         // if (equalCourseGrid.getSelectedRecord() != null) {
@@ -545,10 +554,10 @@
                     }
                     if (this.ID == "equalCourseGrid") {
                         if ((courseAllGrid.getSelectedRecord() != null) && (equalCourseGrid.getSelectedRecord() != null)) {
-                            andBtn.show();
+                            andBtn.enable();
                             andBtn.setTitle("افزودن " + "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + record.nameEC + " به معادل های دوره")
                         } else {
-                            andBtn.hide();
+                            andBtn.disable();
                         }
                     }
                 },
@@ -559,7 +568,7 @@
 // }
                 removeRecordClick: function (rowNum) {
                     if (this.ID == "equalCourseGrid") {
-                        andBtn.hide();
+                        andBtn.disable();
                     }
                     var record = this.getRecord(rowNum);
                     this.removeData(record, function (dsResponse, data, dsRequest) {
@@ -1347,8 +1356,9 @@
             {
                 title: "پیشنیازها", canClose: false,
                 pane: isc.TrDynamicForm.create({
-                    numCols:5,
+                    numCols:6,
                     height:"100%",
+                    // border:"1px solid red",
                     fields: [
                         {
                             name: "courseAllGrid21",
@@ -1356,7 +1366,7 @@
                             ID: "courseAllGrid2",
                             title: "دوره ها",
                             align: "center",
-                            colSpan: 4,
+                            colSpan: 5,
                             // rowSpan: 3,
                             width: "*",
                             titleOrientation: "top",
@@ -1400,17 +1410,15 @@
                             showHoverComponents: true,
                             endRow: true
                         },
+                        {type:"SpacerItem",colSpan:3,endRow:false},
                         {
                             name: "imgMove",
                             ID: "addPreCourseBtn",
                             colSpan: 3,
-                            align: "center",
-                            // rowSpan:4,
                             title: "",
                             width: "*",
                             type: "button",
                             startRow: false,
-                            endRow:true,
                             icon: "[SKIN]/actions/back.png",
                             click: function () {
                                 if (courseAllGrid2.getSelectedRecord() == null) {
@@ -1422,10 +1430,11 @@
                         },
                         ]
                 })
-            }, {
+            },
+            {
                 title: "معادل ها", canClose: false,
                 pane: isc.TrDynamicForm.create({
-                    numCols:5,
+                    numCols:6,
                     height:"100%",
                     fields: [
                         {
@@ -1434,7 +1443,7 @@
                             ID: "courseAllGrid",
                             title: "دوره ها",
                             align: "center",
-                            colSpan: 4,
+                            colSpan: 5,
                             // rowSpan: 3,
                             width: "*",
                             titleOrientation: "top",
@@ -1483,7 +1492,7 @@
                         {
                             name: "andBtn",
                             ID: "andBtn",
-                            colSpan: 3,
+                            colSpan: 4,
                             align: "center",
                             // rowSpan:1,
                             startRow:true,
@@ -1515,7 +1524,7 @@
                             endRow:false,
                             width: "*",
                             type: "button",
-                            icon: "[SKIN]/actions/forward.png",
+                            icon: "[SKIN]/actions/back.png",
                             click: function () {
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
@@ -1529,24 +1538,6 @@
                             }
                         },
                     ]
-                })
-            }
-        ]
-    });
-    var TabSet_DomainType_JspCourse = isc.TabSet.create({
-        tabBarPosition: "top",
-        tabs: [
-            {
-                title: "<spring:message code='basic.information'/>", canClose: false,
-                pane: isc.Label.create({
-                    height: 30,
-                    padding: 10,
-                    align: "center",
-                    valign: "center",
-                    wrap: false,
-                    icon: "icons/16/approved.png",
-                    showEdges: true,
-                    contents: "<i>Approved</i> for release"
                 })
             }
         ]
@@ -1586,11 +1577,11 @@
             members: [HLayOut_Tab_JspCourse, TabSet_Goal_JspCourse, courseSaveOrExitHlayout]
         })]
     });
-    var VLayout_Grid_Syllabus = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [ListGrid_CourseSyllabus]
-    });
+    // var VLayout_Grid_Syllabus = isc.VLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [ListGrid_CourseSyllabus]
+    // });
     var HLayout_Actions_Course = isc.HLayout.create({
         width: "100%",
         height: "5%",
@@ -1602,66 +1593,61 @@
         showResizeBar: true,
         members: [ListGrid_Course]
     });
-    var HLayout_Tab_Course_Goal = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            VLayout_Grid_Syllabus
-        ]
-    });
-    var HLayout_Tab_Course_Skill = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            ListGrid_CourseSkill
-        ]
-    });
-    var HLayout_Tab_Course_Job = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [
-            ListGrid_CourseJob
-        ]
-    });
-    var HLayout_Tab_Course_Competence = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [ListGrid_CourseCompetence]
-    });
+    // var HLayout_Tab_Course_Goal = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [
+    //         VLayout_Grid_Syllabus
+    //     ]
+    // });
+    // var HLayout_Tab_Course_Skill = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [
+    //         ListGrid_CourseSkill
+    //     ]
+    // });
+    // var HLayout_Tab_Course_Job = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [
+    //         ListGrid_CourseJob
+    //     ]
+    // });
+    // var HLayout_Tab_Course_Competence = isc.HLayout.create({
+    //     width: "100%",
+    //     height: "100%",
+    //     members: [ListGrid_CourseCompetence]
+    // });
     var Detail_Tab_Course = isc.TabSet.create({
         tabBarPosition: "top",
-        width: "100%",
-        height: "100%",
         tabs: [
-            <%--{--%>
-            <%--id: "TabPane_Goal_Syllabus1",--%>
-            <%--title: "<spring:message code="course_syllabus_goal"/>",--%>
-            <%--// pane: HLayout_Tab_Course_Goal--%>
-            <%--pane: isc.TrViewLoader.create({viewURL: "goal/show-form"})--%>
-            <%--},--%>
             {
-                id: "TabPane_Goal_Syllabus",
+                // id: "TabPane_Goal_Syllabus",
                 title: "<spring:message code="course_syllabus_goal"/>",
-                pane: HLayout_Tab_Course_Goal
+                pane: ListGrid_CourseSyllabus
             },
             {
-                id: "TabPane_Skill",
+                // id: "TabPane_Job",
+                title: "<spring:message code="course_job"/>",
+                pane: ListGrid_CourseJob
+},
+            {
+                // id: "TabPane_Post",
+                title: "<spring:message code="course_post"/>",
+                pane: isc.MyListGrid.create({fields:[{title:"نام فارسی"},{title:"نام لاتین"}],showResizeBar: false})
+            },
+            {
+                // id: "TabPane_Skill",
                 title: "<spring:message code="course_skill"/>",
-                pane: HLayout_Tab_Course_Skill
+                pane: ListGrid_CourseSkill
 
             },
+
             {
-                id: "TabPane_Job",
-                title: "<spring:message code="course_job"/>",
-                pane: HLayout_Tab_Course_Job
-            },
-            {
-                id: "TabPane_Competence",
-                title: "<spring:message code="course_compatency"/>",
-                pane: HLayout_Tab_Course_Competence
+                // id: "TabPane_Competence",
+                title: "گروه مهارت",
+                pane: ListGrid_CourseCompetence
             }
         ]
     });
@@ -1696,13 +1682,15 @@
         course_method = "POST";
         course_url = courseUrl;
         vm_JspCourse.clearValues();
+        vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
         Window_course.setTitle("<spring:message code="create"/>");
         equalCourse.length = 0;
         testData.length = 0;
         lblCourse.hide();
-        // preCourseGrid.invalidateCache();
-        // equalCourseGrid.invalidateCache();
+        preCourseGrid.invalidateCache();
+        equalCourseGrid.invalidateCache();
+        courseAllGrid.invalidateCache();
         // DynamicForm_course.getItem("epSection").disable();
         // DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
@@ -1803,6 +1791,7 @@
             TabSet_Goal_JspCourse.enableTab(0);
             TabSet_Goal_JspCourse.selectTab(0);
             vm_JspCourse.clearValues();
+            vm_JspCourse.clearErrors();
             // DynamicForm_course_GroupTab.clearValues();
             isc.RPCManager.sendRequest({
                 actionURL: courseUrl + "preCourse/" + ListGrid_Course.getSelectedRecord().id,
