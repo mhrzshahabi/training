@@ -321,15 +321,15 @@
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
-                    }
-                },
-                {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/job/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
                     }
                 },
                 {
@@ -545,7 +545,6 @@
     };
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";

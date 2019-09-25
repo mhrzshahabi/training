@@ -31,7 +31,7 @@
                 ID: "totalsLabel_job"
             }),
             isc.LayoutSpacer.create({
-                width: 40
+                width: 20
             }),
         ]
     });
