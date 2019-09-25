@@ -26,6 +26,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
@@ -138,6 +139,10 @@ public class SkillRestController {
         return new ResponseEntity<>(flag,httpStatus);
     }
 
+
+
+
+
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_skill')")
@@ -196,6 +201,27 @@ public class SkillRestController {
 
 
     // skill group methods ------------------------------------------------------------------------------------------------
+
+
+
+
+    @GetMapping(value = "/{skillId}/need-assessment")
+    public ResponseEntity<ISC<NeedAssessmentDTO.Info>> getNeedAssessment(@PathVariable Long skillId) throws IOException {
+//        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<NeedAssessmentDTO.Info> infos=skillService.getNeedAssessment(skillId);
+
+        SearchDTO.SearchRs<NeedAssessmentDTO.Info> searchRs =new SearchDTO.SearchRs<NeedAssessmentDTO.Info>();
+        searchRs.setList(infos);
+        searchRs.setTotalCount(Long.valueOf(infos.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
+
+
+
+
 
 
     @Loggable
@@ -560,6 +586,10 @@ public class SkillRestController {
 //
 
     // Course methods ------------------------------------------------------------------------------------------------
+
+
+
+
 
     @Loggable
     @GetMapping(value = "{skillId}/courses")

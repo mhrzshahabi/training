@@ -56,6 +56,10 @@ public class Skill extends Auditable{
     @Column(name = "f_category")
     private Long categoryId;
 
+
+    @OneToMany(mappedBy = "skill" ,fetch = FetchType.LAZY)
+    private Set<NeedAssessment> needAssessments;
+
 //زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
     @ManyToOne
     @JoinColumn(name = "f_sub_category", nullable = false,insertable = false, updatable = false)

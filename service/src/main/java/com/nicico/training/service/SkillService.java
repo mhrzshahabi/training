@@ -171,6 +171,15 @@ public class SkillService implements ISkillService {
         return modelMapper.map( skill.getCourseSet(),new TypeToken<List<CourseDTO.Info>>(){}.getType());
     }
 
+
+    @Transactional
+    @Override
+    public List<NeedAssessmentDTO.Info> getNeedAssessment(Long skillID) {
+        final Optional<Skill> optionalSkill=skillDAO.findById(skillID)  ;
+        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        return modelMapper.map( skill.getNeedAssessments(),new TypeToken<List<NeedAssessmentDTO.Info>>(){}.getType());
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<CourseDTO.Info> getUnAttachedCourses(Long skillID,Pageable pageable) {
