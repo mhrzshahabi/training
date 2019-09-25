@@ -42,6 +42,7 @@ public interface ISkillService {
     Integer getUnAttachedSkillGroupsCount(Long skillID);
 //    List<JobDTO.Info> getJobs(Long skillID);
 
+
     CategoryDTO.Info getCategory(Long skillID);
     SubCategoryDTO.Info getSubCategory(Long skillID);
     SkillLevelDTO.Info getSkillLevel(Long skillID);
