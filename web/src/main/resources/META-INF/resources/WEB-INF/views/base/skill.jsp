@@ -5,11 +5,11 @@
 
 //<script>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+    <%
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
 
-var skill_Level_Symbol = ""
+    var skill_Level_Symbol = ""
     var skill_Method = "GET";
     var skill_SkillHomeUrl = rootUrl + "/skill";
     var skill_CategoryHomeUrl = rootUrl + "/category";
@@ -86,7 +86,7 @@ var skill_Level_Symbol = ""
             {name: "titleFa"},
             {name: "titleEn"}
         ],
-        fetchDataURL: skill_SkillHomeUrl +"/skill-group-dummy"
+        fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
 
     var RestDataSource_Skill_Attached_Courses = isc.MyRestDataSource.create({
@@ -101,8 +101,30 @@ var skill_Level_Symbol = ""
             {name: "elevelType.titleFa"},
             {name: "etheoType.titleFa"}
         ],
-        fetchDataURL: skill_SkillHomeUrl+"/course-dummy"
+        fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });
+
+    RestDataSource_Skill_Need_Assessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "contains"},
+            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "contains"},
+            {
+                name: "edomainType.titleFa",
+                title: "<spring:message code="domain"/>",
+                filterOperator: "contains"
+            },
+            {
+                name: "eneedAssessmentPriority.titleFa",
+                title: "<spring:message code="priority"/>",
+                filterOperator: "contains"
+            },
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "contains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+        ],
+        fetchDataURL: skill_SkillHomeUrl + "/0/need-assessment"
+    });
+
 
     var RestDataSource_Skill_UnAttached_Courses = isc.MyRestDataSource.create({
         fields: [
@@ -116,9 +138,8 @@ var skill_Level_Symbol = ""
             {name: "elevelType.titleFa"},
             {name: "etheoType.titleFa"}
         ],
-        fetchDataURL: skill_SkillHomeUrl+"/course-dummy"
+        fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });
-
 
 
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
@@ -269,7 +290,7 @@ var skill_Level_Symbol = ""
                     if (value == null || value.length == 0) {
 
                     } else {
-                        RestDataSource_Skill_SubCategory.fetchDataURL =skill_CategoryHomeUrl+"/" + value + "/sub-categories";
+                        RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl + "/" + value + "/sub-categories";
                         form.getItem("subCategoryId").fetchData();
                         form.getItem("subCategoryId").setValue([]);
                         form.getItem("subCategoryId").setDisabled(false);
@@ -492,6 +513,23 @@ var skill_Level_Symbol = ""
     });
 
 
+    ListGrid_Skill_Need_Assessment = isc.TrLG.create({
+        dataSource: RestDataSource_Skill_Need_Assessment,
+        showFilterEditor: false,
+        filterOnKeypress: false,
+        fields: [
+            {name: "post.titleFa",},
+            {name: "competence.titleFa",},
+            {name: "edomainType.titleFa",},
+            {name: "eneedAssessmentPriority.titleFa",},
+            {name: "skill.titleFa", hidden: true},
+            {name: "description",},
+        ],
+        autoFetchData: false,
+        sortField: 0
+    });
+
+
     var ToolStripButton__Action_Skill_SkillGroups_Select = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         click: function () {
@@ -589,7 +627,7 @@ var skill_Level_Symbol = ""
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -640,10 +678,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             //console.log('record:' + JSON.stringify(record));
             var id = record.categoryId;
             DynamicForm_Skill_Skill.clearValues();
-            RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl+"/" + id + "/sub-categories";
+            RestDataSource_Skill_SubCategory.fetchDataURL = skill_CategoryHomeUrl + "/" + id + "/sub-categories";
             DynamicForm_Skill_Skill.getItem("subCategoryId").fetchData();
             skill_Method = "PUT";
-            skill_ActionUrl = skill_SkillHomeUrl +"/" + record.id;
+            skill_ActionUrl = skill_SkillHomeUrl + "/" + record.id;
             DynamicForm_Skill_Skill.editRecord(record);
             DynamicForm_Skill_Skill.getItem("categoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
@@ -699,17 +737,17 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
-window.open(skill_SkillHomeUrl+"/print-all/pdf");
+                window.open(skill_SkillHomeUrl + "/print-all/pdf");
             }
         }, {
             title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/excel" var="printUrl"/>"--%>
-window.open(skill_SkillHomeUrl+"/print-all/excel");
+                window.open(skill_SkillHomeUrl + "/print-all/excel");
             }
         }, {
             title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
                 <%--"<spring:url value="/skill/print-all/html" var="printUrl"/>"--%>
-                window.open(skill_SkillHomeUrl+"/print-all/html");
+                window.open(skill_SkillHomeUrl + "/print-all/html");
             }
         }]
     });
@@ -740,11 +778,17 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
         selectionChanged: function (record, state) {
             if (record == null) {
                 skill_selectedSkillId = -1;
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/skill-group-dummy";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/course-dummy";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/skill-group-dummy";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/course-dummy";
+                RestDataSource_Skill_Need_Assessment.fetchDataURL = skill_SkillHomeUrl + "/0/need-assessment";
+                ListGrid_Skill_Need_Assessment.invalidateCache();
+                ListGrid_Skill_Need_Assessment.setData([]);
             } else {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl+"/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl+"/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/courses";
+                RestDataSource_Skill_Need_Assessment.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/need-assessment";
+                ListGrid_Skill_Need_Assessment.invalidateCache();
+                ListGrid_Skill_Need_Assessment.fetchData();
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
@@ -766,11 +810,17 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
         dataArrived: function (startRow, endRow) {
             record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null) {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/skill-group-dummy";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/course-dummy";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/skill-group-dummy";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/course-dummy";
+                RestDataSource_Skill_Need_Assessment.fetchDataURL = skill_SkillHomeUrl + "/0/need-assessment";
+                ListGrid_Skill_Need_Assessment.invalidateCache();
+                ListGrid_Skill_Need_Assessment.setData([]);
             } else {
-                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
-                RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/courses";
+                RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
+                RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/courses";
+                RestDataSource_Skill_Need_Assessment.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/need-assessment";
+                ListGrid_Skill_Need_Assessment.invalidateCache();
+                ListGrid_Skill_Need_Assessment.fetchData();
                 selectedSkillId = record.id;
             }
             ListGrid_Skill_Attached_SkillGroups.invalidateCache();
@@ -814,8 +864,8 @@ window.open(skill_SkillHomeUrl+"/print-all/excel");
         title: "چاپ",
         click: function () {
             <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
-<%--console.log('${printUrl}')   ;--%>
-window.open(skill_SkillHomeUrl+"/print-all/pdf");
+            <%--console.log('${printUrl}')   ;--%>
+            window.open(skill_SkillHomeUrl + "/print-all/pdf");
         }
     });
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
@@ -843,10 +893,10 @@ window.open(skill_SkillHomeUrl+"/print-all/pdf");
                 var skillGroupRecord = ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord();
                 var skillGroupId = skillGroupRecord.id;
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
                     httpMethod: "POST",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -878,10 +928,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 }
                 var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-skill-group-list/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/add-skill-group-list/" + skillId,
                     httpMethod: "POST",
                     data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -908,10 +958,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 var skillGroupId = skillGroupRecord.id;
 // var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -943,10 +993,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 }
 // var JSONObj = {"ids": skillGroupIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/remove-skill-group-list/" + skillGroupIds + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1040,10 +1090,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
             isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
+                actionURL: skill_SkillHomeUrl + "/add-skill-group/" + skillGroupId + "/" + skillId,
                 httpMethod: "POST",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1098,10 +1148,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             var skillGroupId = skillGroupRecord.id;
 
             isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
+                actionURL: skill_SkillHomeUrl + "/remove-skill-group/" + skillGroupId + "/" + skillId,
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1262,9 +1312,9 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null) {
             skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/skill-group-dummy";
+            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/skill-group-dummy";
         } else {
-            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
+            RestDataSource_Skill_Attached_SkillGroups.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/skill-groups";
             selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_SkillGroups.invalidateCache();
@@ -1285,10 +1335,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 var courseRecord = ListGrid_Skill_UnAttached_Course.getSelectedRecord();
                 var courseId = courseRecord.id;
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
                     httpMethod: "POST",
                     serverOutputAsString: false,
                     callback: function (resp) {
@@ -1320,10 +1370,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 }
                 var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/add-course-list/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/add-course-list/" + skillId,
                     httpMethod: "POST",
                     data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1350,10 +1400,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 var courseId = courseRecord.id;
 // var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1385,10 +1435,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 }
 // var JSONObj = {"ids": courseIds};
                 isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
                     contentType: "application/json; charset=utf-8",
-                    actionURL:  skill_SkillHomeUrl + "/remove-course-list/" + courseIds + "/" + skillId,
+                    actionURL: skill_SkillHomeUrl + "/remove-course-list/" + courseIds + "/" + skillId,
                     httpMethod: "DELETE",
 // data: JSON.stringify(JSONObj),
                     serverOutputAsString: false,
@@ -1482,10 +1532,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             var skillRecord = ListGrid_Skill_Skill.getSelectedRecord();
             var skillId = skillRecord.id;
             isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
+                actionURL: skill_SkillHomeUrl + "/add-course/" + courseId + "/" + skillId,
                 httpMethod: "POST",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1540,10 +1590,10 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             var courseId = courseRecord.id;
 
             isc.RPCManager.sendRequest({
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL:  skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
+                actionURL: skill_SkillHomeUrl + "/remove-course/" + courseId + "/" + skillId,
                 httpMethod: "DELETE",
                 serverOutputAsString: false,
                 callback: function (resp) {
@@ -1704,9 +1754,9 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null) {
             skill_selectedSkillId = -1;
-            RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/course-dummy";
+            RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/course-dummy";
         } else {
-            RestDataSource_Skill_Attached_Courses.fetchDataURL =  skill_SkillHomeUrl + "/" + record.id + "/courses";
+            RestDataSource_Skill_Attached_Courses.fetchDataURL = skill_SkillHomeUrl + "/" + record.id + "/courses";
             selectedSkillId = record.id;
         }
         ListGrid_Skill_Attached_Courses.invalidateCache();
@@ -1749,6 +1799,14 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
     });
 
 
+    var HLayout_Skill_Need_Assessment_Grid = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [
+            ListGrid_Skill_Need_Assessment
+        ]
+    });
     var HLayout_Skill_SkillCourses_Grid = isc.HLayout.create({
         width: "100%",
         height: "100%",
@@ -1782,6 +1840,14 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             HLayout_Skill_SkillCourses_Grid, VLayout_Action_Skill_SkillCourses
         ]
     });
+    var HLayout_Tab_Skill_Need_Assessment = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        <%--border: "2px solid blue",--%>
+        members: [
+            HLayout_Skill_Need_Assessment_Grid
+        ]
+    });
 
 
     var Detail_Tab_Skill = isc.TabSet.create({
@@ -1799,7 +1865,13 @@ httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 id: "TabPane_Skill_Course",
                 title: "لیست دوره ها",
                 pane: HLayout_Tab_Skill_Courses
+            },
+            {
+                id: "TabPane_Skill_Course",
+                title: "لیست نیازسنجی مرتبط",
+                pane: HLayout_Tab_Skill_Need_Assessment
             }
+
         ]
     });
 
