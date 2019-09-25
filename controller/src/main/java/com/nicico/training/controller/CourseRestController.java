@@ -341,4 +341,13 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/test.jasper", params, jsonDataSource, response);
     }
+
+    @Loggable
+    @GetMapping(value = {"/printTest/{courseId}"})
+    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable String courseId) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+        params.put("courseId", courseId);
+        reportUtil.export("/reports/testCourse.jasper", params, response);
+    }
 }

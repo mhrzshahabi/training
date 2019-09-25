@@ -184,7 +184,12 @@
             title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
                 print_CourseListGrid("html");
             }
-        }]
+        },
+        <%--{--%>
+            <%--title: "چاپ با جزییات", icon: "<spring:url value="print.png"/>", click: function() {--%>
+                <%--window.open("course/testCourse/"+ListGrid_Course.getSelectedRecord().id+"/pdf");}--%>
+        <%--}--%>
+        ]
     });
     var ListGrid_Course = isc.MyListGrid.create({
         ID: "gridCourse",
@@ -516,15 +521,27 @@
                 selectionChanged: function (record, state) {
                     if (this.ID == "courseAllGrid") {
                         orBtn.show();
-                        addPreCourseBtn.show();
+                        // addPreCourseBtn.show();
                         orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
-                        addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
+                        // addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
                         if (equalCourseGrid.getSelectedRecord() != null) {
                             andBtn.show();
                             andBtn.setTitle("افزودن " + "'" + record.titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC + " به معادل های دوره")
                         } else {
                             andBtn.hide();
                         }
+                    }
+                    if (this.ID == "courseAllGrid2") {
+                        // orBtn.show();
+                        addPreCourseBtn.show();
+                        // orBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به معادل های دوره");
+                        addPreCourseBtn.setTitle("افزودن دوره " + "'" + record.titleFa + "'" + " به پیش نیازهای دوره");
+                        // if (equalCourseGrid.getSelectedRecord() != null) {
+                        //     andBtn.show();
+                        //     andBtn.setTitle("افزودن " + "'" + record.titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC + " به معادل های دوره")
+                        // } else {
+                        //     andBtn.hide();
+                        // }
                     }
                     if (this.ID == "equalCourseGrid") {
                         if ((courseAllGrid.getSelectedRecord() != null) && (equalCourseGrid.getSelectedRecord() != null)) {
@@ -1382,7 +1399,27 @@
                             showHover: true,
                             showHoverComponents: true,
                             endRow: true
-                        }
+                        },
+                        {
+                            name: "imgMove",
+                            ID: "addPreCourseBtn",
+                            colSpan: 3,
+                            align: "center",
+                            // rowSpan:4,
+                            title: "",
+                            width: "*",
+                            type: "button",
+                            startRow: false,
+                            endRow:true,
+                            icon: "[SKIN]/actions/back.png",
+                            click: function () {
+                                if (courseAllGrid2.getSelectedRecord() == null) {
+                                    isc.say("دوره ای انتخاب نشده است");
+                                } else {
+                                    preCourseGrid.transferSelectedData(courseAllGrid2);
+                                }
+                            }
+                        },
                         ]
                 })
             }, {
@@ -1442,7 +1479,55 @@
 // selectionChanged : function(record, state) {
 //     orBtn.setTitle(record.titleFa);
 // }
-                        }
+                        },
+                        {
+                            name: "andBtn",
+                            ID: "andBtn",
+                            colSpan: 3,
+                            align: "center",
+                            // rowSpan:1,
+                            startRow:true,
+                            endRow: false,
+                            title: "",
+                            width: "*",
+                            type: "button",
+                            icon: "[SKIN]/actions/configure.png",
+                            click: function () {
+                                if (courseAllGrid.getSelectedRecord() == null) {
+                                    isc.say("دوره ای انتخاب نشده است");
+                                } else {
+                                    equalCourseGrid.addData({
+                                        nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
+                                        idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC
+                                    });
+                                    equalCourseGrid.removeData(equalCourseGrid.getSelectedRecord());
+                                }
+                            }
+                        },
+                        {
+                            name: "orBtn",
+                            ID: "orBtn",
+                            colSpan: 2,
+                            align: "center",
+                            // rowSpan:1,
+                            title: "",
+                            startRow: false,
+                            endRow:false,
+                            width: "*",
+                            type: "button",
+                            icon: "[SKIN]/actions/forward.png",
+                            click: function () {
+                                if (courseAllGrid.getSelectedRecord() == null) {
+                                    isc.say("دوره ای انتخاب نشده است");
+                                } else {
+                                    equalCourseGrid.addData({
+                                        // id: courseAllGrid.getSelectedRecord().id,
+                                        nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
+                                        idEC: courseAllGrid.getSelectedRecord().id.toString()
+                                    });
+                                }
+                            }
+                        },
                     ]
                 })
             }
@@ -1699,8 +1784,8 @@
     function ListGrid_Course_Edit() {
         testData.length = 0;
         equalCourse.length = 0;
-        // preCourseGrid.invalidateCache();
-        // equalCourseGrid.invalidateCache();
+        preCourseGrid.invalidateCache();
+        equalCourseGrid.invalidateCache();
 
         var sRecord = ListGrid_Course.getSelectedRecord();
 
@@ -1728,10 +1813,10 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    // for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                    //
-                    //     preCourseDS.addData(JSON.parse(resp.data)[i]);
-                    // }
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+
+                        preCourseDS.addData(JSON.parse(resp.data)[i]);
+                    }
                 }
             });
             isc.RPCManager.sendRequest({
@@ -1743,9 +1828,9 @@
                 showPrompt: false,
                 serverOutputAsString: false,
                 callback: function (resp) {
-                    // for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                    //     equalCourseDS.addData(JSON.parse(resp.data)[i]);
-                    // }
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                        equalCourseDS.addData(JSON.parse(resp.data)[i]);
+                    }
                 }
             });
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
@@ -1822,4 +1907,5 @@
         criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
         criteriaForm_course.submitForm();
     };
+
     //</script>
