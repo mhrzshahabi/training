@@ -6183,7 +6183,8 @@ select[disabled] option {
     background-image: -webkit-linear-gradient(bottom, #f4f7fb 0%, #f4f7fb 2%, #e7f0fe 2%, #cdddf4 100%);
     background-image: linear-gradient(to top, #f4f7fb 0%, #f4f7fb 2%, #e7f0fe 2%, #cdddf4 100%);
     border: 1px solid #c4c4c4;
-    padding-right: 10px;
+    padding-right: 6px;
+    padding-left: 10px;
 }
 
 .ribbonBar {
