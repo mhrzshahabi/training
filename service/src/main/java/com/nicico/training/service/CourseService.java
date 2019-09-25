@@ -312,6 +312,24 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
+    public List<SkillGroupDTO.Info> getSkillGroup(Long courseId) {
+        Course one = courseDAO.getOne(courseId);
+        List<SkillGroupDTO.Info> listSkillGroup = new ArrayList<>();
+        Set<Skill> skillSet = one.getSkillSet();
+        for (Skill skill : skillSet) {
+            Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
+            Optional.ofNullable(skillGroupSet)
+                    .ifPresent(skillGroups ->
+                            skillGroups.forEach(skillGroup ->
+                                    listSkillGroup.add(modelMapper.map(skillGroup, SkillGroupDTO.Info.class))
+                            ));
+
+            }
+        return listSkillGroup;
+    }
+
+    @Transactional
+    @Override
     public List<JobDTOOld.Info> getJob(Long courseId) {
         Set<JobOld> jobSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);

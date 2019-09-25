@@ -197,6 +197,20 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/skill-group/{courseId}")
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
+        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
+        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+        specResponse.setData(skillGroup)
+                .setStartRow(0)
+                .setEndRow(skillGroup.size())
+                .setTotalRows(skillGroup.size());
+        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/job/{courseId}")
     public ResponseEntity<JobDTOOld.IscRes> getJob(@PathVariable Long courseId) {
         List<JobDTOOld.Info> job = courseService.getJob(courseId);

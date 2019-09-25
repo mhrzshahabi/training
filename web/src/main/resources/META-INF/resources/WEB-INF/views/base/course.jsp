@@ -133,7 +133,7 @@
             {name: "titleEn"}
         ],
 
-        fetchDataURL: courseUrl + "getcompetence/" + courseId.id
+        // fetchDataURL: courseUrl + "getcompetence/" + courseId.id
     });
     var RestDataSourceEducationCourseJsp = isc.MyRestDataSource.create({
         fields: [
@@ -247,9 +247,9 @@
             RestDataSource_CourseJob.fetchDataURL = courseUrl + "job/" + courseId.id;
             ListGrid_CourseJob.fetchData();
             ListGrid_CourseJob.invalidateCache();
-            // RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "getcompetence/" + courseId.id;
-            // ListGrid_CourseCompetence.fetchData();
-            // ListGrid_CourseCompetence.invalidateCache();
+            RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseId.id;
+            ListGrid_CourseCompetence.fetchData();
+            ListGrid_CourseCompetence.invalidateCache();
             for (var i = 0; i < trainingTabSet.tabs.length; i++) {
                 if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                     trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -1859,27 +1859,27 @@
         }
     };
 
-    function openTabGoal() {
-        if (ListGrid_Course.getSelectedRecord() == null) {
-            isc.Dialog.create({
-                message: "<spring:message code="msg.no.records.selected"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            for (j = 0; j < trainingTabSet.tabs.length; j++) {
-                if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {
-                    trainingTabSet.removeTab(j);
-                }
-            }
-            createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form", false);
-            RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
-        }
-    };
+    <%--function openTabGoal() {--%>
+        <%--if (ListGrid_Course.getSelectedRecord() == null) {--%>
+            <%--isc.Dialog.create({--%>
+                <%--message: "<spring:message code="msg.no.records.selected"/>",--%>
+                <%--icon: "[SKIN]ask.png",--%>
+                <%--title: "<spring:message code="course_Warning"/>",--%>
+                <%--buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],--%>
+                <%--buttonClick: function (button, index) {--%>
+                    <%--this.close();--%>
+                <%--}--%>
+            <%--});--%>
+        <%--} else {--%>
+            <%--for (j = 0; j < trainingTabSet.tabs.length; j++) {--%>
+                <%--if (trainingTabSet.getTab(j).title.substr(0, 5) == "اهداف") {--%>
+                    <%--trainingTabSet.removeTab(j);--%>
+                <%--}--%>
+            <%--}--%>
+            <%--createTab("<spring:message code="course_goal_of_syllabus"/>" + " " + courseId.titleFa, "goal/show-form", false);--%>
+            <%--RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";--%>
+        <%--}--%>
+    <%--};--%>
 
     function print_CourseListGrid(type) {
         var advancedCriteria_course = ListGrid_Course.getCriteria();
