@@ -115,6 +115,7 @@ public class SkillRestController {
         return new ResponseEntity<>(flag,httpStatus);
     }
 
+
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_skill')")
