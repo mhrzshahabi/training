@@ -321,15 +321,15 @@
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
-                    }
-                },
-                {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/job/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
                     }
                 },
                 {
@@ -367,7 +367,7 @@
     });
 
     designingTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.designing.and.planning"/>",
+        title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -409,7 +409,7 @@
      });
 
     runTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.run"/>",
+        title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -442,7 +442,7 @@
     });
 
     evaluationTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.evaluation"/>",
+        title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             data: []
         }),
@@ -560,7 +560,6 @@
     };
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
