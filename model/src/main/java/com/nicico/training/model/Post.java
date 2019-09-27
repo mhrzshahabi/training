@@ -20,23 +20,40 @@ public class Post {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", nullable = false)
     private String code;
 
-    @Column(name = "c_title_fa")
+    @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_job_id", nullable = true)
+    @JoinColumn(name = "f_job_id", nullable = false)
     private Job job;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_post_grade_id", nullable = true)
+    @JoinColumn(name = "f_post_grade_id", nullable = false)
     private PostGrade postGrade;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_department_id", nullable = true)
-    private Department department;
+    @Column(name = "c_department_area")
+    private String area;
+
+    @Column(name = "c_department_assistance")
+    private String assistance;
+
+    @Column(name = "c_department_affairs")
+    private String affairs;
+
+    @Column(name = "c_department_section")
+    private String section;
+
+    @Column(name = "c_department_unit")
+    private String unit;
+
+    @Column(name = "c_cost_center_code", nullable = false)
+    private String costCenterCode;
+
+    @Column(name = "c_cost_center_title_fa", nullable = false)
+    private String costCenterTitleFa;
 
     @Column(name = "e_active")
     EActive eActive;

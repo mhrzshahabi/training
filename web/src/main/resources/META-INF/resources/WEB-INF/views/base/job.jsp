@@ -98,7 +98,7 @@
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
-            if (totalRows > 0 && this.data.lengthIsKnown()) {
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_job.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_job.setContents("&nbsp;");
