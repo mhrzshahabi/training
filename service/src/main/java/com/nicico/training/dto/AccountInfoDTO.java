@@ -37,10 +37,12 @@ public class AccountInfoDTO {
         private String shabaNumber;
     }
 
+
     @Getter
 	@Setter
-	@ApiModel("AccountInfoInfoTuple")
+   	@ApiModel("AccountInfoInfoTuple")
 	public static class AccountInfoInfoTuple {
+	    private Long id;
         private String accountNumber;
         private String bank;
         private String bBranch;
@@ -48,6 +50,7 @@ public class AccountInfoDTO {
         private String cartNumber;
         private String shabaNumber;
 	}
+
 
     @Getter
     @Setter

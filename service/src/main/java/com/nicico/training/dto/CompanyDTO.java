@@ -38,13 +38,16 @@ public class CompanyDTO implements Serializable {
     @ApiModel("CompanyInfo")
     public static class Info extends CompanyDTO {
         private Long id;
-      //  private PersonalInfoDTO.PersonalInfoInfoTuple manager;
-      //  private AccountInfoDTO.AccountInfoInfoTuple accountInfoInfoTuple;
-      //  private AddressDTO.AddressInfoTuple addressInfoTuple;
+        private PersonalInfoDTO.PersonalInfoInfoTuple manager;
+        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
+        private AddressDTO.AddressInfoTuple addressInfoTuple;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private Long managerId;
+        private Long contactInfoId;
+        private Long accountInfoId;
     }
 
     @Getter
@@ -52,11 +55,12 @@ public class CompanyDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CompanyCreateRq")
     public static class Create extends CompanyDTO {
+        private PersonalInfoDTO.Create manager;
+        private AccountInfoDTO.Create accountInfoTuple;
+        private AddressDTO.Create addressInfoTuple;
         private Long managerId;
-
         private Long contactInfoId;
-
-        private Set<Long> accountInfoIdSet;
+        private Long accountInfoId;
     }
 
     @Getter
