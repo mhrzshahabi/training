@@ -40,7 +40,7 @@ public class CompanyDTO implements Serializable {
         private Long id;
         private PersonalInfoDTO.PersonalInfoInfoTuple manager;
         private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-        private AddressDTO.AddressInfoTuple addressInfoTuple;
+        private AddressDTO.AddressInfoTuple address;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
@@ -56,8 +56,8 @@ public class CompanyDTO implements Serializable {
     @ApiModel("CompanyCreateRq")
     public static class Create extends CompanyDTO {
         private PersonalInfoDTO.Create manager;
-        private AccountInfoDTO.Create accountInfoTuple;
-        private AddressDTO.Create addressInfoTuple;
+        private AccountInfoDTO.Create accountInfo;
+        private AddressDTO.Create address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
