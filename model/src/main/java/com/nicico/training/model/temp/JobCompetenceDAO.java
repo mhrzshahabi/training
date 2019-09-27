@@ -6,8 +6,8 @@ DATE: 6/12/2019
 TIME: 7:49 AM
 */
 
-import com.nicico.training.model.JobCompetence;
-import com.nicico.training.model.JobCompetenceKey;
+import com.nicico.training.model.temp.JobCompetence;
+import com.nicico.training.model.temp.JobCompetenceKey;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 

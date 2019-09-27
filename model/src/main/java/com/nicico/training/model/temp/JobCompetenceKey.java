@@ -1,4 +1,4 @@
-package com.nicico.training.model;
+package com.nicico.training.model.temp;
 
 /*
 AUTHOR: ghazanfari_f

@@ -116,6 +116,13 @@
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
+        sortField: 0,
+        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
+        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
+        configureSortText: "<spring:message code="sort.config"/>",
+        clearSortFieldText: "<spring:message code="sort.clear"/>",
+        autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
+        autoFitFieldText: "<spring:message code="auto.fit"/>",
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);

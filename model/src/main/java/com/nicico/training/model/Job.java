@@ -16,7 +16,7 @@ import javax.persistence.Table;
 @Getter
 @EqualsAndHashCode(of = "id")
 @Entity
-@Table(name = "tbl_job_new")
+@Table(name = "tbl_job")
 public class Job {
 
     @Id

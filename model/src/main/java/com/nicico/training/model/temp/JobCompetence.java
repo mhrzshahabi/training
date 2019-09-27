@@ -1,4 +1,4 @@
-package com.nicico.training.model;
+package com.nicico.training.model.temp;
 
 /*
 AUTHOR: ghazanfari_f
@@ -6,6 +6,8 @@ DATE: 6/3/2019
 TIME: 7:22 AM
 */
 
+import com.nicico.training.model.CompetenceOld;
+import com.nicico.training.model.Job;
 import com.nicico.training.model.enums.EJobCompetenceType;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -30,7 +32,7 @@ public class JobCompetence {
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("f_job_id")
     @JoinColumn(name = "f_job_id")
-    private JobOld job;
+    private Job job;
 
     @ManyToOne(fetch = FetchType.EAGER)
     @MapsId("f_competence_id")
@@ -43,7 +45,7 @@ public class JobCompetence {
     @Column(name = "e_job_competence_type")
     private Integer eJobCompetenceTypeId;
 
-    public JobCompetence(JobOld job, CompetenceOld competence) {
+    public JobCompetence(Job job, CompetenceOld competence) {
         this.job = job;
         this.competence = competence;
         this.id = new JobCompetenceKey(job.getId(), competence.getId());

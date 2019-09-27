@@ -8,6 +8,7 @@ TIME: 9:26 AM
 
 import com.nicico.training.model.enums.ECompetenceInputType;
 import com.nicico.training.model.enums.ETechnicalType;
+import com.nicico.training.model.temp.JobCompetence;
 import lombok.*;
 import lombok.experimental.Accessors;
 

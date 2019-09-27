@@ -38,7 +38,7 @@ import java.util.Map;
 @RequestMapping("/api/job-competence")
 public class JobCompetenceRestController {
 
-    private final JobCompetenceService jobCompetenceService;
+    /*private final JobCompetenceService jobCompetenceService;
     private final JobServiceOld jobService;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
@@ -141,7 +141,7 @@ public class JobCompetenceRestController {
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/JobCompetenceByCriteria.jasper", params, jsonDataSource, response);
-    }
+    }*/
 
 }
 
