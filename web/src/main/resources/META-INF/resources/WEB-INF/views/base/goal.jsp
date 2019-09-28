@@ -419,7 +419,7 @@
     });
 
     var ListGrid_Goal = isc.ListGrid.create({
-        width: "100%",
+        width: "*",
         height: "100%",
         border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
@@ -455,7 +455,7 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
     var ListGrid_Syllabus_Goal = isc.ListGrid.create({
-        width: "100%",
+        width: "*",
         height: "100%",
         border: "2px solid gray",
         dataSource: RestDataSource_Syllabus,
@@ -895,7 +895,7 @@
         members: [ListGrid_Goal]
     });
     var VLayout_Body_Goal = isc.VLayout.create({
-        width: "30%",
+        width: "*",
         height: "100%",
         members: [HLayout_Action_Goal, HLayout_Grid_Goal]
     });
