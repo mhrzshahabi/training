@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -212,16 +213,14 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTOOld.IscRes> getJob(@PathVariable Long courseId) {
-        List<JobDTOOld.Info> job = courseService.getJob(courseId);
-        final JobDTOOld.SpecRs specResponse = new JobDTOOld.SpecRs();
-        specResponse.setData(job)
+    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId){
+        List<JobDTO.Info> job = courseService.getJob(courseId);
+        ISC.Response response = new ISC.Response();
+        response.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        final JobDTOOld.IscRes specRs = new JobDTOOld.IscRes();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Loggable

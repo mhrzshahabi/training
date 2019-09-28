@@ -632,7 +632,7 @@
     });
 
     var vm_JspCourse = isc.ValuesManager.create({});
-    var DynamicForm_course_MainTab = isc.TrDynamicForm.create({
+    var DynamicForm_course_MainTab = isc.DynamicForm.create({
         // sectionVisibilityMode: "mutex",
         colWidths: ["10%", "40%", "9%", "10%"],
         titleAlign: "left",
@@ -796,7 +796,7 @@
         ],
         valuesManager:"vm_JspCourse"
     });
-    var DynamicForm_course_GroupTab = isc.TrDynamicForm.create({
+    var DynamicForm_course_GroupTab = isc.DynamicForm.create({
         colWidths: ["8%", "11%", "8%", "11%", "8%", "11%"],
         numCols: 4,
         fields: [
@@ -1270,7 +1270,7 @@
         tabs: [
             {
                 title: "شرایط مدرس دوره", canClose: false,
-                pane: isc.TrDynamicForm.create({
+                pane: isc.DynamicForm.create({
                     ID:"teacherForm",
                     width: "90%",
                     fields: [{
@@ -1355,7 +1355,7 @@
             },
             {
                 title: "پیشنیازها", canClose: false,
-                pane: isc.TrDynamicForm.create({
+                pane: isc.DynamicForm.create({
                     numCols:6,
                     height:"100%",
                     // border:"1px solid red",
@@ -1433,7 +1433,7 @@
             },
             {
                 title: "معادل ها", canClose: false,
-                pane: isc.TrDynamicForm.create({
+                pane: isc.DynamicForm.create({
                     numCols:6,
                     height:"100%",
                     fields: [
@@ -1568,7 +1568,7 @@
         members: [TabSet_BasicInfo_JspCourse, VLayout_Tab2_JspCourse, VLayout_Tab_JspCourse]
     })
 
-    var Window_course = isc.TrWindow.create({
+    var Window_course = isc.Window.create({
         placement: "fillScreen",
         items: [isc.VLayout.create({
             // membersMargin: 5,
