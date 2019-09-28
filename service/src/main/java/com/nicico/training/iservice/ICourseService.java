@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -35,7 +36,12 @@ public interface ICourseService {
     List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
 
     List<CompetenceDTO.Info> getCompetence(Long courseId);
-    List<JobDTOOld.Info> getJob(Long courseId);
+
+    List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
+
+    List<JobDTO.Info> getJob(Long courseId);
+
+    List<PostDTO.Info> getPost(Long courseId);
 
     String getMaxCourseCode(String str);
 

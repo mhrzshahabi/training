@@ -43,6 +43,7 @@ public class ContactInfoDTO {
 	@Setter
 	@ApiModel("ContactInfoInfoTuple")
 	public static class ContactInfoInfoTuple {
+	    private Long id;
         private String email;
         private String mobile;
         private String personalWebSite;

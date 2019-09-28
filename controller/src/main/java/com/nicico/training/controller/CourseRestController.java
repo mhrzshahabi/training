@@ -22,6 +22,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -197,17 +198,29 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/skill-group/{courseId}")
+    public ResponseEntity<SkillGroupDTO.SkillGroupSpecRs> getSkillGroup(@PathVariable Long courseId) {
+        List<SkillGroupDTO.Info> skillGroup = courseService.getSkillGroup(courseId);
+        final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
+        specResponse.setData(skillGroup)
+                .setStartRow(0)
+                .setEndRow(skillGroup.size())
+                .setTotalRows(skillGroup.size());
+        final SkillGroupDTO.SkillGroupSpecRs specRs = new SkillGroupDTO.SkillGroupSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTOOld.IscRes> getJob(@PathVariable Long courseId) {
-        List<JobDTOOld.Info> job = courseService.getJob(courseId);
-        final JobDTOOld.SpecRs specResponse = new JobDTOOld.SpecRs();
-        specResponse.setData(job)
+    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId){
+        List<JobDTO.Info> job = courseService.getJob(courseId);
+        ISC.Response response = new ISC.Response();
+        response.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        final JobDTOOld.IscRes specRs = new JobDTOOld.IscRes();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
 
     @Loggable
@@ -340,5 +353,14 @@ public class CourseRestController {
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/test.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @GetMapping(value = {"/printTest/{courseId}"})
+    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable String courseId) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+        params.put("courseId", courseId);
+        reportUtil.export("/reports/testCourse.jasper", params, response);
     }
 }

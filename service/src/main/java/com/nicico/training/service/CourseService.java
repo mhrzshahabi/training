@@ -312,15 +312,31 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<JobDTOOld.Info> getJob(Long courseId) {
-        Set<JobOld> jobSet = new HashSet<>();
+    public List<JobDTO.Info> getJob(Long courseId) {
+        Set<Job> jobSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
-            Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
-            for (SkillGroup skillGroup : skillGroupSet) {
-                Set<Competence> competenceSet = skillGroup.getCompetenceSet();
-                //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
+            Set<NeedAssessment> needAssessments = skill.getNeedAssessments();
+            for (NeedAssessment needAssessment : needAssessments) {
+                Post post = needAssessment.getPost();
+                Job job = post.getJob();
+                jobSet.add(job);
+            }
+        }
+        List<JobDTO.Info> jobInfo = new ArrayList<>();
+        Optional.ofNullable(jobSet)
+                .ifPresent(jobs ->
+                        jobs.forEach(job ->
+                                jobInfo.add(modelMapper.map(job, JobDTO.Info.class))
+                        ));
+        return jobInfo;
+    }
+
+
+
+
+    //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
 //                for (Competence competence : competenceSet) {
 //                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
 //                    for (JobCompetence jobCompetence : jobCompetenceSet) {
@@ -330,7 +346,7 @@ public class CourseService implements ICourseService {
 //                }
                 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
 
-            }
+//            }
 //            Set<Competence> competenceSet = skill.getCompetenceSet();
 //            for (Competence competence : competenceSet) {
 //                Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
@@ -338,16 +354,16 @@ public class CourseService implements ICourseService {
 //                    Job job = jobCompetence.getJob();
 //                    jobSet.add(job);
 //                }
-//            }
-        }
-        List<JobDTOOld.Info> jobInfo = new ArrayList<>();
-        Optional.ofNullable(jobSet)
-                .ifPresent(jobs ->
-                        jobs.forEach(job ->
-                                jobInfo.add(modelMapper.map(job, JobDTOOld.Info.class))
-                        ));
-        return jobInfo;
-    }
+////            }
+//        }
+//        List<JobDTOOld.Info> jobInfo = new ArrayList<>();
+//        Optional.ofNullable(jobSet)
+//                .ifPresent(jobs ->
+//                        jobs.forEach(job ->
+//                                jobInfo.add(modelMapper.map(job, JobDTOOld.Info.class))
+//                        ));
+//        return jobInfo;
+//    }
 
 
     @Transactional
@@ -403,6 +419,49 @@ public class CourseService implements ICourseService {
                                 compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
                         ));
         return compeInfoList;
+    }
+
+    @Transactional
+    @Override
+    public List<PostDTO.Info> getPost(Long courseId) {
+        Set<Post> postSet = new HashSet<>();
+        Course one = courseDAO.getOne(courseId);
+        Set<Skill> skillSet = one.getSkillSet();
+        for (Skill skill : skillSet) {
+            Set<NeedAssessment> needAssessments = skill.getNeedAssessments();
+            for (NeedAssessment needAssessment : needAssessments) {
+                Post post = needAssessment.getPost();
+                postSet.add(post);
+            }
+        }
+        List<PostDTO.Info> postInfo = new ArrayList<>();
+        Optional.ofNullable(postSet)
+                .ifPresent(posts ->
+                        posts.forEach(post ->
+                                postInfo.add(modelMapper.map(post, PostDTO.Info.class))
+                        ));
+        return postInfo;
+    }
+
+    @Transactional
+    @Override
+    public List<SkillGroupDTO.Info> getSkillGroup(Long courseId) {
+        Course one = courseDAO.getOne(courseId);
+        Set<SkillGroup> set = new HashSet<>();
+        List<SkillGroupDTO.Info> skillGroupInfo = new ArrayList<>();
+        Set<Skill> skillSet = one.getSkillSet();
+        for (Skill skill : skillSet) {
+            Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
+            for (SkillGroup skillGroup : skillGroupSet) {
+                set.add(skillGroup);
+            }
+        }
+        Optional.ofNullable(set)
+                .ifPresent(sets ->
+                        sets.forEach(set1 ->
+                                skillGroupInfo.add(modelMapper.map(set1, SkillGroupDTO.Info.class))
+                        ));
+        return skillGroupInfo;
     }
 
     @Transactional
