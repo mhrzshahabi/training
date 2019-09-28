@@ -13,10 +13,10 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Getter
-@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tbl_job")
+@Getter
+@EqualsAndHashCode(of = "id")
 public class Job {
 
     @Id

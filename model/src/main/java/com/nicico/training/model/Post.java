@@ -10,10 +10,10 @@ import lombok.Getter;
 
 import javax.persistence.*;
 
-@Getter
-@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tbl_post")
+@Getter
+@EqualsAndHashCode(of = "id")
 public class Post {
 
     @Id
@@ -34,26 +34,26 @@ public class Post {
     @JoinColumn(name = "f_post_grade_id", nullable = false)
     private PostGrade postGrade;
 
-    @Column(name = "c_department_area")
-    private String area;
-
-    @Column(name = "c_department_assistance")
-    private String assistance;
-
-    @Column(name = "c_department_affairs")
-    private String affairs;
-
-    @Column(name = "c_department_section")
-    private String section;
-
-    @Column(name = "c_department_unit")
-    private String unit;
-
     @Column(name = "c_cost_center_code", nullable = false)
     private String costCenterCode;
 
     @Column(name = "c_cost_center_title_fa", nullable = false)
     private String costCenterTitleFa;
+
+    @Column(name = "c_department_area")
+    private String departmentArea;
+
+    @Column(name = "c_department_assistance")
+    private String departmentAssistance;
+
+    @Column(name = "c_department_affairs")
+    private String departmentAffairs;
+
+    @Column(name = "c_department_section")
+    private String departmentSection;
+
+    @Column(name = "c_department_unit")
+    private String departmentUnit;
 
     @Column(name = "e_active")
     EActive eActive;
