@@ -4,7 +4,6 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
 
     var company_method = "POST";
     var companyId;
@@ -12,7 +11,26 @@
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
-    var RestDataSource_company = isc.MyRestDataSource.create({
+
+
+     var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ]
+    });
+
+
+     var RestDataSource_Work_State_Company = isc.MyRestDataSource.create({
+        fields: [
+            {name: "id"},
+            {name: "name"}
+        ],
+        fetchDataURL: stateUrl + "spec-list"
+    });
+
+
+     var RestDataSource_company = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
@@ -22,232 +40,56 @@
         fetchDataURL: companyUrl + "spec-list",
     });
 
-    var RestDataSource_All_Person = isc.MyRestDataSource.create({
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
-        ],
-        fetchDataURL: personalInfoUrl + "spec-list",
-    });
 
-    var RestDataSource_ThisCommittee_Person = isc.MyRestDataSource.create({
-
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
-        ],
-
-    });
-
-
-    var Ds_Member_Attached_Committee = isc.MyRestDataSource.create({
-        fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
-        ],
-        autoFetchData: false,
-    });
-
-    var DsCategory_committee = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"}
-        ],
-        fetchDataURL: categoryUrl + "spec-list?_startRow=0&_endRow=55",
-    });
-
-    var DsSubCategory_committee = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"}
-        ],
-    });
-
-    Menu_ListGrid_committee = isc.Menu.create({
+    Menu_ListGrid_Company = isc.Menu.create({
         data: [
             {
                 title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                    ListGrid_Committee.invalidateCache();
+
                 }
             }, {
                 title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
-                    show_CommitteeNewForm();
+
                 }
             }, {
                 title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
-                    show_CommitteEditForm();
+
                 }
             }, {
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                    show_CommitteeRemoveForm();
+
                 }
             }, {isSeparator: true}, {
                 title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                    print_CommitteeListGrid("pdf")
+
                 }
             }, {
                 title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                    print_CommitteeListGrid("excel")
+
                 }
             }, {
                 title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                    print_CommitteeListGrid("html")
+
                 }
             }
-            , {isSeparator: true}, {
-                title: "لیست اعضاء", icon: "<spring:url value="CommitteeMembers.png"/>", click: function () {
-                    ToolStripButton_Member.click();
-
-                }
-
-            }]
+            ]
     });
-
-    var ListGrid_Committee = isc.MyListGrid.create({
-        dataSource: RestDataSource_company,
-        contextMenu: Menu_ListGrid_committee,
-        autoFetchData: true,
-        doubleClick: function () {
-            show_CommitteEditForm();
-        },
-
-        selectionChanged: function (record, state) {
-            companyId = record;
-
-
-        },
-        click: function () {
-            var record1 = ListGrid_Committee.getSelectedRecord();
-            Ds_Member_Attached_Committee.fetchDataURL = companyUrl + record1.id + "/getMembers";
-            ListGrid_Member_Attached_Committee.invalidateCache();
-            ListGrid_Member_Attached_Committee.fetchData();
-
-        },
-
-        dataArrived: function (startRow, endRow) {
-        },
-        sortField: 1,
-    });
-
-    var ListGrid_Member_Attached_Committee = isc.MyListGrid.create({
-        dataSource: Ds_Member_Attached_Committee,
-        selectionType: "none",
-        sortField: 1
-
-    });
-
-    var ListGrid_All_Person = isc.MyListGrid.create({
-        width: "100%",
-        height: "100%", canDragResize: true,
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
-        autoFetchData: true,
-        dataSource: RestDataSource_All_Person,
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        dragTrackerMode: "title",
-        canDrag: true,
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-
-
-            var activeCommittee = ListGrid_Committee.getSelectedRecord();
-
-            var memberIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                memberIds.add(dropRecords[i].id);
-            }
-            ;
-
-            var JSONObj = {"ids": memberIds};
-            isc.RPCManager.sendRequest({
-
-// isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, company_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: companyUrl + "removeMembers/" + activeCommittee.id + "/" + memberIds,
-                httpMethod: "DELETE",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                        ListGrid_All_Person.invalidateCache();
-                        ListGrid_ThisCommittee_Person.invalidateCache();
-
-
-                    } else {
-                        isc.say("خطا");
-                    }
-                }
-            });
-        }
-
-    });
-
-
-    var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
-        width: "100%",
-        height: "100%", canDragResize: true,
-        selectionType: "multiple",
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
-        autoFetchData: false,
-        dataSource: RestDataSource_ThisCommittee_Person,
-
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 22,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        dragTrackerMode: "title",
-        canDrag: true,
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-            var activeCommittee = ListGrid_Committee.getSelectedRecord();
-            var personIds = new Array();
-            for (i = 0; i < dropRecords.getLength(); i++) {
-                personIds.add(dropRecords[i].id);
-            }
-            ;
-            var JSONObj = {"ids": personIds};
-            isc.RPCManager.sendRequest({
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                actionURL: companyUrl + "addmembers/" + personIds + "/" + activeCommittee.id, //localhost:8080/training/api/committee/addmember/141/104
-                httpMethod: "POST",
-                data: JSON.stringify(JSONObj),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
-                        ListGrid_ThisCommittee_Person.invalidateCache();
-                        ListGrid_All_Person.invalidateCache();
-
-                    } else {
-
-                        isc.say("خطا");
-                    }
-                }
-            });
-        }
-
-    });
-
 
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Committee = isc.MyDynamicForm.create({
-
-
+     var co = isc.ValuesManager.create({});
+     var DynamicForm_Company = isc.DynamicForm.create({
+              width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 80,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+         valuesManager: "co",
         fields: [
             {name: "id", hidden: true},
             {
@@ -259,55 +101,289 @@
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
-                name: "categoryId",
-                title: "<spring:message code="course_category"/>",
+                name: "workDomain",
+                title: "حوزه کاری",
+               // textAlign: "center",
+                required: true,
+                width: "*",
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+            {
+                name: "email",
+                title: "ایمیل",
+              //  textAlign: "center",
+                required: true,
+                width: "*",
+
+            }
+        ]
+    });
+
+
+
+        var DynamicForm_AccountInfo_Company = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 80,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "co",
+        numCols: 6,
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 10,
+        newPadding: 5,
+        fields: [
+            {name: "id", hidden: true},
+
+            {
+                name: "accountInfo.bank",
+                title: "<spring:message code='bank'/>",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
+            },
+            {
+                name: "accountInfo.bankBranch",
+                title: "<spring:message code='bank.branch'/>",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
+            },
+
+            {
+                name: "accountInfo.bankBranchCode",
+                title: "<spring:message code='bank.branch.code'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+
+            {
+                name: "accountInfo.accountNumber",
+                title: "<spring:message code='account.number'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+            {
+                name: "accountInfo.cartNumber",
+                title: "<spring:message code='cart.number'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+            {
+                name: "accountInfo.shabaNumber",
+                title: "<spring:message code='shaba.number'/>",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+
+        ]
+    });
+
+
+
+        var DynamicForm_ManagerInfo_Company = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 120,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "co",
+        titleAlign: "left",
+        numCols: 6,
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 10,
+        newPadding: 5,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "manager.firstNameFa",
+                title: "نام",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
+            },
+            {
+                name: "manager.lastNameFa",
+                title: "نام خانوادگی",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30"
+            },
+
+            {
+                name: "manager.nationalCode",
+                title: "شماره ملی",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+             {
+                name: "manager.contactInfo.email",
+                title: "ایمیل",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+             {
+                name: "manager.contactInfo.mobile",
+                title: "موبایل",
+                type: 'text',
+                keyPressFilter: "[0-9]",
+                length: "30"
+            },
+           ]
+        });
+
+
+
+        var DynamicForm_Address_Company = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        align: "center",
+        canSubmit: true,
+        titleWidth: 120,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        valuesManager: "co",
+        numCols: 6,
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        margin: 10,
+        newPadding: 5,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "addressInfoTuple.restAddr",
+                title: "آدرس",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                width: "*"
+            },
+            {
+                name: "addressInfoTuple.postCode",
+                title: "کد پستی",
+                type: 'text',
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                width: "*"
+            },
+            {
+                name: "addressInfoTuple.phone",
+                title: "تلفن",
+                type: 'text',
+                length: "30",
+                width: "*"
+            },
+            {
+                name: "addressInfoTuple.fax",
+                title: "فکس",
+               // type: "textArea",
+                width: "*",
+                length: "255"
+            },
+            {
+                name: "addressInfoTuple.webSite",
+                title: "وب سایت",
+                type: 'text',
+                width: "*",
+                keyPressFilter: "[0-9]",
+                length: "11"
+            },
+          {
+                name: "addressInfoTuple.stateId",
+                title: "استان",
                 textAlign: "center",
-                optionDataSource: DsCategory_committee,
+                optionDataSource:  RestDataSource_Work_State_Company,
                 required: true,
                 width: "*",
                 changeOnKeypress: true,
                 filterOnKeypress: true,
-                displayField: "titleFa",
+                displayField: "name",
                 valueField: "id",
-                filterFields: ["titleFa"],
+                filterFields: ["name"],
                 changed: function (form, item, value) {
-                    DynamicForm_Committee.getItem("subCategoryId").clearValue();
-                    DynamicForm_Committee.getItem("subCategoryId").setValue();
-                    DsSubCategory_committee.fetchDataURL = categoryUrl + value + "/sub-categories?_startRow=0&_endRow=55";
-// DsSubCategory_committee.fetchDataURL = categoryUrl + value;
-                    DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
-                    DynamicForm_Committee.getItem("subCategoryId").fetchData();
+                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").clearValue();
+                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").setValue();
+                    RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
+                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").optionDataSource =  RestDataSource_Work_City_Company;
+                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").fetchData();
                 },
             },
-            {
-                name: "subCategoryId",
-                title: "<spring:message code="course_subcategory"/>",
-                prompt: "ابتدا گروه را انتخاب کنید",
+                {
+                name: "addressInfoTuple.cityId",
+                title: "<spring:message code='city'/>",
+                prompt: "ابتدا شهر را انتخاب کنید",
                 textAlign: "center",
                 destroyed: true,
                 required: true,
                 width: "*",
-                displayField: "titleFa",
+                displayField: "name",
                 valueField: "id",
-                filterFields: ["titleFa"],
+                filterFields: ["name"],
+            },
+          ],
+            });
+
+
+//********************************************************************************************************************
+
+     var HLayOut_Company = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        height: "10%",
+        membersMargin: 10,
+        members: [DynamicForm_Company]
+    });
+
+
+     var TabSet_Company_JspCompany = isc.TabSet.create({
+        tabBarPosition: "top",
+        titleEditorTopOffset:2,
+        height: "20%",
+        tabs: [
+            {
+                title: "<spring:message code='account.information'/>", canClose: false,
+              pane: DynamicForm_AccountInfo_Company,
             },
             {
-                name: "tasks",
-                title: "وظایف",
-                type: "textArea",
-                height: "40",
-                length: "350", width: "*",
+                title: "اطلاعات مدیر", canClose: false,
+             pane: DynamicForm_ManagerInfo_Company,
             },
-            {
-                name: "description",
-                title: "توضیحات",
-                type: "textArea",
-                height: "40",
-                length: "350", width: "*",
-            }
+            // {
+            //     title: "آدرس", canClose: false,
+            //   pane: DynamicForm_Address_Company,
+            // }
         ]
     });
+
      var Window_Company = isc.Window.create({
+       // placement: "fillScreen",
+         width: "50%",
+          height: "50%",
+       //  height: "500",
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
         canDragResize: true,
@@ -319,32 +395,80 @@
         autoDraw: false,
         dismissOnEscape: true,
         border: "1px solid gray",
-        items: [isc.VLayout.create({
-            width: "100%",
-            height: "100%",
+            items: [isc.VLayout.create({
+           width: "100%",
+           height: "340",
             members: [
-                HLayOut_Temp_JspTeacher,
-                TabSet_Bottom_JspTeacher,
-                HLayOut_TeacherSaveOrExit_JspTeacher
+             HLayOut_Company,
+             TabSet_Company_JspCompany,
+                isc.MyHLayoutButtons.create({
+                members: [isc.MyButton.create({
+                    title: "<spring:message code="save"/>",
+                    icon: "pieces/16/save.png",
+                    click: function () {
+                     save_Company();
+                    //  if (committee_method == "PUT") {
+                    //   // edit_Committee();
+                    // } else {
+                    //  //   save_Committee();
+                    // }
+
+
+                    }
+                }), isc.MyButton.create({
+                    title: "<spring:message code="cancel"/>",
+                    icon: "<spring:url value="remove.png"/>",
+                    click: function () {
+                      Window_Company.close();
+                    }
+                })],
+            })
             ]
         })]
     });
 
-   //**********************************************************************************
+
+
+
+      var ListGrid_Company = isc.MyListGrid.create({
+        dataSource: RestDataSource_company,
+        contextMenu: Menu_ListGrid_Company,
+        autoFetchData: true,
+        doubleClick: function () {
+
+        },
+
+        selectionChanged: function (record, state) {
+            companyId = record;
+
+
+        },
+        click: function () {
+
+
+        },
+
+        dataArrived: function (startRow, endRow) {
+        },
+        sortField: 1,
+    });
+
+
+    //**********************************************************************************
     //ToolStripButton
     //**********************************************************************************
     var ToolStripButton_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_Committee.invalidateCache();
+
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/>",
         click: function () {
-            show_CommitteEditForm();
+           show_Company_Edit();
         }
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
@@ -352,177 +476,29 @@
         title: "<spring:message code="create"/>",
         click: function () {
             company_method = "POST";
-            DynamicForm_Committee.getItem("subCategoryId").setOptionDataSource(null);
-            show_CommitteeNewForm();
-
-        }
+              show_CompanyNewForm();
+                      }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
         click: function () {
-            show_CommitteeRemoveForm();
+
         }
     });
     var ToolStripButton_Print = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
-            print_CommitteeListGrid("pdf");
-        }
-
-    });
-    var DynamicForm_thisCommitteeHeader_Jsp = isc.DynamicForm.create({
-        titleWidth: "400",
-        width: "700",
-        align: "right",
-        autoDraw: false,
-
-
-        fields: [
-
-            {
-                name: "sgTitle",
-                type: "staticText",
-                title: "افزودن اعضا به کمیته",
-                wrapTitle: false,
-                width: 250
-            }
-        ]
-    });
-
-    var SectionStack_All_Skills_Jsp = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                title: "لیست اعضاء",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_All_Person
-                ]
-            }
-        ]
-    });
-
-    var SectionStack_Current_Skill_JspClass = isc.SectionStack.create({
-        visibilityMode: "multiple",
-        width: "50%",
-        sections: [
-            {
-                name: "sTitle",
-// title: "لیست اعضای کمیته مورد نظر",
-                expanded: true,
-                canCollapse: false,
-                align: "center",
-                items: [
-                    ListGrid_ThisCommittee_Person
-                ]
-            }
-        ]
-    });
-
-    var HStack_Committee_AddUsers_Jsp = isc.HStack.create({
-        membersMargin: 10,
-        height: 500,
-        members: [
-            SectionStack_All_Skills_Jsp,
-            SectionStack_Current_Skill_JspClass
-        ]
-    });
-
-
-    var HLayOut_thisCommittee_AddUsers_Jsp = isc.HLayout.create({
-        width: 700,
-        height: 30,
-        border: "0px solid yellow",
-        layoutMargin: 5,
-        align: "center",
-        onCreate: function () {
-            alert("man toye hlayout hastam");
-
-        },
-        members: [
-            DynamicForm_thisCommitteeHeader_Jsp
-        ]
-    });
-
-    var VLayOut_User_Committee_Jsp = isc.VLayout.create({
-        width: "100%",
-        height: "300",
-        autoDraw: false,
-        border: "3px solid gray", layoutMargin: 5,
-        members: [HLayOut_thisCommittee_AddUsers_Jsp,
-            HStack_Committee_AddUsers_Jsp,
-        ]
-    });
-
-    var Window_Add_User_TO_Committee = isc.Window.create({
-        title: "لیست اعضاء",
-        width: "900",
-        height: "400",
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-
-        closeClick: function () {
-
-
-// ListGrid_Skill_Group_Competence.invalidateCache();
-// ListGrid_Skill_Group_Skills.invalidateCache();
-            this.hide();
-        },
-        items: [
-            VLayOut_User_Committee_Jsp
-        ]
-    });
-
-
-    var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "<spring:url value="CommitteeMembers.png"/>",
-        title: "لیست اعضاء",
-        click: function () {
-            var record = ListGrid_Committee.getSelectedRecord();
-            if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "کمیته ای انتخاب نشده است",
-                    icon: "[SKIN]ask.png",
-                    title: "پیام",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-
-            } else {
-
-                RestDataSource_All_Person.fetchDataURL = companyUrl + record.id + "/unAttachMember";
-                ListGrid_All_Person.invalidateCache();
-                ListGrid_All_Person.fetchData();
-
-                RestDataSource_ThisCommittee_Person.fetchDataURL = companyUrl + record.id + "/getMembers";
-                ListGrid_ThisCommittee_Person.invalidateCache();
-                ListGrid_ThisCommittee_Person.fetchData();
-                DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
-                SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle", "لیست اعضای کمیته :" + " " + getFormulaMessage(record.titleFa, "2", "red", "B"));
-                Window_Add_User_TO_Committee.show();
-
-
-            }
 
         }
+
     });
 
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_Member]
+        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
     });
 
     //***********************************************************************************
@@ -533,87 +509,59 @@
         members: [ToolStrip_Actions]
     });
 
-    var HLayout_Grid_Committee = isc.HLayout.create({
+         var HLayout_Grid_Company = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        members: [ListGrid_Committee]
+        members: [ListGrid_Company]
     });
 
-    var VLayout_Body_Group = isc.VLayout.create({
+      var VLayout_Body_Group = isc.VLayout.create({
         width: "100%",
         height: "100%",
         members: [HLayout_Actions_Group
-            , HLayout_Grid_Committee
+            , HLayout_Grid_Company
         ]
-    });
-
-    var HLayout_Committee_Member_Grid = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        members: [
-            ListGrid_Member_Attached_Committee
-        ]
-    });
-
-    var HLayout_Tab_Committee_Member = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-
-        members: [
-            HLayout_Committee_Member_Grid
-        ]
-    });
-    var Detail_Tab_Committee = isc.TabSet.create({
-        tabBarPosition: "top",
-        width: "100%",
-        height: "100%",
-        tabs: [
-            {
-                id: "TabPane_Committee_Member",
-                title: "لیست عضوها",
-                pane: HLayout_Tab_Committee_Member
-            }
-        ]
-    });
-
-    var VLayout_Tab_Committee = isc.VLayout.create({
-        width: "100%",
-        height: "50%",
-         members: [Detail_Tab_Committee]
     });
 
 
     var VLayout_Committee_Body_All = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        members: [VLayout_Body_Group, VLayout_Tab_Committee]
+        members: [VLayout_Body_Group]
     });
+
 
     //************************************************************************************
     //function
     //************************************************************************************
 
-    function show_CommitteeNewForm() {
+       function save_Company() {
+         //  var companyData=DynamicForm_Company.getValues();
+
+
+             var data_Company = co.getValues();
+             console.log(data_Company);
+
+              isc.RPCManager.sendRequest(MyDsRequest(companyUrl, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+    };
+
+
+
+    function show_CompanyNewForm() {
         company_method = "POST";
-        Window_Committee.setTitle("ایجاد"),
-        DynamicForm_Committee.clearValues();
-        Window_Committee.show();
-        DynamicForm_Committee.clearValues();
-    };
+        Window_Company.setTitle("ایجاد"),
+        DynamicForm_Company.clearValues();
+        DynamicForm_AccountInfo_Company.clearValues();
 
-    function save_Committee() {
-        if (!DynamicForm_Committee.validate()) {
-            return;
-        }
-        var cate = DynamicForm_Committee.getValue("categoryId");
-        var subCate = DynamicForm_Committee.getValue("subCategoryId");
-        isc.RPCManager.sendRequest(MyDsRequest(companyUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
+        Window_Company.show();
+
     };
 
 
-    function show_CommitteEditForm() {
-        var record = ListGrid_Committee.getSelectedRecord();
-        if (record == null || record.id == null) {
+
+       function show_Company_Edit() {
+        var record_company = ListGrid_Company.getSelectedRecord();
+        if (record_company == null || record_company.id == null) {
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
@@ -624,174 +572,33 @@
                 }
             });
         } else {
-            company_method = "PUT";
-            Window_Committee.setTitle("ویرایش");
-            Window_Committee.show();
-            DynamicForm_Committee.clearValues();
-            DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
-            DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
-            DynamicForm_Committee.getItem("subCategoryId").fetchData();
-            DynamicForm_Committee.editRecord(record);
+            //          co.clearValues();
+        //   co.clearErrors(true);
+           company_method = "PUT";
+           co.editRecord(record_company);
+           Window_Company.setTitle("<spring:message code="edit"/>");
+           Window_Company.show();
 
         }
     };
 
-    function show_CommitteeRemoveForm() {
-        company_method = "DELETE";
-        var record = ListGrid_Committee.getSelectedRecord();
-        if (record == null || record.id == null) {
-
-            <%--// simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.not.selected"/>", 2000, "say");--%>
-            isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            isc.MyYesNoDialog.create({
-                message: "<spring:message
-        code="committee_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message
-        code="committee_delete1"/>",
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-
-                        isc.RPCManager.sendRequest(MyDsRequest(companyUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
-
-                    }
-                }
-            });
-        }
-
-    };
-
-    function edit_Committee() {
-        var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
-        var cateEdit = DynamicForm_Committee.getValue("categoryId");
-        var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
-        isc.RPCManager.sendRequest(MyDsRequest(companyUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" + committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
-
-    };
-
-    function findConflictWhenEdit(resp) {
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            if (resp.data.length > 0) {
-                var committeeDataEdit = DynamicForm_Committee.getValues();
-                var committeeSaveUrlEdit = companyUrl;
-                var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-                committeeSaveUrlEdit += committeeEditRecord1.id;
-                isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEdit, company_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
-
-            } else {
-
-                var cate2 = DynamicForm_Committee.getValue("categoryId");
-                var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
-                var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
-                var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
-                isc.RPCManager.sendRequest(MyDsRequest(companyUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'" + cate3 + "','" + sc + "')"));
-
-            }
-        } else {
-            var OK = isc.Dialog.create({
-                message: "پاسخی از سمت سرور دریافت نشد",
-                icon: "[SKIN]say.png",
-                title: "انجام فرمان"
-            });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        }
-    };
-
-
-    function show_ConflictCommittee(resp, cat, subcat) {
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            if (resp.data.length > 0) {
-                var OK = isc.Dialog.create({
-                    message: "گروه " + cat + " و زیر گروه " + subcat + " وارد شده با کمیته تخصصی " + getFormulaMessage(resp.data, 2, "red", "I") + " تداخل دارد",
-                    icon: "[SKIN]say.png",
-                    title: "هشدار"
-                });
-                setTimeout(function () {
-                    OK.close();
-                }, 3000);
-            } else {
-
-                var committeeDataEditCreate = DynamicForm_Committee.getValues();
-                var committeeSaveUrlEditCreate = companyUrl;
-// if (company_method.localeCompare("PUT") == 0) {
-// var committeeRecord = ListGrid_Committee.getSelectedRecord();
-// committeeSaveUrl += committeeRecord.id;
-// }
-                isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
-            }
-        } else {
-            var OK = isc.Dialog.create({
-                message: "پاسخی از سمت سرور دریافت نشد",
-                icon: "[SKIN]say.png",
-                title: "انجام فرمان"
-            });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        }
-    }
-
-    function show_CommitteeActionResult(resp) {
+     function show_CompanyActionResult(resp) {
         var respCode = resp.httpResponseCode;
-
         if (respCode == 200 || respCode == 201) {
-
-            if ((company_method == "POST" || company_method == "PUT") || (company_method == "DELETE" && resp.data == "true")) {
-                ListGrid_Committee.invalidateCache();
-                var MyOkDialog_committee = isc.MyOkDialog.create({
-                    message: "عمليات با موفقيت اجرا شد.",
-
-                });
-
-                setTimeout(function () {
-                    MyOkDialog_committee.close();
-                }, 3000);
-
-                Window_Committee.close();
-            } else {
-                var MyOkDialog_committee = isc.MyOkDialog.create({
-                    message: "کمیته مورد نظر دارای عضو می باشد. قابل حذف نیست",
-
-                });
-
-                setTimeout(function () {
-                    MyOkDialog_committee.close();
-                }, 3000);
-            }
-        } else {
-            var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: ",
+            ListGrid_Term.invalidateCache();
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
             });
-
             setTimeout(function () {
-                MyOkDialog_committee.close();
+                MyOkDialog_term.close();
+            }, 3000);
+            Window_term.close();
+        } else {
+            var MyOkDialog_term = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+            setTimeout(function () {
+                MyOkDialog_term.close();
             }, 3000);
         }
     };
-
-    function print_CommitteeListGrid(type) {
-        var advancedCriteria_committee = ListGrid_Committee.getCriteria();
-        var criteriaForm_committee = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"}
-                ]
-        })
-        criteriaForm_committee.setValue("CriteriaStr", JSON.stringify(advancedCriteria_committee));
-        criteriaForm_committee.submitForm();
-
-    }
