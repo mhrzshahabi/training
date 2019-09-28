@@ -196,19 +196,19 @@ public class CourseRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
+    /*@Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<JobDTOOld.IscRes> getJob(@PathVariable Long courseId) {
-        List<JobDTOOld.Info> job = courseService.getJob(courseId);
-        final JobDTOOld.SpecRs specResponse = new JobDTOOld.SpecRs();
+    public ResponseEntity<JobDTO.IscRes> getJob(@PathVariable Long courseId) {
+        List<JobDTO.Info> job = courseService.getJob(courseId);
+        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
         specResponse.setData(job)
                 .setStartRow(0)
                 .setEndRow(job.size())
                 .setTotalRows(job.size());
-        final JobDTOOld.IscRes specRs = new JobDTOOld.IscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+    }*/
 
     @Loggable
     @GetMapping(value = "/{courseId}/{goalIdList}")

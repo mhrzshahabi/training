@@ -30,9 +30,6 @@
             isc.Label.create({
                 ID: "totalsLabel_postGrade"
             }),
-            isc.LayoutSpacer.create({
-                width: 40
-            }),
         ]
     });
 
@@ -40,8 +37,8 @@
     PostGradeDS_postGrade = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "contains", autoFitWidth:true},
-            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth:true},
+            {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postGradeUrl + "iscList"
     });
@@ -59,7 +56,7 @@
         dataChanged : function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
-            if (totalRows > 0 && this.data.lengthIsKnown()) {
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_postGrade.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_postGrade.setContents("&nbsp;");
@@ -74,5 +71,5 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostGradeLG_postGrade() {
-        PostGradeLG_postGrade.invalidateCache();
+        PostGradeLG_postGrade.filterByEditor();
     };

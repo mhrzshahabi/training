@@ -45,6 +45,7 @@ public class TrainingException extends NICICOException {
         PersonalInfoNotFound(404),
         CommitteeNotFound(404),
         TermNotFound(404),
+        CompanyNotFound(404),
         PostNotFound(404),
         NeedAssessmentNotFound(404),
         BankNotFound(404),

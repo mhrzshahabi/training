@@ -312,8 +312,8 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<JobDTOOld.Info> getJob(Long courseId) {
-        Set<JobOld> jobSet = new HashSet<>();
+    public List<JobDTO.Info> getJob(Long courseId) {
+        Set<Job> jobSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
@@ -340,11 +340,11 @@ public class CourseService implements ICourseService {
 //                }
 //            }
         }
-        List<JobDTOOld.Info> jobInfo = new ArrayList<>();
+        List<JobDTO.Info> jobInfo = new ArrayList<>();
         Optional.ofNullable(jobSet)
                 .ifPresent(jobs ->
                         jobs.forEach(job ->
-                                jobInfo.add(modelMapper.map(job, JobDTOOld.Info.class))
+                                jobInfo.add(modelMapper.map(job, JobDTO.Info.class))
                         ));
         return jobInfo;
     }

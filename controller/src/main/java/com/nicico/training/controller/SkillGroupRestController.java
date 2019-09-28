@@ -8,8 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.CompetenceDTO;
-import com.nicico.training.dto.JobDTOOld;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.service.SkillGroupService;
@@ -175,31 +174,29 @@ public class SkillGroupRestController {
 //
 //    }
 
-
+/*
     @Loggable
     @GetMapping(value = "/{skillGroupId}/getJobs")
 //    @PreAuthorize("hasAnyAuthority('r_skill_group')")
-    public ResponseEntity<JobDTOOld.IscRes> getJobs(@PathVariable Long skillGroupId) {
+    public ResponseEntity<JobDTO.IscRes> getJobs(@PathVariable Long skillGroupId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<JobDTOOld.Info> list = skillGroupService.getJobs(skillGroupId);
+        List<JobDTO.Info> list = skillGroupService.getJobs(skillGroupId);
 
-        final JobDTOOld.SpecRs specResponse = new JobDTOOld.SpecRs();
+        final JobDTO.SpecRs specResponse = new JobDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
                 .setEndRow( list.size())
                 .setTotalRows(list.size());
 
-        final JobDTOOld.IscRes specRs = new JobDTOOld.IscRes();
+        final JobDTO.IscRes specRs = new JobDTO.IscRes();
 
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs,HttpStatus.OK);
 
 
-    }
-
-
+    }*/
 
 
 

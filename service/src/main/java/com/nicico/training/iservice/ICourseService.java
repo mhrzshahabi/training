@@ -35,7 +35,7 @@ public interface ICourseService {
     List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
 
     List<CompetenceDTO.Info> getCompetence(Long courseId);
-    List<JobDTOOld.Info> getJob(Long courseId);
+    List<JobDTO.Info> getJob(Long courseId);
 
     String getMaxCourseCode(String str);
 

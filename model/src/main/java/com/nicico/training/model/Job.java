@@ -13,20 +13,20 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@Entity
+@Table(name = "tbl_job")
 @Getter
 @EqualsAndHashCode(of = "id")
-@Entity
-@Table(name = "tbl_job_new")
 public class Job {
 
     @Id
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", nullable = false)
     private String code;
 
-    @Column(name = "c_title_fa")
+    @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
     @Column(name = "e_active")

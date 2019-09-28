@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//<script>
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({
@@ -33,6 +33,49 @@
         ]
     });
 
+    // ------------------------------------------- TabSet -------------------------------------------
+
+    let JobTabs_job = isc.TabSet.create({
+        tabs: [
+            {
+                title: "<spring:message code="post.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
+                title: "<spring:message code="need.assessment.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
+                title: "<spring:message code="competence.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
+                title: "<spring:message code="skill.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
+                title: "<spring:message code="skill.group.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
+                title: "<spring:message code="course.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+        ]
+    });
+
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
     JobDS_job = isc.TrDS.create({
         fields: [
@@ -50,13 +93,12 @@
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "header", "filterEditor", "body",],
+        gridComponents: [JobTS_job, "header", "filterEditor", "body", JobTabs_job],
         contextMenu: JobMenu_job,
-        sortField: 0,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
-            if (totalRows > 0 && this.data.lengthIsKnown()) {
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_job.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_job.setContents("&nbsp;");
@@ -66,7 +108,7 @@
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [JobTS_job, JobLG_job],
+        members: [JobLG_job],
     });
 
     // ------------------------------------------- Functions -------------------------------------------

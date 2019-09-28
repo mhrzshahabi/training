@@ -946,7 +946,7 @@ var dummy;
                 length: "30"
             },
             {
-                name: "personality.accountInfo.bBranch",
+                name: "personality.accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
@@ -954,7 +954,7 @@ var dummy;
             },
 
             {
-                name: "personality.accountInfo.bCode",
+                name: "personality.accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
@@ -1008,7 +1008,7 @@ var dummy;
         ]
     });
 
-    var DynamicForm_AddressInfo_JspTeacher = isc.DynamicForm.create({
+     var DynamicForm_AddressInfo_JspTeacher = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -1476,6 +1476,7 @@ var dummy;
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Work_City_JspTeacher;
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
             }
+
             DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
             showCategories();
             Window_Teacher_JspTeacher.show();
@@ -1816,8 +1817,8 @@ var dummy;
             if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bBranch", personality.accountInfo.bBranch);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bCode", personality.accountInfo.bCode);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
