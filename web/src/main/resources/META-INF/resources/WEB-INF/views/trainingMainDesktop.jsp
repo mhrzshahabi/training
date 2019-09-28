@@ -729,9 +729,7 @@
     });
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
-    createTab("شغل", "<spring:url value="/job/show-form"/>");
-    createTab("رده پستی", "<spring:url value="/postGrade/show-form"/>");
-    createTab("پست", "<spring:url value="/post/show-form"/>");
+
 
 </script>
 </body>
