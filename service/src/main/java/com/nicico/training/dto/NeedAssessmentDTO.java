@@ -70,7 +70,7 @@ public class NeedAssessmentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("NeedAssessment - Info")
-    public static class Info extends NeedAssessmentDTO {
+    public static class Info {
         private Long id;
         private PostDTO.Info post;
         private CompetenceDTO.Info competence;

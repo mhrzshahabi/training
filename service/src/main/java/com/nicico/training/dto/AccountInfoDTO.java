@@ -23,7 +23,7 @@ public class AccountInfoDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfo")
-    public static class Info{
+    public static class Info {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -31,33 +31,36 @@ public class AccountInfoDTO {
         private String lastModifiedBy;
         private String accountNumber;
         private String bank;
-        private String bBranch;
-        private Long bCode;
+        private String bankBranch;
+        private Long bankBranchCode;
         private String cartNumber;
         private String shabaNumber;
     }
 
+
     @Getter
-	@Setter
-	@ApiModel("AccountInfoInfoTuple")
-	public static class AccountInfoInfoTuple {
+    @Setter
+    @ApiModel("AccountInfoInfoTuple")
+    public static class AccountInfoInfoTuple {
+        private Long id;
         private String accountNumber;
         private String bank;
-        private String bBranch;
-        private Long bCode;
+        private String bankBranch;
+        private Long bankBranchCode;
         private String cartNumber;
         private String shabaNumber;
-	}
+    }
+
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfoCreateRq")
-    public static class Create{
+    public static class Create {
         private String accountNumber;
         private String bank;
-        private String bBranch;
-        private Long bCode;
+        private String bankBranch;
+        private Long bankBranchCode;
         private String cartNumber;
         private String shabaNumber;
     }
@@ -66,11 +69,11 @@ public class AccountInfoDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("AccountInfoUpdateRq")
-    public static class Update{
+    public static class Update {
         private String accountNumber;
         private String bank;
-        private String bBranch;
-        private Long bCode;
+        private String bankBranch;
+        private Long bankBranchCode;
         private String cartNumber;
         private String shabaNumber;
     }

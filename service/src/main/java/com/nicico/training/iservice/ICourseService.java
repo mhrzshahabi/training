@@ -40,7 +40,7 @@ public interface ICourseService {
     @Transactional
     List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
 
-    List<JobDTOOld.Info> getJob(Long courseId);
+    List<JobDTO.Info> getJob(Long courseId);
 
     String getMaxCourseCode(String str);
 

@@ -48,8 +48,6 @@
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
     const numFilter = "[0-9]";
 
-    const okDialogShowTime = 3000;
-
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
@@ -61,7 +59,17 @@
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
-    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true});
+    isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
+    isc.DynamicForm.addProperties({
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>", requiredTitleSuffix: "",
+        requiredMessage: "<spring:message code="msg.field.is.required"/>", wrapItemTitles: false
+    });
+    isc.Window.addProperties({
+        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
+        showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
+    });
+    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
 
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
@@ -108,6 +116,14 @@
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
         },
+        sortField: 0,
+        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
+        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
+        configureSortText: "<spring:message code="sort.config"/>",
+        clearSortFieldText: "<spring:message code="sort.clear"/>",
+        autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
+        autoFitFieldText: "<spring:message code="auto.fit"/>",
+        emptyMessage: "",
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -138,19 +154,6 @@
     isc.TrPrintBtn.addProperties({
         title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
     });
-
-
-    isc.DynamicForm.addProperties({
-        width: "100%",
-        margin: 5,
-        errorOrientation: "right",
-        wrapItemTitles: false,
-        titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
-        requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.field.is.required"/>",
-    });
-    isc.defineClass("TrDynamicForm", DynamicForm);
 
     TrValidators = {
         NotEmpty: {
@@ -189,30 +192,12 @@
     function trTrim(value) {
         var trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
-    }
+    };
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
     isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
 
-    isc.defineClass("TrWindow", Window);
-    isc.TrWindow.addProperties({
-        autoSize: true,
-        autoCenter: true,
-        isModal: false,
-        showModalMask: true,
-        canFocus: true,
-        dismissOnEscape: true,
-        canDragReposition: true,
-        canDragResize: true,
-        showHeaderIcon: false,
-        showFooter: true,
-        animateMinimize: true,
-        width: 800,
-        showMaximizeButton: true,
-        defaultMinimizeHeight: 500,
-    });
-
-    isc.defineClass("TrHLayoutButtons", HLayout);
+    isc.defineClass("TrHLayoutButtons", TrHLayout);
     isc.TrHLayoutButtons.addProperties({
         align: "center",
         height: 34,
@@ -220,62 +205,64 @@
         membersMargin: 10,
     });
 
-    isc.defineClass("TrSaveButton", Button);
-    isc.TrSaveButton.addProperties({
+    isc.defineClass("TrSaveBtn", Button);
+    isc.TrSaveBtn.addProperties({
         title: "<spring:message code="save"/>",
     });
 
-    isc.defineClass("TrSaveNextButton", Button);
-    isc.TrSaveNextButton.addProperties({
+    isc.defineClass("TrSaveNextBtn", Button);
+    isc.TrSaveNextBtn.addProperties({
         title: "<spring:message code="save.and.next"/>",
     });
 
-    isc.defineClass("TrCancelButton", Button);
-    isc.TrCancelButton.addProperties({
+    isc.defineClass("TrCancelBtn", Button);
+    isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
     });
 
-    isc.defineClass("TrOkDialog", Dialog);
-    isc.TrOkDialog.addProperties({
-        title: "<spring:message code='message'/>",
-        icon: "[SKIN]say.png",
-        isModal: true,
-        buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
-        buttonClick: function (button, index) {
-            this.close();
+    function createDialog(message, type, title) {
+        type = type ? type : 'info';
+        if (type == 'info') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else if (type == 'ask') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [
+                    isc.Button.create({title: "<spring:message code="yes"/>",}),
+                    isc.Button.create({title: "<spring:message code="no"/>",})
+                ],
+            });
+        } else if (type == 'confirm') {
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message,
+                buttons: [
+                    isc.Button.create({title: "<spring:message code="yes"/>",}),
+                    isc.Button.create({title: "<spring:message code="no"/>",})
+                ],
+            });
         }
-    });
+    };
 
-    isc.defineClass("TrYesNoDialog", Dialog);
-    isc.TrYesNoDialog.addProperties({
-        title: "<spring:message code='message'/>",
-        icon: "[SKIN]ask.png",
-        isModal: true,
-        buttons: [
-            isc.Button.create({title: "<spring:message code="yes"/>",}),
-            isc.Button.create({title: "<spring:message code="no"/>",})
-        ],
-    });
-
-    isc.defineClass("TrComboBoxItem", ComboBoxItem);
-    isc.TrComboBoxItem.addProperties({
-        addUnknownValues: false,
-        emptyPickListMessage: "",
-        pickListProperties: {
-            showFilterEditor: true
-        },
-        wrapTitle: false,
-    });
-
-    isc.defineClass("TrComboBoxItemAutoRefresh", TrComboBoxItem);
-    isc.TrComboBoxItemAutoRefresh.addProperties({
+    isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
+    isc.TrComboAutoRefresh.addProperties({
         click: function (form, item) {
             item.fetchData();
         }
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
-
     systemImg = isc.Img.create({
         src: "<spring:url value="training.png"/>",
         width: 24,
@@ -338,25 +325,13 @@
     });
 
     needAssessmentTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.need.assessment"/>",
+        title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             data: [
-                {
-                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
-                    }
-                },
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/job/show-form"/>");
-                    }
-                },
-                {
-                    title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/post/show-form"/>");
                     }
                 },
                 {
@@ -366,9 +341,21 @@
                     }
                 },
                 {
+                    title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/post/show-form"/>");
+                    }
+                },
+                  {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
                     }
                 },
                 {
@@ -388,7 +375,7 @@
     });
 
     designingTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.designing.and.planning"/>",
+        title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -397,18 +384,6 @@
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
                 },
-                <%--{--%>
-                <%--title: "<spring:message code="syllabus"/>", icon: "<spring:url value="syllabus.png"/>",--%>
-                <%--click: function () {--%>
-                <%--createTab(this.title, "<spring:url value="/syllabus/show-form"/>");--%>
-                <%--}--%>
-                <%--},--%>
-                <%--{--%>
-                <%--title: "<spring:message code="goal"/>", icon: "<spring:url value="goal.png"/>",--%>
-                <%--click: function () {--%>
-                <%--createTab(this.title, "<spring:url value="/goal/show-form"/>");--%>
-                <%--}--%>
-                <%--},--%>
                 {
                     title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
                     click: function () {
@@ -422,12 +397,27 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
+                 {
+                    title: "<spring:message code="company"/>",
+                    icon: "<spring:url value="company.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/company/show-form"/>");
+                    }
+                },
+                 {
+                    title: "شرح وظایف",
+                    icon: "<spring:url value="committee.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/task/show-form"/>");
+                    }
+                },
+
             ]
         }),
-    });
+     });
 
     runTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.run"/>",
+        title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -460,7 +450,7 @@
     });
 
     evaluationTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="training.evaluation"/>",
+        title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             data: []
         }),
@@ -544,6 +534,7 @@
         members: [
             isc.HLayout.create({
                 height: "1%",
+                defaultLayoutAlign: "center",
                 members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
             }),
             isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
@@ -577,7 +568,6 @@
     };
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const jobCompetenceUrl = rootUrl + "/job-competence/";
     const enumUrl = rootUrl + "/enum/";
     const goalUrl = rootUrl + "/goal/";
     const syllabusUrl = rootUrl + "/syllabus/";
@@ -595,6 +585,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
+    const companyUrl=rootUrl +"/company/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
@@ -736,9 +727,11 @@
             isc.say("خطا در اتصال به سرور!");
         }
     });
-
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
+    createTab("شغل", "<spring:url value="/job/show-form"/>");
+    createTab("رده پستی", "<spring:url value="/postGrade/show-form"/>");
+    createTab("پست", "<spring:url value="/post/show-form"/>");
 
 </script>
 </body>

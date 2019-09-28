@@ -2,40 +2,40 @@
     font-family: 'IRANSans';
     font-style: normal;
     font-weight: bold;
-    src: url('fonts/IRANSans/IRANSansWeb_Bold.eot');
-    src: url('fonts/IRANSans/IRANSansWeb_Bold.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('fonts/IRANSans/IRANSansWeb_Bold.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('fonts/IRANSans/IRANSansWeb_Bold.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('fonts/IRANSans/IRANSansWeb_Bold.ttf') format('truetype');
+    src: url('../../../font/IRANSansWeb_Bold.eot');
+    src: url('../../../font/IRANSansWeb_Bold.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('../../../font/IRANSansWeb_Bold.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('../../../font/IRANSansWeb_Bold.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../../../font/IRANSansWeb_Bold.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'IRANSans';
     font-style: normal;
     font-weight: 500;
-    src: url('fonts/IRANSans/IRANSansWeb_Medium.eot');
-    src: url('fonts/IRANSans/IRANSansWeb_Medium.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('fonts/IRANSans/IRANSansWeb_Medium.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('fonts/IRANSans/IRANSansWeb_Medium.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('fonts/IRANSans/IRANSansWeb_Medium.ttf') format('truetype');
+    src: url('../../../font/IRANSansWeb_Medium.eot');
+    src: url('../../../font/IRANSansWeb_Medium.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('../../../font/IRANSansWeb_Medium.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('../../../font/IRANSansWeb_Medium.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../../../font/IRANSansWeb_Medium.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'IRANSans';
     font-style: normal;
     font-weight: 300;
-    src: url('fonts/IRANSans/IRANSansWeb_Light.eot');
-    src: url('fonts/IRANSans/IRANSansWeb_Light.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('fonts/IRANSans/IRANSansWeb_Light.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('fonts/IRANSans/IRANSansWeb_Light.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('fonts/IRANSans/IRANSansWeb_Light.ttf') format('truetype');
+    src: url('../../../font/IRANSansWeb_Light.eot');
+    src: url('../../../font/IRANSansWeb_Light.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('../../../font/IRANSansWeb_Light.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('../../../font/IRANSansWeb_Light.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../../../font/IRANSansWeb_Light.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'IRANSans';
     font-style: normal;
     font-weight: 200;
-    src: url('fonts/IRANSans/IRANSansWeb_UltraLight.eot');
-    src: url('fonts/IRANSans/IRANSansWeb_UltraLight.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('fonts/IRANSans/IRANSansWeb_UltraLight.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('fonts/IRANSans/IRANSansWeb_UltraLight.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('fonts/IRANSans/IRANSansWeb_UltraLight.ttf') format('truetype');
+    src: url('../../../font/IRANSansWeb_UltraLight.eot');
+    src: url('../../../font/IRANSansWeb_UltraLight.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('../../../font/IRANSansWeb_UltraLight.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('../../../font/IRANSansWeb_UltraLight.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../../../font/IRANSansWeb_UltraLight.ttf') format('truetype');
 }
 
 @font-face {
     font-family: 'IRANSans';
     font-style: normal;
     font-weight: normal;
-    src: url('fonts/IRANSans/IRANSansWeb.eot');
-    src: url('fonts/IRANSans/IRANSansWeb.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('fonts/IRANSans/IRANSansWeb.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('fonts/IRANSans/IRANSansWeb.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('fonts/IRANSans/IRANSansWeb.ttf') format('truetype');
+    src: url('../../../font/IRANSansWeb.eot');
+    src: url('../../../font/IRANSansWeb.eot?#iefix') format('embedded-opentype'), /* IE6-8 */ url('../../../font/IRANSansWeb.woff2') format('woff2'), /* Chrome36+, Opera24+*/ url('../../../font/IRANSansWeb.woff') format('woff'), /* FF3.6+, IE9, Chrome6+, Saf5.1+*/ url('../../../font/IRANSansWeb.ttf') format('truetype');
 }
 
 /*===========================================================================
@@ -175,8 +175,8 @@ ul {
 .pageBackground {
     background: #fafafa;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* default text */
@@ -185,8 +185,8 @@ ul {
 .normalDisabled,
 .normalBold {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .normalBold {
@@ -218,16 +218,16 @@ ul {
     background-color: #fdfdd3;
     border: 1px solid gray;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 5px;
 }
 
 /* group label */
 .groupLabel {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-left: 5px;
     padding-right: 5px;
 }
@@ -281,8 +281,8 @@ ul {
     background-image: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
     border: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 2px;
 }
 
@@ -334,8 +334,8 @@ ul {
     -moz-border-radius: 3px;
     -webkit-border-radius: 3px;
     border-radius: 3px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 3px;
 }
 
@@ -585,8 +585,8 @@ ul {
 .imgButtonDown,
 .imgButtonSelectedDown,
 .imgButtonDisabled {
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .imgButtonDisabled {
@@ -610,8 +610,8 @@ ul {
 .stretchImgButtonPendingSelectedDown,
 .stretchImgButtonPendingSelectedDisabled,
 .stretchImgButtonPendingDisabled {
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .stretchImgButtonOver,
@@ -652,8 +652,8 @@ ul {
 .buttonTitleDisabled,
 .buttonTitleSelectedDisabled {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .buttonTitleDisabled,
@@ -739,10 +739,10 @@ ul {
     border-bottom: 1px solid transparent;
     border-top: 1px solid transparent;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
-    padding-bottom: 2px;
-    padding-top: 2px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
+    padding: 2px;
+    padding-right: 10px;
 }
 
 .menuOver,
@@ -850,8 +850,8 @@ ul {
     background-image: linear-gradient(to bottom, #ffffff 0%, #e0e0e0 100%);
     border: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
 }
@@ -972,7 +972,6 @@ ul {
     -moz-box-shadow: 0 1px #dbeeff, 0 -1px #dbeeff;
     -webkit-box-shadow: 0 1px #dbeeff, 0 -1px #dbeeff;
     box-shadow: 0 1px #dbeeff, 0 -1px #dbeeff;
-    margin-top: 10px;
 }
 
 .windowHeader,
@@ -983,10 +982,12 @@ ul {
 .windowHeaderText,
 .dialogHeaderText {
     color: #4D4D4D;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: bold;
-    padding: 4px 12px 0px 0px;
+    padding-bottom: 2px;
+    padding-left: 2px;
+    padding-right: 2px;
 }
 
 .windowStatusBar {
@@ -995,8 +996,8 @@ ul {
     border-right: 1px solid white;
     border-top: 1px solid #999999;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .modalMask {
@@ -1090,8 +1091,8 @@ ul {
 .listPaneTitle,
 .listPaneTitleDisabled {
     color: #000000;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /*============================================================
@@ -1101,8 +1102,8 @@ ul {
     background-color: white;
     border: 1px solid #bfbfbf;
     color: #d6d6d6;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .tabBaseline {
@@ -1117,8 +1118,8 @@ ul {
 .tabSelectedDown,
 .tabSelectedDisabled,
 .tabDisabled {
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .tabTitle,
@@ -1138,8 +1139,8 @@ ul {
 .vtabTitleDisabled,
 .vtabTitleSelectedDisabled {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-bottom: 1px;
 }
 
@@ -1767,30 +1768,30 @@ ul {
 .imgSectionHeaderTitleOveropened {
     border-left: 5px;
     color: #000000;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .imgSectionHeaderTitleDisabledopened,
 .imgSectionHeaderTitleDisabledclosed {
     border-left: 5px;
     color: gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .sectionHeaderTitleopened,
 .sectionHeaderTitleclosed {
     color: white;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .sectionHeaderTitleDisabledopened,
 .sectionHeaderTitleDisabledclosed {
     color: gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* SectionStack headers - css based */
@@ -1799,8 +1800,8 @@ ul {
 .sectionHeaderDisabledopened,
 .sectionHeaderDisabledclosed {
     color: #000000;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 2px 2px 2px 3px;
 }
 
@@ -1997,8 +1998,8 @@ ul {
     padding: 0px 10px 0px 10px !important;
     /* !important to override the cellpadding attribute */
     color: #2779ff;
-    font-family: IRANSans, sans-serif;
-    font-size: 15px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 16px;
     line-height: 24px;
 }
 
@@ -2062,8 +2063,8 @@ ul {
 
 .navItemHeader {
     color: #000000;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     background: url(./images/SectionHeader/header_opened_stretch.png) padding-box;
     background-attachment: scroll;
     background-color: #b9d7fd;
@@ -2416,9 +2417,8 @@ ul {
 .labelAnchorFocused,
 .labelAnchorFocusedRTL {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
-    padding-right: 10px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .roundedTextItem,
@@ -2510,8 +2510,8 @@ ul {
 .headerItemError,
 .headerItemErrorRTL {
     color: #4d4d4d;
-    font-family: IRANSans, sans-serif;
-    font-size: 14px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -3222,9 +3222,12 @@ select[disabled] option {
 .textAreaItemLiteDisabledHint,
 .textAreaItemLiteDisabledHintRTL {
     color: #555;
-    font-size: 12px;
-    padding: 0 10px;
-    font-family: IRANSans, sans-serif;
+    font-size: 13px;
+    padding-left: 4px;
+    padding-right: 4px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
     border-radius: 0px;
 }
 
@@ -3277,7 +3280,7 @@ select[disabled] option {
 .selectItemLiteTextDisabledHintRTL {
     outline: none;
     border: 0px;
-    padding-right: 10px;
+    padding-right: 0px;
     background-color: rgba(255, 255, 255, 0);
     background-color: \9 transparent;
 }
@@ -4234,7 +4237,7 @@ select[disabled] option {
 .labelAnchorPendingError,
 .labelAnchorPendingErrorRTL {
     color: black;
-    font-family: IRANSans, sans-serif;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
     text-decoration: none;
 }
 
@@ -4658,7 +4661,7 @@ select[disabled] option {
     padding-right: 6px;
     padding-bottom: 4px;
     padding-left: 6px;
-    font-size: 12px;
+    font-size: 13px;
 }
 
 /*============================================================
@@ -4741,8 +4744,8 @@ select[disabled] option {
     background-color: white;
     color: black;
     border: 2px solid white;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .dateChooserNavButton,
@@ -4762,8 +4765,8 @@ select[disabled] option {
     background-image: -webkit-linear-gradient(top, #e7f0fe 0%, #e7f2fe 4%, #e6f0fe 9%, #c9dffd 65%, #c4ddfd 96%, #bbd5f6 100%);
     background-image: linear-gradient(to bottom, #e7f0fe 0%, #e7f2fe 4%, #e6f0fe 9%, #c9dffd 65%, #c4ddfd 96%, #bbd5f6 100%);
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* year/month buttons */
@@ -4922,8 +4925,8 @@ select[disabled] option {
 .dateChooserBorderedBottomButtonFocusedOver,
 .dateChooserBorderedBottomButtonFocusedDown {
     background-color: white;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border: 1px solid #ababab;
     color: #4d4d4d;
     cursor: pointer;
@@ -5037,8 +5040,8 @@ select[disabled] option {
 .rangebarRange,
 .rangebarValue {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 10px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 11px;
 }
 
 .pendingSliderValue {
@@ -5281,8 +5284,8 @@ select[disabled] option {
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     -webkit-text-size-adjust: 100%;
 }
 
@@ -5296,8 +5299,8 @@ select[disabled] option {
 .detailHeader {
     background-color: #bdddff;
     color: #4d4d4d;
-    font-family: IRANSans, sans-serif;
-    font-size: 14px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 15px;
     font-weight: bold;
 }
 
@@ -5340,16 +5343,16 @@ select[disabled] option {
 .offlineMessage,
 .emptyMessage {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 11px;
 }
 
 .gridDragTracker {
     border: 1px dotted gray;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 1px;
 }
 
@@ -5368,8 +5371,8 @@ select[disabled] option {
 .recordEditorCell {
     background-color: #fafafa;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /*============================================================
@@ -5448,8 +5451,8 @@ select[disabled] option {
 .sorterButtonSelectedOver,
 .sorterButtonSelectedDown {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #97b4d3;
     border-left: 1px solid #fafafa;
     border-right: 1px solid #cccccc;
@@ -5522,8 +5525,8 @@ select[disabled] option {
 .sorterButton {
     background-color: #fafafa;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #b6bfc9;
     border-left: 1px solid #fafafa;
     border-right: 1px solid #cccccc;
@@ -5536,8 +5539,8 @@ select[disabled] option {
 .sorterButtonSelected {
     color: black;
     background-color: #f0f6ff;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #97b4d3;
     border-left: 1px solid white;
     border-right: 1px solid #cdcfd0;
@@ -5564,13 +5567,13 @@ select[disabled] option {
 .sorterButtonSelectedDisabled {
     background-color: #fef6f6;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #c1c8d2;
     border-left: 1px solid #f6f7f9;
     border-right: 1px solid #c1c8d2;
     color: #ababab;
-    font-size: 11px;
+    font-size: 12px;
     padding-left: 3px;
     padding-right: 3px;
 }
@@ -5582,8 +5585,8 @@ select[disabled] option {
 .sorterButtonOver,
 .sorterButtonDown {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     background-color: #a2ccf6;
     padding-left: 3px;
     padding-right: 3px;
@@ -5597,8 +5600,8 @@ select[disabled] option {
 .sorterButtonSelectedDown {
     color: black;
     background-color: aliceblue;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-left: 3px;
     padding-right: 3px;
 }
@@ -5682,8 +5685,8 @@ select[disabled] option {
 .headerButtonSelectedOverRotated,
 .headerButtonSelectedDownRotated {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #97b4d3;
     border-left: 1px solid #fafafa;
     border-right: 1px solid #cccccc;
@@ -5743,8 +5746,8 @@ select[disabled] option {
 .headerButtonRotated {
     background-color: #fafafa;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #b6bfc9;
     border-left: 1px solid #fafafa;
     border-right: 1px solid #cccccc;
@@ -5756,8 +5759,8 @@ select[disabled] option {
 .headerButtonSelectedRotated {
     color: black;
     background-color: #f0f6ff;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #97b4d3;
     border-left: 1px solid white;
     border-right: 1px solid #cdcfd0;
@@ -5780,13 +5783,13 @@ select[disabled] option {
 .headerButtonSelectedDisabledRotated {
     background-color: #fef6f6;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     border-bottom: 1px solid #c1c8d2;
     border-left: 1px solid #f6f7f9;
     border-right: 1px solid #c1c8d2;
     color: #ababab;
-    font-size: 11px;
+    font-size: 12px;
     padding-top: 3px;
     padding-bottom: 3px;
 }
@@ -5796,8 +5799,8 @@ select[disabled] option {
 .headerButtonOverRotated,
 .headerButtonDownRotated {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     background-color: #a2ccf6;
     padding-top: 3px;
     padding-bottom: 3px;
@@ -5809,8 +5812,8 @@ select[disabled] option {
 .headerButtonSelectedDownRotated {
     color: black;
     background-color: aliceblue;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-top: 3px;
     padding-bottom: 3px;
 }
@@ -5825,8 +5828,8 @@ select[disabled] option {
 .headerTitleDisabled,
 .headerTitleSelectedDisabled {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
 }
@@ -5853,8 +5856,8 @@ select[disabled] option {
 .filterOperatorIconSelected,
 .filterOperatorIconSelectedFocused,
 .filterOperatorIconSelectedFocusedOver {
-    font-family: IRANSans, sans-serif;
-    font-size: 10px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 11px;
     line-height: 18px;
     text-align: center;
     padding: 0px;
@@ -5916,8 +5919,8 @@ select[disabled] option {
 .specialColSelectedOver,
 .specialColDisabled,
 .groupNode {
-    font-size: 11px;
-    font-family: IRANSans, sans-serif;
+    font-size: 12px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
     border-top: 1px solid #fafafa;
     border-bottom: 1px solid #f0f0f0;
     color: black;
@@ -5929,8 +5932,8 @@ select[disabled] option {
     border-top: 1px solid #fafafa;
     border-bottom: 1px solid #fafafa;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     text-overflow: ellipsis;
 }
 
@@ -6054,7 +6057,7 @@ select[disabled] option {
 .groupNode {
     border-bottom: 1px solid #8FA7C7;
     color: #3765A4;
-    font-family: IRANSans, sans-serif;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
     font-weight: bold;
 }
 
@@ -6083,8 +6086,8 @@ select[disabled] option {
 .treeTallCellDisabled,
 .treeTallCellDisabledDark {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     text-overflow: ellipsis;
 }
 
@@ -6162,7 +6165,7 @@ select[disabled] option {
 
 /* Multi-sort - sort-index appearing next to sort-arrows in field headers */
 .sortNumeral {
-    font-size: 7px;
+    font-size: 8px;
     vertical-align: top;
 }
 
@@ -6180,6 +6183,8 @@ select[disabled] option {
     background-image: -webkit-linear-gradient(bottom, #f4f7fb 0%, #f4f7fb 2%, #e7f0fe 2%, #cdddf4 100%);
     background-image: linear-gradient(to top, #f4f7fb 0%, #f4f7fb 2%, #e7f0fe 2%, #cdddf4 100%);
     border: 1px solid #c4c4c4;
+    padding-right: 6px;
+    padding-left: 10px;
 }
 
 .ribbonBar {
@@ -6226,9 +6231,10 @@ select[disabled] option {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12.4px;
     padding: 2px 5px;
+    padding-left: 10px;
 }
 
 .toolStripButtonDisabled {
@@ -6395,8 +6401,8 @@ select[disabled] option {
     -webkit-border-top-right-radius: 2px;
     border-top-right-radius: 2px;
     color: #4d4d4d;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: bold;
     padding: 3px;
 }
@@ -6422,8 +6428,8 @@ select[disabled] option {
     -webkit-border-radius: 3px;
     border-radius: 3px;
     padding: 4px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     color: #4d4d4d;
 }
 
@@ -6991,8 +6997,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7014,8 +7020,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7037,8 +7043,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #153E8A;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
 }
@@ -7061,8 +7067,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7087,8 +7093,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7100,8 +7106,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7110,8 +7116,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7120,8 +7126,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7137,8 +7143,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #153e8a;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7160,8 +7166,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7183,8 +7189,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7206,8 +7212,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -moz-border-radius-topright: 5px;
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7229,8 +7235,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7252,8 +7258,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #153E8A;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
 }
@@ -7276,8 +7282,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7302,8 +7308,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7315,8 +7321,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7325,8 +7331,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7335,8 +7341,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7352,8 +7358,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #153e8a;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7375,8 +7381,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7398,8 +7404,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-right-radius: 5px;
     border-top-right-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7421,8 +7427,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -moz-border-radius-topleft: 5px;
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7444,8 +7450,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7467,8 +7473,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #153E8A;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
 }
@@ -7491,8 +7497,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7517,8 +7523,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     border-color: #66afe9;
@@ -7530,8 +7536,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7540,8 +7546,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7550,8 +7556,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-top: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7567,8 +7573,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #153e8a;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7590,8 +7596,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7613,8 +7619,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-top-left-radius: 5px;
     border-top-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
 }
 
@@ -7636,8 +7642,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -moz-border-radius-bottomleft: 5px;
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding-top: 1px;
 }
@@ -7660,8 +7666,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7684,8 +7690,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #153E8A;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
@@ -7709,8 +7715,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
@@ -7736,8 +7742,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #2e67d0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: normal;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
@@ -7750,8 +7756,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7761,8 +7767,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7772,8 +7778,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid gray;
     border-right: 1px solid gray;
     border-bottom: 1px solid gray;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7790,8 +7796,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #153e8a;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7814,8 +7820,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7838,8 +7844,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     -webkit-border-bottom-left-radius: 5px;
     border-bottom-left-radius: 5px;
     color: #b3b3b3;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding: 0 7px 1px 7px;
     padding: 1px 7px 1px 7px;
 }
@@ -7868,8 +7874,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid white;
     border-right: 1px solid #ababab;
     border-top: 1px solid white;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     color: black;
     text-overflow: ellipsis;
 }
@@ -7880,8 +7886,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid #f0f0f0;
     border-right: 1px solid #ababab;
     border-top: 1px solid #f0f0f0;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     color: black;
     text-overflow: ellipsis;
 }
@@ -7892,8 +7898,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-left: 1px solid white;
     border-right: 1px solid white;
     border-top: 1px solid white;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     color: #666666;
     text-overflow: ellipsis;
 }
@@ -7946,7 +7952,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 /* row headers */
 .rowHeader {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #FFFFFF;
@@ -7958,7 +7964,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #264260;
@@ -7970,7 +7976,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #264260;
@@ -7982,7 +7988,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #808080;
     background-color: #6682A0;
     border-left: 1px solid #808080;
@@ -7994,7 +8000,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .rowHeaderSelected,
 .rowHeaderSelectedDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #3E74B3;
     border-left: 1px solid #00008B;
@@ -8006,7 +8012,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderSelectedOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #3E74B3;
     border-top: 1px solid white;
@@ -8018,7 +8024,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderSelectedDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #808080;
     background-color: #3E74B3;
     border-left: 1px solid #808080;
@@ -8030,7 +8036,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 /* row label */
 .rowHeaderLabel {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #204B7A;
@@ -8043,7 +8049,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderLabelOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #204B7A;
@@ -8056,7 +8062,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderLabelDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #204B7A;
@@ -8069,7 +8075,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderLabelDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #808080;
     background-color: #7D7D7D;
@@ -8082,7 +8088,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .rowHeaderLabelSelected,
 .rowHeaderLabelSelectedDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8095,7 +8101,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderLabelSelectedOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8108,7 +8114,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .rowHeaderLabelSelectedDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #808080;
     background-color: #7D7D7D;
@@ -8121,7 +8127,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 /* column headers */
 .colHeader {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #FFFFFF;
@@ -8133,7 +8139,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #264260;
@@ -8145,7 +8151,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: white;
     background-color: #6682A0;
     border-left: 1px solid #264260;
@@ -8157,7 +8163,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #808080;
     background-color: #6682A0;
     border-left: 1px solid #808080;
@@ -8169,7 +8175,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .colHeaderSelected,
 .colHeaderSelectedDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8182,7 +8188,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderSelectedOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8195,7 +8201,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderSelectedDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #808080;
     background-color: #3E74B3;
@@ -8208,7 +8214,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 /* column label */
 .colHeaderLabel {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #204B7A;
@@ -8222,7 +8228,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .colHeaderLabelOver,
 .colHeaderLabelDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #204B7A;
@@ -8235,7 +8241,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderLabelDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #808080;
     background-color: #7D7D7D;
@@ -8248,7 +8254,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .colHeaderLabelSelected,
 .colHeaderLabelSelectedDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8261,7 +8267,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderLabelSelectedOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8274,7 +8280,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .colHeaderLabelSelectedDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: #808080;
     background-color: #7D7D7D;
@@ -8287,7 +8293,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 /* inner header */
 .innerHeader {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: black;
     background-color: #CCCCCC;
     border-left: 1px solid white;
@@ -8299,7 +8305,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .innerHeaderOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: black;
     background-color: #CCCCCC;
     border-left: 1px solid #808080;
@@ -8311,7 +8317,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .innerHeaderDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: black;
     background-color: #CCCCCC;
     border-left: 1px solid #808080;
@@ -8323,7 +8329,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .innerHeaderDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #808080;
     background-color: #CCCCCC;
     border-left: 1px solid #808080;
@@ -8335,7 +8341,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .innerHeaderSelected,
 .innerHeaderSelectedDown {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8348,7 +8354,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .innerHeaderSelectedOver {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     font-weight: bold;
     color: white;
     background-color: #3E74B3;
@@ -8361,7 +8367,7 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .innerHeaderSelectedDisabled {
     font-family: Arial, Verdana, Bitstream Vera Sans, sans-serif;
-    font-size: 11px;
+    font-size: 12px;
     color: #808080;
     background-color: #CCCCCC;
     border-left: 1px solid #808080;
@@ -8383,30 +8389,30 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 
 .chartTitle {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 14px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 15px;
     font-weight: bold;
     text-align: center;
 }
 
 .chartAxisTitle {
     color: #0000ff;
-    font-family: IRANSans, sans-serif;
-    font-size: 12px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 13px;
     font-weight: bold;
 }
 
 .chartValueTitle {
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .chartTotal {
     background-color: linen;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 12px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 13px;
 }
 
 .chartBody {
@@ -8454,8 +8460,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 ============================================================*/
 .printHeader {
     border: 1px solid black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: bold;
 }
 
@@ -8474,8 +8480,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calendarWorkdayDisabled,
@@ -8497,8 +8503,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calendarWorkdaySelected,
@@ -8507,8 +8513,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .labelColumn,
@@ -8519,8 +8525,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .labelColumnOver,
@@ -8538,8 +8544,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthDayHeaderOver,
@@ -8552,8 +8558,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthDayHeaderDisabled,
@@ -8562,8 +8568,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthDayBody,
@@ -8572,8 +8578,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthDayBodyOver,
@@ -8586,8 +8592,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthDayBodyDisabled,
@@ -8596,8 +8602,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* calMonthOtherDayHeader and Body */
@@ -8607,8 +8613,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: #454545;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthOtherDayHeaderSelected,
@@ -8619,8 +8625,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: #454545;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthOtherDayBody,
@@ -8631,8 +8637,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .calMonthOtherDayBodyOver,
@@ -8641,8 +8647,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* calMonthOtherDayBlank */
@@ -8658,8 +8664,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
     color: #454545;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* calMonthEventLink */
@@ -8687,8 +8693,8 @@ a.calMonthEventLink:active {
 .eventWindow {
     background-color: aliceblue;
     border: 1px solid #c8d9f4;
-    font-family: IRANSans, sans-serif;
-    font-size: 9px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 10px;
     padding: 1px;
     margin: 0px;
 }
@@ -8699,8 +8705,8 @@ a.calMonthEventLink:active {
     background-color: #d0dff6;
     color: #4d4d4d;
     border: 1px solid #d0dff6;
-    font-family: IRANSans, sans-serif;
-    font-size: 9px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 10px;
     margin: 1px;
     padding: 2px 2px 0px 2px;
 }
@@ -8720,8 +8726,8 @@ a.calMonthEventLink:active {
     background-color: aliceblue;
     color: black;
     border: 1px solid aliceblue;
-    font-family: IRANSans, sans-serif;
-    font-size: 9px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 10px;
     margin-left: 1px;
     margin-right: 1px;
 }
@@ -8757,8 +8763,8 @@ a.calMonthEventLink:active {
     display: inline-block;
     color: white;
     background-color: #AA0000;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 /* make all grippers rounded */
@@ -8799,8 +8805,8 @@ a.calMonthEventLink:active {
 .propSheetValueDisabled {
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     margin: 0px;
     padding: 0px;
 }
@@ -8811,8 +8817,8 @@ a.calMonthEventLink:active {
     background-color: #dedede;
     border-bottom: 1px solid #ababab;
     border-right: 1px solid #ababab;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     padding-left: 4px;
     padding-right: 4px;
 }
@@ -8821,16 +8827,16 @@ a.calMonthEventLink:active {
 .propSheetValueError {
     background-color: #cfd9f2;
     color: #204269;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
 }
 
 .propSheetField,
 .propSheetFieldDisabled {
     background-color: white;
     border: 0px;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     margin-top: 3px;
     padding-bottom: 0px;
     padding-top: 0px;
@@ -8843,8 +8849,8 @@ a.calMonthEventLink:active {
     background-color: #cccccc;
     border-bottom: 1px solid #ababab;
     color: black;
-    font-family: IRANSans, sans-serif;
-    font-size: 11px;
+    font-family: IRANSans, Arial, Verdana, sans-serif;
+    font-size: 12px;
     font-weight: bold;
     padding: 4px;
 }

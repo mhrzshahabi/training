@@ -37,9 +37,11 @@ public interface ISkillService {
 //    List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable);
 //    Integer getUnAttachedCompetencesCount(Long skillID);
     List<SkillGroupDTO.Info> getSkillGroups(Long skillID);
+    List<NeedAssessmentDTO.Info> getNeedAssessment(Long skillID);
     List<SkillGroupDTO.Info> getUnAttachedSkillGroups(Long skillID, Pageable pageable);
     Integer getUnAttachedSkillGroupsCount(Long skillID);
 //    List<JobDTO.Info> getJobs(Long skillID);
+
 
     CategoryDTO.Info getCategory(Long skillID);
     SubCategoryDTO.Info getSubCategory(Long skillID);

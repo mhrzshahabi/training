@@ -302,7 +302,7 @@
             }
         })]
     });
-    var Window_EducationOrientation = isc.TrWindow.create({
+    var Window_EducationOrientation = isc.Window.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -555,7 +555,7 @@
             }
         })]
     });
-    var Window_EducationMajor = isc.TrWindow.create({
+    var Window_EducationMajor = isc.Window.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -807,7 +807,7 @@
             }
         })]
     });
-    var Window_EducationLevel = isc.TrWindow.create({
+    var Window_EducationLevel = isc.Window.create({
         autoSize: true,
         autoCenter: true,
         isModal: true,

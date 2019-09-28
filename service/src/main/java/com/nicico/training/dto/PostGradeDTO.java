@@ -19,7 +19,7 @@ public class PostGradeDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGrade - Info")
-    public static class Info extends PostGradeDTO {
+    public static class Info {
         private Long id;
         private String code;
         private String titleFa;
