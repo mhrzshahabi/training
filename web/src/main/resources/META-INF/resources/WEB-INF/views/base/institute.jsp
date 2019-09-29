@@ -593,7 +593,7 @@
 
     var DynamicForm_Institute_Institute = isc.DynamicForm.create({
         width: "100%",
-        height: "100%",
+        // height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 150,
@@ -609,12 +609,23 @@
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
-            {
+{
+name: "addressId",
+hidden: true
+},
+{
+name: "accountInfoId",
+hidden: true
+},
+{
+name: "managerId", hidden: true
+},
+{
                 name: "titleFa",
                 title: "عنوان فارسی",
                 colSpan: 2,
                 required: true,
-                width: 250,
+                width: 200,
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255"
@@ -623,18 +634,10 @@
                 name: "titleEn",
                 title: "عنوان لاتین",
                 colSpan: 2,
-                width: 250,
+                width: 200,
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "255"
-            },
-            {
-                name: "addressId",
-                hidden: true
-            },
-            {
-                name: "accountInfoId",
-                hidden: true
             },
             {
                 name: "parentInstituteId",
@@ -656,7 +659,7 @@
                 readOnly: true,
                 type: 'text',
                 keyPressFilter: "[]",
-                width: 300,
+                width: 200,
                 length: "10"
             },
             {
@@ -665,13 +668,10 @@
                 showTitle: false,
                 canEdit: false,
                 colSpan: 4,
-                width: 500,
+                width: 430,
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "255"
-            },
-            {
-                name: "managerId", hidden: true
             },
             {
                 name: "manager.nationalCode",
@@ -684,7 +684,7 @@
                         ListGrid_Institute_PersonalList_Select();
                     }
                 }],
-                width: 300,
+                width: 200,
                 type: 'text',
                 required: true,
                 keyPressFilter: "[0-9]",
@@ -700,7 +700,7 @@
                 showTitle: false,
                 canEdit: false,
                 colSpan: 2,
-                width: 250,
+                width: 210,
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
@@ -711,7 +711,7 @@
                 canEdit: false,
                 showTitle: false,
                 colSpan: 2,
-                width: 250,
+                width: 210,
                 type: 'text',
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "30"
@@ -721,7 +721,7 @@
                 type: "IntegerItem",
                 colSpan: 2,
                 title: "نوع موسسه",
-                width: 250,
+                width: 200,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -750,7 +750,7 @@
                 colSpan: 2,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                width: 250,
+                width: 200,
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
@@ -784,7 +784,7 @@
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "ValuesManager_Institute_InstituteValue",
-        numCols: 2,
+        numCols: 4,
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 2,
@@ -792,7 +792,7 @@
         fields: [
             {
                 name: "teacherNumPHD",
-                title: "استاد دکتری",
+                title: "دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -800,7 +800,7 @@
             },
             {
                 name: "teacherNumLicentiate",
-                title: "استاد لیسانس",
+                title: "لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -808,7 +808,7 @@ width:100
             },
             {
                 name: "teacherNumMaster",
-                title: "استاد فوق لیسانس",
+                title: "فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -816,7 +816,7 @@ width:100
             },
             {
                 name: "teacherNumAssociate",
-                title: "استاد فوق دیپلم",
+                title: "فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -824,7 +824,7 @@ width:100
             },
             {
                 name: "teacherNumDiploma",
-                title: "استاد دیپلم/زیردیپلم",
+                title: "دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -843,7 +843,7 @@ width:100
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "ValuesManager_Institute_InstituteValue",
-        numCols: 2,
+        numCols: 4,
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 2,
@@ -851,7 +851,7 @@ width:100
         fields: [
             {
                 name: "empNumPHD",
-                title: " کارمند دکتری",
+                title: "دکتری",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -859,7 +859,7 @@ width:100
             },
             {
                 name: "empNumLicentiate",
-                title: "کارمند لیسانس",
+                title: "لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -867,7 +867,7 @@ width:100
             },
             {
                 name: "empNumMaster",
-                title: "کارمند فوق لیسانس",
+                title: "فوق لیسانس",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -875,7 +875,7 @@ width:100
             },
             {
                 name: "empNumAssociate",
-                title: " کارمند فوق دیپلم",
+                title: "فوق دیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -883,7 +883,7 @@ width:100
             },
             {
                 name: "empNumDiploma",
-                title: "کارمند دیپلم/زیردیپلم",
+                title: "دیپلم/زیردیپلم",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -991,7 +991,7 @@ width:100
                             required: true,
                             colSpan: 3,
                             keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                            width: 300,
+                            width: 640,
                             type: 'textArea',
                             length: "255"
                         }
@@ -1015,9 +1015,8 @@ width:100
     var TabSet_Institute_InstituteTeacherNum = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "100%",
-        width: "20%",
-        margin: 20,
+        // height: "100%",
+        width: "48%",
         newPadding: 5,
         tabs: [
             {
@@ -1029,13 +1028,13 @@ width:100
     var TabSet_Institute_InstituteEmpNum = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "100%",
-        width: "20%",
-        margin: 20,
+        // height: "100%",
+        width: "48%",
+         // margin:5,
         newPadding: 5,
         tabs: [
             {
-                title: "تعداد کارمندان", canClose: false,
+                title: "تعداد کارمندان", canClose: false,titleWidth:this.width,
                 pane: DynamicForm_Institute_InstituteEmpNum
             }
         ]
@@ -1044,9 +1043,8 @@ width:100
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
         height: "100%",
-        width: "60%",
-        margin: 20,
-        newPadding: 5,
+        width: "100%",
+        padding: 5,
         tabs: [
             {
                 title: "ارتباط با موسسه", canClose: false,
@@ -1057,27 +1055,29 @@ width:100
 
     var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
         width: "100%",
-        height: 250,
-        margin: 2,
-        newPadding: 5,
-
-        members: [TabSet_Institute_InstituteEmpNum, TabSet_Institute_InstituteTeacherNum,TabSet_Institute_InstituteAddress]
-    });
-
-
-    var VLayout__Institute_Institute_Val = isc.VLayout.create({
-        width: "100%",
-        height: "50%",
-// border: "1px solid blue",
+        // height: 250,
+        // margin:5,
         padding: 5,
-        members: [DynamicForm_Institute_Institute, HLayout_Institute_InstituteTeacherAndEmp]
+
+        members: [TabSet_Institute_InstituteEmpNum,isc.LayoutSpacer.create({width: "5"}), TabSet_Institute_InstituteTeacherNum]
     });
+
+
+//     var VLayout_Institute_Institute_Val = isc.VLayout.create({
+//         width: "100%",
+//         height: "50%",
+// // border: "1px solid blue",
+//         padding: 5,
+//         members: [HLayout_Institute_InstituteTeacherAndEmp]
+//     });
+
     var VLayout__Institute_Institute_Address = isc.VLayout.create({
         width: "100%",
-        height: "25%",
+        // height: "25%",
 // border: "1px solid blue",
-        members: []
+        members: [TabSet_Institute_InstituteAddress]
     });
+
 
     var IButton_Institute_Institute_Exit = isc.IButton.create({
         top: 260,
@@ -1142,8 +1142,11 @@ width:100
 
     var VLayout_Institute_Institute_Form = isc.VLayout.create({
         width: "100%",
-        height: "690",
-        members: [VLayout__Institute_Institute_Val, VLayout__Institute_Institute_Address]
+        height: "510 ",
+        members: [
+                    DynamicForm_Institute_Institute,
+                    HLayout_Institute_InstituteTeacherAndEmp,
+                    VLayout__Institute_Institute_Address]
     });
 
     var HLayOut_Institute_InstituteSaveOrExit = isc.HLayout.create({
@@ -1162,7 +1165,7 @@ width:100
     var Window_Institute_Institute = isc.Window.create({
         title: "<spring:message code='training.institute'/>",
         width: 800,
-        height: 700,
+        height: 520,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -1960,7 +1963,7 @@ width:100
                 type: "IntegerItem",
                 title: "بانک",
                 textAlign: "center",
-                width: 250,
+                width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -1987,7 +1990,7 @@ width:100
                 type: "IntegerItem",
                 title: "شعبه بانک",
                 textAlign: "center",
-                width: 250,
+width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -2014,29 +2017,25 @@ width:100
                 title: "شماره حساب",
                 required: true,
                 keyPressFilter: "[0-9|/|.]| ",
-                width: 250,
-                length: 30
+width: "*",
             },
             {
                 name: "cartNumber",
                 keyPressFilter: "[0-9|-| ]",
                 title: "شماره کارت",
-                width: 250,
-                length: 30
+width: "*",
             },
             {
                 name: "shabaNumber",
                 title: "شماره شبا",
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
-                width: 250,
-                length: "30"
+width: "*",
             },
             {
                 name: "accountOwnerName",
                 title: "نام صاحب حساب",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "100",
-                width: 250
+width: "*",
             },
             {
                 name: "description",
@@ -2044,7 +2043,7 @@ width:100
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "500",
                 colSpan:3,
-                width: 630
+width: "*",
             }
         ]
     });

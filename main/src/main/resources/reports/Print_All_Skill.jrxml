@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Training"/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="newOracle"/>
 	<property name="ireport.zoom" value="1.6105100000000008"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
@@ -15,8 +15,7 @@
 	"TBL_SKILL"."C_DESCRIPTION",
 	"TBL_CATEGORY"."C_TITLE_FA" "Category",
 	"TBL_SUB_CATEGORY"."C_TITLE_FA" "SubCategory",
-	"TBL_SKILL_LEVEL"."C_TITLE_FA" "SkillLevel",
-	DECODE("TBL_SKILL"."E_DOMAIN_TYPE",1,'دانشی',2,'مهارتی',3,'نگرشی') "DomainType"
+	"TBL_SKILL_LEVEL"."C_TITLE_FA" "SkillLevel"
 FROM "TBL_SKILL",
 	"TBL_SUB_CATEGORY",
 	"TBL_SKILL_LEVEL",
@@ -34,7 +33,6 @@ WHERE
 	<field name="Category" class="java.lang.String"/>
 	<field name="SubCategory" class="java.lang.String"/>
 	<field name="SkillLevel" class="java.lang.String"/>
-	<field name="DomainType" class="java.lang.String"/>
 	<group name="SubCategory">
 		<groupExpression><![CDATA[$F{SubCategory}]]></groupExpression>
 		<groupHeader>
@@ -66,7 +64,7 @@ WHERE
 					<text><![CDATA[کد مهارت]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="310" y="41" width="110" height="32" uuid="5899e9d4-8577-4a32-9d41-8256a38d4f99"/>
+					<reportElement x="291" y="41" width="129" height="32" uuid="5899e9d4-8577-4a32-9d41-8256a38d4f99"/>
 					<box>
 						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -79,20 +77,7 @@ WHERE
 					<text><![CDATA[سطح مهارت]]></text>
 				</staticText>
 				<staticText>
-					<reportElement x="200" y="41" width="110" height="32" uuid="3e735cc5-4fe8-4d8a-ad0e-abc609cf37dd"/>
-					<box>
-						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-						<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-						<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					</box>
-					<textElement textAlignment="Center" verticalAlignment="Middle">
-						<font fontName="B Titr" size="14" isBold="true"/>
-					</textElement>
-					<text><![CDATA[حوزه مهارت]]></text>
-				</staticText>
-				<staticText>
-					<reportElement x="0" y="41" width="200" height="32" uuid="98e4c8a7-03ef-4de2-9fcf-8a2f7ca249c6"/>
+					<reportElement x="0" y="41" width="291" height="32" uuid="98e4c8a7-03ef-4de2-9fcf-8a2f7ca249c6"/>
 					<box>
 						<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 						<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -205,7 +190,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{C_CODE}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="310" y="0" width="110" height="26" uuid="fe15c515-7727-4f32-a92f-9bc8a8185ee8"/>
+				<reportElement x="291" y="0" width="129" height="26" uuid="fe15c515-7727-4f32-a92f-9bc8a8185ee8"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
@@ -218,20 +203,7 @@ WHERE
 				<textFieldExpression><![CDATA[$F{SkillLevel}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="200" y="0" width="110" height="26" uuid="79c6eb2c-13b7-4a1f-ba6e-e9b23ef2654e"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{DomainType}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="0" y="0" width="200" height="26" uuid="40cccae6-c9f2-4d4b-9bba-119e523acbfb"/>
+				<reportElement x="0" y="0" width="291" height="26" uuid="40cccae6-c9f2-4d4b-9bba-119e523acbfb"/>
 				<box>
 					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
 					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>

@@ -562,6 +562,26 @@
                     }
                 },
 
+                recordDrop: function(dropRecords, targetRecord, index, sourceWidget){
+                    if(sourceWidget.ID === "courseAllGrid2"){
+                        preCourseGrid.transferSelectedData(courseAllGrid2);}
+                    if(sourceWidget.ID === "courseAllGrid"){
+                        if(targetRecord){
+                            equalCourseGrid.addData({
+                                nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + targetRecord.nameEC,
+                                idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + targetRecord.idEC
+                            });
+                            equalCourseGrid.removeData(targetRecord);
+                        }
+                        else{
+                            equalCourseGrid.addData({
+                                nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
+                                idEC: courseAllGrid.getSelectedRecord().id.toString()
+                            });
+                        }
+                    }
+                },
+
 // dropComplete: function() {
 // equalCourseGrid.getSelectedRecord().titleFa = equalCourseGrid.getSelectedRecord().titleFa+" و "+courseAllGrid.getSelectedRecord().titleFa;
 // equalCourseGrid.refreshFields();
@@ -1358,6 +1378,9 @@
                 pane: isc.DynamicForm.create({
                     numCols:6,
                     height:"100%",
+                    overflow:"hidden",
+                    styleName:"paddingRight",
+
                     // border:"1px solid red",
                     fields: [
                         {
@@ -1436,6 +1459,8 @@
                 pane: isc.DynamicForm.create({
                     numCols:6,
                     height:"100%",
+                    overflow:"hidden",
+                    styleName:"paddingRight_hamed",
                     fields: [
                         {
                             name: "courseAllGrid22",
@@ -1480,11 +1505,14 @@
                             canRemoveRecords: true,
                             canDragRecordsOut: false,
                             selectionType: "single",
+                            canAcceptDroppedRecords: true,
+                            // canReorderRecords: true,
+
 // showFilterEditor:true,
 // filterOnKeypress:true,
 // canAcceptDroppedRecords: true,
                             dragDataAction: "none",
-                            canHover: false
+                            canHover: false,
 // selectionChanged : function(record, state) {
 //     orBtn.setTitle(record.titleFa);
 // }
@@ -1540,7 +1568,12 @@
                     ]
                 })
             }
-        ]
+        ],
+        tabSelected: function(tabSet) {
+            if(tabSet.valueOf()==2){
+                andBtn.disable();
+            }
+        }
     });
     var VLayout_Tab_JspCourse = isc.VLayout.create({
         membersMargin: 5,

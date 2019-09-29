@@ -22,6 +22,7 @@
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
+    <link rel="stylesheet" href="<spring:url value='/static/css/training.css' />"/>
     <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
@@ -728,8 +729,6 @@
         }
     });
     // ---------------------------------------- Not Ok - End ----------------------------------------
-
-
 
 </script>
 </body>

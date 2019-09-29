@@ -75,9 +75,6 @@
                 padding: 5,
                 ID: "totalsLabel_competence"
             }),
-            isc.LayoutSpacer.create({
-                width: "40"
-            }),
         ]
     });
 
@@ -128,7 +125,7 @@
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
-            if (totalRows > 0 && this.data.lengthIsKnown()) {
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_competence.setContents("&nbsp;");
@@ -186,6 +183,7 @@
     });
 
     let CompetenceWin_competence = isc.Window.create({
+        width: 800,
         items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
             members: [
                 isc.TrSaveBtn.create({
@@ -303,13 +301,13 @@
 
     // To show an ok dialog
     function showOkDialog(msg, iconName) {
-        createDialog('info', 'info');
-        createDialog('ask', 'ask');
-        createDialog('confirm', 'confirm');
-        // iconName = iconName ? iconName : 'say';
-        // // let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png", autoDraw: true});
-        // let dialog = isc.TrOkDialog.create({message: msg, autoDraw: true});
-        // Timer.setTimeout(function () {
-        //     dialog.close();
-        // }, 3000);
+        // createDialog('info', 'info');
+        // createDialog('ask', 'ask');
+        // createDialog('confirm', 'confirm');
+        iconName = iconName ? iconName : 'say';
+        // let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png", autoDraw: true});
+        let dialog = isc.MyOkDialog.create({message: msg, autoDraw: true});
+        Timer.setTimeout(function () {
+            dialog.close();
+        }, 3000);
     };

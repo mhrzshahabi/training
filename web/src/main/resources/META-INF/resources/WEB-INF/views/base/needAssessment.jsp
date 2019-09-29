@@ -232,6 +232,7 @@
     });
 
     let NeedAssessmentWin_needAssessment = isc.Window.create({
+        width: 800,
         items: [NeedAssessmentDF_needAssessment, isc.TrHLayoutButtons.create({
             members: [
                 isc.TrSaveBtn.create({
