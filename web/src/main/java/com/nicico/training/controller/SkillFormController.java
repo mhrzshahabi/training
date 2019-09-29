@@ -7,10 +7,7 @@ com.nicico.training.controller.masterData
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.ResponseEntity;
+import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
@@ -20,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
+
+import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
@@ -37,22 +36,23 @@ public class SkillFormController {
         return "base/skill";
     }
 
+
     @RequestMapping("/print-all/{type}")
-    public ResponseEntity<?> print(Authentication authentication, @PathVariable String type) {
-        String token = "";
-        if (authentication instanceof OAuth2AuthenticationToken) {
-            OAuth2AuthorizedClient client = authorizedClientService
-                    .loadAuthorizedClient(
-                            ((OAuth2AuthenticationToken) authentication).getAuthorizedClientRegistrationId(),
-                            authentication.getName());
-            token = client.getAccessToken().getTokenValue();
-        }
+    public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
+
+
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-        HttpHeaders headers = new HttpHeaders();
+        final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
@@ -65,6 +65,8 @@ public class SkillFormController {
         else
             return null;
     }
+
+
 
 
 

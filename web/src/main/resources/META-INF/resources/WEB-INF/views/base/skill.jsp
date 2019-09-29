@@ -104,7 +104,7 @@
         fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });
 
-    RestDataSource_Skill_Need_Assessment = isc.TrDS.create({
+    var RestDataSource_Skill_Need_Assessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "contains"},
@@ -125,7 +125,6 @@
         fetchDataURL: skill_SkillHomeUrl + "/0/need-assessment"
     });
 
-
     var RestDataSource_Skill_UnAttached_Courses = isc.MyRestDataSource.create({
         fields: [
             {name: "id"},
@@ -140,7 +139,6 @@
         ],
         fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });
-
 
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
 
@@ -445,7 +443,6 @@
 
     //معرفی DataSourse ها و ایجاد امکان نمایش
 
-
     var ListGrid_Skill_Attached_SkillGroups = isc.ListGrid.create({
         width: "100%",
         height: "100%",
@@ -661,7 +658,6 @@
 
 
     };
-
     function ListGrid_Skill_Skill_Edit() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -692,7 +688,6 @@
 
         }
     };
-
     function ListGrid_Skill_Skill_Add() {
         skill_Method = "POST";
         skill_ActionUrl = skill_SkillHomeUrl;
@@ -704,7 +699,6 @@
         Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
         Window_Skill_Skill.show();
     };
-
     function ListGrid_Skill_Skill_refresh() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
