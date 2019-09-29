@@ -79,8 +79,6 @@ public class ContactInfoDTO {
         private String mobile;
         private String personalWebSite;
         private String description;
-        private Long homeAddressId;
-        private Long workAddressId;
     }
 
     @Getter

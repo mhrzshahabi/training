@@ -287,7 +287,7 @@ var dummy;
                 width: "*",
                 hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true
-                , blur: function () {
+                , changed: function () {
                     var codeCheck;
                     codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
                     codeMeliCheck = codeCheck;
@@ -644,7 +644,7 @@ var dummy;
                 hint: "*********09",
                 showHintInField: true,
                 errorMessage: "<spring:message code='msg.mobile.validation'/>"
-                , blur: function () {
+                , changed: function () {
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.mobile"));
                     cellPhoneCheck = mobileCheck;
@@ -942,7 +942,7 @@ var dummy;
                 length: "30"
             },
             {
-                name: "personality.accountInfo.bbranch",
+                name: "personality.accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
@@ -950,7 +950,7 @@ var dummy;
             },
 
             {
-                name: "personality.accountInfo.bcode",
+                name: "personality.accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
@@ -1126,18 +1126,17 @@ var dummy;
                 title: "<spring:message code='email'/>",
                 type: 'text',
                 width: "*",
-                // hint: "test@nicico.com",
                 showHintInField: true,
                 length: "30"
-                , blur: function () {
+                , changed: function () {
                     var emailCheck;
-                    emailCheck = checkEmail(DynamicForm_BasicInfo_JspTeacher.getValue("personality.contactInfo.email"));
+                    emailCheck = checkEmail(DynamicForm_AddressInfo_JspTeacher.getValue("personality.contactInfo.email"));
                     mailCheck = emailCheck;
                     if (emailCheck === false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.email", "<spring:message
+                        DynamicForm_AddressInfo_JspTeacher.addFieldErrors("personality.contactInfo.email", "<spring:message
                                                                             code='msg.email.validation'/>", true);
                     if (emailCheck === true)
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
+                        DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
                 }
             },
 
@@ -1817,8 +1816,8 @@ var dummy;
             if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bbranch", personality.accountInfo.bbranch);
-                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bcode", personality.accountInfo.bcode);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
+                DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
                 DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
             }
