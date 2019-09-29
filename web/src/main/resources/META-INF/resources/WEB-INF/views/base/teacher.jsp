@@ -215,7 +215,7 @@ var dummy;
             },
             {
                 name: "enableStatus",
-                title: "<spring:message code='mobile.connection'/>",
+                title: "<spring:message code='status'/>",
                 align: "center",
                 type: "boolean",
                 canFilter: false
