@@ -103,9 +103,30 @@ public class CompanyService implements ICompanyService {
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
         Optional<Company> optionalCompany = companyDAO.findById(id);
         Company currentCompany = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompanyNotFound));
-        // Set<Long> AccountInfoIdSet = request.getAccountInfoIdSet();
+
+        PersonalInfo currentPersonalInfo=mapper.map(request.getManager(),PersonalInfo.class);
+        currentPersonalInfo.getContactInfoId();//contactInfoId
+
+
+       //---------------------UPDATE AccountInfo---------------------------------------------------------------------------------------------------
+        Optional<AccountInfo> optionalAccountInfo=accountInfoDAO.findById(currentCompany.getAccountInfoId());
+        AccountInfo accountInfo= optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
+        AccountInfo accountInfo1=new AccountInfo();
+        mapper.map(accountInfo,accountInfo1);
+        mapper.map(request.getAccountInfo(),accountInfo1);
+        accountInfoDAO.saveAndFlush(accountInfo1);
+
+       //------------------ --UPDATE MANAGER----- -------------------------------------------------------------------------------------------------
+       Optional<PersonalInfo> optionalManager=personalInfoDAO.findById(currentCompany.getManagerId());
+       PersonalInfo manager=optionalManager.orElseThrow(() ->new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
+       PersonalInfo manager1=new PersonalInfo();
+       mapper.map(manager,manager1);
+       mapper.map(request.getManager(),manager1);
+       personalInfoDAO.saveAndFlush(manager1);
+
         Company company = new Company();
         mapper.map(currentCompany, company);
+
         mapper.map(request, company);
         return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
     }

@@ -105,6 +105,7 @@ public class PersonalInfoDTO {
         private Long educationLevelId;
         private Long educationMajorId;
         private Long educationOrientationId;
+        private Long contactInfoId;
         }
 
     @Getter

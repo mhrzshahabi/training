@@ -67,7 +67,7 @@
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
-        showHeaderIcon: false, animateMinimize: true, width: 800, showMaximizeButton: true,
+        showHeaderIcon: false, animateMinimize: true,showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
 
