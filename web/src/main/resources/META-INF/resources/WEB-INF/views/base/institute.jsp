@@ -1963,7 +1963,7 @@ width:100
                 type: "IntegerItem",
                 title: "بانک",
                 textAlign: "center",
-                width: 250,
+                width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -1990,7 +1990,7 @@ width:100
                 type: "IntegerItem",
                 title: "شعبه بانک",
                 textAlign: "center",
-                width: 250,
+width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -2017,29 +2017,25 @@ width:100
                 title: "شماره حساب",
                 required: true,
                 keyPressFilter: "[0-9|/|.]| ",
-                width: 250,
-                length: 30
+width: "*",
             },
             {
                 name: "cartNumber",
                 keyPressFilter: "[0-9|-| ]",
                 title: "شماره کارت",
-                width: 250,
-                length: 30
+width: "*",
             },
             {
                 name: "shabaNumber",
                 title: "شماره شبا",
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
-                width: 250,
-                length: "30"
+width: "*",
             },
             {
                 name: "accountOwnerName",
                 title: "نام صاحب حساب",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
-                length: "100",
-                width: 250
+width: "*",
             },
             {
                 name: "description",
@@ -2047,7 +2043,7 @@ width:100
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "500",
                 colSpan:3,
-                width: 630
+width: "*",
             }
         ]
     });
