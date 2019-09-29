@@ -26,8 +26,8 @@ public class TeacherDTO {
 	@Accessors(chain = true)
 	@ApiModel("TeacherInfo")
 	public static class Info{
-		private Long id;
 
+		private Long id;
 		private DateTimeDTO.DateTimeRs createdDate;
 		private String createdBy;
 		private DateTimeDTO.DateTimeRs lastModifiedDate;
@@ -38,8 +38,8 @@ public class TeacherDTO {
 		private String teacherCode;
 		private Boolean enableStatus;
 		private String economicalCode;
-		private String economicalRecordNumber;
-		private Long personalityId;
+		private String econolmicalRecordNumber;
+		private Long personaityId;
 
 		private Set<CategoryDTO.CategoryInfoTuple> categories;
 		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
