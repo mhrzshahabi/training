@@ -5,6 +5,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.JobDTO;
+import com.nicico.training.model.Job;
 
 import java.util.List;
 
