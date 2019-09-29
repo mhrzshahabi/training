@@ -19,7 +19,7 @@ public class JobDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Job - Info")
-    public static class Info extends JobDTO {
+    public static class Info {
         private Long id;
         private String code;
         private String titleFa;

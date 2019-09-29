@@ -6250,6 +6250,7 @@ select[disabled] option {
     border: 1px solid transparent;
 }
 
+
 .toolStripButtonDisabled,
 .toolStripButtonSelectedDisabled {
     color: #ababab;

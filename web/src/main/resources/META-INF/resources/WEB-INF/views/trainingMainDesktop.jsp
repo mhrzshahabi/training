@@ -22,6 +22,7 @@
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
+    <link rel="stylesheet" href="<spring:url value='/static/css/training.css' />"/>
     <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
@@ -61,14 +62,14 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", margin: 5, errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>", requiredTitleSuffix: "",
         requiredMessage: "<spring:message code="msg.field.is.required"/>", wrapItemTitles: false
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
-        showHeaderIcon: false, animateMinimize: true,showMaximizeButton: true,
-    });
+        showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
+        });
     isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
 
     isc.defineClass("TrHLayout", HLayout);
@@ -123,6 +124,7 @@
         clearSortFieldText: "<spring:message code="sort.clear"/>",
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
+        emptyMessage: "",
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -334,9 +336,9 @@
                     }
                 },
                 {
-                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
+                        createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
                     }
                 },
                 {
@@ -345,16 +347,16 @@
                         createTab(this.title, "<spring:url value="/post/show-form"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
-                    }
-                },
-                {
+                  {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
                     }
                 },
                 {
