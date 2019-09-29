@@ -1460,7 +1460,7 @@
                     numCols:6,
                     height:"100%",
                     overflow:"hidden",
-                    styleName:"paddingRight_hamed",
+                    styleName:"paddingRight",
                     fields: [
                         {
                             name: "courseAllGrid22",
