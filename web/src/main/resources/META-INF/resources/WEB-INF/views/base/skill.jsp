@@ -461,7 +461,7 @@
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
+        showFilterEditor: false,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
@@ -497,7 +497,7 @@
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
+        showFilterEditor: false,
         filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
@@ -730,18 +730,18 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
-                window.open(skill_SkillHomeUrl + "/print-all/pdf");
+                "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
+                window.open('${printUrl}');
             }
         }, {
             title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                <%--"<spring:url value="/skill/print-all/excel" var="printUrl"/>"--%>
-                window.open(skill_SkillHomeUrl + "/print-all/excel");
+                "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
+                window.open('${printUrl}');
             }
         }, {
             title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                <%--"<spring:url value="/skill/print-all/html" var="printUrl"/>"--%>
-                window.open(skill_SkillHomeUrl + "/print-all/html");
+                "<spring:url value="/skill/print-all/html" var="printUrl"/>"
+                window.open('${printUrl}');
             }
         }]
     });
@@ -857,9 +857,9 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-            <%--"<spring:url value="/skill/print-all/pdf" var="printUrl"/>"--%>
+            "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
             <%--console.log('${printUrl}')   ;--%>
-            window.open(skill_SkillHomeUrl + "/print-all/pdf");
+            window.open('${printUrl}');
         }
     });
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
