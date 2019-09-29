@@ -38,8 +38,8 @@ public class TeacherDTO {
 		private String teacherCode;
 		private Boolean enableStatus;
 		private String economicalCode;
-		private String econolmicalRecordNumber;
-		private Long personaityId;
+		private String economicalRecordNumber;
+		private Long personalityId;
 
 		private Set<CategoryDTO.CategoryInfoTuple> categories;
 		private PersonalInfoDTO.PersonalInfoInfoTuple personality;
@@ -79,7 +79,6 @@ public class TeacherDTO {
 		private Boolean enableStatus;
 		private String economicalCode;
 		private String economicalRecordNumber;
-		private Long personalityId;
 	}
 
 	@Getter
