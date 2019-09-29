@@ -266,14 +266,15 @@ Date.prototype.getJalaliUTCDay = function () {
 
 function checkBirthDate(date) {
     var checkDateFlag = checkDate(date);
+
     if(checkDateFlag) {
-        var month = parseInt(date.substr(5, 2));
         var day = parseInt(date.substr(8, 2));
+        var month = parseInt(date.substr(5, 2));
         var year = parseInt(date.substr(0, 4));
 
         var jeoDate = new Date(JalaliDate.jalaliToGregorian(year, month, day));
         var todayDate = new Date();
-        if (Date.compareDates(jeoDate,todayDate) == 1)
+        if (Date.compareDates(jeoDate,todayDate) === -1)
             return false;
         return true;
     }
