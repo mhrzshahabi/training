@@ -793,6 +793,8 @@ public class SkillRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Print_All_Skill.jasper", params, response);
+//        reportUtil.export("/reports/skillGroup.jasper", params, response);
+
     }
 
 

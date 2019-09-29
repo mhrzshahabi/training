@@ -7,10 +7,13 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.model.Post;
 import com.nicico.training.repository.PostDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,6 +31,12 @@ public class PostService implements IPostService {
     public List<PostDTO.Info> list() {
         return modelMapper.map(postDAO.findAll(), new TypeToken<List<PostDTO.Info>>() {
         }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Page<Post> listByJobId(Long jobId, Pageable pageable) {
+        return postDAO.findAllByJobId(jobId, pageable);
     }
 
     @Transactional(readOnly = true)
