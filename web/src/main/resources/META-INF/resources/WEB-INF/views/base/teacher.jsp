@@ -172,8 +172,12 @@ var dummy;
             ListGrid_teacher_edit();
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
+            {name: "id", title: "id", canEdit: false, hidden: true},
+            {
+                name: "teacherCode",
+                title: "<spring:message code='code'/>",
+                align: "center"
+            },
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
@@ -1204,6 +1208,8 @@ var dummy;
         width: 100,
         orientation: "vertical",
         click: function () {
+            //TODO remove refresh
+            ListGrid_teacher_refresh();
             showAttachViewLoader.hide();
             Window_Teacher_JspTeacher.close();
         }
@@ -1414,7 +1420,9 @@ var dummy;
                     this.close();
                 }
             });
-        } else {
+        }
+        else {
+
             showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personalityId);
 
             vm.clearValues();
