@@ -1208,7 +1208,6 @@ var dummy;
         width: 100,
         orientation: "vertical",
         click: function () {
-            //TODO remove refresh
             ListGrid_teacher_refresh();
             showAttachViewLoader.hide();
             Window_Teacher_JspTeacher.close();
