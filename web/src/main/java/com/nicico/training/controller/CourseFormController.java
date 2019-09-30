@@ -42,7 +42,7 @@ public class CourseFormController {
 		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
 		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
 		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 

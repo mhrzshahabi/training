@@ -47,9 +47,6 @@ management:
       show-details: always
 
 nicico:
-  temp:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
   jpa:
     entity:
       package: com.nicico.training.model
@@ -68,9 +65,8 @@ nicico:
   upload:
     dir: /var/nicico/${spring.application.name}/
     person:
-      upload:
-        dir: /var/nicico/${spring.application.name}/
-    #      dir: /var/nicico/${spring.application.name}/
+      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
+      image: /var/nicico/${spring.application.name}/upload/person/img
   rest-api:
       url: /var/nicico/${spring.application.name}/
   workflow:

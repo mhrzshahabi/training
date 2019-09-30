@@ -405,7 +405,7 @@
             }
         }, {isSeparator: true}, {
             title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf")
+                window.open("/training/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf")
             }
         }, {
             title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
@@ -874,8 +874,8 @@
         isModal: true,
         showModalMask: true,
         align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
+        autoSize: false,
+        animateMinimize: false,
         closeClick: function () {
             this.hide();
         },
