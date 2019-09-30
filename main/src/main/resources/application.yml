@@ -49,7 +49,7 @@ management:
 nicico:
   temp:
     upload:
-      dir: c:/upload/temp/
+      dir: /var/nicico/${spring.application.name}/
   jpa:
     entity:
       package: com.nicico.training.model
@@ -64,12 +64,12 @@ nicico:
     password:
   person:
     upload:
-      dir: c:/upload/person/
+      dir: /var/nicico/${spring.application.name}/
   upload:
     dir: /var/nicico/${spring.application.name}/
     person:
       upload:
-        dir: c:/upload/person/
+        dir: /var/nicico/${spring.application.name}/
     #      dir: /var/nicico/${spring.application.name}/
   rest-api:
       url: /var/nicico/${spring.application.name}/
