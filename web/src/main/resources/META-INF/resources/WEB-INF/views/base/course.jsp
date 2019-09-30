@@ -819,6 +819,7 @@
     var DynamicForm_course_GroupTab = isc.DynamicForm.create({
         colWidths: ["8%", "11%", "8%", "11%", "8%", "11%"],
         numCols: 4,
+// border:"1px solid blue",
         fields: [
             {
                 name: "category.id",
@@ -1356,7 +1357,8 @@
         // width: "40%",
         tabs: [
             {
-                title: "اطلاعات تکمیلی", canClose: false,
+                title: "اطلاعات تکمیلی",
+                canClose: false,
                 pane: DynamicForm_course_GroupTab
             }
         ]
@@ -1584,7 +1586,7 @@
                 align: "center",
                 valign: "center",
                 wrap: false,
-                border: "1px solid lightGray",
+                // border: "1px solid lightGray",
                 height: "30%"
             }), TabSet_Teacher_JspCourse],
     });
@@ -1599,7 +1601,7 @@
         width: "100%",
         membersMargin: 5,
         members: [TabSet_BasicInfo_JspCourse, VLayout_Tab2_JspCourse, VLayout_Tab_JspCourse]
-    })
+    });
 
     var Window_course = isc.Window.create({
         placement: "fillScreen",
