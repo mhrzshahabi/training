@@ -47,11 +47,11 @@ public class CourseFormController {
 		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, String.class);
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/EXCEL", HttpMethod.POST, entity, String.class);
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/HTML", HttpMethod.POST, entity, String.class);
+			return restTemplate.exchange(restApiUrl + "/api/course/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
 		else
 			return null;
 	}
