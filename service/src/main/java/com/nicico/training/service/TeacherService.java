@@ -37,7 +37,7 @@ public class TeacherService implements ITeacherService {
     private final EnumsConverter.EMarriedConverter eMarriedConverter = new EnumsConverter.EMarriedConverter();
     private final EnumsConverter.EMilitaryConverter eMilitaryConverter = new EnumsConverter.EMilitaryConverter();
 
-    @Value("${nicico.person.upload.dir}")
+    @Value("${nicico.upload.person.image}")
     private String personUploadDir;
 
     @Transactional(readOnly = true)
