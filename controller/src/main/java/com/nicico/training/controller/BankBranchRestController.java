@@ -131,6 +131,8 @@ public class BankBranchRestController {
 
     // ---------------
 
+    // ---------------
+
     @Loggable
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_bank_branch')")

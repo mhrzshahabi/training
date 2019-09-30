@@ -42,7 +42,7 @@ public class InstituteAccountService implements IInstituteAccountService {
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info create(InstituteAccountDTO.Create request) {
+    public InstituteAccountDTO.Info create(Object request) {
         final InstituteAccount account = modelMapper.map(request, InstituteAccount.class);
 
         return save(account);
@@ -50,7 +50,7 @@ public class InstituteAccountService implements IInstituteAccountService {
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info update(Long id, InstituteAccountDTO.Update request) {
+    public InstituteAccountDTO.Info update(Long id, Object request) {
         final Optional<InstituteAccount> slById = instituteAccountDAO.findById(id);
         final InstituteAccount account = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
 
