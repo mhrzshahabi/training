@@ -384,16 +384,18 @@
             title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Goal_Add();
             }
-        }, {
-            title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {
-                Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
-                Window_AddGoal.show();
-                ListGrid_CourseGoal_Goal.invalidateCache();
-                RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;
-                ListGrid_GoalAll.invalidateCache();
-                <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
-            }
-        }, {
+        },
+<%--{--%>
+            <%--title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {--%>
+                <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);--%>
+                <%--Window_AddGoal.show();--%>
+                <%--ListGrid_CourseGoal_Goal.invalidateCache();--%>
+                <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;--%>
+                <%--ListGrid_GoalAll.invalidateCache();--%>
+                <%--&lt;%&ndash;window.open("<spring:url value="/goal/print/pdf"/>");&ndash;%&gt;--%>
+            <%--}--%>
+        <%--}, --%>
+        {
             title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Goal_Edit();
@@ -540,7 +542,11 @@
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        freezeFieldText: "ثابت نگه داشتن",
+        canDragRecordsOut:true,
+        dragDataAction:"none",
+        canAcceptDroppedRecords:true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget){removeAsListGrid();}
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
@@ -578,7 +584,11 @@
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        freezeFieldText: "ثابت نگه داشتن",
+        canDragRecordsOut:true,
+        dragDataAction:"none",
+        canAcceptDroppedRecords:true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget){addToListGrid()}
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
@@ -692,7 +702,7 @@
         hoverWidth: "12%",
         title: "افزودن",
         click: function () {
-            Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);
+            Window_AddGoal.setTitle("افزودن هدف به دوره " + getFormulaMessage(courseId.titleFa,2,"red","b"));
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
             ListGrid_CourseGoal_Goal.fetchData();
@@ -706,117 +716,14 @@
         icon: "[SKIN]/TransferIcons/left.png",
         title: "",
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
-        click: function () {
-            if (courseId == "" || courseId.id == null) {
-                isc.Dialog.create({
-                    message: "دوره اي انتخاب نشده است.",
-                    icon: "[SKIN]ask.png",
-                    title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-                var goalRecord = ListGrid_GoalAll.getSelectedRecords();
-                if (goalRecord.length == 0) {
-                    isc.Dialog.create({
-                        message: "هدفي انتخاب نشده است.",
-                        icon: "[SKIN]ask.png",
-                        title: "پیغام",
-                        buttons: [isc.Button.create({title: "تائید"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                } else {
-                    var goalList = new Array();
-                    for (var i = 0; i < goalRecord.length; i++) {
-                        goalList.add(goalRecord[i].id);
-                    }
-                    isc.RPCManager.sendRequest({
-                        actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
-                        httpMethod: "GET",
-                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        serverOutputAsString: false,
-                        callback: function (resp) {
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                ListGrid_GoalAll.invalidateCache();
-                                ListGrid_CourseGoal_Goal.invalidateCache();
-                                ListGrid_Goal.invalidateCache();
-                                ListGrid_Syllabus_Goal.invalidateCache();
-
-
-                            } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
-                            }
-
-                        }
-                    });
-                }
-            }
-        }
+        click: function(){addToListGrid()}
     });
     var ToolStripButton_Remove_Vertical = isc.ToolStripButton.create({
         icon: "[SKIN]/TransferIcons/right.png",
         title: "",
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
-            if (courseId == "" || courseId.id == null) {
-                isc.Dialog.create({
-                    message: "دوره اي انتخاب نشده است.",
-                    icon: "[SKIN]ask.png",
-                    title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
-            } else {
-                var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
-                if (goalrRecord.length == 0) {
-                    isc.Dialog.create({
-                        message: "هدفي انتخاب نشده است.",
-                        icon: "[SKIN]ask.png",
-                        title: "پیغام",
-                        buttons: [isc.Button.create({title: "تائید"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                } else {
-                    var arryRecord = new Array();
-                    for (var i = 0; i < goalrRecord.length; i++) {
-                        arryRecord.add(goalrRecord[i].id)
-
-                    }
-                    isc.RPCManager.sendRequest({
-
-                        actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
-                        httpMethod: "GET",
-                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                        useSimpleHttp: true,
-                        contentType: "application/json; charset=utf-8",
-                        showPrompt: false,
-                        serverOutputAsString: false,
-                        callback: function (resp) {
-                            if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                ListGrid_GoalAll.invalidateCache();
-                                ListGrid_CourseGoal_Goal.invalidateCache();
-                                ListGrid_Goal.invalidateCache();
-                                ListGrid_Syllabus_Goal.invalidateCache();
-
-                            } else {
-                                simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                            }
-
-                        }
-                    });
-                }
-            }
+removeAsListGrid();
         }
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
@@ -1147,5 +1054,114 @@
         ListGrid_Syllabus_Goal.invalidateCache();
 // ListGrid_Syllabus_Goal.getField("practicalDuration").summaryValue="Sum:" + getFormulaMessage(ListGrid_Syllabus_Goal.getGridSummaryData().get(1).practicalDuration,1,"red","B");
     };
+
+    function addToListGrid() {
+if (courseId == "" || courseId.id == null) {
+isc.Dialog.create({
+message: "دوره اي انتخاب نشده است.",
+icon: "[SKIN]ask.png",
+title: "پیغام",
+buttons: [isc.Button.create({title: "تائید"})],
+buttonClick: function (button, index) {
+this.close();
+}
+});
+} else {
+var goalRecord = ListGrid_GoalAll.getSelectedRecords();
+if (goalRecord.length == 0) {
+isc.Dialog.create({
+message: "هدفي انتخاب نشده است.",
+icon: "[SKIN]ask.png",
+title: "پیغام",
+buttons: [isc.Button.create({title: "تائید"})],
+buttonClick: function (button, index) {
+this.close();
+}
+});
+} else {
+var goalList = new Array();
+for (var i = 0; i < goalRecord.length; i++) {
+goalList.add(goalRecord[i].id);
+}
+isc.RPCManager.sendRequest({
+actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
+httpMethod: "GET",
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+useSimpleHttp: true,
+contentType: "application/json; charset=utf-8",
+showPrompt: false,
+serverOutputAsString: false,
+callback: function (resp) {
+if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+ListGrid_GoalAll.invalidateCache();
+ListGrid_CourseGoal_Goal.invalidateCache();
+ListGrid_Goal.invalidateCache();
+ListGrid_Syllabus_Goal.invalidateCache();
+
+
+} else {
+simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
+}
+
+}
+});
+}
+}
+}
+
+function removeAsListGrid() {
+if (courseId == "" || courseId.id == null) {
+isc.Dialog.create({
+message: "دوره اي انتخاب نشده است.",
+icon: "[SKIN]ask.png",
+title: "پیغام",
+buttons: [isc.Button.create({title: "تائید"})],
+buttonClick: function (button, index) {
+this.close();
+}
+});
+} else {
+var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
+if (goalrRecord.length == 0) {
+isc.Dialog.create({
+message: "هدفي انتخاب نشده است.",
+icon: "[SKIN]ask.png",
+title: "پیغام",
+buttons: [isc.Button.create({title: "تائید"})],
+buttonClick: function (button, index) {
+this.close();
+}
+});
+} else {
+var arryRecord = new Array();
+for (var i = 0; i < goalrRecord.length; i++) {
+arryRecord.add(goalrRecord[i].id)
+
+}
+isc.RPCManager.sendRequest({
+
+actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
+httpMethod: "GET",
+httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+useSimpleHttp: true,
+contentType: "application/json; charset=utf-8",
+showPrompt: false,
+serverOutputAsString: false,
+callback: function (resp) {
+if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+ListGrid_GoalAll.invalidateCache();
+ListGrid_CourseGoal_Goal.invalidateCache();
+ListGrid_Goal.invalidateCache();
+ListGrid_Syllabus_Goal.invalidateCache();
+
+} else {
+simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+}
+
+}
+});
+}
+}
+}
 
     //</script>
