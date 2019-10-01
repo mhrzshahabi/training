@@ -27,10 +27,6 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoInfo")
     public static class Info{
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
 		private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
 		private EMarriedDTO.EMarriedInfoTuple eMarried;
 		private EGenderDTO.EGenderInfoTuple eGender;
