@@ -254,6 +254,9 @@
             RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
+            ListGrid_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseId.id;
+            ListGrid_Post_JspCourse.fetchData();
+            ListGrid_Post_JspCourse.invalidateCache();
             for (var i = 0; i < trainingTabSet.tabs.length; i++) {
                 if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
                     trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
@@ -1776,8 +1779,14 @@
                 // id: "TabPane_Post",
                 title: "<spring:message code="course_post"/>",
                 pane: isc.MyListGrid.create({
-                    fields: [{title: "نام فارسی"}, {title: "نام لاتین"}],
-                    showResizeBar: false
+                    ID:"ListGrid_Post_JspCourse",
+                    showResizeBar: false,
+                    dataSource: isc.MyRestDataSource.create({fields:[{name:"id",primaryKey:true,hidden:true},
+                        {name:"titleFa",title:"نام فارسی",align:"center"},
+                        {name:"titleEn",title:"نام لاتین",align:"center"}
+                        ],
+                        fetchDataURL:postUrl+"iscList",
+                    }),
                 })
             },
             {
