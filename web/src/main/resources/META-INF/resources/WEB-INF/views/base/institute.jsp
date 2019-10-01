@@ -14,6 +14,7 @@
     var instituteWait;
     var institute_Institute_Url = rootUrl + "/institute/";
     var institute_Institute_Account_Url = rootUrl + "/institute-account/";
+    var institute_Institute_TrainingPlace_Url = rootUrl + "/training-place/";
     var institute_Bank_Url = rootUrl + "/bank/";
     var institute_BankBranch_Url = rootUrl + "/bank-branch/";
     var mailCheck = true;
@@ -89,8 +90,8 @@
             {name: "institute.titleFa"},
             {name: "instituteId"},
             {name: "capacity"},
-            {name: "ePlaceType.titleFa"},
-            {name: "eArrangementType.titleFa"},
+            {name: "eplaceType.titleFa"},
+            {name: "earrangementType.titleFa"},
             {name: "description"}
         ],
         fetchDataURL: institute_Institute_Url + "training-place/0"
@@ -293,14 +294,17 @@
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = "";
-                ListGrid_Institute_Institute_Account.invalidateCache();
-//                ListGrid_Institute_Institute_Account.clearData();
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
+                ListGrid_Institute_TrainingPlace.invalidateCache();
             } else {
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
                 ListGrid_Institute_Institute_Account.invalidateCache();
                 ListGrid_Institute_Institute_Account.fetchData();
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_TrainingPlace.fetchData();
             }
             ListGrid_Institute_Attached_Equipment.invalidateCache();
             ListGrid_Institute_Attached_Teacher.invalidateCache();
@@ -313,14 +317,17 @@
                 RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = "";
-                ListGrid_Institute_Institute_Account.invalidateCache();
-                // ListGrid_Institute_Institute_Account.clearData();
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
+                ListGrid_Institute_TrainingPlace.invalidateCache();
             } else {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipment-dummy";
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
                 RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
                 RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
                 ListGrid_Institute_Institute_Account.invalidateCache();
                 ListGrid_Institute_Institute_Account.fetchData();
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_TrainingPlace.fetchData();
             }
             ListGrid_Institute_Attached_Equipment.invalidateCache();
             ListGrid_Institute_Attached_Teacher.invalidateCache();
@@ -473,37 +480,67 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    // var ListGrid_Institute_TrainingPlace = isc.ListGrid.create({
-    // width: "100%",
-    // height: "100%",
-    // dataSource: RestDataSource_Institute_TrainingPlace,
-    // doubleClick: function () {
-    //
-    // },
-    // fields: [
-    // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-    // {name: "titleFa", title: "عنوان فارسی", align: "center"},
-    // {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-    // {name: "capacity", title: "ظرفیت", align: "center"},
-    // {name: "ePlaceType.titleFa", title: "نوع محل", align: "center"},
-    // {name: "eArrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
-    // ],
-    // selectionType: "multiple",
-    // sortField: 1,
-    // sortDirection: "descending",
-    // dataPageSize: 50,
-    // autoFetchData: false,
-    // showFilterEditor: true,
-    // filterOnKeypress: true,
-    // sortFieldAscendingText: "مرتب سازی صعودی ",
-    // sortFieldDescendingText: "مرتب سازی نزولی",
-    // configureSortText: "تنظیم مرتب سازی",
-    // autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-    // autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-    // filterUsingText: "فیلتر کردن",
-    // groupByText: "گروه بندی",
-    // freezeFieldText: "ثابت نگه داشتن"
-    // });
+    var ListGrid_Institute_TrainingPlace = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_TrainingPlace,
+        doubleClick: function () {
+
+        },
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "عنوان فارسی", align: "center"},
+            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
+            {name: "capacity", title: "ظرفیت", align: "center"},
+            {name: "ePlaceType.titleFa", title: "نوع محل", align: "center"},
+            {name: "eArrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
+    var ListGrid_Institute_TrainingPlece_Equipment = isc.ListGrid.create({
+        width: "100%",
+        height: "100%",
+        dataSource: RestDataSource_Institute_Institite_Equipment,
+        doubleClick: function () {
+        },
+        fields: [
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code", title: "کد", align: "center"},
+            {name: "titleFa", title: "عنوان فارسی", align: "center"},
+            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
+            {name: "description", title: "ملاحظات", align: "center"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: false,
+        autoDraw: false,
+        showFilterEditor: true,
+        filterOnKeypress: true,
+        sortFieldAscendingText: "مرتب سازی صعودی ",
+        sortFieldDescendingText: "مرتب سازی نزولی",
+        configureSortText: "تنظیم مرتب سازی",
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن"
+    });
 
     var ListGrid_Institute_Institute_List = isc.ListGrid.create({
         width: "100%",
@@ -1962,8 +1999,6 @@
     //--------------------------------------------------------------------------------------------------------------------//
     /*Edit Accounts For Institute*/
     //--------------------------------------------------------------------------------------------------------------------//
-
-
     var DynamicForm_Institute_Institute_Account = isc.DynamicForm.create({
         width: "100%",
         titleWidth: 120,
@@ -2120,7 +2155,6 @@
         }
     });
 
-
     var VLayout_Institute_Institute_Account_Form = isc.VLayout.create({
         width: "100%",
         height: "90%",
@@ -2160,7 +2194,6 @@
         })]
     });
 
-
     var ToolStripButton_Institute_Account_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "افزودن",
@@ -2187,6 +2220,743 @@
         center: true,
         members: [
             ToolStripButton_Institute_Account_Add, ToolStripButton_Institute_Account_Edit, ToolStripButton_Institute_Account_Remove
+        ]
+    });
+
+    function Function_Institute_Account_Remove() {
+        var record = ListGrid_Institute_Institute_Account.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "حساب برای حذف انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين حساب حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+
+                    if (index == 0) {
+                        var wait = isc.Dialog.create({
+                            message: "<spring:message code='global.form.do.operation'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='global.message'/>"
+                        });
+                        isc.RPCManager.sendRequest({
+                            actionURL: institute_Institute_Account_Url + record.id,
+                            httpMethod: "DELETE",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            showPrompt: true,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                wait.close();
+                                if (resp.data == "true") {
+                                    ListGrid_Institute_Institute_Account.invalidateCache();
+                                    var OK = isc.Dialog.create({
+                                        message: "حساب با موفقيت حذف گرديد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام شد"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 3000);
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "خطا"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    };
+    function Function_Institute_Account_Edit() {
+        var record = ListGrid_Institute_Institute_Account.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "حساب برای ویرایش انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+//console.log('record:' + JSON.stringify(record));
+            DynamicForm_Institute_Institute_Account.getField("bankId").fetchData();
+            RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + record.bankId;
+            DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
+            DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
+            DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
+
+            DynamicForm_Institute_Institute_Account.clearValues();
+            DynamicForm_Institute_Institute_Account.editRecord(record);
+            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(record.isEnable == 1 ? true : false);
+            reqMethod = "PUT";
+            Window_Institute_Account.setTitle(" ویرایش حساب شماره " + getFormulaMessage(ListGrid_Institute_Institute_Account.getSelectedRecord().accountNumber, 3, "red", "I"));
+            Window_Institute_Account.show();
+            Window_Institute_Account.bringToFront();
+        }
+    };
+    function Function_Institute_Account_Add() {
+        var record = ListGrid_Institute_Institute.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "مرکز آموزشی برای ورود حسابهایش انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            DynamicForm_Institute_Institute_Account.clearValues();
+            DynamicForm_Institute_Institute_Account.clearErrors(true);
+            reqMethod = "POST";
+// DynamicForm_Institute_Institute.clearValues();
+            DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(1);
+            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
+
+            DynamicForm_Institute_Institute_Account.getItem("instituteId").setValue(record.id);
+            DynamicForm_Institute_Institute_Account.getItem("bankBranchId").setOptionDataSource(null);
+            Window_Institute_Account.setTitle("ایجاد حساب جدید");
+            Window_Institute_Account.show();
+            Window_Institute_Account.bringToFront();
+        }
+    };
+    function Function_Institute_Account_Save() {
+
+        DynamicForm_Institute_Institute_Account.validate();
+        if (DynamicForm_Institute_Institute_Account.hasErrors()) {
+            return;
+        }
+
+        var data = DynamicForm_Institute_Institute_Account.getValues();
+        var instituteAccountSaveUrl = institute_Institute_Account_Url;
+        if (reqMethod.localeCompare("PUT") == 0) {
+            var instituteAccountRecord = ListGrid_Institute_Institute_Account.getSelectedRecord();
+            instituteAccountSaveUrl += instituteAccountRecord.id;
+        }
+        isc.RPCManager.sendRequest(MyDsRequest(instituteAccountSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_Account_Save_Result(rpcResponse)"));
+    }
+
+    function Function_Institute_Account_Save_Result(resp) {
+        var respCode = resp.httpResponseCode;
+        if (respCode == 200 || respCode == 201) {
+            ListGrid_Institute_Institute_Account.invalidateCache();
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+
+            }, 3000);
+
+            Window_Institute_Account.close();
+
+        } else {
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*Edit Training Places For Institute*/
+    //--------------------------------------------------------------------------------------------------------------------//
+    var DynamicForm_Institute_Institute_TrainingPlace = isc.DynamicForm.create({
+        width: "100%",
+        titleWidth: 120,
+        colWidths: [120, 300, 120, 300],
+        height: "100%",
+        align: "center",
+        wrapItemTitles: false,
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 4,
+        fields: [
+            {name: "id", hidden: true},
+            {name: "instituteId", hidden: true},
+            {
+                name: "titleFa",
+                title: "شرح فارسی",
+                required: true,
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                width: "*",
+            },
+            {
+                name: "titleEn",
+                keyPressFilter: "[0-9|-| ]",
+                keyPressFilter: "[0-9|A-Z|a-z| ]",
+                width: "*",
+            },
+            {
+                name: "eplaceTypeId",
+                type: "IntegerItem",
+                title: "نوع محل آموزشی",
+                width: "*",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EPlaceType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                required: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "earrangementTypeId",
+                type: "IntegerItem",
+                title: "چیدمان",
+                width: "*",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_EArrangementType,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                required: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+            },
+            {
+                name: "capacity",
+                title: "ظرفیت",
+                keyPressFilter: "[0-9]",
+                width: "*",
+            },
+            {
+                name: "description",
+                title: "توضیحات",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "500",
+                colSpan: 3,
+                width: "*",
+            }
+        ]
+    });
+
+    var IButton_Institute_Institute_TrainingPlace_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "<spring:url value="remove.png"/>",
+        click: function () {
+            Window_Institute_TrainingPlace.close();
+        }
+    });
+    var IButton_Institute_Institute_TrainingPlace_Save = isc.IButton.create({
+        top: 260,
+        title: "ذخیره",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_TrainingPlace_Save();
+        }
+    });
+
+    var VLayout_Institute_Institute_TrainingPlace_Form = isc.VLayout.create({
+        width: "100%",
+        height: "90%",
+        members: [DynamicForm_Institute_Institute_TrainingPlace]
+    });
+    var HLayOut_Institute_Institute_TrainingPlace_Action = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: 30,
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_Institute_TrainingPlace_Save, IButton_Institute_Institute_TrainingPlace_Exit]
+    });
+    var Window_Institute_TrainingPlace = isc.Window.create({
+        title: "حساب موسسه",
+        width: 750,
+        height: 200,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_Institute_TrainingPlace_Form, HLayOut_Institute_Institute_TrainingPlace_Action]
+        })]
+    });
+
+    var ToolStripButton_Institute_TrainingPlace_Add = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/add.png",
+        title: "افزودن",
+        click: function () {
+            Function_Institute_TrainingPlace_Add();
+        }
+    });
+    var ToolStripButton_Institute_TrainingPlace_Remove = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            Function_Institute_TrainingPlace_Remove();
+        }
+    });
+    var ToolStripButton_Institute_TrainingPlace_Edit = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/edit.png",
+        title: "ویرایش",
+        click: function () {
+            Function_Institute_TrainingPlace_Edit();
+        }
+    });
+    var ToolStrip_Institute_TrainingPlace = isc.ToolStrip.create({
+        width: "20",
+        center: true,
+        members: [
+            ToolStripButton_Institute_TrainingPlace_Add, ToolStripButton_Institute_TrainingPlace_Edit, ToolStripButton_Institute_TrainingPlace_Remove
+        ]
+    });
+
+    function Function_Institute_TrainingPlace_Remove() {
+        var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+        if (record == null) {
+            isc.Dialog.create({
+                message: "محل آموزشی برای حذف انتخاب نشده است!",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var Dialog_Delete = isc.Dialog.create({
+                message: "آيا مي خواهيد اين محل آموزشی حذف گردد؟",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                    title: "خير"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+
+                    if (index == 0) {
+                        var wait = isc.Dialog.create({
+                            message: "<spring:message code='global.form.do.operation'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='global.message'/>"
+                        });
+                        isc.RPCManager.sendRequest({
+                            actionURL: institute_Institute_TrainingPlace_Url + record.id,
+                            httpMethod: "DELETE",
+                            useSimpleHttp: true,
+                            contentType: "application/json; charset=utf-8",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                            showPrompt: true,
+                            serverOutputAsString: false,
+                            callback: function (resp) {
+                                wait.close();
+                                if (resp.data == "true") {
+                                    ListGrid_Institute_TrainingPlace.invalidateCache();
+                                    var OK = isc.Dialog.create({
+                                        message: "محل آموزشی با موفقيت حذف گرديد",
+                                        icon: "[SKIN]say.png",
+                                        title: "انجام شد"
+                                    });
+                                    setTimeout(function () {
+                                        OK.close();
+                                    }, 3000);
+                                } else {
+                                    var ERROR = isc.Dialog.create({
+                                        message: "ركورد مورد نظر قابل حذف نيست",
+                                        icon: "[SKIN]stop.png",
+                                        title: "خطا"
+                                    });
+                                    setTimeout(function () {
+                                        ERROR.close();
+                                    }, 3000);
+                                }
+                            }
+                        });
+                    }
+                }
+            });
+        }
+    };
+    function Function_Institute_TrainingPlace_Edit() {
+        var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "محل آموزشی برای ویرایش انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+
+            DynamicForm_Institute_Institute_TrainingPlace.clearValues();
+            DynamicForm_Institute_Institute_TrainingPlace.editRecord(record);
+            reqMethod = "PUT";
+            Window_Institute_TrainingPlace.setTitle(" ویرایش محل آموزشی  " + getFormulaMessage(ListGrid_Institute_TrainingPlace.getSelectedRecord().titleFa, 3, "red", "I"));
+            Window_Institute_TrainingPlace.show();
+            Window_Institute_TrainingPlace.bringToFront();
+        }
+    };
+    function Function_Institute_TrainingPlace_Add() {
+        var record = ListGrid_Institute_Institute.getSelectedRecord();
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "مرکز آموزشی برای ورود محل های آموزشی انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "توجه",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            DynamicForm_Institute_Institute_TrainingPlace.clearValues();
+            DynamicForm_Institute_Institute_TrainingPlace.clearErrors(true);
+            reqMethod = "POST";
+            DynamicForm_Institute_Institute_TrainingPlace.getItem("instituteId").setValue(record.id);
+            Window_Institute_TrainingPlace.setTitle("ایجاد محل آموزشی جدید");
+            Window_Institute_TrainingPlace.show();
+            Window_Institute_TrainingPlace.bringToFront();
+        }
+    };
+    function Function_Institute_TrainingPlace_Save() {
+
+        DynamicForm_Institute_Institute_TrainingPlace.validate();
+        if (DynamicForm_Institute_Institute_TrainingPlace.hasErrors()) {
+            return;
+        }
+
+        var data = DynamicForm_Institute_Institute_TrainingPlace.getValues();
+        var instituteTrainingPlaceSaveUrl = institute_Institute_TrainingPlace_Url;
+        if (reqMethod.localeCompare("PUT") == 0) {
+            var instituteTrainingPlaceRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+            instituteTrainingPlaceSaveUrl += instituteTrainingPlaceRecord.id;
+        }
+        isc.RPCManager.sendRequest(MyDsRequest(instituteTrainingPlaceSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_TrainingPlace_Save_Result(rpcResponse)"));
+    }
+
+    function Function_Institute_TrainingPlace_Save_Result(resp) {
+        var respCode = resp.httpResponseCode;
+        if (respCode == 200 || respCode == 201) {
+            ListGrid_Institute_TrainingPlace.invalidateCache();
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "عمليات با موفقيت اجرا شد.",
+
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+
+            }, 3000);
+
+            Window_Institute_TrainingPlace.close();
+
+        } else {
+            var MyOkDialog_job = isc.MyOkDialog.create({
+                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+            });
+
+            setTimeout(function () {
+                MyOkDialog_job.close();
+            }, 3000);
+        }
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*Edit Equipments For Training Places In Institute*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+
+    var DynamicForm_Institute_TrainingPlace_Equipment = isc.DynamicForm.create({
+        width: "100%",
+        titleWidth: 120,
+        colWidths: [120, 300, 120, 300],
+        height: "100%",
+        align: "center",
+        wrapItemTitles: false,
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 4,
+        fields: [
+            {name: "id", hidden: true},
+            {name: "instituteId", hidden: true},
+            {name: "isEnable", hidden: true},
+            {
+                name: "bankId",
+                type: "IntegerItem",
+                title: "بانک",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_Bank,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["titleFa"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", title: "عنوان بانک", width: "30%", filterOperator: "iContains"},
+                    {name: "ebankType.titleFa", title: "نوع بانک", width: "30%", filterOperator: "iContains"}
+                ]
+            },
+            {
+                name: "bankBranchId",
+                type: "IntegerItem",
+                title: "شعبه بانک",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Institute_BankBranch,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["titleFa"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "code", title: "کد شعبه", width: "30%", filterOperator: "iContains"},
+                    {name: "titleFa", title: "عنوان شعبه", width: "30%", filterOperator: "iContains"}
+                ]
+            },
+            {
+                name: "accountNumber",
+                title: "شماره حساب",
+                required: true,
+                keyPressFilter: "[0-9|/|.]| ",
+                width: "*",
+            },
+            {
+                name: "cartNumber",
+                keyPressFilter: "[0-9|-| ]",
+                title: "شماره کارت",
+                width: "*",
+            },
+            {
+                name: "shabaNumber",
+                title: "شماره شبا",
+                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
+                width: "*",
+            },
+            {
+                name: "accountOwnerName",
+                title: "نام صاحب حساب",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                width: "*",
+            },
+            {
+                name: "description",
+                title: "توضیحات",
+                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
+                length: "500",
+                colSpan: 2,
+                width: "*",
+            },
+            {
+                name: "isEnableVal",
+                title: "فعال؟",
+                align: "center",
+                showTitle: false,
+                type: "checkbox",
+                keyPressFilter: "[A-Z|a-z|0-9|-| ]",
+                width: "*",
+            },
+        ],
+        itemChanged: function (item, newValue) {
+//            alert(DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString());
+            if (item.name == "bankId") {
+                if (newValue == undefined) {
+                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
+// RestDataSource_Institute_BankBranch.fetchDataURL =null;
+                } else {
+                    RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + newValue;
+                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
+                    DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
+                    DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
+                }
+            } else if (item.name == "isEnableVal") {
+                var v = DynamicForm_Institute_Institute_Account.getField("isEnableVal").getValue().toString();
+                DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(v == "true" ? 1 : 0);
+
+            }
+        }
+
+    });
+
+    var IButton_Institute_TrainingPlace_Equipment_Exit = isc.IButton.create({
+        top: 260,
+        title: "لغو",
+        align: "center",
+        icon: "<spring:url value="remove.png"/>",
+        click: function () {
+            Window_Institute_Account.close();
+        }
+    });
+    var IButton_Institute_TrainingPlace_Equipment_Save = isc.IButton.create({
+        top: 260,
+        title: "ذخیره",
+        align: "center",
+        icon: "pieces/16/save.png",
+        click: function () {
+            Function_Institute_Account_Save();
+        }
+    });
+
+
+    var VLayout_Institute_TrainingPlace_Equipment_Form = isc.VLayout.create({
+        width: "100%",
+        height: "90%",
+        members: [DynamicForm_Institute_TrainingPlace_Equipment]
+    });
+
+    var HLayOut_Institute_TrainingPlace_Equipment_Action = isc.HLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: 30,
+        alignLayout: "center",
+        align: "center",
+        padding: 10,
+        membersMargin: 10,
+        members: [IButton_Institute_TrainingPlace_Equipment_Save, IButton_Institute_TrainingPlace_Equipment_Exit]
+    });
+
+    var Window_Institute_TrainingPlace_Equipment = isc.Window.create({
+        title: "حساب موسسه",
+        width: 750,
+        height: 200,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        autoDraw: false,
+        dismissOnEscape: false,
+        border: "1px solid gray",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items: [isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [VLayout_Institute_TrainingPlace_Equipment_Form, HLayOut_Institute_TrainingPlace_Equipment_Action]
+        })]
+    });
+
+
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/add.png",
+        title: "افزودن",
+        click: function () {
+            Function_Institute_Account_Add();
+        }
+    });
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Remove = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/remove.png",
+        title: "حذف",
+        click: function () {
+            Function_Institute_Account_Remove();
+        }
+    });
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Edit = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/edit.png",
+        title: "ویرایش",
+        click: function () {
+            Function_Institute_Account_Edit();
+        }
+    });
+    var ToolStrip_Institute_TrainingPlace_Equipment = isc.ToolStrip.create({
+        width: "20",
+        center: true,
+        members: [
+            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Edit, ToolStripButton_Institute_TrainingPlace_Equipment_Remove
         ]
     });
 
@@ -2252,11 +3022,25 @@
         members: [ListGrid_Institute_Institute]
     });
 
-    // var HLayout_Institute__Institute_TrainingPlace = isc.HLayout.create({
-    // width: "100%",
-    // height: "100%",
-    // members: [ListGrid_Institute_TrainingPlace]
-    // });
+
+    var VLayout_Institute_Institute_TrainingPlace = isc.VLayout.create({
+        width: "59%",
+        height: "100%",
+        members: [ToolStrip_Institute_TrainingPlace, ListGrid_Institute_TrainingPlace]
+    });
+
+    var VLayout_Institute_Institute_TrainingPlace_Equipment = isc.VLayout.create({
+        width: "40%",
+        height: "100%",
+        members: [ToolStrip_Institute_TrainingPlace_Equipment, ListGrid_Institute_TrainingPlece_Equipment]
+    });
+
+
+    var HLayout_Institute_Institute_TrainingPlace = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [VLayout_Institute_Institute_TrainingPlace, isc.LayoutSpacer.create({width: "1%"}), VLayout_Institute_Institute_TrainingPlace_Equipment]
+    });
 
     var VLayout_Institute_Institute_Teacher = isc.VLayout.create({
         width: "100%",
@@ -2280,12 +3064,12 @@
         width: "100%",
         height: "100%",
         tabs: [
-// {
-// id: "TabPane_Institute_TrainingPlace",
-// title: "لیست محل های آموزشی",
-// pane: HLayout_Institute__Institute_TrainingPlace
-//
-// },
+            {
+                id: "TabPane_Institute_TrainingPlace",
+                title: "لیست محل های آموزشی",
+                pane: HLayout_Institute_Institute_TrainingPlace
+
+            },
 
             {
                 id: "TabPane_Institute_Teacher",
@@ -2475,173 +3259,6 @@
         ListGrid_Institute_Institute.invalidateCache();
     };
 
-    function Function_Institute_Account_Remove() {
-        var record = ListGrid_Institute_Institute_Account.getSelectedRecord();
-        if (record == null) {
-            isc.Dialog.create({
-                message: "حساب برای حذف انتخاب نشده است!",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين حساب حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خير"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-
-                    if (index == 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='global.form.do.operation'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='global.message'/>"
-                        });
-                        isc.RPCManager.sendRequest({
-                            actionURL: institute_Institute_Account_Url + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Institute_Institute_Account.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "حساب با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
-                    }
-                }
-            });
-        }
-    };
-
-    function Function_Institute_Account_Edit() {
-        var record = ListGrid_Institute_Institute_Account.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "حساب برای ویرایش انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            //console.log('record:' + JSON.stringify(record));
-            DynamicForm_Institute_Institute_Account.getField("bankId").fetchData();
-            RestDataSource_Institute_BankBranch.fetchDataURL = institute_Bank_Url + "bank-branches/" + record.bankId;
-            DynamicForm_Institute_Institute_Account.getField("bankBranchId").optionDataSource = RestDataSource_Institute_BankBranch;
-            DynamicForm_Institute_Institute_Account.getField("bankBranchId").fetchData();
-            DynamicForm_Institute_Institute_Account.clearValue("bankBranchId");
-
-            DynamicForm_Institute_Institute_Account.clearValues();
-            DynamicForm_Institute_Institute_Account.editRecord(record);
-            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(record.isEnable == 1 ? true : false);
-            reqMethod = "PUT";
-            Window_Institute_Account.setTitle(" ویرایش حساب شماره " + getFormulaMessage(ListGrid_Institute_Institute_Account.getSelectedRecord().accountNumber, 3, "red", "I"));
-            Window_Institute_Account.show();
-            Window_Institute_Account.bringToFront();
-        }
-    };
-
-    function Function_Institute_Account_Add() {
-        var record = ListGrid_Institute_Institute.getSelectedRecord();
-        if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "مرکز آموزشی برای ورود حسابهایش انتخاب نشده است.",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
-        } else {
-            DynamicForm_Institute_Institute_Account.clearValues();
-            DynamicForm_Institute_Institute_Account.clearErrors(true);
-            reqMethod = "POST";
-// DynamicForm_Institute_Institute.clearValues();
-            DynamicForm_Institute_Institute_Account.getField("isEnable").setValue(1);
-            DynamicForm_Institute_Institute_Account.getField("isEnableVal").setValue(true);
-
-            DynamicForm_Institute_Institute_Account.getItem("instituteId").setValue(record.id);
-            DynamicForm_Institute_Institute_Account.getItem("bankBranchId").setOptionDataSource(null);
-            Window_Institute_Account.setTitle("ایجاد حساب جدید");
-            Window_Institute_Account.show();
-            Window_Institute_Account.bringToFront();
-        }
-    };
-
-    function Function_Institute_Account_Save() {
-
-        DynamicForm_Institute_Institute_Account.validate();
-        if (DynamicForm_Institute_Institute_Account.hasErrors()) {
-            return;
-        }
-
-        var data = DynamicForm_Institute_Institute_Account.getValues();
-        var instituteAccountSaveUrl = institute_Institute_Account_Url;
-        if (reqMethod.localeCompare("PUT") == 0) {
-            var instituteAccountRecord = ListGrid_Institute_Institute_Account.getSelectedRecord();
-            instituteAccountSaveUrl += instituteAccountRecord.id;
-        }
-        isc.RPCManager.sendRequest(MyDsRequest(instituteAccountSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_Account_Save_Result(rpcResponse)"));
-    }
-
-    function Function_Institute_Account_Save_Result(resp) {
-        var respCode = resp.httpResponseCode;
-        if (respCode == 200 || respCode == 201) {
-            ListGrid_Institute_Institute_Account.invalidateCache();
-            var MyOkDialog_job = isc.MyOkDialog.create({
-                message: "عمليات با موفقيت اجرا شد.",
-
-            });
-
-            setTimeout(function () {
-                MyOkDialog_job.close();
-
-            }, 3000);
-
-            Window_Institute_Account.close();
-
-        } else {
-            var MyOkDialog_job = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
-            });
-
-            setTimeout(function () {
-                MyOkDialog_job.close();
-            }, 3000);
-        }
-    }
 
     // function checkMobile(mobile) {
     // if (mobile[0] == "0" && mobile[1] == "9")

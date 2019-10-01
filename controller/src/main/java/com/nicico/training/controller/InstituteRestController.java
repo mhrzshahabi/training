@@ -545,6 +545,27 @@ public class InstituteRestController {
     }
 
     @Loggable
+    @GetMapping(value = "{instituteId}/training-places")
+//    @PreAuthorize("hasAnyAuthority('r_teacher')")
+    public ResponseEntity<TrainingPlaceDTO.TrainingPlaceSpecRs> getTrainingPlaces(@PathVariable Long instituteId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<TrainingPlaceDTO.Info> trainingPlaces = instituteService.getTrainingPlaces(instituteId);
+
+        final TrainingPlaceDTO.SpecRs specResponse = new TrainingPlaceDTO.SpecRs();
+        specResponse.setData(trainingPlaces)
+                .setStartRow(0)
+                .setEndRow(trainingPlaces.size())
+                .setTotalRows(trainingPlaces.size());
+
+        final TrainingPlaceDTO.TrainingPlaceSpecRs specRs = new TrainingPlaceDTO.TrainingPlaceSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
     @GetMapping(value = "/account-dummy")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<InstituteAccountDTO.AccountSpecRs> accountDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {

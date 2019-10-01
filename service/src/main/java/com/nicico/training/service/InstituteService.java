@@ -190,6 +190,16 @@ public class InstituteService implements IInstituteService {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public List<TrainingPlaceDTO.Info> getTrainingPlaces(Long instituteId) {
+        final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
+        final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
+
+        return modelMapper.map(institute.getTrainingPlaceSet(), new TypeToken<List<TrainingPlaceDTO.Info>>() {}.getType());
+
+    }
+
 
     @Transactional
     @Override
