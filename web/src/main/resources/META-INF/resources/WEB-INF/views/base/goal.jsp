@@ -423,7 +423,7 @@
     var ListGrid_Goal = isc.ListGrid.create({
         width: "*",
         height: "100%",
-        border: "2px solid gray",
+        // border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
         contextMenu: Menu_ListGrid_Goal,
         doubleClick: function () {
@@ -459,7 +459,7 @@
     var ListGrid_Syllabus_Goal = isc.ListGrid.create({
         width: "*",
         height: "100%",
-        border: "2px solid gray",
+        // border: "2px solid gray",
         dataSource: RestDataSource_Syllabus,
         // groupByField:"goal.titleFa", groupStartOpen:"all",
         showGridSummary: true,

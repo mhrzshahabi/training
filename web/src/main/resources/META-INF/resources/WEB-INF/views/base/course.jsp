@@ -254,7 +254,7 @@
             RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
-            ListGrid_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseId.id;
+            RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseId.id;
             ListGrid_Post_JspCourse.fetchData();
             ListGrid_Post_JspCourse.invalidateCache();
             for (var i = 0; i < trainingTabSet.tabs.length; i++) {
@@ -717,11 +717,14 @@
             {
                 name: "needText",
                 // titleOrientation: "top",
-                title: "شرح\u200cمشکل /نیاز /درخواست",
+                // title: "شرح\u200cمشکل /نیاز /درخواست",
+                title: "درخواست",
                 colSpan: 4,
                 rowSpan: 1,
                 readonly: true,
                 type: "textArea",
+                showHintInField:true,
+                hint:"شرح مشکل/نیاز/درخواست",
                 // height: "100",
                 width: "*",
                 length: "*",
@@ -1603,14 +1606,13 @@
     });
     var VLayout_Tab_JspCourse = isc.VStack.create({
         membersMargin: 5,
-// styleName:"paddingRight",
         width: "22%",
         members: [
             isc.DynamicForm.create({
                 ID: "lblCourse",
                 numCols:1,
 // cellBorder:1,
-                fields: [{name: "domainCourse", type: "staticText", showTitle:false, width:"250", align:"center"}],
+                fields: [{name: "domainCourse", type: "staticText", showTitle:false, width:"50%", align:"center"}],
                 // padding: 10,
                 isGroup: true,
                 groupTitle: "حیطه",
@@ -1624,22 +1626,25 @@
                 height: "30%"
             }),
             isc.DynamicForm.create({
-                colWidths: ["8%", "20%"],
+                colWidths: ["8%", "18%","1%"],
                 ID: "teacherForm",
+                numCols:3,
+                // padding:10,
                 isGroup: true,
                 groupTitle: "شرایط مدرس دوره",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid lightBlue",
-                width: "100%",
+                width: "96%",
                 height:"75%",
+                // margin:20,
                 fields: [{
                     name: "minTeacherDegree",
-                    // colSpan: 2,
+                    colSpan: 1,
                     title: "<spring:message code="course_minTeacherDegree"/>",
                     autoFetchData: true,
                     required: true,
                     // height: "30",
-                    width: "250",
+                    width: "*",
                     textAlign: "center",
                     displayField: "titleFa",
                     valueField: "titleFa",
@@ -1663,7 +1668,7 @@
                             errorMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
                         }],
                         // height: "30",
-                        width: "250",
+                        width: "*",
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
                     },
@@ -1677,7 +1682,7 @@
                         writeStackedIcons: true,
                         // height: "30",
                         required: true,
-                        width: "250",
+                        width: "*",
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",
                         validators: [{
@@ -1785,7 +1790,8 @@
                         {name:"titleFa",title:"نام فارسی",align:"center"},
                         {name:"titleEn",title:"نام لاتین",align:"center"}
                         ],
-                        fetchDataURL:postUrl+"iscList",
+                        ID:"RestData_Post_JspCourse",
+                    // fetchDataURL:courseUrl + "post/" + ListGrid_Course.getSelectedRecord().id,
                     }),
                 })
             },
