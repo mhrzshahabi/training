@@ -25,35 +25,30 @@ public class Company extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @Column(name="c_email")
+    @Column(name = "c_email")
     private String email;
 
-    @Column(name="c_work_domain")
+    @Column(name = "c_work_domain")
     private String workDomain;
 
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
     @JoinColumn(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
     private AccountInfo accountInfo;
-    @Column(name="f_account_info_id")
+    @Column(name = "f_account_info_id")
     private Long accountInfoId;
 
-
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REFRESH)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "f_personal_info_id", nullable = false, insertable = false, updatable = false)
     private PersonalInfo manager;
     @Column(name = "f_personal_info_id")
     private Long managerId;
 
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="f_address_id",nullable = false,insertable = false,updatable = false)
+    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "f_address_id", nullable = false, insertable = false, updatable = false)
     private Address address;
-    @Column(name="f_address_id")
+    @Column(name = "f_address_id")
     private Long addressId;
-
-
-
 }
 
 

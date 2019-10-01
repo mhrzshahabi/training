@@ -8,6 +8,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,7 +30,7 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		return "base/term";
 	}
 
-	@PostMapping("/printWithCriteria/{type}")
+	@RequestMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("AccessToken");
 
@@ -49,11 +50,11 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/pdf", HttpMethod.GET, entity, byte[].class);
 		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/excel", HttpMethod.GET, entity, byte[].class);
 		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/html", HttpMethod.GET, entity, byte[].class);
 		else
 			return null;
 	}

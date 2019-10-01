@@ -132,7 +132,7 @@ public class TermRestController {
 
 
     @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}"})
+    @GetMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
