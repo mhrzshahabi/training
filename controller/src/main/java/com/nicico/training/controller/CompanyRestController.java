@@ -7,6 +7,7 @@ import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;import com.fasterxml.jackson.core.type.TypeReference;
 import com.nicico.copper.common.Loggable;
@@ -49,11 +50,12 @@ public class CompanyRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<CompanyDTO.Info> create(@RequestBody CompanyDTO.Create req) {
-        CompanyDTO.Create create = (new ModelMapper()).map(req, CompanyDTO.Create.class);
+
+               CompanyDTO.Create create = (new ModelMapper()).map(req, CompanyDTO.Create.class);
         return new ResponseEntity<>(companyService.create(create), HttpStatus.CREATED);
     }
 
- @Loggable
+    @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CompanyDTO.Info> update(@PathVariable Long id, @RequestBody CompanyDTO.Update request) {
         CompanyDTO.Update update = (new ModelMapper()).map(request, CompanyDTO.Update.class);

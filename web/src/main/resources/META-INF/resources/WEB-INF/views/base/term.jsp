@@ -301,7 +301,10 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-            print_TermListGrid("pdf");
+         "<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"
+               window.open('${printUrl}');
+       // window.open("/term/printWithCriteria/pdf");
+       //   print_TermListGrid("pdf");
         }
     });
 
@@ -557,6 +560,7 @@
     };
 
     function print_TermListGrid(type) {
+
         var advancedCriteria = ListGrid_Term.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
             method: "POST",
