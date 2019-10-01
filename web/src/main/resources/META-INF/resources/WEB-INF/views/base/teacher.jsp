@@ -1562,6 +1562,7 @@ var dummy;
                 ]
         });
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.show();
         criteriaForm.submitForm();
     };
 
