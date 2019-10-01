@@ -28,10 +28,6 @@ public class TeacherDTO {
 	public static class Info{
 
 		private Long id;
-		private DateTimeDTO.DateTimeRs createdDate;
-		private String createdBy;
-		private DateTimeDTO.DateTimeRs lastModifiedDate;
-		private String lastModifiedBy;
 
 		@NotEmpty
 		@ApiModelProperty(required = true)

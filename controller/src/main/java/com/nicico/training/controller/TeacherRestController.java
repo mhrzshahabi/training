@@ -8,10 +8,10 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.CustomModelMapper;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -69,7 +69,7 @@ public class TeacherRestController {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
         ((LinkedHashMap) request).remove("categories");
-        TeacherDTO.Update update = (new ModelMapper()).map(request, TeacherDTO.Update.class);
+        TeacherDTO.Update update = (new CustomModelMapper()).map(request, TeacherDTO.Update.class);
         return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
     }
 
@@ -97,11 +97,11 @@ public class TeacherRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam("_endRow") Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -165,31 +165,30 @@ public class TeacherRestController {
         return new ResponseEntity(categorySet, HttpStatus.OK);
     }
 
-	@Loggable
-	@PostMapping(value = {"/printWithCriteria/{type}"})
-	public void printWithCriteria(HttpServletResponse response,
-								  @PathVariable String type,
-								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
-        if(criteriaStr.equalsIgnoreCase("{}")) {
+        if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
-        }
-        else{
+        } else {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-		final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-		final Map<String, Object> params = new HashMap<>();
-		params.put("todayDate", dateUtil.todayDate());
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
 
-		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
-	}
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
+    }
 
 }
