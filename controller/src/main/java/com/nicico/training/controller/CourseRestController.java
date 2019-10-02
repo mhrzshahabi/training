@@ -224,6 +224,18 @@ public class CourseRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/post/{courseId}")
+    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId){
+        List<PostDTO.Info> post = courseService.getPost(courseId);
+        ISC.Response response = new ISC.Response();
+        response.setData(post)
+                .setStartRow(0)
+                .setEndRow(post.size())
+                .setTotalRows(post.size());
+        return new ResponseEntity<>(response, HttpStatus.OK);
+    }
+
+    @Loggable
     @GetMapping(value = "/{courseId}/{goalIdList}")
 //	@PreAuthorize("hasAuthority('d_course')")
     public ResponseEntity<Void> getCourseIdvGoalsId(@PathVariable Long courseId, @PathVariable List<Long> goalIdList) {
