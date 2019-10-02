@@ -11,14 +11,15 @@ import lombok.ToString;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ERunType {
 
-    Internal(1, "داخلي"),
-    Dispatch(2, "اعزام"),
-    InternalSeminar(3, "سمينار داخلي"),
-    DispatchSeminar(4, "سمينار اعزام"),
-    WhileWorking(5, "حين كار");
+    Internal(1, "داخلي", "C"),
+    Dispatch(2, "اعزام", "D"),
+    InternalSeminar(3, "سمينار داخلي", "S"),
+    DispatchSeminar(4, "سمينار اعزام", "H"),
+    WhileWorking(5, "حين كار", "J");
 
     private final Integer id;
     private final String titleFa;
+    private final String code;
 
     public String getLiteral() {
         return name();
