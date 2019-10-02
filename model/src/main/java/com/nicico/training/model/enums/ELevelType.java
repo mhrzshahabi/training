@@ -14,11 +14,12 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ELevelType {
-    Master(1, "كارشناسي"),
-    Technician(2, "تكنسيني"),
-    Worker(3, "كارگري");
+    Master(1, "كارشناسي", "1"),
+    Technician(2, "تكنسيني", "2"),
+    Worker(3, "كارگري", "3");
     private final Integer id;
     private final String titleFa;
+    private final String code;
 
     public String getLiteral() {
         return name();

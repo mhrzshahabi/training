@@ -1277,7 +1277,8 @@ var dummy;
     });
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
-        tabBarPosition: "top",
+        tabBarPosition: "right",
+        tabBarThickness: 100,
         titleEditorTopOffset: 2,
         height: "35%",
         tabs: [
