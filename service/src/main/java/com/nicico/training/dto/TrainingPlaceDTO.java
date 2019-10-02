@@ -37,18 +37,13 @@ public class TrainingPlaceDTO {
     @ApiModelProperty(required = true)
     private Integer capacity;
 
+    @NotEmpty
+    @ApiModelProperty(required = true)
+    private Integer eplaceTypeId;
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer ePlaceTypeId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer eArrangementTypeId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Long instituteId;
+    private Integer earrangementTypeId;
 
     @ApiModelProperty(required = true)
     private String description;
@@ -59,17 +54,12 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceInfo")
     public static class Info extends TrainingPlaceDTO {
-        private Long id;
 
-        private InstituteDTO.Info institute;
+        private Long id;
+//        private InstituteDTO.Info institute;
         private EPlaceType ePlaceType;
         private EArrangementType eArrangementType;
 
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-        private Integer version;
     }
     //-------------------------------
     @Getter
@@ -77,6 +67,10 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceCreateRq")
     public static class Create extends TrainingPlaceDTO {
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private Long instituteId;
+
         Set<Long> equipmentIds;
     }
 
@@ -87,8 +81,6 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceUpdateRq")
     public static class Update extends TrainingPlaceDTO {
-        @ApiModelProperty(required = true)
-        private Integer version;
     }
 
     // ------------------------------

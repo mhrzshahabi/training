@@ -88,10 +88,6 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
         private Set<EquipmentDTO.Info> equipmentSet;
         private Set<TrainingPlaceDTO.Info> trainingPlaceSet;

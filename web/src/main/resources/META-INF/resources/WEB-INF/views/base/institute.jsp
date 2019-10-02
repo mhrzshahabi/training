@@ -16,6 +16,7 @@
     var institute_Institute_Account_Url = rootUrl + "/institute-account/";
     var institute_Institute_TrainingPlace_Url = rootUrl + "/training-place/";
     var institute_Bank_Url = rootUrl + "/bank/";
+    var institute_Equipment_Url="";
     var institute_BankBranch_Url = rootUrl + "/bank-branch/";
     var mailCheck = true;
 
@@ -450,8 +451,10 @@
         width: "100%",
         height: "100%",
         autoDraw: false,
-
         dataSource: RestDataSource_Institute_Institute_Account,
+        doubleClick: function () {
+                Function_Institute_Account_Edit();
+        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "bank.titleFa", title: "بانک", align: "center"},
@@ -485,15 +488,15 @@
         height: "100%",
         dataSource: RestDataSource_Institute_TrainingPlace,
         doubleClick: function () {
-
+                Function_Institute_TrainingPlace_Edit();
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "عنوان فارسی", align: "center"},
             {name: "titleEn", title: "عنوان لاتین ", align: "center"},
             {name: "capacity", title: "ظرفیت", align: "center"},
-            {name: "ePlaceType.titleFa", title: "نوع محل", align: "center"},
-            {name: "eArrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
+            {name: "eplaceType.titleFa", title: "نوع محل", align: "center"},
+            {name: "earrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -1116,7 +1119,7 @@
 
     var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
         width: "100%",
-// height: 250,
+ height: 150,
 // margin:5,
         padding: 5,
 
@@ -1203,7 +1206,7 @@
 
     var VLayout_Institute_Institute_Form = isc.VLayout.create({
         width: "100%",
-        height: "590 ",
+        height: "490 ",
         members: [
             DynamicForm_Institute_Institute,
             HLayout_Institute_InstituteTeacherAndEmp,
@@ -1226,7 +1229,7 @@
     var Window_Institute_Institute = isc.Window.create({
         title: "<spring:message code='training.institute'/>",
         width: 800,
-        height: 600,
+        height: 500,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -1442,7 +1445,7 @@
 
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*Edit Equipments For Institute*/
+    /*Edit Equipments For Institute And Training Place*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ListGrid_Institute_Equipment_List = isc.ListGrid.create({
@@ -1513,7 +1516,7 @@
                     }
                 });
             } else {
-                Function_Institute_EquipmentList_Select(record.id);
+                Function_Institute_EquipmentList_Select(institute_Institute_Url,record.id,1);
             }
         }
     });
@@ -1587,8 +1590,8 @@
         })]
     });
 
-    function Function_Institute_EquipmentList_Select(instituteId) {
-        RestDataSource_Institute_Institite_UnAttachedEquipment.fetchDataURL = institute_Institute_Url + instituteId + "/unattached-equipments"
+    function Function_Institute_EquipmentList_Select(baseUrl,masterId,dest) {
+        RestDataSource_Institute_Institite_UnAttachedEquipment.fetchDataURL = baseUrl + masterId + "/unattached-equipments"
         ListGrid_Institute_Equipment_List.invalidateCache();
         ListGrid_Institute_Equipment_List.fetchData();
         Window_Institute_EquipmentList.show();
@@ -2418,6 +2421,7 @@
             },
             {
                 name: "titleEn",
+title: "شرح لاتین",
                 keyPressFilter: "[0-9|-| ]",
                 keyPressFilter: "[0-9|A-Z|a-z| ]",
                 width: "*",

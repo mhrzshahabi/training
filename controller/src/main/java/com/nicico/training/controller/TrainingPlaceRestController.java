@@ -6,11 +6,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.EquipmentDTO;
 import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.iservice.ITrainingPlaceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -46,14 +49,14 @@ public class TrainingPlaceRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_equipment')")
-    public ResponseEntity<TrainingPlaceDTO.Info> create(@Validated @RequestBody TrainingPlaceDTO.Create request) {
+    public ResponseEntity<TrainingPlaceDTO.Info> create(@Validated @RequestBody Object request) {
         return new ResponseEntity<>(trainingPlaceService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_equipment')")
-    public ResponseEntity<TrainingPlaceDTO.Info> update(@PathVariable Long id, @Validated @RequestBody TrainingPlaceDTO.Update request) {
+    public ResponseEntity<TrainingPlaceDTO.Info> update(@PathVariable Long id, @Validated @RequestBody Object request) {
         return new ResponseEntity<>(trainingPlaceService.update(id, request), HttpStatus.OK);
     }
 
@@ -138,6 +141,127 @@ public class TrainingPlaceRestController {
     public ResponseEntity<SearchDTO.SearchRs<TrainingPlaceDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(trainingPlaceService.search(request), HttpStatus.OK);
     }
+
+
+
+
+    @Loggable
+    @GetMapping(value = "{trainingPlaceId}/equipments")
+//    @PreAuthorize("hasAnyAuthority('r_equipment')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getEquipments(@PathVariable Long trainingPlaceId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<EquipmentDTO.Info> equipments = trainingPlaceService.getEquipments(trainingPlaceId);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(0)
+                .setEndRow(equipments.size())
+                .setTotalRows(equipments.size());
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "{trainingPlaceId}/unattached-equipments")
+//    @PreAuthorize("hasAnyAuthority('r_equipment')")
+    public ResponseEntity<EquipmentDTO.EquipmentSpecRs> getUnAttachedEquipments(@RequestParam("_startRow") Integer startRow,
+                                                                                @RequestParam("_endRow") Integer endRow,
+                                                                                @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                @RequestParam(value = "operator", required = false) String operator,
+                                                                                @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                @RequestParam(value = "_sortBy", required = false) String sortBy,
+                                                                                @PathVariable Long trainingPlaceId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+
+        Integer pageSize=endRow-startRow;
+        Integer pageNumber=(endRow-1)/pageSize;
+        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+
+        List<EquipmentDTO.Info> equipments  =trainingPlaceService.getUnAttachedEquipments(trainingPlaceId,pageable);
+
+        final EquipmentDTO.SpecRs specResponse = new EquipmentDTO.SpecRs();
+        specResponse.setData(equipments)
+                .setStartRow(startRow)
+                .setEndRow(endRow)
+                .setTotalRows(trainingPlaceService.getUnAttachedEquipmentsCount(trainingPlaceId));
+
+        final EquipmentDTO.EquipmentSpecRs specRs = new EquipmentDTO.EquipmentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @DeleteMapping(value = "/remove-equipment/{equipmentId}/{trainingPlaceId}")
+    public ResponseEntity<Boolean> removeEquipment(@PathVariable Long equipmentId, @PathVariable Long trainingPlaceId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            trainingPlaceService.removeEquipment(equipmentId, trainingPlaceId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/remove-equipment-list/{equipmentIds}/{trainingPlaceId}")
+    public ResponseEntity<Boolean> removeEquipments(@PathVariable List<Long> equipmentIds, @PathVariable Long trainingPlaceId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            trainingPlaceService.removeEquipments(equipmentIds, trainingPlaceId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-equipment/{equipmentId}/{trainingPlaceId}")
+    public ResponseEntity<Boolean> addEquipment(@PathVariable Long equipmentId, @PathVariable Long trainingPlaceId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            trainingPlaceService.addEquipment(equipmentId, trainingPlaceId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+    @Loggable
+    @PostMapping(value = "/add-equipment-list/{trainingPlaceId}")
+    public ResponseEntity<Boolean> addEquipments(@Validated @RequestBody EquipmentDTO.EquipmentIdList request, @PathVariable Long trainingPlaceId) {
+        boolean flag=false;
+        HttpStatus httpStatus=HttpStatus.OK;
+
+        try {
+            trainingPlaceService.addEquipments(request.getIds(), trainingPlaceId);
+            flag=true;
+        } catch (Exception e) {
+            httpStatus=HttpStatus.NO_CONTENT;
+            flag=false;
+        }
+        return new ResponseEntity<>(flag,httpStatus);
+    }
+
+
 
 
 }

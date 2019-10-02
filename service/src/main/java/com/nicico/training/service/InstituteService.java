@@ -103,7 +103,6 @@ public class InstituteService implements IInstituteService {
         AccountInfo accountInfo = new AccountInfo();
 
 
-
         addressDAO.save(address);
         accountInfoDAO.save(accountInfo);
 
@@ -186,7 +185,8 @@ public class InstituteService implements IInstituteService {
         final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
         final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
 
-        return modelMapper.map(institute.getInstituteAccountSet(), new TypeToken<List<InstituteAccountDTO.Info>>() {}.getType());
+        return modelMapper.map(institute.getInstituteAccountSet(), new TypeToken<List<InstituteAccountDTO.Info>>() {
+        }.getType());
 
     }
 
@@ -196,7 +196,8 @@ public class InstituteService implements IInstituteService {
         final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
         final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
 
-        return modelMapper.map(institute.getTrainingPlaceSet(), new TypeToken<List<TrainingPlaceDTO.Info>>() {}.getType());
+        return modelMapper.map(institute.getTrainingPlaceSet(), new TypeToken<List<TrainingPlaceDTO.Info>>() {
+        }.getType());
 
     }
 
@@ -334,10 +335,6 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
-        int b=1;
-        Institute i=new Institute();
-        InstituteDTO.Info info=new InstituteDTO.Info();
-        modelMapper.map(i,info);
         return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
     }
 
