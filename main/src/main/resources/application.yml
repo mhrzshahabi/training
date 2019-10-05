@@ -103,7 +103,13 @@ spring:
             token-uri: http://apps.icico.net.ir/oauth/token
             user-info-uri: http://apps.icico.net.ir/user/info
             user-name-attribute: username
-
+#nicico:
+#  upload:
+#    dir: /var/nicico/${spring.application.name}/upload
+#    person:
+#      image: /var/nicico/${spring.application.name}/upload/person/img
+#      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
+#    bpmn:/var/nicico/${spring.application.name}/upload/bpmn
 ---
 
 spring:
@@ -131,7 +137,13 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
-
+#nicico:
+#  upload:
+#    dir: /var/nicico/${spring.application.name}/upload
+#    person:
+#      image: /var/nicico/${spring.application.name}/upload/person/img
+#      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
+#    bpmn:/var/nicico/${spring.application.name}/upload/bpmn
 ---
 
 spring:
@@ -161,3 +173,13 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
+nicico:
+  upload:
+    dir: c:/nicico/${spring.application.name}/upload
+  dir:
+    upload:
+      person:
+        img: c:/nicico/${spring.application.name}/upload/person/img
+        tmp: c:/nicico/${spring.application.name}/upload/person/img/temp
+      bpmn: c:/nicico/${spring.application.name}/upload/bpmn
+
