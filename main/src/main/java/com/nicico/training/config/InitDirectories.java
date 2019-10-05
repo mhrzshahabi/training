@@ -13,9 +13,6 @@ import java.io.File;
 @Component
 public class InitDirectories {
 
-    @Value("${spring.profiles.active}")
-    private String activeProfile;
-
     @Value("${nicico.dir.upload.person.img}")
     private String personImgDir;
 
