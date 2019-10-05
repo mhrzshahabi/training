@@ -10,9 +10,9 @@ public interface IInstituteAccountService {
 
     List<InstituteAccountDTO.Info> list();
 
-    InstituteAccountDTO.Info create(InstituteAccountDTO.Create request);
+    InstituteAccountDTO.Info create(Object request);
 
-    InstituteAccountDTO.Info update(Long id, InstituteAccountDTO.Update request);
+    InstituteAccountDTO.Info update(Long id, Object request);
 
     void delete(Long id);
 

@@ -221,9 +221,8 @@
         title: "<spring:message code="cancel"/>",
     });
 
-    function createDialog(message, type, title) {
-        type = type ? type : 'info';
-        if (type == 'info') {
+    function createDialog(type, message, title) {
+        if (type === 'info') {
             return isc.Dialog.create({
                 icon: type + '.png',
                 title: title ? title : "<spring:message code='message'/>",
@@ -233,7 +232,7 @@
                     this.close();
                 }
             });
-        } else if (type == 'ask') {
+        } else if (type === 'ask') {
             return isc.Dialog.create({
                 icon: type + '.png',
                 title: title ? title : "<spring:message code='message'/>",
@@ -243,7 +242,7 @@
                     isc.Button.create({title: "<spring:message code="no"/>",})
                 ],
             });
-        } else if (type == 'confirm') {
+        } else if (type === 'confirm') {
             return isc.Dialog.create({
                 icon: type + '.png',
                 title: title ? title : "<spring:message code='message'/>",
@@ -252,6 +251,12 @@
                     isc.Button.create({title: "<spring:message code="yes"/>",}),
                     isc.Button.create({title: "<spring:message code="no"/>",})
                 ],
+            });
+        } else if (type === 'wait'){
+            return isc.Dialog.create({
+                icon: type + '.png',
+                title: title ? title : "<spring:message code='message'/>",
+                message: message ? message : "<spring:message code='msg.waiting'/>",
             });
         }
     };

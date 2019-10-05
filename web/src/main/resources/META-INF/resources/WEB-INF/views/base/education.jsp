@@ -19,21 +19,15 @@
     ///////////////////////DataSource/////////////////////////
     /////////////////////////////////////////////////////////
 
-    var RestDataSourceEducationLevel = isc.MyRestDataSource.create({
-        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
+    var RestDataSourceEducationLevel = isc.TrDS.create({
+        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"} ],
         fetchDataURL: educationLevelUrl + "spec-list"});
 
-    var RestDataSourceEducationMajor = isc.MyRestDataSource.create({
-        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
+    var RestDataSourceEducationMajor = isc.TrDS.create({
+        fields: [{name: "id",primaryKey: true}, {name: "titleFa"}, {name: "titleEn"} ],
         fetchDataURL: educationMajorUrl + "spec-list"});
 
-    var RestDataSourceEducationOrientation = isc.MyRestDataSource.create({
+    var RestDataSourceEducationOrientation = isc.TrDS.create({
         fields: [   {name: "id", primaryKey: true},
                     {name: "titleFa"},
                     {name: "titleEn"},
@@ -41,19 +35,17 @@
                     {name: "educationMajorId", hidden: true},
                     {name:"educationLevel.titleFa"},
                     {name:"educationMajor.titleFa"}
-        ], dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
+        ],
         fetchDataURL: educationOrientationUrl + "spec-list"});
 
-    var RestDataSource_eduLevel = isc.MyRestDataSource.create({
+    var RestDataSource_eduLevel = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=55",
         autoFetchData: true
     });
 
-        var RestDataSource_eduMajor = isc.MyRestDataSource.create({
+        var RestDataSource_eduMajor = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
@@ -103,53 +95,46 @@
             }]
     });
 
-    var ListGrid_EducationOrientation = isc.MyListGrid.create({
+    var ListGrid_EducationOrientation = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationOrientation,
         contextMenu: Menu_ListGrid_EducationOrientation,
+        fields: [
+            {name: "id", title: "شماره",hidden: true},
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "iContains"},
+            {name: "educationLevelId", hidden: true, filterOperator: "contains"},
+            {name: "educationMajorId", hidden: true, filterOperator: "contains"},
+            {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center", filterOperator: "iContains"},
+            {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center", filterOperator: "iContains"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        filterOnKeypress: true,
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن",
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                                     "<spring:message code='education.edit.orientation'/>",
                                     DynamicForm_EducationOrientation, Window_EducationOrientation);
         },
-        fields: [
-            {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"},
-            {name: "educationLevelId", hidden: true, filterOperator: "contains"},
-            {name: "educationMajorId", hidden: true, filterOperator: "contains"},
-            {name: "educationLevel.titleFa", title: "<spring:message code="education.level"/>", align: "center", filterOperator: "contains"},
-            {name: "educationMajor.titleFa", title: "<spring:message code="education.major"/>", align: "center", filterOperator: "contains"}
-        ],
-        selectionType: "multiple",
-        selectionChanged: function (record, state) {
-        },
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var DynamicForm_EducationOrientation = isc.MyDynamicForm.create({
+    var DynamicForm_EducationOrientation = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                type: 'text',
                 length: "100",
                 readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
@@ -157,7 +142,6 @@
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
-                type: 'text',
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             },
@@ -190,18 +174,13 @@
         ]
     });
 
-    var ToolStripButton_Refresh_EducationOrientation = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
-
+    var ToolStripButton_Refresh_EducationOrientation = isc.TrRefreshBtn.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationOrientation);
         }
     });
 
-    var ToolStripButton_Edit_EducationOrientation = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code="edit"/> ",
+    var ToolStripButton_Edit_EducationOrientation = isc.TrEditBtn.create({
         click: function () {
             DynamicForm_EducationOrientation.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
@@ -209,15 +188,13 @@
                                     DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code="create"/>",
+    var ToolStripButton_Add_EducationOrientation = isc.TrCreateBtn.create({
         click: function () {
             ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.add.orientation'/>",
                                     DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Remove_EducationOrientation = isc.ToolStripButton.create({
+    var ToolStripButton_Remove_EducationOrientation = isc.TrRemoveBtn.create({
         icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
@@ -241,9 +218,8 @@
     });
 
 
-    var IButton_EducationOrientation_Save = isc.IButton.create({
-        top: 260, title: "<spring:message code="global.form.save"/>",
-        icon: "pieces/16/save.png",
+    var IButton_EducationOrientation_Save = isc.TrSaveBtn.create({
+        top: 260,
         click: function () {
             DynamicForm_EducationOrientation.validate();
             if (DynamicForm_EducationOrientation.hasErrors()) {
@@ -251,7 +227,6 @@
             }
             var data = DynamicForm_EducationOrientation.getValues();
             isc.RPCManager.sendRequest({
-                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -264,16 +239,19 @@
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
+                        createDialog("info","<spring:message code="msg.operation.successful"/>",
+                                        "<spring:message code="msg.command.done"/>");
                         ListGrid_Education_refresh(ListGrid_EducationOrientation);
                         setTimeout(function () {
                             ListGrid_EducationOrientation.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationOrientation.close();
                     }else if(resp.httpResponseCode === 406){
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
+                        createDialog("info","<spring:message code="msg.record.duplicate"/>",
+                                        "<spring:message code="message"/>");
                     }else {
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
+                        createDialog("info","<spring:message code="msg.operation.error"/>",
+                                        "<spring:message code="message"/>");
                     }
 
                 }
@@ -281,17 +259,12 @@
 
         }
     });
-    var HLayout_EducationOrientation_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationOrientation_SaveOrExit = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        width: "100%",
-        align: "center",
         padding: 10,
-        membersMargin: 10,
-        members: [IButton_EducationOrientation_Save, isc.IButton.create({
-            ID: "IButton_EducationOrientation_Exit",
-            title: "<spring:message code="cancel"/>",
+        members: [IButton_EducationOrientation_Save, isc.TrCancelBtn.create({
             prompt: "",
             width: 100,
             icon: "<spring:url value="remove.png"/>",
@@ -303,18 +276,12 @@
         })]
     });
     var Window_EducationOrientation = isc.Window.create({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
         align: "center",
-        autoDraw: false,
-        dismissOnEscape: false,
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
-        items: [isc.VLayout.create({
+        items: [isc.TrVLayout.create({
             width: "300",
             height: "120",
             members: [DynamicForm_EducationOrientation, HLayout_EducationOrientation_SaveOrExit]
@@ -327,15 +294,11 @@
     });
 
 
-    var HLayout_Grid_EducationOrientation = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
+    var HLayout_Grid_EducationOrientation = isc.TrHLayout.create({
         members: [ListGrid_EducationOrientation]
     });
 
-    var VLayout_Body_EducationOrientation = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Body_EducationOrientation = isc.TrVLayout.create({
         members: [HLayout_Actions_EducationOrientation,
                     HLayout_Grid_EducationOrientation
                 ]
@@ -385,49 +348,42 @@
             }]
     });
 
-     var ListGrid_EducationMajor = isc.MyListGrid.create({
+     var ListGrid_EducationMajor = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
+        fields: [
+            {name: "id", title: "شماره", hidden: true, filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
+        ],
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        filterOnKeypress: true,
+        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        filterUsingText: "فیلتر کردن",
+        groupByText: "گروه بندی",
+        freezeFieldText: "ثابت نگه داشتن",
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                                     "<spring:message code='education.edit.major'/>",
                                     DynamicForm_EducationMajor, Window_EducationMajor);
         },
-        fields: [
-            {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
-        ],
-        // selectionType: "multiple",
-        selectionChanged: function (record, state) {
-        },
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var DynamicForm_EducationMajor = isc.MyDynamicForm.create({
+    var DynamicForm_EducationMajor = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
                 name: "titleFa",
                 title: "<spring:message code="global.titleFa"/>",
                 required: true,
-                type: 'text',
                 length: "100",
                 readonly: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|' ']"
@@ -435,26 +391,19 @@
             {
                 name: "titleEn",
                 title: "<spring:message code="global.titleEn"/>",
-                type: 'text',
-
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
             }
         ]
     });
 
-    var ToolStripButton_Refresh_EducationMajor = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
-
+    var ToolStripButton_Refresh_EducationMajor = isc.TrRefreshBtn.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationMajor);
         }
     });
 
-    var ToolStripButton_Edit_EducationMajor = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code="edit"/> ",
+    var ToolStripButton_Edit_EducationMajor = isc.TrEditBtn.create({
         click: function () {
             DynamicForm_EducationMajor.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
@@ -462,17 +411,13 @@
                                     DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Add_EducationMajor = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code="create"/>",
+    var ToolStripButton_Add_EducationMajor = isc.TrCreateBtn.create({
         click: function () {
             ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.add.major'/>",
                                     DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Remove_EducationMajor = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code="remove"/> ",
+    var ToolStripButton_Remove_EducationMajor = isc.TrRemoveBtn.create({
         click: function () {
             ListGrid_Education_Remove(ListGrid_EducationMajor,educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
         }
@@ -494,9 +439,8 @@
     });
 
 
-    var IButton_EducationMajor_Save = isc.IButton.create({
-        top: 260, title: "<spring:message code="save"/>",
-        icon: "pieces/16/save.png",
+    var IButton_EducationMajor_Save = isc.TrSaveBtn.create({
+        top: 260,
         click: function () {
             DynamicForm_EducationMajor.validate();
             if (DynamicForm_EducationMajor.hasErrors()) {
@@ -504,7 +448,6 @@
             }
             var data = DynamicForm_EducationMajor.getValues();
             isc.RPCManager.sendRequest({
-                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -517,16 +460,19 @@
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
+                        createDialog("info","<spring:message code="msg.operation.successful"/>",
+                                        "<spring:message code="msg.command.done"/>");
                         ListGrid_Education_refresh(ListGrid_EducationMajor);
                         setTimeout(function () {
                             ListGrid_EducationMajor.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationMajor.close();
                     }else if(resp.httpResponseCode === 406){
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
+                        createDialog("info","<spring:message code="msg.record.duplicate"/>",
+                                        "<spring:message code="message"/>");
                     } else {
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
+                        createDialog("info","<spring:message code="msg.operation.error"/>",
+                                        "<spring:message code="message"/>");
                     }
 
                 }
@@ -534,17 +480,13 @@
 
         }
     });
-    var HLayout_EducationMajor_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationMajor_SaveOrExit = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        align: "center",
         padding: 10,
-        membersMargin: 10,
-        members: [IButton_EducationMajor_Save, isc.IButton.create({
-            ID: "IButton_EducationMajor_Exit",
-            title: "<spring:message code="cancel"/>",
+        members: [IButton_EducationMajor_Save, isc.TrCancelBtn.create({
             prompt: "",
             width: 100,
             icon: "<spring:url value="remove.png"/>",
@@ -556,18 +498,12 @@
         })]
     });
     var Window_EducationMajor = isc.Window.create({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
         align: "center",
-        autoDraw: false,
-        dismissOnEscape: false,
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
-        items: [isc.VLayout.create({
+        items: [isc.TrVLayout.create({
             width: "300",
             height: "120",
             members: [DynamicForm_EducationMajor, HLayout_EducationMajor_SaveOrExit]
@@ -580,15 +516,11 @@
     });
 
 
-    var HLayout_Grid_EducationMajor = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
+    var HLayout_Grid_EducationMajor = isc.TrVLayout.create({
         members: [ListGrid_EducationMajor]
     });
 
-    var VLayout_Body_EducationMajor = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Body_EducationMajor = isc.TrVLayout.create({
         members: [HLayout_Actions_EducationMajor,
                     HLayout_Grid_EducationMajor
                 ]
@@ -636,42 +568,36 @@
             }]
     });
 
-    var ListGrid_EducationLevel = isc.MyListGrid.create({
+    var ListGrid_EducationLevel = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSourceEducationLevel,
         contextMenu: Menu_ListGrid_EducationLevel,
-        doubleClick: function () {
-            ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
-                                    "<spring:message code='education.edit.level'/>",
-                                    DynamicForm_EducationLevel, Window_EducationLevel);
-        },
         fields: [
             {name: "id", title: "شماره",hidden: true},
             {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
             {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
         ],
-        // selectionType: "multiple",
-        selectionChanged: function (record, state) {
-        },
+        selectionType: "multiple",
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
         allowAdvancedCriteria: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        freezeFieldText: "ثابت نگه داشتن",
+        doubleClick: function () {
+            ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
+                                    "<spring:message code='education.edit.level'/>",
+                                    DynamicForm_EducationLevel, Window_EducationLevel);
+        },
     });
 
-    var DynamicForm_EducationLevel = isc.MyDynamicForm.create({
+    var DynamicForm_EducationLevel = isc.DynamicForm.create({
         fields: [
             {name: "id", hidden: true},
             {
@@ -693,18 +619,13 @@
         ]
     });
 
-    var ToolStripButton_Refresh_EducationLevel = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/> ",
-
+    var ToolStripButton_Refresh_EducationLevel = isc.TrRefreshBtn.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationLevel);
         }
     });
 
-    var ToolStripButton_Edit_EducationLevel = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code="edit"/> ",
+    var ToolStripButton_Edit_EducationLevel = isc.TrEditBtn.create({
         click: function () {
             DynamicForm_EducationLevel.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
@@ -712,17 +633,13 @@
                                     DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Add_EducationLevel = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code="create"/>",
+    var ToolStripButton_Add_EducationLevel = isc.TrCreateBtn.create({
         click: function () {
             ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.add.level'/>",
                                     DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Remove_EducationLevel = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code="remove"/> ",
+    var ToolStripButton_Remove_EducationLevel = isc.TrRemoveBtn.create({
         click: function () {
             ListGrid_Education_Remove(ListGrid_EducationLevel,educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
         }
@@ -744,9 +661,8 @@
     });
 
 
-    var IButton_EducationLevel_Save = isc.IButton.create({
-        top: 260, title: "<spring:message code="save"/>",
-        icon: "pieces/16/save.png",
+    var IButton_EducationLevel_Save = isc.TrSaveBtn.create({
+        top: 260,
         click: function () {
             DynamicForm_EducationLevel.validate();
             if (DynamicForm_EducationLevel.hasErrors()) {
@@ -754,7 +670,6 @@
             }
             var data = DynamicForm_EducationLevel.getValues();
             isc.RPCManager.sendRequest({
-                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -767,7 +682,8 @@
                     if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("<spring:message code="msg.command.done"/>", "<spring:message code="msg.operation.successful"/>", "3000", "say");
+                        createDialog("info","<spring:message code="msg.operation.successful"/>",
+                                        "<spring:message code="msg.command.done"/>");
                         ListGrid_Education_refresh(ListGrid_EducationLevel);
                         setTimeout(function () {
                             ListGrid_EducationLevel.setSelectedState(gridState);
@@ -775,10 +691,12 @@
                         Window_EducationLevel.close();
                     }
                     else if(resp.httpResponseCode === 406){
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.record.duplicate"/>", "3000", "error");
+                        createDialog("info","<spring:message code="msg.record.duplicate"/>",
+                                        "<spring:message code="message"/>");
                     }
                     else {
-                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", "3000", "error")
+                        createDialog("info","<spring:message code="msg.operation.error"/>",
+                                        "<spring:message code="message"/>");
                     }
 
                 }
@@ -786,17 +704,13 @@
 
         }
     });
-    var HLayout_EducationLevel_SaveOrExit = isc.MyHLayoutButtons.create({
+    var HLayout_EducationLevel_SaveOrExit = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
-        align: "center",
         padding: 10,
-        membersMargin: 10,
-        members: [IButton_EducationLevel_Save, isc.IButton.create({
-            ID: "IButton_EducationLevel_Exit",
-            title: "<spring:message code="cancel"/>",
+        members: [IButton_EducationLevel_Save, isc.TrCancelBtn.create({
             prompt: "",
             width: 100,
             icon: "<spring:url value="remove.png"/>",
@@ -808,18 +722,12 @@
         })]
     });
     var Window_EducationLevel = isc.Window.create({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
         align: "center",
-        autoDraw: false,
-        dismissOnEscape: false,
         border: "1px solid gray",
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
-        items: [isc.VLayout.create({
+        items: [isc.TrVLayout.create({
             width: "300",
             height: "120",
             members: [DynamicForm_EducationLevel, HLayout_EducationLevel_SaveOrExit]
@@ -832,15 +740,11 @@
     });
 
 
-    var HLayout_Grid_EducationLevel = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
+    var HLayout_Grid_EducationLevel = isc.TrHLayout.create({
         members: [ListGrid_EducationLevel]
     });
 
-    var VLayout_Body_EducationLevel = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Body_EducationLevel = isc.TrVLayout.create({
         members: [HLayout_Actions_EducationLevel,
                     HLayout_Grid_EducationLevel
                 ]
@@ -852,10 +756,8 @@
     //////////////////////////////////////////////////////////
 
     var VLayout_Tabset_Education = isc.TabSet.create({
-    tabBarPosition: "top",
-    // tabBarAlign: "center",
-    width: "100%",
-    height: "100%",
+    tabBarPosition: "right",
+    tabBarThickness: 100,
     tabs: [
         {title: "<spring:message code="education.level"/>", pane:VLayout_Body_EducationLevel},
         {title: "<spring:message code="education.major"/>", pane:VLayout_Body_EducationMajor},
@@ -863,15 +765,11 @@
     ]
     });
 
-    var VLayout_Tab_Education = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Tab_Education = isc.TrVLayout.create({
         members: [VLayout_Tabset_Education]
     });
 
-    var VLayout_Body_Education = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Body_Education = isc.TrVLayout.create({
         members: [VLayout_Tab_Education]
     });
 
@@ -881,35 +779,15 @@
 
     function ListGrid_Education_Remove(EducationListGrid, Url, msg) {
         var record = EducationListGrid.getSelectedRecord();
-        // console.log(record);
         if (record == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.not.selected.record'/> !",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function () {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            isc.Dialog.create({
-                message: msg,
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='global.warning'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
-                    title: "<spring:message code='global.no'/>"
-                })],
-                buttonClick: function (button, index) {
+            var Dialog_Education_remove = createDialog("ask",msg,"<spring:message code='global.warning'/>");
+            Dialog_Education_remove.addProperties({buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        var wait = isc.Dialog.create({
-                            message: "<spring:message code='msg.waiting'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='message'/>"
-                        });
+                            var wait = createDialog("wait");
                         isc.RPCManager.sendRequest({
-                            willHandleError: true,
                             actionURL: Url + "delete/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
@@ -921,20 +799,17 @@
                                 wait.close();
                                 if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
                                     EducationListGrid.invalidateCache();
-                                    simpleDialog("<spring:message code='msg.command.done'/>",
-                                                    "<spring:message code='msg.operation.successful'/>", 3000, "say");
+                                    createDialog("info","<spring:message code="msg.operation.successful"/>",
+                                        "<spring:message code="msg.command.done"/>");
                                 }else if(resp.httpResponseCode === 406){
-                                    simpleDialog("<spring:message code='message'/>",
-                                                    "<spring:message code='msg.record.cannot.deleted'/>", 3000, "stop");
+                                    createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
                                 }else {
-                                    simpleDialog("<spring:message code='message'/>",
-                                                    "<spring:message code='msg.operation.error'/>", 3000, "stop");
+                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
                                 }
                             }
                         });
                     }
-                }
-            });
+                }});
             ListGrid_Education_refresh(EducationListGrid);
         }
     }
@@ -942,15 +817,7 @@
     function ListGrid_Education_Edit(EducationListGrid, Url, title, EducationDynamicForm, EducationWindows) {
         var record = EducationListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='global.grid.record.not.selected'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-                buttonClick: function () {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
             methodEducation = "PUT";
             saveActionUrl = Url + record.id;
@@ -995,6 +862,7 @@
             criteriaForm.action = "<spring:url value="education/orientation/printWithCriteria/"/>" + type;
         }
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.show();
         criteriaForm.submitForm();
     }
 

@@ -42,23 +42,28 @@ public class InstituteAccountService implements IInstituteAccountService {
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info create(InstituteAccountDTO.Create request) {
+    public InstituteAccountDTO.Info create(Object request) {
+
         final InstituteAccount account = modelMapper.map(request, InstituteAccount.class);
 
         return save(account);
+
     }
 
     @Transactional
     @Override
-    public InstituteAccountDTO.Info update(Long id, InstituteAccountDTO.Update request) {
+    public InstituteAccountDTO.Info update(Long id, Object request) {
+
         final Optional<InstituteAccount> slById = instituteAccountDAO.findById(id);
         final InstituteAccount account = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
 
         InstituteAccount updating = new InstituteAccount();
+
         modelMapper.map(account, updating);
         modelMapper.map(request, updating);
 
         return save(updating);
+
     }
 
     @Transactional
@@ -71,7 +76,6 @@ public class InstituteAccountService implements IInstituteAccountService {
     @Override
     public void delete(InstituteAccountDTO.Delete request) {
         final List<InstituteAccount> slAllById = instituteAccountDAO.findAllById(request.getIds());
-
         instituteAccountDAO.deleteAll(slAllById);
     }
 

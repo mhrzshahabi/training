@@ -217,6 +217,5 @@ public class PersonalInfoDTO {
         private Integer endRow;
         private Integer totalRows;
     }
-
 }
 

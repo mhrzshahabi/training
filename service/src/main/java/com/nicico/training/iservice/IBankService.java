@@ -1,6 +1,7 @@
 package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.BankBranchDTO;
 import com.nicico.training.dto.BankDTO;
 
 import java.util.List;
@@ -19,5 +20,7 @@ public interface IBankService {
     void delete(BankDTO.Delete request);
 
     SearchDTO.SearchRs<BankDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<BankBranchDTO.Info> getBankBranches(Long bankID);
 
 }

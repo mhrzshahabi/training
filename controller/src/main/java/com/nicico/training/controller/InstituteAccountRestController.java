@@ -22,7 +22,7 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/account")
+@RequestMapping(value = "/api/institute-account")
 public class InstituteAccountRestController {
     private final IInstituteAccountService accountService;
     private final ObjectMapper objectMapper;
@@ -46,14 +46,14 @@ public class InstituteAccountRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_account')")
-    public ResponseEntity<InstituteAccountDTO.Info> create(@Validated @RequestBody InstituteAccountDTO.Create request) {
+    public ResponseEntity<InstituteAccountDTO.Info> create(@Validated @RequestBody Object request) {
         return new ResponseEntity<>(accountService.create(request), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_account')")
-    public ResponseEntity<InstituteAccountDTO.Info> update(@PathVariable Long id, @Validated @RequestBody InstituteAccountDTO.Update request) {
+    public ResponseEntity<InstituteAccountDTO.Info> update(@PathVariable Long id, @Validated @RequestBody Object request) {
         return new ResponseEntity<>(accountService.update(id, request), HttpStatus.OK);
     }
 

@@ -18,10 +18,11 @@ import java.util.Set;
 @Entity
 @Table(name="tbl_training_place",schema = "TRAINING")
 public class TrainingPlace extends  Auditable{
+
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "training_place_seq")
     @SequenceGenerator(name = "training_place_seq",sequenceName = "seq_training_place_id",allocationSize = 1)
-    @Column(name = "id",precision = 0)
+    @Column(name = "id")
     private Long id;
 
     @Column(name = "c_title_fa", nullable = false)
@@ -36,14 +37,14 @@ public class TrainingPlace extends  Auditable{
     @Column(name = "e_place_type",insertable = false, updatable = false)
     private EPlaceType ePlaceType;
 
-    @Column(name = "e_place_type",insertable = false, updatable = false)
-    private Integer ePlaceTypeId;
+    @Column(name = "e_place_type")
+    private Integer eplaceTypeId;
 
-    @Column(name = "e_place_type",insertable = false, updatable = false)
+    @Column(name = "e_arrangement_type",insertable = false, updatable = false)
     private EArrangementType eArrangementType;
 
-    @Column(name = "e_place_type",insertable = false, updatable = false)
-    private Integer eArrangementTypeId;
+    @Column(name = "e_arrangement_type")
+    private Integer earrangementTypeId;
 
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "tbl_training_place_equipment",
@@ -56,7 +57,7 @@ public class TrainingPlace extends  Auditable{
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)
     private Institute institute;
 
-    @Column(name = "f_institute", insertable = false, updatable = false)
+    @Column(name = "f_institute")
     private Long instituteId;
 
     @Column(name = "c_description", length = 500)
