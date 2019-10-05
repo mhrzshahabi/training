@@ -104,15 +104,8 @@
             {
                 name: "code",
                 title: "کد",
-                //  hidden: true,
-               // type: 'text',
-                //required: true,
-                 disabled:true,
+                disabled: true,
                 canEdit: false,
-             // requiredMessage: "کد می تواند شامل عدد , حروف فارسی و انگلیسی باشد",
-                //  titleOrientation: "top",
-                //keyPressFilter: "[/|0-9]",
-                // length: "15",
                 hint: "کد به صورت اتوماتیک ایجاد می شود", showHintInField: true,
                 width: "*",
                 height: 35
@@ -125,7 +118,7 @@
                 required: true,
                 height: 35,
                 requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
-                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
+// keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
                 width: "*",// hint: "Persian/فارسی", showHintInField: true,
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
@@ -136,7 +129,6 @@
                 title: "تاریخ شروع",
                 ID: "startDate_jspTerm",
                 type: 'text',
-                enabled: false,
                 required: true,
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
@@ -145,12 +137,21 @@
                     displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
                 },
                 icons: [{
-                    src: "pieces/pcal.png",
-                    click: function () {
+                    src: "<spring:url value="calendar.png"/>",
+                        click: function () {
                         closeCalendarWindow();
                         displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
                     }
                 }],
+
+                changed: function (form, item, value) {
+                    var startdate = DynamicForm_Term.getItem("startDate").getValue();
+                    if (startdate != null) {
+                        if (term_method == "POST")
+                            getTermCodeRequest(startdate.substr(0, 4));
+                    } else
+                        simpleDialog("پیام", "تاریخ شروع وارد نشده است.", 3000, "say");
+                },
                 blur: function () {
                     var dateCheck = false;
                     dateCheck = checkDate(DynamicForm_Term.getValue("startDate"));
@@ -163,7 +164,7 @@
                     var endDate = DynamicForm_Term.getValue("endDate");
                     var startDate = DynamicForm_Term.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-                        //  DynamicForm_Term.clearFieldErrors("endDate", true);
+                        // DynamicForm_Term.clearFieldErrors("endDate", true);
                         DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                         DynamicForm_Term.getItem("endDate").setValue();
                         endDateCheckTerm = false;
@@ -185,16 +186,11 @@
                     displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
                 },
                 icons: [{
-                    src: "pieces/pcal.png",
+                    src: "<spring:url value="calendar.png"/>",
                     click: function () {
-                        var startdate = DynamicForm_Term.getItem("startDate").getValue();
                         closeCalendarWindow();
                         displayDatePicker('endDate_jspTerm', this, 'ymd', '/');
-                        if (startdate != null) {
-                            if (term_method == "POST")
-                                getTermCodeRequest(startdate.substr(0, 4));
-                        } else
-                            simpleDialog("پیام", "تاریخ شروع وارد نشده است.", 3000, "say");
+
                     }
                 }],
                 blur: function () {
@@ -241,20 +237,23 @@
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
             members: [isc.MyButton.create({
                 title: "ذخیره",
-                icon: "pieces/16/save.png",
+               // icon: "pieces/16/save.png",
+
                 click: function () {
 
 
                     if (term_method == "PUT") {
                         edit_Term();
                     } else {
+
+
                         save_Term();
                     }
                 }
 
             }), isc.MyButton.create({
                 title: "لغو",
-                icon: "<spring:url value="remove.png"/>",
+             //   icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     Window_term.close();
                 }
@@ -301,10 +300,11 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
-         "<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"
-               window.open('${printUrl}');
-       // window.open("/term/printWithCriteria/pdf");
-       //   print_TermListGrid("pdf");
+            <%--"<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"--%>
+            <%--      window.open('${printUrl}');--%>
+// window.open("/term/printWithCriteria/pdf");
+            print_TermListGrid("pdf");
+
         }
     });
 
@@ -478,32 +478,33 @@
         }
         var strsData = startDate1.replace(/(\/)/g, "");
         var streData = endDate1.replace(/\//g, "");
-        //=================================================================
-         isc.RPCManager.sendRequest(MyDsRequest( termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id, "GET", null, "callback:ConflictWhenEdit(rpcResponse)"));
-       };
-                function ConflictWhenEdit(resp) {
-                  if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                if (resp.data.length > 0) {
-                                    var OK = isc.Dialog.create({
-                                        message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام فرمان"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var termData = DynamicForm_Term.getValues();
-                                    var termSaveUrl = termUrl;
-                                    if (term_method.localeCompare("PUT") == 0) {
-                                        var jobRecord = ListGrid_Term.getSelectedRecord();
-                                        termSaveUrl += jobRecord.id;
-                                    }
-                                    isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
-                                }
-                            }
+//=================================================================
+        isc.RPCManager.sendRequest(MyDsRequest(termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id, "GET", null, "callback:ConflictWhenEdit(rpcResponse)"));
+    };
 
+    function ConflictWhenEdit(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            if (resp.data.length > 0) {
+                var OK = isc.Dialog.create({
+                    message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
+                    icon: "[SKIN]say.png",
+                    title: "انجام فرمان"
+                });
+                setTimeout(function () {
+                    OK.close();
+                }, 3000);
+            } else {
+                var termData = DynamicForm_Term.getValues();
+                var termSaveUrl = termUrl;
+                if (term_method.localeCompare("PUT") == 0) {
+                    var jobRecord = ListGrid_Term.getSelectedRecord();
+                    termSaveUrl += jobRecord.id;
                 }
+                isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
+            }
+        }
+
+    }
 
     function show_TermRemoveForm() {
         var record = ListGrid_Term.getSelectedRecord();
@@ -569,12 +570,14 @@
             canSubmit: true,
             fields:
                 [
-                    {name: "CriteriaStr", type: "hidden"}
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name:"token",type:"hidden"}
                 ]
+
         })
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.submitForm();
-
-
+         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+         criteriaForm.setValue("token","<%= accessToken %>")
+         criteriaForm.show();
+         criteriaForm.submitForm();
     };
 
