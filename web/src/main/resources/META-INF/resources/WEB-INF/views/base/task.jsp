@@ -258,7 +258,7 @@ var dummy;
                                                                         code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        fillPersonalInfoFiels(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                        fillPersonalInfoFields(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
                     }
                 }
             },
@@ -952,7 +952,7 @@ var dummy;
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data == "") {
                 var ERROR = isc.Dialog.create({
-                    message: ("<spring:message code='msg.national.code.dublicate'/>"),
+                    message: ("<spring:message code='msg.national.code.duplicate'/>"),
                     icon: "[SKIN]stop.png",
                     title: "<spring:message code='message'/>"
                 });

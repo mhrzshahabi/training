@@ -115,7 +115,6 @@
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
-        filterOnKeypress: true,
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
@@ -354,9 +353,9 @@
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
         fields: [
-            {name: "id", title: "شماره", hidden: true, filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
+            {name: "id", title: "شماره", hidden: true},
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "iContains"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -364,7 +363,6 @@
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
-        filterOnKeypress: true,
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
@@ -575,8 +573,8 @@
         contextMenu: Menu_ListGrid_EducationLevel,
         fields: [
             {name: "id", title: "شماره",hidden: true},
-            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "contains"}
+            {name: "titleFa", title: "<spring:message code="global.titleFa"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "<spring:message code="global.titleEn"/>", align: "center", filterOperator: "iContains"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -584,7 +582,6 @@
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
-        filterOnKeypress: true,
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
         filterUsingText: "فیلتر کردن",
@@ -833,7 +830,7 @@
         if (record != null && record.id != null) {
             EducationListGrid.selectRecord(record);
         }
-            EducationListGrid.invalidateCache();
+            EducationListGrid.filterByEditor();
     }
 
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
