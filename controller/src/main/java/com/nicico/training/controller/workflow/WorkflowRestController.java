@@ -57,7 +57,7 @@ public class WorkflowRestController {
 	private final FileUtil fileUtil;
 	private final ResultSetConverter resultSetConverter;
 
-	@Value("${nicico.bpmn.upload.dir}")
+	@Value("${nicico.dir.upload.bpmn}")
 	private String bpmnUploadDir;
 
 	@PostMapping(value = "/uploadProcessDefinition")
