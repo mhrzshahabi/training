@@ -64,7 +64,7 @@
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>", requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.field.is.required"/>", wrapItemTitles: false
+        requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
@@ -133,16 +133,16 @@
         title: "<spring:message code="refresh"/>",
     });
 
-    isc.defineClass("TrCreateBtn", ToolStripButton);
-    isc.TrCreateBtn.addProperties({
-        icon: "<spring:url value="create.png"/>",
-        title: "<spring:message code="create"/>",
-    });
-
     isc.defineClass("TrEditBtn", ToolStripButton);
     isc.TrEditBtn.addProperties({
         icon: "<spring:url value="edit.png"/>",
         title: "<spring:message code="edit"/>",
+    });
+
+    isc.defineClass("TrCreateBtn", ToolStripButton);
+    isc.TrCreateBtn.addProperties({
+        icon: "<spring:url value="create.png"/>",
+        title: "<spring:message code="create"/>",
     });
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
@@ -176,6 +176,11 @@
             type: "regexp",
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
+        },
+        EmailValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.company.checked.email"/>",
+            expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
         Trimmer: {
             type: "custom",

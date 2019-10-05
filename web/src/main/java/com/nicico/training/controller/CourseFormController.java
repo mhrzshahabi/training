@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.nicico.copper.common.domain.ConstantVARs;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -29,7 +30,8 @@ public class CourseFormController {
 
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+//		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
+		String token = request.getParameter("myToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());

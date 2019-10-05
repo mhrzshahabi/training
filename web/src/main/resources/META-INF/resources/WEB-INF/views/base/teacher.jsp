@@ -21,13 +21,13 @@ var dummy;
 
     var selectedRecordPersonalID = null;
 
-    var teacherCategoriesID = new Array();
+    var teacherCategoriesID = [];
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     // ------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Teacher_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
@@ -42,83 +42,55 @@ var dummy;
     });
 
 
-    var RestDataSource_Egender_JspTeacher = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}
-        ],
+    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eGender/spec-list"
     });
 
-    var RestDataSource_Emarried_JspTeacher = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}
-        ],
+    var RestDataSource_Emarried_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eMarried/spec-list"
     });
 
-    var RestDataSource_Emilitary_JspTeacher = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}
-        ],
+    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
 
-    var RestDataSource_Category_JspTeacher = isc.MyRestDataSource.create({
-        fields: [{name: "id"}, {name: "titleFa"}
-        ],
+    var RestDataSource_Category_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-    var RestDataSource_Education_Level_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleEn"},
-            {name: "titleFa"}
-        ],
+    var RestDataSource_Education_Level_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
         fetchDataURL: educationUrl + "level/spec-list"
     });
 
-    var RestDataSource_Education_Major_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleEn"},
-            {name: "titleFa"}
-        ],
+    var RestDataSource_Education_Major_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
         fetchDataURL: educationUrl + "major/spec-list"
     });
 
-    var RestDataSource_Education_Orientation_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "titleEn"},
-            {name: "titleFa"}
-        ]
+    var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}]
     });
 
-    var RestDataSource_Home_City_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "name"}
-        ]
+    var RestDataSource_Home_City_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}]
     });
 
-    var RestDataSource_Home_State_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "name"}
-        ],
+    var RestDataSource_Home_State_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
 
-    var RestDataSource_Work_City_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "name"}
-        ]
+    var RestDataSource_Work_City_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}]
     });
 
-    var RestDataSource_Work_State_JspTeacher = isc.MyRestDataSource.create({
-        fields: [
-            {name: "id"},
-            {name: "name"}
-        ],
+    var RestDataSource_Work_State_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
     //--------------------------------------------------------------------------------------------------------------------//
@@ -193,7 +165,7 @@ var dummy;
                 title: "<spring:message code='education.categories'/>",
                 align: "center",
                 formatCellValue: function (value, record) {
-                    if(record.categories.length == 0)
+                    if(record.categories.length === 0)
                         return;
                     var cat = record.categories[0].titleFa.toString();
                     for(var i=1;i<record.categories.length;i++){
@@ -229,19 +201,12 @@ var dummy;
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
-        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
-        configureSortText: "<spring:message code='configureSortText'/>",
-        autoFitAllText: "<spring:message code='autoFitAllText'/>",
-        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
-
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -251,7 +216,6 @@ var dummy;
     var vm = isc.ValuesManager.create({});
 
     var showAttachViewLoader = isc.ViewLoader.create({
-        autoDraw: false,
         viewURL: "",
         overflow: "scroll",
         height: "133px",
@@ -262,19 +226,15 @@ var dummy;
     });
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "vm",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -283,12 +243,10 @@ var dummy;
             {
                 name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
-                type: 'text',
                 required: true,
                 wrapTitle: false,
                 keyPressFilter: "[0-9]",
                 length: "10",
-                width: "*",
                 hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true
                 , changed: function () {
@@ -300,7 +258,7 @@ var dummy;
                                                                         code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        fillPersonalInfoFiels(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                        fillPersonalInfoFields(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
                     }
                 }
             },
@@ -308,8 +266,6 @@ var dummy;
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                type: 'text',
-                width: "*",
                 disabled: true,
             },
 
@@ -326,38 +282,26 @@ var dummy;
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
-                type: 'text',
-                width: "*",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                showHintInField: true
             },
 
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
-                type: 'text',
-                width: "*",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                showHintInField: true
             },
             {
                 name: "personality.fullNameEn",
                 title: "<spring:message code='firstName.latin'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[a-z|A-Z |]",
-                showHintInField: true
             },
 
             {
                 name: "personality.fatherName",
                 title: "<spring:message code='father.name'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                showHintInField: true,
                 length: "30"
             },
 
@@ -365,13 +309,11 @@ var dummy;
                 name: "personality.birthDate",
                 title: "<spring:message code='birth.date'/>",
                 ID: "birthDate_jspTeacher",
-                type: 'text',
-                width: "*",
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
-                    src: "pieces/pcal.png",
+                    src: "[SKIN]/actions/pcal.png",
                     click: function () {
                         closeCalendarWindow();
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
@@ -392,16 +334,12 @@ var dummy;
             {
                 name: "personality.birthLocation",
                 title: "<spring:message code='birth.location'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
             {
                 name: "personality.birthCertificate",
                 title: "<spring:message code='birth.certificate'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
@@ -409,8 +347,6 @@ var dummy;
             {
                 name: "personality.birthCertificateLocation",
                 title: "<spring:message code='birth.certificate.location'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
@@ -588,7 +524,6 @@ var dummy;
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                width: "*",
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
@@ -599,7 +534,6 @@ var dummy;
                     showFilterEditor: true,
                     gridComponents: [
                         isc.ToolStrip.create({
-                            autoDraw: false,
                             height: 30,
                             width: "100%",
                             members: [
@@ -637,12 +571,9 @@ var dummy;
                 }
             },
 
-
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "11",
                 hint: "*********09",
@@ -655,7 +586,6 @@ var dummy;
                     if (mobileCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.contactInfo.mobile", "<spring:message
                                                                            code='msg.mobile.validation'/>", true);
-
                     if (mobileCheck === true)
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.contactInfo.mobile", true);
                 }
@@ -664,8 +594,6 @@ var dummy;
             {
                 name: "personality.nationality",
                 title: "<spring:message code='nationality'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
@@ -674,11 +602,8 @@ var dummy;
                 name: "personality.description",
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
-                width: "*",
-                length: "500",
                 colSpan: 3,
             }
-
 
         ],
         itemChanged: function (item, newValue) {
@@ -699,15 +624,13 @@ var dummy;
             }
             else if(item.name === "enableStatus"){
                 if(newValue === "false"){
-                    isc.MyYesNoDialog.create({
-                        message: "<spring:message code='msg.teacher.enable.status.change.confirm'/>",
-                        buttonClick: function (button, index) {
-                            this.close();
-                            if (index === 1) {
-                                DynamicForm_BasicInfo_JspTeacher.getField("enableStatus").setValue("true");
-                            }
+                    var ask = createDialog("confirm", "<spring:message code='msg.teacher.enable.status.change.confirm'/>");
+                    ask.addProperties({buttonClick: function (button, index) {
+                        this.close();
+                        if (index === 1) {
+                            DynamicForm_BasicInfo_JspTeacher.getField("enableStatus").setValue("true");
                         }
-                    })
+                    }});
                 }
             }
         }
@@ -720,13 +643,9 @@ var dummy;
         titleWidth: 0,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
-        titleSuffix: "",
         valuesManager: "vm",
         numCols: 2,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -755,19 +674,15 @@ var dummy;
     });
 
     var DynamicForm_JobInfo_JspTeacher = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "vm",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -775,25 +690,19 @@ var dummy;
             {
                 name: "personality.workJob",
                 title: "<spring:message code='job'/>",
-                type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
-                width: "*"
             },
             {
                 name: "personality.workName",
                 title: "<spring:message code='work.place'/>",
-                type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
-                width: "*"
             },
             {
                 name: "personality.contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
-                type: 'text',
                 length: "30",
-                width: "*"
             },
 
             {
@@ -868,30 +777,21 @@ var dummy;
                 name: "personality.contactInfo.workAddress.restAddr",
                 title: "<spring:message code='address.rest'/>",
                 type: "textArea",
-                width: "*",
                 length: "255"
             },
             {
                 name: "personality.contactInfo.workAddress.phone",
                 title: "<spring:message code='telephone'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "11"
             },
-
-
             {
                 name: "personality.contactInfo.workAddress.fax",
                 title: "<spring:message code='telefax'/>",
-                width: "*",
-                type: 'text'
             },
             {
                 name: "personality.contactInfo.workAddress.postCode",
                 title: "<spring:message code='postal.code'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15"
             }
@@ -903,7 +803,8 @@ var dummy;
                 } else {
                     DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
                     RestDataSource_Work_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Work_City_JspTeacher;
+                    DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").
+                                                                optionDataSource = RestDataSource_Work_City_JspTeacher;
                     DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
                 }
             }
@@ -921,19 +822,15 @@ var dummy;
     });
 
     var DynamicForm_AccountInfo_JspTeacher = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "vm",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -941,14 +838,12 @@ var dummy;
             {
                 name: "personality.accountInfo.bank",
                 title: "<spring:message code='bank'/>",
-                type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
             {
                 name: "personality.accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -956,7 +851,6 @@ var dummy;
             {
                 name: "personality.accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
-                type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
@@ -964,7 +858,6 @@ var dummy;
             {
                 name: "personality.accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
-                type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
@@ -972,7 +865,6 @@ var dummy;
             {
                 name: "personality.accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
-                type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
@@ -980,7 +872,6 @@ var dummy;
             {
                 name: "personality.accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
-                type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
@@ -988,8 +879,6 @@ var dummy;
             {
                 name: "economicalCode",
                 title: "<spring:message code='economical.code'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15",
                 stopOnError: true
@@ -998,8 +887,6 @@ var dummy;
             {
                 name: "economicalRecordNumber",
                 title: "<spring:message code='economical.record.number'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15",
                 stopOnError: true
@@ -1008,19 +895,15 @@ var dummy;
     });
 
     var DynamicForm_AddressInfo_JspTeacher = isc.DynamicForm.create({
-        width: "100%",
         height: "100%",
         align: "center",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "vm",
         titleAlign: "left",
         numCols: 6,
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -1096,14 +979,11 @@ var dummy;
                 name: "personality.contactInfo.homeAddress.restAddr",
                 title: "<spring:message code='address.rest'/>",
                 type: "textArea",
-                width: "*",
                 length: "255"
             },
             {
                 name: "personality.contactInfo.homeAddress.phone",
                 title: "<spring:message code='telephone'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "11"
             },
@@ -1112,15 +992,11 @@ var dummy;
             {
                 name: "personality.contactInfo.homeAddress.fax",
                 title: "<spring:message code='telefax'/>",
-                width: "*",
-                type: 'text'
             },
 
             {
                 name: "personality.contactInfo.homeAddress.postCode",
                 title: "<spring:message code='postal.code'/>",
-                type: 'text',
-                width: "*",
                 keyPressFilter: "[0-9]",
                 length: "15"
             },
@@ -1128,8 +1004,6 @@ var dummy;
             {
                 name: "personality.contactInfo.email",
                 title: "<spring:message code='email'/>",
-                type: 'text',
-                width: "*",
                 showHintInField: true,
                 length: "30"
                 , changed: function () {
@@ -1137,8 +1011,8 @@ var dummy;
                     emailCheck = checkEmail(DynamicForm_AddressInfo_JspTeacher.getValue("personality.contactInfo.email"));
                     mailCheck = emailCheck;
                     if (emailCheck === false)
-                        DynamicForm_AddressInfo_JspTeacher.addFieldErrors("personality.contactInfo.email", "<spring:message
-                                                                            code='msg.email.validation'/>", true);
+                        DynamicForm_AddressInfo_JspTeacher.addFieldErrors("personality.contactInfo.email",
+                                                    "<spring:message code='msg.email.validation'/>", true);
                     if (emailCheck === true)
                         DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.email", true);
                 }
@@ -1148,8 +1022,6 @@ var dummy;
             {
                 name: "personality.contactInfo.personalWebSite",
                 title: "<spring:message code='personal.website'/>",
-                type: 'text',
-                width: "*",
                 stopOnError: true
             }
 
@@ -1161,7 +1033,8 @@ var dummy;
                 } else {
                     DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
                     RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + newValue;
-                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
+                    DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").
+                                                    optionDataSource = RestDataSource_Home_City_JspTeacher;
                     DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
                 }
             }
@@ -1177,12 +1050,10 @@ var dummy;
         }
     });
 
-    var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
+    var IButton_Teacher_Save_JspTeacher = isc.TrSaveBtn.create({
         top: 260,
-        title: "<spring:message code='save'/>",
-        icon: "pieces/16/save.png",
         click: function () {
-            if (codeMeliCheck == false || cellPhoneCheck == false || mailCheck == false || persianDateCheck == false) {
+            if (codeMeliCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
                 return;
             }
             vm.validate();
@@ -1193,16 +1064,16 @@ var dummy;
             DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
             var data = vm.getValues();
             var teacherSaveUrl = teacherUrl;
-            if (teacherMethod.localeCompare("PUT") == 0) {
+            if (teacherMethod.localeCompare("PUT") === 0) {
                 var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
                 teacherSaveUrl += teacherRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data), "callback: teacher_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(MyDsRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                                                "callback: teacher_action_result(rpcResponse)"));
         }
     });
 
-    var IButton_Teacher_Exit_JspTeacher = isc.IButton.create({
-        title: "<spring:message code='cancel'/>",
+    var IButton_Teacher_Exit_JspTeacher = isc.TrCancelBtn.create({
         icon: "<spring:url value="remove.png"/>",
         prompt: "",
         width: 100,
@@ -1214,22 +1085,19 @@ var dummy;
         }
     });
 
-    var HLayOut_TeacherSaveOrExit_JspTeacher = isc.HLayout.create({
+    var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
         alignLayout: "center",
-        align: "center",
         padding: 10,
-        membersMargin: 10,
         members: [IButton_Teacher_Save_JspTeacher, IButton_Teacher_Exit_JspTeacher]
     });
 
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "100%",
         width: "75%",
         tabs: [
             {
@@ -1239,11 +1107,10 @@ var dummy;
         ]
     });
 
-    var VLayOut_Photo_JspTeacher = isc.VLayout.create({
+    var VLayOut_Photo_JspTeacher = isc.TrVLayout.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        defaultLayoutAlign: "center",
         padding: 10,
         membersMargin: 10,
         width: "*",
@@ -1264,7 +1131,7 @@ var dummy;
         ]
     });
 
-    var HLayOut_Temp_JspTeacher = isc.HLayout.create({
+    var HLayOut_Temp_JspTeacher = isc.TrHLayout.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
@@ -1301,18 +1168,10 @@ var dummy;
         placement: "fillScreen",
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
-        canDragResize: true,
-        autoSize: true,
         align: "center",
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
         autoDraw: false,
-        dismissOnEscape: true,
         border: "1px solid gray",
-        items: [isc.VLayout.create({
-            width: "100%",
-            height: "100%",
+        items: [isc.TrVLayout.create({
             members: [
                 HLayOut_Temp_JspTeacher,
                 TabSet_Bottom_JspTeacher,
@@ -1325,33 +1184,25 @@ var dummy;
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code='refresh'/>",
+    var ToolStripButton_Refresh_JspTeacher = isc.TrRefreshBtn.create({
         click: function () {
             ListGrid_teacher_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspTeacher = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code='edit'/>",
+    var ToolStripButton_Edit_JspTeacher = isc.TrEditBtn.create({
         click: function () {
             ListGrid_teacher_edit();
         }
     });
 
-    var ToolStripButton_Add_JspTeacher = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code='create'/>",
+    var ToolStripButton_Add_JspTeacher = isc.TrCreateBtn.create({
         click: function () {
             ListGrid_teacher_add();
         }
     });
 
-    var ToolStripButton_Remove_JspTeacher = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code='remove'/>",
+    var ToolStripButton_Remove_JspTeacher = isc.TrRemoveBtn.create({
         click: function () {
             ListGrid_teacher_remove();
         }
@@ -1376,9 +1227,7 @@ var dummy;
         ]
     });
 
-    var HLayout_Grid_Teacher_JspTeacher = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
+    var HLayout_Grid_Teacher_JspTeacher = isc.TrHLayout.create({
         members: [ListGrid_Teacher_JspTeacher]
     });
 
@@ -1387,9 +1236,7 @@ var dummy;
         members: [ToolStrip_Actions_JspTeacher]
     });
 
-    var VLayout_Body_Teacher_JspTeacher = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
+    var VLayout_Body_Teacher_JspTeacher = isc.TrVLayout.create({
         members: [
             HLayout_Actions_Teacher,
             HLayout_Grid_Teacher_JspTeacher
@@ -1402,24 +1249,17 @@ var dummy;
 
     function ListGrid_teacher_refresh() {
         ListGrid_Teacher_JspTeacher.invalidateCache();
-    };
+        ListGrid_Teacher_JspTeacher.filterByEditor();
+    }
 
     function showTeacherCategories(value) {
         teacherCategoriesID.add(value.id);
-    };
+    }
 
     function ListGrid_teacher_edit() {
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.not.selected.record'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function () {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         }
         else {
 
@@ -1447,11 +1287,13 @@ var dummy;
             var eduMajorValue = record.personality.educationMajorId;
             var eduOrientationValue = record.personality.educationOrientationId;
 
-            if (eduOrientationValue == undefined && eduMajorValue == undefined) {
+            if (eduOrientationValue === undefined && eduMajorValue === undefined) {
                 DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-            } else if (eduMajorValue != undefined) {
-                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl + "major/spec-list-by-majorId/" + eduMajorValue;
-                DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
+            } else if (eduMajorValue !== undefined) {
+                RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
+                                    "major/spec-list-by-majorId/" + eduMajorValue;
+                DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").
+                                    optionDataSource = RestDataSource_Education_Orientation_JspTeacher;
                 DynamicForm_BasicInfo_JspTeacher.getField("personality.educationOrientationId").fetchData();
             }
 
@@ -1460,29 +1302,35 @@ var dummy;
             var stateValue_work = undefined;
             var cityValue_work = undefined;
 
-            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null && record.personality.contactInfo.homeAddress.stateId != null)
+            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null &&
+                                                    record.personality.contactInfo.homeAddress.stateId != null)
                 stateValue_home = record.personality.contactInfo.homeAddress.stateId;
-            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null && record.personality.contactInfo.homeAddress.cityId != null)
+            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null &&
+                                                    record.personality.contactInfo.homeAddress.cityId != null)
                 cityValue_home = record.personality.contactInfo.homeAddress.cityId;
-            if (cityValue_home == undefined) {
+            if (cityValue_home === undefined) {
                 DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
             }
-            if (stateValue_home != undefined) {
+            if (stateValue_home !== undefined) {
                 RestDataSource_Home_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_home;
-                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").optionDataSource = RestDataSource_Home_City_JspTeacher;
+                DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").
+                                                        optionDataSource = RestDataSource_Home_City_JspTeacher;
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
             }
 
-            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null && record.personality.contactInfo.workAddress.stateId != null)
+            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null &&
+                                                    record.personality.contactInfo.workAddress.stateId != null)
                 stateValue_work = record.personality.contactInfo.workAddress.stateId;
-            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null && record.personality.contactInfo.workAddress.cityId != null)
+            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null &&
+                                                    record.personality.contactInfo.workAddress.cityId != null)
                 cityValue_work = record.personality.contactInfo.workAddress.cityId;
-            if (cityValue_work == undefined) {
+            if (cityValue_work === undefined) {
                 DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
             }
-            if (stateValue_work != undefined) {
+            if (stateValue_work !== undefined) {
                 RestDataSource_Work_City_JspTeacher.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue_work;
-                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").optionDataSource = RestDataSource_Work_City_JspTeacher;
+                DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").
+                                                        optionDataSource = RestDataSource_Work_City_JspTeacher;
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
             }
             DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
@@ -1490,7 +1338,7 @@ var dummy;
             Window_Teacher_JspTeacher.show();
             Window_Teacher_JspTeacher.bringToFront();
         }
-    };
+    }
 
     function ListGrid_teacher_add() {
         vm.clearValues();
@@ -1511,44 +1359,26 @@ var dummy;
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
-    };
+    }
 
     function ListGrid_teacher_remove() {
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null) {
-            isc.Dialog.create({
-                message: "<spring:message code='msg.not.selected.record'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "<spring:message code='msg.record.remove.ask'/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code='msg.remove.title'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
-                    title: "<spring:message code='no'/>"
-                })],
-                buttonClick: function (button, index) {
-                    this.close();
-
-                    if (index == 0) {
-                        teacherWait = isc.Dialog.create({
-                            message: "<spring:message code='msg.waiting'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='message'/>"
-                        });
-
-                        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + record.id, "DELETE", null, "callback: teacher_delete_result(rpcResponse)"));
+            var Dialog_Delete = createDialog("ask","<spring:message code='msg.record.remove.ask'/>",
+                                                            "<spring:message code='global.warning'/>");
+            Dialog_Delete.addProperties({buttonClick: function (button, index) {
+                this.close();
+                if (index === 0) {
+                    teacherWait = createDialog("wait");
+                    isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + record.id, "DELETE", null,
+                                                "callback: teacher_delete_result(rpcResponse)"));
                     }
                 }
             });
         }
-    };
+    }
 
     function ListGrid_teacher_print(type) {
         var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
@@ -1565,25 +1395,25 @@ var dummy;
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.show();
         criteriaForm.submitForm();
-    };
+    }
 
     function addCategories(teacherId, categoryIds) {
         var JSONObj = {"ids": categoryIds};
-        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
                                                 "callback: teacher_addCategories_result(rpcResponse)"));
 
-    };
+    }
 
     function addAttach(personalId) {
         var formData1 = new FormData();
         var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
-        if (file != undefined) {
+        if (file !== undefined) {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addAttach/" + personalId, "POST", personalInfo_addAttach_result);
         }
 
-    };
+    }
 
     function personalInfo_addAttach_result(req) {
         attachName = req.response;
@@ -1596,10 +1426,8 @@ var dummy;
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
         if(file.size>1024000){
-            simpleDialog("<spring:message code='error'/>", "<spring:message code="photo.size.hint"/>", "error");
-            return;
-        }
-        if (file !== undefined) {
+            createDialog("info", "<spring:message code="photo.size.hint"/>", "<spring:message code='error'/>");
+        } else{
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
         }
     }
@@ -1612,79 +1440,55 @@ var dummy;
         }
         else if(req.status === 406) {
             if (req.response.data === "wrong size")
-                simpleDialog("<spring:message code='error'/>", "<spring:message code="photo.size.hint"/>", "error");
+                createDialog("info", "<spring:message code="photo.size.hint"/>", "<spring:message code='error'/>");
             else if (req.response === "wrong dimension")
-                simpleDialog("<spring:message code='error'/>", "<spring:message code="photo.dimension.hint"/>", "error");
-            return;
+                createDialog("info", "<spring:message code="photo.dimension.hint"/>", "<spring:message code='error'/>");
+        }
+        else{
+            createDialog("info","<spring:message code='error'/>");
         }
     }
 
     function showCategories() {
         teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "getCategories/" + teacherId, "POST", null, "callback: teacher_getCategories_result(rpcResponse)"));
-    };
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "getCategories/" + teacherId, "POST", null,
+                                            "callback: teacher_getCategories_result(rpcResponse)"));
+    }
 
     function teacher_delete_result(resp) {
         teacherWait.close();
-        if (resp.httpResponseCode == 200) {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
-            var OK = isc.Dialog.create({
-                message: "<spring:message code='msg.record.remove.successful'/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code='msg.command.done'/>"
-            });
+        if (resp.httpResponseCode === 200) {
+            ListGrid_teacher_refresh();
+            var OK = createDialog("info","<spring:message code='msg.record.remove.successful'/>",
+                "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        } else if (resp.data == false) {
-            var ERROR = isc.Dialog.create({
-                message: "<spring:message code='msg.teacher.remove.error'/>",
-                icon: "[SKIN]stop.png",
-                title: "<spring:message code='message'/>"
-            });
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
+        } else if (resp.data === false) {
+            createDialog("info","<spring:message code='msg.teacher.remove.error'/>");
         } else {
-            var ERROR = isc.Dialog.create({
-                message: "<spring:message code='msg.record.remove.failed'/>",
-                icon: "[SKIN]stop.png",
-                title: "<spring:message code='message'/>"
-            });
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
+            createDialog("info","<spring:message code='msg.record.remove.failed'/>");
         }
-    };
+    }
 
     function teacher_action_result(resp) {
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            if (resp.data == "") {
-                var ERROR = isc.Dialog.create({
-                    message: ("<spring:message code='msg.national.code.dublicate'/>"),
-                    icon: "[SKIN]stop.png",
-                    title: "<spring:message code='message'/>"
-                });
-                setTimeout(function () {
-                    ERROR.close();
-                }, 3000);
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            if (resp.data === "") {
+                createDialog("info","<spring:message code='msg.national.code.duplicate'/>");
             } else {
                 responseID = JSON.parse(resp.data).id;
                 gridState = "[{id:" + responseID + "}]";
                 categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
-                var OK = isc.Dialog.create({
-                    message: "<spring:message code='msg.operation.successful'/>",
-                    icon: "[SKIN]say.png",
-                    title: "<spring:message code='msg.command.done'/>"
-                });
+                var OK = createDialog("info","<spring:message code='msg.operation.successful'/>",
+                    "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
                     OK.close();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 1000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() != undefined)
+                }, 3000);
+                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined)
                     addAttach(JSON.parse(resp.data).personalityId);
                 setTimeout(function () {
-                    if (categoryList != undefined)
+                    if (categoryList !== undefined)
                         addCategories(responseID, categoryList);
                     ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.fetchData();
@@ -1695,86 +1499,77 @@ var dummy;
                 Window_Teacher_JspTeacher.close();
             }
         } else {
-            var ERROR = isc.Dialog.create({
-                message: ("<spring:message code='error'/>"),
-                icon: "[SKIN]stop.png",
-                title: "<spring:message code='message'/>"
-            });
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
+            createDialog("info","<spring:message code='error'/>");
         }
-    };
+    }
 
     function teacher_addCategories_result(resp) {
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
         } else {
-            isc.say("<spring:message code='error'/>");
+            createDialog("info","<spring:message code='error'/>");
         }
-    };
+    }
 
 
     function teacher_getCategories_result(resp) {
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
         } else {
-            isc.say("<spring:message code='error'/>");
+            createDialog("info","<spring:message code='error'/>");
         }
-    };
+    }
 
 
     function checkCodeMeli(code) {
-        if (code == "undefined" && code == null && code == "")
+        if (code === "undefined" || code === null || code === "")
             return false;
         var L = code.length;
 
-        if (L < 8 || parseFloat(code, 10) == 0) return false;
+        if (L < 8 || parseFloat(code, 10) === 0)
+            return false;
         code = ('0000' + code).substr(L + 4 - 10);
-        if (parseFloat(code.substr(3, 6), 10) == 0) return false;
+        if (parseFloat(code.substr(3, 6), 10) === 0)
+            return false;
         var c = parseFloat(code.substr(9, 1), 10);
         var s = 0;
-        for (var i = 0; i < 9; i++)
+        for (var i = 0; i < 9; i++) {
             s += parseFloat(code.substr(i, 1), 10) * (10 - i);
+        }
         s = s % 11;
-        return (s < 2 && c == s) || (s >= 2 && c == (11 - s));
-        return true;
-    };
+        return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
+    }
 
     function checkEmail(email) {
-        if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
-            return false;
-        else
-            return true;
-    };
+        return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
+    }
 
     function checkMobile(mobile) {
-        if (mobile[0] == "0" && mobile[1] == "9" && mobile.length == 11)
-            return true;
-        else
-            return false;
-    };
+        return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
+    }
 
-    function fillPersonalInfoFiels(nationalCode) {
-        isc.RPCManager.sendRequest(MyDsRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalInfo_findOne_result(rpcResponse)"));
-    };
+    function fillPersonalInfoFields(nationalCode) {
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,
+                                                            "callback: personalInfo_findOne_result(rpcResponse)"));
+    }
 
     function showAttach(pId) {
         selectedRecordPersonalID = pId;
-        isc.RPCManager.sendRequest(MyDsRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null, "callback: personalInfo_checkAttach_result(rpcResponse)"));
-    };
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null,
+                                                            "callback: personalInfo_checkAttach_result(rpcResponse)"));
+    }
 
     function personalInfo_checkAttach_result(resp) {
-        if (resp.data == "true") {
+        if (resp.data === "true") {
             showAttachViewLoader.setViewURL("<spring:url value="/personalInfo/getAttach/"/>" + selectedRecordPersonalID);
             showAttachViewLoader.show();
-        } else if (resp.data == "false") {
+        } else if (resp.data === "false") {
             showAttachViewLoader.setView();
             showAttachViewLoader.show();
         }
-    };
+    }
 
     function personalInfo_findOne_result(resp) {
-        if (resp != null && resp != undefined && resp.data!="") {
+        if (resp !== null && resp !== undefined && resp.data!=="") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
@@ -1797,12 +1592,12 @@ var dummy;
             DynamicForm_JobInfo_JspTeacher.setValue("personality.workName", personality.workName);
             DynamicForm_JobInfo_JspTeacher.setValue("personality.workJob", personality.workJob);
 
-            if (personality.contactInfo != null && personality.contactInfo != undefined) {
+            if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
                 DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
                 DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
 
-                if (personality.contactInfo.workAddress != null && personality.contactInfo.workAddress != undefined) {
+                if (personality.contactInfo.workAddress !== null && personality.contactInfo.workAddress !== undefined) {
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", personality.contactInfo.workAddress.restAddr);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.postCode", personality.contactInfo.workAddress.postCode);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.phone", personality.contactInfo.workAddress.phone);
@@ -1812,7 +1607,7 @@ var dummy;
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.stateId", personality.contactInfo.workAddress.stateId);
                     DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.otherCountry", personality.contactInfo.workAddress.otherCountry);
                 }
-                if (personality.contactInfo.homeAddress != null && personality.contactInfo.homeAddress != undefined) {
+                if (personality.contactInfo.homeAddress !== null && personality.contactInfo.homeAddress !== undefined) {
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.stateId", personality.contactInfo.homeAddress.stateId);
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.restAddr", personality.contactInfo.homeAddress.restAddr);
                     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postCode", personality.contactInfo.homeAddress.postCode);

@@ -131,8 +131,9 @@ public class TermRestController {
     }
 
 
+
     @Loggable
-    @GetMapping(value = {"/printWithCriteria/{type}"})
+   @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -157,7 +158,6 @@ public class TermRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TermByCriteria.jasper", params, jsonDataSource, response);
     }
-
 
     @Loggable
     @GetMapping(value ={"/checkForConflict/{sData}/{eData}"})

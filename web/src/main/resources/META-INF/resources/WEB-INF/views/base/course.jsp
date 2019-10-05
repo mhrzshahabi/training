@@ -745,17 +745,21 @@
                 width: "*",
                 // height: "30",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
-                // change: function (form, item, value) {
-                //     if(value != null){
-                //         form.getItem("epSection").enable();
-                //         form.getField("preCourseGrid").title = "پیش نیازهای دوره " + value;
-                //         form.getField("equalCourseGrid").title = "معادلهای دوره " + value;
-                //     }
-                //     else{
-                //         form.getItem("epSection").disable();
-                //     }
-                //
-                // }
+                change: function (form, item, value) {
+                    if(value != null){
+                       formEqualCourse.getItem("equalCourseGrid1").title = "معادل های " + getFormulaMessage(value,2,"red","b");
+                       formPreCourse.getItem("preCourseGrid1").title = "پیش نیازهای " + getFormulaMessage(value,2,"red","b");
+                       formEqualCourse.reset();
+                       formPreCourse.reset();
+                    }
+                    else{
+                        formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
+                        formEqualCourse.reset();
+                        formPreCourse.getItem("preCourseGrid1").title = "پیشنیازهای دوره";
+                        formPreCourse.reset();
+                    }
+
+                }
             },
             {
                 name: "titleEn",
@@ -1035,7 +1039,6 @@
         ],
         valuesManager: "vm_JspCourse"
     });
-    // var DynamicForm
 
     var IButton_course_Save = isc.IButton.create({
         ID: "courseSaveBtn",
@@ -1166,7 +1169,7 @@
             icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
-                Window_course.close();
+                Window_course.closeClick();
             }
         })]
     });
@@ -1410,6 +1413,7 @@
             {
                 title: "پیشنیازها", canClose: false,
                 pane: isc.DynamicForm.create({
+                    ID: "formPreCourse",
                     numCols: 6,
                     height: "100%",
                     overflow: "hidden",
@@ -1486,11 +1490,12 @@
                             }
                         },
                     ]
-                })
+                }),
             },
             {
-                title: "معادل ها", canClose: false,
+                title: "معادل\u200cها", canClose: false,
                 pane: isc.DynamicForm.create({
+                    ID: "formEqualCourse",
                     numCols: 6,
                     height: "100%",
                     overflow: "hidden",
@@ -1609,6 +1614,12 @@
         tabSelected: function (tabSet) {
             if (tabSet.valueOf() == 2) {
                 andBtn.disable();
+                formEqualCourse.getItem("equalCourseGrid1").title = "معادل\u200cهای " + getFormulaMessage(DynamicForm_course_MainTab.getItem("titleFa")._value,2,"red","b");
+                formEqualCourse.reset();
+            }
+            if(tabSet.valueOf() == 1){
+                formPreCourse.getItem("preCourseGrid1").title = "پیش\u200cنیازهای " + getFormulaMessage(DynamicForm_course_MainTab.getItem("titleFa")._value,2,"red","b");
+                formPreCourse.reset();
             }
         }
     });
@@ -1731,8 +1742,15 @@
             // membersMargin: 5,
             width: "100%",
             height: "100%",
-            members: [HLayOut_Tab_JspCourse, TabSet_Goal_JspCourse, courseSaveOrExitHlayout]
-        })]
+            members: [HLayOut_Tab_JspCourse, TabSet_Goal_JspCourse, courseSaveOrExitHlayout],
+        })],
+        closeClick: function () {
+            formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
+            formEqualCourse.reset();
+            formPreCourse.getItem("preCourseGrid1").title = "پیشنیازهای دوره";
+            formPreCourse.reset();
+            this.close();
+        }
     });
     // var VLayout_Grid_Syllabus = isc.VLayout.create({
     //     width: "100%",
@@ -2057,20 +2075,24 @@
             canSubmit: true,
             fields:
                 [
-                    {name: "CriteriaStr", type: "hidden"}
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "myToken", type:"hidden"}
                 ]
         })
         criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
+        criteriaForm_course.show();
         criteriaForm_course.submitForm();
     };
 
     function courseCode() {
-        var subCat = DynamicForm_course_GroupTab.getField("subCategory.id").getSelectedRecord();
+        var subCatDis = DynamicForm_course_GroupTab.getField("subCategory.id").isDisabled();
         var cat = DynamicForm_course_GroupTab.getField("category.id").getSelectedRecord();
+        var subCat = DynamicForm_course_GroupTab.getField("subCategory.id");
         var eRun = DynamicForm_course_GroupTab.getField("erunType.id").getSelectedRecord();
         var eLevel = DynamicForm_course_GroupTab.getField("elevelType.id").getSelectedRecord();
         var eTheo = DynamicForm_course_GroupTab.getField("etheoType.id").getSelectedRecord();
-        subCat = subCat==undefined ? (cat==undefined ? "" : cat.code) : subCat.code;
+        subCat = subCatDis ? "" : (subCat.getSelectedRecord()==undefined ? cat.code : subCat.getSelectedRecord().code);
         eRun = eRun==undefined ? "" : eRun.code;
         eLevel = eLevel==undefined ? "" : eLevel.code;
         eTheo = eTheo==undefined ? "" : eTheo.code;
