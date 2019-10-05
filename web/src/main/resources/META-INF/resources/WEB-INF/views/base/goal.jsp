@@ -241,26 +241,28 @@
                         setTimeout(function () {
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
                         }, 900);
-                        setTimeout(function() {
-                        sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration;
-                        if(sumSyllabus != (ListGrid_Course.getSelectedRecord().theoryDuration)){
-                        isc.Dialog.create({
-                            message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
-                            icon: "[SKIN]ask.png",
-                            title: "سوال؟",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
-                            buttonClick: function (button, index) {
-                                if (index) {
-                                    this.close();
-                                } else {
-                                    this.close();
-                                    DynamicForm_course_MainTab.getItem("theoryDuration").setValue(sumSyllabus);
-                                    setTimeout(function() {
-                                        courseSaveBtn.click();
-                                    },500)
-                                }
-                            },
-                        });}}, 1500);
+                        setTimeout(function () {
+                            sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration;
+                            if (sumSyllabus != (ListGrid_Course.getSelectedRecord().theoryDuration)) {
+                                isc.Dialog.create({
+                                    message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
+                                    icon: "[SKIN]ask.png",
+                                    title: "سوال؟",
+                                    buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                                    buttonClick: function (button, index) {
+                                        if (index) {
+                                            this.close();
+                                        } else {
+                                            this.close();
+                                            DynamicForm_course_MainTab.getItem("theoryDuration").setValue(sumSyllabus);
+                                            setTimeout(function () {
+                                                courseSaveBtn.click();
+                                            }, 500)
+                                        }
+                                    },
+                                });
+                            }
+                        }, 1500);
                         Window_Syllabus.close();
 
                     } else {
@@ -385,39 +387,39 @@
                 ListGrid_Goal_Add();
             }
         },
-<%--{--%>
+            <%--{--%>
             <%--title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {--%>
-                <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);--%>
-                <%--Window_AddGoal.show();--%>
-                <%--ListGrid_CourseGoal_Goal.invalidateCache();--%>
-                <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;--%>
-                <%--ListGrid_GoalAll.invalidateCache();--%>
-                <%--&lt;%&ndash;window.open("<spring:url value="/goal/print/pdf"/>");&ndash;%&gt;--%>
+            <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);--%>
+            <%--Window_AddGoal.show();--%>
+            <%--ListGrid_CourseGoal_Goal.invalidateCache();--%>
+            <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;--%>
+            <%--ListGrid_GoalAll.invalidateCache();--%>
+            <%--&lt;%&ndash;window.open("<spring:url value="/goal/print/pdf"/>");&ndash;%&gt;--%>
             <%--}--%>
-        <%--}, --%>
-        {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+            <%--}, --%>
+            {
+                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
 
-                ListGrid_Goal_Edit();
+                    ListGrid_Goal_Edit();
 
-            }
-        }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                ListGrid_Goal_Remove();
-            }
-        }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                window.open("/training/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf")
-            }
-        }, {
-            title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/excel")
-            }
-        }, {
-            title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/html")
-            }
-        }]
+                }
+            }, {
+                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                    ListGrid_Goal_Remove();
+                }
+            }, {isSeparator: true}, {
+                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                    window.open("/training/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/pdf")
+                }
+            }, {
+                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                    window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/excel")
+                }
+            }, {
+                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                    window.open("/goal/print-one-course/" + ListGrid_Course.getSelectedRecord().id + "/html")
+                }
+            }]
     });
 
     var ListGrid_Goal = isc.ListGrid.create({
@@ -482,7 +484,13 @@
             {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
             {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", summaryFunction: "sum", format: "جمع: # ساعت "},
+            {
+                name: "practicalDuration",
+                title: "مدت زمان اجرا",
+                align: "center",
+                summaryFunction: "sum",
+                format: "جمع: # ساعت "
+            },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goal.titleFa", hidden: true}
         ],
@@ -543,10 +551,12 @@
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن",
-        canDragRecordsOut:true,
-        dragDataAction:"none",
-        canAcceptDroppedRecords:true,
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget){removeAsListGrid();}
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        canAcceptDroppedRecords: true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+            removeAsListGrid();
+        }
     });
     var ListGrid_CourseGoal_Goal = isc.ListGrid.create({
         width: "100%",
@@ -585,10 +595,12 @@
         filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن",
-        canDragRecordsOut:true,
-        dragDataAction:"none",
-        canAcceptDroppedRecords:true,
-        recordDrop: function (dropRecords, targetRecord, index, sourceWidget){addToListGrid()}
+        canDragRecordsOut: true,
+        dragDataAction: "none",
+        canAcceptDroppedRecords: true,
+        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+            addToListGrid()
+        }
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
@@ -629,34 +641,34 @@
             if (ListGrid_Goal.getSelectedRecord() == null) {
                 Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="goal/print-all/pdf"/>")'
+                    click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'
                 }, {
                     title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
                 }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
-                    click: 'window.open("<spring:url value="syllabus/print/pdf"/>")'
+                    click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'
                 }, {
                     title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
+                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
                 }])
             } else {
-                Menu_Print_GoalJsp.setData([{
+                    Menu_Print_GoalJsp.setData([{
                     title: "همه اهداف",
-                    click: 'window.open("<spring:url value="goal/print-all/pdf"/>")'
-                }, {
+                    click: 'window.open("goal/print-all/pdf/<%=accessToken%>")'
+                    }, {
                     title: "اهداف دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
-                }, {isSeparator: true}, {
+                    click: 'window.open("goal/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
+                    }, {isSeparator: true}, {
                     title: "همه سرفصل ها",
-                    click: 'window.open("<spring:url value="syllabus/print/pdf"/>")'
-                }, {
+                    click: 'window.open("syllabus/print/pdf/<%=accessToken%>")'
+                    }, {
                     title: "سرفصل هاي دوره " + '"' + ListGrid_Course.getSelectedRecord().titleFa + '"',
-                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf")'
-                },
+                    click: 'window.open("syllabus/print-one-course/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
+                    },
                     {
                         title: "سرفصل هاي هدف " + '"' + ListGrid_Goal.getSelectedRecord().titleFa + '"',
-                        click: 'window.open("syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf")'
+                        click: 'window.open("syllabus/print-one-goal/"+ListGrid_Goal.getSelectedRecord().id+"/pdf/<%=accessToken%>")'
                     }])
             }
         }
@@ -702,7 +714,7 @@
         hoverWidth: "12%",
         title: "افزودن",
         click: function () {
-            Window_AddGoal.setTitle("افزودن هدف به دوره " + getFormulaMessage(courseId.titleFa,2,"red","b"));
+            Window_AddGoal.setTitle("افزودن هدف به دوره " + getFormulaMessage(courseId.titleFa, 2, "red", "b"));
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
             ListGrid_CourseGoal_Goal.fetchData();
@@ -716,14 +728,16 @@
         icon: "[SKIN]/TransferIcons/left.png",
         title: "",
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
-        click: function(){addToListGrid()}
+        click: function () {
+            addToListGrid()
+        }
     });
     var ToolStripButton_Remove_Vertical = isc.ToolStripButton.create({
         icon: "[SKIN]/TransferIcons/right.png",
         title: "",
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
-removeAsListGrid();
+            removeAsListGrid();
         }
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
@@ -870,8 +884,7 @@ removeAsListGrid();
                                 wait.close();
                                 if (resp.httpResponseCode == 200) {
                                     ListGrid_Goal.invalidateCache();
-                                    simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message
-        code="msg.operation.successful"/>", 3000, "say");
+                                    simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                                 } else {
                                     simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
                                 }
@@ -1017,7 +1030,7 @@ removeAsListGrid();
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
             Window_Syllabus.setTitle("ایجاد سرفصل");
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration+2) + " ساعت می باشد.");
+            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
     };
@@ -1056,112 +1069,110 @@ removeAsListGrid();
     };
 
     function addToListGrid() {
-if (courseId == "" || courseId.id == null) {
-isc.Dialog.create({
-message: "دوره اي انتخاب نشده است.",
-icon: "[SKIN]ask.png",
-title: "پیغام",
-buttons: [isc.Button.create({title: "تائید"})],
-buttonClick: function (button, index) {
-this.close();
-}
-});
-} else {
-var goalRecord = ListGrid_GoalAll.getSelectedRecords();
-if (goalRecord.length == 0) {
-isc.Dialog.create({
-message: "هدفي انتخاب نشده است.",
-icon: "[SKIN]ask.png",
-title: "پیغام",
-buttons: [isc.Button.create({title: "تائید"})],
-buttonClick: function (button, index) {
-this.close();
-}
-});
-} else {
-var goalList = new Array();
-for (var i = 0; i < goalRecord.length; i++) {
-goalList.add(goalRecord[i].id);
-}
-isc.RPCManager.sendRequest({
-actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
-httpMethod: "GET",
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-useSimpleHttp: true,
-contentType: "application/json; charset=utf-8",
-showPrompt: false,
-serverOutputAsString: false,
-callback: function (resp) {
-if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-ListGrid_GoalAll.invalidateCache();
-ListGrid_CourseGoal_Goal.invalidateCache();
-ListGrid_Goal.invalidateCache();
-ListGrid_Syllabus_Goal.invalidateCache();
+        if (courseId == "" || courseId.id == null) {
+            isc.Dialog.create({
+                message: "دوره اي انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "پیغام",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var goalRecord = ListGrid_GoalAll.getSelectedRecords();
+            if (goalRecord.length == 0) {
+                isc.Dialog.create({
+                    message: "هدفي انتخاب نشده است.",
+                    icon: "[SKIN]ask.png",
+                    title: "پیغام",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                var goalList = new Array();
+                for (var i = 0; i < goalRecord.length; i++) {
+                    goalList.add(goalRecord[i].id);
+                }
+                isc.RPCManager.sendRequest({
+                    actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            ListGrid_GoalAll.invalidateCache();
+                            ListGrid_CourseGoal_Goal.invalidateCache();
+                            ListGrid_Goal.invalidateCache();
+                            ListGrid_Syllabus_Goal.invalidateCache();
 
 
-} else {
-simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
-}
+                        } else {
+                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 3000, "stop");
+                        }
 
-}
-});
-}
-}
-}
+                    }
+                });
+            }
+        }
+    }
 
-function removeAsListGrid() {
-if (courseId == "" || courseId.id == null) {
-isc.Dialog.create({
-message: "دوره اي انتخاب نشده است.",
-icon: "[SKIN]ask.png",
-title: "پیغام",
-buttons: [isc.Button.create({title: "تائید"})],
-buttonClick: function (button, index) {
-this.close();
-}
-});
-} else {
-var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
-if (goalrRecord.length == 0) {
-isc.Dialog.create({
-message: "هدفي انتخاب نشده است.",
-icon: "[SKIN]ask.png",
-title: "پیغام",
-buttons: [isc.Button.create({title: "تائید"})],
-buttonClick: function (button, index) {
-this.close();
-}
-});
-} else {
-var arryRecord = new Array();
-for (var i = 0; i < goalrRecord.length; i++) {
-arryRecord.add(goalrRecord[i].id)
+    function removeAsListGrid() {
+        if (courseId == "" || courseId.id == null) {
+            isc.Dialog.create({
+                message: "دوره اي انتخاب نشده است.",
+                icon: "[SKIN]ask.png",
+                title: "پیغام",
+                buttons: [isc.Button.create({title: "تائید"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+            var goalrRecord = ListGrid_CourseGoal_Goal.getSelectedRecords();
+            if (goalrRecord.length == 0) {
+                isc.Dialog.create({
+                    message: "هدفي انتخاب نشده است.",
+                    icon: "[SKIN]ask.png",
+                    title: "پیغام",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                var arryRecord = new Array();
+                for (var i = 0; i < goalrRecord.length; i++) {
+                    arryRecord.add(goalrRecord[i].id)
 
-}
-isc.RPCManager.sendRequest({
+                }
+                isc.RPCManager.sendRequest({
 
-actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
-httpMethod: "GET",
-httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-useSimpleHttp: true,
-contentType: "application/json; charset=utf-8",
-showPrompt: false,
-serverOutputAsString: false,
-callback: function (resp) {
-if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-ListGrid_GoalAll.invalidateCache();
-ListGrid_CourseGoal_Goal.invalidateCache();
-ListGrid_Goal.invalidateCache();
-ListGrid_Syllabus_Goal.invalidateCache();
+                    actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            ListGrid_GoalAll.invalidateCache();
+                            ListGrid_CourseGoal_Goal.invalidateCache();
+                            ListGrid_Goal.invalidateCache();
+                            ListGrid_Syllabus_Goal.invalidateCache();
 
-} else {
-simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-}
+                        } else {
+                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                        }
 
-}
-});
-}
-}
-}
-
-    //</script>
+                    }
+                });
+            }
+        }
+    }

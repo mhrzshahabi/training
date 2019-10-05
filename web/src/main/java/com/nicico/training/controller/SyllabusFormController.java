@@ -28,9 +28,9 @@ public class SyllabusFormController {
 		return "base/syllabus";
 	}
 
-	@RequestMapping("/print/{type}")
-	public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+	@RequestMapping("/print/{type}/{token}")
+	public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type, @PathVariable String token) {
+//		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -50,9 +50,9 @@ public class SyllabusFormController {
 		else
 			return null;
 	}
-    @RequestMapping("/print-one-course/{courseId}/{type}")
-    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+    @RequestMapping("/print-one-course/{courseId}/{type}/{token}")
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId, @PathVariable String token) {
+//		String token = (String) request.getSession().getAttribute("AccessToken");
 
 
         RestTemplate restTemplate = new RestTemplate();
@@ -75,9 +75,9 @@ public class SyllabusFormController {
     }
     //------------------------------------------------
 
-	@RequestMapping("/print-one-goal/{goalId}/{type}")
-	public ResponseEntity<?> printOneGoal(HttpServletRequest request, @PathVariable String type, @PathVariable Long goalId) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+	@RequestMapping("/print-one-goal/{goalId}/{type}/{token}")
+	public ResponseEntity<?> printOneGoal(HttpServletRequest request, @PathVariable String type, @PathVariable Long goalId, @PathVariable String token) {
+//		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());

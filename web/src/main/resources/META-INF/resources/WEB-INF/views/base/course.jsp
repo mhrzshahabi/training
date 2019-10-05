@@ -746,7 +746,6 @@
                 // height: "30",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
                 change: function (form, item, value) {
-                    // alert(value);
                     if(value != null){
                        formEqualCourse.getItem("equalCourseGrid1").title = "معادل های " + getFormulaMessage(value,2,"red","b");
                        formPreCourse.getItem("preCourseGrid1").title = "پیش نیازهای " + getFormulaMessage(value,2,"red","b");
@@ -1040,7 +1039,6 @@
         ],
         valuesManager: "vm_JspCourse"
     });
-    // var DynamicForm
 
     var IButton_course_Save = isc.IButton.create({
         ID: "courseSaveBtn",
@@ -1492,10 +1490,10 @@
                             }
                         },
                     ]
-                })
+                }),
             },
             {
-                title: "معادل ها", canClose: false,
+                title: "معادل\u200cها", canClose: false,
                 pane: isc.DynamicForm.create({
                     ID: "formEqualCourse",
                     numCols: 6,
@@ -1616,6 +1614,12 @@
         tabSelected: function (tabSet) {
             if (tabSet.valueOf() == 2) {
                 andBtn.disable();
+                formEqualCourse.getItem("equalCourseGrid1").title = "معادل\u200cهای " + getFormulaMessage(DynamicForm_course_MainTab.getItem("titleFa")._value,2,"red","b");
+                formEqualCourse.reset();
+            }
+            if(tabSet.valueOf() == 1){
+                formPreCourse.getItem("preCourseGrid1").title = "پیش\u200cنیازهای " + getFormulaMessage(DynamicForm_course_MainTab.getItem("titleFa")._value,2,"red","b");
+                formPreCourse.reset();
             }
         }
     });
@@ -2071,10 +2075,13 @@
             canSubmit: true,
             fields:
                 [
-                    {name: "CriteriaStr", type: "hidden"}
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "myToken", type:"hidden"}
                 ]
         })
         criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+        criteriaForm_course.setValue("myToken", "<%=accessToken%>");
+        criteriaForm_course.show();
         criteriaForm_course.submitForm();
     };
 
