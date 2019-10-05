@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.BankBranchDTO;
 import com.nicico.training.dto.BankDTO;
 import com.nicico.training.iservice.IBankService;
 import lombok.RequiredArgsConstructor;
@@ -137,5 +138,28 @@ public class BankRestController {
 //    @PreAuthorize("hasAuthority('r_bank')")
     public ResponseEntity<SearchDTO.SearchRs<BankDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(bankService.search(request), HttpStatus.OK);
+
     }
+
+    @Loggable
+    @GetMapping(value = "bank-branches/{bankId}")
+//    @PreAuthorize("hasAnyAuthority('r_course')")
+    public ResponseEntity<BankBranchDTO.BankBranchSpecRs> getBankBranches(@PathVariable Long bankId) {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<BankBranchDTO.Info> bankBranches = bankService.getBankBranches(bankId);
+
+        final BankBranchDTO.SpecRs specResponse = new BankBranchDTO.SpecRs();
+        specResponse.setData(bankBranches)
+                .setStartRow(0)
+                .setEndRow(bankBranches.size())
+                .setTotalRows(bankBranches.size());
+
+        final BankBranchDTO.BankBranchSpecRs specRs = new BankBranchDTO.BankBranchSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
 }

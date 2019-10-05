@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.BankBranchDTO;
 import com.nicico.training.dto.BankDTO;
 import com.nicico.training.iservice.IBankService;
 import com.nicico.training.model.Bank;
@@ -87,4 +88,16 @@ public class BankService implements IBankService {
         final Bank saved = bankDAO.saveAndFlush(bank);
         return modelMapper.map(saved, BankDTO.Info.class);
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<BankBranchDTO.Info> getBankBranches(Long bankID) {
+        final Optional<Bank> optionalBank = bankDAO.findById(bankID);
+        final Bank bank = optionalBank.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.BankNotFound));
+
+        return modelMapper.map(bank.getBankBranchSet(), new TypeToken<List<BankBranchDTO.Info>>() {}.getType());
+    }
+
+
 }
