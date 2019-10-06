@@ -48,6 +48,7 @@ public class CompanyDTO implements Serializable {
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
+        private Long addressId;
     }
 
     @Getter
@@ -61,6 +62,7 @@ public class CompanyDTO implements Serializable {
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
+        private Long addressId;
     }
 
     @Getter
