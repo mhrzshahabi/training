@@ -1122,7 +1122,7 @@
         }
     }
 
-    function removeAsListGrid() {
+    function removeAsListGrid(){
         if (courseId == "" || courseId.id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
@@ -1176,3 +1176,4 @@
             }
         }
     }
+//</script>
