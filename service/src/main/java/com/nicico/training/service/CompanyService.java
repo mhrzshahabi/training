@@ -9,10 +9,7 @@ import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.ICompanyService;
 import com.nicico.training.model.*;
-import com.nicico.training.repository.AccountInfoDAO;
-import com.nicico.training.repository.CompanyDAO;
-import com.nicico.training.repository.ContactInfoDAO;
-import com.nicico.training.repository.PersonalInfoDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -31,6 +28,7 @@ public class CompanyService implements ICompanyService {
     private final AccountInfoDAO accountInfoDAO;
     private final PersonalInfoDAO personalInfoDAO;
     private final ContactInfoDAO contactInfoDAO;
+    private final AddressDAO addressDAO;
     private final ModelMapper mapper;
 
 
@@ -75,24 +73,28 @@ public class CompanyService implements ICompanyService {
 
         final ContactInfo contactInfo=mapper.map(request.getManager().getContactInfo(),ContactInfo.class);
 
+        final Address address=mapper.map(request.getAddress(),Address.class);
+
         final Company company = mapper.map(request, Company.class);
 
+
         final ContactInfo  savedcontactInfo=contactInfoDAO.saveAndFlush(contactInfo);
-
-
         personalInfo.setContactInfo(savedcontactInfo);
         personalInfo.setContactInfoId(savedcontactInfo.getId());
 
 
         final PersonalInfo savedpersonalInfo=personalInfoDAO.saveAndFlush(personalInfo);
+        company.setManager(savedpersonalInfo);
+        company.setManagerId(savedpersonalInfo.getId());
 
         final AccountInfo savedaccountInfo=accountInfoDAO.saveAndFlush(accountInfo);
-
         company.setAccountInfo(savedaccountInfo);
         company.setAccountInfoId(savedaccountInfo.getId());
 
-        company.setManager(savedpersonalInfo);
-        company.setManagerId(savedpersonalInfo.getId());
+        final  Address savedAddressInfo=addressDAO.saveAndFlush(address);
+        company.setAddress(savedAddressInfo);
+        company.setAddressId(savedAddressInfo.getId());
+
 
         return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
 

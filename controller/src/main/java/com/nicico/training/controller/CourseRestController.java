@@ -382,12 +382,12 @@ public class CourseRestController {
         for (CourseDTO.Info courseDTO : preCourseList) {
             preCourse = preCourse + " - " + courseDTO.getTitleFa();
         }
-        preCourse = preCourse.substring(2);
+        preCourse = preCourse != "" ? preCourse.substring(2) : "";
         List<Map> equalCourseList = courseService.equalCourseList(courseId);
         for (Map map : equalCourseList) {
             equalCourse = equalCourse + "   یا   " + map.get("nameEC");
         }
-        equalCourse = equalCourse.substring(6);
+        equalCourse = equalCourse != "" ? equalCourse.substring(6) : "";
         ERunType eRun = new ModelMapper().map(info.getERunType(), ERunType.class);
         ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
