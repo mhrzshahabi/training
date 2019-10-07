@@ -193,6 +193,8 @@
                 return true;
             }
         }
+
+
     };
 
     function trTrim(value) {
@@ -415,15 +417,7 @@
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
-                 {
-                    title: "شرح وظایف",
-                    icon: "<spring:url value="committee.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="/task/show-form"/>");
-                    }
-                },
-
-            ]
+                            ]
         }),
      });
 
