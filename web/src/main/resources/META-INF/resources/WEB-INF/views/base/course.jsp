@@ -191,10 +191,10 @@
                     print_CourseListGrid("html");
                 }
             },
-            <%--{--%>
-            <%--title: "چاپ با جزییات", icon: "<spring:url value="print.png"/>", click: function() {--%>
-            <%--window.open("course/testCourse/"+ListGrid_Course.getSelectedRecord().id+"/pdf");}--%>
-            <%--}--%>
+            {
+            title: "چاپ با جزییات", icon: "<spring:url value="print.png"/>", click: function() {
+            window.open("course/testCourse/"+ListGrid_Course.getSelectedRecord().id+"/pdf/<%=accessToken%>");}
+            }
         ]
     });
     var ListGrid_Course = isc.MyListGrid.create({

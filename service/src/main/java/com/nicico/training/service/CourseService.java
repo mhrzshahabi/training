@@ -41,8 +41,35 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public CourseDTO.Info get(Long id) {
+        Float a = Float.valueOf(0);
+        Float b = Float.valueOf(0);
+        Float c = Float.valueOf(0);
+        Long sumAll = Long.valueOf(0);
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        List<Goal> goalSet = course.getGoalSet();
+        for (Goal goal : goalSet) {
+            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+            for (Syllabus syllabus : syllabusSet) {
+                Integer eDomainTypeId = syllabus.getEDomainTypeId();
+                switch (eDomainTypeId) {
+                    case 1:
+                        a += syllabus.getPracticalDuration();
+                        break;
+                    case 2:
+                        b += syllabus.getPracticalDuration();
+                        break;
+                    case 3:
+                        c += syllabus.getPracticalDuration();
+                        break;
+                }
+                sumAll += syllabus.getPracticalDuration();
+            }
+        }
+        course.setKnowledge((long) round(a * 100 / (Float.valueOf(sumAll))));
+        course.setSkill((long) round(b * 100 / (Float.valueOf(sumAll))));
+        course.setAttitude((long) round(c * 100 / (Float.valueOf(sumAll))));
+
         return modelMapper.map(course, CourseDTO.Info.class);
     }
 
@@ -74,9 +101,11 @@ public class CourseService implements ICourseService {
                     sumAll += syllabus.getPracticalDuration();
                 }
             }
-            course.setKnowledge(a * 100 / sumAll);
-            course.setSkill(b * 100 / sumAll);
-            course.setAttitude(c * 100 / sumAll);
+            if(sumAll != 0) {
+                course.setKnowledge(a * 100 / sumAll);
+                course.setSkill(b * 100 / sumAll);
+                course.setAttitude(c * 100 / sumAll);
+            }
         }
         return modelMapper.map(cAll, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());

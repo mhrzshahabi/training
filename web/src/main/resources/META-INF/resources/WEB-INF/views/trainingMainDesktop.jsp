@@ -177,6 +177,11 @@
             errorMessage: "<spring:message code="msg.field.can't.contains.special.chars"/>",
             expression: /^((?![~!@#$%^&*()+='"?]).)*$/,
         },
+        EmailValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.company.checked.email"/>",
+            expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+        },
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {

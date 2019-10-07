@@ -9,7 +9,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
+import com.nicico.training.dto.enums.ERunTypeDTO;
 import com.nicico.training.iservice.ICourseService;
+import com.nicico.training.model.enums.ERunType;
+import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -369,10 +372,31 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = {"/printTest/{courseId}"})
-    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable String courseId) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, "pdf");
+    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable Long courseId) throws Exception {
+        final Map<String, Object> params = new HashMap<>();
+        CourseDTO.Info info = courseService.get(courseId);
+        String domain = "دانشی: " + info.getKnowledge() + "%     " + "نگرشی: " + info.getAttitude() + "%    " + "مهارتی: " + info.getSkill() + "%";
+        List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
+        String preCourse = "";
+        String equalCourse = "";
+        for (CourseDTO.Info courseDTO : preCourseList) {
+            preCourse = preCourse + " - " + courseDTO.getTitleFa();
+        }
+        preCourse = preCourse != "" ? preCourse.substring(2) : "";
+        List<Map> equalCourseList = courseService.equalCourseList(courseId);
+        for (Map map : equalCourseList) {
+            equalCourse = equalCourse + "   یا   " + map.get("nameEC");
+        }
+        equalCourse = equalCourse != "" ? equalCourse.substring(6) : "";
+        ERunType eRun = new ModelMapper().map(info.getERunType(), ERunType.class);
+        ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
-        reportUtil.export("/reports/testCourse.jasper", params, response);
+        params.put("domain", domain);
+        params.put("preCourse",preCourse);
+        params.put("equalCourse", equalCourse);
+        params.put("eRun", eRun.getTitleFa());
+        params.put("theo",eTheo.getTitleFa());
+        reportUtil.export("/reports/test1.jasper", params, response);
     }
 }

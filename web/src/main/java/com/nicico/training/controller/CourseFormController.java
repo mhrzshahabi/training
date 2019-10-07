@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
+import org.springframework.security.core.parameters.P;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
@@ -130,9 +131,9 @@ public class CourseFormController {
 	}
 
 
-	@GetMapping("/testCourse/{courseId}/{type}")
-	public ResponseEntity<?> printTestCourse(final HttpServletRequest request, @PathVariable String courseId, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+	@GetMapping("/testCourse/{courseId}/{type}/{token}")
+	public ResponseEntity<?> printTestCourse(final HttpServletRequest request, @PathVariable String courseId, @PathVariable String type, @PathVariable String token) {
+//		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());

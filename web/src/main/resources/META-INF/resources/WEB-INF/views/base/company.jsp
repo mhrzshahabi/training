@@ -4,12 +4,13 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-    var company_method = "POST";
-    var companyId;
 
-    //************************************************************************************
-    // RestDataSource & ListGrid
-    //************************************************************************************
+var company_method = "POST";
+var companyId;
+
+//************************************************************************************
+// RestDataSource & ListGrid
+//************************************************************************************
 //<script>
 
     var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
@@ -25,7 +26,7 @@
             {name: "id"},
             {name: "name"}
         ],
-        fetchDataURL: stateUrl + "spec-list"
+        fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=55"
     });
 
 
@@ -36,7 +37,7 @@
             {name: "workDomain", title: "حوزه کاری", filterOperator: "contains"},
             {name: "email", title: "ایمیل", filterOperator: "contains"},
         ],
-        fetchDataURL: companyUrl + "spec-list",
+          fetchDataURL: companyUrl + "spec-list"
     });
 
 
@@ -82,6 +83,8 @@
         width: "100%",
         height: "100%",
         align: "center",
+        isGroup:true,
+        groupTitle:"اطلاعات شرکت",
         canSubmit: true,
         titleWidth: 80,
         showInlineErrors: true,
@@ -98,14 +101,14 @@
                 length: "250",
                 width: "*",
                 required: "true",
-                requiredMessage:"لطفا نام شرکت را وارد کنید",
+                requiredMessage: "لطفا نام شرکت را وارد کنید",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "workDomain",
                 title: "حوزه کاری",
                 required: true,
-                requiredMessage:"لطفا حوزه فعالیت شرکت را وارد کنید",
+                requiredMessage: "لطفا حوزه فعالیت شرکت را وارد کنید",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
@@ -113,14 +116,7 @@
                 name: "email",
                 title: "ایمیل",
                 width: "*",
-                <%--blur: function () {--%>
-                <%--    var emailCheck;--%>
-                <%--    emailCheck = checkEmail_Company(DynamicForm_Company.getValue("email"));--%>
-                <%--    if (emailCheck === false)--%>
-                <%--        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);--%>
-                <%--    if (emailCheck === true)--%>
-                <%--        DynamicForm_Company.clearFieldErrors("email", true);--%>
-                <%--}--%>
+
 
             }
         ]
@@ -132,6 +128,7 @@
         height: "100%",
         align: "center",
         canSubmit: true,
+        isGroup:true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
@@ -141,7 +138,7 @@
         numCols: 6,
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        margin: 10,
+        margin: 20,
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
@@ -209,16 +206,17 @@
         height: "100%",
         align: "center",
         canSubmit: true,
-        titleWidth: 120,
+        isGroup:true,
+        titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
         valuesManager: "co",
-        titleAlign: "left",
         numCols: 6,
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        margin: 10,
+        margin: 20,
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
@@ -245,30 +243,46 @@
                 title: "شماره ملی",
                 type: 'text',
                 keyPressFilter: "[0-9]",
-                length: "30"
+                textAlign: "left",
+                length: "10"
+            },
+             {
+                name: "manager.contactInfo.mobile",
+                title: "موبایل",
+                type: 'text',
+                textAlign: "left",
+                length: "11",
+                hint: "*********09",
+              width:272,
+                showHintInField: true,
+                keyPressFilter: "[0-9]",
+                icons: [{
+                    name: "tel",
+                    src: "blank", // if inline icons are not supported by the browser, revert to a blank icon
+                    inline: true,
+                    text: "&#x2706;",
+                    baseStyle: "telIcon"
+                }]
             },
             {
                 name: "manager.contactInfo.email",
                 title: "ایمیل",
                 type: 'text',
-<%--                blur: function () {--%>
-<%--                    var emailCheck;--%>
-<%--                    emailCheck = checkEmail_Company(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));--%>
-<%--                    if (emailCheck === false)--%>
-<%--                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message  code='msg.email.validation'/>", true);--%>
+                width:"250",
+                validators: [TrValidators.EmailValidate],
+                keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                blur: function () {
+                    var emailCheck;
+                    emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
+                    if (emailCheck == false) {
+                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message code='msg.company.checked.email'/>", true);
+                    } else {
+                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
+                    }
 
-<%--                    if (emailCheck === true)--%>
-<%--                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);--%>
-<%--                }--%>
+                }
             },
 
-            {
-                name: "manager.contactInfo.mobile",
-                title: "موبایل",
-                type: 'text',
-                keyPressFilter: "[0-9]",
-                length: "30"
-            },
         ]
     });
 
@@ -278,7 +292,8 @@
         height: "100%",
         align: "center",
         canSubmit: true,
-        titleWidth: 120,
+        isGroup:true,
+        titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
@@ -287,82 +302,90 @@
         numCols: 6,
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
-        margin: 10,
+        margin: 20,
         newPadding: 5,
+
+
         fields: [
             {name: "id", hidden: true},
             {
-                name: "addressInfoTuple.restAddr",
+                name: "address.restAddr",
                 title: "آدرس",
                 type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F\]",
                 length: "30",
-                width: "*"
+               // width: "*"
             },
             {
-                name: "addressInfoTuple.postCode",
+                name: "address.postCode",
                 title: "کد پستی",
                 type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                keyPressFilter: "[1-9]",
                 length: "30",
-                width: "*"
+               // width: "*"
             },
             {
-                name: "addressInfoTuple.phone",
+                name: "address.phone",
                 title: "تلفن",
                 type: 'text',
                 length: "30",
-                width: "*"
+                textAlign:"left",
+                keyPressFilter: "[0-9]",
+                usePlaceholderForHint:true,
+               // width: "*"
             },
             {
-                name: "addressInfoTuple.fax",
+                name: "address.fax",
                 title: "فکس",
-// type: "textArea",
-                width: "*",
+                type: "text",
+                keyPressFilter: "[0-9]",
+              //  width: "*",
                 length: "255"
             },
             {
-                name: "addressInfoTuple.webSite",
+                name: "address.webSite",
                 title: "وب سایت",
                 type: 'text',
-                width: "*",
-                keyPressFilter: "[0-9]",
+                 keyPressFilter: "[a-z|A-Z]",
+              //  width: "*",
+                // keyPressFilter: "[0-9]",
                 length: "11"
             },
             {
-                name: "addressInfoTuple.stateId",
+                name: "address.stateId",
                 title: "استان",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
                 required: true,
-                width: "*",
+             //   width: "*",
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
                 filterFields: ["name"],
                 changed: function (form, item, value) {
-                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").clearValue();
-                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").setValue();
+                    DynamicForm_Address_Company.getItem("address.cityId").clearValue();
+                    DynamicForm_Address_Company.getItem("address.cityId").setValue();
                     RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
-                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").optionDataSource = RestDataSource_Work_City_Company;
-                    DynamicForm_Address_Company.getItem("addressInfoTuple.city.name").fetchData();
+                    DynamicForm_Address_Company.getItem("address.cityId").optionDataSource = RestDataSource_Work_City_Company;
+                    DynamicForm_Address_Company.getItem("address.cityId").fetchData();
                 },
             },
             {
-                name: "addressInfoTuple.cityId",
+                name: "address.cityId",
                 title: "<spring:message code='city'/>",
                 prompt: "ابتدا شهر را انتخاب کنید",
                 textAlign: "center",
                 destroyed: true,
                 required: true,
-                width: "*",
+             //   width: "*",
                 displayField: "name",
                 valueField: "id",
                 filterFields: ["name"],
             },
         ],
-    });
+
+});
 
 
     //********************************************************************************************************************
@@ -374,16 +397,16 @@
         alignLayout: "center",
         align: "center",
         padding: 10,
-        height: "10%",
-        membersMargin: 10,
-        members: [DynamicForm_Company]
+        height: "20%",
+        membersMargin:10,
+          members: [DynamicForm_Company]
     });
 
 
     var TabSet_Company_JspCompany = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        height: "20%",
+        height: "25%",
         tabs: [
             {
                 title: "<spring:message code='account.information'/>", canClose: false,
@@ -393,17 +416,18 @@
                 title: "اطلاعات مدیر", canClose: false,
                 pane: DynamicForm_ManagerInfo_Company,
             },
-            // {
-            // title: "آدرس", canClose: false,
-            // pane: DynamicForm_Address_Company,
-            // }
+
+            {
+            title: "آدرس", canClose: false,
+            pane: DynamicForm_Address_Company,
+            }
         ]
     });
 
     var Window_Company = isc.Window.create({
 // placement: "fillScreen",
-        width: "50%",
-        height: "40%",
+        width: "60%",
+        height: "65%",
 // height: "500",
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
@@ -418,27 +442,27 @@
         border: "1px solid gray",
         items: [isc.VLayout.create({
             width: "100%",
-            height: "340",
+            height: "390",
             members: [
                 HLayOut_Company,
                 TabSet_Company_JspCompany,
                 isc.MyHLayoutButtons.create({
                     members: [isc.MyButton.create({
                         title: "<spring:message code="save"/>",
-                        icon: "pieces/16/save.png",
+                       // icon: "pieces/16/save.png",
                         click: function () {
-                                 if (company_method == "PUT") {
-                                  Edit_Company();
-                                    } else {
+                            if (company_method == "PUT") {
+                                Edit_Company();
+                            } else {
 
-                                   Save_Company();
-                                    }
+                                Save_Company();
+                            }
 
 
                         }
                     }), isc.MyButton.create({
                         title: "<spring:message code="cancel"/>",
-                        icon: "<spring:url value="remove.png"/>",
+                       // icon: "<spring:url value="remove.png"/>",
                         click: function () {
                             Window_Company.close();
                         }
@@ -459,14 +483,9 @@
 
         selectionChanged: function (record, state) {
             companyId = record;
-
-
-        },
+      },
         click: function () {
-
-
         },
-
         dataArrived: function (startRow, endRow) {
         },
         sortField: 1,
@@ -495,7 +514,7 @@
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
-              show_CompanyNewForm();
+            show_CompanyNewForm();
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
@@ -554,32 +573,32 @@
     //function
     //************************************************************************************
 
-    function  Save_Company() {
+    function Save_Company() {
 
-            co.validate();
-            // if (co.hasErrors()) {
-            //     alert("sdfgsdfgsdf");
-            //     return;
-            // }
-               var data_Company = co.getValues();
-               alert(data_Company.titleFa);
+        co.validate();
+        if (co.hasErrors()) {
 
-             isc.RPCManager.sendRequest(MyDsRequest(companyUrl,"POST",JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+            return;
+        }
+
+        {
+        var data_Company = co.getValues();
+        isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        }
     };
 
-    function Edit_Company()
-    {
+    function Edit_Company() {
 
-          //
-          // if (!co.validate()) {
-          //       return;
-          //   }
-          //
-            var company_editURL=companyUrl;
-            var Record = ListGrid_Company.getSelectedRecord();
-            company_editURL += Record.id;
-            var data_Company = co.getValues();
-            isc.RPCManager.sendRequest(MyDsRequest(company_editURL,company_method,JSON.stringify(data_Company),"callback:show_CompanyActionResult(rpcResponse)"));
+//
+// if (!co.validate()) {
+// return;
+// }
+//
+        var company_editURL = companyUrl;
+        var Record = ListGrid_Company.getSelectedRecord();
+        company_editURL += Record.id;
+        var data_Company = co.getValues();
+        isc.RPCManager.sendRequest(MyDsRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
 
     }
 
@@ -589,7 +608,9 @@
         Window_Company.setTitle("ایجاد"),
         DynamicForm_Company.clearValues();
         DynamicForm_AccountInfo_Company.clearValues();
+        DynamicForm_Address_Company.clearValues();
         DynamicForm_ManagerInfo_Company.clearValues();
+
         Window_Company.show();
     };
 
@@ -606,11 +627,14 @@
                 }
             });
         } else {
-           var record = ListGrid_Company.getSelectedRecord();
+            var record = ListGrid_Company.getSelectedRecord();
             co.clearValues();
             co.clearErrors(true);
-            co.editRecord(record);
             company_method = "PUT";
+            RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
+            DynamicForm_Address_Company.getItem("address.cityId").optionDataSource = RestDataSource_Work_City_Company;
+            DynamicForm_Address_Company.getItem("address.cityId").fetchData();
+             co.editRecord(record);
             Window_Company.setTitle("<spring:message code="edit"/>");
             Window_Company.show();
         }
@@ -669,4 +693,13 @@
             return false;
         else
             return true;
+    };
+
+    function ValidateEmail(inputText) {
+        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+        if (re.test(inputText.toLowerCase()))
+            return true;
+        else
+            return false;
+
     };
