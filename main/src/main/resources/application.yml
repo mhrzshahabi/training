@@ -59,30 +59,18 @@ nicico:
     url:
     username:
     password:
-  person:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
-  upload:
-    dir: /var/nicico/${spring.application.name}/
-    person:
-      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
-      image: /var/nicico/${spring.application.name}/upload/person/img
   rest-api:
-      url: /var/nicico/${spring.application.name}/
+    url: /var/nicico/${spring.application.name}/
   workflow:
     update:
       mode: false
-  bpmn:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
-
 ---
 
 spring:
   profiles: Production
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training
+    username: training_dev
     password: training
   redis:
     host: apps.icico.net.ir
@@ -116,7 +104,7 @@ spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training
+    username: training_dev
     password: training
   redis:
     host: devapp01.icico.net.ir
