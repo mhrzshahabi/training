@@ -253,6 +253,7 @@ var companyId;
                 textAlign: "left",
                 length: "11",
                 hint: "*********09",
+              width:272,
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
                 icons: [{
@@ -311,7 +312,7 @@ var companyId;
                 name: "address.restAddr",
                 title: "آدرس",
                 type: 'text',
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F\]",
                 length: "30",
                // width: "*"
             },
@@ -328,12 +329,16 @@ var companyId;
                 title: "تلفن",
                 type: 'text',
                 length: "30",
+                textAlign:"left",
+                keyPressFilter: "[0-9]",
+                usePlaceholderForHint:true,
                // width: "*"
             },
             {
                 name: "address.fax",
                 title: "فکس",
                 type: "text",
+                keyPressFilter: "[0-9]",
               //  width: "*",
                 length: "255"
             },
@@ -341,6 +346,7 @@ var companyId;
                 name: "address.webSite",
                 title: "وب سایت",
                 type: 'text',
+                 keyPressFilter: "[a-z|A-Z]",
               //  width: "*",
                 // keyPressFilter: "[0-9]",
                 length: "11"
@@ -378,7 +384,8 @@ var companyId;
                 filterFields: ["name"],
             },
         ],
-    });
+
+});
 
 
     //********************************************************************************************************************
@@ -476,14 +483,9 @@ var companyId;
 
         selectionChanged: function (record, state) {
             companyId = record;
-
-
-        },
+      },
         click: function () {
-
-
         },
-
         dataArrived: function (startRow, endRow) {
         },
         sortField: 1,
@@ -608,6 +610,7 @@ var companyId;
         DynamicForm_AccountInfo_Company.clearValues();
         DynamicForm_Address_Company.clearValues();
         DynamicForm_ManagerInfo_Company.clearValues();
+
         Window_Company.show();
     };
 
