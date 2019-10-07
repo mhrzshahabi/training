@@ -16,7 +16,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,6 +36,7 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final CustomModelMapper modelMapper;
 
     // ------------------------------
 
@@ -58,7 +58,7 @@ public class TeacherRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_teacher')")
     public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
-        TeacherDTO.Create create = (new ModelMapper()).map(request, TeacherDTO.Create.class);
+        TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
         return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
     }
 
@@ -69,7 +69,7 @@ public class TeacherRestController {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
         ((LinkedHashMap) request).remove("categories");
-        TeacherDTO.Update update = (new CustomModelMapper()).map(request, TeacherDTO.Update.class);
+        TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
         return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
     }
 

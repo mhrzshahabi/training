@@ -592,6 +592,7 @@
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
     const companyUrl=rootUrl +"/company/";
+    const addressUrl = rootUrl + "/address/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

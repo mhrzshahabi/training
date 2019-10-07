@@ -71,31 +71,31 @@ public class PersonalInfo extends Auditable {
 	private String workJob;
 
     @Column(name = "e_married" ,insertable = false, updatable = false)
-	private EMarried eMarried;
+	private EMarried married;
 
     @Column(name = "e_married")
-	private Integer eMarriedId;
+	private Integer marriedId;
 
 	@Column(name = "e_military" ,insertable = false, updatable = false)
-	private EMilitary eMilitary;
+	private EMilitary military;
 
 	@Column(name = "e_military")
-	private Integer eMilitaryId;
+	private Integer militaryId;
 
 	@Column(name = "e_gender" ,insertable = false, updatable = false)
-	private EGender eGender;
+	private EGender gender;
 
 	@Column(name = "e_gender")
-	private Integer eGenderId;
+	private Integer genderId;
 
 	@Column(name = "c_married")
-	private String eMarriedTitleFa;
+	private String marriedTitleFa;
 
 	@Column(name = "c_military")
-	private String eMilitaryTitleFa;
+	private String militaryTitleFa;
 
 	@Column(name = "c_gender")
-	private String eGenderTitleFa;
+	private String genderTitleFa;
 
 	@OneToOne(fetch = FetchType.EAGER)
 	@JoinColumn(name = "f_contact_info", insertable = false, updatable = false)

@@ -4,7 +4,6 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AccountInfoDTO;
-import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
@@ -108,17 +107,17 @@ public class PersonalInfoService implements IPersonalInfoService {
 				personalInfo.setContactInfoId(contactInfo.getId());
 		}
 
-		if(request.getEMarriedId() != null) {
-				personalInfo.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-				personalInfo.setEMarriedTitleFa(personalInfo.getEMarried().getTitleFa());
+		if(request.getMarriedId() != null) {
+				personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getMarriedId()));
+				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
 		}
-		if(request.getEMilitaryId() != null) {
-				 personalInfo.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-				 personalInfo.setEMilitaryTitleFa(personalInfo.getEMilitary().getTitleFa());
+		if(request.getMilitaryId() != null) {
+				 personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getMilitaryId()));
+				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
 		}
-		if(request.getEGenderId() != null) {
-				personalInfo.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-				personalInfo.setEGenderTitleFa(personalInfo.getEGender().getTitleFa());
+		if(request.getGenderId() != null) {
+				personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getGenderId()));
+				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
 		}
 
 		return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
@@ -175,17 +174,17 @@ public class PersonalInfoService implements IPersonalInfoService {
 			contactInfoId = null;
 		}
 
-		if(request.getEMarriedId() != null) {
-				personalInfo.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-				personalInfo.setEMarriedTitleFa(personalInfo.getEMarried().getTitleFa());
+		if(request.getMarriedId() != null) {
+				personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getMarriedId()));
+				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
 		}
-		if(request.getEMilitaryId() != null) {
-				 personalInfo.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-				 personalInfo.setEMilitaryTitleFa(personalInfo.getEMilitary().getTitleFa());
+		if(request.getMilitaryId() != null) {
+				 personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getMilitaryId()));
+				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
 		}
-		if(request.getEGenderId() != null) {
-				personalInfo.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-				personalInfo.setEGenderTitleFa(personalInfo.getEGender().getTitleFa());
+		if(request.getGenderId() != null) {
+				personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getGenderId()));
+				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
 		}
 
         PersonalInfo pupdating = new PersonalInfo();

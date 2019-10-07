@@ -100,4 +100,13 @@ public class AddressRestController {
         return new ResponseEntity<>(addressService.search(request), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getOneByPostalCode/{postalCode}")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity<AddressDTO.Info> getOneByPostalCode(@PathVariable String postalCode) {
+        return new ResponseEntity<>(addressService.getOneByPostalCode(postalCode), HttpStatus.OK);
+    }
+
+
+
 }

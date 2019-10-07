@@ -77,6 +77,19 @@ public class AddressService implements IAddressService {
         return SearchUtil.search(addressDAO, request, address -> modelMapper.map(address, AddressDTO.Info.class));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public AddressDTO.Info getOneByPostalCode(String postalCode) {
+        List<Address> addresses = addressDAO.findByPostalCode(postalCode);
+        Address address;
+        if(addresses != null && addresses.size() != 0) {
+            address = addresses.get(0);
+            return modelMapper.map(address, AddressDTO.Info.class);
+        }
+        else
+            return null;
+    }
+
     // ------------------------------
 
     private AddressDTO.Info save(Address address) {
