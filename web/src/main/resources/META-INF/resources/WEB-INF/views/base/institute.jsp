@@ -11,21 +11,18 @@
 
     var instituteMethod = "POST";
     var reqMethod = "POST";
-    var instituteWait;
     var institute_Institute_Url = rootUrl + "/institute/";
     var institute_Institute_Account_Url = rootUrl + "/institute-account/";
     var institute_Institute_TrainingPlace_Url = rootUrl + "/training-place/";
     var institute_Bank_Url = rootUrl + "/bank/";
-    var institute_Equipment_Url="";
-    var institute_BankBranch_Url = rootUrl + "/bank-branch/";
-    var mailCheck = true;
-
+    var equipmentDestUrl = "";
+    var globalWait = undefined;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
 
-    var RestDataSource_Institute_Institute = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institute = isc.TrDS.create({
         fields: [
 
             {name: "id", primaryKey: true},
@@ -65,7 +62,7 @@
         fetchDataURL: institute_Institute_Url + "spec-list"
     });
 
-    var RestDataSource_Institute_Institute_Account = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institute_Account = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "instituteId"},
@@ -83,7 +80,7 @@
         fetchDataURL: institute_Institute_Url + "account-dummy"
     });
 
-    var RestDataSource_Institute_TrainingPlace = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_TrainingPlace = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
@@ -97,7 +94,7 @@
         ],
         fetchDataURL: institute_Institute_Url + "training-place/0"
     });
-    var RestDataSource_Institute_TrainingPlace_Equipment = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_TrainingPlace_Equipment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -108,7 +105,7 @@
         fetchDataURL: institute_Institute_Url + "training-place-equipment/0"
     });
 
-    var RestDataSource_Institute_Institite_Equipment = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institite_Equipment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -118,7 +115,7 @@
         ],
         fetchDataURL: institute_Institute_Url + "equipment-dummy"
     });
-    var RestDataSource_Institute_Institite_UnAttachedEquipment = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institite_UnAttachedEquipment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -129,7 +126,7 @@
         fetchDataURL: institute_Institute_Url + "0/unattached-equipments"
     });
 
-    var RestDataSource_Institute_Institite_Teacher = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institite_Teacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
@@ -141,7 +138,7 @@
         ],
         fetchDataURL: institute_Institute_Url + "teacher-dummy"
     });
-    var RestDataSource_Institute_Institite_UnAttachedTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institite_UnAttachedTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
@@ -154,14 +151,14 @@
         fetchDataURL: institute_Institute_Url + "0/unattached-teachers"
     });
 
-    var RestDataSource_Institute_City = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_City = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
         ],
         fetchDataURL: cityUrl + "spec-list"
     });
-    var RestDataSource_Institute_State = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_State = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -169,7 +166,7 @@
         fetchDataURL: stateUrl + "spec-list"
     });
 
-    var RestDataSource_Institute_Bank = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Bank = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -179,7 +176,7 @@
         ],
         fetchDataURL: institute_Bank_Url + "spec-list"
     });
-    var RestDataSource_Institute_BankBranch = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_BankBranch = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -193,28 +190,28 @@
         fetchDataURL: institute_Bank_Url + "bank-branches"
     });
 
-    var RestDataSource_Institute_EPlaceType = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_EPlaceType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "ePlaceType/spec-list"
     });
-    var RestDataSource_Institute_EArrangementType = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_EArrangementType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eArrangementType/spec-list"
     });
-    var RestDataSource_Institute_EInstituteType = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_EInstituteType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eInstituteType/spec-list"
     });
-    var RestDataSource_Institute_ELicenseType = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_ELicenseType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eLicenseType/spec-list"
     });
 
-    var RestDataSource_Institute_PersonalInfo_List = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_PersonalInfo_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "firstNameFa"},
@@ -225,7 +222,7 @@
         ],
         fetchDataURL: personalInfoUrl + "spec-list"
     });
-    var RestDataSource_Institute_Institute_List = isc.MyRestDataSource.create({
+    var RestDataSource_Institute_Institute_List = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
@@ -282,70 +279,55 @@
     /*Listgrid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ListGrid_Institute_Institute = isc.ListGrid.create({
+    var ListGrid_Institute_Institute = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institute,
         contextMenu: Menu_ListGrid_Institute_Institute,
-        doubleClick: function () {
-            ListGrid_Institute_Institute_Edit();
-        },
-        selectionChanged: function (record, state) {
-            if (record == null) {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
-                RestDataSource_Institute_Institute_Account.fetchDataURL = "";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
-                ListGrid_Institute_TrainingPlace.invalidateCache();
-            } else {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
-                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
-                ListGrid_Institute_Institute_Account.invalidateCache();
-                ListGrid_Institute_Institute_Account.fetchData();
-                ListGrid_Institute_TrainingPlace.invalidateCache();
-                ListGrid_Institute_TrainingPlace.fetchData();
-            }
-            ListGrid_Institute_Attached_Equipment.invalidateCache();
-            ListGrid_Institute_Attached_Teacher.invalidateCache();
-            ListGrid_Institute_Attached_Equipment.fetchData();
-            ListGrid_Institute_Attached_Teacher.fetchData();
-        },
-        dataArrived: function (startRow, endRow) {
-            record = ListGrid_Institute_Institute.getSelectedRecord();
-            if (record == null) {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
-                RestDataSource_Institute_Institute_Account.fetchDataURL = "";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
-                ListGrid_Institute_TrainingPlace.invalidateCache();
-            } else {
-                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
-                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
-                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
-                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
-                ListGrid_Institute_Institute_Account.invalidateCache();
-                ListGrid_Institute_Institute_Account.fetchData();
-                ListGrid_Institute_TrainingPlace.invalidateCache();
-                ListGrid_Institute_TrainingPlace.fetchData();
-            }
-            ListGrid_Institute_Attached_Equipment.invalidateCache();
-            ListGrid_Institute_Attached_Teacher.invalidateCache();
-            ListGrid_Institute_Attached_Equipment.fetchData();
-            ListGrid_Institute_Attached_Teacher.fetchData();
-
-
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "iContains"},
-            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "iContains"},
-            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "iContains"},
-            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "iContains"},
-            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "iContains"},
-            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "iContains"},
-            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "iContains"},
+            {
+                name: "titleFa",
+                title: "<spring:message code='global.titleFa'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code='global.titleEn'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "manager.firstNameFa",
+                title: "<spring:message code='manager.name'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "manager.lastNameFa",
+                title: "<spring:message code='manager.family'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "parentInstitute.titleFa",
+                title: "<spring:message code='institute.parent'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "einstituteType.titleFa",
+                title: "<spring:message code='institute.type'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
+            {
+                name: "elicenseType.titleFa",
+                title: "<spring:message code='diploma.type'/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
             {name: "state.name", hidden: true},
             {name: "city.name", hidden: true},
             {name: "restAddress", hidden: true},
@@ -370,200 +352,249 @@
             {name: "managerId", hidden: true},
             {name: "parentInstituteId", hidden: true}
         ],
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        showFilterEditor: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
-        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
-        configureSortText: "<spring:message code='configureSortText'/>",
-        autoFitAllText: "<spring:message code='autoFitAllText'/>",
-        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        doubleClick: function () {
+            ListGrid_Institute_Institute_Edit();
+        },
+        selectionChanged: function (record, state) {
+            if (record == null) {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
+                RestDataSource_Institute_Institute_Account.fetchDataURL = "";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_Institute_Account.invalidateCache()
+                ListGrid_Institute_TrainingPlace.setData([]);
+                ListGrid_Institute_Institute_Account.setData([]);
+            } else {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
+                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
+                ListGrid_Institute_Institute_Account.invalidateCache();
+                ListGrid_Institute_Institute_Account.fetchData();
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_TrainingPlace.fetchData();
+            }
+            ListGrid_Institute_Attached_Equipment.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Equipment.fetchData();
+            ListGrid_Institute_Attached_Teacher.fetchData();
+        },
+        dataArrived: function (startRow, endRow) {
+            record = ListGrid_Institute_Institute.getSelectedRecord();
+            if (record == null) {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + "equipment-dummy";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + "teacher-dummy";
+                RestDataSource_Institute_Institute_Account.fetchDataURL = "";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = "";
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_Institute_Account.invalidateCache()
+                ListGrid_Institute_TrainingPlace.setData([]);
+                ListGrid_Institute_Institute_Account.setData([]);
+            } else {
+                RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + record.id + "/equipments";
+                RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + record.id + "/teachers";
+                RestDataSource_Institute_Institute_Account.fetchDataURL = institute_Institute_Url + record.id + "/accounts";
+                RestDataSource_Institute_TrainingPlace.fetchDataURL = institute_Institute_Url + record.id + "/training-places";
+                ListGrid_Institute_Institute_Account.invalidateCache();
+                ListGrid_Institute_Institute_Account.fetchData();
+                ListGrid_Institute_TrainingPlace.invalidateCache();
+                ListGrid_Institute_TrainingPlace.fetchData();
+            }
+            ListGrid_Institute_Attached_Equipment.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Equipment.fetchData();
+            ListGrid_Institute_Attached_Teacher.fetchData();
+
+
+        }
+
     });
 
-
-    var ListGrid_Institute_Attached_Teacher = isc.ListGrid.create({
+    var ListGrid_Institute_Attached_Teacher = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institite_Teacher,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "teacherCode", title: "کد", align: "center"},
-            {name: "personality.firstNameFa", title: "نام", align: "center"},
-            {name: "personality.lastNameFa", title: "نام خانوادگی ", align: "center"},
-            {name: "personality.nationalCode", title: "کد ملی", align: "center"}
+            {name: "personality.firstNameFa", title: "<spring:message code='firstName'/>", align: "center"},
+            {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", align: "center"},
+            {name: "personality.nationalCode", title: "<spring:message code='national.code'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         autoDraw: false,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        showFilterEditor: false,
     });
-    var ListGrid_Institute_Attached_Equipment = isc.ListGrid.create({
+    var ListGrid_Institute_Attached_Equipment = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institite_Equipment,
-        doubleClick: function () {
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "description", title: "ملاحظات", align: "center"}
+            {name: "code", title: "<spring:message code='code'/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='global.titleEn'/>", align: "center"},
+            {name: "description", title: "<spring:message code='description'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
         autoDraw: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        showFilterEditor: false,
+        doubleClick: function () {
+        }
     });
-    var ListGrid_Institute_Institute_Account = isc.ListGrid.create({
+    var ListGrid_Institute_Institute_Account = isc.TrLG.create({
         width: "100%",
         height: "100%",
         autoDraw: false,
         dataSource: RestDataSource_Institute_Institute_Account,
-        doubleClick: function () {
-                Function_Institute_Account_Edit();
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "bank.titleFa", title: "بانک", align: "center"},
-            {name: "bankBranch.titleFa", title: "شعبه بانک", align: "center"},
-            {name: "accountNumber", title: "شماره حساب ", align: "center"},
-            {name: "cartNumber", title: "شماره کارت", align: "center"},
-            {name: "shabaNumber", title: "شماره شبا", align: "center"},
-            {name: "accountOwnerName", title: "نام صاحب حساب", align: "center"},
-            {name: "isEnable", title: "فعال؟", align: "center"},
-            {name: "description", title: "توضیحات", align: "center"}
+            {name: "bank.titleFa", title: "<spring:message code='bank.title'/>", align: "center"},
+            {name: "bankBranch.titleFa", title: "<spring:message code='bank.branch.title'/>", align: "center"},
+            {name: "accountNumber", title: "<spring:message code='account.number'/>", align: "center"},
+            {name: "cartNumber", title: "<spring:message code='cart.number'/>", align: "center"},
+            {name: "shabaNumber", title: "<spring:message code='shaba.number'/>", align: "center"},
+            {name: "accountOwnerName", title: "<spring:message code='account.owner.name'/>", align: "center"},
+            {name: "isEnable", title: "<spring:message code='isEnable'/>", align: "center"},
+            {name: "description", title: "<spring:message code='description'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        showFilterEditor: false,
+        doubleClick: function () {
+            Function_Institute_Account_Edit();
+        }
     });
 
-    var ListGrid_Institute_TrainingPlace = isc.ListGrid.create({
+    var ListGrid_Institute_TrainingPlace = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_TrainingPlace,
-        doubleClick: function () {
-                Function_Institute_TrainingPlace_Edit();
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "capacity", title: "ظرفیت", align: "center"},
-            {name: "eplaceType.titleFa", title: "نوع محل", align: "center"},
-            {name: "earrangementType.titleFa", title: "شکل/ترتیب", align: "center"}
+            {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='global.titleEn'/>", align: "center"},
+            {name: "capacity", title: "<spring:message code='capacity'/>", align: "center"},
+            {name: "eplaceType.titleFa", title: "<spring:message code='place.type'/>", align: "center"},
+            {name: "earrangementType.titleFa", title: "<spring:message code='place.shape'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        showFilterEditor: false,
+        doubleClick: function () {
+            Function_Institute_TrainingPlace_Edit();
+        },
+        selectionChanged: function (record, state) {
+            if (record == null) {
+                RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = "";
+                RestDataSource_Institute_TrainingPlace_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.setData([]);
+            } else {
+                RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + record.id + "/equipments";
+                ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.fetchData();
+            }
+        },
+        dataArrived: function (startRow, endRow) {
+            record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+            if (record == null) {
+                RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = "";
+                RestDataSource_Institute_TrainingPlace_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.setData([]);
+            } else {
+                RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + record.id + "/equipments";
+                ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.fetchData();
+            }
+        }
     });
-    var ListGrid_Institute_TrainingPlece_Equipment = isc.ListGrid.create({
+    var ListGrid_Institute_TrainingPlece_Equipment = isc.TrLG.create({
         width: "100%",
         height: "100%",
-        dataSource: RestDataSource_Institute_Institite_Equipment,
-        doubleClick: function () {
-        },
+        dataSource: RestDataSource_Institute_TrainingPlace_Equipment,
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "description", title: "ملاحظات", align: "center"}
+            {name: "code", title: "<spring:message code='code'/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='global.titleEn'/>", align: "center"},
+            {name: "description", title: "<spring:message code='description'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
         autoDraw: false,
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        showFilterEditor: false,
+        doubleClick: function () {
+        }
     });
 
-    var ListGrid_Institute_Institute_List = isc.ListGrid.create({
+    var ListGrid_Institute_Institute_List = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institute_List,
-        doubleClick: function () {
-            Function_Institute_InstituteList_Selected();
-        },
-
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان فارسی", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "عنوان لاتین", align: "center", filterOperator: "contains"},
-            {name: "manager.firstNameFa", title: "نام مدیر", align: "center", filterOperator: "contains"},
-            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر", align: "center", filterOperator: "contains"},
-            {name: "parentInstitute.titleFa", title: "موسسه مادر", align: "center", filterOperator: "contains"},
-            {name: "einstituteType.titleFa", title: "نوع موسسه", align: "center", filterOperator: "contains"},
-            {name: "elicenseType.titleFa", title: "نوع مدرک", align: "center", filterOperator: "contains"}
+            {
+                name: "titleFa",
+                title: "<spring:message code='global.titleFa'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "titleEn",
+                title: "<spring:message code='global.titleEn'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "manager.firstNameFa",
+                title: "<spring:message code='manager.name'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "manager.lastNameFa",
+                title: "<spring:message code='manager.family'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "parentInstitute.titleFa",
+                title: "<spring:message code='institute.parent'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "einstituteType.titleFa",
+                title: "<spring:message code='institute.type'/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {
+                name: "elicenseType.titleFa",
+                title: "<spring:message code='diploma.type'/>",
+                align: "center",
+                filterOperator: "contains"
+            }
         ],
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
@@ -571,57 +602,48 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
-        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
-        configureSortText: "<spring:message code='configureSortText'/>",
-        autoFitAllText: "<spring:message code='autoFitAllText'/>",
-        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        doubleClick: function () {
+            Function_Institute_InstituteList_Selected();
+        }
     });
-    var ListGrid_Institute_PersonalInfo_List = isc.ListGrid.create({
+    var ListGrid_Institute_PersonalInfo_List = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_PersonalInfo_List,
-        doubleClick: function () {
-            Function_Institute_InstituteList_Selected
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "firstNameFa",
-                title: "نام",
+                title: "<spring:message code='firstName'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
                 name: "lastNameFa",
-                title: "نام خانوادگی",
+                title: "<spring:message code='lastName'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
                 name: "fatherName",
-                title: "نام پدر",
+                title: "<spring:message code='father.name'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
                 name: "nationalCode",
-                title: "کد ملی",
+                title: "<spring:message code='national.code'/>",
                 align: "center",
                 filterOperator: "contains"
             },
             {
                 name: "birthDate",
-                title: "تاریخ تولد",
+                title: "<spring:message code='birth.date'/>",
                 align: "center",
                 filterOperator: "contains"
             }
 
         ],
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
@@ -629,15 +651,9 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
-        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
-        configureSortText: "<spring:message code='configureSortText'/>",
-        autoFitAllText: "<spring:message code='autoFitAllText'/>",
-        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
-
+        doubleClick: function () {
+            Function_Institute_PersonalList_Selected();
+        }
     });
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
@@ -648,11 +664,11 @@
         width: "100%",
 // height: "100%",
         align: "center",
+        isGroup: true,
+
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "ValuesManager_Institute_InstituteValue",
         numCols: 6,
         titleAlign: "left",
@@ -674,7 +690,7 @@
             },
             {
                 name: "titleFa",
-                title: "عنوان فارسی",
+                title: "<spring:message code='global.titleFa'/>",
                 colSpan: 2,
                 required: true,
                 width: "*",
@@ -684,7 +700,7 @@
             },
             {
                 name: "titleEn",
-                title: "عنوان لاتین",
+                title: "<spring:message code='global.titleEn'/>",
                 colSpan: 2,
                 width: "*",
                 type: 'text',
@@ -693,7 +709,7 @@
             },
             {
                 name: "parentInstituteId",
-                title: "موسسه مادر",
+                title: "<spring:message code='institute.parent'/>",
                 iconWidth: 16,
                 iconHeight: 16,
                 suppressBrowserClearIcon: true,
@@ -772,7 +788,7 @@
                 name: "einstituteTypeId",
                 type: "IntegerItem",
                 colSpan: 2,
-                title: "نوع موسسه",
+                title: "<spring:message code='institute.type'/>",
                 width: "*",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -798,7 +814,7 @@
             {
                 name: "elicenseTypeId",
                 type: "IntegerItem",
-                title: "نوع مدرک",
+                title: "<spring:message code='diploma.type'/>",
                 colSpan: 2,
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -832,9 +848,9 @@
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "ValuesManager_Institute_InstituteValue",
+        isGroup: true,
+        groupTitle: "<spring:message code='teacher.count'/>",
         numCols: 4,
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
@@ -843,7 +859,7 @@
         fields: [
             {
                 name: "teacherNumPHD",
-                title: "دکتری",
+                title: "<spring:message code='phd'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -851,7 +867,7 @@
             },
             {
                 name: "teacherNumLicentiate",
-                title: "لیسانس",
+                title: "<spring:message code='licentiate'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -859,7 +875,7 @@
             },
             {
                 name: "teacherNumMaster",
-                title: "فوق لیسانس",
+                title: "<spring:message code='master'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -867,7 +883,7 @@
             },
             {
                 name: "teacherNumAssociate",
-                title: "فوق دیپلم",
+                title: "<spring:message code='associate'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -875,7 +891,7 @@
             },
             {
                 name: "teacherNumDiploma",
-                title: "دیپلم/زیردیپلم",
+                title: "<spring:message code='diploma'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -890,10 +906,10 @@
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
         valuesManager: "ValuesManager_Institute_InstituteValue",
         numCols: 4,
+        isGroup: true,
+        groupTitle: "تعداد کارمندان",
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 2,
@@ -901,7 +917,7 @@
         fields: [
             {
                 name: "empNumPHD",
-                title: "دکتری",
+                title: "<spring:message code='phd'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -909,7 +925,7 @@
             },
             {
                 name: "empNumLicentiate",
-                title: "لیسانس",
+                title: "<spring:message code='licentiate'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -917,7 +933,7 @@
             },
             {
                 name: "empNumMaster",
-                title: "فوق لیسانس",
+                title: "<spring:message code='master'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -925,7 +941,7 @@
             },
             {
                 name: "empNumAssociate",
-                title: "فوق دیپلم",
+                title: "<spring:message code='associate'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -933,7 +949,7 @@
             },
             {
                 name: "empNumDiploma",
-                title: "دیپلم/زیردیپلم",
+                title: "<spring:message code='diploma'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 length: "5",
@@ -949,9 +965,9 @@
         canSubmit: true,
         showInlineErrors: true,
         showErrorText: false,
-        showErrorStyle: false,
+        isGroup: true,
+        groupTitle: "ارتباط با موسسه",
         valuesManager: "ValuesManager_Institute_InstituteValue",
-        errorOrientation: "right",
         titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
@@ -959,7 +975,7 @@
             {
                 name: "stateId",
                 type: "IntegerItem",
-                title: "استان",
+                title: "<spring:message code='state'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -984,7 +1000,7 @@
             {
                 name: "cityId",
                 type: "IntegerItem",
-                title: "شهر",
+                title: "<spring:message code='city'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -1009,7 +1025,7 @@
             },
             {
                 name: "postCode",
-                title: "کد پستی",
+                title: "<spring:message code='post.code'/>",
                 keyPressFilter: "[0-9|-| ]",
                 width: "*",
                 length: "11",
@@ -1017,40 +1033,40 @@
             {
                 name: "phone",
                 keyPressFilter: "[0-9|-]",
-                title: "تلفن",
+                title: "<spring:message code='telephone'/>",
                 width: "*",
                 length: "12"
             },
             {
                 name: "mobile",
                 keyPressFilter: "[0-9|-]",
-                title: "تلفن",
+                title: "<spring:message code='mobile'/>",
                 width: "*",
                 length: "12"
             },
             {
                 name: "fax",
-                title: "فکس",
+                title: "<spring:message code='telefax'/>",
                 keyPressFilter: "[0-9|-]",
                 width: "*",
                 length: "12"
             },
             {
                 name: "email",
-                title: "فکس",
-                keyPressFilter: "[0-9|-]",
+                title: "<spring:message code='email'/>",
                 width: "*",
+                validators: [TrValidators.EmailValidate],
                 length: "12"
             },
             {
                 name: "webSite",
-                title: "وب سایت",
+                title: "<spring:message code='website'/>",
                 width: "*",
                 length: "100"
             },
             {
                 name: "restAddress",
-                title: "آدرس",
+                title: "<spring:message code='address'/>",
                 required: true,
                 colSpan: 3,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
@@ -1076,54 +1092,54 @@
     });
 
 
-    var TabSet_Institute_InstituteTeacherNum = isc.TabSet.create({
-        tabBarPosition: "top",
-        titleEditorTopOffset: 2,
-// height: "100%",
-        width: "48%",
-        newPadding: 5,
-        tabs: [
-            {
-                title: "تعداد اساتید", canClose: false,
-                pane: DynamicForm_Institute_InstituteTeacherNum
-            }
-        ]
-    });
-    var TabSet_Institute_InstituteEmpNum = isc.TabSet.create({
-        tabBarPosition: "top",
-        titleEditorTopOffset: 2,
-// height: "100%",
-        width: "48%",
-// margin:5,
-        newPadding: 5,
-        tabs: [
-            {
-                title: "تعداد کارمندان", canClose: false, titleWidth: this.width,
-                pane: DynamicForm_Institute_InstituteEmpNum
-            }
-        ]
-    });
-    var TabSet_Institute_InstituteAddress = isc.TabSet.create({
-        tabBarPosition: "top",
-        titleEditorTopOffset: 2,
-        height: "100%",
-        width: "100%",
-        padding: 5,
-        tabs: [
-            {
-                title: "ارتباط با موسسه", canClose: false,
-                pane: DynamicForm_Institute_Institute_Address
-            }
-        ]
-    });
+    //     var TabSet_Institute_InstituteTeacherNum = isc.TabSet.create({
+    //         tabBarPosition: "top",
+    //         titleEditorTopOffset: 2,
+    // // height: "100%",
+    //         width: "48%",
+    //         newPadding: 5,
+    //         tabs: [
+    //             {
+    //                 title: "تعداد اساتید", canClose: false,
+    //                 pane: DynamicForm_Institute_InstituteTeacherNum
+    //             }
+    //         ]
+    //     });
+    //     var TabSet_Institute_InstituteEmpNum = isc.TabSet.create({
+    //         tabBarPosition: "top",
+    //         titleEditorTopOffset: 2,
+    // // height: "100%",
+    //         width: "48%",
+    // // margin:5,
+    //         newPadding: 5,
+    //         tabs: [
+    //             {
+    //                 title: "تعداد کارمندان", canClose: false, titleWidth: this.width,
+    //                 pane: DynamicForm_Institute_InstituteEmpNum
+    //             }
+    //         ]
+    //     });
+    //     var TabSet_Institute_InstituteAddress = isc.TabSet.create({
+    //         tabBarPosition: "top",
+    //         titleEditorTopOffset: 2,
+    //         height: "100%",
+    //         width: "100%",
+    //         padding: 5,
+    //         tabs: [
+    //             {
+    //                 title: "ارتباط با موسسه", canClose: false,
+    //                 pane: DynamicForm_Institute_Institute_Address
+    //             }
+    //         ]
+    //     });
 
     var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
         width: "100%",
- height: 150,
+        height: 150,
 // margin:5,
         padding: 5,
 
-        members: [TabSet_Institute_InstituteEmpNum, isc.LayoutSpacer.create({width: "5"}), TabSet_Institute_InstituteTeacherNum]
+        members: [DynamicForm_Institute_InstituteEmpNum, isc.LayoutSpacer.create({width: "5"}), DynamicForm_Institute_InstituteTeacherNum]
     });
 
 
@@ -1139,7 +1155,7 @@
         width: "100%",
 // height: "25%",
 // border: "1px solid blue",
-        members: [TabSet_Institute_InstituteAddress]
+        members: [DynamicForm_Institute_Institute_Address]
     });
 
 
@@ -1172,7 +1188,7 @@
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 instituteSaveUrl += instituteRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(instituteSaveUrl, instituteMethod, JSON.stringify(data), "callback: institute_Save_action_result(rpcResponse)"));
         }
     });
 
@@ -1254,7 +1270,7 @@
 
     var IButton_Institute_InstituteList_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -1264,7 +1280,7 @@
 
     var IButton_Institute_InstituteList_Choose = isc.IButton.create({
         top: 260,
-        title: "انتخاب",
+        title: "<spring:message code='selectfromlist'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -1293,7 +1309,7 @@
     });
 
     var Window_Institute_InstituteList = isc.Window.create({
-        title: "انتخاب موسسه آموزشی مادر",
+        title: "<spring:message code='institute.selectparent'/>",
         width: 800,
         height: 700,
         autoSize: true,
@@ -1348,7 +1364,7 @@
 
     var IButton_Institute_PersonalList_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -1358,7 +1374,7 @@
 
     var IButton_Institute_PersonalList_Choose = isc.IButton.create({
         top: 260,
-        title: "انتخاب",
+        title: "<spring:message code='selectfromlist'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -1387,7 +1403,7 @@
     });
 
     var Window_Institute_PersonalList = isc.Window.create({
-        title: "انتخاب موسسه آموزشی مادر",
+        title: "<spring:message code='institute.selectmanager'/>",
         width: 800,
         height: 700,
         autoSize: true,
@@ -1448,40 +1464,31 @@
     /*Edit Equipments For Institute And Training Place*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ListGrid_Institute_Equipment_List = isc.ListGrid.create({
+    var ListGrid_Institute_Equipment_List = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institite_UnAttachedEquipment,
-        doubleClick: function () {
-            Function_Institute_EquipmentList_Selected();
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center"},
-            {name: "titleFa", title: "عنوان فارسی", align: "center"},
-            {name: "titleEn", title: "عنوان لاتین ", align: "center"},
-            {name: "description", title: "ملاحظات", align: "center"}
+            {name: "code", title: "<spring:message code='code'/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code='global.titleFa'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='global.titleEn'/>", align: "center"},
+            {name: "description", title: "<spring:message code='description'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        doubleClick: function () {
+            Function_Institute_EquipmentList_Selected(equipmentDestUrl);
+        }
     });
 
     var IButton_Institute_EquipmentList_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -1491,18 +1498,17 @@
 
     var IButton_Institute_EquipmentList_Choose = isc.IButton.create({
         top: 260,
-        title: "انتخاب",
+        title: "<spring:message code='selectfromlist'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
-            Function_Institute_EquipmentList_Selected();
+            Function_Institute_EquipmentList_Selected(equipmentDestUrl);
         }
     });
 
 
-    var ToolStripButton_Institute_Equipment_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "افزودن",
+    var ToolStripButton_Institute_Equipment_Add = isc.TrCreateBtn.create({
+        title: "<spring:message code="btn.append"/>",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1516,13 +1522,12 @@
                     }
                 });
             } else {
-                Function_Institute_EquipmentList_Select(institute_Institute_Url,record.id,1);
+                equipmentDestUrl = "institute-equipment";
+                Function_Institute_EquipmentList_Select(institute_Institute_Url, record.id, equipmentDestUrl);
             }
         }
     });
-    var ToolStripButton_Institute_Equipment_Delete = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Institute_Equipment_Delete = isc.TrRemoveBtn.create({
         click: function () {
             var record = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1569,7 +1574,7 @@
     });
 
     var Window_Institute_EquipmentList = isc.Window.create({
-        title: "انتخاب تجهیزات کمک آموزشی",
+        title: "<spring:message code='institute.selectequipment'/>",
         width: 800,
         height: 700,
         autoSize: true,
@@ -1590,75 +1595,62 @@
         })]
     });
 
-    function Function_Institute_EquipmentList_Select(baseUrl,masterId,dest) {
-        RestDataSource_Institute_Institite_UnAttachedEquipment.fetchDataURL = baseUrl + masterId + "/unattached-equipments"
+    function Function_Institute_EquipmentList_Select(baseUrl, masterId, dest) {
+        RestDataSource_Institute_Institite_UnAttachedEquipment.fetchDataURL = baseUrl + masterId + "/unattached-equipments";
+        equipmentDestUrl = dest;
         ListGrid_Institute_Equipment_List.invalidateCache();
         ListGrid_Institute_Equipment_List.fetchData();
         Window_Institute_EquipmentList.show();
         Window_Institute_EquipmentList.bringToFront();
     };
 
-    function Function_Institute_EquipmentList_Selected() {
-
+    function Function_Institute_EquipmentList_Selected(dest) {
+        var addEquipmentUrl = "";
+        var masterRecord = undefined;
+        var masterId = null;
+        if (dest == "training-place-equipment") {
+            addEquipmentUrl = institute_Institute_TrainingPlace_Url;
+            masterRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+            masterId = masterRecord.id;
+        } else if (dest == "institute-equipment") {
+            addEquipmentUrl = institute_Institute_Url;
+            masterRecord = ListGrid_Institute_Institute.getSelectedRecord();
+            masterId = masterRecord.id;
+        }
+        console.log(masterId);
         if (ListGrid_Institute_Equipment_List.getSelectedRecord() != null) {
-// console.log(ListGrid_Institute_Equipment_List.getSelectedRecords().getLength());
             var selectedEquipmentRecords = ListGrid_Institute_Equipment_List.getSelectedRecords();
             if (selectedEquipmentRecords.getLength() > 1) {
-                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
-                var instituteId = instituteRecord.id;
-
                 var equipmentIds = new Array();
                 for (i = 0; i < selectedEquipmentRecords.getLength(); i++) {
                     equipmentIds.add(selectedEquipmentRecords[i].id);
                 }
                 var JSONObj = {"ids": equipmentIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "add-equipment-list/" + instituteId,
-                    httpMethod: "POST",
-                    data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + instituteId + "/equipments"
-                            ListGrid_Institute_Attached_Equipment.invalidateCache();
-                            ListGrid_Institute_Attached_Equipment.fetchData();
-                            Window_Institute_EquipmentList.close();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-
-
+                isc.RPCManager.sendRequest(TrDSRequest(addEquipmentUrl + "add-equipment-list/" + masterId, "POST", JSON.stringify(JSONObj), "callback: Function_Institute_EquipmentList_Selected_CallBack(rpcResponse)"));
             } else {
-                var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
-                var instituteId = instituteRecord.id;
                 var equipmentRecord = ListGrid_Institute_Equipment_List.getSelectedRecord();
                 var equipmentId = equipmentRecord.id;
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "add-equipment/" + equipmentId + "/" + instituteId,
-                    httpMethod: "POST",
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + instituteId + "/equipments"
-                            ListGrid_Institute_Attached_Equipment.invalidateCache();
-                            ListGrid_Institute_Attached_Equipment.fetchData();
-                            Window_Institute_EquipmentList.close();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(addEquipmentUrl + "add-equipment/" + equipmentId + "/" + masterId, "POST", null, "callback: Function_Institute_EquipmentList_Selected_CallBack(rpcResponse)"));
             }
-
         }
+    }
+
+    function Function_Institute_EquipmentList_Selected_CallBack(resp) {
+        if (resp.data == "true") {
+            if (equipmentDestUrl == "training-place-equipment") {
+                // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
+                ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.fetchData();
+            } else if (equipmentDestUrl == "institute-equipment") {
+                // RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
+                ListGrid_Institute_Attached_Equipment.invalidateCache();
+                ListGrid_Institute_Attached_Equipment.fetchData();
+            }
+            Window_Institute_EquipmentList.close();
+        } else {
+            isc.say("اجرای این دستور با مشکل مواجه شده است");
+        }
+
     }
 
     function Function_Institute_Equipment_Remove() {
@@ -1673,90 +1665,65 @@
                     equipmentIds.add(equipmentRecords[i].id);
                 }
 // var JSONObj = {"ids": skillGroupIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "remove-equipment-list/" + equipmentIds + "/" + instituteId,
-                    httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Institute_Attached_Equipment.invalidateCache();
-                            ListGrid_Institute_Attached_Equipment.fetchData();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "remove-equipment-list/" + equipmentIds + "/" + instituteId, "DELETE", null, "callback: Function_Institute_Equipment_Remove_CallBack(rpcResponse)"));
             } else {
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 var instituteId = instituteRecord.id;
                 var equipmentRecord = ListGrid_Institute_Attached_Equipment.getSelectedRecord();
                 var equipmentId = equipmentRecord.id;
 // var JSONObj = {"ids": courseIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "remove-equipment/" + equipmentId + "/" + instituteId,
-                    httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Institute_Attached_Equipment.invalidateCache();
-                            ListGrid_Institute_Attached_Equipment.fetchData();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "remove-equipment/" + equipmentId + "/" + instituteId, "DELETE", null, "callback: Function_Institute_Equipment_Remove_CallBack(rpcResponse)"));
             }
+        }
+    }
 
+    function Function_Institute_Equipment_Remove_CallBack(resp) {
+        if (resp.data == "true") {
+            if (equipmentDestUrl == "training-place-equipment") {
+                // RestDataSource_Institute_TrainingPlace_Equipment.fetchDataURL = institute_Institute_TrainingPlace_Url + masterId + "/equipments"
+                ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
+                ListGrid_Institute_TrainingPlece_Equipment.fetchData();
+            } else if (equipmentDestUrl == "institute-equipment") {
+                // RestDataSource_Institute_Institite_Equipment.fetchDataURL = institute_Institute_Url + masterId + "/equipments"
+                ListGrid_Institute_Attached_Equipment.invalidateCache();
+                ListGrid_Institute_Attached_Equipment.fetchData();
+            }
+        } else {
+            isc.say("اجرای این دستور با مشکل مواجه شده است");
         }
 
     }
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Edit Teachers For Institute*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ListGrid_Institute_Teacher_List = isc.ListGrid.create({
+    var ListGrid_Institute_Teacher_List = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Institute_Institite_UnAttachedTeacher,
-        doubleClick: function () {
-            Function_Institute_TeacherList_Selected();
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "کد", align: "center"},
-            {name: "personality.firstNameFa", title: "نام", align: "center"},
-            {name: "personality.lastNameFa", title: "نام خانوادگی ", align: "center"},
-            {name: "personality.nationalCode", title: "کد ملی", align: "center"}
+            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center"},
+            {name: "personality.firstNameFa", title: "<spring:message code='firstName'/>", align: "center"},
+            {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", align: "center"},
+            {name: "personality.nationalCode", title: "<spring:message code='national.code'/>", align: "center"}
         ],
         selectionType: "multiple",
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        doubleClick: function () {
+            Function_Institute_TeacherList_Selected();
+        }
     });
 
     var IButton_Institute_TeacherList_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -1766,7 +1733,7 @@
 
     var IButton_Institute_TeacherList_Choose = isc.IButton.create({
         top: 260,
-        title: "انتخاب",
+        title: "<spring:message code='selectfromlist'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -1775,9 +1742,8 @@
     });
 
 
-    var ToolStripButton_Institute_Teacher_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "افزودن",
+    var ToolStripButton_Institute_Teacher_Add = isc.TrCreateBtn.create({
+        title: "<spring:message code="btn.append"/>",
         click: function () {
             var record = ListGrid_Institute_Institute.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1796,9 +1762,7 @@
         }
     });
 
-    var ToolStripButton_Institute_Teacher_Delete = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Institute_Teacher_Delete = isc.TrRemoveBtn.create({
         click: function () {
             var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -1846,7 +1810,7 @@
     });
 
     var Window_Institute_TeacherList = isc.Window.create({
-        title: "انتخاب اساتید",
+        title: "<spring:message code='institute.selectteacher'/>",
         width: 800,
         height: 700,
         autoSize: true,
@@ -1892,54 +1856,29 @@
                     teacherIds.add(selectedTeacherRecords[i].id);
                 }
                 var JSONObj = {"ids": teacherIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "add-teacher-list/" + instituteId,
-                    httpMethod: "POST",
-                    data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + instituteId + "/teachers"
-                            ListGrid_Institute_Attached_Teacher.invalidateCache();
-                            ListGrid_Institute_Attached_Teacher.fetchData();
-                            Window_Institute_TeacherList.close();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
-
-
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "add-teacher-list/" + instituteId, "POST", JSON.stringify(JSONObj), "callback: Function_Institute_TeacherList_Selected_CallBack(rpcResponse)"));
             } else {
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 var instituteId = instituteRecord.id;
                 var teacherRecord = ListGrid_Institute_Teacher_List.getSelectedRecord();
                 var teacherId = teacherRecord.id;
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "add-teacher/" + teacherId + "/" + instituteId,
-                    httpMethod: "POST",
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            RestDataSource_Institute_Institite_Teacher.fetchDataURL = institute_Institute_Url + instituteId + "/teachers"
-                            ListGrid_Institute_Attached_Teacher.invalidateCache();
-                            ListGrid_Institute_Attached_Teacher.fetchData();
-                            Window_Institute_TeacherList.close();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "add-teacher/" + teacherId + "/" + instituteId, "POST", null, "callback: Function_Institute_TeacherList_Selected_CallBack(rpcResponse)"));
             }
 
         }
     }
+
+    function Function_Institute_TeacherList_Selected_CallBack(resp) {
+        if (resp.data == "true") {
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.fetchData();
+            Window_Institute_TeacherList.close();
+        } else {
+            isc.say("اجرای این دستور با مشکل مواجه شده است");
+        }
+
+    }
+
 
     function Function_Institute_Teacher_Remove() {
         var selectedAttachedTeacherRecords = ListGrid_Institute_Attached_Teacher.getSelectedRecords();
@@ -1953,51 +1892,30 @@
                     teacherIds.add(teacherRecords[i].id);
                 }
 // var JSONObj = {"ids": skillGroupIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "remove-teacher-list/" + teacherIds + "/" + instituteId,
-                    httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Institute_Attached_Teacher.invalidateCache();
-                            ListGrid_Institute_Attached_Teacher.fetchData();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "remove-teacher-list/" + teacherIds + "/" + instituteId, "DELETE", null, "callback: Function_Institute_Teacher_Remove_CallBack(rpcResponse)"));
             } else {
                 var instituteRecord = ListGrid_Institute_Institute.getSelectedRecord();
                 var instituteId = instituteRecord.id;
                 var teacherRecord = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
                 var teacherId = teacherRecord.id;
 // var JSONObj = {"ids": courseIds};
-                isc.RPCManager.sendRequest({
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    actionURL: institute_Institute_Url + "remove-teacher/" + teacherId + "/" + instituteId,
-                    httpMethod: "DELETE",
-// data: JSON.stringify(JSONObj),
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.data == "true") {
-                            ListGrid_Institute_Attached_Teacher.invalidateCache();
-                            ListGrid_Institute_Attached_Teacher.fetchData();
-                        } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
-                        }
-                    }
-                });
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + "remove-teacher/" + teacherId + "/" + instituteId, "DELETE", null, "callback: Function_Institute_TeacherList_Selected_CallBack(rpcResponse)"));
             }
 
         }
 
     }
+
+    function Function_Institute_Teacher_Remove_CallBack(resp) {
+        if (resp.data == "true") {
+            ListGrid_Institute_Attached_Teacher.invalidateCache();
+            ListGrid_Institute_Attached_Teacher.fetchData();
+        } else {
+            isc.say("اجرای این دستور با مشکل مواجه شده است");
+        }
+
+    }
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Edit Accounts For Institute*/
@@ -2024,7 +1942,7 @@
             {
                 name: "bankId",
                 type: "IntegerItem",
-                title: "بانک",
+                title: "<spring:message code='bank'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -2044,14 +1962,24 @@
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "titleFa", title: "عنوان بانک", width: "30%", filterOperator: "iContains"},
-                    {name: "ebankType.titleFa", title: "نوع بانک", width: "30%", filterOperator: "iContains"}
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='bank.title'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ebankType.titleFa",
+                        title: "<spring:message code='bank.type'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
                 ]
             },
             {
                 name: "bankBranchId",
                 type: "IntegerItem",
-                title: "شعبه بانک",
+                title: "<spring:message code='bank.branch'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -2071,13 +1999,23 @@
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "code", title: "کد شعبه", width: "30%", filterOperator: "iContains"},
-                    {name: "titleFa", title: "عنوان شعبه", width: "30%", filterOperator: "iContains"}
+                    {
+                        name: "code",
+                        title: "<spring:message code='bank.branch.code'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='bank.branch.title'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
                 ]
             },
             {
                 name: "accountNumber",
-                title: "شماره حساب",
+                title: "<spring:message code='account.number'/>",
                 required: true,
                 keyPressFilter: "[0-9|/|.]| ",
                 width: "*",
@@ -2085,24 +2023,24 @@
             {
                 name: "cartNumber",
                 keyPressFilter: "[0-9|-| ]",
-                title: "شماره کارت",
+                title: "<spring:message code='cart.number'/>",
                 width: "*",
             },
             {
                 name: "shabaNumber",
-                title: "شماره شبا",
+                title: "<spring:message code='shaba.number'/>",
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
             },
             {
                 name: "accountOwnerName",
-                title: "نام صاحب حساب",
+                title: "<spring:message code='account.owner.name'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
             },
             {
                 name: "description",
-                title: "توضیحات",
+                title: "<spring:message code='description'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "500",
                 colSpan: 2,
@@ -2110,7 +2048,7 @@
             },
             {
                 name: "isEnableVal",
-                title: "فعال؟",
+                title: "<spring:message code='isEnable'/>",
                 align: "center",
                 showTitle: false,
                 type: "checkbox",
@@ -2141,7 +2079,7 @@
 
     var IButton_Institute_Institute_Account_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -2150,7 +2088,7 @@
     });
     var IButton_Institute_Institute_Account_Save = isc.IButton.create({
         top: 260,
-        title: "ذخیره",
+        title: "<spring:message code='save'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -2197,23 +2135,17 @@
         })]
     });
 
-    var ToolStripButton_Institute_Account_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "افزودن",
+    var ToolStripButton_Institute_Account_Add = isc.TrCreateBtn.create({
         click: function () {
             Function_Institute_Account_Add();
         }
     });
-    var ToolStripButton_Institute_Account_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Institute_Account_Remove = isc.TrRemoveBtn.create({
         click: function () {
             Function_Institute_Account_Remove();
         }
     });
-    var ToolStripButton_Institute_Account_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+    var ToolStripButton_Institute_Account_Edit = isc.TrEditBtn.create({
         click: function () {
             Function_Institute_Account_Edit();
         }
@@ -2255,43 +2187,14 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: institute_Institute_Account_Url + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Institute_Institute_Account.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "حساب با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+                        globalWait = wait;
+                        isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Account_Url + record.id, "DELETE", null, "callback: Function_Institute_Account_Remove_Result(rpcResponse)"));
                     }
                 }
             });
         }
     };
+
     function Function_Institute_Account_Edit() {
         var record = ListGrid_Institute_Institute_Account.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -2321,6 +2224,7 @@
             Window_Institute_Account.bringToFront();
         }
     };
+
     function Function_Institute_Account_Add() {
         var record = ListGrid_Institute_Institute.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -2348,6 +2252,7 @@
             Window_Institute_Account.bringToFront();
         }
     };
+
     function Function_Institute_Account_Save() {
 
         DynamicForm_Institute_Institute_Account.validate();
@@ -2361,7 +2266,8 @@
             var instituteAccountRecord = ListGrid_Institute_Institute_Account.getSelectedRecord();
             instituteAccountSaveUrl += instituteAccountRecord.id;
         }
-        isc.RPCManager.sendRequest(MyDsRequest(instituteAccountSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_Account_Save_Result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(instituteAccountSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_Account_Save_Result(rpcResponse)"));
+
     }
 
     function Function_Institute_Account_Save_Result(resp) {
@@ -2391,6 +2297,30 @@
         }
     }
 
+    function Function_Institute_Account_Remove_Result(resp) {
+        globalWait.close();
+        if (resp.data == "true") {
+            ListGrid_Institute_Institute_Account.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "حساب با موفقيت حذف گرديد",
+                icon: "[SKIN]say.png",
+                title: "انجام شد"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: "ركورد مورد نظر قابل حذف نيست",
+                icon: "[SKIN]stop.png",
+                title: "خطا"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    }
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Edit Training Places For Institute*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -2414,14 +2344,14 @@
             {name: "instituteId", hidden: true},
             {
                 name: "titleFa",
-                title: "شرح فارسی",
+                title: "<spring:message code='global.titleFa'/>",
                 required: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
             },
             {
                 name: "titleEn",
-title: "شرح لاتین",
+                title: "<spring:message code='global.titleEn'/>",
                 keyPressFilter: "[0-9|-| ]",
                 keyPressFilter: "[0-9|A-Z|a-z| ]",
                 width: "*",
@@ -2429,7 +2359,7 @@ title: "شرح لاتین",
             {
                 name: "eplaceTypeId",
                 type: "IntegerItem",
-                title: "نوع محل آموزشی",
+                title: "<spring:message code='place.type'/>",
                 width: "*",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -2455,7 +2385,7 @@ title: "شرح لاتین",
             {
                 name: "earrangementTypeId",
                 type: "IntegerItem",
-                title: "چیدمان",
+                title: "<spring:message code='place.shape'/>",
                 width: "*",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
@@ -2480,13 +2410,13 @@ title: "شرح لاتین",
             },
             {
                 name: "capacity",
-                title: "ظرفیت",
+                title: "<spring:message code='capacity'/>",
                 keyPressFilter: "[0-9]",
                 width: "*",
             },
             {
                 name: "description",
-                title: "توضیحات",
+                title: "<spring:message code='description'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "500",
                 colSpan: 3,
@@ -2497,7 +2427,7 @@ title: "شرح لاتین",
 
     var IButton_Institute_Institute_TrainingPlace_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -2506,7 +2436,7 @@ title: "شرح لاتین",
     });
     var IButton_Institute_Institute_TrainingPlace_Save = isc.IButton.create({
         top: 260,
-        title: "ذخیره",
+        title: "<spring:message code='save'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -2551,27 +2481,22 @@ title: "شرح لاتین",
         })]
     });
 
-    var ToolStripButton_Institute_TrainingPlace_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "افزودن",
+    var ToolStripButton_Institute_TrainingPlace_Add = isc.TrCreateBtn.create({
         click: function () {
             Function_Institute_TrainingPlace_Add();
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Institute_TrainingPlace_Remove = isc.TrRemoveBtn.create({
         click: function () {
             Function_Institute_TrainingPlace_Remove();
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+    var ToolStripButton_Institute_TrainingPlace_Edit = isc.TrEditBtn.create({
         click: function () {
             Function_Institute_TrainingPlace_Edit();
         }
     });
+
     var ToolStrip_Institute_TrainingPlace = isc.ToolStrip.create({
         width: "20",
         center: true,
@@ -2609,43 +2534,14 @@ title: "شرح لاتین",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: institute_Institute_TrainingPlace_Url + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Institute_TrainingPlace.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "محل آموزشی با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+                        globalWait = wait;
+                        isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + record.id, "DELETE", null, "callback: Function_Institute_TrainingPlace_Remove_Result(rpcResponse)"));
                     }
                 }
             });
         }
     };
+
     function Function_Institute_TrainingPlace_Edit() {
         var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -2668,6 +2564,7 @@ title: "شرح لاتین",
             Window_Institute_TrainingPlace.bringToFront();
         }
     };
+
     function Function_Institute_TrainingPlace_Add() {
         var record = ListGrid_Institute_Institute.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -2690,6 +2587,7 @@ title: "شرح لاتین",
             Window_Institute_TrainingPlace.bringToFront();
         }
     };
+
     function Function_Institute_TrainingPlace_Save() {
 
         DynamicForm_Institute_Institute_TrainingPlace.validate();
@@ -2703,7 +2601,7 @@ title: "شرح لاتین",
             var instituteTrainingPlaceRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
             instituteTrainingPlaceSaveUrl += instituteTrainingPlaceRecord.id;
         }
-        isc.RPCManager.sendRequest(MyDsRequest(instituteTrainingPlaceSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_TrainingPlace_Save_Result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(instituteTrainingPlaceSaveUrl, reqMethod, JSON.stringify(data), "callback: Function_Institute_TrainingPlace_Save_Result(rpcResponse)"));
     }
 
     function Function_Institute_TrainingPlace_Save_Result(resp) {
@@ -2733,8 +2631,33 @@ title: "شرح لاتین",
         }
     }
 
+    function Function_Institute_TrainingPlace_Remove_Result(resp) {
+        globalWait.close();
+        if (resp.data == "true") {
+            ListGrid_Institute_TrainingPlace.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "محل آموزشی با موفقيت حذف گرديد",
+                icon: "[SKIN]say.png",
+                title: "انجام شد"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: "ركورد مورد نظر قابل حذف نيست",
+                icon: "[SKIN]stop.png",
+                title: "خطا"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+
+    }
+
     //--------------------------------------------------------------------------------------------------------------------//
-    /*Edit Equipments For Training Places In Institute*/
+    /*Edit Equipments For Training Places And Institute*/
     //--------------------------------------------------------------------------------------------------------------------//
 
 
@@ -2760,7 +2683,7 @@ title: "شرح لاتین",
             {
                 name: "bankId",
                 type: "IntegerItem",
-                title: "بانک",
+                title: "<spring:message code='bank'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -2780,14 +2703,24 @@ title: "شرح لاتین",
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "titleFa", title: "عنوان بانک", width: "30%", filterOperator: "iContains"},
-                    {name: "ebankType.titleFa", title: "نوع بانک", width: "30%", filterOperator: "iContains"}
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='bank.title'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "ebankType.titleFa",
+                        title: "<spring:message code='bank.type'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
                 ]
             },
             {
                 name: "bankBranchId",
                 type: "IntegerItem",
-                title: "شعبه بانک",
+                title: "<spring:message code='bank.branch'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -2807,13 +2740,23 @@ title: "شرح لاتین",
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "code", title: "کد شعبه", width: "30%", filterOperator: "iContains"},
-                    {name: "titleFa", title: "عنوان شعبه", width: "30%", filterOperator: "iContains"}
+                    {
+                        name: "code",
+                        title: "<spring:message code='bank.branch.code'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "titleFa",
+                        title: "<spring:message code='bank.branch.title'/>",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
                 ]
             },
             {
                 name: "accountNumber",
-                title: "شماره حساب",
+                title: "<spring:message code='account.number'/>",
                 required: true,
                 keyPressFilter: "[0-9|/|.]| ",
                 width: "*",
@@ -2821,24 +2764,24 @@ title: "شرح لاتین",
             {
                 name: "cartNumber",
                 keyPressFilter: "[0-9|-| ]",
-                title: "شماره کارت",
+                title: "<spring:message code='cart.number'/>",
                 width: "*",
             },
             {
                 name: "shabaNumber",
-                title: "شماره شبا",
+                title: "<spring:message code='shaba.number'/>",
                 keyPressFilter: "[A-Z|a-z|0-9|-| ]",
                 width: "*",
             },
             {
                 name: "accountOwnerName",
-                title: "نام صاحب حساب",
+                title: "<spring:message code='account.owner.name'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 width: "*",
             },
             {
                 name: "description",
-                title: "توضیحات",
+                title: "<spring:message code='description'/>",
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|A-Z|a-z]| ",
                 length: "500",
                 colSpan: 2,
@@ -2846,7 +2789,7 @@ title: "شرح لاتین",
             },
             {
                 name: "isEnableVal",
-                title: "فعال؟",
+                title: "<spring:message code='isEnable'/>",
                 align: "center",
                 showTitle: false,
                 type: "checkbox",
@@ -2877,7 +2820,7 @@ title: "شرح لاتین",
 
     var IButton_Institute_TrainingPlace_Equipment_Exit = isc.IButton.create({
         top: 260,
-        title: "لغو",
+        title: "<spring:message code='cancel'/>",
         align: "center",
         icon: "<spring:url value="remove.png"/>",
         click: function () {
@@ -2886,7 +2829,7 @@ title: "شرح لاتین",
     });
     var IButton_Institute_TrainingPlace_Equipment_Save = isc.IButton.create({
         top: 260,
-        title: "ذخیره",
+        title: "<spring:message code='save'/>",
         align: "center",
         icon: "pieces/16/save.png",
         click: function () {
@@ -2935,62 +2878,99 @@ title: "شرح لاتین",
     });
 
 
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "افزودن",
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Add = isc.TrCreateBtn.create({
+        title: "<spring:message code="btn.append"/>",
         click: function () {
-            Function_Institute_Account_Add();
+            var record = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+            if (record == null || record.id == null) {
+                isc.Dialog.create({
+                    message: "لطفا یک محل آموزشی را انتخاب کنید.",
+                    icon: "[SKIN]ask.png",
+                    title: "توجه",
+                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                equipmentDestUrl = "training-place-equipment";
+                Function_Institute_EquipmentList_Select(institute_Institute_TrainingPlace_Url, record.id, equipmentDestUrl);
+            }
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+    var ToolStripButton_Institute_TrainingPlace_Equipment_Remove = isc.TrRemoveBtn.create({
         click: function () {
-            Function_Institute_Account_Remove();
+            Function_Institute_TrainingPlace_Equipment_Remove();
         }
     });
-    var ToolStripButton_Institute_TrainingPlace_Equipment_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
-        click: function () {
-            Function_Institute_Account_Edit();
-        }
-    });
+
     var ToolStrip_Institute_TrainingPlace_Equipment = isc.ToolStrip.create({
         width: "20",
         center: true,
         members: [
-            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Edit, ToolStripButton_Institute_TrainingPlace_Equipment_Remove
+            ToolStripButton_Institute_TrainingPlace_Equipment_Add, ToolStripButton_Institute_TrainingPlace_Equipment_Remove
         ]
     });
 
+
+    function Function_Institute_TrainingPlace_Equipment_Remove() {
+        var selectedAttachedEquipmentRecords = ListGrid_Institute_TrainingPlece_Equipment.getSelectedRecords();
+        if (selectedAttachedEquipmentRecords != null) {
+            if (selectedAttachedEquipmentRecords.getLength() > 1) {
+                var trainingPlaceRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+                var trainingPlaceId = trainingPlaceRecord.id;
+                var equipmentRecords = ListGrid_Institute_TrainingPlece_Equipment.getSelectedRecords();
+                var equipmentIds = new Array();
+                for (i = 0; i < equipmentRecords.getLength(); i++) {
+                    equipmentIds.add(equipmentRecords[i].id);
+                }
+                // var JSONObj = {"ids": skillGroupIds};
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + "remove-equipment-list/" + equipmentIds + "/" + trainingPlaceId, "DELETE", null, "callback: Function_Institute_TrainingPlace_Equipment_Remove_CallBack(rpcResponse)"));
+
+            } else {
+                var trainingPlaceRecord = ListGrid_Institute_TrainingPlace.getSelectedRecord();
+                var trainingPlaceId = trainingPlaceRecord.id;
+                var equipmentRecord = ListGrid_Institute_TrainingPlece_Equipment.getSelectedRecord();
+                var equipmentId = equipmentRecord.id;
+                // var JSONObj = {"ids": courseIds};
+                isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_TrainingPlace_Url + "remove-equipment/" + equipmentId + "/" + trainingPlaceId, "DELETE", null, "callback: Function_Institute_TrainingPlace_Equipment_Remove_CallBack(rpcResponse)"));
+            }
+        }
+    }
+
+    function Function_Institute_TrainingPlace_Equipment_Remove_CallBack(resp) {
+        if (resp.data == "true") {
+            ListGrid_Institute_TrainingPlece_Equipment.invalidateCache();
+            ListGrid_Institute_TrainingPlece_Equipment.fetchData();
+        } else {
+            isc.say("اجرای این دستور با مشکل مواجه شده است");
+        }
+    }
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Institute_Institute_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code='refresh'/>",
+    var ToolStripButton_Institute_Institute_Refresh = isc.TrRefreshBtn.create({
         click: function () {
             ListGrid_Institute_Institute_refresh();
         }
     });
-    var ToolStripButton_Institute_Institute_Edit = isc.ToolStripButton.create({
+    var ToolStripButton_Institute_Institute_Edit = isc.TrEditBtn.create({
         icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_Institute_Institute_Edit();
         }
     });
-    var ToolStripButton_Institute_Institute_Add = isc.ToolStripButton.create({
+    var ToolStripButton_Institute_Institute_Add = isc.TrCreateBtn.create({
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_Institute_Institute_Add();
         }
     });
-    var ToolStripButton_Institute_Institute_Remove = isc.ToolStripButton.create({
+    var ToolStripButton_Institute_Institute_Remove = isc.TrRemoveBtn.create({
         icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code='remove'/>",
         click: function () {
@@ -3070,24 +3050,24 @@ title: "شرح لاتین",
         tabs: [
             {
                 id: "TabPane_Institute_TrainingPlace",
-                title: "لیست محل های آموزشی",
+                title: "<spring:message code='institute.placelist'/>",
                 pane: HLayout_Institute_Institute_TrainingPlace
 
             },
 
             {
                 id: "TabPane_Institute_Teacher",
-                title: "لیست اساتید",
+                title: "<spring:message code='institute.teacherlist'/>",
                 pane: VLayout_Institute_Institute_Teacher
             },
             {
                 id: "TabPane_Institute_Equipment",
-                title: "لیست تجهیزات کمک آموزشی",
+                title: "<spring:message code='institute.equipmentlist'/>",
                 pane: VLayout_Institute_Institute_Equipment
             },
             {
                 id: "TabPane_Institute_Account",
-                title: "لیست حساب های موسسه",
+                title: "<spring:message code='institute.accountlist'/>",
                 pane: VLayout_Institute_Institute_Account
             }
         ]
@@ -3152,38 +3132,8 @@ title: "شرح لاتین",
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='global.message'/>"
                         });
-                        isc.RPCManager.sendRequest({
-                            actionURL: institute_Institute_Url + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.data == "true") {
-                                    ListGrid_Institute_Institute.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "مرکز آموزشی با موفقيت حذف گرديد",
-                                        icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            }
-                        });
+                        globalWait = wait;
+                        isc.RPCManager.sendRequest(TrDSRequest(institute_Institute_Url + record.id, "DELETE", null, "callback: ListGrid_Institute_Institute_Remove_CallBack(rpcResponse)"));
                     }
                 }
             });
@@ -3262,6 +3212,31 @@ title: "شرح لاتین",
         }
         ListGrid_Institute_Institute.invalidateCache();
     };
+
+    function ListGrid_Institute_Institute_Remove_CallBack(resp) {
+        globalWait.close();
+        if (resp.data == "true") {
+            ListGrid_Institute_Institute.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "مرکز آموزشی با موفقيت حذف گرديد",
+                icon: "[SKIN]say.png",
+                title: "انجام شد"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: "ركورد مورد نظر قابل حذف نيست",
+                icon: "[SKIN]stop.png",
+                title: "خطا"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+
+    }
 
 
     // function checkMobile(mobile) {
