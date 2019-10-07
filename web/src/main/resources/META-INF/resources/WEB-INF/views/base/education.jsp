@@ -13,6 +13,8 @@
     var educationLevelUrl = educationUrl + "level/";
     var educationMajorUrl = educationUrl + "major/";
     var educationOrientationUrl = educationUrl + "orientation/";
+    var EducationListGrid;
+    var wait;
 
 
     //////////////////////////////////////////////////////////
@@ -77,8 +79,8 @@
                 }
             }, {
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                    ListGrid_Education_Remove(ListGrid_EducationOrientation,educationOrientationUrl,
-                                                "<spring:message code='msg.education.orientation.remove'/>");
+                    EducationListGrid = ListGrid_EducationOrientation;
+                    ListGrid_Education_Remove(educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
@@ -197,7 +199,8 @@
         icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
-            ListGrid_Education_Remove(ListGrid_EducationOrientation,educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
+            EducationListGrid = ListGrid_EducationOrientation;
+            ListGrid_Education_Remove(educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
         }
     });
     var ToolStripButton_Print_EducationOrientation = isc.ToolStripButton.create({
@@ -225,37 +228,8 @@
                 return;
             }
             var data = DynamicForm_EducationOrientation.getValues();
-            isc.RPCManager.sendRequest({
-                actionURL: saveActionUrl,
-                httpMethod: methodEducation,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        createDialog("info","<spring:message code="msg.operation.successful"/>",
-                                        "<spring:message code="msg.command.done"/>");
-                        ListGrid_Education_refresh(ListGrid_EducationOrientation);
-                        setTimeout(function () {
-                            ListGrid_EducationOrientation.setSelectedState(gridState);
-                        }, 1000);
-                        Window_EducationOrientation.close();
-                    }else if(resp.httpResponseCode === 406){
-                        createDialog("info","<spring:message code="msg.record.duplicate"/>",
-                                        "<spring:message code="message"/>");
-                    }else {
-                        createDialog("info","<spring:message code="msg.operation.error"/>",
-                                        "<spring:message code="message"/>");
-                    }
-
-                }
-            });
-
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrl,methodEducation,JSON.stringify(data),
+                "callback: edu_orientation_save_result(rpcResponse)"));
         }
     });
     var HLayout_EducationOrientation_SaveOrExit = isc.TrHLayoutButtons.create({
@@ -329,8 +303,8 @@
                 }
             }, {
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                    ListGrid_Education_Remove(ListGrid_EducationMajor,educationMajorUrl,
-                                                "<spring:message code='msg.education.major.remove'/>");
+                    EducationListGrid = ListGrid_EducationMajor;
+                    ListGrid_Education_Remove(educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
@@ -417,7 +391,8 @@
     });
     var ToolStripButton_Remove_EducationMajor = isc.TrRemoveBtn.create({
         click: function () {
-            ListGrid_Education_Remove(ListGrid_EducationMajor,educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
+            EducationListGrid = ListGrid_EducationMajor;
+            ListGrid_Education_Remove(educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
         }
     });
     var ToolStripButton_Print_EducationMajor = isc.ToolStripButton.create({
@@ -548,8 +523,8 @@
                 }
             }, {
                 title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
-                    ListGrid_Education_Remove(ListGrid_EducationLevel,educationLevelUrl,
-                                                "<spring:message code='msg.education.level.remove'/>");
+                    EducationListGrid = ListGrid_EducationLevel;
+                    ListGrid_Education_Remove(educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
@@ -638,7 +613,8 @@
     });
     var ToolStripButton_Remove_EducationLevel = isc.TrRemoveBtn.create({
         click: function () {
-            ListGrid_Education_Remove(ListGrid_EducationLevel,educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
+            EducationListGrid = ListGrid_EducationLevel;
+            ListGrid_Education_Remove(educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
         }
     });
     var ToolStripButton_Print_EducationLevel = isc.ToolStripButton.create({
@@ -774,7 +750,7 @@
     ////////////////////////Functions/////////////////////////
     /////////////////////////////////////////////////////////
 
-    function ListGrid_Education_Remove(EducationListGrid, Url, msg) {
+    function ListGrid_Education_Remove(Url, msg) {
         var record = EducationListGrid.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
@@ -783,28 +759,9 @@
             Dialog_Education_remove.addProperties({buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                            var wait = createDialog("wait");
-                        isc.RPCManager.sendRequest({
-                            actionURL: Url + "delete/" + record.id,
-                            httpMethod: "DELETE",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            showPrompt: true,
-                            serverOutputAsString: false,
-                            callback: function (resp) {
-                                wait.close();
-                                if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                                    EducationListGrid.invalidateCache();
-                                    createDialog("info","<spring:message code="msg.operation.successful"/>",
-                                        "<spring:message code="msg.command.done"/>");
-                                }else if(resp.httpResponseCode === 406){
-                                    createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
-                                }else {
-                                    createDialog("info", "<spring:message code="msg.operation.error"/>");
-                                }
-                            }
-                        });
+                        wait = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(Url + "delete/" + record.id, "DELETE", null,
+                            "callback: edu_delete_result(rpcResponse)"));
                     }
                 }});
             ListGrid_Education_refresh(EducationListGrid);
@@ -830,7 +787,8 @@
         if (record != null && record.id != null) {
             EducationListGrid.selectRecord(record);
         }
-            EducationListGrid.filterByEditor();
+        EducationListGrid.invalidateCache();
+        EducationListGrid.filterByEditor();
     }
 
     function ListGrid_Education_Add(Url, title, EducationDynamicForm, EducationWindows) {
@@ -863,4 +821,39 @@
         criteriaForm.submitForm();
     }
 
+    function edu_orientation_save_result (resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            var responseID = JSON.parse(resp.data).id;
+            var gridState = "[{id:" + responseID + "}]";
+            var OK = createDialog("info","<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            ListGrid_Education_refresh(ListGrid_EducationOrientation);
+            setTimeout(function () {
+                OK.close();
+                ListGrid_EducationOrientation.setSelectedState(gridState);
+            }, 3000);
+            Window_EducationOrientation.close();
+        }else if(resp.httpResponseCode === 406 && resp.context.httpMethod === "POST"){
+            createDialog("info","<spring:message code='msg.record.duplicate'/>",
+                "<spring:message code="message"/>");
+        }else if(resp.httpResponseCode === 406 && resp.context.httpMethod === "PUT"){
+            createDialog("info","<spring:message code='msg.education.orientation.edit.error'/>");
+        }else {
+            createDialog("info","<spring:message code="msg.operation.error"/>",
+                "<spring:message code="message"/>");
+        }
+    }
+
+    function edu_delete_result (resp) {
+        wait.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            EducationListGrid.invalidateCache();
+            createDialog("info","<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+        }else if(resp.httpResponseCode === 406){
+            createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+        }else {
+        createDialog("info", "<spring:message code="msg.operation.error"/>");
+        }
+    }
 //</script>

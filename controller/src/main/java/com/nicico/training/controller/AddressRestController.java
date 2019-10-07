@@ -104,9 +104,10 @@ public class AddressRestController {
     @GetMapping(value = "/getOneByPostalCode/{postalCode}")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<AddressDTO.Info> getOneByPostalCode(@PathVariable String postalCode) {
+        if (postalCode == null || postalCode.equals("undefined"))
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
         return new ResponseEntity<>(addressService.getOneByPostalCode(postalCode), HttpStatus.OK);
     }
-
 
 
 }

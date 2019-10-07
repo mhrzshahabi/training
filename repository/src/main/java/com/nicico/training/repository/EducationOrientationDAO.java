@@ -12,7 +12,7 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface EducationOrientationDAO extends JpaRepository<EducationOrientation,Long>, JpaSpecificationExecutor<EducationOrientation> {
+public interface EducationOrientationDAO extends JpaRepository<EducationOrientation, Long>, JpaSpecificationExecutor<EducationOrientation> {
     @Modifying
     @Query(value = "select * from TBL_EDUCATION_ORIENTATION where C_TITLE_FA = :titleFa" +
             " and F_EDUCATION_LEVEL = :educationLevelId" +
@@ -23,4 +23,9 @@ public interface EducationOrientationDAO extends JpaRepository<EducationOrientat
             @Param("titleFa") String titleFa,
             @Param("educationLevelId") Long educationLevelId,
             @Param("educationMajorId") Long educationMajorId);
+
+    @Modifying
+    @Query(value = "select * from TBL_EDUCATION_ORIENTATION where F_EDUCATION_LEVEL = :levelId and F_EDUCATION_MAJOR = :majorId", nativeQuery = true)
+    @Transactional
+    List<EducationOrientation> listByLevelIdAndMajorId(@Param("levelId") Long levelId, @Param("majorId") Long majorId);
 }
