@@ -275,6 +275,24 @@
         }
     });
 
+    function trPrintWithCriteria(url, advancedCriteria){
+        var trCriteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: url,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "token", type:"hidden"}
+                ]
+        })
+        trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        trCriteriaForm.setValue("token", "<%=accessToken%>");
+        trCriteriaForm.show();
+        trCriteriaForm.submitForm();
+    }
+
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
         src: "<spring:url value="training.png"/>",

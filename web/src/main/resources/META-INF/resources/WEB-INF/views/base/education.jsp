@@ -84,15 +84,18 @@
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationOrientation, educationOrientationUrl, "pdf");
+                     trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+                        ListGrid_EducationOrientation.getCriteria());
                  }
              }, {
                  title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationOrientation, educationOrientationUrl, "excel");
+                     trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "excel",
+                        ListGrid_EducationOrientation.getCriteria());
                  }
              }, {
                  title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationOrientation, educationOrientationUrl, "html");
+                     trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "html",
+                        ListGrid_EducationOrientation.getCriteria());
                  }
             }]
     });
@@ -207,7 +210,8 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            print_EducationListGrid(ListGrid_EducationOrientation, educationOrientationUrl, "pdf");
+            trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+                ListGrid_EducationOrientation.getCriteria());
         }
     });
     var ToolStrip_Actions_EducationOrientation = isc.ToolStrip.create({
@@ -308,15 +312,18 @@
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationMajor, educationMajorUrl, "pdf");
+                     trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+                        ListGrid_EducationMajor.getCriteria());
                  }
              }, {
                  title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationMajor, educationMajorUrl, "excel");
+                     trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "excel",
+                        ListGrid_EducationMajor.getCriteria());
                  }
              }, {
                  title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationMajor, educationMajorUrl, "html");
+                     trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "html",
+                        ListGrid_EducationMajor.getCriteria());
                  }
             }]
     });
@@ -399,7 +406,8 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            print_EducationListGrid(ListGrid_EducationMajor, educationMajorUrl, "pdf");
+            trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
+                ListGrid_EducationMajor.getCriteria());
         }
     });
     var ToolStrip_Actions_EducationMajor = isc.ToolStrip.create({
@@ -528,15 +536,18 @@
                 }
             }, {isSeparator: true}, {
                  title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "pdf");
+                     trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+                        ListGrid_EducationLevel.getCriteria());
                  }
              }, {
                  title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "excel");
+                     trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "excel",
+                        ListGrid_EducationLevel.getCriteria());
                  }
              }, {
                  title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
-                     print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "html");
+                     trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "html",
+                        ListGrid_EducationLevel.getCriteria());
                  }
             }]
     });
@@ -621,7 +632,8 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            print_EducationListGrid(ListGrid_EducationLevel, educationLevelUrl, "pdf");
+            trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
+                ListGrid_EducationLevel.getCriteria());
         }
     });
     var ToolStrip_Actions_EducationLevel = isc.ToolStrip.create({
@@ -797,28 +809,6 @@
             EducationDynamicForm.clearValues();
             EducationWindows.setTitle(title);
             EducationWindows.show();
-    }
-
-    function print_EducationListGrid(EducationListGrid, Url, type) {
-        var advancedCriteria = EducationListGrid.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                target: "_Blank",
-                canSubmit: true,
-                fields: [ {name: "CriteriaStr", type: "hidden"} ]
-            });
-        if(Url === educationLevelUrl){
-                criteriaForm.action = "<spring:url value="education/level/printWithCriteria/"/>" + type;
-        }
-        else if(Url === educationMajorUrl){
-            criteriaForm.action = "<spring:url value="education/major/printWithCriteria/"/>" + type;
-        }
-        else if(Url === educationOrientationUrl){
-            criteriaForm.action = "<spring:url value="education/orientation/printWithCriteria/"/>" + type;
-        }
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.show();
-        criteriaForm.submitForm();
     }
 
     function edu_orientation_save_result (resp) {

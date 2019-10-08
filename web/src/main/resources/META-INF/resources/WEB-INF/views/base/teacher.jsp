@@ -117,21 +117,24 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-                ListGrid_teacher_print("pdf");
+                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
+                    ListGrid_Teacher_JspTeacher.getCriteria());
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
-                ListGrid_teacher_print("excel");
+                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "excel",
+                    ListGrid_Teacher_JspTeacher.getCriteria());
             }
         }, {
             title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
-                ListGrid_teacher_print("html");
+                trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "html",
+                    ListGrid_Teacher_JspTeacher.getCriteria());
             }
         }]
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*Listgrid*/
+    /*ListGrid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
@@ -1231,7 +1234,8 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-            ListGrid_teacher_print("pdf");
+        trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
+            ListGrid_Teacher_JspTeacher.getCriteria());
         }
     });
 
@@ -1410,23 +1414,6 @@
                 }
             });
         }
-    }
-
-    function ListGrid_teacher_print(type) {
-        var advancedCriteria = ListGrid_Teacher_JspTeacher.getCriteria();
-        var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: "<spring:url value="/teacher/printWithCriteria/"/>" + type,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"}
-                ]
-        });
-        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        criteriaForm.show();
-        criteriaForm.submitForm();
     }
 
     function addCategories(teacherId, categoryIds) {
