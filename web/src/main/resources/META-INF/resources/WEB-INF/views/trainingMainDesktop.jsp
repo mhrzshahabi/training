@@ -182,6 +182,16 @@
             errorMessage: "<spring:message code="msg.company.checked.email"/>",
             expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
+        MobileValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.check.mobile"/>",
+            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+        },
+        PhoneValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.check.phone"/>",
+            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+        },
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {
