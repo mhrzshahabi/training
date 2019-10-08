@@ -331,8 +331,7 @@ var companyId;
                 length: "30",
                 textAlign:"left",
                 keyPressFilter: "[0-9]",
-                usePlaceholderForHint:true,
-               // width: "*"
+                // width: "*"
             },
             {
                 name: "address.fax",
@@ -346,11 +345,22 @@ var companyId;
                 name: "address.webSite",
                 title: "وب سایت",
                 type: 'text',
-                 keyPressFilter: "[a-z|A-Z]",
+               //  keyPressFilter: "[a-z|A-Z]",
+               //   length: "11",
               //  width: "*",
                 // keyPressFilter: "[0-9]",
-                length: "11"
-            },
+              blur:function(){
+              var checkWebSite=isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
+              if (checkWebSite)
+                    {
+                     DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
+                    }
+                    else
+                    {
+                    DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
+                    }
+              },
+              },
             {
                 name: "address.stateId",
                 title: "استان",
@@ -702,4 +712,15 @@ var companyId;
         else
             return false;
 
+    };
+
+
+    function isUrlValid(userInput) {
+
+   // var res =/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
+   var res=/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/;
+   if(res.test(userInput.toLowerCase()))
+     return true;
+    else
+      return false;
     };

@@ -377,7 +377,10 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
-            print_CommitteeListGrid("pdf");
+          print_CommitteeListGrid("pdf");
+       //  "<spring:url value="/committee/printCommitteeWithMember/pdf" var="printUrl"/>"
+           //     window.open('${printUrl}');
+
         }
 
     });
@@ -791,18 +794,22 @@
     };
 
     function print_CommitteeListGrid(type) {
-        var advancedCriteria_committee = ListGrid_Committee.getCriteria();
-        var criteriaForm_committee = isc.DynamicForm.create({
-            method: "POST",
+         var advancedCriteria = ListGrid_Committee.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "GET",
             action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
             target: "_Blank",
             canSubmit: true,
             fields:
                 [
-                    {name: "CriteriaStr", type: "hidden"}
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name:"token",type:"hidden"}
                 ]
-        })
-        criteriaForm_committee.setValue("CriteriaStr", JSON.stringify(advancedCriteria_committee));
-        criteriaForm_committee.submitForm();
 
+        })
+         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+         criteriaForm.setValue("token","<%= accessToken %>")
+         criteriaForm.show();
+         criteriaForm.submitForm();
     }
+
