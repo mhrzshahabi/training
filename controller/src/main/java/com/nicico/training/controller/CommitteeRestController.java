@@ -258,10 +258,33 @@ public class CommitteeRestController {
 
     }
 
-// @Loggable
-//    @PostMapping(value = {"/printWithCriteria/{type}/{committeeId}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,@PathVariable int committeeId,
+
+//
+//    @Loggable
+//    @PostMapping(value = {"/printCommitteeWithMember/{type}"})
+//    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put(ConstantVARs.REPORT_TYPE, type);
+//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
+//    }
+
+ @Loggable
+    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
+    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
+//        reportUtil.export("/reports/skillGroup.jasper", params, response);
+
+    }
+
+//
+    //--------------
+//
+//    @Loggable
+//   @PostMapping(value = {"/printCommitteeWithMember/{type}"})
+//    public void printAll(HttpServletResponse response,
+//                                  @PathVariable String type,
 //                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 //
 //        final SearchDTO.CriteriaRq criteriaRq;
@@ -282,17 +305,19 @@ public class CommitteeRestController {
 //        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 //
 //        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/CommitteeByCriteria.jasper", params, jsonDataSource, response);
+//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, jsonDataSource, response);
 //    }
+//    //---------------
 
 
-    @Loggable
-    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
-    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
-    }
+
+
+
+
+
+
+
+
 
     @Loggable
     @GetMapping(value = {"/findConflictCommittee/{category}/{subcategory}"})

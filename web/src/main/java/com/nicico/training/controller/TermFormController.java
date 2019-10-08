@@ -32,10 +32,12 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		return "base/term";
 	}
 
+
+
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 		//String token = (String) request.getSession().getAttribute("AccessToken");
-			String token=(String) request.getParameter("token");
+		String token=(String) request.getParameter("token");
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 	   final HttpHeaders headers = new HttpHeaders();
