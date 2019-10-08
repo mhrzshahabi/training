@@ -185,6 +185,7 @@ public class CourseService implements ICourseService {
         final Optional<Course> optionalCourse = courseDAO.findById(id);
         final Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<Long> preCourseListId = request.getPreCourseListId();
+//        currentCourse.setPre
         List<String> equalCourseListId = request.getEqualCourseListId();
         String s = Joiner.on(',').join(preCourseListId);
         String s1 = Joiner.on(',').join(equalCourseListId);

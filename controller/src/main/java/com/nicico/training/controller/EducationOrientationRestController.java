@@ -61,7 +61,11 @@ public class EducationOrientationRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationOrientation')")
     public ResponseEntity<EducationOrientationDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EducationOrientationDTO.Update request) {
-        return new ResponseEntity<>(educationOrientationService.update(id, request), HttpStatus.OK);
+        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.update(id, request);
+        if (educationOrientationInfo == null)
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        else
+            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.OK);
     }
 
     @Loggable
@@ -139,4 +143,19 @@ public class EducationOrientationRestController {
         reportUtil.export("/reports/EducationOrientationByCriteria.jasper", params, jsonDataSource, response);
     }
 
+    @Loggable
+    @GetMapping(value = "/spec-list-by-levelId-and-majorId/{levelId}:{majorId}")
+//    @PreAuthorize("hasAuthority('r_educationOrientation')")
+    public ResponseEntity<EducationOrientationDTO.EducationOrientationSpecRs> listByLevelIdAndMajorId(
+            @PathVariable Long levelId, @PathVariable Long majorId) {
+        List<EducationOrientationDTO.Info> eduOrientation = educationOrientationService.listByLevelIdAndMajorId(levelId, majorId);
+        final EducationOrientationDTO.SpecRs specResponse = new EducationOrientationDTO.SpecRs();
+        specResponse.setData(eduOrientation)
+                .setStartRow(0)
+                .setEndRow(eduOrientation.size())
+                .setTotalRows(eduOrientation.size());
+        final EducationOrientationDTO.EducationOrientationSpecRs specRs = new EducationOrientationDTO.EducationOrientationSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 }

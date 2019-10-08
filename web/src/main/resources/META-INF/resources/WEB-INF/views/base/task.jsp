@@ -319,7 +319,7 @@ var dummy;
 
 
             {
-                name: "personality.egenderId",
+                name: "personality.genderId",
                 type: "IntegerItem",
                 title: "<spring:message code='gender'/>",
                 textAlign: "center",
@@ -346,7 +346,7 @@ var dummy;
             },
 
             {
-                name: "personality.emilitaryId",
+                name: "personality.militaryId",
                 type: "IntegerItem",
                 width: "*",
                 title: "<spring:message code='military'/>",
