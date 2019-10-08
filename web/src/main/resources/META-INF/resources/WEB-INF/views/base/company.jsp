@@ -116,6 +116,18 @@ var companyId;
                 name: "email",
                 title: "ایمیل",
                 width: "*",
+                 validators: [TrValidators.EmailValidate],
+                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                 blur: function () {
+                    var emailCheck;
+                    emailCheck = ValidateEmail(DynamicForm_Company.getValue("email"));
+                    if (emailCheck == false) {
+                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.company.checked.email'/>", true);
+                    } else {
+                        DynamicForm_Company.clearFieldErrors("email", true);
+                    }
+
+                }
 
 
             }
@@ -253,22 +265,16 @@ var companyId;
                 textAlign: "left",
                 length: "11",
                 hint: "*********09",
-              width:272,
+             // width:272,
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
-                icons: [{
-                    name: "tel",
-                    src: "blank", // if inline icons are not supported by the browser, revert to a blank icon
-                    inline: true,
-                    text: "&#x2706;",
-                    baseStyle: "telIcon"
-                }]
+
             },
             {
                 name: "manager.contactInfo.email",
                 title: "ایمیل",
                 type: 'text',
-                width:"250",
+              fontSizes: "1 (8 pt)",
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
                 blur: function () {
@@ -345,13 +351,14 @@ var companyId;
                 name: "address.webSite",
                 title: "وب سایت",
                 type: 'text',
-               //  keyPressFilter: "[a-z|A-Z]",
-               //   length: "11",
-              //  width: "*",
-                // keyPressFilter: "[0-9]",
-              blur:function(){
-              var checkWebSite=isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
-              if (checkWebSite)
+                validators: {
+                            type: "regexp",
+                            errorMessage: "وب سایت اشتباه وارد شده",
+                            expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
+                           },
+               blur:function(){
+               var checkWebSite=isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
+               if (checkWebSite)
                     {
                      DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
                     }
@@ -436,9 +443,8 @@ var companyId;
 
     var Window_Company = isc.Window.create({
 // placement: "fillScreen",
-        width: "60%",
-        height: "65%",
-// height: "500",
+        width: "50%",
+        height: "45%",
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
         canDragResize: true,
@@ -523,7 +529,7 @@ var companyId;
     var ToolStripButton_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
-        click: function () {
+            click: function () {
             show_CompanyNewForm();
         }
     });
@@ -716,11 +722,10 @@ var companyId;
 
 
     function isUrlValid(userInput) {
-
-   // var res =/^(?:http(s)?:\/\/)?[\w.-]+(?:\.[\w\.-]+)+[\w\-\._~:/?#[\]@!\$&'\(\)\*\+,;=.]+$/;
    var res=/^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/;
    if(res.test(userInput.toLowerCase()))
      return true;
     else
       return false;
     };
+
