@@ -59,7 +59,12 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.ViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        loadingMessage: "<spring:message code="loading"/>",
+    });
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
@@ -67,10 +72,22 @@
         requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
-        showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
-        });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        canFocus: true,
+        dismissOnEscape: true,
+        canDragResize: true,
+        showHeaderIcon: false,
+        animateMinimize: true,
+        showMaximizeButton: true,
+    });
+    isc.ComboBoxItem.addProperties({
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+    });
 
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
@@ -269,7 +286,7 @@
                     isc.Button.create({title: "<spring:message code="no"/>",})
                 ],
             });
-        } else if (type === 'wait'){
+        } else if (type === 'wait') {
             return isc.Dialog.create({
                 icon: type + '.png',
                 title: title ? title : "<spring:message code='message'/>",
@@ -285,7 +302,7 @@
         }
     });
 
-    function trPrintWithCriteria(url, advancedCriteria){
+    function trPrintWithCriteria(url, advancedCriteria) {
         var trCriteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: url,
@@ -294,7 +311,7 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
-                    {name: "token", type:"hidden"}
+                    {name: "token", type: "hidden"}
                 ]
         })
         trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
@@ -387,7 +404,7 @@
                         createTab(this.title, "<spring:url value="/post/show-form"/>");
                     }
                 },
-                  {
+                {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
@@ -438,16 +455,16 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
-                 {
+                {
                     title: "<spring:message code="company"/>",
                     icon: "<spring:url value="company.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
-                            ]
+            ]
         }),
-     });
+    });
 
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="run"/>",
@@ -618,7 +635,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
-    const companyUrl=rootUrl +"/company/";
+    const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
 
 

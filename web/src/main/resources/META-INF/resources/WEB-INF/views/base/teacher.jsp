@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-//<script>
+// <script>
     var dummy;
     var teacherMethod = "POST";
     var teacherWait;
@@ -142,7 +142,7 @@
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
-        filterOperator: "contains",
+        filterOperator: "iContains",
         doubleClick: function () {
             ListGrid_teacher_edit();
         },
@@ -157,11 +157,17 @@
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
+                sortNormalizer: function (record) {
+                    return record.personality.firstNameFa;
+                }
             },
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
                 align: "center",
+                sortNormalizer: function (record) {
+                    return record.personality.lastNameFa;
+                }
             },
             {
                 name: "category",
@@ -170,27 +176,48 @@
                 formatCellValue: function (value, record) {
                     if (record.categories.length === 0)
                         return;
+                    record.categories.sort();
                     var cat = record.categories[0].titleFa.toString();
                     for (var i = 1; i < record.categories.length; i++) {
                         cat += "، " + record.categories[i].titleFa;
                     }
                     return cat;
-                }
+                },
+                sortNormalizer: function (record) {
+                    if (record.categories.length === 0)
+                        return;
+                    record.categories.sort();
+                    var cat = record.categories[0].titleFa.toString();
+                    for (var i = 1; i < record.categories.length; i++) {
+                        cat += "، " + record.categories[i].titleFa;
+                    }
+                    return cat;
+                },
             },
             {
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
+                sortNormalizer: function (record) {
+                    return record.personality.educationLevel.titleFa;
+                }
             },
             {
                 name: "personality.educationMajor.titleFa",
                 title: "<spring:message code='education.major'/>",
                 align: "center",
+                sortNormalizer: function (record) {
+                    return record.personality.educationLevel.titleFa;
+                }
             },
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='mobile.connection'/>",
                 align: "center",
+                type: "phoneNumber",
+                sortNormalizer: function (record) {
+                    return record.personality.contactInfo.mobile;
+                }
             },
             {
                 name: "enableStatus",
@@ -617,7 +644,7 @@
                 var majorId = DynamicForm_BasicInfo_JspTeacher.getField("personality.educationMajorId").getValue();
                 if (newValue === undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
-                } else if (levelId !== undefined && majorId !== undefined){
+                } else if (levelId !== undefined && majorId !== undefined) {
                     DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
                     RestDataSource_Education_Orientation_JspTeacher.fetchDataURL = educationUrl +
                         "orientation/spec-list-by-levelId-and-majorId/" + levelId + ":" + majorId;
@@ -1234,8 +1261,8 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
-        trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
-            ListGrid_Teacher_JspTeacher.getCriteria());
+            trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
+                ListGrid_Teacher_JspTeacher.getCriteria());
         }
     });
 
@@ -1387,6 +1414,11 @@
         DynamicForm_BasicInfo_JspTeacher.getItem("personality.educationOrientationId").setOptionDataSource(null);
         DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").setOptionDataSource(null);
         DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").setOptionDataSource(null);
+
+        DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").enable();
+        DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.stateId").enable();
+        DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").enable();
+        DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.stateId").enable();
 
         teacherMethod = "POST";
         vm.clearValues();
