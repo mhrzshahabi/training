@@ -604,12 +604,11 @@ var companyId;
     };
 
     function Edit_Company() {
+          co.validate();
+        if (co.hasErrors()) {
 
-//
-// if (!co.validate()) {
-// return;
-// }
-//
+           return;
+        }
         var company_editURL = companyUrl;
         var Record = ListGrid_Company.getSelectedRecord();
         company_editURL += Record.id;

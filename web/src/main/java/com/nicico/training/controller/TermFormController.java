@@ -32,6 +32,8 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		return "base/term";
 	}
 
+
+
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 		//String token = (String) request.getSession().getAttribute("AccessToken");
