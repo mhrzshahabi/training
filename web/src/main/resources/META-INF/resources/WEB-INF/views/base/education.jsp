@@ -467,6 +467,7 @@
             }
             var data = DynamicForm_EducationMajor.getValues();
             isc.RPCManager.sendRequest({
+                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -486,12 +487,15 @@
                             ListGrid_EducationMajor.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationMajor.close();
-                    } else if (resp.httpResponseCode === 406) {
-                        createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                            "<spring:message code="message"/>");
                     } else {
-                        createDialog("info", "<spring:message code="msg.operation.error"/>",
-                            "<spring:message code="message"/>");
+                        let respText = resp.httpResponseText;
+                        if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                            createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                                "<spring:message code="message"/>");
+                        } else {
+                            createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                "<spring:message code="message"/>");
+                        }
                     }
 
                 }
@@ -703,6 +707,7 @@
             }
             var data = DynamicForm_EducationLevel.getValues();
             isc.RPCManager.sendRequest({
+                willHandleError: true,
                 actionURL: saveActionUrl,
                 httpMethod: methodEducation,
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -722,12 +727,15 @@
                             ListGrid_EducationLevel.setSelectedState(gridState);
                         }, 1000);
                         Window_EducationLevel.close();
-                    } else if (resp.httpResponseCode === 406) {
-                        createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                            "<spring:message code="message"/>");
                     } else {
-                        createDialog("info", "<spring:message code="msg.operation.error"/>",
-                            "<spring:message code="message"/>");
+                        let respText = resp.httpResponseText;
+                        if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                            createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                                "<spring:message code="message"/>");
+                        } else {
+                            createDialog("info", "<spring:message code="msg.operation.error"/>",
+                                "<spring:message code="message"/>");
+                        }
                     }
 
                 }
@@ -871,14 +879,17 @@
                 ListGrid_EducationOrientation.setSelectedState(gridState);
             }, 3000);
             Window_EducationOrientation.close();
-        } else if (resp.httpResponseCode === 406 && resp.context.httpMethod === "POST") {
-            createDialog("info", "<spring:message code='msg.record.duplicate'/>",
-                "<spring:message code="message"/>");
-        } else if (resp.httpResponseCode === 406 && resp.context.httpMethod === "PUT") {
-            createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code='msg.record.duplicate'/>",
+                    "<spring:message code="message"/>");
+            } else if (resp.httpResponseCode === 406 && respText === "NotEditable") {
+                createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
         }
     }
 
@@ -888,10 +899,13 @@
             EducationListGrid.invalidateCache();
             createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-        } else if (resp.httpResponseCode === 406) {
-            createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
     }
 

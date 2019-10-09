@@ -10,8 +10,10 @@ import com.nicico.training.model.EducationMajor;
 import com.nicico.training.model.EducationOrientation;
 import com.nicico.training.repository.EducationMajorDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,10 +48,15 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public EducationMajorDTO.Info create(EducationMajorDTO.Create request) {
         final EducationMajor educationMajor = modelMapper.map(request, EducationMajor.class);
-        if(educationMajorDAO.findByTitleFa(educationMajor.getTitleFa()).isEmpty())
+//        if (educationMajorDAO.findByTitleFa(educationMajor.getTitleFa()).isEmpty())
+//            return save(educationMajor);
+//        else
+//            return null;
+        try {
             return save(educationMajor);
-        else
-            return null;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -57,22 +64,38 @@ public class EducationMajorService implements IEducationMajorService {
     public EducationMajorDTO.Info update(Long id, EducationMajorDTO.Update request) {
         final Optional<EducationMajor> cById = educationMajorDAO.findById(id);
         final EducationMajor educationMajor = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
+//        if (request.getTitleFa() != null) {
+//            List<EducationMajor> byTitleFa = educationMajorDAO.findByTitleFa(request.getTitleFa());
+//            if (byTitleFa.size() > 1)
+//                return null;
+//            if (byTitleFa.size() == 1 && !Objects.equals(educationMajor.getId(), byTitleFa.get(0).getId()))
+//                return null;
+//        }
         EducationMajor updating = new EducationMajor();
         modelMapper.map(educationMajor, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        try {
+            return save(updating);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
-    public Boolean delete(Long id) {
+    public void delete(Long id) {
         final Optional<EducationMajor> one = educationMajorDAO.findById(id);
         final EducationMajor educationMajor = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationMajorNotFound));
-        if (educationMajor.getPersonalInfoList().isEmpty() && educationMajor.getEducationOrientationList().isEmpty()) {
+//        if (educationMajor.getPersonalInfoList().isEmpty() && educationMajor.getEducationOrientationList().isEmpty()) {
+//            educationMajorDAO.delete(educationMajor);
+//            return true;
+//        } else {
+//            return false;
+//        }
+        try {
             educationMajorDAO.delete(educationMajor);
-            return true;
-        } else {
-            return false;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
 
@@ -80,8 +103,8 @@ public class EducationMajorService implements IEducationMajorService {
     @Override
     public void delete(EducationMajorDTO.Delete request) {
         final List<EducationMajor> gAllById = educationMajorDAO.findAllById(request.getIds());
-        for (EducationMajor educationMajor: gAllById) {
-            if(!educationMajor.getPersonalInfoList().isEmpty() || !educationMajor.getEducationOrientationList().isEmpty())
+        for (EducationMajor educationMajor : gAllById) {
+            if (!educationMajor.getPersonalInfoList().isEmpty() || !educationMajor.getEducationOrientationList().isEmpty())
                 gAllById.remove(educationMajor);
         }
         educationMajorDAO.deleteAll(gAllById);
