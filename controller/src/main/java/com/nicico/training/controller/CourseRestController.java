@@ -81,8 +81,13 @@ public class CourseRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<CourseDTO.Info> create(@RequestBody Object req) {
-        CourseDTO.Create create = (new ModelMapper()).map(req, CourseDTO.Create.class);
-        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
+        CourseDTO.Create request = (new ModelMapper()).map(req, CourseDTO.Create.class);
+//        return new ResponseEntity<>(courseService.create(create), HttpStatus.CREATED);
+        CourseDTO.Info courseInfo = courseService.create(request);
+        if (courseInfo != null)
+            return new ResponseEntity<>(courseInfo, HttpStatus.CREATED);
+        else
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -375,7 +380,7 @@ public class CourseRestController {
     public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable Long courseId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         CourseDTO.Info info = courseService.get(courseId);
-        String domain = "دانشی: " + info.getKnowledge() + "%     " + "نگرشی: " + info.getAttitude() + "%    " + "مهارتی: " + info.getSkill() + "%";
+//        String domain = "دانشی: " + info.getKnowledge() + "%     " + "نگرشی: " + info.getAttitude() + "%    " + "مهارتی: " + info.getSkill() + "%";
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
         String preCourse = "";
         String equalCourse = "";
@@ -392,7 +397,7 @@ public class CourseRestController {
         ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
-        params.put("domain", domain);
+//        params.put("domain", domain);
         params.put("preCourse",preCourse);
         params.put("equalCourse", equalCourse);
         params.put("eRun", eRun.getTitleFa());

@@ -6,7 +6,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//<script>
+// <script>
     <%--<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
     var sumSyllabus;
     var methodGoal = "GET";
@@ -30,7 +30,7 @@
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
-        // fetchDataURL: courseUrl + "goal/" + courseId.id
+        // fetchDataURL: courseUrl + "goal/" + ListGrid_Course.getSelectedRecord().id
     });
     var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
         fields: [
@@ -235,6 +235,7 @@
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var responseID = JSON.parse(resp.data).id;
+                        evalDomain();
                         var gridState = "[{id:" + responseID + "}]";
                         simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
                         ListGrid_Syllabus_Goal.invalidateCache();
@@ -255,9 +256,9 @@
                                         } else {
                                             this.close();
                                             DynamicForm_course_MainTab.getItem("theoryDuration").setValue(sumSyllabus);
-                                            setTimeout(function () {
-                                                courseSaveBtn.click();
-                                            }, 500)
+                                            // setTimeout(function () {
+                                            //     courseSaveBtn.click();
+                                            // }, 500)
                                         }
                                     },
                                 });
@@ -278,10 +279,9 @@
         members: [IButton_Goal_Save, isc.MyButton.create({
             ID: "IButton_Goal_Exit",
             title: "لغو",
-            prompt: "",
-            // width: 100,
+            // prompt: "",
             icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
+            // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
                 Window_Goal.close();
@@ -389,10 +389,10 @@
         },
             <%--{--%>
             <%--title: "افزودن", icon: "pieces/16/icon_add_files.png", click: function () {--%>
-            <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + courseId.titleFa);--%>
+            <%--Window_AddGoal.setTitle("افزودن هدف به دوره " + ListGrid_Course.getSelectedRecord().titleFa);--%>
             <%--Window_AddGoal.show();--%>
             <%--ListGrid_CourseGoal_Goal.invalidateCache();--%>
-            <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;--%>
+            <%--RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + ListGrid_Course.getSelectedRecord().id;--%>
             <%--ListGrid_GoalAll.invalidateCache();--%>
             <%--&lt;%&ndash;window.open("<spring:url value="/goal/print/pdf"/>");&ndash;%&gt;--%>
             <%--}--%>
@@ -427,6 +427,7 @@
         height: "100%",
         // border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
+        // dataSource: goalCourseDS,
         contextMenu: Menu_ListGrid_Goal,
         doubleClick: function () {
             ListGrid_Goal_Edit();
@@ -489,7 +490,7 @@
                 title: "مدت زمان اجرا",
                 align: "center",
                 summaryFunction: "sum",
-                format: "جمع: # ساعت "
+                format : "# ساعت"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goal.titleFa", hidden: true}
@@ -674,7 +675,7 @@
         }
     });
     var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+        icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
@@ -714,11 +715,11 @@
         hoverWidth: "12%",
         title: "افزودن",
         click: function () {
-            Window_AddGoal.setTitle("افزودن هدف به دوره " + getFormulaMessage(courseId.titleFa, 2, "red", "b"));
+            Window_AddGoal.setTitle("افزودن هدف به دوره " + getFormulaMessage(ListGrid_Course.getSelectedRecord().titleFa, 2, "red", "b"));
             Window_AddGoal.show();
             ListGrid_CourseGoal_Goal.invalidateCache();
             ListGrid_CourseGoal_Goal.fetchData();
-            RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + courseId.id;
+            RestDataSource_GoalAll.fetchDataURL = courseUrl + "goal/" + ListGrid_Course.getSelectedRecord().id;
             ListGrid_GoalAll.invalidateCache();
             ListGrid_GoalAll.fetchData();
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
@@ -928,14 +929,17 @@
         // }
         // RestDataSource_CourseGoal.fetchDataURL = courseUrl + ""
         RestDataSource_CourseGoal.fetchDataURL = courseUrl + ListGrid_Course.getSelectedRecord().id + "/goal";
+        ListGrid_Goal.fetchData();
         ListGrid_Goal.invalidateCache();
+        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id;
+        ListGrid_Syllabus_Goal.fetchData();
         ListGrid_Syllabus_Goal.invalidateCache();
     }
 
     function ListGrid_Goal_Add() {
-        if (courseId == null || courseId.id == null) {
+        if (DynamicForm_course_MainTab.getItem("titleFa")._value == null) {
             isc.Dialog.create({
-                message: "دوره اي انتخاب نشده است.",
+                message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
                 buttons: [isc.Button.create({title: "تائید"})],
@@ -945,7 +949,7 @@
             });
         } else {
             methodGoal = "POST";
-            urlGoal = goalUrl + "create/" + courseId.id;
+            urlGoal = goalUrl + "create/" + ListGrid_Course.getSelectedRecord().id;
             DynamicForm_Goal.clearValues();
             Window_Goal.setTitle("ایجاد هدف");
             Window_Goal.show();
@@ -1064,12 +1068,15 @@
         } else {
             ListGrid_Syllabus_Goal.selectRecord(record);
         }
+        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id
         ListGrid_Syllabus_Goal.invalidateCache();
+        ListGrid_Syllabus_Goal.fetchData();
+        evalDomain();
 // ListGrid_Syllabus_Goal.getField("practicalDuration").summaryValue="Sum:" + getFormulaMessage(ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration,1,"red","B");
     };
 
     function addToListGrid() {
-        if (courseId == "" || courseId.id == null) {
+        if (ListGrid_Course.getSelectedRecord() == null || ListGrid_Course.getSelectedRecord().id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
@@ -1097,7 +1104,7 @@
                     goalList.add(goalRecord[i].id);
                 }
                 isc.RPCManager.sendRequest({
-                    actionURL: courseUrl + courseId.id + "/" + goalList.toString(),
+                    actionURL: courseUrl + ListGrid_Course.getSelectedRecord().id + "/" + goalList.toString(),
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
@@ -1123,7 +1130,7 @@
     }
 
     function removeAsListGrid(){
-        if (courseId == "" || courseId.id == null) {
+        if (ListGrid_Course.getSelectedRecord() == null || ListGrid_Course.getSelectedRecord().id == null) {
             isc.Dialog.create({
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
@@ -1153,7 +1160,7 @@
                 }
                 isc.RPCManager.sendRequest({
 
-                    actionURL: courseUrl + "remove/" + courseId.id + "/" + arryRecord.toString(),
+                    actionURL: courseUrl + "remove/" + ListGrid_Course.getSelectedRecord().id + "/" + arryRecord.toString(),
                     httpMethod: "GET",
                     httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                     useSimpleHttp: true,
