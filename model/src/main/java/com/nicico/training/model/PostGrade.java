@@ -3,21 +3,19 @@ ghazanfari_f, 8/29/2019, 9:11 AM
 */
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.EActive;
-import com.nicico.training.model.enums.EDeleted;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.hibernate.annotations.Immutable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Entity
-@Table(name = "tbl_post_grade")
 @Getter
-@EqualsAndHashCode(of = "id")
-public class PostGrade {
+@Entity
+@Immutable
+@Table(name = "tbl_post_grade")
+public class PostGrade extends Auditable {
 
     @Id
     @Column(name = "id")
@@ -28,10 +26,4 @@ public class PostGrade {
 
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
-
-    @Column(name = "e_active")
-    EActive eActive;
-
-    @Column(name = "e_deleted")
-    EDeleted eDeleted;
 }

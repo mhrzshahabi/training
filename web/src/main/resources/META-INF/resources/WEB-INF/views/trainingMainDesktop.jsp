@@ -322,7 +322,7 @@
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
-        src: "<spring:url value="training.png"/>",
+        src: "<spring:url value="nicico.png"/>",
         width: 24,
         height: 24,
         imageType: "stretch",
@@ -592,7 +592,7 @@
         ]
     });
 
-    // -------------------------------------------  Functions                          -----------------------------------------------
+    // -------------------------------------------  Functions  -----------------------------------------------
 
     function logout() {
         document.location.href = "logout";
