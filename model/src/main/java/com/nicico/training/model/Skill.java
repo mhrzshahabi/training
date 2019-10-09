@@ -5,7 +5,6 @@ com.nicico.training.model
 @Time :11:14 AM
     */
 
-import com.nicico.training.model.enums.EDomainType;
 import lombok.*;
 import lombok.experimental.Accessors;
 

@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
@@ -12,12 +13,11 @@ import com.nicico.training.iservice.IEducationLevelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.apache.commons.lang3.StringUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;

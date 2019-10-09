@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;

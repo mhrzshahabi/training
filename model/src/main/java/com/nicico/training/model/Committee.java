@@ -2,10 +2,8 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.apache.ibatis.annotations.Many;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Getter

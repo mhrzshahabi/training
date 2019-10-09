@@ -4,7 +4,6 @@ ghazanfari_f, 9/30/2019, 9:29 AM
 package com.nicico.training.config;
 
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
