@@ -4,9 +4,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-
 import com.nicico.training.dto.CompanyDTO;
-import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.ICompanyService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -16,10 +14,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

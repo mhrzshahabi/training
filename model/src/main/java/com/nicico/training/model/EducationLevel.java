@@ -2,7 +2,6 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.validator.constraints.UniqueElements;
 
 import javax.persistence.*;
 import java.util.List;

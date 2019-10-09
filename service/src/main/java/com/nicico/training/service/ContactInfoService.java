@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
-import com.nicico.training.iservice.IAddressService;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
