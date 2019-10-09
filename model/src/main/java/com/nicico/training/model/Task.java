@@ -4,8 +4,6 @@ package com.nicico.training.model;
 import lombok.*;
 import lombok.experimental.Accessors;
 
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.persistence.*;
 
 @Getter

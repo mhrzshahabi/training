@@ -1,14 +1,14 @@
 package com.nicico.training.dto;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Category;
-import com.nicico.training.model.SubCategory;
 import com.nicico.training.model.User;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
+
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.Date;

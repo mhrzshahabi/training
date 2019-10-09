@@ -1,6 +1,5 @@
 package com.nicico.training.repository;
 
-import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;

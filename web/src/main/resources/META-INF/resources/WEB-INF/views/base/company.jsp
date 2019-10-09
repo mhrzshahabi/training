@@ -11,7 +11,7 @@ var companyId;
 //************************************************************************************
 // RestDataSource & ListGrid
 //************************************************************************************
-//<script>
+// <script>
 
     var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
         fields: [
@@ -37,7 +37,7 @@ var companyId;
             {name: "workDomain", title: "حوزه کاری", filterOperator: "contains"},
             {name: "email", title: "ایمیل", filterOperator: "contains"},
         ],
-          fetchDataURL: companyUrl + "spec-list"
+        fetchDataURL: companyUrl + "spec-list"
     });
 
 
@@ -83,8 +83,8 @@ var companyId;
         width: "100%",
         height: "100%",
         align: "center",
-        isGroup:true,
-        groupTitle:"اطلاعات شرکت",
+        isGroup: true,
+        groupTitle: "اطلاعات شرکت",
         canSubmit: true,
         titleWidth: 80,
         showInlineErrors: true,
@@ -116,6 +116,18 @@ var companyId;
                 name: "email",
                 title: "ایمیل",
                 width: "*",
+                validators: [TrValidators.EmailValidate],
+                keyPressFilter: "[a-z|A-Z|0-9|.|@]",
+                blur: function () {
+                    var emailCheck;
+                    emailCheck = ValidateEmail(DynamicForm_Company.getValue("email"));
+                    if (emailCheck == false) {
+                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.company.checked.email'/>", true);
+                    } else {
+                        DynamicForm_Company.clearFieldErrors("email", true);
+                    }
+
+                }
 
 
             }
@@ -128,7 +140,7 @@ var companyId;
         height: "100%",
         align: "center",
         canSubmit: true,
-        isGroup:true,
+        isGroup: true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
@@ -148,6 +160,7 @@ var companyId;
                 title: "<spring:message code='bank'/>",
                 type: 'text',
                 required: "true",
+                requiredMessage: "نام بانک را وارد کنید",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -206,7 +219,7 @@ var companyId;
         height: "100%",
         align: "center",
         canSubmit: true,
-        isGroup:true,
+        isGroup: true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
@@ -246,36 +259,31 @@ var companyId;
                 textAlign: "left",
                 length: "10"
             },
-             {
+            {
                 name: "manager.contactInfo.mobile",
                 title: "موبایل",
                 type: 'text',
                 textAlign: "left",
                 length: "11",
                 hint: "*********09",
-              width:272,
+// width:272,
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
-                icons: [{
-                    name: "tel",
-                    src: "blank", // if inline icons are not supported by the browser, revert to a blank icon
-                    inline: true,
-                    text: "&#x2706;",
-                    baseStyle: "telIcon"
-                }]
+
             },
             {
                 name: "manager.contactInfo.email",
                 title: "ایمیل",
                 type: 'text',
-                width:"250",
+                fontSizes: "1 (8 pt)",
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
                 blur: function () {
                     var emailCheck;
                     emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
                     if (emailCheck == false) {
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message code='msg.company.checked.email'/>", true);
+                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
+        code='msg.company.checked.email'/>", true);
                     } else {
                         DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
                     }
@@ -292,7 +300,7 @@ var companyId;
         height: "100%",
         align: "center",
         canSubmit: true,
-        isGroup:true,
+        isGroup: true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
@@ -312,9 +320,9 @@ var companyId;
                 name: "address.restAddr",
                 title: "آدرس",
                 type: 'text',
-                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F\]",
+// keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F\]",
                 length: "30",
-               // width: "*"
+// width: "*"
             },
             {
                 name: "address.postCode",
@@ -322,34 +330,42 @@ var companyId;
                 type: 'text',
                 keyPressFilter: "[1-9]",
                 length: "30",
-               // width: "*"
+// width: "*"
             },
             {
                 name: "address.phone",
                 title: "تلفن",
                 type: 'text',
                 length: "30",
-                textAlign:"left",
+                textAlign: "left",
                 keyPressFilter: "[0-9]",
-                usePlaceholderForHint:true,
-               // width: "*"
+// width: "*"
             },
             {
                 name: "address.fax",
                 title: "فکس",
                 type: "text",
                 keyPressFilter: "[0-9]",
-              //  width: "*",
+// width: "*",
                 length: "255"
             },
             {
                 name: "address.webSite",
                 title: "وب سایت",
                 type: 'text',
-                 keyPressFilter: "[a-z|A-Z]",
-              //  width: "*",
-                // keyPressFilter: "[0-9]",
-                length: "11"
+                validators: {
+                    type: "regexp",
+                    errorMessage: "وب سایت اشتباه وارد شده",
+                    expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
+                },
+                blur: function () {
+                    var checkWebSite = isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
+                    if (checkWebSite) {
+                        DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
+                    } else {
+                        DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
+                    }
+                },
             },
             {
                 name: "address.stateId",
@@ -357,7 +373,7 @@ var companyId;
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
                 required: true,
-             //   width: "*",
+// width: "*",
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -378,14 +394,14 @@ var companyId;
                 textAlign: "center",
                 destroyed: true,
                 required: true,
-             //   width: "*",
+// width: "*",
                 displayField: "name",
                 valueField: "id",
                 filterFields: ["name"],
             },
         ],
 
-});
+    });
 
 
     //********************************************************************************************************************
@@ -398,8 +414,8 @@ var companyId;
         align: "center",
         padding: 10,
         height: "20%",
-        membersMargin:10,
-          members: [DynamicForm_Company]
+        membersMargin: 10,
+        members: [DynamicForm_Company]
     });
 
 
@@ -409,26 +425,28 @@ var companyId;
         height: "25%",
         tabs: [
             {
+                ID: "MyTab1",
                 title: "<spring:message code='account.information'/>", canClose: false,
                 pane: DynamicForm_AccountInfo_Company,
             },
             {
+                ID: "MyTab2",
                 title: "اطلاعات مدیر", canClose: false,
                 pane: DynamicForm_ManagerInfo_Company,
             },
 
             {
-            title: "آدرس", canClose: false,
-            pane: DynamicForm_Address_Company,
+                ID: "MyTab3",
+                title: "آدرس", canClose: false,
+                pane: DynamicForm_Address_Company,
             }
         ]
     });
 
     var Window_Company = isc.Window.create({
 // placement: "fillScreen",
-        width: "60%",
-        height: "65%",
-// height: "500",
+        width: "50%",
+        height: "45%",
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
         canDragResize: true,
@@ -449,7 +467,7 @@ var companyId;
                 isc.MyHLayoutButtons.create({
                     members: [isc.MyButton.create({
                         title: "<spring:message code="save"/>",
-                       // icon: "pieces/16/save.png",
+// icon: "pieces/16/save.png",
                         click: function () {
                             if (company_method == "PUT") {
                                 Edit_Company();
@@ -462,7 +480,7 @@ var companyId;
                         }
                     }), isc.MyButton.create({
                         title: "<spring:message code="cancel"/>",
-                       // icon: "<spring:url value="remove.png"/>",
+// icon: "<spring:url value="remove.png"/>",
                         click: function () {
                             Window_Company.close();
                         }
@@ -483,7 +501,7 @@ var companyId;
 
         selectionChanged: function (record, state) {
             companyId = record;
-      },
+        },
         click: function () {
         },
         dataArrived: function (startRow, endRow) {
@@ -575,25 +593,55 @@ var companyId;
 
     function Save_Company() {
 
-        co.validate();
-        if (co.hasErrors()) {
-
+// co.validate();
+// if (co.hasErrors()) {
+// var s
+// var len= Object.entries(co.getErrors()).length
+// for (var i = 0; i < len; i++) {
+// s=s+Object.entries(co.getErrors())[i][1]+ "\n";
+//
+// }
+// return;
+// }
+           if (!DynamicForm_Company.validate()) {
             return;
-        }
+              }
 
-        {
-        var data_Company = co.getValues();
-        isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
-        }
+            if (!DynamicForm_AccountInfo_Company.validate()) {
+                TabSet_Company_JspCompany.selectTab(0)
+                return;
+            }
+
+            if (!DynamicForm_ManagerInfo_Company.validate()) {
+                TabSet_Company_JspCompany.selectTab(1)
+                return;
+            }
+
+            if (!DynamicForm_Address_Company.validate()) {
+                TabSet_Company_JspCompany.selectTab(2)
+                return;
+            }
+
+            var data_Company = co.getValues();
+            isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+
+
     };
 
     function Edit_Company() {
-
+// co.validate();
+// if (co.hasErrors()) {
 //
-// if (!co.validate()) {
 // return;
 // }
-//
+
+        if (!DynamicForm_Company.validate()) {
+
+            DynamicForm_AccountInfo_Company.getFocusItem("accountInfo.bank");
+            return;
+        }
+
+
         var company_editURL = companyUrl;
         var Record = ListGrid_Company.getSelectedRecord();
         company_editURL += Record.id;
@@ -606,7 +654,7 @@ var companyId;
     function show_CompanyNewForm() {
         company_method = "POST";
         Window_Company.setTitle("ایجاد"),
-        DynamicForm_Company.clearValues();
+            DynamicForm_Company.clearValues();
         DynamicForm_AccountInfo_Company.clearValues();
         DynamicForm_Address_Company.clearValues();
         DynamicForm_ManagerInfo_Company.clearValues();
@@ -634,7 +682,7 @@ var companyId;
             RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
             DynamicForm_Address_Company.getItem("address.cityId").optionDataSource = RestDataSource_Work_City_Company;
             DynamicForm_Address_Company.getItem("address.cityId").fetchData();
-             co.editRecord(record);
+            co.editRecord(record);
             Window_Company.setTitle("<spring:message code="edit"/>");
             Window_Company.show();
         }
@@ -703,3 +751,32 @@ var companyId;
             return false;
 
     };
+
+
+    function isUrlValid(userInput) {
+        var res = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/;
+        if (res.test(userInput.toLowerCase()))
+            return true;
+        else
+            return false;
+    };
+
+
+    function customDialog(title, message, timeout, dialogType) {
+        var di = isc.Dialog.create({
+            message: message,
+            icon: "[SKIN]" + dialogType + ".png",
+            title: title,
+            buttons: [isc.Button.create({title: "تائید"})],
+            buttonClick: function (button, index) {
+                di.close();
+            }
+        });
+        if (timeout > 0) {
+            setTimeout(function () {
+                di.close();
+            }, timeout);
+        }
+
+    }
+

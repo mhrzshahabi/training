@@ -21,5 +21,7 @@ public interface IEducationOrientationService {
 
     SearchDTO.SearchRs<EducationOrientationDTO.Info> search(SearchDTO.SearchRq request);
 
+    List<EducationOrientationDTO.Info> listByLevelIdAndMajorId(Long levelId, Long majorId);
+
     //------------------------
 }

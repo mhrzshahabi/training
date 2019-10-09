@@ -59,7 +59,12 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.ViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        loadingMessage: "<spring:message code="loading"/>",
+    });
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
@@ -67,10 +72,22 @@
         requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true, canDragResize: true,
-        showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
-        });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",});
+        autoSize: true,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        canFocus: true,
+        dismissOnEscape: true,
+        canDragResize: true,
+        showHeaderIcon: false,
+        animateMinimize: true,
+        showMaximizeButton: true,
+    });
+    isc.ComboBoxItem.addProperties({
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+    });
 
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
@@ -182,6 +199,16 @@
             errorMessage: "<spring:message code="msg.company.checked.email"/>",
             expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
+        MobileValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.check.mobile"/>",
+            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+        },
+        PhoneValidate: {
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.check.phone"/>",
+            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+        },
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {
@@ -259,7 +286,7 @@
                     isc.Button.create({title: "<spring:message code="no"/>",})
                 ],
             });
-        } else if (type === 'wait'){
+        } else if (type === 'wait') {
             return isc.Dialog.create({
                 icon: type + '.png',
                 title: title ? title : "<spring:message code='message'/>",
@@ -274,6 +301,24 @@
             item.fetchData();
         }
     });
+
+    function trPrintWithCriteria(url, advancedCriteria) {
+        var trCriteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: url,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        trCriteriaForm.setValue("token", "<%=accessToken%>");
+        trCriteriaForm.show();
+        trCriteriaForm.submitForm();
+    }
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
@@ -359,7 +404,7 @@
                         createTab(this.title, "<spring:url value="/post/show-form"/>");
                     }
                 },
-                  {
+                {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/competence/show-form"/>");
@@ -410,16 +455,16 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
-                 {
+                {
                     title: "<spring:message code="company"/>",
                     icon: "<spring:url value="company.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
                 },
-                            ]
+            ]
         }),
-     });
+    });
 
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="run"/>",
@@ -590,7 +635,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
-    const companyUrl=rootUrl +"/company/";
+    const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
 
 

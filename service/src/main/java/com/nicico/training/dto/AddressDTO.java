@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -41,7 +40,7 @@ public class AddressDTO {
     @Getter
     @Setter
     @ApiModel("AddressInfoTuple")
-    public static class AddressInfoTuple extends AddressDTO {
+    static class AddressInfoTuple extends AddressDTO {
         private CityDTO.CityInfoTuple city;
         private StateDTO.StateInfoTuple state;
     }
