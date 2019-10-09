@@ -11,9 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.model.Category;
 import com.nicico.training.repository.CategoryDAO;
-import com.nicico.training.repository.CommitteeDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;

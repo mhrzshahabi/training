@@ -27,7 +27,7 @@ public class EducationFormController {
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,
                                                @PathVariable String educationType,
                                                @PathVariable String type) {
-        String token = (String) request.getSession().getAttribute("AccessToken");
+        String token = request.getParameter("token");
 
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -42,7 +42,7 @@ public class EducationFormController {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         type = type.toUpperCase();
         return restTemplate.exchange(restApiUrl + "/api/education/" + educationType + "/printWithCriteria/" + type,
                 HttpMethod.POST,
