@@ -12,6 +12,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
+import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -44,6 +45,7 @@ public class CourseRestController {
     private final ICourseService iCourseService;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final CourseDAO courseDAO;
 
     // ---------------------------------
     @Loggable
@@ -377,8 +379,7 @@ public class CourseRestController {
     @GetMapping(value = {"/printTest/{courseId}"})
     public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable Long courseId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
-        CourseDTO.Info info = courseService.get(courseId);
-//        String domain = "دانشی: " + info.getKnowledge() + "%     " + "نگرشی: " + info.getAttitude() + "%    " + "مهارتی: " + info.getSkill() + "%";
+        String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
         String preCourse = "";
         String equalCourse = "";
@@ -391,11 +392,12 @@ public class CourseRestController {
             equalCourse = equalCourse + "   یا   " + map.get("nameEC");
         }
         equalCourse = equalCourse != "" ? equalCourse.substring(6) : "";
+        CourseDTO.Info info = courseService.get(courseId);
         ERunType eRun = new ModelMapper().map(info.getERunType(), ERunType.class);
         ETheoType eTheo = new ModelMapper().map(info.getETheoType(), ETheoType.class);
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
-//        params.put("domain", domain);
+        params.put("domain", domain);
         params.put("preCourse",preCourse);
         params.put("equalCourse", equalCourse);
         params.put("eRun", eRun.getTitleFa());

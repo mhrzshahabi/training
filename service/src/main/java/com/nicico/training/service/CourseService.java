@@ -41,10 +41,10 @@ public class CourseService implements ICourseService {
     @Transactional(readOnly = true)
     @Override
     public CourseDTO.Info get(Long id) {
-        Float a = Float.valueOf(0);
-        Float b = Float.valueOf(0);
-        Float c = Float.valueOf(0);
-        Long sumAll = Long.valueOf(0);
+//        Float a = Float.valueOf(0);
+//        Float b = Float.valueOf(0);
+//        Float c = Float.valueOf(0);
+//        Long sumAll = Long.valueOf(0);
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
 //        List<Goal> goalSet = course.getGoalSet();
@@ -413,7 +413,6 @@ public class CourseService implements ICourseService {
             return "0";
         for (Course course : courseList) {
             if (max < Integer.parseInt(course.getCode().substring(6, 10)))
-
                 max = Integer.parseInt(course.getCode().substring(6, 10));
         }
         return String.valueOf(max);
@@ -520,4 +519,38 @@ public class CourseService implements ICourseService {
         final Course course = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         course.getGoalSet().clear();
     }
+
+    @Transactional
+    @Override
+    public String getDomain(Long id) {
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course info = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        Float a = Float.valueOf(0);
+        Float b = Float.valueOf(0);
+        Float c = Float.valueOf(0);
+        Long sumAll = Long.valueOf(0);
+        List<Goal> goalSet = info.getGoalSet();
+        for (Goal goal : goalSet) {
+            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+            for (Syllabus syllabus : syllabusSet) {
+                Integer eDomainTypeId = syllabus.getEDomainTypeId();
+                switch (eDomainTypeId) {
+                    case 1:
+                        a += syllabus.getPracticalDuration();
+                        break;
+                    case 2:
+                        b += syllabus.getPracticalDuration();
+                        break;
+                    case 3:
+                        c += syllabus.getPracticalDuration();
+                        break;
+                }
+                sumAll += syllabus.getPracticalDuration();
+            }
+        }
+        String domain = "دانشی: " + round(a * 100 / (Float.valueOf(sumAll))) + "%     " + "نگرشی: " + round(c * 100 / (Float.valueOf(sumAll))) + "%    " + "مهارتی: " + round(b * 100 / (Float.valueOf(sumAll))) + "%";
+        return domain;
+    }
 }
+
+
