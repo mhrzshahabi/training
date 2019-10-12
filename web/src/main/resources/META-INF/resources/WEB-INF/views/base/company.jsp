@@ -11,7 +11,7 @@ var companyId;
 //************************************************************************************
 // RestDataSource & ListGrid
 //************************************************************************************
-// <script>
+//<script>
 
     var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
         fields: [
@@ -257,9 +257,19 @@ var companyId;
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
-                length: "10"
-            },
-            {
+                length: "10",
+                changed: function () {
+                    var check_National_Company = checkCodeMeli_Company(DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode"));
+                        if (check_National_Company === true) {
+                          var nationalCodeCompany=DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode");
+                         DynamicForm_ManagerInfo_Company.clearFieldErrors("personality.nationalCode", true);
+                        isc.RPCManager.sendRequest(TrDSRequest(companyUrl + "getOneByNationalCode/" + nationalCodeCompany, "GET", null, "callback: personalInfo_findOne_result_company(rpcResponse)"));
+                    }
+                    <%-- else {--%>
+                    <%--    DynamicForm_ManagerInfo_Company.addFieldErrors("personality.nationalCode", "<spring:message code='msg.national.code.validation'/>", true);--%>
+                    <%--}--%>
+                }
+            },  {
                 name: "manager.contactInfo.mobile",
                 title: "موبایل",
                 type: 'text',
@@ -283,7 +293,7 @@ var companyId;
                     emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
                     if (emailCheck == false) {
                         DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
-        code='msg.company.checked.email'/>", true);
+                          code='msg.company.checked.email'/>", true);
                     } else {
                         DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
                     }
@@ -603,27 +613,27 @@ var companyId;
 // }
 // return;
 // }
-           if (!DynamicForm_Company.validate()) {
+        if (!DynamicForm_Company.validate()) {
             return;
-              }
+        }
 
-            if (!DynamicForm_AccountInfo_Company.validate()) {
-                TabSet_Company_JspCompany.selectTab(0)
-                return;
-            }
+        if (!DynamicForm_AccountInfo_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(0)
+            return;
+        }
 
-            if (!DynamicForm_ManagerInfo_Company.validate()) {
-                TabSet_Company_JspCompany.selectTab(1)
-                return;
-            }
+        if (!DynamicForm_ManagerInfo_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(1)
+            return;
+        }
 
-            if (!DynamicForm_Address_Company.validate()) {
-                TabSet_Company_JspCompany.selectTab(2)
-                return;
-            }
+        if (!DynamicForm_Address_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(2)
+            return;
+        }
 
-            var data_Company = co.getValues();
-            isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        var data_Company = co.getValues();
+        isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
 
 
     };
@@ -762,21 +772,36 @@ var companyId;
     };
 
 
-    function customDialog(title, message, timeout, dialogType) {
-        var di = isc.Dialog.create({
-            message: message,
-            icon: "[SKIN]" + dialogType + ".png",
-            title: title,
-            buttons: [isc.Button.create({title: "تائید"})],
-            buttonClick: function (button, index) {
-                di.close();
-            }
-        });
-        if (timeout > 0) {
-            setTimeout(function () {
-                di.close();
-            }, timeout);
-        }
+    function checkCodeMeli_Company(code) {
+        if (code === "undefined" || code === null || code === "")
+            return false;
+        var L = code.length;
 
+        if (L < 8 || parseFloat(code, 10) === 0)
+            return false;
+        code = ('0000' + code).substr(L + 4 - 10);
+        if (parseFloat(code.substr(3, 6), 10) === 0)
+            return false;
+        var c = parseFloat(code.substr(9, 1), 10);
+        var s = 0;
+        for (var i = 0; i < 9; i++) {
+            s += parseFloat(code.substr(i, 1), 10) * (10 - i);
+        }
+        s = s % 11;
+        return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
     }
+
+    function personalInfo_findOne_result_company(resp) {
+
+        if (resp !== null && resp !== undefined && resp.data !== "") {
+            var personal = JSON.parse(resp.data);
+            console.log(JSON.parse(resp.data));
+            DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.manager.firstNameFa);
+            DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.manager.lastNameFa);
+            DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.mobile", personal.manager.contactInfo.mobile);
+            DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.email", personal.manager.contactInfo.email);
+        }
+    };
+
+
 

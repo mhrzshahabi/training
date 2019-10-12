@@ -28,7 +28,6 @@ public class CompanyService implements ICompanyService {
     private final ModelMapper mapper;
 
 
-
     @Transactional(readOnly = true)
     @Override
     public CompanyDTO.Info get(Long id) {
@@ -67,27 +66,27 @@ public class CompanyService implements ICompanyService {
 
         final PersonalInfo personalInfo = mapper.map(request.getManager(), PersonalInfo.class);
 
-        final ContactInfo contactInfo=mapper.map(request.getManager().getContactInfo(),ContactInfo.class);
+        final ContactInfo contactInfo = mapper.map(request.getManager().getContactInfo(), ContactInfo.class);
 
-        final Address address=mapper.map(request.getAddress(),Address.class);
+        final Address address = mapper.map(request.getAddress(), Address.class);
 
         final Company company = mapper.map(request, Company.class);
 
 
-        final ContactInfo  savedcontactInfo=contactInfoDAO.saveAndFlush(contactInfo);
+        final ContactInfo savedcontactInfo = contactInfoDAO.saveAndFlush(contactInfo);
         personalInfo.setContactInfo(savedcontactInfo);
         personalInfo.setContactInfoId(savedcontactInfo.getId());
 
 
-        final PersonalInfo savedpersonalInfo=personalInfoDAO.saveAndFlush(personalInfo);
+        final PersonalInfo savedpersonalInfo = personalInfoDAO.saveAndFlush(personalInfo);
         company.setManager(savedpersonalInfo);
         company.setManagerId(savedpersonalInfo.getId());
 
-        final AccountInfo savedaccountInfo=accountInfoDAO.saveAndFlush(accountInfo);
+        final AccountInfo savedaccountInfo = accountInfoDAO.saveAndFlush(accountInfo);
         company.setAccountInfo(savedaccountInfo);
         company.setAccountInfoId(savedaccountInfo.getId());
 
-        final  Address savedAddressInfo=addressDAO.saveAndFlush(address);
+        final Address savedAddressInfo = addressDAO.saveAndFlush(address);
         company.setAddress(savedAddressInfo);
         company.setAddressId(savedAddressInfo.getId());
 
@@ -96,31 +95,46 @@ public class CompanyService implements ICompanyService {
 
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public CompanyDTO.Info getOneByNationalCode(String nationalCode) {
+        List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
+        PersonalInfo personalInfo = null;
+        if (personalInfoList != null && personalInfoList.size() != 0) {
+            personalInfo = personalInfoList.get(0);
+            List<Company> companyList=companyDAO.findByManagerId(personalInfo.getId());
+            Company company=companyList.get(0);
+            return mapper.map(company,CompanyDTO.Info.class);
+        } else
+            return null;
+    }
+
+
     @Transactional
     @Override
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
         Optional<Company> optionalCompany = companyDAO.findById(id);
         Company currentCompany = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompanyNotFound));
 
-        PersonalInfo currentPersonalInfo=mapper.map(request.getManager(),PersonalInfo.class);
+        PersonalInfo currentPersonalInfo = mapper.map(request.getManager(), PersonalInfo.class);
         currentPersonalInfo.getContactInfoId();//contactInfoId
 
 
-       //---------------------UPDATE AccountInfo---------------------------------------------------------------------------------------------------
-        Optional<AccountInfo> optionalAccountInfo=accountInfoDAO.findById(currentCompany.getAccountInfoId());
-        AccountInfo accountInfo= optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-        AccountInfo accountInfo1=new AccountInfo();
-        mapper.map(accountInfo,accountInfo1);
-        mapper.map(request.getAccountInfo(),accountInfo1);
+        //---------------------UPDATE AccountInfo---------------------------------------------------------------------------------------------------
+        Optional<AccountInfo> optionalAccountInfo = accountInfoDAO.findById(currentCompany.getAccountInfoId());
+        AccountInfo accountInfo = optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
+        AccountInfo accountInfo1 = new AccountInfo();
+        mapper.map(accountInfo, accountInfo1);
+        mapper.map(request.getAccountInfo(), accountInfo1);
         accountInfoDAO.saveAndFlush(accountInfo1);
 
-       //------------------ --UPDATE MANAGER----- -------------------------------------------------------------------------------------------------
-       Optional<PersonalInfo> optionalManager=personalInfoDAO.findById(currentCompany.getManagerId());
-       PersonalInfo manager=optionalManager.orElseThrow(() ->new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
-       PersonalInfo manager1=new PersonalInfo();
-       mapper.map(manager,manager1);
-       mapper.map(request.getManager(),manager1);
-       personalInfoDAO.saveAndFlush(manager1);
+        //------------------ --UPDATE MANAGER----- -------------------------------------------------------------------------------------------------
+        Optional<PersonalInfo> optionalManager = personalInfoDAO.findById(currentCompany.getManagerId());
+        PersonalInfo manager = optionalManager.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
+        PersonalInfo manager1 = new PersonalInfo();
+        mapper.map(manager, manager1);
+        mapper.map(request.getManager(), manager1);
+        personalInfoDAO.saveAndFlush(manager1);
 
         Company company = new Company();
         mapper.map(currentCompany, company);

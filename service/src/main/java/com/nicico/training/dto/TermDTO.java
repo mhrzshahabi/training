@@ -1,4 +1,5 @@
 package com.nicico.training.dto;
+
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
@@ -36,12 +37,11 @@ public class TermDTO implements Serializable {
     private String description;
 
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TermInfo")
-    public static class Info extends TermDTO{
+    public static class Info extends TermDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
