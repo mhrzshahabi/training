@@ -32,21 +32,21 @@ public class InstituteAccount extends Auditable {
     @Column(name = "c_account_owner_name",length = 255)
     private String accountOwnerName;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "c_institute",insertable = false,updatable = false)
     private Institute institute;
 
     @Column(name = "c_institute")
     private Long instituteId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "c_bank",insertable = false,updatable = false)
     private Bank bank;
 
     @Column(name = "c_bank")
     private Long bankId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "c_bank_branch",insertable = false,updatable = false)
     private BankBranch bankBranch;
 

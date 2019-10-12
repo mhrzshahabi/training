@@ -258,20 +258,26 @@
             title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Institute_Institute_Remove();
             }
-        }, {isSeparator: true}]
-        <%--{title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("pdf");--%>
-        <%--}},--%>
-        <%--{--%>
-        <%--title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("excel");--%>
-        <%--}--%>
-        <%--},--%>
-        <%--{--%>
-        <%--title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
-        <%--ListGrid_institute_print("html");--%>
-        <%--}--%>
-        <%--}]--%>
+        }, {isSeparator: true},
+            {
+                title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
+                    ListGrid_institute_print("pdf");
+                }
+            },
+            {
+                title: "<spring:message code='print.excel'/>",
+                icon: "<spring:url value="excel.png"/>",
+                click: function () {
+                    ListGrid_institute_print("excel");
+                }
+            },
+            {
+                title: "<spring:message code='print.html'/>",
+                icon: "<spring:url value="html.png"/>",
+                click: function () {
+                    ListGrid_institute_print("html");
+                }
+            }]
 
     });
 
@@ -981,6 +987,7 @@
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "name",
+                required: true,
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_State,
                 autoFetchData: true,
@@ -1006,6 +1013,7 @@
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
 // defaultToFirstOption: true,
+                required: true,
                 displayField: "name",
                 valueField: "id",
                 optionDataSource: RestDataSource_Institute_City,
@@ -1035,28 +1043,65 @@
                 keyPressFilter: "[0-9|-]",
                 title: "<spring:message code='telephone'/>",
                 width: "*",
+                required: true,
+                validators: [TrValidators.PhoneValidate],
+                blur: function () {
+                    var phoneCheck;
+                    phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("phone"));
+                    if (phoneCheck === false)
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.check.phone'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("phone", true);
+                },
                 length: "12"
             },
             {
                 name: "mobile",
-                keyPressFilter: "[0-9|-]",
+                keyPressFilter: "[0-9|-|+]",
                 title: "<spring:message code='mobile'/>",
                 width: "*",
-                length: "12"
+                validators: [TrValidators.MobileValidate],
+                blur: function () {
+                    var mobileCheck;
+                    mobileCheck = checkMobile(DynamicForm_Institute_Institute_Address.getValue("mobile"));
+                    if (mobileCheck === false)
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("mobile", "<spring:message code='msg.check.phone'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("mobile", true);
+                },
+                length: "13"
             },
             {
                 name: "fax",
                 title: "<spring:message code='telefax'/>",
                 keyPressFilter: "[0-9|-]",
                 width: "*",
+                validators: [TrValidators.PhoneValidate],
+                blur: function () {
+                    var phoneCheck;
+                    phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("fax"));
+                    if (phoneCheck === false)
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("fax", "<spring:message code='msg.check.phone'/>", true);
+                    if (phoneCheck === true)
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("fax", true);
+                },
                 length: "12"
             },
             {
                 name: "email",
                 title: "<spring:message code='email'/>",
+                keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
                 width: "*",
                 validators: [TrValidators.EmailValidate],
-                length: "12"
+                blur: function () {
+                    var emailCheck;
+                    emailCheck = checkEmail(DynamicForm_Institute_Institute_Address.getValue("email"));
+                    if (emailCheck === false)
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("email", "<spring:message code='msg.email.validation'/>", true);
+                    if (emailCheck === true)
+                        DynamicForm_Institute_Institute_Address.clearFieldErrors("email", true);
+                },
+                length: "50"
             },
             {
                 name: "webSite",
@@ -1087,51 +1132,13 @@
                     DynamicForm_Institute_Institute_Address.clearValue("cityId");
                 }
             }
+            if (item.name == "email") {
+            }
+
         }
 
     });
 
-
-    //     var TabSet_Institute_InstituteTeacherNum = isc.TabSet.create({
-    //         tabBarPosition: "top",
-    //         titleEditorTopOffset: 2,
-    // // height: "100%",
-    //         width: "48%",
-    //         newPadding: 5,
-    //         tabs: [
-    //             {
-    //                 title: "تعداد اساتید", canClose: false,
-    //                 pane: DynamicForm_Institute_InstituteTeacherNum
-    //             }
-    //         ]
-    //     });
-    //     var TabSet_Institute_InstituteEmpNum = isc.TabSet.create({
-    //         tabBarPosition: "top",
-    //         titleEditorTopOffset: 2,
-    // // height: "100%",
-    //         width: "48%",
-    // // margin:5,
-    //         newPadding: 5,
-    //         tabs: [
-    //             {
-    //                 title: "تعداد کارمندان", canClose: false, titleWidth: this.width,
-    //                 pane: DynamicForm_Institute_InstituteEmpNum
-    //             }
-    //         ]
-    //     });
-    //     var TabSet_Institute_InstituteAddress = isc.TabSet.create({
-    //         tabBarPosition: "top",
-    //         titleEditorTopOffset: 2,
-    //         height: "100%",
-    //         width: "100%",
-    //         padding: 5,
-    //         tabs: [
-    //             {
-    //                 title: "ارتباط با موسسه", canClose: false,
-    //                 pane: DynamicForm_Institute_Institute_Address
-    //             }
-    //         ]
-    //     });
 
     var HLayout_Institute_InstituteTeacherAndEmp = isc.HLayout.create({
         width: "100%",
@@ -1158,7 +1165,6 @@
         members: [DynamicForm_Institute_Institute_Address]
     });
 
-
     var IButton_Institute_Institute_Exit = isc.IButton.create({
         top: 260,
         title: "<spring:message code='cancel'/>",
@@ -1168,7 +1174,6 @@
             Window_Institute_Institute.close();
         }
     });
-
     var IButton_Institute_Institute_Save = isc.IButton.create({
         top: 260,
         title: "<spring:message code='save'/>",
@@ -1761,7 +1766,6 @@
             }
         }
     });
-
     var ToolStripButton_Institute_Teacher_Delete = isc.TrRemoveBtn.create({
         click: function () {
             var record = ListGrid_Institute_Attached_Teacher.getSelectedRecord();
@@ -1780,7 +1784,6 @@
             }
         }
     });
-
     var ToolStrip_Institute_Teacher = isc.ToolStrip.create({
         width: "20",
         center: true,
@@ -1945,6 +1948,7 @@
                 title: "<spring:message code='bank'/>",
                 textAlign: "center",
                 width: "*",
+                required: true,
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -1981,6 +1985,7 @@
                 type: "IntegerItem",
                 title: "<spring:message code='bank.branch'/>",
                 textAlign: "center",
+                required: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -2412,6 +2417,7 @@
                 name: "capacity",
                 title: "<spring:message code='capacity'/>",
                 keyPressFilter: "[0-9]",
+                required: true,
                 width: "*",
             },
             {
@@ -2978,13 +2984,13 @@
         }
     });
 
-    <%--var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({--%>
-    <%--icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--title: "<spring:message code='print'/>",--%>
-    <%--click: function () {--%>
-    <%--ListGrid_institute_print("pdf");--%>
-    <%--}--%>
-    <%--});--%>
+    var ToolStripButton_Institute_Institute_Print = isc.ToolStripButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "<spring:message code='print'/>",
+        click: function () {
+            ListGrid_institute_print("pdf");
+        }
+    });
 
     var ToolStrip_Institute_Institute_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -2992,8 +2998,8 @@
             ToolStripButton_Institute_Institute_Refresh,
             ToolStripButton_Institute_Institute_Add,
             ToolStripButton_Institute_Institute_Edit,
-            ToolStripButton_Institute_Institute_Remove]//,
-// ToolStripButton_Institute_Institute_Print]
+            ToolStripButton_Institute_Institute_Remove,
+            ToolStripButton_Institute_Institute_Print]
     });
 
     var HLayout_Institute_Institute_Action = isc.HLayout.create({
@@ -3104,7 +3110,6 @@
     //--------------------------------------------------------------------------------------------------------------------//
     function ListGrid_Institute_Institute_Remove() {
         var record = ListGrid_Institute_Institute.getSelectedRecord();
-//console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "مرکز آموزشی برای حذف انتخاب نشده است!",
@@ -3138,8 +3143,6 @@
                 }
             });
         }
-
-
     };
 
     function ListGrid_Institute_Institute_Edit() {
@@ -3155,19 +3158,14 @@
                 }
             });
         } else {
-//console.log('record:' + JSON.stringify(record));
-
             DynamicForm_Institute_Institute.clearValues();
-            DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
+DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
+DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
 
             ValuesManager_Institute_InstituteValue.editRecord(record);
 
             var stateValue = undefined;
             var cityValue = undefined;
-
-// DynamicForm_Institute_Institute_Address.getField("stateId").invalidateCache();
-// DynamicForm_Institute_Institute_Address.getField("stateId").fetchData();
-
 
             if (record != null && record.stateId != null)
                 stateValue = record.stateId;
@@ -3177,18 +3175,14 @@
                 DynamicForm_Institute_Institute_Address.clearValue("cityId");
             }
             if (stateValue != undefined) {
-// RestDataSource_Institute_State.fetchDataURL=stateUrl + "spec-list";
                 RestDataSource_Institute_City.fetchDataURL = stateUrl + "spec-list-by-stateId/" + stateValue;
-// DynamicForm_Institute_Institute_Address.getField("stateId").optionDataSource = RestDataSource_Institute_State;
                 DynamicForm_Institute_Institute_Address.getField("cityId").optionDataSource = RestDataSource_Institute_City;
                 DynamicForm_Institute_Institute_Address.getField("cityId").fetchData();
             }
 
-
             instituteMethod = "PUT";
             Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
             Window_Institute_Institute.show();
-
         }
     };
 
@@ -3196,7 +3190,6 @@
         ValuesManager_Institute_InstituteValue.clearValues();
         ValuesManager_Institute_InstituteValue.clearErrors(true);
         instituteMethod = "POST";
-// DynamicForm_Institute_Institute.clearValues();
         DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
         ;
         Window_Institute_Institute.setTitle("ایجاد مرکز آموزشی جدید");
@@ -3212,6 +3205,27 @@
         }
         ListGrid_Institute_Institute.invalidateCache();
     };
+
+    function ListGrid_institute_print(type) {
+        var advancedCriteria = ListGrid_Institute_Institute.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/institute/printWithCriteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "token", type: "hidden"}
+                ]
+
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("token", "<%= accessToken %>");
+        criteriaForm.show();
+        criteriaForm.submitForm();
+
+    }
 
     function ListGrid_Institute_Institute_Remove_CallBack(resp) {
         globalWait.close();
@@ -3239,10 +3253,14 @@
     }
 
 
-    // function checkMobile(mobile) {
-    // if (mobile[0] == "0" && mobile[1] == "9")
-    // return true;
-    // else
-    // return false;
-    // };
+    function checkEmail(email) {
+        return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
+    }
 
+    function checkMobile(mobile) {
+        return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
+    }
+
+    function checkPhone(phone) {
+        return (phone[0] === "0" && phone.length === 11) || (phone[0] !== "0" && phone.length === 8);
+    }

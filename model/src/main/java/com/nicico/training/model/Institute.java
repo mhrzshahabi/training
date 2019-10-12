@@ -65,7 +65,7 @@ public class Institute  extends  Auditable{
     @Column(name = "f_state")
     private Long stateId;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute",cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<InstituteAccount> instituteAccountSet;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
@@ -75,19 +75,19 @@ public class Institute  extends  Auditable{
     @Column(name ="f_manager")
     private Long managerId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "tbl_institute_teacher",
             joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="f_teacher",referencedColumnName = "id")})
     private Set<Teacher> teacherSet;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "tbl_institute_equipment",
             joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute",cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<TrainingPlace> trainingPlaceSet;
 
 
@@ -134,7 +134,7 @@ public class Institute  extends  Auditable{
     private Integer elicenseTypeId;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute_parent", insertable = false, updatable = false)
     private Institute parentInstitute;
 

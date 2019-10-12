@@ -68,7 +68,7 @@ public class Skill extends Auditable{
     private Long subCategoryId;
 
     //-------------------------------------------------
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(name = "tbl_skill_course",
             joinColumns = {@JoinColumn(name = "f_skill_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})

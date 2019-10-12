@@ -46,14 +46,14 @@ public class TrainingPlace extends  Auditable{
     @Column(name = "e_arrangement_type")
     private Integer earrangementTypeId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
 	@JoinTable(name = "tbl_training_place_equipment",
             joinColumns={@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn( name = "f_equipment_id", referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)
     private Institute institute;
 
