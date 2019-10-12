@@ -110,14 +110,14 @@ public class Course extends Auditable {
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
 
-    @Transient
-    private Long knowledge = Long.valueOf(0);
-
-    @Transient
-    private Long skill = Long.valueOf(0);
-
-    @Transient
-    private Long attitude = Long.valueOf(0);
+//    @Transient
+//    private Long knowledge = Long.valueOf(0);
+//
+//    @Transient
+//    private Long skill = Long.valueOf(0);
+//
+//    @Transient
+//    private Long attitude = Long.valueOf(0);
 
     @Column(name = "c_pre_course")
     private String preCourse;
@@ -157,4 +157,9 @@ public class Course extends Auditable {
     @OneToMany()
     @JoinColumn(name = "f_course",insertable = false, updatable = false)
     private Set<EqualCourse> equalCourseSet;
+
+    @Transient
+    public Boolean getHasGoal(){
+        return goalSet.isEmpty();
+    }
 }

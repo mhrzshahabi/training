@@ -49,5 +49,4 @@ public abstract class Auditable {
     @Column(name = "e_deleted")
     EDeleted eDeleted;
 
-
 }
