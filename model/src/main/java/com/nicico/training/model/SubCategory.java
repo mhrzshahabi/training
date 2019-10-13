@@ -21,21 +21,21 @@ import javax.persistence.*;
 public class SubCategory extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "category_seq")
-    @SequenceGenerator(name = "category_seq", sequenceName = "seq_category_id",  allocationSize = 1)
+    @SequenceGenerator(name = "category_seq", sequenceName = "seq_category_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_code",length = 7,nullable = false,unique = true)
+    @Column(name = "c_code", length = 7, nullable = false, unique = true)
     private String code;
 
-    @Column(name = "c_title_fa",  nullable = false)
+    @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
 
     @Column(name = "c_title_en")
     private String titleEn;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_category_id",insertable = false,updatable = false)
+    @JoinColumn(name = "f_category_id", insertable = false, updatable = false)
     private Category category;
 
     @Column(name = "f_category_id")

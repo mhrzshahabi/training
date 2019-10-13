@@ -15,19 +15,19 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Accessors(chain=true)
+@Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_skill")
 
-public class Skill extends Auditable{
+public class Skill extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "skill_seq")
-    @SequenceGenerator(name = "skill_seq",sequenceName = "seq_skill_id",allocationSize = 1)
-    @Column(name = "id",precision = 0)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "skill_seq")
+    @SequenceGenerator(name = "skill_seq", sequenceName = "seq_skill_id", allocationSize = 1)
+    @Column(name = "id", precision = 0)
     private Long id;
 
-    @Column(name = "c_code",length = 10,nullable = false,unique = true)
+    @Column(name = "c_code", length = 10, nullable = false, unique = true)
     private String code;
 
     @Column(name = "c_title_fa", nullable = false)
@@ -39,42 +39,42 @@ public class Skill extends Auditable{
     @Column(name = "c_description", length = 500)
     private String description;
 
-//معرفی سطح مهارت(آشنایی، توانایی و تسلط)
+    //معرفی سطح مهارت(آشنایی، توانایی و تسلط)
     @ManyToOne
-    @JoinColumn(name = "f_skill_level", nullable = false,insertable = false, updatable = false)
+    @JoinColumn(name = "f_skill_level", nullable = false, insertable = false, updatable = false)
     private SkillLevel skillLevel;
 
     @Column(name = "f_skill_level")
     private Long skillLevelId;
 
-//  گروه بندی مهارت(کامپیوتر/برق/...)
+    //  گروه بندی مهارت(کامپیوتر/برق/...)
     @ManyToOne
-    @JoinColumn(name = "f_category", nullable = false,insertable = false, updatable = false)
+    @JoinColumn(name = "f_category", nullable = false, insertable = false, updatable = false)
     private Category category;
 
     @Column(name = "f_category")
     private Long categoryId;
 
 
-    @OneToMany(mappedBy = "skill" ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "skill", fetch = FetchType.LAZY)
     private Set<NeedAssessment> needAssessments;
 
-//زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
+    //زیر گروه مثلا برای گروه کامپیوتر (شبکه، سخت افزار و ...)
     @ManyToOne
-    @JoinColumn(name = "f_sub_category", nullable = false,insertable = false, updatable = false)
+    @JoinColumn(name = "f_sub_category", nullable = false, insertable = false, updatable = false)
     private SubCategory subCategory;
 
     @Column(name = "f_sub_category")
     private Long subCategoryId;
 
     //-------------------------------------------------
-    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name = "tbl_skill_course",
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "tbl_skill_course",
             joinColumns = {@JoinColumn(name = "f_skill_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
     private Set<Course> courseSet;
 
-    @ManyToMany(fetch = FetchType.LAZY,mappedBy = "skillSet" )
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillSet")
     private Set<SkillGroup> skillGroupSet;
 
 

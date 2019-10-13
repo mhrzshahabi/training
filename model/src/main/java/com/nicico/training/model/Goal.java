@@ -19,8 +19,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_goal")
-public class Goal extends Auditable
-{
+public class Goal extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "goal_seq")
     @SequenceGenerator(name = "goal_seq", sequenceName = "seq_goal_id", allocationSize = 1)

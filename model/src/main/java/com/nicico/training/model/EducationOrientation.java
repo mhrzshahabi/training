@@ -14,7 +14,7 @@ import java.util.List;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_education_orientation",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa", "f_education_level","f_education_major"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa", "f_education_level", "f_education_major"})})
 public class EducationOrientation extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_orientation_seq")
@@ -42,6 +42,6 @@ public class EducationOrientation extends Auditable {
     @Column(name = "f_education_major")
     private Long educationMajorId;
 
-    @OneToMany(mappedBy = "educationOrientation",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "educationOrientation", fetch = FetchType.LAZY)
     private List<PersonalInfo> personalInfoList;
 }

@@ -15,7 +15,7 @@ import javax.persistence.Table;
 public class Department extends Auditable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", precision = 10)
     private String id;
 
     @Column(name = "c_area")
@@ -33,9 +33,9 @@ public class Department extends Auditable {
     @Column(name = "c_unit")
     private String unit;
 
-    @Column(name = "c_cost_center_code")
+    @Column(name = "c_cost_center_code", nullable = false)
     private String costCenterCode;
 
-    @Column(name = "c_cost_center_title_fa")
+    @Column(name = "c_cost_center_title_fa", nullable = false)
     private String costCenterTitleFa;
 }

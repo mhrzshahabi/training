@@ -20,34 +20,34 @@ public class InstituteAccount extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_account_number",length = 20)
+    @Column(name = "c_account_number", length = 20)
     private String accountNumber;
 
-    @Column(name = "c_cart_number",length = 20)
+    @Column(name = "c_cart_number", length = 20)
     private String cartNumber;
 
-    @Column(name = "c_shaba_number",length = 100)
+    @Column(name = "c_shaba_number", length = 100)
     private String shabaNumber;
 
-    @Column(name = "c_account_owner_name",length = 255)
+    @Column(name = "c_account_owner_name", length = 255)
     private String accountOwnerName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "c_institute",insertable = false,updatable = false)
+    @JoinColumn(name = "c_institute", insertable = false, updatable = false)
     private Institute institute;
 
     @Column(name = "c_institute")
     private Long instituteId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "c_bank",insertable = false,updatable = false)
+    @JoinColumn(name = "c_bank", insertable = false, updatable = false)
     private Bank bank;
 
     @Column(name = "c_bank")
     private Long bankId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "c_bank_branch",insertable = false,updatable = false)
+    @JoinColumn(name = "c_bank_branch", insertable = false, updatable = false)
     private BankBranch bankBranch;
 
     @Column(name = "c_bank_branch")

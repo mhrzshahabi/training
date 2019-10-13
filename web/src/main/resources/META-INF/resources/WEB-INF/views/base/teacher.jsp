@@ -722,13 +722,13 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "personality.workJob",
+                name: "personality.jobLocation",
                 title: "<spring:message code='job'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
             },
             {
-                name: "personality.workName",
+                name: "personality.jobTitle",
                 title: "<spring:message code='work.place'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
@@ -1710,8 +1710,8 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.workName", personality.workName);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.workJob", personality.workJob);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.workName);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.workJob);
 
             if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
