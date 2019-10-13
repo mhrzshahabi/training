@@ -18,7 +18,7 @@ import javax.persistence.Table;
 public class Job extends Auditable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", precision = 10)
     private Long id;
 
     @Column(name = "c_code", nullable = false)

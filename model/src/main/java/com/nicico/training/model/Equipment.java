@@ -25,7 +25,7 @@ public class Equipment extends Auditable {
     @Column(name = "id")
     private Long id;
 
-    @Column(name = "c_code",length = 10)
+    @Column(name = "c_code", length = 10)
     private String code;
 
     @Column(name = "c_title_fa", nullable = false)

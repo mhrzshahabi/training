@@ -14,7 +14,7 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ETheoType {
-    Theory(1, "تئوري","T"),
+    Theory(1, "تئوري", "T"),
     Practical(2, "عملي", "P"),
     TheoryPractical(3, "تئوري_عملي", "M");
 

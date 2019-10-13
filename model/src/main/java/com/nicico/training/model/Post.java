@@ -15,7 +15,7 @@ import javax.persistence.*;
 public class Post extends Auditable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", precision = 10)
     private Long id;
 
     @Column(name = "c_code", nullable = false)

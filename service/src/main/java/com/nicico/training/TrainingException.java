@@ -49,7 +49,10 @@ public class TrainingException extends NICICOException {
         PostNotFound(404),
         NeedAssessmentNotFound(404),
         BankNotFound(404),
-        BankBranchNotFound(404);
+        BankBranchNotFound(404),
+        NotEditable(404),
+        DuplicateRecord(404),
+        NotDeletable(404);
 
         private final Integer httpStatusCode;
 

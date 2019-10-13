@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"},callSuper = false)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_course")
 public class Course extends Auditable {
@@ -55,62 +55,52 @@ public class Course extends Auditable {
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "category_id",insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "subcategory_id",insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
     private SubCategory subCategory;
 
-    @Column(name="subcategory_id")
+    @Column(name = "subcategory_id")
     private Long subCategoryId;
 
     @ManyToMany(mappedBy = "courseSet")
     private Set<Skill> skillSet;
 
-    @OneToMany(mappedBy = "course" ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
-
-    @PreRemove
-    private void preRemove() {
-        tclassSet.forEach( c -> c.setCourse(null));
-    }
-
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tbl_course_goal",
+    @JoinTable(name = "tbl_course_goal",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
-
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tbl_pre_course",
+    @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> perCourseList;
-
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tbl_pre_course",
+    @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
     private List<Course> perCourseListOf;
-
     @Column(name = "e_run_type")
     private ERunType eRunType;
-
     @Column(name = "e_level_type")
     private ELevelType eLevelType;
-
     @Column(name = "e_theo_type")
     private ETheoType eTheoType;
-
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
+    @Column(name = "c_pre_course")
+    private String preCourse;
 
-//    @Transient
+    //    @Transient
 //    private Long knowledge = Long.valueOf(0);
 //
 //    @Transient
@@ -118,15 +108,13 @@ public class Course extends Auditable {
 //
 //    @Transient
 //    private Long attitude = Long.valueOf(0);
-
-    @Column(name = "c_pre_course")
-    private String preCourse;
-
     @Column(name = "c_equal_course")
     private String equalCourse;
-
     @Column(name = "c_need_text")
     private String needText;
+    @OneToMany()
+    @JoinColumn(name = "f_course", insertable = false, updatable = false)
+    private Set<EqualCourse> equalCourseSet;
 
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
@@ -154,12 +142,13 @@ public class Course extends Auditable {
 //        return x;
 //    }
 
-    @OneToMany()
-    @JoinColumn(name = "f_course",insertable = false, updatable = false)
-    private Set<EqualCourse> equalCourseSet;
+    @PreRemove
+    private void preRemove() {
+        tclassSet.forEach(c -> c.setCourse(null));
+    }
 
     @Transient
-    public Boolean getHasGoal(){
+    public Boolean getHasGoal() {
         return goalSet.isEmpty();
     }
 }

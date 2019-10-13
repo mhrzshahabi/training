@@ -54,7 +54,7 @@ public class Committee extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @ManyToMany(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_committee_personal_info",
             joinColumns = {@JoinColumn(name = "f_committee_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_personal_info_id", referencedColumnName = "id")})

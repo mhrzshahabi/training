@@ -40,15 +40,15 @@ public class Address extends Auditable {
     private City city;
 
     @Column(name = "f_city")
-	private Long cityId;
+    private Long cityId;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_state", insertable = false, updatable = false)
     private State state;
 
     @Column(name = "f_state")
-	private Long stateId;
+    private Long stateId;
 
-	@Column(name = "b_other_country")
-	private Boolean otherCountry;
+    @Column(name = "b_other_country")
+    private Boolean otherCountry;
 }

@@ -33,15 +33,15 @@ public class SkillGroup extends Auditable {
     private String description;
 
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
-	@JoinTable(name = "tbl_skill_skillgroup",
+    @JoinTable(name = "tbl_skill_skillgroup",
             joinColumns = {@JoinColumn(name = "f_skillgroup_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_skill_id", referencedColumnName = "id")})
     private Set<Skill> skillSet;
 
-   // @ManyToMany(mappedBy = "skillGroupSet" )
-   @ManyToMany
-   @JoinTable(name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_skill_group_id"),
-           inverseJoinColumns = @JoinColumn(name = "f_competence_id"))
+    // @ManyToMany(mappedBy = "skillGroupSet" )
+    @ManyToMany
+    @JoinTable(name = "tbl_competence_skill_group", joinColumns = @JoinColumn(name = "f_skill_group_id"),
+            inverseJoinColumns = @JoinColumn(name = "f_competence_id"))
     private Set<Competence> competenceSet;
 
 }
