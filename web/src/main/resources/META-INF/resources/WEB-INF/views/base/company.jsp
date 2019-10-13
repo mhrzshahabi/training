@@ -33,9 +33,9 @@ var companyId;
     var RestDataSource_company = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
-            {name: "workDomain", title: "حوزه کاری", filterOperator: "contains"},
-            {name: "email", title: "ایمیل", filterOperator: "contains"},
+            {name: "titleFa", title:"<spring:message code="title"/>" , filterOperator: "contains"},
+            {name: "workDomain", title:"<spring:message code="workDomain"/>", filterOperator: "contains"},
+            {name: "email", title: "<spring:message code="email"/>", filterOperator: "contains"},
         ],
         fetchDataURL: companyUrl + "spec-list"
     });
@@ -44,31 +44,31 @@ var companyId;
     Menu_ListGrid_Company = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
 
                 }
             }, {
-                title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                title:  "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
 
                 }
             }, {
-                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+                title:  "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 }
             }, {
-                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
 
                 }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
 
                 }
             }, {
-                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
 
                 }
             }, {
-                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
 
                 }
             }
@@ -101,20 +101,20 @@ var companyId;
                 length: "250",
                 width: "*",
                 required: "true",
-                requiredMessage: "لطفا نام شرکت را وارد کنید",
+               // requiredMessage: "لطفا نام شرکت را وارد کنید",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "workDomain",
-                title: "حوزه کاری",
+                title: "<spring:message code="workDomain"/>",
                 required: true,
-                requiredMessage: "لطفا حوزه فعالیت شرکت را وارد کنید",
+             //   requiredMessage: "لطفا حوزه فعالیت شرکت را وارد کنید",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "email",
-                title: "ایمیل",
+                title: "<spring:message code="email"/>",
                 width: "*",
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
@@ -122,7 +122,7 @@ var companyId;
                     var emailCheck;
                     emailCheck = ValidateEmail(DynamicForm_Company.getValue("email"));
                     if (emailCheck == false) {
-                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.invalid.email.address'/>", true);
+                        DynamicForm_Company.addFieldErrors("email","<spring:message code='msg.company.checked.email'/>", true);
                     } else {
                         DynamicForm_Company.clearFieldErrors("email", true);
                     }
@@ -149,7 +149,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+       // requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
         fields: [
@@ -160,7 +160,7 @@ var companyId;
                 title: "<spring:message code='bank'/>",
                 type: 'text',
                 required: "true",
-                requiredMessage: "نام بانک را وارد کنید",
+               // requiredMessage: "نام بانک را وارد کنید",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -172,7 +172,6 @@ var companyId;
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
-
             {
                 name: "accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
@@ -181,8 +180,6 @@ var companyId;
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
-
-
             {
                 name: "accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
@@ -191,7 +188,6 @@ var companyId;
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
-
             {
                 name: "accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
@@ -200,7 +196,6 @@ var companyId;
                 keyPressFilter: "[0-9]",
                 length: "30"
             },
-
             {
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
@@ -228,7 +223,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+      //  requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
         fields: [
@@ -236,7 +231,7 @@ var companyId;
             {
                 name: "manager.firstNameFa",
                 required: "true",
-                title: "نام",
+                title: "<spring:message code='firstName'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -244,7 +239,7 @@ var companyId;
             {
                 name: "manager.lastNameFa",
                 required: "true",
-                title: "نام خانوادگی",
+                title: "<spring:message code='lastName'/>",
                 type: 'text',
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
@@ -253,25 +248,22 @@ var companyId;
             {
                 name: "manager.nationalCode",
                 required: "true",
-                title: "شماره ملی",
+               title: "<spring:message code='national.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
                 length: "10",
                 changed: function () {
                     var check_National_Company = checkCodeMeli_Company(DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode"));
-                        if (check_National_Company === true) {
-                          var nationalCodeCompany=DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode");
-                         DynamicForm_ManagerInfo_Company.clearFieldErrors("personality.nationalCode", true);
+                    if (check_National_Company === true) {
+                        var nationalCodeCompany = DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode");
+                        DynamicForm_ManagerInfo_Company.clearFieldErrors("personality.nationalCode", true);
                         isc.RPCManager.sendRequest(TrDSRequest(companyUrl + "getOneByNationalCode/" + nationalCodeCompany, "GET", null, "callback: personalInfo_findOne_result_company(rpcResponse)"));
                     }
-                    <%-- else {--%>
-                    <%--    DynamicForm_ManagerInfo_Company.addFieldErrors("personality.nationalCode", "<spring:message code='msg.national.code.validation'/>", true);--%>
-                    <%--}--%>
                 }
-            },  {
+            }, {
                 name: "manager.contactInfo.mobile",
-                title: "موبایل",
+              title: "<spring:message code='mobile'/>",
                 type: 'text',
                 textAlign: "left",
                 length: "11",
@@ -283,7 +275,7 @@ var companyId;
             },
             {
                 name: "manager.contactInfo.email",
-                title: "ایمیل",
+                title: "<spring:message code='email'/>",
                 type: 'text',
                 fontSizes: "1 (8 pt)",
                 validators: [TrValidators.EmailValidate],
@@ -293,7 +285,7 @@ var companyId;
                     emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
                     if (emailCheck == false) {
                         DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
-                          code='msg.invalid.email.address'/>", true);
+        code='msg.company.checked.email'/>", true);
                     } else {
                         DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
                     }
@@ -319,7 +311,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+       // requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
 
@@ -328,7 +320,7 @@ var companyId;
             {name: "id", hidden: true},
             {
                 name: "address.restAddr",
-                title: "آدرس",
+                title: "<spring:message code='address'/>",
                 type: 'text',
 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F\]",
                 length: "30",
@@ -336,7 +328,7 @@ var companyId;
             },
             {
                 name: "address.postCode",
-                title: "کد پستی",
+                title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 keyPressFilter: "[1-9]",
                 length: "30",
@@ -344,7 +336,7 @@ var companyId;
             },
             {
                 name: "address.phone",
-                title: "تلفن",
+                title: "<spring:message code='telephone'/>",
                 type: 'text',
                 length: "30",
                 textAlign: "left",
@@ -353,7 +345,7 @@ var companyId;
             },
             {
                 name: "address.fax",
-                title: "فکس",
+                title: "<spring:message code='fax'/>",
                 type: "text",
                 keyPressFilter: "[0-9]",
 // width: "*",
@@ -361,7 +353,7 @@ var companyId;
             },
             {
                 name: "address.webSite",
-                title: "وب سایت",
+                title: "<spring:message code='fax'/>",
                 type: 'text',
                 validators: {
                     type: "regexp",
@@ -379,7 +371,7 @@ var companyId;
             },
             {
                 name: "address.stateId",
-                title: "استان",
+               title: "<spring:message code='state'/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
                 required: true,
@@ -711,7 +703,7 @@ var companyId;
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
+               message: "<spring:message code="msg.record.remove.ask"/>",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -728,7 +720,7 @@ var companyId;
         if (respCode == 200 || respCode == 201) {
             ListGrid_Company.invalidateCache();
             var MyOkDialog_company = isc.MyOkDialog.create({
-                message: "عمليات با موفقيت اجرا شد.",
+                 message: "<spring:message code="msg.operation.successful"/>",
             });
             setTimeout(function () {
                 MyOkDialog_company.close();
@@ -736,7 +728,7 @@ var companyId;
             Window_Company.close();
         } else {
             var MyOkDialog_company = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: " + resp.httpResponseCode,
+                message: "msg.operation.error",
             });
             setTimeout(function () {
                 MyOkDialog_company.close();
@@ -790,14 +782,14 @@ var companyId;
     }
 
     function personalInfo_findOne_result_company(resp) {
-
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personal = JSON.parse(resp.data);
-            console.log(JSON.parse(resp.data));
-            DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.manager.firstNameFa);
-            DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.manager.lastNameFa);
-            DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.mobile", personal.manager.contactInfo.mobile);
-            DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.email", personal.manager.contactInfo.email);
+            DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.firstNameFa);
+            DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.lastNameFa);
+            if (personal.contactInfo !== null && personal.contactInfo !== undefined) {
+                DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.mobile", personal.contactInfo.mobile);
+                DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.email", personal.contactInfo.email);
+            }
         }
     };
 
