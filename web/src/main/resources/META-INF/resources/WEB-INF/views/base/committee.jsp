@@ -249,7 +249,7 @@
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Committee = isc.MyDynamicForm.create({
+    var DynamicForm_Committee = isc.DynamicForm.create({
 
 
         fields: [
@@ -316,7 +316,7 @@
         items: [
             DynamicForm_Committee,
             isc.MyHLayoutButtons.create({
-                members: [isc.MyButton.create({
+                members: [isc.Button.create({
                     title: "<spring:message code="save"/>",
                     icon: "pieces/16/save.png",
                     click: function () {
@@ -328,7 +328,7 @@
 
 
                     }
-                }), isc.MyButton.create({
+                }), isc.Button.create({
                     title: "<spring:message code="cancel"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {

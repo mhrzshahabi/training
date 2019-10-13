@@ -145,7 +145,7 @@ var taskMethod="POST";
 //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Task = isc.MyDynamicForm.create({
+    var DynamicForm_Task = isc.DynamicForm.create({
         ID: "DynamicForm_Task",
          valuesManager: "vm",
         fields: [{name: "id", hidden: true},

@@ -66,20 +66,23 @@
         titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
+
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",
+        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "", useClientFiltering: false,
+        changeOnKeypress: false,
     });
+
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
-    var TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+    let TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -181,17 +184,17 @@
         EmailValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.email.address"/>",
-            expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
+            expression: /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/,
         },
         WebsiteValidate: {
-                  type: "regexp",
-                  errorMessage: "msg.website.validation",
-                  expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
-                },
+            type: "regexp",
+            errorMessage: "<spring:message code="msg.invalid.web.address"/>",
+            expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.[a-z]{2,5}(:[0-9]{1,5})?(\/.*)?$/
+        },
         MobileValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
-            expression: /^((0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9})$/,
+            expression: /^([+]\d{2})?\d{10}$/,
         },
         PhoneValidate: {
             type: "regexp",
@@ -212,9 +215,9 @@
     };
 
     function trTrim(value) {
-        var trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
+        let trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
-    };
+    }
 
     isc.TextItem.addProperties({validators: [TrValidators.Trimmer]});
     isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
@@ -272,7 +275,7 @@
             dialog.message = message ? message : "<spring:message code='in.operation'/>";
         }
         return dialog;
-    };
+    }
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
     isc.TrComboAutoRefresh.addProperties({
@@ -530,16 +533,15 @@
 
     function logout() {
         document.location.href = "logout";
-    };
+    }
 
     function createTab(title, url, autoRefresh) {
-        var tab = trainingTabSet.getTabObject(title);
+        let tab = trainingTabSet.getTabObject(title);
         if (tab !== undefined) {
             if ((autoRefresh !== undefined) && (autoRefresh == true)) {
                 trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
             }
             trainingTabSet.selectTab(tab);
-            return;
         } else {
             trainingTabSet.addTab({
                 title: title,
@@ -549,7 +551,7 @@
             });
             createTab(title, url);
         }
-    };
+    }
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";
@@ -572,9 +574,7 @@
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
 
-
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
-        var xhttp;
         xhttp = new XMLHttpRequest();
         xhttp.willHandleError = true;
         xhttp.onreadystatechange = function () {
@@ -585,55 +585,14 @@
         xhttp.open(method, url, true);
         xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttp.send(formData1);
-    };
+    }
 
-    isc.defineClass("MyDynamicForm", DynamicForm);
-    isc.MyDynamicForm.addProperties({
-        width: "100%",
-        align: "center",
-        margin: 10,
-        cellPadding: 3,
-        wrapItemTitles: false,
-        titleAlign: "right",
-        requiredMessage: "فیلد اجباری است.",
-        showInlineErrors: true,
-        showErrorText: false,
-        showErrorStyle: false,
-        errorOrientation: "right",
-        canSubmit: true,
-    });
-
-    isc.defineClass("MyButton", Button);
-    isc.MyButton.addProperties({
-        width: 100,
-        height: 27,
-    });
-
-    isc.defineClass("MyHLayoutButtons", HLayout);
-    isc.MyHLayoutButtons.addProperties({
-        width: "100%",
-        height: 50,
-        align: "center",
-        verticalAlign: "center",
-        membersMargin: 15,
-        defaultLayoutAlign: "center",
-    });
-
-    isc.defineClass("MyComboBoxItem", ComboBoxItem);
-    isc.MyComboBoxItem.addProperties({
-        addUnknownValues: false,
-        useClientFiltering: false,
-        cachePickListResults: true,
-        changeOnKeypress: false,
-        useClientFiltering: true,
-        width: "*"
-    });
 
     isc.defineClass("MyOkDialog", Dialog);
     isc.MyOkDialog.addProperties({
         title: "<spring:message code='message'/>",
         isModal: true,
-        buttons: [isc.MyButton.create({title: "تائید"})],
+        buttons: [isc.Button.create({title: "تائید"})],
         icon: "[SKIN]say.png",
         buttonClick: function (button, index) {
             this.close();
@@ -646,17 +605,11 @@
         icon: "[SKIN]say.png",
         title: "<spring:message code='message'/>",
         buttons: [
-            isc.MyButton.create({title: "بله",}),
-            isc.MyButton.create({title: "خير",})],
+            isc.Button.create({title: "بله",}),
+            isc.Button.create({title: "خير",})],
         buttonClick: function (button, index) {
             this.close();
         }
-    });
-
-    isc.defineClass("MyTabSet", TabSet);
-    isc.TabSet.addProperties({
-        width: "100%",
-        height: "100%",
     });
 
     isc.RPCManager.addClassProperties({
@@ -668,7 +621,7 @@
     });
 
     function trPrintWithCriteria(url, advancedCriteria) {
-        var trCriteriaForm = isc.DynamicForm.create({
+        let trCriteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: url,
             target: "_Blank",
@@ -678,12 +631,13 @@
                     {name: "CriteriaStr", type: "hidden"},
                     {name: "token", type: "hidden"}
                 ]
-        })
+        });
         trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         trCriteriaForm.setValue("token", "<%=accessToken%>");
         trCriteriaForm.show();
         trCriteriaForm.submitForm();
     }
+
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>

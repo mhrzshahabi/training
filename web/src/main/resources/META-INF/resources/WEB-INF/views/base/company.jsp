@@ -467,7 +467,7 @@ var companyId;
                 HLayOut_Company,
                 TabSet_Company_JspCompany,
                 isc.MyHLayoutButtons.create({
-                    members: [isc.MyButton.create({
+                    members: [isc.Button.create({
                         title: "<spring:message code="save"/>",
 // icon: "pieces/16/save.png",
                         click: function () {
@@ -480,7 +480,7 @@ var companyId;
 
 
                         }
-                    }), isc.MyButton.create({
+                    }), isc.Button.create({
                         title: "<spring:message code="cancel"/>",
 // icon: "<spring:url value="remove.png"/>",
                         click: function () {

@@ -98,7 +98,7 @@
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Term = isc.MyDynamicForm.create({
+    var DynamicForm_Term = isc.DynamicForm.create({
         ID: "DynamicForm_Term",
         fields: [{name: "id", hidden: true},
             {
@@ -235,7 +235,7 @@
         title: "دوره",
         width: 500,
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-            members: [isc.MyButton.create({
+            members: [isc.Button.create({
                 title: "ذخیره",
                // icon: "pieces/16/save.png",
 
@@ -251,7 +251,7 @@
                     }
                 }
 
-            }), isc.MyButton.create({
+            }), isc.Button.create({
                 title: "لغو",
              //   icon: "<spring:url value="remove.png"/>",
                 click: function () {
