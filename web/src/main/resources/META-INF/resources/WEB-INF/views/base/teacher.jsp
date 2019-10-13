@@ -2,25 +2,20 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-
 // <script>
     var dummy;
     var teacherMethod = "POST";
     var teacherWait;
-
     var responseID;
     var categoryList;
     var gridState;
     var attachName;
     var attachNameTemp;
-
     var codeMeliCheck = true;
     var cellPhoneCheck = true;
     var mailCheck = true;
     var persianDateCheck = true;
-
     var selectedRecordPersonalID = null;
-
     var teacherCategoriesID = [];
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -694,7 +689,7 @@
                 multiple: "",
             }
         ],
-        itemChanged: function (item, newValue) {
+        itemChanged: function (item) {
             if (item.name === "attachPic") {
                 showTempAttach();
                 setTimeout(function () {

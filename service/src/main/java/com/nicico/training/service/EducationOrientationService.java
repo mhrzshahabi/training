@@ -9,7 +9,9 @@ import com.nicico.training.iservice.IEducationOrientationService;
 import com.nicico.training.model.EducationOrientation;
 import com.nicico.training.repository.EducationOrientationDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -45,13 +47,18 @@ public class EducationOrientationService implements IEducationOrientationService
     @Override
     public EducationOrientationDTO.Info create(EducationOrientationDTO.Create request) {
         final EducationOrientation educationOrientation = modelMapper.map(request, EducationOrientation.class);
-        if (educationOrientationDAO.findByTitleFaAndEducationLevelIdAAndEducationMajorId(
-                educationOrientation.getTitleFa(),
-                educationOrientation.getEducationLevelId(),
-                educationOrientation.getEducationMajorId()).isEmpty())
+        try {
             return save(educationOrientation);
-        else
-            return null;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+//        if (educationOrientationDAO.findByTitleFaAndEducationLevelIdAAndEducationMajorId(
+//                educationOrientation.getTitleFa(),
+//                educationOrientation.getEducationLevelId(),
+//                educationOrientation.getEducationMajorId()).isEmpty())
+//            return save(educationOrientation);
+//        else
+//            return null;
     }
 
     @Transactional
@@ -59,26 +66,40 @@ public class EducationOrientationService implements IEducationOrientationService
     public EducationOrientationDTO.Info update(Long id, EducationOrientationDTO.Update request) {
         final Optional<EducationOrientation> cById = educationOrientationDAO.findById(id);
         final EducationOrientation educationOrientation = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
+
         if (!Objects.equals(request.getEducationLevelId(), educationOrientation.getEducationLevelId()) ||
                 !Objects.equals(request.getEducationMajorId(), educationOrientation.getEducationMajorId()))
             if (!educationOrientation.getPersonalInfoList().isEmpty())
-                return null;
+                throw new TrainingException(TrainingException.ErrorType.NotEditable);
+
         EducationOrientation updating = new EducationOrientation();
         modelMapper.map(educationOrientation, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+
+//        List<EducationOrientation> orientationList = educationOrientationDAO.findByTitleFaAndEducationLevelIdAAndEducationMajorId(
+//                updating.getTitleFa(),
+//                updating.getEducationLevelId(),
+//                updating.getEducationMajorId());
+//        if (orientationList.size() > 1)
+//            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+//        if (orientationList.size() == 1 && !Objects.equals(educationOrientation.getId(), orientationList.get(0).getId()))
+//            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        try {
+            return save(updating);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
-    public Boolean delete(Long id) {
+    public void delete(Long id) {
         final Optional<EducationOrientation> one = educationOrientationDAO.findById(id);
         final EducationOrientation educationOrientation = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationOrientationNotFound));
-        if (educationOrientation.getPersonalInfoList().isEmpty()) {
+        try {
             educationOrientationDAO.delete(educationOrientation);
-            return true;
-        } else {
-            return false;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
 
@@ -111,7 +132,7 @@ public class EducationOrientationService implements IEducationOrientationService
     public List<EducationOrientationDTO.Info> listByLevelIdAndMajorId(Long levelId, Long majorId) {
         List<EducationOrientation> educationOrientations = educationOrientationDAO.listByLevelIdAndMajorId(levelId, majorId);
         List<EducationOrientationDTO.Info> eduOrientationInfo = new ArrayList<>();
-        for (EducationOrientation eduOrient: educationOrientations) {
+        for (EducationOrientation eduOrient : educationOrientations) {
             eduOrientationInfo.add(modelMapper.map(eduOrient, EducationOrientationDTO.Info.class));
         }
         return eduOrientationInfo;

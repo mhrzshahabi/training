@@ -6,11 +6,13 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationOrientationDTO;
 import com.nicico.training.iservice.IEducationOrientationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -49,33 +51,48 @@ public class EducationOrientationRestController {
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.Info> create(@Validated @RequestBody EducationOrientationDTO.Create request) {
-        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.create(request);
-        if (educationOrientationInfo != null)
-            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity create(@Validated @RequestBody EducationOrientationDTO.Create request) {
+//        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.create(request);
+//        if (educationOrientationInfo != null)
+//            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.CREATED);
+//        else
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+
+        try {
+            return new ResponseEntity<>(educationOrientationService.create(request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationOrientation')")
-    public ResponseEntity<EducationOrientationDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EducationOrientationDTO.Update request) {
-        EducationOrientationDTO.Info educationOrientationInfo = educationOrientationService.update(id, request);
-        if (educationOrientationInfo == null)
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
-        else
-            return new ResponseEntity<>(educationOrientationInfo, HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody EducationOrientationDTO.Update request) {
+        try {
+            return new ResponseEntity<>(educationOrientationService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationOrientation')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        if (educationOrientationService.delete(id))
+    public ResponseEntity delete(@PathVariable Long id) {
+//        if (educationOrientationService.delete(id))
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
+        try {
+            educationOrientationService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    null,
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

@@ -15,7 +15,7 @@ public interface IEducationMajorService {
 
     EducationMajorDTO.Info update(Long id, EducationMajorDTO.Update request);
 
-    Boolean delete(Long id);
+    void delete(Long id);
 
     void delete(EducationMajorDTO.Delete request);
 
