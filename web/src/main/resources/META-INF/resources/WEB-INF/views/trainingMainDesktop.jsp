@@ -185,8 +185,8 @@
         },
         WebsiteValidate: {
                   type: "regexp",
-                  errorMessage: "msg.website.validation",
-                  expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
+                   errorMessage: "<spring:message code="msg.website.validation"/>",
+                   expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/,
                 },
         MobileValidate: {
             type: "regexp",
