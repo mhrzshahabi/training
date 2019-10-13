@@ -110,7 +110,7 @@
             }]
     });
 
-    var ListGrid_Committee = isc.MyListGrid.create({
+    var ListGrid_Committee = isc.TrLG.create({
         dataSource: RestDataSource_committee,
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
@@ -136,14 +136,14 @@
         sortField: 1,
     });
 
-    var ListGrid_Member_Attached_Committee = isc.MyListGrid.create({
+    var ListGrid_Member_Attached_Committee = isc.TrLG.create({
         dataSource: Ds_Member_Attached_Committee,
         selectionType: "none",
         sortField: 1
 
     });
 
-    var ListGrid_All_Person = isc.MyListGrid.create({
+    var ListGrid_All_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         canDragRecordsOut: true,
@@ -197,7 +197,7 @@
     });
 
 
-    var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
+    var ListGrid_ThisCommittee_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         selectionType: "multiple",
@@ -249,7 +249,7 @@
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Committee = isc.MyDynamicForm.create({
+    var DynamicForm_Committee = isc.DynamicForm.create({
 
 
         fields: [
@@ -316,7 +316,7 @@
         items: [
             DynamicForm_Committee,
             isc.MyHLayoutButtons.create({
-                members: [isc.MyButton.create({
+                members: [isc.Button.create({
                     title: "<spring:message code="save"/>",
                     icon: "pieces/16/save.png",
                     click: function () {
@@ -328,7 +328,7 @@
 
 
                     }
-                }), isc.MyButton.create({
+                }), isc.Button.create({
                     title: "<spring:message code="cancel"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {

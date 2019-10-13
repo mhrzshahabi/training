@@ -165,7 +165,7 @@
         }
     });
 
-    var IButton_Goal_Save = isc.MyButton.create({
+    var IButton_Goal_Save = isc.Button.create({
         top: 260, title: "ذخیره",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -202,7 +202,7 @@
 
         }
     });
-    var IButton_Syllabus_Save = isc.MyButton.create({
+    var IButton_Syllabus_Save = isc.Button.create({
         top: 260, title: "ذخیره",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -276,7 +276,7 @@
     });
 
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
-        members: [IButton_Goal_Save, isc.MyButton.create({
+        members: [IButton_Goal_Save, isc.Button.create({
             ID: "IButton_Goal_Exit",
             title: "لغو",
             // prompt: "",
@@ -297,7 +297,7 @@
         // align: "center",
         // padding: 10,
         // membersMargin: 10,
-        members: [IButton_Syllabus_Save, isc.MyButton.create({
+        members: [IButton_Syllabus_Save, isc.Button.create({
             ID: "IButton_Syllabus_Exit",
             title: "لغو",
             prompt: "",

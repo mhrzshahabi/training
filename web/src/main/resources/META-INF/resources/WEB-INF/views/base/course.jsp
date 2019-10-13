@@ -197,7 +197,7 @@
             }
         ]
     });
-    var ListGrid_Course = isc.MyListGrid.create({
+    var ListGrid_Course = isc.TrLG.create({
         ID: "gridCourse",
         dataSource: RestDataSource_course,
         canAddFormulaFields: true,
@@ -372,7 +372,7 @@
             }
         },
     });
-    var ListGrid_CourseSkill = isc.MyListGrid.create({
+    var ListGrid_CourseSkill = isc.TrLG.create({
         dataSource: RestDataSource_CourseSkill,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -389,7 +389,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseJob = isc.MyListGrid.create({
+    var ListGrid_CourseJob = isc.TrLG.create({
         dataSource: RestDataSource_CourseJob,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -406,7 +406,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseCompetence = isc.MyListGrid.create({
+    var ListGrid_CourseCompetence = isc.TrLG.create({
         dataSource: RestDataSource_CourseCompetence,
         fields: [
             {name: "id", title: "شماره", canEdit: false, hidden: true},
@@ -422,7 +422,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseSyllabus = isc.MyListGrid.create({
+    var ListGrid_CourseSyllabus = isc.TrLG.create({
 
         dataSource: RestDataSource_Syllabus,
         groupByField: "goal.titleFa", groupStartOpen: "none",
@@ -903,7 +903,7 @@
                 // titleOrientation: "top",
                 title: "<spring:message code="course_eruntype"/>",
                 required: true,
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_e_run_type,
                 // autoFetchData: false,
@@ -937,7 +937,7 @@
                 name: "elevelType.id",
                 colSpan: 1,
                 title: "<spring:message code="cousre_elevelType"/>",
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 required: true,
                 // height: "30",
@@ -973,7 +973,7 @@
                 colSpan: 1,
                 title: "<spring:message code="course_etheoType"/>",
                 required: true,
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSourceETheoType,
                 valueField: "id",
@@ -1004,7 +1004,7 @@
                 colSpan: 1,
 
                 title: "<spring:message code="course_etechnicalType"/>",
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 required: true,
                 displayField: "titleFa",
@@ -1836,7 +1836,7 @@
             {
                 // id: "TabPane_Post",
                 title: "<spring:message code="post"/>",
-                pane: isc.MyListGrid.create({
+                pane: isc.TrLG.create({
                     ID: "ListGrid_Post_JspCourse",
                     showResizeBar: false,
                     dataSource: isc.TrDS.create({

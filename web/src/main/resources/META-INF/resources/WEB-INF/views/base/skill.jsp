@@ -142,7 +142,7 @@
 
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
 
-    var DynamicForm_Skill_Skill = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_Skill = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -1024,7 +1024,7 @@
         ]
     });
 
-    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.DynamicForm.create({
         titleWidth: 400,
 // border:2,
         width: "100%",
@@ -1466,7 +1466,7 @@
         ]
     });
 
-    var DynamicForm_Skill_SkillData_Add_Course = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_Course = isc.DynamicForm.create({
         titleWidth: 400,
 // border:2,
         width: "100%",
