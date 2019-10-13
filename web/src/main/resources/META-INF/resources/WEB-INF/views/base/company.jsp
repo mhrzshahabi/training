@@ -493,7 +493,7 @@ var companyId;
     });
 
 
-    var ListGrid_Company = isc.MyListGrid.create({
+    var ListGrid_Company = isc.TrLG.create({
         dataSource: RestDataSource_company,
         contextMenu: Menu_ListGrid_Company,
         autoFetchData: true,

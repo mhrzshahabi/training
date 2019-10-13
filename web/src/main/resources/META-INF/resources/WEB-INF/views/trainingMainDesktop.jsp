@@ -587,21 +587,6 @@
         xhttp.send(formData1);
     };
 
-    isc.defineClass("MyListGrid", ListGrid);
-    isc.MyListGrid.addProperties({
-        width: "100%",
-        height: "100%",
-        dataPageSize: 50,
-        useAllDataSourceFields: true,
-        selectionType: "single",
-        showFilterEditor: true,
-        filterOnKeypress: true,
-        alternateRecordStyles: true,
-        autoDraw: true,
-        showResizeBar: true,
-        sortField: 0,
-    });
-
     isc.defineClass("MyDynamicForm", DynamicForm);
     isc.MyDynamicForm.addProperties({
         width: "100%",

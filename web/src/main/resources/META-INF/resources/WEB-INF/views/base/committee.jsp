@@ -110,7 +110,7 @@
             }]
     });
 
-    var ListGrid_Committee = isc.MyListGrid.create({
+    var ListGrid_Committee = isc.TrLG.create({
         dataSource: RestDataSource_committee,
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
@@ -136,14 +136,14 @@
         sortField: 1,
     });
 
-    var ListGrid_Member_Attached_Committee = isc.MyListGrid.create({
+    var ListGrid_Member_Attached_Committee = isc.TrLG.create({
         dataSource: Ds_Member_Attached_Committee,
         selectionType: "none",
         sortField: 1
 
     });
 
-    var ListGrid_All_Person = isc.MyListGrid.create({
+    var ListGrid_All_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         canDragRecordsOut: true,
@@ -197,7 +197,7 @@
     });
 
 
-    var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
+    var ListGrid_ThisCommittee_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         selectionType: "multiple",

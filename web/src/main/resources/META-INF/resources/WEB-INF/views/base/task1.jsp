@@ -66,7 +66,7 @@ var taskMethod="POST";
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
     });
-    var ListGrid_Task = isc.MyListGrid.create({
+    var ListGrid_Task = isc.TrLG.create({
      //   dataSource: RestDataSource_term,
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_task,

@@ -276,7 +276,7 @@
 
 
 
-    var ListGrid_Skill_Group_Jsp = isc.MyListGrid.create({
+    var ListGrid_Skill_Group_Jsp = isc.TrLG.create({
         color: "red",
         selectionType:"multiple",
         dataSource: RestDataSource_Skill_Group_Jsp,

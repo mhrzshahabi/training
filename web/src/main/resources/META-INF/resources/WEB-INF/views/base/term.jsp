@@ -70,7 +70,7 @@
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
     });
-    var ListGrid_Term = isc.MyListGrid.create({
+    var ListGrid_Term = isc.TrLG.create({
         dataSource: RestDataSource_term,
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_term,
