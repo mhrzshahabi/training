@@ -49,7 +49,7 @@ var taskMethod="POST";
  //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
-    var RestDataSource_term = isc.MyRestDataSource.create({
+    var RestDataSource_term = isc.TrDS.create({
         ID: "termDS",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {

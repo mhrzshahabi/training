@@ -15,14 +15,14 @@
     var urlSyllabus = syllabusUrl;
     var selectedRecord = 0;
 
-    var RestDataSourceGoalEDomainType = isc.MyRestDataSource.create({
+    var RestDataSourceGoalEDomainType = isc.TrDS.create({
         fields: [{name: "id", primeryKey: true}, {name: "titleFa"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
         fetchDataURL: enumUrl + "eDomainType"
     });
-    var RestDataSource_GoalAll = isc.MyRestDataSource.create({
+    var RestDataSource_GoalAll = isc.TrDS.create({
         ID: "goalDS",
         fields: [
             {name: "id", primaryKey: "true", hidden: "true"}, {name: "titleFa"}, {name: "titleEn"},
@@ -32,7 +32,7 @@
         jsonSuffix: "",
         // fetchDataURL: courseUrl + "goal/" + ListGrid_Course.getSelectedRecord().id
     });
-    var RestDataSource_Syllabus_JspGoal = isc.MyRestDataSource.create({
+    var RestDataSource_Syllabus_JspGoal = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},

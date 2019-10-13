@@ -31,7 +31,7 @@ var dummy;
     /*Rest Data Sources*/
     // ------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Teacher_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "teacherCode"},
@@ -45,25 +45,25 @@ var dummy;
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-    var RestDataSource_Egender_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eGender/spec-list"
     });
 
-    var RestDataSource_Emilitary_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Emilitary_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
 
-    var RestDataSource_Category_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Category_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-     var RestDataSource_Education_Orientation_JspTeacher = isc.MyRestDataSource.create({
+     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
@@ -71,7 +71,7 @@ var dummy;
         ]
     });
 
-    var RestDataSource_Home_City_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Home_City_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -79,14 +79,14 @@ var dummy;
     });
 
 
-    var RestDataSource_Work_City_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Work_City_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
         ]
     });
 
-    var RestDataSource_Work_State_JspTeacher = isc.MyRestDataSource.create({
+    var RestDataSource_Work_State_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -538,7 +538,7 @@ var dummy;
                 var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
                 teacherSaveUrl += teacherRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data), "callback: teacher_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data), "callback: teacher_action_result(rpcResponse)"));
         }
     });
 
@@ -848,7 +848,7 @@ var dummy;
                             title: "<spring:message code='message'/>"
                         });
 
-                        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + record.id, "DELETE", null, "callback: teacher_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + record.id, "DELETE", null, "callback: teacher_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -873,7 +873,7 @@ var dummy;
 
     function addCategories(teacherId, categoryIds) {
         var JSONObj = {"ids": categoryIds};
-        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj), "callback: teacher_addCategories_result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj), "callback: teacher_addCategories_result(rpcResponse)"));
 
     };
 
@@ -912,7 +912,7 @@ var dummy;
 
     function showCategories() {
         teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(MyDsRequest(teacherUrl + "getCategories/" + teacherId, "POST", null, "callback: teacher_getCategories_result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "getCategories/" + teacherId, "POST", null, "callback: teacher_getCategories_result(rpcResponse)"));
     };
 
     function teacher_delete_result(resp) {
@@ -1025,7 +1025,7 @@ var dummy;
 
     function showAttach(pId) {
         selectedRecordPersonalID = pId;
-        isc.RPCManager.sendRequest(MyDsRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null, "callback: personalInfo_checkAttach_result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "checkAttach/" + selectedRecordPersonalID, "GET", null, "callback: personalInfo_checkAttach_result(rpcResponse)"));
     };
 
     function personalInfo_checkAttach_result(resp) {

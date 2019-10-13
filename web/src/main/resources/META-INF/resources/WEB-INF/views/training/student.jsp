@@ -11,7 +11,7 @@
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Student_JspStudent = isc.MyRestDataSource.create({
+    var RestDataSource_Student_JspStudent = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "studentID"},
@@ -223,7 +223,7 @@
                 var studentRecord = ListGrid_Student_JspStudent.getSelectedRecord();
                 studentSaveUrl += studentRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(studentSaveUrl, studentMethod, JSON.stringify(data), "callback: student_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(studentSaveUrl, studentMethod, JSON.stringify(data), "callback: student_action_result(rpcResponse)"));
         }
     });
 
@@ -369,7 +369,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(MyDsRequest(studentUrl + record.id, "DELETE", null, "callback: student_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "DELETE", null, "callback: student_delete_result(rpcResponse)"));
                     }
                 }
             });

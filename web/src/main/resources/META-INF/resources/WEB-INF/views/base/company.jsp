@@ -13,7 +13,7 @@ var companyId;
 //************************************************************************************
 //<script>
 
-    var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
+    var RestDataSource_Work_City_Company = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -21,7 +21,7 @@ var companyId;
     });
 
 
-    var RestDataSource_Work_State_Company = isc.MyRestDataSource.create({
+    var RestDataSource_Work_State_Company = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -30,7 +30,7 @@ var companyId;
     });
 
 
-    var RestDataSource_company = isc.MyRestDataSource.create({
+    var RestDataSource_company = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
@@ -122,7 +122,7 @@ var companyId;
                     var emailCheck;
                     emailCheck = ValidateEmail(DynamicForm_Company.getValue("email"));
                     if (emailCheck == false) {
-                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.company.checked.email'/>", true);
+                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.invalid.email.address'/>", true);
                     } else {
                         DynamicForm_Company.clearFieldErrors("email", true);
                     }
@@ -293,7 +293,7 @@ var companyId;
                     emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
                     if (emailCheck == false) {
                         DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
-                          code='msg.company.checked.email'/>", true);
+                          code='msg.invalid.email.address'/>", true);
                     } else {
                         DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
                     }
@@ -633,9 +633,7 @@ var companyId;
         }
 
         var data_Company = co.getValues();
-        isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
-
-
+        isc.RPCManager.sendRequest(TrDSRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
     };
 
     function Edit_Company() {
@@ -656,7 +654,7 @@ var companyId;
         var Record = ListGrid_Company.getSelectedRecord();
         company_editURL += Record.id;
         var data_Company = co.getValues();
-        isc.RPCManager.sendRequest(MyDsRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
 
     }
 
@@ -717,7 +715,7 @@ var companyId;
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(MyDsRequest(companyUrl + record.id, "DELETE", null, "callback: show_CompanyActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(companyUrl + record.id, "DELETE", null, "callback: show_CompanyActionResult(rpcResponse)"));
                     }
                 }
             });

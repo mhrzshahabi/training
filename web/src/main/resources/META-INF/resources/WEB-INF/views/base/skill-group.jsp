@@ -12,7 +12,7 @@
 
 
 
-    var RestDataSource_Skill_Group_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام گروه مهارت", align: "center", filterOperator: "contains"},
@@ -402,7 +402,7 @@
     }
 
 
-    var RestDataSource_Skill_Group_Skills_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Skills_Jsp = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -414,7 +414,7 @@
     });
 
 
-    var RestDataSource_All_Skills = isc.MyRestDataSource.create({
+    var RestDataSource_All_Skills = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -426,7 +426,7 @@
         , fetchDataURL: skillGroupUrl + "spec-list"
     });
 
-    var RestDataSource_ForThisSkillGroup_GetSkills = isc.MyRestDataSource.create({
+    var RestDataSource_ForThisSkillGroup_GetSkills = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -633,7 +633,7 @@
             var JSONObj = {"ids": skillIds};
 
 
-            MyDsRequest()
+            TrDSRequest()
 
 
             isc.RPCManager.sendRequest({
@@ -775,7 +775,7 @@
     });
 
 
-    var RestDataSource_Skill_Group_Competencies_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Competencies_Jsp = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},

@@ -8,7 +8,7 @@
 
 <html>
 <head>
-    <title><spring:message code="nicico.training.system"/></title>
+    <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
@@ -59,36 +59,20 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({
-        width: "100%",
-        height: "100%",
-        border: "0px",
-        loadingMessage: "<spring:message code="loading"/>",
-    });
+    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>", requiredTitleSuffix: "",
-        requiredMessage: "<spring:message code="msg.field.is.required"/>"
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
+        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
+        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        canFocus: true,
-        dismissOnEscape: true,
-        canDragResize: true,
-        showHeaderIcon: false,
-        animateMinimize: true,
-        showMaximizeButton: true,
+        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true},
-        addUnknownValues: false,
-        emptyPickListMessage: "",
+        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "",
     });
-
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
@@ -196,17 +180,17 @@
         },
         EmailValidate: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.company.checked.email"/>",
+            errorMessage: "<spring:message code="msg.invalid.email.address"/>",
             expression: /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/,
         },
         MobileValidate: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.check.mobile"/>",
+            errorMessage: "<spring:message code="msg.invalid.mobile.number"/>",
             expression: /^((0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9})$/,
         },
         PhoneValidate: {
             type: "regexp",
-            errorMessage: "<spring:message code="msg.check.phone"/>",
+            errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
             expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
         },
         Trimmer: {
@@ -220,8 +204,6 @@
                 return true;
             }
         }
-
-
     };
 
     function trTrim(value) {
@@ -256,43 +238,35 @@
     });
 
     function createDialog(type, message, title) {
+        dialog = isc.Dialog.create({
+            icon: type + '.png',
+            title: title ? title : "<spring:message code='message'/>",
+            message: message,
+        });
+
         if (type === 'info') {
-            return isc.Dialog.create({
-                icon: type + '.png',
-                title: title ? title : "<spring:message code='message'/>",
-                message: message,
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>",})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            dialog.setButtons([
+                isc.Button.create({
+                    title: "<spring:message code="ok"/>",
+                    click: function () {
+                        this.close();
+                    }
+                })
+            ]);
         } else if (type === 'ask') {
-            return isc.Dialog.create({
-                icon: type + '.png',
-                title: title ? title : "<spring:message code='message'/>",
-                message: message,
-                buttons: [
-                    isc.Button.create({title: "<spring:message code="yes"/>",}),
-                    isc.Button.create({title: "<spring:message code="no"/>",})
-                ],
-            });
+            dialog.setButtons([
+                isc.Button.create({title: "<spring:message code="yes"/>",}),
+                isc.Button.create({title: "<spring:message code="no"/>",})
+            ]);
         } else if (type === 'confirm') {
-            return isc.Dialog.create({
-                icon: type + '.png',
-                title: title ? title : "<spring:message code='message'/>",
-                message: message,
-                buttons: [
-                    isc.Button.create({title: "<spring:message code="yes"/>",}),
-                    isc.Button.create({title: "<spring:message code="no"/>",})
-                ],
-            });
+            dialog.setButtons([
+                isc.Button.create({title: "<spring:message code="ok"/>",}),
+                isc.Button.create({title: "<spring:message code="cancel"/>",})
+            ]);
         } else if (type === 'wait') {
-            return isc.Dialog.create({
-                icon: type + '.png',
-                title: title ? title : "<spring:message code='message'/>",
-                message: message ? message : "<spring:message code='msg.waiting'/>",
-            });
+            dialog.message = message ? message : "<spring:message code='in.operation'/>";
         }
+        return dialog;
     };
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
@@ -302,35 +276,17 @@
         }
     });
 
-    function trPrintWithCriteria(url, advancedCriteria) {
-        var trCriteriaForm = isc.DynamicForm.create({
-            method: "POST",
-            action: url,
-            target: "_Blank",
-            canSubmit: true,
-            fields:
-                [
-                    {name: "CriteriaStr", type: "hidden"},
-                    {name: "token", type: "hidden"}
-                ]
-        })
-        trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-        trCriteriaForm.setValue("token", "<%=accessToken%>");
-        trCriteriaForm.show();
-        trCriteriaForm.submitForm();
-    }
-
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
         src: "<spring:url value="nicico.png"/>",
-        width: 24,
-        height: 24,
+        // width: 24,
+        // height: 24,
         imageType: "stretch",
         padding: 5,
     });
 
     systemLabel = isc.Label.create({
-        contents: "<spring:message code="nicico.training.system"/>",
+        contents: "<spring:message code="training.system"/>",
         styleName: "normalBold",
         padding: 5,
     });
@@ -550,33 +506,6 @@
 
     trainingTabSet = isc.TabSet.create({
         tabs: [],
-        tabSelected: function (tabSet, tabNum, tabPane, ID, tab, name) {
-            var tabTitle = ID.title;
-            if (tabTitle.substr(0, 5) == "اهداف") {
-                setTimeout(function () {
-                    RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
-                    ListGrid_Goal.fetchData();
-                    ListGrid_Goal.invalidateCache();
-                    RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
-                    ListGrid_Syllabus_Goal.fetchData();
-                    ListGrid_Syllabus_Goal.invalidateCache();
-
-                }, 100);
-            }
-            if (tabTitle.substr(0, 4) == "دوره") {
-                setTimeout(function () {
-                    ListGrid_CourseCompetence.invalidateCache();
-                    ListGrid_CourseSkill.invalidateCache();
-                    ListGrid_CourseJob.invalidateCache();
-                    // ListGrid_CourseGoal.invalidateCache();
-                    if (courseId != "") {
-                        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
-                        ListGrid_CourseSyllabus.fetchData();
-                        ListGrid_CourseSyllabus.invalidateCache();
-                    }
-                }, 100);
-            }
-        },
     });
 
     isc.TrVLayout.create({
@@ -652,37 +581,6 @@
         xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttp.send(formData1);
     };
-
-    var MyDsRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
-        return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true,
-            showPrompt: false,
-            serverOutputAsString: false,
-            actionURL: actionURLParam,
-            httpMethod: httpMethodParam,
-            data: dataParam,
-            callback: callbackParam,
-            willHandleError: true,
-        }
-    };
-
-    isc.defineClass("MyRestDataSource", RestDataSource);
-    isc.MyRestDataSource.addProperties({
-        dataFormat: "json",
-        jsonSuffix: "",
-        jsonPrefix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer <%= accessToken %>"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        transformResponse: function (dsResponse, dsRequest, data) {
-            return this.Super("transformResponse", arguments);
-        }
-    });
 
     isc.defineClass("MyListGrid", ListGrid);
     isc.MyListGrid.addProperties({
@@ -778,6 +676,24 @@
             isc.say("خطا در اتصال به سرور!");
         }
     });
+
+    function trPrintWithCriteria(url, advancedCriteria) {
+        var trCriteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: url,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"},
+                    {name: "token", type: "hidden"}
+                ]
+        })
+        trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        trCriteriaForm.setValue("token", "<%=accessToken%>");
+        trCriteriaForm.show();
+        trCriteriaForm.submitForm();
+    }
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
