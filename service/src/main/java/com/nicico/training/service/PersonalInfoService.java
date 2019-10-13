@@ -109,15 +109,15 @@ public class PersonalInfoService implements IPersonalInfoService {
 
 		if(request.getMarriedId() != null) {
 				personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getMarriedId()));
-				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
+//				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
 		}
 		if(request.getMilitaryId() != null) {
 				 personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getMilitaryId()));
-				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
+//				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
 		}
 		if(request.getGenderId() != null) {
 				personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getGenderId()));
-				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
+//				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
 		}
 
 		return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
@@ -176,15 +176,15 @@ public class PersonalInfoService implements IPersonalInfoService {
 
 		if(request.getMarriedId() != null) {
 				personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getMarriedId()));
-				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
+//				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
 		}
 		if(request.getMilitaryId() != null) {
 				 personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getMilitaryId()));
-				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
+//				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
 		}
 		if(request.getGenderId() != null) {
 				personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getGenderId()));
-				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
+//				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
 		}
 
         PersonalInfo pupdating = new PersonalInfo();

@@ -31,7 +31,7 @@ public class Company extends Auditable {
     private String workDomain;
 
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
     private AccountInfo accountInfo;
     @Column(name = "f_account_info_id")
@@ -43,7 +43,7 @@ public class Company extends Auditable {
     @Column(name = "f_personal_info_id")
     private Long managerId;
 
-    @OneToOne(fetch = FetchType.LAZY,cascade = CascadeType.REMOVE)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "f_address_id", nullable = false, insertable = false, updatable = false)
     private Address address;
     @Column(name = "f_address_id")

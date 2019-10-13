@@ -160,32 +160,6 @@ public class InstituteRestController {
         return new ResponseEntity<>(instituteService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}"})
-    public void printWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-        final SearchDTO.CriteriaRq criteriaRq;
-        final SearchDTO.SearchRq searchRq;
-        if (criteriaStr.equalsIgnoreCase("{}")) {
-            searchRq = new SearchDTO.SearchRq();
-        } else {
-            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-        }
-
-        final SearchDTO.SearchRs<InstituteDTO.Info> searchRs = instituteService.search(searchRq);
-
-        final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
-
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/InstituteByCriteria.jasper", params, jsonDataSource, response);
-    }
-
 
     @Loggable
     @GetMapping(value = "{instituteId}/equipments")
@@ -565,6 +539,34 @@ public class InstituteRestController {
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<InstituteAccountDTO.AccountSpecRs> accountDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
         return new ResponseEntity<InstituteAccountDTO.AccountSpecRs>(new InstituteAccountDTO.AccountSpecRs(), HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+
+        final SearchDTO.SearchRs<InstituteDTO.Info> searchRs = instituteService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/InstituteList.jasper", params, jsonDataSource, response);
     }
 
 

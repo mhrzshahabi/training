@@ -25,13 +25,11 @@ public class InstituteFormController {
         return "base/institute";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
+    @RequestMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
-
+		String token=(String) request.getParameter("token");
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
 		final HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + token);
 

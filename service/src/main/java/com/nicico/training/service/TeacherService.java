@@ -110,17 +110,17 @@ public class TeacherService implements ITeacherService {
 
                 if (request.getPersonality().getMarriedId() != null) {
                     personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getPersonality().getMarriedId()));
-                    personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
+//                    personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
                     personalInfo.setMarriedId(request.getPersonality().getMarriedId());
                 }
                 if (request.getPersonality().getMilitaryId() != null) {
                     personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getPersonality().getMilitaryId()));
-                    personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
+//                    personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
                     personalInfo.setMilitaryId(request.getPersonality().getMilitaryId());
                 }
                 if (request.getPersonality().getGenderId() != null) {
                     personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getPersonality().getGenderId()));
-                    personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
+//                    personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
                     personalInfo.setGenderId(request.getPersonality().getGenderId());
                 }
 
@@ -274,17 +274,17 @@ public class TeacherService implements ITeacherService {
 
                 if (request.getPersonality().getMarriedId() != null) {
                     personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getPersonality().getMarriedId()));
-                    personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
+//                    personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
                     personalInfo.setMarriedId(request.getPersonality().getMarriedId());
                 }
                 if (request.getPersonality().getMilitaryId() != null) {
                     personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getPersonality().getMilitaryId()));
-                    personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
+//                    personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
                     personalInfo.setMilitaryId(request.getPersonality().getMilitaryId());
                 }
                 if (request.getPersonality().getGenderId() != null) {
                     personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getPersonality().getGenderId()));
-                    personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
+//                    personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
                     personalInfo.setGenderId(request.getPersonality().getGenderId());
                 }
 
@@ -463,17 +463,17 @@ public class TeacherService implements ITeacherService {
 
         if (request.getPersonality().getMarriedId() != null) {
             personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getPersonality().getMarriedId()));
-            personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
+//            personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
             personalInfo.setMarriedId(request.getPersonality().getMarriedId());
         }
         if (request.getPersonality().getMilitaryId() != null) {
             personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getPersonality().getMilitaryId()));
-            personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
+//            personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
             personalInfo.setMilitaryId(request.getPersonality().getMilitaryId());
         }
         if (request.getPersonality().getGenderId() != null) {
             personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getPersonality().getGenderId()));
-            personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
+//            personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
             personalInfo.setGenderId(request.getPersonality().getGenderId());
         }
 

@@ -202,7 +202,7 @@
         MobileValidate: {
             type: "regexp",
             errorMessage: "<spring:message code="msg.check.mobile"/>",
-            expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+            expression: /^((0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9})$/,
         },
         PhoneValidate: {
             type: "regexp",
