@@ -277,20 +277,11 @@ var companyId;
                 name: "manager.contactInfo.email",
                 title: "<spring:message code='email'/>",
                 type: 'text',
+                validateOnExit:true,
                 fontSizes: "1 (8 pt)",
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
-                blur: function () {
-                    var emailCheck;
-                    emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
-                    if (emailCheck == false) {
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
-        code='msg.company.checked.email'/>", true);
-                    } else {
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
-                    }
 
-                }
             },
 
         ]
@@ -353,21 +344,18 @@ var companyId;
             },
             {
                 name: "address.webSite",
-                title: "<spring:message code='fax'/>",
+                title: "<spring:message code='website'/>",
                 type: 'text',
-                validators: {
-                    type: "regexp",
-                    errorMessage: "وب سایت اشتباه وارد شده",
-                    expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
-                },
-                blur: function () {
-                    var checkWebSite = isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
-                    if (checkWebSite) {
-                        DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
-                    } else {
-                        DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
-                    }
-                },
+                validateOnExit:true,
+
+                 // blur: function () {
+                //     var checkWebSite = isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
+                //     if (checkWebSite) {
+                //         DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
+                //     } else {
+                //         DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
+                //     }
+                // },
             },
             {
                 name: "address.stateId",
@@ -595,16 +583,6 @@ var companyId;
 
     function Save_Company() {
 
-// co.validate();
-// if (co.hasErrors()) {
-// var s
-// var len= Object.entries(co.getErrors()).length
-// for (var i = 0; i < len; i++) {
-// s=s+Object.entries(co.getErrors())[i][1]+ "\n";
-//
-// }
-// return;
-// }
         if (!DynamicForm_Company.validate()) {
             return;
         }
@@ -737,23 +715,6 @@ var companyId;
             }, 3000);
         }
     };
-
-    function checkEmail_Company(email) {
-        if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
-            return false;
-        else
-            return true;
-    };
-
-    function ValidateEmail(inputText) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(inputText.toLowerCase()))
-            return true;
-        else
-            return false;
-
-    };
-
 
     function isUrlValid(userInput) {
         var res = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/;
