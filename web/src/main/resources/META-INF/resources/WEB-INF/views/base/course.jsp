@@ -666,7 +666,11 @@
         // }
     });
 
-    var vm_JspCourse = isc.ValuesManager.create({});
+    var vm_JspCourse = isc.ValuesManager.create({
+        itemChanged:function(item, newValue){
+            IButton_course_Save.enable();
+        }
+    });
     var DynamicForm_course_MainTab = isc.DynamicForm.create({
         // sectionVisibilityMode: "mutex",
         colWidths: ["10%", "40%", "9%", "10%"],
@@ -1169,7 +1173,8 @@
             }//end else
 //-----------------------------------------------
 
-        }
+        },
+        disabled:true
     });
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
@@ -1778,6 +1783,7 @@
             this.close();
         }
     });
+
     // var VLayout_Grid_Syllabus = isc.VLayout.create({
     //     width: "100%",
     //     height: "100%",
@@ -1892,6 +1898,7 @@
     function ListGrid_Course_add() {
         // TabSet_Goal_JspCourse.disableTab(0);
         TabSet_Goal_JspCourse.selectTab(0);
+        IButton_course_Save.disable();
         DynamicForm_course_GroupTab.getItem("category.id").enable();
         DynamicForm_course_GroupTab.getItem("erunType.id").enable();
         DynamicForm_course_GroupTab.getItem("elevelType.id").enable();
@@ -2012,7 +2019,7 @@
                 }
             });
         } else {
-
+            IButton_course_Save.disable();
             // TabSet_Goal_JspCourse.enableTab(0);
             TabSet_Goal_JspCourse.selectTab(0);
             vm_JspCourse.clearValues();
@@ -2071,7 +2078,7 @@
                 ToolStrip_Actions_Goal.enable();
                 ToolStrip_Actions_Syllabus.enable();
                 lblCourse.show();
-            }, 200)
+            }, 400)
             // if (ListGrid_Course.getSelectedRecord().theoryDuration != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) {
             // DynamicForm_course.getItem("theoryDuration").setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
             // }
@@ -2102,7 +2109,6 @@
         <%--}--%>
         <%--};--%>
     }
-
     function print_CourseListGrid(type) {
         var advancedCriteria_course = ListGrid_Course.getCriteria();
         var criteriaForm_course = isc.DynamicForm.create({
@@ -2160,7 +2166,6 @@
             let sum = da+ma+ne;
             lblCourse.getField("domainCourse").setValue("دانشی: " + getFormulaMessage(Math.round(da*100/sum) + "%", 2, "brown") + "، مهارتی: " + getFormulaMessage(Math.round(ma*100/sum) + "%", 2, "green") + "، نگرشی: " + getFormulaMessage(Math.round(ne*100/sum) + "%", 2, "blue"));
         },1000)
-
     }
 
 //</script>
