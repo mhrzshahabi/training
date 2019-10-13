@@ -18,7 +18,7 @@ import lombok.ToString;
 public enum EDeleted {
 
     Deleted(1, "حذف شده"),
-    UnDeleted(0,"حذف نشده");
+    UnDeleted(0, "حذف نشده");
 
     private final Integer id;
     private final String titleFa;

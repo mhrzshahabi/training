@@ -13,8 +13,7 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_education_level",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa"})})
+@Table(name = "tbl_education_level")
 public class EducationLevel extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "education_level_seq")
@@ -28,9 +27,9 @@ public class EducationLevel extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @OneToMany(mappedBy = "educationLevel",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "educationLevel", fetch = FetchType.LAZY)
     private List<EducationOrientation> educationOrientationList;
 
-    @OneToMany(mappedBy = "educationLevel",fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "educationLevel", fetch = FetchType.LAZY)
     private List<PersonalInfo> personalInfoList;
 }

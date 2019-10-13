@@ -122,4 +122,11 @@ public class CompanyRestController {
         return new ResponseEntity<>(companyService.search(request), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
+    public ResponseEntity<CompanyDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
+        return new ResponseEntity<>(companyService.getOneByNationalCode(nationalCode), HttpStatus.OK);
+    }
+
+
 }

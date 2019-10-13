@@ -6,12 +6,14 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationMajorDTO;
 import com.nicico.training.dto.EducationOrientationDTO;
 import com.nicico.training.iservice.IEducationMajorService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -50,29 +52,52 @@ public class EducationMajorRestController {
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationMajor')")
-    public ResponseEntity<EducationMajorDTO.Info> create(@Validated @RequestBody EducationMajorDTO.Create request) {
-        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);
-        if (educationMajorInfo != null)
-            return new ResponseEntity<>(educationMajorInfo, HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity create(@Validated @RequestBody EducationMajorDTO.Create request) {
+//        EducationMajorDTO.Info educationMajorInfo = educationMajorService.create(request);
+//        if (educationMajorInfo != null)
+//            return new ResponseEntity<>(educationMajorInfo, HttpStatus.CREATED);
+//        else
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        try {
+            return new ResponseEntity<>(educationMajorService.create(request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationMajor')")
-    public ResponseEntity<EducationMajorDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EducationMajorDTO.Update request) {
-        return new ResponseEntity<>(educationMajorService.update(id, request), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody EducationMajorDTO.Update request) {
+//        EducationMajorDTO.Info educationMajorInfo = educationMajorService.update(id, request);
+//        if (educationMajorInfo != null)
+//            return new ResponseEntity<>(educationMajorInfo, HttpStatus.OK);
+//        else
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        try {
+            return new ResponseEntity<>(educationMajorService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationMajor')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        if (educationMajorService.delete(id))
+    public ResponseEntity delete(@PathVariable Long id) {
+//        if (educationMajorService.delete(id))
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
+        try {
+            educationMajorService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    null,
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

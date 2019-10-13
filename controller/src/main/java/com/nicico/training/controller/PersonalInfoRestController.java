@@ -138,7 +138,7 @@ public class PersonalInfoRestController {
     public ResponseEntity<InputStreamResource> getAttach(ModelMap modelMap, @PathVariable Long Id) {
         final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
         final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String fileName = personalInfo.getAttachPhoto();
+        String fileName = personalInfo.getPhoto();
         File file = new File(personUploadDir + "/" + fileName);
         try {
             return new ResponseEntity<>(new InputStreamResource(new FileInputStream(file)), HttpStatus.OK);
@@ -155,7 +155,7 @@ public class PersonalInfoRestController {
     public ResponseEntity<Boolean> checkAttach(@PathVariable Long Id) {
         final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
         final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String fileName = personalInfo.getAttachPhoto();
+        String fileName = personalInfo.getPhoto();
         try {
             if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
                 return new ResponseEntity<Boolean>(false, HttpStatus.OK);
@@ -233,8 +233,8 @@ public class PersonalInfoRestController {
             if (!file.isEmpty()) {
                 final Optional<PersonalInfo> cById = personalInfoDAO.findById(Id);
                 final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-                if (personalInfo.getAttachPhoto() != null && personalInfo.getAttachPhoto() != "") {
-                    File file1 = new File(personUploadDir + "/" + personalInfo.getAttachPhoto());
+                if (personalInfo.getPhoto() != null && personalInfo.getPhoto() != "") {
+                    File file1 = new File(personUploadDir + "/" + personalInfo.getPhoto());
                     file1.delete();
                 }
                 String currentDate = new SimpleDateFormat("yyyyMMdd").format(new Date());
@@ -243,7 +243,7 @@ public class PersonalInfoRestController {
                 file.transferTo(destinationFile);
                 fileInfo.setFileName(destinationFile.getPath());
                 fileInfo.setFileSize(file.getSize());
-                personalInfo.setAttachPhoto(changedFileName);
+                personalInfo.setPhoto(changedFileName);
             } else
                 return new ResponseEntity<>(changedFileName, HttpStatus.NO_CONTENT);
 

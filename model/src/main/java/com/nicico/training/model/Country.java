@@ -20,12 +20,12 @@ public class Country extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
-    private String name;
+    @Column(name = "c_name_fa", nullable = false)
+    private String nameFa;
 
-    @Column(name = "c_title_en")
-    private String titleEn;
+    @Column(name = "c_name_en")
+    private String nameEn;
 
-//    @OneToMany(mappedBy = "country", fetch = FetchType.LAZY)
-//    private Set<State> stateSet;
+    @Column(name = "c_abbrev")
+    private String abbrev;
 }

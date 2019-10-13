@@ -1,11 +1,6 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
 
 // <script>
     var methodEducation = "GET";
@@ -122,8 +117,8 @@
                 align: "center",
                 filterOperator: "iContains"
             },
-            {name: "educationLevelId", hidden: true, filterOperator: "contains"},
-            {name: "educationMajorId", hidden: true, filterOperator: "contains"},
+            {name: "educationLevelId", hidden: true},
+            {name: "educationMajorId", hidden: true},
             {
                 name: "educationLevel.titleFa",
                 title: "<spring:message code="education.level"/>",
@@ -262,7 +257,7 @@
             }
             var data = DynamicForm_EducationOrientation.getValues();
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrl, methodEducation, JSON.stringify(data),
-                "callback: edu_orientation_save_result(rpcResponse)"));
+                "callback: edu_save_result(rpcResponse)"));
         }
     });
     var HLayout_EducationOrientation_SaveOrExit = isc.TrHLayoutButtons.create({
@@ -466,37 +461,8 @@
                 return;
             }
             var data = DynamicForm_EducationMajor.getValues();
-            isc.RPCManager.sendRequest({
-                actionURL: saveActionUrl,
-                httpMethod: methodEducation,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                            "<spring:message code="msg.command.done"/>");
-                        ListGrid_Education_refresh(ListGrid_EducationMajor);
-                        setTimeout(function () {
-                            ListGrid_EducationMajor.setSelectedState(gridState);
-                        }, 1000);
-                        Window_EducationMajor.close();
-                    } else if (resp.httpResponseCode === 406) {
-                        createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                            "<spring:message code="message"/>");
-                    } else {
-                        createDialog("info", "<spring:message code="msg.operation.error"/>",
-                            "<spring:message code="message"/>");
-                    }
-
-                }
-            });
-
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrl, methodEducation, JSON.stringify(data),
+                "callback: edu_save_result(rpcResponse)"));
         }
     });
     var HLayout_EducationMajor_SaveOrExit = isc.TrHLayoutButtons.create({
@@ -702,37 +668,8 @@
                 return;
             }
             var data = DynamicForm_EducationLevel.getValues();
-            isc.RPCManager.sendRequest({
-                actionURL: saveActionUrl,
-                httpMethod: methodEducation,
-                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                useSimpleHttp: true,
-                contentType: "application/json; charset=utf-8",
-                showPrompt: false,
-                data: JSON.stringify(data),
-                serverOutputAsString: false,
-                callback: function (resp) {
-                    if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                            "<spring:message code="msg.command.done"/>");
-                        ListGrid_Education_refresh(ListGrid_EducationLevel);
-                        setTimeout(function () {
-                            ListGrid_EducationLevel.setSelectedState(gridState);
-                        }, 1000);
-                        Window_EducationLevel.close();
-                    } else if (resp.httpResponseCode === 406) {
-                        createDialog("info", "<spring:message code="msg.record.duplicate"/>",
-                            "<spring:message code="message"/>");
-                    } else {
-                        createDialog("info", "<spring:message code="msg.operation.error"/>",
-                            "<spring:message code="message"/>");
-                    }
-
-                }
-            });
-
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrl, methodEducation, JSON.stringify(data),
+                "callback: edu_save_result(rpcResponse)"));
         }
     });
     var HLayout_EducationLevel_SaveOrExit = isc.TrHLayoutButtons.create({
@@ -859,26 +796,33 @@
         EducationWindows.show();
     }
 
-    function edu_orientation_save_result(resp) {
+    function edu_save_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-            ListGrid_Education_refresh(ListGrid_EducationOrientation);
+            if (resp.context.actionURL.contains("major")) {
+                edu_after_save(ListGrid_EducationMajor, Window_EducationMajor, gridState);
+            } else if ((resp.context.actionURL).contains("level")) {
+                edu_after_save(ListGrid_EducationLevel, Window_EducationLevel, gridState);
+            } else if (resp.context.actionURL.contains("orientation")) {
+                edu_after_save(ListGrid_EducationOrientation, Window_EducationOrientation, gridState);
+            }
             setTimeout(function () {
                 OK.close();
-                ListGrid_EducationOrientation.setSelectedState(gridState);
             }, 3000);
-            Window_EducationOrientation.close();
-        } else if (resp.httpResponseCode === 406 && resp.context.httpMethod === "POST") {
-            createDialog("info", "<spring:message code='msg.record.duplicate'/>",
-                "<spring:message code="message"/>");
-        } else if (resp.httpResponseCode === 406 && resp.context.httpMethod === "PUT") {
-            createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                    "<spring:message code="message"/>");
+            } else if (resp.httpResponseCode === 406 && respText === "NotEditable") {
+                createDialog("info", "<spring:message code='msg.education.orientation.edit.error'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
         }
     }
 
@@ -886,13 +830,27 @@
         wait.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             EducationListGrid.invalidateCache();
-            createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-        } else if (resp.httpResponseCode === 406) {
-            createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
+    }
+
+    function edu_after_save(edu_grid, edu_window, gridState) {
+        ListGrid_Education_refresh(edu_grid);
+        setTimeout(function () {
+            edu_grid.setSelectedState(gridState);
+        }, 1000);
+        edu_window.close();
     }
 
     //</script>

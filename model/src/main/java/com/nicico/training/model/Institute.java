@@ -16,7 +16,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_institute")
-public class Institute  extends  Auditable{
+public class Institute extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "institute_seq")
@@ -33,7 +33,7 @@ public class Institute  extends  Auditable{
     @Column(name = "c_address")
     private String restAddress;
 
-    @Column(name = "c_post_code",length = 12)
+    @Column(name = "c_post_code", length = 12)
     private String postCode;
 
     @Column(name = "c_phone", length = 50)
@@ -65,29 +65,29 @@ public class Institute  extends  Auditable{
     @Column(name = "f_state")
     private Long stateId;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "institute", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<InstituteAccount> instituteAccountSet;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade=CascadeType.REFRESH)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REFRESH)
     @JoinColumn(name = "f_manager", insertable = false, updatable = false)
     private PersonalInfo manager;
 
-    @Column(name ="f_manager")
+    @Column(name = "f_manager")
     private Long managerId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "tbl_institute_teacher",
-            joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name="f_teacher",referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "f_institute", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")})
     private Set<Teacher> teacherSet;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     @JoinTable(name = "tbl_institute_equipment",
-            joinColumns = {@JoinColumn(name = "f_institute",referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name="f_equipment",referencedColumnName = "id")})
+            joinColumns = {@JoinColumn(name = "f_institute", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_equipment", referencedColumnName = "id")})
     private Set<Equipment> equipmentSet;
 
-    @OneToMany(fetch = FetchType.LAZY,mappedBy = "institute")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "institute", cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
     private Set<TrainingPlace> trainingPlaceSet;
 
 
@@ -121,7 +121,7 @@ public class Institute  extends  Auditable{
     @Column(name = "n_emp_diploma_number")
     private Integer empNumDiploma;
 
-    @Column(name = "e_institute_type" ,  insertable = false, updatable = false)
+    @Column(name = "e_institute_type", insertable = false, updatable = false)
     private EInstituteType eInstituteType;
 
     @Column(name = "e_institute_type")
@@ -134,11 +134,11 @@ public class Institute  extends  Auditable{
     private Integer elicenseTypeId;
 
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute_parent", insertable = false, updatable = false)
     private Institute parentInstitute;
 
-    @Column(name ="f_institute_parent")
+    @Column(name = "f_institute_parent")
     private Long parentInstituteId;
 
 }

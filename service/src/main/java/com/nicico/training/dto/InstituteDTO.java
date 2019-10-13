@@ -87,10 +87,10 @@ public class InstituteDTO {
     @ApiModel("InstituteInfo")
     public static class Info extends InstituteDTO {
         private Long id;
-        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
-        private Set<EquipmentDTO.Info> equipmentSet;
-        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-        private Set<InstituteAccountDTO.Info> instituteAccountSet;
+//        private Set<TeacherDTO.TeacherInfoTuple> teacherSet;
+//        private Set<EquipmentDTO.Info> equipmentSet;
+//        private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
+//        private Set<InstituteAccountDTO.Info> instituteAccountSet;
         private PersonalInfoDTO.Info manager;
         private InstituteDTO.Info  parentInstitute;
         private EInstituteTypeDTO.EInstituteTypeInfoTuple eInstituteType;

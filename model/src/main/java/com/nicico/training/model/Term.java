@@ -10,10 +10,10 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"},callSuper = false)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_term")
-public class Term extends Auditable{
+public class Term extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Term_seq")
     @SequenceGenerator(name = "Term_seq", sequenceName = "seq_Term_id", allocationSize = 1)
@@ -26,10 +26,10 @@ public class Term extends Auditable{
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @Column(name="c_startdate")
+    @Column(name = "c_startdate")
     private String startDate;
 
-     @Column(name="c_enddate")
+    @Column(name = "c_enddate")
     private String endDate;
 
 
