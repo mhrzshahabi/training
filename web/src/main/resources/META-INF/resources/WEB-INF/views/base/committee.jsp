@@ -12,7 +12,7 @@
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
-    var RestDataSource_committee = isc.MyRestDataSource.create({
+    var RestDataSource_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
@@ -26,7 +26,7 @@
         fetchDataURL: committeeUrl + "spec-list",
     });
 
-    var RestDataSource_All_Person = isc.MyRestDataSource.create({
+    var RestDataSource_All_Person = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
             {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
             {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
@@ -35,7 +35,7 @@
         fetchDataURL: personalInfoUrl + "spec-list",
     });
 
-    var RestDataSource_ThisCommittee_Person = isc.MyRestDataSource.create({
+    var RestDataSource_ThisCommittee_Person = isc.TrDS.create({
 
         fields: [{name: "id", primaryKey: true, hidden: true},
             {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
@@ -46,7 +46,7 @@
     });
 
 
-    var Ds_Member_Attached_Committee = isc.MyRestDataSource.create({
+    var Ds_Member_Attached_Committee = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
             {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
             {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
@@ -55,7 +55,7 @@
         autoFetchData: false,
     });
 
-    var DsCategory_committee = isc.MyRestDataSource.create({
+    var DsCategory_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"}
@@ -63,7 +63,7 @@
         fetchDataURL: categoryUrl + "spec-list?_startRow=0&_endRow=55",
     });
 
-    var DsSubCategory_committee = isc.MyRestDataSource.create({
+    var DsSubCategory_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"}
@@ -110,7 +110,7 @@
             }]
     });
 
-    var ListGrid_Committee = isc.MyListGrid.create({
+    var ListGrid_Committee = isc.TrLG.create({
         dataSource: RestDataSource_committee,
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
@@ -136,14 +136,14 @@
         sortField: 1,
     });
 
-    var ListGrid_Member_Attached_Committee = isc.MyListGrid.create({
+    var ListGrid_Member_Attached_Committee = isc.TrLG.create({
         dataSource: Ds_Member_Attached_Committee,
         selectionType: "none",
         sortField: 1
 
     });
 
-    var ListGrid_All_Person = isc.MyListGrid.create({
+    var ListGrid_All_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         canDragRecordsOut: true,
@@ -172,7 +172,7 @@
             var JSONObj = {"ids": memberIds};
             isc.RPCManager.sendRequest({
 
-                // isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
+                // isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrl, committee_method, JSON.stringify(committeeData), "callback: show_CommitteeActionResult(rpcResponse)"));
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
@@ -197,7 +197,7 @@
     });
 
 
-    var ListGrid_ThisCommittee_Person = isc.MyListGrid.create({
+    var ListGrid_ThisCommittee_Person = isc.TrLG.create({
         width: "100%",
         height: "100%", canDragResize: true,
         selectionType: "multiple",
@@ -249,7 +249,7 @@
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Committee = isc.MyDynamicForm.create({
+    var DynamicForm_Committee = isc.DynamicForm.create({
 
 
         fields: [
@@ -316,7 +316,7 @@
         items: [
             DynamicForm_Committee,
             isc.MyHLayoutButtons.create({
-                members: [isc.MyButton.create({
+                members: [isc.Button.create({
                     title: "<spring:message code="save"/>",
                     icon: "pieces/16/save.png",
                     click: function () {
@@ -328,7 +328,7 @@
 
 
                     }
-                }), isc.MyButton.create({
+                }), isc.Button.create({
                     title: "<spring:message code="cancel"/>",
                     icon: "<spring:url value="remove.png"/>",
                     click: function () {
@@ -621,7 +621,7 @@
         }
         var cate = DynamicForm_Committee.getValue("categoryId");
         var subCate = DynamicForm_Committee.getValue("subCategoryId");
-        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate + "/" + subCate, "GET", null, "callback: show_ConflictCommittee(rpcResponse)"));
     };
 
 
@@ -672,7 +672,7 @@
                     this.close();
                     if (index == 0) {
 
-                        isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + record.id, "DELETE", null, "callback: show_CommitteeActionResult(rpcResponse)"));
 
                     }
                 }
@@ -684,7 +684,7 @@
              var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
              var cateEdit = DynamicForm_Committee.getValue("categoryId");
              var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
-             isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
+             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
 
             };
 
@@ -696,7 +696,7 @@
                  var committeeSaveUrlEdit = committeeUrl;
                  var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
                  committeeSaveUrlEdit += committeeEditRecord1.id;
-              isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
+              isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
 
             } else {
 
@@ -704,7 +704,7 @@
              var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
              var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
               var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
-             isc.RPCManager.sendRequest(MyDsRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'"+ cate3+"','"+ sc+ "')"));
+             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'"+ cate3+"','"+ sc+ "')"));
 
             }
         } else {
@@ -741,7 +741,7 @@
                 //     var committeeRecord = ListGrid_Committee.getSelectedRecord();
                 //     committeeSaveUrl += committeeRecord.id;
                 // }
-             isc.RPCManager.sendRequest(MyDsRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+             isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({

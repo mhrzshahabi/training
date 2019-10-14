@@ -53,7 +53,7 @@
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
-    var RestDataSource_term = isc.MyRestDataSource.create({
+    var RestDataSource_term = isc.TrDS.create({
         ID: "termDS",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
@@ -70,7 +70,7 @@
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
     });
-    var ListGrid_Term = isc.MyListGrid.create({
+    var ListGrid_Term = isc.TrLG.create({
         dataSource: RestDataSource_term,
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_term,
@@ -98,7 +98,7 @@
     //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Term = isc.MyDynamicForm.create({
+    var DynamicForm_Term = isc.DynamicForm.create({
         ID: "DynamicForm_Term",
         fields: [{name: "id", hidden: true},
             {
@@ -235,7 +235,7 @@
         title: "دوره",
         width: 500,
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-            members: [isc.MyButton.create({
+            members: [isc.Button.create({
                 title: "ذخیره",
                // icon: "pieces/16/save.png",
 
@@ -251,7 +251,7 @@
                     }
                 }
 
-            }), isc.MyButton.create({
+            }), isc.Button.create({
                 title: "لغو",
              //   icon: "<spring:url value="remove.png"/>",
                 click: function () {
@@ -413,7 +413,7 @@
                     var jobRecord = ListGrid_Term.getSelectedRecord();
                     termSaveUrl += jobRecord.id;
                 }
-                isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({
@@ -479,7 +479,7 @@
         var strsData = startDate1.replace(/(\/)/g, "");
         var streData = endDate1.replace(/\//g, "");
 //=================================================================
-        isc.RPCManager.sendRequest(MyDsRequest(termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id, "GET", null, "callback:ConflictWhenEdit(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData + "/" + selectTerm.id, "GET", null, "callback:ConflictWhenEdit(rpcResponse)"));
     };
 
     function ConflictWhenEdit(resp) {
@@ -500,7 +500,7 @@
                     var jobRecord = ListGrid_Term.getSelectedRecord();
                     termSaveUrl += jobRecord.id;
                 }
-                isc.RPCManager.sendRequest(MyDsRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(termSaveUrl, term_method, JSON.stringify(termData), "callback:show_TermActionResult(rpcResponse)"));
             }
         }
 
@@ -525,7 +525,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(MyDsRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
                     }
                 }
             });

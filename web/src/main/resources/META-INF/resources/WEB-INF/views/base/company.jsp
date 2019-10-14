@@ -13,7 +13,7 @@ var companyId;
 //************************************************************************************
 //<script>
 
-    var RestDataSource_Work_City_Company = isc.MyRestDataSource.create({
+    var RestDataSource_Work_City_Company = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -21,7 +21,7 @@ var companyId;
     });
 
 
-    var RestDataSource_Work_State_Company = isc.MyRestDataSource.create({
+    var RestDataSource_Work_State_Company = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "name"}
@@ -30,12 +30,11 @@ var companyId;
     });
 
 
-
-    var RestDataSource_company = isc.MyRestDataSource.create({
+    var RestDataSource_company = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title:"<spring:message code="title"/>" , filterOperator: "contains"},
-            {name: "workDomain", title:"<spring:message code="workDomain"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "contains"},
+            {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "contains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "contains"},
         ],
         fetchDataURL: companyUrl + "spec-list"
@@ -45,15 +44,17 @@ var companyId;
     Menu_ListGrid_Company = isc.Menu.create({
         data: [
             {
-                title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+                title: "<spring:message code="refresh"/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
 
                 }
             }, {
-                title:  "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
+                title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
 
                 }
             }, {
-                title:  "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
 
                 }
             }, {
@@ -65,11 +66,15 @@ var companyId;
 
                 }
             }, {
-                title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>",
+                icon: "<spring:url value="excel.png"/>",
+                click: function () {
 
                 }
             }, {
-                title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "<spring:message code="print.html"/>",
+                icon: "<spring:url value="html.png"/>",
+                click: function () {
 
                 }
             }
@@ -102,14 +107,14 @@ var companyId;
                 length: "250",
                 width: "*",
                 required: "true",
-               // requiredMessage: "لطفا نام شرکت را وارد کنید",
+// requiredMessage: "لطفا نام شرکت را وارد کنید",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
             {
                 name: "workDomain",
                 title: "<spring:message code="workDomain"/>",
                 required: true,
-             //   requiredMessage: "لطفا حوزه فعالیت شرکت را وارد کنید",
+// requiredMessage: "لطفا حوزه فعالیت شرکت را وارد کنید",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
             },
@@ -123,7 +128,7 @@ var companyId;
                     var emailCheck;
                     emailCheck = ValidateEmail(DynamicForm_Company.getValue("email"));
                     if (emailCheck == false) {
-                        DynamicForm_Company.addFieldErrors("email","<spring:message code='msg.company.checked.email'/>", true);
+                        DynamicForm_Company.addFieldErrors("email", "<spring:message code='msg.company.checked.email'/>", true);
                     } else {
                         DynamicForm_Company.clearFieldErrors("email", true);
                     }
@@ -150,7 +155,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-       // requiredMessage: "<spring:message code='msg.field.is.required'/>",
+// requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
         fields: [
@@ -160,7 +165,7 @@ var companyId;
                 title: "<spring:message code='bank'/>",
                 type: 'text',
                 required: "true",
-               // requiredMessage: "نام بانک را وارد کنید",
+// requiredMessage: "نام بانک را وارد کنید",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
@@ -223,7 +228,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-      //  requiredMessage: "<spring:message code='msg.field.is.required'/>",
+// requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
         fields: [
@@ -248,7 +253,7 @@ var companyId;
             {
                 name: "manager.nationalCode",
                 required: "true",
-               title: "<spring:message code='national.code'/>",
+                title: "<spring:message code='national.code'/>",
                 type: 'text',
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
@@ -263,7 +268,7 @@ var companyId;
                 }
             }, {
                 name: "manager.contactInfo.mobile",
-              title: "<spring:message code='mobile'/>",
+                title: "<spring:message code='mobile'/>",
                 type: 'text',
                 textAlign: "left",
                 length: "11",
@@ -277,20 +282,10 @@ var companyId;
                 name: "manager.contactInfo.email",
                 title: "<spring:message code='email'/>",
                 type: 'text',
-                fontSizes: "1 (8 pt)",
+                validateOnExit: true,
                 validators: [TrValidators.EmailValidate],
                 keyPressFilter: "[a-z|A-Z|0-9|.|@]",
-                blur: function () {
-                    var emailCheck;
-                    emailCheck = ValidateEmail(DynamicForm_ManagerInfo_Company.getValue("manager.contactInfo.email"));
-                    if (emailCheck == false) {
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.contactInfo.email", "<spring:message
-        code='msg.company.checked.email'/>", true);
-                    } else {
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.contactInfo.email", true);
-                    }
 
-                }
             },
 
         ]
@@ -311,7 +306,7 @@ var companyId;
         valuesManager: "co",
         numCols: 6,
         titleAlign: "left",
-       // requiredMessage: "<spring:message code='msg.field.is.required'/>",
+// requiredMessage: "<spring:message code='msg.field.is.required'/>",
         margin: 20,
         newPadding: 5,
 
@@ -353,25 +348,22 @@ var companyId;
             },
             {
                 name: "address.webSite",
-                title: "<spring:message code='fax'/>",
+                title: "<spring:message code='website'/>",
                 type: 'text',
-                validators: {
-                    type: "regexp",
-                    errorMessage: "وب سایت اشتباه وارد شده",
-                    expression: /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/
-                },
-                blur: function () {
-                    var checkWebSite = isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
-                    if (checkWebSite) {
-                        DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
-                    } else {
-                        DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
-                    }
-                },
+                validateOnExit: true,
+                validators: [TrValidators.WebsiteValidate],
+// blur: function () {
+// var checkWebSite = isUrlValid(DynamicForm_Address_Company.getValue("address.webSite"))
+// if (checkWebSite) {
+// DynamicForm_Address_Company.clearFieldErrors("address.webSite", true);
+// } else {
+// DynamicForm_Address_Company.addFieldErrors("address.webSite", "وب سایت وارد شده اشتباه است", true);
+// }
+// },
             },
             {
                 name: "address.stateId",
-               title: "<spring:message code='state'/>",
+                title: "<spring:message code='state'/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
                 required: true,
@@ -467,7 +459,7 @@ var companyId;
                 HLayOut_Company,
                 TabSet_Company_JspCompany,
                 isc.MyHLayoutButtons.create({
-                    members: [isc.MyButton.create({
+                    members: [isc.Button.create({
                         title: "<spring:message code="save"/>",
 // icon: "pieces/16/save.png",
                         click: function () {
@@ -480,7 +472,7 @@ var companyId;
 
 
                         }
-                    }), isc.MyButton.create({
+                    }), isc.Button.create({
                         title: "<spring:message code="cancel"/>",
 // icon: "<spring:url value="remove.png"/>",
                         click: function () {
@@ -493,7 +485,7 @@ var companyId;
     });
 
 
-    var ListGrid_Company = isc.MyListGrid.create({
+    var ListGrid_Company = isc.TrLG.create({
         dataSource: RestDataSource_company,
         contextMenu: Menu_ListGrid_Company,
         autoFetchData: true,
@@ -595,37 +587,27 @@ var companyId;
 
     function Save_Company() {
 
-// co.validate();
-// if (co.hasErrors()) {
-// var s
-// var len= Object.entries(co.getErrors()).length
-// for (var i = 0; i < len; i++) {
-// s=s+Object.entries(co.getErrors())[i][1]+ "\n";
-//
-// }
-// return;
-// }
         if (!DynamicForm_Company.validate()) {
+
             return;
         }
-
         if (!DynamicForm_AccountInfo_Company.validate()) {
             TabSet_Company_JspCompany.selectTab(0)
             return;
         }
-
         if (!DynamicForm_ManagerInfo_Company.validate()) {
             TabSet_Company_JspCompany.selectTab(1)
             return;
         }
-
         if (!DynamicForm_Address_Company.validate()) {
             TabSet_Company_JspCompany.selectTab(2)
             return;
         }
 
-        var data_Company = co.getValues();
-        isc.RPCManager.sendRequest(MyDsRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        if (DynamicForm_Company.validate() && DynamicForm_AccountInfo_Company && DynamicForm_ManagerInfo_Company && DynamicForm_Address_Company) {
+            var data_Company = co.getValues();
+            isc.RPCManager.sendRequest(TrDSRequest(companyUrl, "POST", JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        }
 
 
     };
@@ -639,17 +621,28 @@ var companyId;
 
         if (!DynamicForm_Company.validate()) {
 
-            DynamicForm_AccountInfo_Company.getFocusItem("accountInfo.bank");
             return;
         }
-
+        if (!DynamicForm_AccountInfo_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(0)
+            return;
+        }
+        if (!DynamicForm_ManagerInfo_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(1)
+            return;
+        }
+        if (!DynamicForm_Address_Company.validate()) {
+            TabSet_Company_JspCompany.selectTab(2)
+            return;
+        }
 
         var company_editURL = companyUrl;
         var Record = ListGrid_Company.getSelectedRecord();
         company_editURL += Record.id;
-        var data_Company = co.getValues();
-        isc.RPCManager.sendRequest(MyDsRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
-
+        if (DynamicForm_Company.validate() && DynamicForm_AccountInfo_Company && DynamicForm_ManagerInfo_Company && DynamicForm_Address_Company) {
+            var data_Company = co.getValues();
+            isc.RPCManager.sendRequest(TrDSRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
+        }
     }
 
 
@@ -705,7 +698,7 @@ var companyId;
             });
         } else {
             isc.MyYesNoDialog.create({
-               message: "<spring:message code="msg.record.remove.ask"/>",
+                message: "<spring:message code="msg.record.remove.ask"/>",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -722,7 +715,7 @@ var companyId;
         if (respCode == 200 || respCode == 201) {
             ListGrid_Company.invalidateCache();
             var MyOkDialog_company = isc.MyOkDialog.create({
-                 message: "<spring:message code="msg.operation.successful"/>",
+                message: "<spring:message code="msg.operation.successful"/>",
             });
             setTimeout(function () {
                 MyOkDialog_company.close();
@@ -737,23 +730,6 @@ var companyId;
             }, 3000);
         }
     };
-
-    function checkEmail_Company(email) {
-        if (email.indexOf("@") == -1 || email.indexOf(".") == -1 || email.lastIndexOf(".") < email.indexOf("@"))
-            return false;
-        else
-            return true;
-    };
-
-    function ValidateEmail(inputText) {
-        var re = /^(([^<>()\[\]\\.,;:\s@"]+(\.[^<>()\[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
-        if (re.test(inputText.toLowerCase()))
-            return true;
-        else
-            return false;
-
-    };
-
 
     function isUrlValid(userInput) {
         var res = /^(http:\/\/www\.|https:\/\/www\.|http:\/\/|https:\/\/)?[a-z0-9]+([\-\.]{1}[a-z0-9]+)*\.(com|ir|org)?$/;

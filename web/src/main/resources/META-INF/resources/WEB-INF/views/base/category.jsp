@@ -405,7 +405,7 @@
         })]
     });
 
-    var RestDataSource_Sub_Category = isc.MyRestDataSource.create({
+    var RestDataSource_Sub_Category = isc.TrDS.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}
@@ -617,7 +617,7 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var RestDataSource_Category = isc.MyRestDataSource.create({
+    var RestDataSource_Category = isc.TrDS.create({
         fields: [
             {name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "code"}, {name: "description"}

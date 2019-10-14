@@ -18,7 +18,7 @@
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Class_JspClass = isc.MyRestDataSource.create({
+    var RestDataSource_Class_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
@@ -34,7 +34,7 @@
        fetchDataURL: classUrl + "spec-list"
     });
 
-    var RestDataSource_Teacher_JspClass = isc.MyRestDataSource.create({
+    var RestDataSource_Teacher_JspClass = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "fullNameFa"},
@@ -42,7 +42,7 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-    var RestDataSource_Course_JspClass = isc.MyRestDataSource.create({
+    var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -51,7 +51,7 @@
         fetchDataURL: courseUrl + "spec-list"
     });
 
-    var RestDataSource_Class_Student_JspClass = isc.MyRestDataSource.create({
+    var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "fullNameFa"},
@@ -60,7 +60,7 @@
         fetchDataURL: classUrl + "otherStudent"
     });
 
-    var RestDataSource_Class_CurrentStudent_JspClass = isc.MyRestDataSource.create({
+    var RestDataSource_Class_CurrentStudent_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "fullNameFa"},
@@ -418,7 +418,7 @@
                 classSaveUrl += classRecord.id;
             }
 
-            isc.RPCManager.sendRequest(MyDsRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -523,7 +523,7 @@
             var StudentID = StudentRecord.id;
             var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
             var ClassID = ClassRecord.id;
-            isc.RPCManager.sendRequest(MyDsRequest(classUrl + "addStudent/" + StudentID + "/" + ClassID, "POST", null, "callback: class_add_student_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudent/" + StudentID + "/" + ClassID, "POST", null, "callback: class_add_student_result(rpcResponse)"));
         },
         dataPageSize: 50,
     });
@@ -580,7 +580,7 @@
                 StudentID.add(dropRecords[i].id);
             }
             var JSONObj = {"ids": StudentID};
-            isc.RPCManager.sendRequest(MyDsRequest(classUrl + "addStudents/" + ClassID, "POST", JSON.stringify(JSONObj), "callback: class_add_students_result(rpcResponse)"));
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + ClassID, "POST", JSON.stringify(JSONObj), "callback: class_add_students_result(rpcResponse)"));
         },
 
         createRecordComponent: function (record, colNum) {
@@ -609,7 +609,7 @@
                         var ClassID = ClassRecord.id;
                         var StudentRecord = record;
                         var StudentID = StudentRecord.id;
-                        isc.RPCManager.sendRequest(MyDsRequest(classUrl + "removeStudent/" + StudentID + "/" + ClassID, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + StudentID + "/" + ClassID, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
                     }
                 });
                 recordCanvas.addMember(removeIcon);
@@ -817,7 +817,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(MyDsRequest(classUrl + record.id, "DELETE", null, "callback: class_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + record.id, "DELETE", null, "callback: class_delete_result(rpcResponse)"));
                     }
                 }
             });

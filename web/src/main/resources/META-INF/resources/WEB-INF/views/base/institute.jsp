@@ -1049,7 +1049,7 @@
                     var phoneCheck;
                     phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("phone"));
                     if (phoneCheck === false)
-                        DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.check.phone'/>", true);
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
                     if (mobileCheck === true)
                         DynamicForm_Institute_Institute_Address.clearFieldErrors("phone", true);
                 },
@@ -1065,7 +1065,7 @@
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_Institute_Institute_Address.getValue("mobile"));
                     if (mobileCheck === false)
-                        DynamicForm_Institute_Institute_Address.addFieldErrors("mobile", "<spring:message code='msg.check.phone'/>", true);
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("mobile", "<spring:message code='msg.invalid.phone.number'/>", true);
                     if (mobileCheck === true)
                         DynamicForm_Institute_Institute_Address.clearFieldErrors("mobile", true);
                 },
@@ -1081,7 +1081,7 @@
                     var phoneCheck;
                     phoneCheck = checkPhone(DynamicForm_Institute_Institute_Address.getValue("fax"));
                     if (phoneCheck === false)
-                        DynamicForm_Institute_Institute_Address.addFieldErrors("fax", "<spring:message code='msg.check.phone'/>", true);
+                        DynamicForm_Institute_Institute_Address.addFieldErrors("fax", "<spring:message code='msg.invalid.phone.number'/>", true);
                     if (phoneCheck === true)
                         DynamicForm_Institute_Institute_Address.clearFieldErrors("fax", true);
                 },

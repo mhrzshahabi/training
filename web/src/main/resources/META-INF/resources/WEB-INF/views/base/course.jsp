@@ -25,7 +25,7 @@
     var ChangeEtechnicalType = false;
     var chang = false;
     var course_url = courseUrl;
-    var RestDataSource_category = isc.MyRestDataSource.create({
+    var RestDataSource_category = isc.TrDS.create({
         ID: "categoryDS",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
@@ -37,7 +37,7 @@
         ], dataFormat: "json",
         fetchDataURL: categoryUrl + "spec-list",
     });
-    var RestDataSource_course = isc.MyRestDataSource.create({
+    var RestDataSource_course = isc.TrDS.create({
         ID: "courseDS",
         fields: [{name: "id", type: "Integer", primaryKey: true},
             {name: "code"},
@@ -62,27 +62,27 @@
         ],
         fetchDataURL: courseUrl + "spec-list",
     });
-    var RestDataSource_eTechnicalType = isc.MyRestDataSource.create({
+    var RestDataSource_eTechnicalType = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eTechnicalType/spec-list",
         autoFetchData: true,
     });
-    var RestDataSource_e_level_type = isc.MyRestDataSource.create({
+    var RestDataSource_e_level_type = isc.TrDS.create({
         autoCacheAllData: false,
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eLevelType",
         autoFetchData: true,
     });
-    var RestDataSource_e_run_type = isc.MyRestDataSource.create({
+    var RestDataSource_e_run_type = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eRunType/spec-list",
 // cacheAllData:true,
         autoFetchData: true,
     });
-    var RestDataSourceETheoType = isc.MyRestDataSource.create({
+    var RestDataSourceETheoType = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
         ],
         fetchDataURL: enumUrl + "eTheoType",
@@ -93,28 +93,28 @@
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "code"}
         ]
     });
-    var RestDataSource_CourseGoal = isc.MyRestDataSource.create({
+    var RestDataSource_CourseGoal = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"}],
         // fetchDataURL: courseUrl + courseId.id + "/goal"
     });
-    var RestDataSource_CourseSkill = isc.MyRestDataSource.create({
+    var RestDataSource_CourseSkill = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
         ], dataFormat: "json",
 
         fetchDataURL: courseUrl + "skill/" + courseId.id
     });
-    var RestDataSource_CourseJob = isc.MyRestDataSource.create({
+    var RestDataSource_CourseJob = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}
         ],
 
         fetchDataURL: courseUrl + "job/" + courseId.id
     });
-    var RestDataSource_Syllabus = isc.MyRestDataSource.create({
+    var RestDataSource_Syllabus = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "goal.titleFa"},
@@ -125,7 +125,7 @@
         ],
         fetchDataURL: syllabusUrl + "spec-list"
     });
-    var RestDataSource_CourseCompetence = isc.MyRestDataSource.create({
+    var RestDataSource_CourseCompetence = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa"},
@@ -134,7 +134,7 @@
 
         // fetchDataURL: courseUrl + "getcompetence/" + courseId.id
     });
-    var RestDataSourceEducationCourseJsp = isc.MyRestDataSource.create({
+    var RestDataSourceEducationCourseJsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "titleFa", type: "text"}
@@ -174,17 +174,17 @@
             , {
                 isSeparator: true
             }, {
-                title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
+                title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                     print_CourseListGrid("pdf");
                 }
             }, {
-                title: "<spring:message code="print.excel"/>",
+                title: "<spring:message code="format.excel"/>",
                 icon: "<spring:url value="excel.png"/>",
                 click: function () {
                     print_CourseListGrid("excel");
                 }
             }, {
-                title: "<spring:message code="print.html"/>",
+                title: "<spring:message code="format.html"/>",
                 icon: "<spring:url value="html.png"/>",
                 click: function () {
                     print_CourseListGrid("html");
@@ -197,7 +197,7 @@
             }
         ]
     });
-    var ListGrid_Course = isc.MyListGrid.create({
+    var ListGrid_Course = isc.TrLG.create({
         ID: "gridCourse",
         dataSource: RestDataSource_course,
         canAddFormulaFields: true,
@@ -372,7 +372,7 @@
             }
         },
     });
-    var ListGrid_CourseSkill = isc.MyListGrid.create({
+    var ListGrid_CourseSkill = isc.TrLG.create({
         dataSource: RestDataSource_CourseSkill,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -389,7 +389,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseJob = isc.MyListGrid.create({
+    var ListGrid_CourseJob = isc.TrLG.create({
         dataSource: RestDataSource_CourseJob,
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
@@ -406,7 +406,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseCompetence = isc.MyListGrid.create({
+    var ListGrid_CourseCompetence = isc.TrLG.create({
         dataSource: RestDataSource_CourseCompetence,
         fields: [
             {name: "id", title: "شماره", canEdit: false, hidden: true},
@@ -422,7 +422,7 @@
         showResizeBar: false,
 
     });
-    var ListGrid_CourseSyllabus = isc.MyListGrid.create({
+    var ListGrid_CourseSyllabus = isc.TrLG.create({
 
         dataSource: RestDataSource_Syllabus,
         groupByField: "goal.titleFa", groupStartOpen: "none",
@@ -913,7 +913,7 @@
                 // titleOrientation: "top",
                 title: "<spring:message code="course_eruntype"/>",
                 required: true,
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_e_run_type,
                 // autoFetchData: false,
@@ -947,7 +947,7 @@
                 name: "elevelType.id",
                 colSpan: 1,
                 title: "<spring:message code="cousre_elevelType"/>",
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 required: true,
                 // height: "30",
@@ -983,7 +983,7 @@
                 colSpan: 1,
                 title: "<spring:message code="course_etheoType"/>",
                 required: true,
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 optionDataSource: RestDataSourceETheoType,
                 valueField: "id",
@@ -1014,7 +1014,7 @@
                 colSpan: 1,
 
                 title: "<spring:message code="course_etechnicalType"/>",
-                // editorType: "MyComboBoxItem",
+                // editorType: "ComboBoxItem",
                 textAlign: "center",
                 required: true,
                 displayField: "titleFa",
@@ -1845,16 +1845,16 @@
             },
             {
                 // id: "TabPane_Job",
-                title: "<spring:message code="course_job"/>",
+                title: "<spring:message code="job"/>",
                 pane: ListGrid_CourseJob
             },
             {
                 // id: "TabPane_Post",
-                title: "<spring:message code="course_post"/>",
-                pane: isc.MyListGrid.create({
+                title: "<spring:message code="post"/>",
+                pane: isc.TrLG.create({
                     ID: "ListGrid_Post_JspCourse",
                     showResizeBar: false,
-                    dataSource: isc.MyRestDataSource.create({
+                    dataSource: isc.TrDS.create({
                         fields: [{name: "id", primaryKey: true, hidden: true},
                             {name: "titleFa", title: "نام فارسی", align: "center"},
                             {name: "titleEn", title: "نام لاتین", align: "center"}
@@ -1866,7 +1866,7 @@
             },
             {
                 // id: "TabPane_Skill",
-                title: "<spring:message code="course_skill"/>",
+                title: "<spring:message code="skill"/>",
                 pane: ListGrid_CourseSkill
 
             },

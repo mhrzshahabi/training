@@ -1112,7 +1112,7 @@
                 var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
                 teacherSaveUrl += teacherRecord.id;
             }
-            isc.RPCManager.sendRequest(MyDsRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_action_result(rpcResponse)"));
         }
     });

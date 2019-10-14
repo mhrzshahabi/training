@@ -20,7 +20,7 @@
 
     // Start Block Of Combo And List Data Sources ----------------------------------------------------------
 
-    var RestDataSource_Skill_Skill_Level = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Skill_Level = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "titleFa"},
@@ -30,7 +30,7 @@
         fetchDataURL: skill_SkillLevelUrl
     });
 
-    var RestDataSource_Skill_Category = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Category = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "code"},
@@ -41,7 +41,7 @@
         fetchDataURL: skill_CategoryUrl
     });
 
-    var RestDataSource_Skill_SubCategory = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_SubCategory = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
             {name: "code"},
@@ -57,7 +57,7 @@
 
     // Start Block Of Main And Detail Data Sources ----------------------------------------------------------
 
-    var RestDataSource_Skill_Skill = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Skill = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -71,7 +71,7 @@
         fetchDataURL: skill_SkillHomeUrl + "/spec-list"
     });
 
-    var RestDataSource_Skill_Attached_SkillGroups = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Attached_SkillGroups = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -80,7 +80,7 @@
         fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
 
-    var RestDataSource_Skill_UnAttached_SkillGroups = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_UnAttached_SkillGroups = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -89,7 +89,7 @@
         fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
 
-    var RestDataSource_Skill_Attached_Courses = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Attached_Courses = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -125,7 +125,7 @@
         fetchDataURL: skill_SkillHomeUrl + "/0/need-assessment"
     });
 
-    var RestDataSource_Skill_UnAttached_Courses = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_UnAttached_Courses = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -142,7 +142,7 @@
 
     //End Block Of Main And Detail Data Sources ----------------------------------------------------------
 
-    var DynamicForm_Skill_Skill = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_Skill = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -1024,7 +1024,7 @@
         ]
     });
 
-    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_SkillGroup = isc.DynamicForm.create({
         titleWidth: 400,
 // border:2,
         width: "100%",
@@ -1466,7 +1466,7 @@
         ]
     });
 
-    var DynamicForm_Skill_SkillData_Add_Course = isc.MyDynamicForm.create({
+    var DynamicForm_Skill_SkillData_Add_Course = isc.DynamicForm.create({
         titleWidth: 400,
 // border:2,
         width: "100%",

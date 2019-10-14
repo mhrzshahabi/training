@@ -49,7 +49,7 @@ var taskMethod="POST";
  //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
-    var RestDataSource_term = isc.MyRestDataSource.create({
+    var RestDataSource_term = isc.TrDS.create({
         ID: "termDS",
         transformRequest: function (dsRequest) {
             dsRequest.httpHeaders = {
@@ -66,7 +66,7 @@ var taskMethod="POST";
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
     });
-    var ListGrid_Task = isc.MyListGrid.create({
+    var ListGrid_Task = isc.TrLG.create({
      //   dataSource: RestDataSource_term,
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_task,
@@ -145,7 +145,7 @@ var taskMethod="POST";
 //*************************************************************************************
     //DynamicForm & Window
     //*************************************************************************************
-    var DynamicForm_Task = isc.MyDynamicForm.create({
+    var DynamicForm_Task = isc.DynamicForm.create({
         ID: "DynamicForm_Task",
          valuesManager: "vm",
         fields: [{name: "id", hidden: true},
