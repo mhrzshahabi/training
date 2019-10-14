@@ -876,7 +876,7 @@
                             }
                         }
                         names = names.substr(2);
-                        createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره های مذکور بگیرید.", "اخطار")
+                        createDialog('info', "هدف " + getFormulaMessage(record.titleFa, 2, "red", "b") + " با " + names + " در ارتباط است، ابتدا هدف را از دوره&#8201های مذکور جدا کنید.", "اخطار")
                     }
                     else{
                         var Dialog_Delete = isc.Dialog.create({

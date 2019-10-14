@@ -91,6 +91,20 @@ public class CourseRestController {
     }
 
     @Loggable
+    @PutMapping(value = "setPreCourse/{id}")
+    public ResponseEntity setPreCourse(@PathVariable Long id, @RequestBody List<Long> req) {
+        courseService.setPreCourse(id, req);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PutMapping(value = "setEqualCourse/{id}")
+    public ResponseEntity setEqualCourse(@PathVariable Long id, @RequestBody List<String> req) {
+        courseService.setEqualCourse(id, req);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @Loggable
     @PutMapping(value = "/{id}")
     //@PreAuthorize("hasAuthority('u_course')")
 //	public ResponseEntity<CourseDTO.Info> update(@PathVariable Long id,@Validated @RequestBody CourseDTO.Update request) {
