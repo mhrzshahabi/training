@@ -285,16 +285,16 @@
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
         src: "<spring:url value="nicico.png"/>",
-        // width: 24,
-        // height: 24,
+        width: 25,
+        height: 25,
         imageType: "stretch",
-        padding: 5,
+        padding: 4,
     });
 
     systemLabel = isc.Label.create({
         contents: "<spring:message code="training.system"/>",
         styleName: "normalBold",
-        padding: 5,
+        padding: 4,
     });
 
     userTSMB = isc.ToolStripMenuButton.create({
