@@ -355,6 +355,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="job.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/job-group/show-form"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
@@ -569,6 +575,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
+    const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
 
