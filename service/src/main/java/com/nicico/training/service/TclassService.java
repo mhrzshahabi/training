@@ -4,7 +4,6 @@ package com.nicico.training.service;
 */
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
-import com.nicico.copper.common.domain.json.ResultSetConverter;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
@@ -17,11 +16,9 @@ import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityManager;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -33,12 +30,6 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
-
-    @Autowired
-    EntityManager entityManager;
-
-    @Autowired
-    ResultSetConverter resultSetConverter;
 
     @Transactional(readOnly = true)
     @Override
@@ -119,12 +110,12 @@ public class TclassService implements ITclassService {
         List<Student> otherStudent = new ArrayList<>();
 
         for (Student student : allStudent) {
-                if(!currentStudent.contains(student))
-                    otherStudent.add(student);
+            if (!currentStudent.contains(student))
+                otherStudent.add(student);
         }
 
         List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-        Optional.ofNullable(otherStudent)
+        Optional.of(otherStudent)
                 .ifPresent(students ->
                         students.forEach(student ->
                                 studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
@@ -134,7 +125,7 @@ public class TclassService implements ITclassService {
 
     @Transactional
     @Override
-    public void removeStudent (Long studentId,Long classId) {
+    public void removeStudent(Long studentId, Long classId) {
         Tclass tclass = tclassDAO.getOne(classId);
         Student student = studentDAO.getOne(studentId);
         tclass.getStudentSet().remove(student);
@@ -142,7 +133,7 @@ public class TclassService implements ITclassService {
 
     @Transactional
     @Override
-    public void addStudent (Long studentId,Long classId) {
+    public void addStudent(Long studentId, Long classId) {
         Tclass tclass = tclassDAO.getOne(classId);
         Student student = studentDAO.getOne(studentId);
         tclass.getStudentSet().add(student);
