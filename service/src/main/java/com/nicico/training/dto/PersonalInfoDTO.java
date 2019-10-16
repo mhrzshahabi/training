@@ -139,5 +139,22 @@ public class PersonalInfoDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("PersonalInfoFullNameTuple")
+    static class PersonalInfoFullNameTuple {
+
+        private Long id;
+
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String fullNameFa;
+
+        @NotEmpty
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+
+    }
 }
 

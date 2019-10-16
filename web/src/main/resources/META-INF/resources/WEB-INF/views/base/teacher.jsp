@@ -338,7 +338,7 @@
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
-                    src: "[SKIN]/actions/pcal.png",
+                    src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
                         displayDatePicker('birthDate_jspTeacher', this, 'ymd', '/');
@@ -475,9 +475,6 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
                 pickListFields: [
                     {
                         name: "titleFa",

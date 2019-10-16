@@ -22,6 +22,8 @@ public interface ITeacherService {
 
 	SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
 
+	SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
+
 	void addCategories(CategoryDTO.Delete  request, Long teacherId);
 
 	List<Long> getCategories(Long teacherId);

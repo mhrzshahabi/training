@@ -9,9 +9,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-<%--<script>--%>
+// <script>
 
-<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
     var Menu_ListGrid_WorkflowProcessDefinitionList = isc.Menu.create({
         width: 150,
@@ -50,6 +50,7 @@
         overflow: "scroll",
         loadingMessage: "فرم فرایندی برای نمایش وجود ندارد"
     });
+
     function ListGrid_WorkflowProcessList_uploadProcessDefinition() {
 
         var filesList = document.querySelector('input[name="file"]').files;
@@ -120,7 +121,7 @@
                     if (index == 0) {
                         var processDefID = record.id;
                         <spring:url value="/web/workflow/getProcessDefinitionDetailForm/" var="getProcessDefinitionDetailForm"/>
-                        workflowProcessDefinitionViewLoader.setViewURL("${getProcessDefinitionDetailForm}" + processDefID + "?Authorization=Bearer "+'${cookie['access_token'].getValue()}' );
+                        workflowProcessDefinitionViewLoader.setViewURL("${getProcessDefinitionDetailForm}" + processDefID + "?Authorization=Bearer " + '${cookie['access_token'].getValue()}');
                         workflowProcessDefinitionViewLoader.show();
                     }
                 }
@@ -196,7 +197,7 @@
         } else {
             var deployId = record.id;
             <spring:url value="/web/workflow/processDefinition/diagram/" var="diagram"/>
-workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
+            workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
             workflowProcessDefinitionViewLoader.show();
         }
 
@@ -254,7 +255,8 @@ workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
             ToolStrip_ProcessDefinitionActions
         ]
     });
-    var RestDataSource_ProcessDefinitionList = isc.RestDataSource.create({
+
+    var RestDataSource_ProcessDefinitionList = isc.TrDS.create({
         fields: [
 
             {name: "name", title: "نام فرایند"},
@@ -265,19 +267,8 @@ workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
             {name: "version", title: "نسخه"},
             {name: "id", title: "id", type: "text"}
         ],
-        dataFormat: "json",
-        jsonPrefix: "",
-        jsonSuffix: "",
-        transformRequest: function (dsRequest) {
-            dsRequest.httpHeaders = {
-                "Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-                "Access-Control-Allow-Origin": "${restApiUrl}"
-            };
-            return this.Super("transformRequest", arguments);
-        },
-        fetchDataURL: "${restApiUrl}/api/workflow/processDefinition/list"
+        fetchDataURL: workflowUrl + "processDefinition/list"
     });
-
 
     var ListGrid_ProcessDefinitionList = isc.ListGrid.create({
         width: "100%",

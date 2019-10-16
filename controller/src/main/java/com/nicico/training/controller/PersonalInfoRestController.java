@@ -41,10 +41,10 @@ public class PersonalInfoRestController {
     private final IPersonalInfoService personalInfoService;
     private final PersonalInfoDAO personalInfoDAO;
 
-    @Value("${nicico.dir.upload.person.img}")
+    @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
 
-    @Value("${nicico.dir.upload.person.tmp}")
+    @Value("${nicico.dirs.upload-person-tmp}")
     private String tempUploadDir;
 
     @Loggable

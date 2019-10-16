@@ -43,7 +43,7 @@ public class TeacherDTO {
     @Setter
     @ApiModel("TeacherInfoTuple")
     static class TeacherInfoTuple {
-        private PersonalInfoDTO.PersonalInfoInfoTuple personality;
+        private PersonalInfoDTO.Create personality;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
     }
 
@@ -94,4 +94,32 @@ public class TeacherDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("TeacherFullNameTuple")
+    public static class TeacherFullNameTuple {
+        private Long id;
+        private PersonalInfoDTO.PersonalInfoFullNameTuple personality;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherFullNameSpecRs")
+    public static class TeacherFullNameSpecRs {
+        private FullNameSpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class FullNameSpecRs {
+        private List<TeacherFullNameTuple> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
 }
