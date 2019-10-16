@@ -516,6 +516,12 @@ public class TeacherService implements ITeacherService {
         return SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.Info.class));
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request) {
+        return SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.TeacherFullNameTuple.class));
+    }
+
     // ------------------------------
 
     private TeacherDTO.Info save(Teacher teacher) {
