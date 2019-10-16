@@ -31,7 +31,7 @@
             {name: "course.titleFa"},
             {name: "version"}
         ],
-       fetchDataURL: classUrl + "spec-list"
+        fetchDataURL: classUrl + "spec-list"
     });
 
     var RestDataSource_Teacher_JspClass = isc.TrDS.create({
@@ -95,7 +95,7 @@
             }
         }, {isSeparator: true}, {
             title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-               ListGrid_class_print("pdf");
+                ListGrid_class_print("pdf");
             }
         }, {
             title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
@@ -258,7 +258,7 @@
                 ID: "startDate_jspClass",
                 type: 'text', required: true,
                 hint: "YYYY/MM/DD",
-                keyPressFilter:"[0-9/]",
+                keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('startDate_jspClass', this, 'ymd', '/');
@@ -277,7 +277,7 @@
                     if (dateCheck == false)
                         DynamicForm_Class_JspClass.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
                     if (dateCheck == true)
-                       DynamicForm_Class_JspClass.clearFieldErrors("startDate", true);
+                        DynamicForm_Class_JspClass.clearFieldErrors("startDate", true);
                 }
             },
 
@@ -293,7 +293,7 @@
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
                 hint: "YYYY/MM/DD",
-                keyPressFilter:"[0-9/]",
+                keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 focus: function () {
                     displayDatePicker('endDate_jspClass', this, 'ymd', '/');
@@ -310,24 +310,24 @@
                     dateCheck = checkDate(DynamicForm_Class_JspClass.getValue("endDate"));
                     var endDate = DynamicForm_Class_JspClass.getValue("endDate");
                     var startDate = DynamicForm_Class_JspClass.getValue("startDate");
-                    if (dateCheck == false){
+                    if (dateCheck == false) {
+                        DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
+                        DynamicForm_Class_JspClass.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
+                        endDateCheck = false;
+                    }
+                    if (dateCheck == true) {
+                        if (startDate == undefined)
                             DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
-                            DynamicForm_Class_JspClass.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
-                            endDateCheck = false;
-                        }
-                    if (dateCheck == true){
-                        if(startDate == undefined)
-                            DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
-                        if(startDate != undefined && startDate > endDate){
+                        if (startDate != undefined && startDate > endDate) {
                             DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
                             DynamicForm_Class_JspClass.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                             endDateCheck = false;
                         }
-                        if(startDate != undefined && startDate < endDate){
+                        if (startDate != undefined && startDate < endDate) {
                             DynamicForm_Class_JspClass.clearFieldErrors("endDate", true);
                             endDateCheck = true;
                         }
-                       }
+                    }
                 }
 
             },
@@ -374,11 +374,11 @@
         ],
         itemChanged: function (item, newValue) {
             if (item.name == "courseId" || item.name == "startDate" || item.name == "group") {
-                if(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord() != undefined)
-                        str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
-                if(DynamicForm_Class_JspClass.getItem("startDate").getValue() != undefined)
-                    str2 = DynamicForm_Class_JspClass.getItem("startDate").getValue().substring(0,4);
-                if(DynamicForm_Class_JspClass.getItem("group").getValue() != undefined)
+                if (DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord() != undefined)
+                    str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
+                if (DynamicForm_Class_JspClass.getItem("startDate").getValue() != undefined)
+                    str2 = DynamicForm_Class_JspClass.getItem("startDate").getValue().substring(0, 4);
+                if (DynamicForm_Class_JspClass.getItem("group").getValue() != undefined)
                     str3 = DynamicForm_Class_JspClass.getItem("group").getValue();
                 var code_value = str1 + "-" + str2 + "-" + str3;
                 DynamicForm_Class_JspClass.getItem("code").setValue(code_value);
@@ -412,7 +412,7 @@
 
             var data = DynamicForm_Class_JspClass.getValues();
 
-             var classSaveUrl = classUrl;
+            var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") == 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += classRecord.id;
@@ -857,99 +857,100 @@
         Window_Class_JspClass.show();
     }
 
-        function ListGrid_class_print(type) {
-                 var advancedCriteria = ListGrid_Class_JspClass.getCriteria();
-            var criteriaForm = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/tclass/printWithCriteria/"/>" + type ,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"}
-                    ]
+    function ListGrid_class_print(type) {
+        var advancedCriteria = ListGrid_Class_JspClass.getCriteria();
+        var criteriaForm = isc.DynamicForm.create({
+            method: "POST",
+            action: "<spring:url value="/tclass/printWithCriteria/"/>" + type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:
+                [
+                    {name: "CriteriaStr", type: "hidden"}
+                ]
+        });
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.submitForm();
+    };
+
+    function class_action_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            var responseID = JSON.parse(resp.data).id;
+            var gridState = "[{id:" + responseID + "}]";
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.operation.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
             });
-            criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-            criteriaForm.submitForm();
+            setTimeout(function () {
+                OK.close();
+                ListGrid_Class_JspClass.setSelectedState(gridState);
+            }, 1000);
+            ListGrid_Class_refresh();
+            Window_Class_JspClass.close();
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.operation.error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
     };
 
-    function class_action_result(resp){
-                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        var responseID = JSON.parse(resp.data).id;
-                        var gridState = "[{id:" + responseID + "}]";
-                        var OK = isc.Dialog.create({
-                            message: "<spring:message code='msg.operation.successful'/>",
-                            icon: "[SKIN]say.png",
-                            title: "<spring:message code='msg.command.done'/>"
-                        });
-                        setTimeout(function () {
-                            OK.close();
-                            ListGrid_Class_JspClass.setSelectedState(gridState);
-                        }, 1000);
-                        ListGrid_Class_refresh();
-                        Window_Class_JspClass.close();
-                    } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("<spring:message code='msg.operation.error'/>"),
-                            icon: "[SKIN]stop.png",
-                            title: "<spring:message code='message'/>"
-                        });
-                        setTimeout(function () {
-                            ERROR.close();
-                        }, 3000);
-                    }
+    function class_delete_result(resp) {
+        classWait.close();
+        if (resp.httpResponseCode == 200) {
+            ListGrid_Class_JspClass.invalidateCache();
+            var OK = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.successful'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code='msg.command.done'/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.failed'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
     };
-
-           function class_delete_result(resp) {
-                                classWait.close();
-                                if (resp.httpResponseCode == 200) {
-                                    ListGrid_Class_JspClass.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.successful'/>",
-                                        icon: "[SKIN]say.png",
-                                        title: "<spring:message code='msg.command.done'/>"
-                                    });
-                                    setTimeout(function () {
-                                        OK.close();
-                                    }, 3000);
-                                } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "<spring:message code='msg.record.remove.failed'/>",
-                                        icon: "[SKIN]stop.png",
-                                        title: "<spring:message code='message'/>"
-                                    });
-                                    setTimeout(function () {
-                                        ERROR.close();
-                                    }, 3000);
-                                }
-                            };
 
     function class_remove_student_result(resp) {
-                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                    ListGrid_Current_Students_JspClass.invalidateCache();
-                                    ListGrid_All_Students_JspClass.invalidateCache();
-                                } else {
-                                    isc.say("<spring:message code='error'/>");
-                                }
-                            };
-                               function class_add_student_result(resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Current_Students_JspClass.invalidateCache();
-                        ListGrid_All_Students_JspClass.invalidateCache();
-                    } else {
-                        isc.say("<spring:message code='error'/>");
-                    }
-                };
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            ListGrid_Current_Students_JspClass.invalidateCache();
+            ListGrid_All_Students_JspClass.invalidateCache();
+        } else {
+            isc.say("<spring:message code='error'/>");
+        }
+    };
+
+    function class_add_student_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            ListGrid_Current_Students_JspClass.invalidateCache();
+            ListGrid_All_Students_JspClass.invalidateCache();
+        } else {
+            isc.say("<spring:message code='error'/>");
+        }
+    };
 
 
-                function class_add_students_result(resp) {
-                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                        ListGrid_Current_Students_JspClass.invalidateCache();
-                        ListGrid_All_Students_JspClass.invalidateCache();
-                    } else {
-                        isc.say("<spring:message code='error'/>");
-                    }
-                };
+    function class_add_students_result(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            ListGrid_Current_Students_JspClass.invalidateCache();
+            ListGrid_All_Students_JspClass.invalidateCache();
+        } else {
+            isc.say("<spring:message code='error'/>");
+        }
+    };
 
     function Add_Student() {
 
