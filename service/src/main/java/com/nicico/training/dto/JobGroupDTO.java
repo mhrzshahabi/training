@@ -68,11 +68,11 @@ public class JobGroupDTO {
     @Accessors(chain = true)
     @ApiModel("JobGroupUpdateRq")
     public static class Update extends JobGroupDTO {
-        private Set<Long> jobIds;
+        private Long id;
 //        private Set<Long> competenceIds;
-        @NotNull
-        @ApiModelProperty(required = true)
-        private Integer version;
+//        @NotNull
+//        @ApiModelProperty(required = true)
+//        private Integer version;
     }
 
     // ------------------------------

@@ -279,14 +279,15 @@ public class JobGroupRestController {
     @Loggable
     @GetMapping(value = "/{jobGroupId}/getJobs")
 //    @PreAuthorize("hasAnyAuthority('r_job_group')")
-    public ResponseEntity<ISC.Response<JobDTO.Info>> getJobs(@PathVariable Long jobGroupId) {
+    public ResponseEntity<ISC> getJobs(@PathVariable Long jobGroupId) {
         List<JobDTO.Info> list = jobGroupService.getJobs(jobGroupId);
         ISC.Response<JobDTO.Info> response = new ISC.Response<>();
         response.setData(list)
                 .setStartRow(0)
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        ISC<Object> objectISC = new ISC<>(response);
+        return new ResponseEntity<>(objectISC,HttpStatus.OK);
     }
 
     @Loggable

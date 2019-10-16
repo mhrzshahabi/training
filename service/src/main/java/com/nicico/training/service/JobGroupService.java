@@ -23,10 +23,9 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Service
 @RequiredArgsConstructor
@@ -106,7 +105,7 @@ public class JobGroupService implements IJobGroupService {
         modelMapper.map(jobGroup, updating);
         modelMapper.map(request, updating);
 
-        return save(updating, request.getJobIds());
+        return modelMapper.map(jobGroupDAO.saveAndFlush(updating),JobGroupDTO.Info.class);
     }
 
     @Transactional
@@ -119,7 +118,6 @@ public class JobGroupService implements IJobGroupService {
     @Override
     public void delete(JobGroupDTO.Delete request) {
         final List<JobGroup> cAllById = jobGroupDAO.findAllById(request.getIds());
-
         jobGroupDAO.deleteAll(cAllById);
     }
 
@@ -168,10 +166,15 @@ public class JobGroupService implements IJobGroupService {
     @Override
     @Transactional
     public List<JobDTO.Info> getJobs(Long jobGroupID) {
-//        final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupID);
-//        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
+        final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(jobGroupID);
+        final JobGroup jobGroup = optionalJobGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.JobGroupNotFound));
 //        Set<Competence> competenceSet = jobGroup.getCompetenceSet();
-//        Set<Job> jobs = new HashSet<>();
+        Set<Job> jobs = jobGroup.getJobSet();
+        ArrayList<JobDTO.Info> jobList = new ArrayList<>();
+        for (Job job : jobs) {
+            jobList.add(modelMapper.map(job,JobDTO.Info.class));
+        }
+//        JobDTO.Info info = new JobDTO.Info();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
 //        for (Competence competence:jobGroup.getCompetenceSet()
 //             ) {
@@ -183,8 +186,8 @@ public class JobGroupService implements IJobGroupService {
 //            }
 //        }
 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
-//        return modelMapper.map(jobs, new TypeToken<List<JobDTO.Info>>() {}.getType());
-        return null;
+        return jobList;
+//        return infoList;
     }
 
     @Override
