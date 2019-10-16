@@ -18,6 +18,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Forms.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/EnterpriseBlue/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
@@ -351,7 +352,7 @@
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/job/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/job/show-form"/>");
                     }
                 },
                 {
