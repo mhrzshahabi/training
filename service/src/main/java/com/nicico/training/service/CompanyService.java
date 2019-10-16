@@ -5,6 +5,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompanyDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.ICompanyService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -95,19 +96,19 @@ public class CompanyService implements ICompanyService {
 
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public CompanyDTO.Info getOneByNationalCode(String nationalCode) {
+       @Transactional(readOnly = true)
+       @Override
+   public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
         List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
         PersonalInfo personalInfo = null;
-        if (personalInfoList != null && personalInfoList.size() != 0) {
+        if(personalInfoList != null && personalInfoList.size() != 0) {
             personalInfo = personalInfoList.get(0);
-            List<Company> companyList=companyDAO.findByManagerId(personalInfo.getId());
-            Company company=companyList.get(0);
-            return mapper.map(company,CompanyDTO.Info.class);
-        } else
+            return mapper.map(personalInfo, PersonalInfoDTO.Info.class);
+        }
+        else
             return null;
     }
+
 
 
     @Transactional

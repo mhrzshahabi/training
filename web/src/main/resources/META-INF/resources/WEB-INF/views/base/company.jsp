@@ -47,19 +47,19 @@ var companyId;
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-
+                         ListGrid_Company.invalidateCache();
                 }
             }, {
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
-
+                      show_CompanyNewForm();
                 }
             }, {
                 title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
-
+                    show_Company_EditForm();
                 }
             }, {
                 title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
-
+                     show_CompanyRemoveForm();
                 }
             }, {isSeparator: true}, {
                 title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
@@ -134,8 +134,6 @@ var companyId;
                     }
 
                 }
-
-
             }
         ]
     });
@@ -199,14 +197,13 @@ var companyId;
                 type: 'text',
                 required: "true",
                 keyPressFilter: "[0-9]",
-                length: "30"
+                length: "16"
             },
             {
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
                 type: 'text',
                 required: "true",
-                keyPressFilter: "[0-9]",
                 length: "30"
             },
 
@@ -441,6 +438,7 @@ var companyId;
 // placement: "fillScreen",
         width: "50%",
         height: "45%",
+         minWidth:900,
         title: "<spring:message code='teacher'/>",
         canDragReposition: true,
         canDragResize: true,
@@ -644,7 +642,6 @@ var companyId;
             isc.RPCManager.sendRequest(TrDSRequest(company_editURL, company_method, JSON.stringify(data_Company), "callback:show_CompanyActionResult(rpcResponse)"));
         }
     }
-
 
     function show_CompanyNewForm() {
         company_method = "POST";

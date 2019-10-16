@@ -9,9 +9,6 @@
 
 // <script>
 
-
-
-
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -244,16 +241,17 @@
                     } else {
 
                         // alert(record.id);
-                        RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                        RestDataSource_All_Jobs.invalidateCache();
-                        RestDataSource_All_Jobs.fetchData();
-                        ListGrid_AllJobs.invalidateCache();
+                        // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
+                        // RestDataSource_All_Jobs.invalidateCache();
+                        // RestDataSource_All_Jobs.fetchData();
                         ListGrid_AllJobs.fetchData();
+                        ListGrid_AllJobs.invalidateCache();
+
 
 
                         RestDataSource_ForThisJobGroup_GetJobs.fetchDataURL = jobGroupUrl + record.id + "/getJobs"
-                        RestDataSource_ForThisJobGroup_GetJobs.invalidateCache();
-                        RestDataSource_ForThisJobGroup_GetJobs.fetchData();
+                        // RestDataSource_ForThisJobGroup_GetJobs.invalidateCache();
+                        // RestDataSource_ForThisJobGroup_GetJobs.fetchData();
                         ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                         ListGrid_ForThisJobGroup_GetJobs.fetchData();
                         DynamicForm_thisJobGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
@@ -364,7 +362,6 @@
             ]
         });
 
-
     function ListGrid_Job_Group_Jobs_refresh() {
 
         if (ListGrid_Job_Group_Jsp.getSelectedRecord() == null)
@@ -380,7 +377,6 @@
         else
             ListGrid_Job_Group_Competence.invalidateCache();
     }
-
 
     var RestDataSource_Job_Group_Jobs_Jsp = isc.TrDS.create({
         fields: [
@@ -400,7 +396,7 @@
             {name: "description"},
             {name: "version"}
         ]
-        , fetchDataURL: jobGroupUrl + "spec-list"
+        , fetchDataURL: jobUrl + "iscList"
     });
     var RestDataSource_ForThisJobGroup_GetJobs = isc.TrDS.create({
         fields: [
@@ -692,8 +688,8 @@
 
 
     var HLayOut_thisJobGroup_AddJob_Jsp = isc.HLayout.create({
-        width: 700,
-        height: 30,
+        width: "100%",
+        height: "10%",
         border: "0px solid yellow",
         layoutMargin: 5,
         align: "center",
@@ -706,8 +702,7 @@
 
     var VLayOut_JobGroup_Jobs_Jsp = isc.VLayout.create({
         width: "100%",
-        height: "300",
-        autoDraw: false,
+        height: "100%",
         border: "3px solid gray", layoutMargin: 5,
         members: [
             HLayOut_thisJobGroup_AddJob_Jsp,
@@ -719,17 +714,8 @@
         title: "لیست شغل ها",
         width: "900",
         height: "400",
-        autoSize: true,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
         align: "center",
-        autoDraw: false,
-        dismissOnEscape: true,
-
         closeClick: function () {
-
-
             ListGrid_Job_Group_Competence.invalidateCache();
             ListGrid_Job_Group_Jobs.invalidateCache();
             this.hide();
@@ -738,8 +724,6 @@
             VLayOut_JobGroup_Jobs_Jsp
         ]
     });
-
-
     var RestDataSource_Job_Group_Competencies_Jsp = isc.TrDS.create({
         fields: [
             {name: "id"},
@@ -1392,9 +1376,10 @@
 
             } else {
                 // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                RestDataSource_All_Jobs.fetchDataURL = jobUrl + "iscList";
-                ListGrid_AllJobs.invalidateCache();
+                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "iscList";
                 ListGrid_AllJobs.fetchData();
+                ListGrid_AllJobs.invalidateCache();
+
                 RestDataSource_ForThisJobGroup_GetJobs.fetchDataURL = jobGroupUrl + record.id + "/getJobs";
                 ListGrid_ForThisJobGroup_GetJobs.invalidateCache();
                 ListGrid_ForThisJobGroup_GetJobs.fetchData();
@@ -1415,8 +1400,13 @@
             ToolStripButton_Add_Job_Group_Jsp,
             ToolStripButton_Edit_Job_Group_Jsp,
             ToolStripButton_Remove_Job_Group_Jsp,
-            ToolStripButton_Print_Job_Group_Jsp,
             ToolStripButton_Add_Job_Group_AddJob_Jsp]
+        // members: [ToolStripButton_Refresh_Job_Group_Jsp,
+        //     ToolStripButton_Add_Job_Group_Jsp,
+        //     ToolStripButton_Edit_Job_Group_Jsp,
+        //     ToolStripButton_Remove_Job_Group_Jsp,
+        //     ToolStripButton_Print_Job_Group_Jsp,
+        //     ToolStripButton_Add_Job_Group_AddJob_Jsp]
     });
 
 

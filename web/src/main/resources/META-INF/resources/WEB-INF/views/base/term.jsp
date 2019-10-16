@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://www.springframework.org/security/tags" prefix="sec" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -20,36 +21,39 @@
     Menu_ListGrid_term = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                     ListGrid_Term.invalidateCache();
                 }
             }, {
-                title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                     <sec:authorize access="hasAuthority('PERMISSION')">
+                     </sec:authorize>
+                title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     show_TermNewForm();
+                    <sec:authorize access="hasAuthority('PERMISSION')">
+                    </sec:authorize>
                 }
             }, {
-                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+               title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                     show_TermEditForm();
                 }
             }, {
-                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                     show_TermRemoveForm();
                 }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                title: "<spring:message code="print.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                     print_TermListGrid("pdf");
                 }
             }, {
-                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
                     print_TermListGrid("excel")
                 }
             }, {
-                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
                     print_TermListGrid("html");
                 }
             }]
     });
-
     //************************************************************************************
     // RestDataSource & ListGrid
     //************************************************************************************
