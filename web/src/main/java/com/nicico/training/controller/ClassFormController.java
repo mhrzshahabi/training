@@ -22,7 +22,7 @@ public class ClassFormController {
 
     @RequestMapping("/show-form")
     public String showForm() {
-        return "training/class";
+        return "base/class";
     }
 
     @PostMapping("/printWithCriteria/{type}")

@@ -148,6 +148,13 @@ public class GoalRestController {
         return new ResponseEntity<>(goalService.getSyllabusSet(goalId), HttpStatus.OK);
     }
 
+    @Loggable
+    @GetMapping(value = "/course/{goalId}")
+//    @PreAuthorize("hasAnyAuthority('r_goal')")
+    public ResponseEntity<List<CourseDTO.Info>> getCourses(@PathVariable Long goalId) {
+        return new ResponseEntity<>(goalService.getCourses(goalId), HttpStatus.OK);
+    }
+
     //  -------------------------------
 
 

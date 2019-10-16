@@ -131,6 +131,26 @@ public class CourseService implements ICourseService {
         return listOut;
     }
 
+    @Transactional
+    @Override
+    public void setPreCourse(Long id, List<Long> preCourseListId){
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        List<Course> allById = courseDAO.findAllById(preCourseListId);
+        String s = Joiner.on(',').join(preCourseListId);
+        course.setPreCourse(s);
+        course.setPerCourseList(allById);
+    }
+
+    @Transactional
+    @Override
+    public void setEqualCourse(Long id, List<String> equalCourseList){
+        final Optional<Course> cById = courseDAO.findById(id);
+        final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        String s1 = Joiner.on(',').join(equalCourseList);
+        course.setEqualCourse(s1);
+    }
+
     @Transactional(readOnly = true)
     @Override
     public List<Map> equalCourseList(Long id) {
@@ -171,15 +191,16 @@ public class CourseService implements ICourseService {
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
             course.setETechnicalType(eTechnicalTypeConverter.convertToEntityAttribute(request.getETechnicalTypeId()));
-            List<Long> preCourseListId = request.getPreCourseListId();
-            List<Course> allById = courseDAO.findAllById(preCourseListId);
-            course.setPerCourseList(allById);
-            List<String> equalCourseListId = request.getEqualCourseListId();
-            String s = Joiner.on(',').join(preCourseListId);
-            String s1 = Joiner.on(',').join(equalCourseListId);
-            course.setPreCourse(s);
-            course.setEqualCourse(s1);
-            return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
+//            List<Long> preCourseListId = request.getPreCourseListId();
+//            List<Course> allById = courseDAO.findAllById(preCourseListId);
+//            course.setPerCourseList(allById);
+//            List<String> equalCourseListId = request.getEqualCourseListId();
+//            String s = Joiner.on(',').join(preCourseListId);
+//            String s1 = Joiner.on(',').join(equalCourseListId);
+//            course.setPreCourse(s);
+//            course.setEqualCourse(s1);
+            Course course1 = courseDAO.saveAndFlush(course);
+            return modelMapper.map(course1, CourseDTO.Info.class);
         }
         else
             return null;

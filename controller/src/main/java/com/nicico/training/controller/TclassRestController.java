@@ -33,11 +33,10 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/tclass")
 public class TclassRestController {
-    
+
     private final ITclassService tclassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final DateUtil dateUtil;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -70,7 +69,7 @@ public class TclassRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         tclassService.delete(id);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -78,7 +77,7 @@ public class TclassRestController {
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody TclassDTO.Delete request) {
+    public ResponseEntity delete(@Validated @RequestBody TclassDTO.Delete request) {
         tclassService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -87,11 +86,11 @@ public class TclassRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<TclassDTO.TclassSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                       @RequestParam("_endRow") Integer endRow,
+                                                       @RequestParam(value = "_constructor", required = false) String constructor,
+                                                       @RequestParam(value = "operator", required = false) String operator,
+                                                       @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -177,54 +176,52 @@ public class TclassRestController {
     @Loggable
     @DeleteMapping(value = "/removeStudent/{studentId}/{classId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeStudent(@PathVariable Long studentId,@PathVariable Long classId) {
-        tclassService.removeStudent(studentId,classId);
+    public ResponseEntity removeStudent(@PathVariable Long studentId, @PathVariable Long classId) {
+        tclassService.removeStudent(studentId, classId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/addStudent/{studentId}/{classId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addStudent(@PathVariable Long studentId,@PathVariable Long classId) {
-        tclassService.addStudent(studentId,classId);
+    public ResponseEntity addStudent(@PathVariable Long studentId, @PathVariable Long classId) {
+        tclassService.addStudent(studentId, classId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<Void> addStudents(@Validated @RequestBody StudentDTO.Delete request,@PathVariable Long classId) {
-        tclassService.addStudents(request,classId);
+    public ResponseEntity addStudents(@Validated @RequestBody StudentDTO.Delete request, @PathVariable Long classId) {
+        tclassService.addStudents(request, classId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-	@Loggable
-	@PostMapping(value = {"/printWithCriteria/{type}"})
-	public void printWithCriteria(HttpServletResponse response,
-								  @PathVariable String type,
-								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
-        if(criteriaStr.equalsIgnoreCase("{}")) {
+        if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
-        }
-        else{
+        } else {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-		final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
+        final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
 
-		final Map<String, Object> params = new HashMap<>();
-		params.put("todayDate", dateUtil.todayDate());
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
 
-		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
-
-	}
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
+    }
 
 
 }

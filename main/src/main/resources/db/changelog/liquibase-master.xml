@@ -47,4 +47,6 @@
     <include file="changes/liq-039.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-040.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-041.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-042.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-043.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

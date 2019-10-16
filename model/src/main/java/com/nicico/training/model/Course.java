@@ -10,6 +10,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 
 @Getter
@@ -116,31 +117,17 @@ public class Course extends Auditable {
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Set<EqualCourse> equalCourseSet;
 
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Boolean hasGoal;
+
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
 //
 //    @OneToMany(mappedBy="preCourse")
 //    private List<Course> preCourseList = new ArrayList<>();
-
-//    @Transient
-//    private Long calDomainType(Integer n){
-//        Long x = Long.valueOf(0);
-//        Long sumTime = Long.valueOf(0);
-//        Long sumAllTime = Long.valueOf(0);
-//        List<Goal> goalList = this.getGoalSet();
-//        for (Goal goal : goalList) {
-//            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-//            for (Syllabus syllabus : syllabusSet) {
-//                if(syllabus.getEDomainTypeId().equals(n)) {
-//                    sumTime += syllabus.getPracticalDuration();
-//                }
-//              sumAllTime += syllabus.getPracticalDuration();
-//            }
-//            x = (sumTime/sumAllTime)*100;
-//        }
-//        return x;
-//    }
 
     @PreRemove
     private void preRemove() {
@@ -149,6 +136,7 @@ public class Course extends Auditable {
 
     @Transient
     public Boolean getHasGoal() {
-        return goalSet.isEmpty();
+        if(goalSet == null)return false;
+        else return goalSet.isEmpty();
     }
 }

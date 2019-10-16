@@ -58,5 +58,10 @@ public class Tclass extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_term", insertable = false, updatable = false)
+    private Term term;
 
+    @Column(name = "f_term")
+    private Long termId;
 }

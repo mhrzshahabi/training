@@ -18,6 +18,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Forms.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/EnterpriseBlue/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
@@ -255,7 +256,7 @@
                 isc.Button.create({
                     title: "<spring:message code="ok"/>",
                     click: function () {
-                        this.close();
+                        dialog.close();
                     }
                 })
             ]);
@@ -285,16 +286,16 @@
     // -------------------------------------------  Page UI                          -----------------------------------------------
     systemImg = isc.Img.create({
         src: "<spring:url value="nicico.png"/>",
-        // width: 24,
-        // height: 24,
+        width: 25,
+        height: 25,
         imageType: "stretch",
-        padding: 5,
+        padding: 4,
     });
 
     systemLabel = isc.Label.create({
         contents: "<spring:message code="training.system"/>",
         styleName: "normalBold",
-        padding: 5,
+        padding: 4,
     });
 
     userTSMB = isc.ToolStripMenuButton.create({
@@ -351,7 +352,13 @@
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/job/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/job/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="job.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/job-group/show-form"/>");
                     }
                 },
                 {
@@ -569,6 +576,7 @@
     const personalInfoUrl = rootUrl + "/personalInfo/";
     const committeeUrl = rootUrl + "/committee/";
     const skillGroupUrl = rootUrl + "/skill-group/";
+    const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
 

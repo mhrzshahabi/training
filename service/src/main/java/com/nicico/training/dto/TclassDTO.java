@@ -34,6 +34,7 @@ public class TclassDTO {
     @ApiModelProperty(required = true)
     private String code;
 
+    @ApiModelProperty
     private Long duration;
 
     @ApiModelProperty(required = true)
@@ -42,6 +43,9 @@ public class TclassDTO {
     @ApiModelProperty(required = true)
     private Long courseId;
 
+    @ApiModelProperty(required = true)
+    private Long termId;
+
 
     @Getter
     @Setter
@@ -49,12 +53,9 @@ public class TclassDTO {
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private TeacherDTO.TeacherInfoTuple teacher;
         private CourseDTO.CourseInfoTuple course;
+        private TermDTO term;
     }
 
     // ------------------------------
@@ -64,7 +65,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
-       }
+    }
 
     // ------------------------------
 

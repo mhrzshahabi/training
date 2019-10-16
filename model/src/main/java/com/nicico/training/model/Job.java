@@ -6,10 +6,8 @@ package com.nicico.training.model;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -26,4 +24,7 @@ public class Job extends Auditable {
 
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
+
+    @ManyToMany(mappedBy = "jobSet")
+    private Set<JobGroup> jobGroupSet;
 }

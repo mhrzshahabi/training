@@ -13,7 +13,14 @@ public interface ICourseService {
 
 	List<CourseDTO.Info> list();
 	List<CourseDTO.Info> preCourseList(Long id);
-	List<Map> equalCourseList(Long id);
+
+    @Transactional
+    void setPreCourse(Long id, List<Long> preCourseList);
+
+    @Transactional
+    void setEqualCourse(Long id, List<String> equalCourseList);
+
+    List<Map> equalCourseList(Long id);
 
 	CourseDTO.Info create(CourseDTO.Create request);
 
