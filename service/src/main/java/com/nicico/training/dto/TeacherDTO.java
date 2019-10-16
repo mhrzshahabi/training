@@ -94,4 +94,13 @@ public class TeacherDTO {
         private Integer totalRows;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("TeacherFullNameTuple")
+    static class TeacherFullNameTuple {
+        private Long id;
+        private PersonalInfoDTO.PersonalInfoFullNameTuple personality;
+    }
+
+
 }
