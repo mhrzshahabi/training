@@ -14,7 +14,7 @@ public interface ICompanyService {
 
     CompanyDTO.Info create(CompanyDTO.Create request);
 
-    CompanyDTO.Info getOneByNationalCode(String nationalCode);
+    PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
 
     CompanyDTO.Info update(Long id, CompanyDTO.Update request);
 

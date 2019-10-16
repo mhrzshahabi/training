@@ -8,7 +8,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CompanyDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.service.CompanyService;
+import com.nicico.training.service.PersonalInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
@@ -30,6 +32,7 @@ import java.util.List;
 public class CompanyRestController {
   private final CompanyService companyService;
    private final ObjectMapper objectMapper;
+   private final PersonalInfoService personalInfoService;
    private final DateUtil dateUtil;
    private final ReportUtil reportUtil;
    
@@ -116,7 +119,7 @@ public class CompanyRestController {
     }
 
 
-      @Loggable
+    @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CompanyDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(companyService.search(request), HttpStatus.OK);
@@ -124,9 +127,10 @@ public class CompanyRestController {
 
     @Loggable
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
-    public ResponseEntity<CompanyDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
+    public ResponseEntity<PersonalInfoDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
         return new ResponseEntity<>(companyService.getOneByNationalCode(nationalCode), HttpStatus.OK);
     }
+
 
 
 }
