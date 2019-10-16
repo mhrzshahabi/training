@@ -2,6 +2,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
@@ -9,120 +10,79 @@
 // <script>
 
     var productData = [
-
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Pens", metric:"Revenue", _value:10000, percentNational:25},
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Chairs", metric:"Revenue", _value:50000, percentNational:45},
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Monitors", metric:"Revenue", _value:120000, percentNational:49},
-
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Pens", metric:"Profit", _value:2000, percentNational:25},
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Chairs", metric:"Profit", _value:5000, percentNational:45},
-        {quarter:"Q1, 2016", month:"January", region:"Western U.S.", product:"Monitors", metric:"Profit", _value:44000, percentNational:59, _hilite:"over50"},
-
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Pens", metric:"Revenue", _value:8000, percentNational:20},
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Chairs", metric:"Revenue", _value:22000, percentNational:20},
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Monitors", metric:"Revenue", _value:20000, percentNational:8, _hilite:"under10"},
-
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Pens", metric:"Profit", _value:2000, percentNational:25},
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Chairs", metric:"Profit", _value:2000, percentNational:18},
-        {quarter:"Q1, 2016", month:"January", region:"Midwest U.S.", product:"Monitors", metric:"Profit", _value:5000, percentNational:7, _hilite:"under10"},
-
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Pens", metric:"Revenue", _value:22000, percentNational:55, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Chairs", metric:"Revenue", _value:40000, percentNational:36},
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Monitors", metric:"Revenue", _value:105000, percentNational:43},
-
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Pens", metric:"Profit", _value:4000, percentNational:50, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Chairs", metric:"Profit", _value:4000, percentNational:36},
-        {quarter:"Q1, 2016", month:"January", region:"Eastern U.S.", product:"Monitors", metric:"Profit", _value:25000, percentNational:34},
-
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Pens", metric:"Revenue", _value:12000, percentNational:23},
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Chairs", metric:"Revenue", _value:42000, percentNational:47},
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Monitors", metric:"Revenue", _value:160000, percentNational:40},
-
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Pens", metric:"Profit", _value:4000, percentNational:23},
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Chairs", metric:"Profit", _value:4000, percentNational:47},
-        {quarter:"Q1, 2016", month:"February", region:"Western U.S.", product:"Monitors", metric:"Profit", _value:68000, percentNational:40},
-
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Pens", metric:"Revenue", _value:10000, percentNational:19},
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Chairs", metric:"Revenue", _value:12000, percentNational:13},
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Monitors", metric:"Revenue", _value:75000, percentNational:19},
-
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Pens", metric:"Profit", _value:3000, percentNational:20},
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Chairs", metric:"Profit", _value:1000, percentNational:11},
-        {quarter:"Q1, 2016", month:"February", region:"Midwest U.S.", product:"Monitors", metric:"Profit", _value:32000, percentNational:17},
-
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Pens", metric:"Revenue", _value:31000, percentNational:58, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Chairs", metric:"Revenue", _value:35000, percentNational:39},
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Monitors", metric:"Revenue", _value:164000, percentNational:41},
-
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Pens", metric:"Profit", _value:8000, percentNational:53, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Chairs", metric:"Profit", _value:4000, percentNational:44},
-        {quarter:"Q1, 2016", month:"February", region:"Eastern U.S.", product:"Monitors", metric:"Profit", _value:88000, percentNational:47},
-
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Pens", metric:"Revenue", _value:18000, percentNational:26},
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Chairs", metric:"Revenue", _value:25000, percentNational:54, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Monitors", metric:"Revenue", _value:220000, percentNational:40},
-
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Pens", metric:"Profit", _value:9000, percentNational:29},
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Chairs", metric:"Profit", _value:2000, percentNational:40},
-        {quarter:"Q1, 2016", month:"March", region:"Western U.S.", product:"Monitors", metric:"Profit", _value:112000, percentNational:38},
-
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Pens", metric:"Revenue", _value:7000, percentNational:10},
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Chairs", metric:"Revenue", _value:6000, percentNational:13},
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Monitors", metric:"Revenue", _value:135000, percentNational:25},
-
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Pens", metric:"Profit", _value:2000, percentNational:6, _hilite:"under10"},
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Chairs", metric:"Profit", _value:1000, percentNational:20},
-        {quarter:"Q1, 2016", month:"March", region:"Midwest U.S.", product:"Monitors", metric:"Profit", _value:66000, percentNational:23},
-
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Pens", metric:"Revenue", _value:44000, percentNational:64, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Chairs", metric:"Revenue", _value:15000, percentNational:33},
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Monitors", metric:"Revenue", _value:190000,percentNational:35},
-
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Pens", metric:"Profit", _value:20000, percentNational:65, _hilite:"over50"},
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Chairs", metric:"Profit", _value:2000, percentNational:40},
-        {quarter:"Q1, 2016", month:"March", region:"Eastern U.S.", product:"Monitors", metric:"Profit", _value:115000, percentNational:39}
+        {quarter:"Q1, 2016", month:"دانشی", domain:"شایستگی برنامه نویسی", product:"عملکرد ضروری", _value:"توانایی"},
+        {quarter:"Q1, 2016", month:"مهارتی", domain:"شایستگی برنامه نویسی", product:"عملکرد بهبود", _value:"آشنایی"},
+        {quarter:"Q1, 2016", month:"نگرشی", domain:"شایستگی برنامه نویسی", product:"عملکرد توسعه", _value:"مهارتییس"},
 
     ];
 
     var NeedAssessmentDF_First = isc.DynamicForm.create({
-        // align:"center",
+        numCols:8,
         margin: 20,
+        border:"2px solid red",
+
         fields:[
+            {
+              type:"SpacerItem",
+                colSpan:2
+            },
             {
                 name:"alignment", type:"radioGroup", showTitle:false,
                 valueMap:["شغل","گروه شغلی","پست","گروه پستی"], defaultValue:"center",
-                change:"countryList.getField('countryCode').align = value; countryList.markForRedraw()"
+                change:"countryList.getField('countryCode').align = value; countryList.markForRedraw()",
+                align:"center",
+                // colSpan:1
             },
             {
                 name:"combo", type:"TrComboAutoRefresh", showTitle:false,
+                width:"250",
+                align:"center",
+
             }
         ]
     });
     var NeedAssessmentCG_First = isc.CubeGrid.create({
+        width:"100%",
+        height:"100%",
+        // autoSize:true,
+        // bodyStyleName:"ListGrid",
+        // baseStyle:"cell",
+        // overflow:"hidden",
+        // bodyOverflow:"auto",
         ID: "basicCubeGrid",
-        // data: productData,
-        // width: "100%",
-        // hideEmptyFacetValues: true,
-        //
+        border:"2px solid red",
+        // styleName: "fontSize1",
+        autoFitFieldWidths:true,
+        enableCharting: true,
+        defaultFacetWidth:200,
+        autoSizeHeaders:true,
+        bodyMinWidth:1280,
+        layoutAlign:"center",
+        // canCollapseFacets:true,
+        data: productData,
+        hideEmptyFacetValues: true,
         // valueFormat: "\u00A4,0.00",
-        //
-        // columnFacets: ["quarter", "month", "metric"],
-        // rowFacets: ["region", "product"],
-        //
-        // // configure export colors
-        // exportFacetTextColor: "blue",
-        // exportFacetBGColor: "yellow",
-        //
-        // exportColumnFacetTextColor: "red",
-        // exportColumnFacetBGColor: "#44FF44",
-        //
-        // exportDefaultBGColor: "#FFDDAA"
+        columnFacets: ["quarter", "month"],
+        rowFacets: ["domain", "product"],
+
+        // configure export colors
+        exportFacetTextColor: "blue",
+        exportFacetBGColor: "yellow",
+
+        exportColumnFacetTextColor: "red",
+        exportColumnFacetBGColor: "#44FF44",
+
+        exportDefaultBGColor: "#FFDDAA",
+        cellClick :function(record, rowNum, colNum){
+            alert("")
+        }
     });
 
-    isc.VStack.create({
+    isc.VLayout.create({
         // autoDraw:true,
-        // width: 800,
-        // height: 600,
-        membersMargin:20,
+        border:"2px solid red",
+        width: "100%",
+        height: "100%",
+        // membersMargin:10,
         members: [NeedAssessmentDF_First,NeedAssessmentCG_First],
     });
