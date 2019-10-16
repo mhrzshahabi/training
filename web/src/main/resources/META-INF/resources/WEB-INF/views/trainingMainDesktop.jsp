@@ -255,7 +255,7 @@
                 isc.Button.create({
                     title: "<spring:message code="ok"/>",
                     click: function () {
-                        this.close();
+                        dialog.close();
                     }
                 })
             ]);
