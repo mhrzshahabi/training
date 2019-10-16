@@ -153,7 +153,7 @@
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                 "<spring:message code='education.edit.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
-        },
+        }
     });
 
     var DynamicForm_EducationOrientation = isc.DynamicForm.create({
@@ -386,7 +386,7 @@
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                 "<spring:message code='education.edit.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
-        },
+        }
     });
 
     var DynamicForm_EducationMajor = isc.DynamicForm.create({
@@ -591,7 +591,7 @@
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                 "<spring:message code='education.edit.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
-        },
+        }
     });
 
     var DynamicForm_EducationLevel = isc.DynamicForm.create({
