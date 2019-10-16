@@ -1,12 +1,10 @@
 package com.nicico.training.controller.workflow;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.google.gson.Gson;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.nicico.copper.activiti.domain.*;
 import com.nicico.copper.activiti.domain.iservice.IBusinessWorkflowEngine;
-import com.nicico.copper.common.domain.json.ResultSetConverter;
+import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.grid.GridResponse;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.core.util.file.FileUtil;
@@ -19,16 +17,18 @@ import org.activiti.engine.TaskService;
 import org.activiti.engine.form.FormProperty;
 import org.activiti.engine.form.StartFormData;
 import org.activiti.engine.form.TaskFormData;
-import org.activiti.engine.runtime.ProcessInstance;
+import org.activiti.engine.repository.Deployment;
+import org.activiti.engine.repository.DeploymentBuilder;
 import org.activiti.engine.task.Task;
 import org.activiti.image.impl.DefaultProcessDiagramGenerator;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,80 +36,75 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.*;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/workflow")///api/workflow/uploadProcessDefinition
+@RequestMapping("/api/workflow")
 public class WorkflowRestController {
 
-
-	private final Environment environment;
-	private final ObjectMapper objectMapper;
-	private final IBusinessWorkflowEngine businessWorkflowEngine;
-	private final TaskService taskService;
-	private final RepositoryService repositoryService;
-	private final RuntimeService runtimeService;
 	private final FileUtil fileUtil;
-	private final ResultSetConverter resultSetConverter;
+	private final ModelMapper modelMapper;
+	private final ObjectMapper objectMapper;
+	private final TaskService taskService;
+	private final RuntimeService runtimeService;
+	private final RepositoryService repositoryService;
+	private final IBusinessWorkflowEngine businessWorkflowEngine;
 
-	@Value("${nicico.dir.upload.bpmn}")
+	@Value("${nicico.dirs.upload-bpmn}")
 	private String bpmnUploadDir;
 
 	@PostMapping(value = "/uploadProcessDefinition")
 	public ResponseEntity<Void> uploadProcessDefinition(@RequestParam("file") MultipartFile file) {
-		File uploadedFile = null;
 
+		File uploadedFile = null;
 		if (!file.isEmpty()) {
+
 			String fileName = file.getOriginalFilename();
 			try {
-				if (!fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".bpmn"))
+
+				if (fileName != null && !fileName.substring(fileName.lastIndexOf('.')).equalsIgnoreCase(".bpmn"))
 					return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
 
 				uploadedFile = fileUtil.upload(file, bpmnUploadDir);
-				repositoryService.createDeployment().addInputStream(uploadedFile.getName(), new FileInputStream(uploadedFile)).deploy();
-				uploadedFile.delete();
+				FileInputStream stream = new FileInputStream(uploadedFile);
+				DeploymentBuilder deployment = repositoryService.createDeployment().addInputStream(uploadedFile.getName(), stream);
+				Deployment deployId = deployment.deploy();
 				return new ResponseEntity<>(HttpStatus.OK);
 			} catch (Exception e) {
-				uploadedFile.delete();
+
+				if (uploadedFile != null)
+					uploadedFile.delete();
 				return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
 			}
-		} else {
+		} else
 			return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-		}
 	}
 
 	@GetMapping(value = {"/processDefinition/list"})
-	public ResponseEntity<TotalResponse<String>> getProcessDefinitionList(final Map<String, Object> params, final HttpServletRequest httpRequest) {
-		List<CustomProcessDefinition> processList = businessWorkflowEngine.getProcessDefinitionList();
+	public ResponseEntity<TotalResponse<CustomProcessDefinition>> getProcessDefinitionList(final Map<String, Object> params, final HttpServletRequest httpRequest) {
 
-		return getTotalResponseInJson(httpRequest, processList);
+		return getTotalResponseInJson(httpRequest, businessWorkflowEngine.getProcessDefinitionList());
 	}
 
+	@GetMapping(value = {"/allProcessInstance/list"})
+	public ResponseEntity<TotalResponse<CustomProcessInstance>> getAllProcessInstanceList(final Map<String, Object> params, final HttpServletRequest httpRequest) {
 
-	@GetMapping(value = {"/allProcessInstance/list"}, produces = "application/json;Charset=utf-8")
-	public ResponseEntity<TotalResponse<String>> getAllProcessInstanceList(final Map<String, Object> params, final HttpServletRequest httpRequest) {
-		List<CustomProcessInstance> processList = businessWorkflowEngine.getProcessInstance();
-
-		return getTotalResponseInJson(httpRequest, processList);
+		return getTotalResponseInJson(httpRequest, businessWorkflowEngine.getProcessInstance());
 	}
-
 
 	@GetMapping(value = "/groupTask/list")
-	public ResponseEntity<TotalResponse<String>> getGroupTasksWhichUserBelongsTo(HttpServletRequest req,
-												  @RequestParam(value = "roles", required = false) String roles) {
+	public ResponseEntity<TotalResponse<UserTask>> getGroupTasksWhichUserBelongsTo(HttpServletRequest req, @RequestParam(value = "roles", required = false) String roles) {
+
 		List<String> groupArr = new ArrayList<String>(Arrays.asList(roles.replace("[", "").replace("]", "").split(", ")));
 		List<UserTask> userTasksByGroups = new ArrayList<>();
 		if (groupArr.size() > 0) {
 			userTasksByGroups = businessWorkflowEngine.getUserTasksByGroups(groupArr);
 			checkDescriptionTask(userTasksByGroups);
 		}
-		return getTotalResponseInJson(req, userTasksByGroups);
 
+		return getTotalResponseInJson(req, userTasksByGroups);
 	}
 
 	private void checkDescriptionTask(List<UserTask> userTasksByGroups) {
@@ -118,19 +113,24 @@ public class WorkflowRestController {
 		}
 	}
 
-
 	@GetMapping(value = "/userTask/list")
-	public ResponseEntity<TotalResponse<String>> getUserTasks(HttpServletRequest request, HttpServletResponse res,
-							   @RequestParam(value = "usr", required = false) String usr) {
+	public ResponseEntity<TotalResponse<UserTask>> getUserTasks(HttpServletRequest request, HttpServletResponse res,
+																@RequestParam(value = "usr", required = false) String usr) {
 		List<UserTask> userTasksByName = businessWorkflowEngine.getUserTasks(usr);
 		checkDescriptionTask(userTasksByName);
+		Map resp = new HashMap() {{
+			put("response", new HashMap() {{
+				put("data", userTasksByName);
+			}});
+		}};
 
 		return getTotalResponseInJson(request, userTasksByName);
+//        return new ResponseEntity<>(resp,HttpStatus.OK);
 	}
 
 	@GetMapping(value = "/historyVal/list")
 	public ResponseEntity<TotalResponse<String>> getHistoryVar(HttpServletRequest httpRequest, HttpServletResponse res,
-								@RequestParam(value = "documentId", required = false) String documentId) {
+															   @RequestParam(value = "documentId", required = false) String documentId) {
 		int startRow;
 		int endRow;
 		Map<String, String> sortBy;
@@ -149,8 +149,7 @@ public class WorkflowRestController {
 			else endRow = 80;
 
 			List<Object[]> list = businessWorkflowEngine.getHistoryVar(documentId);
-			List<Map<String, Object>> jsonArr= null;
-//			jsonArr = resultSetConverter.toJsonArray(list, new String[]{"id", "crDate", "assignee", "recom", "documentId"});
+//            List<JsonObject> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"id", "crDate", "assignee", "recom", "documentId"});
 
 			if (list != null && !list.isEmpty()) {
 				totalRowsCount = list.size();
@@ -160,7 +159,7 @@ public class WorkflowRestController {
 			gridResponse.setEndRow(endRow);
 			gridResponse.setStatus(0);
 			gridResponse.setTotalRows(totalRowsCount);
-			gridResponse.setData(jsonArr);
+//            gridResponse.setData(jsonArr);
 
 			return new ResponseEntity<>(new TotalResponse<String>(gridResponse), HttpStatus.OK);
 		} catch (Exception ex) {
@@ -169,10 +168,9 @@ public class WorkflowRestController {
 		}
 	}
 
-
 	@GetMapping(value = "/TbluserRoleDS/list")
 	public ResponseEntity<TotalResponse<String>> getTblUserRoleDS(HttpServletRequest httpRequest, HttpServletResponse res,
-								   @RequestParam(value = "roleName", required = false) String roleName) {
+																  @RequestParam(value = "roleName", required = false) String roleName) {
 
 		int startRow;
 		int endRow;
@@ -183,20 +181,17 @@ public class WorkflowRestController {
 		try {
 			if (roleName == null || roleName.equalsIgnoreCase(""))
 				roleName = "_";
-			List<JsonObject> data = new ArrayList<JsonObject>();
 
 			GridResponse gridResponse = new GridResponse();
 
 			if (httpRequest.getParameter("_startRow") != null)
-				startRow = new Integer(httpRequest.getParameter("_startRow"));
+				startRow = Integer.parseInt(httpRequest.getParameter("_startRow"));
 			else startRow = 0;
 			if (httpRequest.getParameter("_endRow") != null)
 				endRow = new Integer(httpRequest.getParameter("_endRow"));
 			else endRow = 8000;
 
 			List<Object[]> list = businessWorkflowEngine.findUserRoles(roleName);
-			List<Map<String, Object>> jsonArr= null;
-//			List<Map<String, Object>> jsonArr = resultSetConverter.toJsonArray(list, new String[]{"assignee", "name", "roleDesc", "roleName", "id"});
 
 			if (list != null && !list.isEmpty()) {
 				totalRowsCount = list.size();
@@ -207,7 +202,6 @@ public class WorkflowRestController {
 			gridResponse.setEndRow(endRow);
 			gridResponse.setStatus(0);
 			gridResponse.setTotalRows(totalRowsCount);
-			gridResponse.setData(jsonArr);
 
 			return new ResponseEntity<>(new TotalResponse<String>(gridResponse), HttpStatus.OK);
 		} catch (Exception ex) {
@@ -215,7 +209,6 @@ public class WorkflowRestController {
 			return null;
 		}
 	}
-
 
 	@GetMapping(value = "/userTask/count/{usr}")
 	public ResponseEntity<String> getUserTasksCount(@PathVariable(value = "usr", required = false) String usr) {
@@ -225,9 +218,8 @@ public class WorkflowRestController {
 		return new ResponseEntity<>(String.valueOf(userTasksByName.size()), HttpStatus.OK);
 	}
 
-
 	@GetMapping("/userTaskHistory/list/{pId}")
-	public ResponseEntity<TotalResponse<String>> getUserTaskHistory(@PathVariable String pId, HttpServletRequest httpRequest) {
+	public ResponseEntity<TotalResponse<UserTask>> getUserTaskHistory(@PathVariable String pId, HttpServletRequest httpRequest) {
 		List<UserTask> history = businessWorkflowEngine.getTaskInstanceHistory(pId);
 		return getTotalResponseInJson(httpRequest, history);
 	}
@@ -239,7 +231,6 @@ public class WorkflowRestController {
 
 		return "success";
 	}
-
 
 	@RequestMapping(value = "/doUserTask", method = RequestMethod.POST)
 	public String doUserTask(HttpSession session, HttpServletResponse res, @RequestBody String data,
@@ -255,7 +246,6 @@ public class WorkflowRestController {
 		return "success";
 	}
 
-
 	@DeleteMapping(value = "/processDefinition/remove/{id}")
 	public ResponseEntity<String> removeProcessDefinition(@PathVariable String id) {
 
@@ -268,111 +258,24 @@ public class WorkflowRestController {
 
 	}
 
+
+
 	@PostMapping(value = "/startProcess")
-	public ResponseEntity<String> startProcess(@RequestBody String data,
-											   @RequestHeader(value = "user", required = false) String user,
-											   @RequestHeader(value = "processDefId", required = false) String processDefId,
-											   @RequestHeader(value = "processKey", required = false) String processKey) throws IOException {
-		String processInstanceID = "";
-		try {
-			Map<String, Object> params = getParamsFromFormData(data);
-			params.put("username", user);
-//            if (processDefId == null && processKey != null) {
-//                List<CustomProcessDefinition> processDefinitionList = businessWorkflowEngine.getProcessDefinitionList();
-//                for (CustomProcessDefinition customProcessDefinition : processDefinitionList) {
-//                    if (customProcessDefinition.getKey().equals(processKey)) {
-//                        processDefId = customProcessDefinition.getId();
-//
-//                    }
-//                }
-//            }
-//            if (processDefId != null) {
-			ProcessInstance processInstance = businessWorkflowEngine
-				.startProcessInstanceById(
-					businessWorkflowEngine.getProcessLatestVersionList(processKey).get(0).getId(), params);
-			processInstanceID = processInstance.getId();
-//            } else
-//                throw new Exception();
-		} catch (Exception e) {
-			return new ResponseEntity<String>("failed", HttpStatus.OK);
+	public ResponseEntity<Void> startProcess(@RequestBody List<Map<String, Object>> params) throws Exception {
+
+		for (Map<String, Object> param : params) {
+
+			String processKey = String.valueOf(param.get("processKey"));
+			String processId = businessWorkflowEngine.getProcessLatestVersionList(processKey).get(0).getId();
+			businessWorkflowEngine.startProcessInstanceById(processId, param);
 		}
 
-		return new ResponseEntity<String>("success", HttpStatus.OK);
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
-
 
 	@RequestMapping(value = "/exportProcessImage")
-	public void viewPic(HttpServletRequest request,
-						HttpServletResponse response,
-						@RequestParam("processId") String processId) throws Exception {
+	public void viewPic(HttpServletRequest request, HttpServletResponse response, @RequestParam("processId") String processId) throws Exception {
 		businessWorkflowEngine.getProcessDiagram(processId);
-	}
-
-
-	public <T> List<JsonObject> getJsonList(int startRow, int endRow, List<T> entityList) {
-		Gson gson = new Gson();
-		List<JsonObject> data = new ArrayList<JsonObject>();
-		for (int j = startRow; j < endRow; j++) {
-			try {
-				JsonElement element = gson.fromJson(gson.toJson(entityList.get(j)), JsonElement.class);
-				data.add(element.getAsJsonObject());
-			} catch (Exception ex) {
-				System.out.println(ex.getMessage());
-			}
-		}
-
-		return data;
-	}
-
-	private Map<String, Object> getParamsFromFormData(String data) {
-		Gson gson = new Gson();
-		Map<String, Object> params = gson.fromJson(data, Map.class);
-//        data = data.replace("\"", "");
-//        data = data.substring(1, data.length() - 1);
-//        String[] split = data.split(",");
-//        for (String s : split) {
-//            String key=s.substring(0, s.indexOf(":"));
-//                params.put(key, s.substring(s.indexOf(":") + 1));
-//        }
-		return params;
-	}
-
-	private <T> ResponseEntity<TotalResponse<String>> getTotalResponseInJson(HttpServletRequest httpRequest, List<T> processList) {
-		int startRow;
-		int endRow;
-		int totalRowsCount = 0;
-		Gson gson = new Gson();
-
-		try {
-
-
-			List<JsonObject> data = new ArrayList<JsonObject>();
-
-			GridResponse gridResponse = new GridResponse();
-
-			startRow = new Integer(httpRequest.getParameter("_startRow"));
-			endRow = new Integer(httpRequest.getParameter("_endRow"));
-
-
-			if (processList != null && !processList.isEmpty()) {
-				totalRowsCount = processList.size();
-				data = getJsonList(startRow, Integer.min(endRow, totalRowsCount), processList);
-
-			}
-
-			gridResponse.setStartRow(startRow);
-			gridResponse.setEndRow(endRow);
-			gridResponse.setStatus(0);
-			gridResponse.setTotalRows(totalRowsCount);
-			gridResponse.setData(data);
-
-			return new ResponseEntity<>(new TotalResponse<String>(gridResponse), HttpStatus.OK);
-//			return gson.toJson(totalResponse);
-
-		} catch (Exception ex) {
-			ex.printStackTrace();
-			return null;
-		}
 	}
 
 	@GetMapping(value = "/processInstance/diagram/{id}")
@@ -381,7 +284,6 @@ public class WorkflowRestController {
 		if (procDefId.equals("")) {
 			procDefId = businessWorkflowEngine.getProcessInstanceById(id).getProcessDefinitionId();
 		}
-
 
 		List<Task> tasks = taskService.createTaskQuery().processInstanceId(id).list();
 		BpmnModel bpmnModel = repositoryService.getBpmnModel(procDefId);
@@ -432,7 +334,7 @@ public class WorkflowRestController {
 	}
 
 	@GetMapping(value = {"/getUserCartableDetailForm/{id}/{assignee}"})
-	public ResponseEntity<ModelMap> getUserCartableDetailFormFields(@PathVariable String id, @PathVariable String assignee, ModelMap modelMap) {
+	public ResponseEntity<ModelMap> getUserCartableDetailFormFields(@PathVariable String id,  ModelMap modelMap) {
 		TaskFormData taskFormData = businessWorkflowEngine.getTaskFormData(id);
 		prepareTaskForm(modelMap, taskFormData);
 		return new ResponseEntity<>(modelMap, HttpStatus.OK);
@@ -442,12 +344,44 @@ public class WorkflowRestController {
 		return type;
 	}
 
+	private Map getParamsFromFormData(String data) throws IOException {
+
+		return objectMapper.readValue(data, Map.class);
+	}
+
+	private void prepareTaskForm(ModelMap modelMap, TaskFormData taskFormData) {
+		List<CustomFormProperty> formProperties = new ArrayList<CustomFormProperty>();
+		fillFormProperties(formProperties, taskFormData.getFormProperties());
+
+		modelMap.addAttribute("formProperties", formProperties);
+		modelMap.addAttribute("id", taskFormData.getTask().getId());
+		modelMap.addAttribute("title", taskFormData.getTask().getName());
+		modelMap.addAttribute("assignee", taskFormData.getTask().getAssignee());
+		if (taskFormData.getTask().getDescription() != null)
+			modelMap.addAttribute("description", taskFormData.getTask().getDescription().replace("\\n", "<br/>"));
+	}
+
+	private <T> List<T> getJsonList(int startRow, int endRow, List<T> entityList) {
+
+		List<T> data = new ArrayList<>();
+		for (int j = startRow; j < endRow; j++) {
+			try {
+				data.add(entityList.get(j));
+			} catch (Exception ex) {
+
+				System.out.println(ex.getMessage());
+			}
+		}
+
+		return data;
+	}
+
 	private void fillFormProperties(List<CustomFormProperty> formProperties, List<FormProperty> formProperties2) {
 		StringEscapeUtils escapeUtils = new StringEscapeUtils();
 		String[] tmp;
 		for (int i = 0; i < formProperties2.size(); i++) {
 			if (formProperties2.get(i).getValue() != null &&
-				formProperties2.get(i).getValue().equals("doNotRender101"))
+					formProperties2.get(i).getValue().equals("doNotRender101"))
 				continue;
 			CustomFormProperty formProperty = new CustomFormProperty();
 			formProperty.setId(formProperties2.get(i).getId());
@@ -476,12 +410,12 @@ public class WorkflowRestController {
 						// Add value and label (if any)
 						j++;
 						stringBuilder.append('"')
-							.append(enumEntry.getKey())
-							.append('"')
-							.append(':')
-							.append('"')
-							.append(enumEntry.getValue())
-							.append('"');
+								.append(enumEntry.getKey())
+								.append('"')
+								.append(':')
+								.append('"')
+								.append(enumEntry.getValue())
+								.append('"');
 						if (j < values.entrySet().size())
 							stringBuilder.append(',').append('\n');
 					}
@@ -497,11 +431,11 @@ public class WorkflowRestController {
 							j++;
 							if (!enumEntry.getValue().contains("$")) {
 								stringBuilder
-									.append(enumEntry.getKey())
-									.append(':')
-									.append('\'')
-									.append(enumEntry.getValue())
-									.append('\'');
+										.append(enumEntry.getKey())
+										.append(':')
+										.append('\'')
+										.append(enumEntry.getValue())
+										.append('\'');
 							} else {
 
 								String propertyName = enumEntry.getKey();
@@ -519,11 +453,11 @@ public class WorkflowRestController {
 
 								if (propertyValue != null) {
 									stringBuilder
-										.append(propertyName)
-										.append(':')
-										.append('\'')
-										.append(propertyValue)
-										.append('\'');
+											.append(propertyName)
+											.append(':')
+											.append('\'')
+											.append(propertyValue)
+											.append('\'');
 								}
 
 
@@ -572,17 +506,38 @@ public class WorkflowRestController {
 		}
 	}
 
-	private void prepareTaskForm(ModelMap modelMap, TaskFormData taskFormData) {
-		List<CustomFormProperty> formProperties = new ArrayList<CustomFormProperty>();
-		fillFormProperties(formProperties, taskFormData.getFormProperties());
+	private <T> ResponseEntity<TotalResponse<T>> getTotalResponseInJson(HttpServletRequest httpRequest, List<T> processList) {
 
-		modelMap.addAttribute("formProperties", formProperties);
-		modelMap.addAttribute("id", taskFormData.getTask().getId());
-		modelMap.addAttribute("title", taskFormData.getTask().getName());
-		modelMap.addAttribute("assignee", taskFormData.getTask().getAssignee());
-		if (taskFormData.getTask().getDescription() != null)
-			modelMap.addAttribute("description", taskFormData.getTask().getDescription().replace("\\n", "<br/>"));
+		int endRow;
+		int startRow;
+		int totalRowsCount = 0;
+
+		try {
+
+			List<T> data = new ArrayList<>();
+			GridResponse<T> gridResponse = new GridResponse<>();
+
+			startRow = new Integer(httpRequest.getParameter("_startRow"));
+			endRow = new Integer(httpRequest.getParameter("_endRow"));
+
+			if (processList != null && !processList.isEmpty()) {
+				totalRowsCount = processList.size();
+				data = getJsonList(startRow, Integer.min(endRow, totalRowsCount), processList);
+
+			}
+
+			gridResponse.setStartRow(startRow);
+			gridResponse.setEndRow(endRow);
+			gridResponse.setStatus(0);
+			gridResponse.setTotalRows(totalRowsCount);
+			gridResponse.setData(data);
+
+			return new ResponseEntity<>(new TotalResponse<>(gridResponse), HttpStatus.OK);
+
+		} catch (Exception ex) {
+
+			ex.printStackTrace();
+			return null;
+		}
 	}
-
-
 }

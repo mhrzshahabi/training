@@ -39,6 +39,7 @@
     // -------------------------------------------  URLs   -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
+    const workflowUrl= rootUrl + "/workflow/";
     const jobUrl = rootUrl + "/job/";
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
@@ -352,37 +353,37 @@
                 {
                     title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/job/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
                 {
                     title: "<spring:message code="job.group"/>", icon: "<spring:url value="jobGroup.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/job-group/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/job-group/"/>");
                     }
                 },
                 {
                     title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/postGrade/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
                 {
                     title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/post/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
                 {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/competence/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/competence/"/>");
                     }
                 },
                 {
                     title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/needAssessment/show-form"/>");
+                        createTab(this.title, "<spring:url value="web/needAssessment/"/>");
                     }
                 },
                 {
@@ -491,8 +492,19 @@
                 },
                 {
                     title: "<spring:message code="workflow"/>", icon: "<spring:url value="workflow.png"/>",
-                    click: function () {
-                    }
+                    submenu: [
+                        {
+                            title: "<spring:message code="process.definition"/>", icon: "processDefinition.png", click: function () {
+                                createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>", true);
+
+                            }
+                        },
+                        {
+                            title: "همه فرایندها", icon: "pieces/512/processList.png", click: function () {
+                                createTab("همه فرآیندها", "<spring:url value="/web/workflow/processInstance/showForm"/>", true)
+                            }
+                        }
+                    ]
                 },
             ]
         }),

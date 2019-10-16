@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+//<script>
 
     // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({
@@ -38,6 +38,12 @@
     let JobTabs_job = isc.TabSet.create({
         tabs: [
             {
+                title: "<spring:message code="job.group.plural.list"/>",
+                pane: isc.TrVLayout.create({
+                    members: []
+                }),
+            },
+            {
                 title: "<spring:message code="post.plural.list"/>",
                 pane: isc.TrVLayout.create({
                     members: []
@@ -62,13 +68,13 @@
                 }),
             },
             {
-                title: "<spring:message code="skill.group.plural.list"/>",
+                title: "<spring:message code="course.plural.list"/>",
                 pane: isc.TrVLayout.create({
                     members: []
                 }),
             },
             {
-                title: "<spring:message code="course.plural.list"/>",
+                title: "<spring:message code="class.plural.list"/>",
                 pane: isc.TrVLayout.create({
                     members: []
                 }),
@@ -93,7 +99,7 @@
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "header", "filterEditor", "body", JobTabs_job],
+        gridComponents: [JobTS_job, "header", "filterEditor", "body"],
         contextMenu: JobMenu_job,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -108,7 +114,7 @@
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [JobLG_job],
+        members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
     });
 
     // ------------------------------------------- Functions -------------------------------------------

@@ -94,10 +94,11 @@ spring:
 nicico:
   upload:
     dir: /var/nicico/${spring.application.name}/upload
-    person:
-      image: /var/nicico/${spring.application.name}/upload/person/img
-      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
-    bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+  dirs:
+    upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn
 ---
 
 spring:
@@ -128,10 +129,11 @@ spring:
 nicico:
   upload:
     dir: /var/nicico/${spring.application.name}/upload
-    person:
-      image: /var/nicico/${spring.application.name}/upload/person/img
-      temp: /var/nicico/${spring.application.name}/upload/person/img/temp
-    bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+  dirs:
+    upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn
 ---
 
 spring:
@@ -164,10 +166,8 @@ spring:
 nicico:
   upload:
     dir: c:/nicico/${spring.application.name}/upload
-  dir:
-    upload:
-      person:
-        img: c:/nicico/${spring.application.name}/upload/person/img
-        tmp: c:/nicico/${spring.application.name}/upload/person/img/temp
-      bpmn: c:/nicico/${spring.application.name}/upload/bpmn
-
+  dirs:
+    upload-person-img: c:/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn
