@@ -35,7 +35,7 @@
 
     var RestDataSource_Teacher_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey: true},
             {name: "personality.fullNameFa"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
@@ -43,16 +43,17 @@
 
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey: true},
             {name: "code"},
-            {name: "titleFa"}
+            {name: "titleFa"},
+            {name: "theoryDuration"}
         ],
         fetchDataURL: courseUrl + "spec-list"
     });
 
     var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey: true},
             {name: "personality.lastNameFa"},
             {name: "studentID"}
         ],
@@ -68,11 +69,10 @@
         fetchDataURL: classUrl + "student"
     });
 
-    var RestDataSource_Term_CurrentStudent_JspClass = isc.TrDS.create({
+    var RestDataSource_Term_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
-            {name: "titleFa"},
             {name: "startDate"},
             {name: "endDate"}
         ],
@@ -98,8 +98,7 @@
                 ListGrid_class_edit();
             }
         }, {
-            title: "<spring:message code='remove'/>",
-            icon: "<spring:url value="remove.png"/>",
+            title: "<spring:message code='remove'/>", icon: "<spring:url value="remove.png"/>",
             click: function () {
                 ListGrid_class_remove();
             }
@@ -194,22 +193,18 @@
         numCols: 4,
         margin: 50,
         padding: 5,
+        canTabToIcons: false,
         fields: [
             {name: "id", hidden: true},
+            {
+                name: "course.titleFa",
+                title: "<spring:message code='course.title'/>",
+                disabled: true
+            },
             {
                 name: "code",
                 title: "<spring:message code='class.code'/>",
                 disabled: true
-            },
-            {
-                name: "duration",
-                title: "<spring:message code='duration'/>",
-                keyPressFilter: "[0-9]",
-                length: "4",
-                validators: [{
-                    type: "isInteger", validateOnExit: true, stopOnError: true,
-                    errorMessage: "<spring:message code='msg.number.type'/>"
-                }]
             },
             {
                 name: "courseId",
@@ -244,9 +239,51 @@
                 ],
                 changed: function (form) {
                     (form.getItem("course.titleFa")).setValue(form.getItem("courseId").getSelectedRecord().titleFa);
+                    (form.getItem("duration")).setValue(form.getItem("courseId").getSelectedRecord().theoryDuration);
                 }
             },
-
+            {
+                name: "duration",
+                title: "<spring:message code='duration'/>",
+                keyPressFilter: "[0-9]",
+                length: "4",
+                validators: [{
+                    type: "isInteger", validateOnExit: true, stopOnError: true,
+                    errorMessage: "<spring:message code='msg.number.type'/>"
+                }]
+            },
+            {
+                name: "group",
+                title: "<spring:message code='group'/>",
+                required: true,
+                keyPressFilter: "[0-9]",
+                length: "4",
+                validators: [{
+                    type: "isInteger", validateOnExit: true, stopOnError: true,
+                    errorMessage: "<spring:message code='msg.number.type'/>"
+                }]
+            },
+            {
+                name: "teacherId",
+                title: "<spring:message code='trainer'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                // pickListWidth: 230,
+                // changeOnKeypress: true,
+                displayField: "personality.fullNameFa",
+                valueField: "id",
+                required: true,
+                optionDataSource: RestDataSource_Teacher_JspClass,
+                autoFetchData: true,
+                cachePickListResults: true,
+                filterFields: ["personality.fullNameFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                addUnknownValues: false,
+                pickListFields:
+                    [{name: "personality.fullNameFa", filterOperator: "iContains"}]
+            },
             {
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
@@ -255,11 +292,8 @@
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                // focus: function () {
-                //     displayDatePicker('startDate_jspClass', this, 'ymd', '/');
-                // },
                 icons: [{
-                    src: "[SKIN]/actions/pcal.png",
+                    src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
                         displayDatePicker('startDate_jspClass', this, 'ymd', '/');
@@ -275,13 +309,6 @@
                         DynamicForm_Class_JspClass.clearFieldErrors("startDate", true);
                 }
             },
-
-            {
-                name: "course.titleFa",
-                title: "<spring:message code='course.title'/>",
-                disabled: true
-            },
-
             {
                 name: "endDate",
                 title: "<spring:message code='end.date'/>",
@@ -290,11 +317,8 @@
                 hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
-                // focus: function () {
-                //     displayDatePicker('endDate_jspClass', this, 'ymd', '/');
-                // },
                 icons: [{
-                    src: "[SKIN]/actions/pcal.png",
+                    src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
                         displayDatePicker('endDate_jspClass', this, 'ymd', '/');
@@ -324,52 +348,52 @@
                         }
                     }
                 }
-
             },
-
             {
-                name: "group",
-                title: "<spring:message code='group'/>",
-                required: true,
-                keyPressFilter: "[0-9]",
-                length: "4",
-                validators: [{
-                    type: "isInteger", validateOnExit: true, stopOnError: true,
-                    errorMessage: "<spring:message code='msg.number.type'/>"
-                }]
-            },
-
-            {
-                name: "teacher.personality.id",
-                title: "<spring:message code='trainer'/>",
+                name: "termId",
+                title: "<spring:message code='term'/>",
                 textAlign: "center",
-                // editorType: "ComboBoxItem",
-                // pickListWidth: 230,
-                // changeOnKeypress: true,
-                displayField: "personality.fullNameFa",
-                valueField: "id",
                 required: true,
-                optionDataSource: RestDataSource_Teacher_JspClass,
+                editorType: "ComboBoxItem",
+                pickListWidth: 230,
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
                 autoFetchData: true,
                 cachePickListResults: true,
-                filterFields: ["personality.fullNameFa"],
+                useClientFiltering: true,
+                filterFields: ["code"],
                 sortField: ["id"],
-                textMatchStyle: "iContains"
-                // generateExactMatchCriteria: true,
-                // pickListFields: [
-                //     {name: "personality.fullNameFa", width: "70%", filterOperator: "iContains"}
-                //     ]
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='course.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
             }
         ],
         itemChanged: function (item) {
-            if (item.name === "courseId" || item.name === "startDate" || item.name === "group") {
+            if (item.name === "courseId" || item.name === "termId" || item.name === "group") {
                 if (DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord() !== undefined)
                     str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
-                if (DynamicForm_Class_JspClass.getItem("startDate").getValue() !== undefined)
-                    str2 = DynamicForm_Class_JspClass.getItem("startDate").getValue().substring(0, 4);
+                if (DynamicForm_Class_JspClass.getItem("termId").getSelectedRecord() !== undefined)
+                    str2 = DynamicForm_Class_JspClass.getItem("termId").getSelectedRecord().code;
                 if (DynamicForm_Class_JspClass.getItem("group").getValue() !== undefined)
                     str3 = DynamicForm_Class_JspClass.getItem("group").getValue();
-                var code_value = str1 + "-" + str2 + "-" + str3;
+                var code_value = str1 + "/" + str2 + "/" + str3;
                 DynamicForm_Class_JspClass.getItem("code").setValue(code_value);
             }
         }
@@ -776,7 +800,7 @@
 
     function ListGrid_Class_refresh() {
         ListGrid_Class_JspClass.invalidateCache();
-        ListGrid_Teacher_JspTeacher.filterByEditor();
+        ListGrid_Class_JspClass.filterByEditor();
     }
 
     function ListGrid_Class_add() {
