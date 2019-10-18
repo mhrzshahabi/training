@@ -36,9 +36,9 @@
     var RestDataSource_Teacher_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "personality.fullNameFa"}
+            {name: "personality"}
         ],
-        fetchDataURL: teacherUrl + "spec-list"
+        fetchDataURL: teacherUrl + "fullName-list?_startRow=0&_endRow=55"
     });
 
     var RestDataSource_Course_JspClass = isc.TrDS.create({
@@ -48,7 +48,7 @@
             {name: "titleFa"},
             {name: "theoryDuration"}
         ],
-        fetchDataURL: courseUrl + "spec-list"
+        fetchDataURL: courseUrl + "spec-list?_startRow=0&_endRow=55"
     });
 
     var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
@@ -76,7 +76,7 @@
             {name: "startDate"},
             {name: "endDate"}
         ],
-        fetchDataURL: termUrl + "spec-list"
+        fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -142,13 +142,19 @@
                 name: "course.code",
                 title: "<spring:message code='course.code'/>",
                 align: "center",
-                filterOperator: "equals"
+                filterOperator: "equals",
+                sortNormalizer: function (record) {
+                    return record.course.code;
+                }
             },
             {
                 name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
             },
             {name: "duration", title: "<spring:message code='duration'/>", align: "center", filterOperator: "equals"},
             {
@@ -163,7 +169,10 @@
                 name: "teacher.personality.fullNameFa",
                 title: "<spring:message code='trainer'/>",
                 align: "center",
-                filterOperator: "iContains"
+                filterOperator: "iContains",
+                sortNormalizer: function (record) {
+                    return record.teacher.personality.fullNameFa;
+                }
             }
         ],
         sortField: 1,
@@ -185,15 +194,12 @@
     var DynamicForm_Class_JspClass = isc.DynamicForm.create({
         width: "700",
         height: "190",
-        align: "center",
-        canSubmit: true,
-        showInlineErrors: true,
-        showErrorText: false,
-        titleAlign: "right",
         numCols: 4,
-        margin: 50,
-        padding: 5,
-        canTabToIcons: false,
+        padding: 10,
+        align: "center",
+      /*  margin: 50,
+
+        canTabToIcons: false,*/
         fields: [
             {name: "id", hidden: true},
             {
@@ -212,7 +218,7 @@
                 textAlign: "center",
                 required: true,
                 editorType: "ComboBoxItem",
-                pickListWidth: 230,
+                // pickListWidth: 230,
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Course_JspClass,
@@ -275,14 +281,13 @@
                 required: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 autoFetchData: true,
-                cachePickListResults: true,
-                filterFields: ["personality.fullNameFa"],
-                sortField: ["id"],
+                cachePickListResults: false,
+                // filterFields: ["personality.fullNameFa"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 addUnknownValues: false,
-                pickListFields:
-                    [{name: "personality.fullNameFa", filterOperator: "iContains"}]
+                // pickListFields:
+                //     [{name: "personality.fullNameFa", filterOperator: "iContains"}]
             },
             {
                 name: "startDate",
@@ -355,7 +360,6 @@
                 textAlign: "center",
                 required: true,
                 editorType: "ComboBoxItem",
-                pickListWidth: 230,
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
@@ -366,10 +370,11 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
+                colSpan: 3,
                 pickListFields: [
                     {
                         name: "code",
-                        title: "<spring:message code='course.code'/>",
+                        title: "<spring:message code='term.code'/>",
                         filterOperator: "iContains"
                     },
                     {
@@ -793,7 +798,9 @@
             url = classUrl + record.id;
             DynamicForm_Class_JspClass.clearValues();
             DynamicForm_Class_JspClass.editRecord(record);
-            (DynamicForm_Class_JspClass.getItem("course.titleFa")).setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
+            // DynamicForm_Class_JspClass.getField("courseId").fetchData();
+            // DynamicForm_Class_JspClass.getField("courseId").setValue(record.courseId);
+            DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
             Window_Class_JspClass.show();
         }
     }
