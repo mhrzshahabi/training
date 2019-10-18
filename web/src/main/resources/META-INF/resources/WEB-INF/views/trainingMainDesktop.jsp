@@ -3,7 +3,7 @@
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-
+<%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
 <html>
@@ -19,7 +19,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/skins/EnterpriseBlue/load_skin.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
@@ -39,7 +39,7 @@
     // -------------------------------------------  URLs   -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
-    const workflowUrl= rootUrl + "/workflow/";
+    const workflowUrl = rootUrl + "/workflow/";
     const jobUrl = rootUrl + "/job/";
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
@@ -285,7 +285,7 @@
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
-    systemImg = isc.Img.create({
+    nicicoIcon = isc.Img.create({
         src: "<spring:url value="nicico.png"/>",
         width: 25,
         height: 25,
@@ -294,24 +294,23 @@
     });
 
     systemLabel = isc.Label.create({
-        contents: "<spring:message code="training.system"/>",
-        styleName: "normalBold",
+        contents: "<spring:message code="training.system"/>" + " - نسخه ۱",
+        styleName: "customHeader",
         padding: 4,
     });
 
-    userTSMB = isc.ToolStripMenuButton.create({
-        title: "${username}",
-        menu: isc.Menu.create({
-            data: [
-                {
-                    title: "<spring:message code="logout"/>",
-                    icon: "<spring:url value="logout.png"/>",
-                    click: function () {
-                        logout();
-                    }
-                },
-            ]
-        }),
+    userLabel = isc.Label.create({
+        contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
+        styleName: "customHeader",
+        padding: 4,
+    });
+
+    logoutButton = isc.Button.create({
+        title: "<spring:message code="logout"/>",
+        icon: "logout.png",
+        click: function () {
+            logout();
+        }
     });
 
     basicTSMB = isc.ToolStripMenuButton.create({
@@ -538,8 +537,9 @@
         members: [
             isc.HLayout.create({
                 height: "1%",
+                backgroundColor: "#003168",
                 defaultLayoutAlign: "center",
-                members: [systemImg, systemLabel, isc.LayoutSpacer.create({width: "*"}), userTSMB],
+                members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, logoutButton],
             }),
             isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
             trainingTabSet,
