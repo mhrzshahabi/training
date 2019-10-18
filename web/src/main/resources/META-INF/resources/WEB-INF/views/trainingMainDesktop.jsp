@@ -59,7 +59,7 @@
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
-    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true,});
+    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true, border: "1px solid #CCC"});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
@@ -287,14 +287,14 @@
     // -------------------------------------------  Page UI                          -----------------------------------------------
     nicicoIcon = isc.Img.create({
         src: "<spring:url value="nicico.png"/>",
-        width: 25,
-        height: 25,
+        width: 24,
+        height: 24,
         imageType: "stretch",
         padding: 4,
     });
 
     systemLabel = isc.Label.create({
-        contents: "<spring:message code="training.system"/>" + " - نسخه ۱",
+        contents: "<spring:message code="training.system.version"/>",
         styleName: "customHeader",
         padding: 4,
     });
@@ -307,14 +307,56 @@
 
     logoutButton = isc.Button.create({
         title: "<spring:message code="logout"/>",
+        width: "100",
         icon: "logout.png",
         click: function () {
             logout();
         }
     });
 
+    var languageForm = isc.DynamicForm.create({
+        width: 120,
+        height: "100%",
+        fields: [{
+            name: "languageName",
+            showTitle:false,
+            width: "100%",
+            type: "select",
+            valueMap: {
+                "fa": "پارسی",
+                "en": "English",
+            },
+            imageURLSuffix: ".png",
+            valueIconRightPadding: "10",
+            valueIcons: {
+                "fa": "<spring:url value="flags/iran"/>",
+                "en": "<spring:url value="flags/united-kingdom"/>",
+            },
+            changed: function () {
+                var newUrl = window.location.href;
+                var newLang = languageForm.getValue("languageName");
+                if (newUrl.indexOf("lang") > 0) {
+                    newUrl = newUrl.replace(new RegExp("lang=[a-zA-Z_]+"), "lang=" + newLang);
+                } else {
+                    if (newUrl.indexOf("?") > 0) {
+                        if (newUrl.indexOf("#") > 0) {
+                            newUrl = newUrl.replace("#", "&lang=" + newLang + "#")
+                        } else {
+                            newUrl += "&lang=" + newLang;
+                        }
+                    } else {
+                        newUrl = newUrl + "?lang=" + newLang;
+                    }
+                }
+                window.location.href = newUrl;
+            }
+        }]
+    });
+
+    languageForm.setValue("languageName", "<c:out value='${pageContext.response.locale}'/>");
+
     basicTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="basic.information"/>",
+        title: Canvas.imgHTML("<spring:url value="information.png"/>", 16, 16) + "&nbsp; <spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -346,7 +388,7 @@
     });
 
     needAssessmentTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="need.assessment"/>",
+        title: Canvas.imgHTML("<spring:url value="need.png"/>", 16, 16) + "&nbsp; <spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -402,7 +444,7 @@
     });
 
     designingTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="designing.and.planning"/>",
+        title: Canvas.imgHTML("<spring:url value="plan.png"/>", 16, 16) + "&nbsp; <spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -436,7 +478,7 @@
     });
 
     runTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="run"/>",
+        title: Canvas.imgHTML("<spring:url value="seo-training (1).png"/>", 16, 16) + "&nbsp; <spring:message code="run"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -469,14 +511,14 @@
     });
 
     evaluationTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="evaluation"/>",
+        title: Canvas.imgHTML("<spring:url value="test.png"/>", 16, 16) + "&nbsp; <spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             data: []
         }),
     });
 
     cartableTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="cartable"/>",
+        title: Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) + "&nbsp; <spring:message code="cartable"/>",
         menu: isc.Menu.create({
             data: [
                 {
@@ -510,13 +552,14 @@
     });
 
     reportTSMB = isc.ToolStripMenuButton.create({
-        title: "<spring:message code="report"/>",
+        title: Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) + "&nbsp; <spring:message code="report"/>",
         menu: isc.Menu.create({
             data: []
         }),
     });
 
     trainingToolStrip = isc.ToolStrip.create({
+        membersMargin: 5,
         members: [
             basicTSMB,
             needAssessmentTSMB,
@@ -539,7 +582,7 @@
                 height: "1%",
                 backgroundColor: "#003168",
                 defaultLayoutAlign: "center",
-                members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, logoutButton],
+                members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
             }),
             isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
             trainingTabSet,
