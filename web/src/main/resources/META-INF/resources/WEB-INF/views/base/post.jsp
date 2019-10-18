@@ -64,7 +64,7 @@
             {name: "departmentUnit",},
         ],
         autoFetchData: true,
-        gridComponents: [PostTS_post, "header", "filterEditor", "body",],
+        gridComponents: [PostTS_post, "filterEditor", "header", "body",],
         contextMenu: PostMenu_post,
         sortField: 0,
         dataChanged: function () {

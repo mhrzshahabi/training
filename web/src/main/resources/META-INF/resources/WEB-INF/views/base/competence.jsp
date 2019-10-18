@@ -119,7 +119,7 @@
             {name: "description",},
         ],
         autoFetchData: true,
-        gridComponents: [CompetenceTS_competence, "header", "filterEditor", "body",],
+        gridComponents: [CompetenceTS_competence, "filterEditor", "header", "body",],
         contextMenu: CompetenceMenu_competence,
         sortField: 0,
         dataChanged: function () {

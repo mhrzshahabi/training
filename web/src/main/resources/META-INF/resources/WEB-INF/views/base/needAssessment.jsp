@@ -114,7 +114,7 @@
             {name: "description",},
         ],
         autoFetchData: true,
-        gridComponents: [NeedAssessmentTS_needAssessment, "header", "filterEditor", "body",],
+        gridComponents: [NeedAssessmentTS_needAssessment, "filterEditor", "header", "body",],
         contextMenu: NeedAssessmentMenu_needAssessment,
         sortField: 0,
         dataChanged: function () {

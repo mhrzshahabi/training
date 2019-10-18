@@ -248,7 +248,7 @@
     function createDialog(type, message, title) {
         dialog = isc.Dialog.create({
             icon: type + '.png',
-            title: title ? title : "<spring:message code='message'/>",
+            title: title ? title : "<spring:message code="message"/>",
             message: message,
         });
 
@@ -571,8 +571,27 @@
         ]
     });
 
+    var closeAllButton = isc.Button.create({
+        width: 100,
+        icon: "<spring:url value="closeAllTabs.png"/>",
+        title: "<spring:message code="close.all"/>",
+        click: function () {
+            if (trainingTabSet.tabs.length == 0) return;
+            dialog = createDialog("ask", "<spring:message code="close.all.the.tabs?"/>");
+            dialog.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        trainingTabSet.removeTabs(trainingTabSet.tabs);
+                    }
+                }
+            });
+        }
+    });
+
     trainingTabSet = isc.TabSet.create({
         tabs: [],
+        tabBarControls: [closeAllButton]
     });
 
     isc.TrVLayout.create({

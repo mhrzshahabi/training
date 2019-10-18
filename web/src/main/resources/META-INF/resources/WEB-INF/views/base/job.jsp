@@ -99,7 +99,7 @@
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "header", "filterEditor", "body"],
+        gridComponents: [JobTS_job, "filterEditor", "header", "body"],
         contextMenu: JobMenu_job,
         dataChanged: function () {
             this.Super("dataChanged", arguments);

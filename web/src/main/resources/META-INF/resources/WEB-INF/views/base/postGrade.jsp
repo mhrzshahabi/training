@@ -50,7 +50,7 @@
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [PostGradeTS_postGrade, "header", "filterEditor", "body",],
+        gridComponents: [PostGradeTS_postGrade, "filterEditor", "header", "body",],
         contextMenu: PostGradeMenu_postGrade,
         sortField: 0,
         dataChanged : function () {
