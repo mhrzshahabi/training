@@ -41,11 +41,11 @@
             {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "departmentArea", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "departmentAssistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "departmentAffairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "departmentSection", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "departmentUnit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            <%--{name: "department.area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "department.assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "department.affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "department.section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "department.unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},--%>
         ],
         fetchDataURL: postUrl + "iscList"
     });
@@ -57,11 +57,11 @@
             {name: "titleFa",},
             {name: "job.titleFa",},
             {name: "postGrade.titleFa",},
-            {name: "departmentArea",},
-            {name: "departmentAssistance",},
-            {name: "departmentAffairs",},
-            {name: "departmentSection",},
-            {name: "departmentUnit",},
+            // {name: "department.area",},
+            // {name: "department.assistance",},
+            // {name: "department.affairs",},
+            // {name: "department.section",},
+            // {name: "department.unit",},
         ],
         autoFetchData: true,
         gridComponents: [PostTS_post, "filterEditor", "header", "body",],
@@ -97,18 +97,18 @@
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
         members: [
-            isc.HLayout.create({
-                height: "10%",
-                // defaultLayoutAlign: "center",
-                members: [
-                    postFilterForm_post,
-                    isc.Button.create({
-                        title: "<spring:message code="filter"/>",
-                        click: function () {
-                            postFilterForm_post.submit();
-                        }
-                    }),]
-            }),
+            <%--isc.HLayout.create({--%>
+            <%--    height: "10%",--%>
+            <%--    // defaultLayoutAlign: "center",--%>
+            <%--    members: [--%>
+            <%--        // postFilterForm_post,--%>
+            <%--        isc.Button.create({--%>
+            <%--            title: "<spring:message code="filter"/>",--%>
+            <%--            click: function () {--%>
+            <%--                postFilterForm_post.submit();--%>
+            <%--            }--%>
+            <%--        }),]--%>
+            <%--}),--%>
             PostLG_post],
     });
 

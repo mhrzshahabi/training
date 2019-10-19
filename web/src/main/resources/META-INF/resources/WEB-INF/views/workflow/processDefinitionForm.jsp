@@ -164,8 +164,6 @@
 
     function ProcessDefinition_remove_result(resp) {
 
-        alert("done");
-
         if (resp.httpResponseCode === 200) {
             ListGrid_ProcessDefinitionList.invalidateCache();
             var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",

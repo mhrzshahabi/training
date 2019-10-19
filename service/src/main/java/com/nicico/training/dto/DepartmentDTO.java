@@ -3,7 +3,6 @@ ghazanfari_f, 8/29/2019, 10:48 AM
 */
 package com.nicico.training.dto;
 
-import com.nicico.training.model.Department;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,18 +13,19 @@ import java.io.Serializable;
 @Getter
 @Setter
 @Accessors(chain = true)
-public class PostDTO implements Serializable {
+public class DepartmentDTO implements Serializable {
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Post - Info")
+    @ApiModel("Department - Info")
     public static class Info {
         private Long id;
-        private String code;
-        private String titleFa;
-        private JobDTO.Info job;
-        private PostGradeDTO.Info postGrade;
-//        private DepartmentDTO.Info department;
+        private String assistance;
+        private String affairs;
+        private String section;
+        private String unit;
+        private String costCenterCode;
+        private String costCenterTitleFa;
     }
 }

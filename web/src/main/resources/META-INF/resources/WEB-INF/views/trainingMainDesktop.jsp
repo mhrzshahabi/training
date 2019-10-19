@@ -36,7 +36,7 @@
 
 <script type="application/javascript">
 
-    // -------------------------------------------  URLs   -----------------------------------------------
+    // -------------------------------------------  URLs & Filters  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
     const workflowUrl = rootUrl + "/workflow/";
@@ -319,7 +319,7 @@
         height: "100%",
         fields: [{
             name: "languageName",
-            showTitle:false,
+            showTitle: false,
             width: "100%",
             type: "select",
             valueMap: {
@@ -535,14 +535,15 @@
                     title: "<spring:message code="workflow"/>", icon: "<spring:url value="workflow.png"/>",
                     submenu: [
                         {
-                            title: "<spring:message code="process.definition"/>", icon: "processDefinition.png", click: function () {
-                                createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>", true);
-
+                            title: "<spring:message code="process.definition"/>",
+                            icon: "<spring:url value="processDefinition.png"/>",
+                            click: function () {
+                                createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>");
                             }
                         },
                         {
-                            title: "همه فرایندها", icon: "pieces/512/processList.png", click: function () {
-                                createTab("همه فرآیندها", "<spring:url value="/web/workflow/processInstance/showForm"/>", true)
+                            title: "<spring:message code="all.processes"/>", icon: "<spring:url value="processList.png"/>", click: function () {
+                                createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
                         }
                     ]
