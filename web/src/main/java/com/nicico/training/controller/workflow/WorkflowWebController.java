@@ -1,4 +1,4 @@
-package com.nicico.evaluation.controller.workflow;
+package com.nicico.training.controller.workflow;
 //test
 
 import com.nicico.copper.activiti.domain.CustomFormProperty;
@@ -231,7 +231,7 @@ public class WorkflowWebController {
         return "workflow/processDiagramForm";
     }
 
-    @RequestMapping(value = "/processDefinition/remove/{id}", method = RequestMethod.POST)
+    @PostMapping(value = "/processDefinition/remove/{id}")
     @ResponseBody
     public String removeProcessDefinition(@PathVariable String id,@RequestParam("Authorization") String auth) {
         HttpHeaders headers = new HttpHeaders();

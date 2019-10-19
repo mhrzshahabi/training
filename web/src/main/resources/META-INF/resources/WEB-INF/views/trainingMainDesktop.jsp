@@ -663,7 +663,12 @@
             if (this.readyState == 4) {
                 cFunction(this);
             }
+            else {
+                isc.say("خطا در اتصال به سرور");
+
+            }
         };
+
         xhttp.open(method, url, true);
         xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttp.send(formData1);

@@ -56,7 +56,7 @@ public class WorkflowRestController {
 	private String bpmnUploadDir;
 
 	@PostMapping(value = "/uploadProcessDefinition")
-	public ResponseEntity<Void> uploadProcessDefinition(@RequestParam("file") MultipartFile file) {
+	public ResponseEntity uploadProcessDefinition(@RequestParam("file") MultipartFile file) {
 
 		File uploadedFile = null;
 		if (!file.isEmpty()) {

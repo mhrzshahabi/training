@@ -22,16 +22,12 @@
                     ListGrid_WorkflowProcessList_showProcessDefinitionForm();
                 }
             },
-
-
             {
                 title: "حذف رکورد", icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     ListGrid_ProcessDefinition_remove();
                 }
             },
-
-
             {
                 title: "آپلود فایل فرایند", icon: "pieces/16/icon_add_files.png",
                 click: function () {
@@ -53,29 +49,31 @@
 
     function ListGrid_WorkflowProcessList_uploadProcessDefinition() {
 
-        var filesList = document.querySelector('input[name="file"]').files;
-        var fileToLoad = filesList[0];
-        var formData1 = new FormData();
-        formData1.append("file", fileToLoad);
+        var filesList = document.getElementById(window.uploadFileFieldSample1.uploadItem.getElement().id);
+        var fileToLoad = filesList.files[0];
+        var formData = new FormData();
+        formData.append("file", fileToLoad);
         if (fileToLoad !== undefined) {
-            var request = new XMLHttpRequest();
-            request.open("POST", "${restApiUrl}/api/workflow/uploadProcessDefinition");
-            request.setRequestHeader("Authorization", "Bearer " + "${cookie['access_token'].getValue()}");
-            request.send(formData1);
-            request.onreadystatechange = function () {
-                if (request.readyState == XMLHttpRequest.DONE) {
-                    if (request.responseText == "error")
-                        isc.say("آپلود فایل با مشکل مواجه شده است.");
-                    if (request.responseText == "badFile")
-                        isc.say("آپلود فایل قابل قرارگیری روی موتور گردش کار نیست.");
-                    if (request.responseText == "success")
-                        isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
-                    ListGrid_ProcessDefinitionList.invalidateCache();
-                }
-            }
+            TrnXmlHttpRequest(formData, workflowUrl + "uploadProcessDefinition", "POST", checkUploadResult);
         } else {
             isc.say("فایلی برای آپلود انتخاب نشده است.");
         }
+
+
+    }
+
+    function checkUploadResult(resp) {
+
+        if (resp.status == 200)
+            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+        else {
+            isc.say("کد خطا : " + resp.status);
+        }
+        // if (resp.status == "error")
+        //     isc.say("آپلود فایل با مشکل مواجه شده است.");
+        // if (resp.responseText == "badFile")
+        //     isc.say("آپلود فایل قابل قرارگیری روی موتور گردش کار نیست.");
+        ListGrid_ProcessDefinitionList.invalidateCache();
 
     }
 
@@ -84,6 +82,7 @@
         fields: [
             {
                 id: "uploadFileFieldSample1",
+                ID: "uploadFileFieldSample1",
                 name: "file",
                 type: "file",
                 accept: ".bpmn",
@@ -153,32 +152,33 @@
                 buttonClick: function (button, index) {
                     this.hide();
                     if (index == 0) {
-
                         var deployId = record.deploymentId;
-                        isc.RPCManager.sendRequest({
-                            <spring:url value="/web/workflow/processDefinition/remove/" var="removeUrl"/>
-                            actionURL: "${removeUrl}" + deployId + "?Authorization=Bearer " + "${cookie['access_token'].getValue()}",
-                            httpMethod: "POST",
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            showPrompt: true,
-                            // data: fiscalYearId,
-                            serverOutputAsString: false,
-                            callback: function (RpcResponse_o) {
-                                //console.log(RpcResponse_o);
-                                if (RpcResponse_o.data == 'success') {
-                                    ListGrid_ProcessDefinitionList.invalidateCache();
-                                    isc.say("حذف رکورد با موفقیت انجام شد.");
-                                } else {
-                                    isc.say("از این تعریف فرایند وجود دارد و تا تکمیل شدن آن، امکان حذف وجود ندارد.");
-                                }
-                            }
-                        });
+                        isc.RPCManager.sendRequest(
+                            TrDSRequest(workflowUrl + "processDefinition/remove/" + deployId, "DELETE",
+                                null, ProcessDefinition_remove_result));
                     }
                 }
             });
         }
     };
+
+    function ProcessDefinition_remove_result(resp) {
+
+        alert("done");
+
+        if (resp.httpResponseCode === 200) {
+            ListGrid_ProcessDefinitionList.invalidateCache();
+            var OK = createDialog("info", "<spring:message code='msg.record.remove.successful'/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else if (resp.data === false) {
+            createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
+        } else {
+            createDialog("info", "<spring:message code='msg.record.remove.failed'/>");
+        }
+    }
 
     function ListGrid_WorkflowProcessList_showProcessDefinitionImage() {
 
