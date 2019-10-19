@@ -114,7 +114,8 @@
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
+        // members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
+        members: [JobLG_job],
     });
 
     // ------------------------------------------- Functions -------------------------------------------

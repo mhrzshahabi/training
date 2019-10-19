@@ -70,7 +70,7 @@ spring:
   profiles: Production
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training_dev
+    username: training
     password: training
   redis:
     host: apps.icico.net.ir
@@ -98,14 +98,14 @@ nicico:
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
-    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
 ---
 
 spring:
   profiles: Development
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training_dev
+    username: training
     password: training
   redis:
     host: devapp01.icico.net.ir
@@ -133,7 +133,7 @@ nicico:
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
-    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
 ---
 
 spring:
@@ -170,4 +170,4 @@ nicico:
     upload-person-img: c:/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
-    upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img
