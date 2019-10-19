@@ -202,7 +202,7 @@
     }
 
     var ToolStripButton_showProcessDefinitionForm = isc.ToolStripButton.create({
-        icon: "pieces/512/task.png",
+        icon: "task.png",
         title: " نمایش فرم فرایند",
         click: function () {
             ListGrid_WorkflowProcessList_showProcessDefinitionForm();
@@ -210,7 +210,7 @@
     });
 
     var ToolStripButton_showProcessDefinitionImage = isc.ToolStripButton.create({
-        icon: "pieces/512/contact.png",
+        icon: "contact.png",
         title: "تصویر فرایند",
         click: function () {
             ListGrid_WorkflowProcessList_showProcessDefinitionImage();
@@ -218,7 +218,7 @@
     });
 
     var ToolStripButton_uploadProcessDefinitionForm = isc.ToolStripButton.create({
-        title: "آپلود تعریف فرایند", icon: "pieces/16/upload.png",
+        title: "آپلود تعریف فرایند", icon: "upload.png",
         click: function () {
             ListGrid_WorkflowProcessList_uploadProcessDefinition();
         }
