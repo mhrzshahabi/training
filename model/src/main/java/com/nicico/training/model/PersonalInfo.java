@@ -125,8 +125,8 @@ public class PersonalInfo extends Auditable {
 	@Column(name = "f_edu_orientation")
 	private Long educationOrientationId;
 
-	public String getFullNameFa(){
-	    return firstNameFa + " " + lastNameFa;
-    }
+//	public String getFullNameFa(){
+//	    return firstNameFa + " " + lastNameFa;
+//    }
 
 }
