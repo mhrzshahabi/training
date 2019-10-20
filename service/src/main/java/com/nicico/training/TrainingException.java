@@ -68,6 +68,8 @@ public class TrainingException extends NICICOException {
         public String getName() {
             return name();
         }
+
+
     }
 
     // ------------------------------
