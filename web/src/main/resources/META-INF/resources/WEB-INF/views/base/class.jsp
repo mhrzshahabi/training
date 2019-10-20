@@ -166,12 +166,12 @@
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
             {
-                name: "teacher.personality.fullNameFa",
+                name: "teacher.personality.lastNameFa",
                 title: "<spring:message code='trainer'/>",
                 align: "center",
                 filterOperator: "iContains",
                 sortNormalizer: function (record) {
-                    return record.teacher.personality.fullNameFa;
+                    return record.teacher.personality.lastNameFa;
                 }
             }
         ],
@@ -276,18 +276,18 @@
                 editorType: "ComboBoxItem",
                 // pickListWidth: 230,
                 // changeOnKeypress: true,
-                displayField: "personality.fullNameFa",
+                displayField: "personality.lastNameFa",
                 valueField: "id",
                 required: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 autoFetchData: true,
                 cachePickListResults: false,
-                // filterFields: ["personality.fullNameFa"],
+                // filterFields: ["personality.lastNameFa"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 addUnknownValues: false,
                 // pickListFields:
-                //     [{name: "personality.fullNameFa", filterOperator: "iContains"}]
+                //     [{name: "personality.lastNameFa", filterOperator: "iContains"}]
             },
             {
                 name: "startDate",
@@ -511,7 +511,7 @@
         },
         fields: [
             {name: "id", hidden: true},
-            {name: "fullNameFa", title: "<spring:message code='firstName'/>", align: "center"},
+            {name: "lastNameFa", title: "<spring:message code='firstName'/>", align: "center"},
             {name: "studentID", title: "<spring:message code='student.ID'/>", align: "center"}
         ],
         recordDoubleClick: function (viewer, record) {
@@ -554,7 +554,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "fullNameFa", title: "<spring:message
+                name: "lastNameFa", title: "<spring:message
         code='firstName'/>", align: "center", width: "25%", canEdit: false
             },
             {
