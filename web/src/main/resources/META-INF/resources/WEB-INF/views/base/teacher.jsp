@@ -1665,7 +1665,7 @@
         set_city_state(DynamicForm_JobInfo_JspTeacher,
             "personality.contactInfo.workAddress.stateId", OCEnable);
         if (workAddress.city !== undefined)
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.cityId", workAddress.city.name);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.cityId", workAddress.cityId);
         else
             DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
     }
@@ -1683,7 +1683,7 @@
         set_city_state(DynamicForm_AddressInfo_JspTeacher,
             "personality.contactInfo.homeAddress.stateId", OCEnable);
         if (homeAddress.city !== undefined)
-            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.cityId", homeAddress.city.name);
+            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.cityId", homeAddress.cityId);
         else
             DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
     }
@@ -1709,8 +1709,8 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.workName);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.workJob);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
 
             if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);

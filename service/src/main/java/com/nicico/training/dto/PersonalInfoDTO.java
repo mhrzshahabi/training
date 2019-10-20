@@ -27,8 +27,10 @@ public class PersonalInfoDTO {
     private String lastNameFa;
     @NotEmpty
     @ApiModelProperty(required = true)
+    private String firstNameEn;
+    private String lastNameEn;
     private String nationalCode;
-    private String fullNameEn;
+    //    private String fullNameEn;
     private String fatherName;
     private String birthDate;
     private String birthLocation;
@@ -38,8 +40,8 @@ public class PersonalInfoDTO {
     private String nationality;
     private String description;
     private String attachPhoto;
-    private String workName;
-    private String workJob;
+    private String jobTitle;
+    private String jobLocation;
     private Integer militaryId;
     private Integer marriedId;
     private Integer genderId;
@@ -55,7 +57,7 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoInfo")
     public static class Info extends PersonalInfoDTO {
         private Long id;
-//        private String fullNameFa;
+        //        private String fullNameFa;
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;
@@ -71,7 +73,7 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoInfoTuple")
     static class PersonalInfoInfoTuple extends PersonalInfoDTO {
 
-//        private String fullNameFa;
+        //        private String fullNameFa;
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;

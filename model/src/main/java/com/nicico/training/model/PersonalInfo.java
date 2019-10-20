@@ -30,8 +30,8 @@ public class PersonalInfo extends Auditable {
     @Column(name = "c_last_name_fa", nullable = false)
     private String lastNameFa;
 
-    @Column(name = "c_full_name_fa")
-    private String fullNameFa;
+//    @Column(name = "c_full_name_fa")
+//    private String fullNameFa;
 
     @Column(name = "c_first_name_en")
     private String firstNameEn;
@@ -39,8 +39,8 @@ public class PersonalInfo extends Auditable {
     @Column(name = "c_last_name_en")
     private String lastNameEn;
 
-    @Column(name = "c_full_name_en")
-    private String fullNameEn;
+//    @Column(name = "c_full_name_en")
+//    private String fullNameEn;
 
     @Column(name = "c_national_code", length = 10, nullable = false, unique = true)
     private String nationalCode;
@@ -71,6 +71,12 @@ public class PersonalInfo extends Auditable {
 
     @Column(name = "p_photo")
     private String photo;
+
+    @Column(name = "c_job_title")
+    private String jobTitle;
+
+    @Column(name = "c_job_location")
+    private String jobLocation;
 
     @Column(name = "e_married", insertable = false, updatable = false)
     private EMarried married;
@@ -104,26 +110,26 @@ public class PersonalInfo extends Auditable {
     @Column(name = "f_account_info")
     private Long accountInfoId;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
-	private EducationLevel educationLevel;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_edu_level", insertable = false, updatable = false)
+    private EducationLevel educationLevel;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_major", insertable = false, updatable = false)
-	private EducationMajor educationMajor;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_edu_major", insertable = false, updatable = false)
+    private EducationMajor educationMajor;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_edu_orientation", insertable = false, updatable = false)
-	private EducationOrientation educationOrientation;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_edu_orientation", insertable = false, updatable = false)
+    private EducationOrientation educationOrientation;
 
-	@Column(name = "f_edu_level")
-	private Long educationLevelId;
+    @Column(name = "f_edu_level")
+    private Long educationLevelId;
 
-	@Column(name = "f_edu_major")
-	private Long educationMajorId;
+    @Column(name = "f_edu_major")
+    private Long educationMajorId;
 
-	@Column(name = "f_edu_orientation")
-	private Long educationOrientationId;
+    @Column(name = "f_edu_orientation")
+    private Long educationOrientationId;
 
 //	public String getFullNameFa(){
 //	    return firstNameFa + " " + lastNameFa;
