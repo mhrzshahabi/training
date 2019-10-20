@@ -524,11 +524,13 @@
                 {
                     title: "<spring:message code="personal"/>", icon: "<spring:url value="personal.png"/>",
                     click: function () {
+                        createTab(this.title, "<spring:url value="/web/workflow/userCartable/showForm"/>");
                     }
                 },
                 {
                     title: "<spring:message code="group"/>", icon: "<spring:url value="group.png"/>",
                     click: function () {
+                        createTab(this.title, "<spring:url value="/web/workflow/groupCartable/showForm"/>");
                     }
                 },
                 {
@@ -663,8 +665,7 @@
         xhttp.onreadystatechange = function () {
             if (this.readyState == 4) {
                 cFunction(this);
-            }
-            else {
+            } else {
                 isc.say("خطا در اتصال به سرور");
 
             }
