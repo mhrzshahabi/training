@@ -400,7 +400,7 @@
                 {
                     title: "<spring:message code="job.group"/>", icon: "<spring:url value="jobGroup.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/job-group/"/>");
+                        createTab(this.title, "<spring:url value="job-group/show-form"/>");
                     }
                 },
                 {
