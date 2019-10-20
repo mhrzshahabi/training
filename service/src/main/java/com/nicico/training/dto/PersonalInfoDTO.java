@@ -149,7 +149,9 @@ public class PersonalInfoDTO {
 
         @NotEmpty
         @ApiModelProperty(required = true)
-        private String fullNameFa;
+        private String lastNameFa;
+//        private String fullNameFa;
+
 
         @NotEmpty
         @ApiModelProperty(required = true)
