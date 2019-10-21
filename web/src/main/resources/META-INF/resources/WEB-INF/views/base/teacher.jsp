@@ -31,7 +31,7 @@
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories"},
+            {name: "categories"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -187,7 +187,7 @@
                         cat += "، " + record.categories[i].titleFa;
                     }
                     return cat;
-                },
+                }
             },
             {
                 name: "personality.educationLevel.titleFa",
@@ -247,7 +247,7 @@
         width: "100px",
         border: "1px solid red",
         scrollbarSize: 0,
-        loadingMessage: "<spring:message code='msg.photo.loading.error'/>",
+        loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
@@ -291,7 +291,7 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                disabled: true,
+                disabled: true
             },
 
             {
@@ -301,26 +301,26 @@
                 width: "*",
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
-                defaultValue: "true",
+                defaultValue: "true"
             },
 
             {
                 name: "personality.firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
 
             {
                 name: "personality.lastNameFa",
                 title: "<spring:message code='lastName'/>",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "personality.fullNameEn",
                 title: "<spring:message code='firstName.latin'/>",
-                keyPressFilter: "[a-z|A-Z |]",
+                keyPressFilter: "[a-z|A-Z |]"
             },
 
             {
@@ -624,7 +624,7 @@
                 name: "personality.description",
                 title: "<spring:message code='description'/>",
                 type: 'textArea',
-                colSpan: 3,
+                colSpan: 3
             }
 
         ],
@@ -683,7 +683,7 @@
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
-                multiple: "",
+                multiple: ""
             }
         ],
         itemChanged: function (item) {
@@ -696,7 +696,7 @@
                     }
                 }, 300);
             }
-        },
+        }
     });
 
     var DynamicForm_JobInfo_JspTeacher = isc.DynamicForm.create({
@@ -717,13 +717,13 @@
                 name: "personality.jobLocation",
                 title: "<spring:message code='job'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "30",
+                length: "30"
             },
             {
                 name: "personality.jobTitle",
                 title: "<spring:message code='work.place'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "30",
+                length: "30"
             },
             {
                 name: "personality.contactInfo.workAddress.postCode",
@@ -734,7 +734,7 @@
             {
                 name: "personality.contactInfo.workAddress.webSite",
                 title: "<spring:message code='website'/>",
-                length: "30",
+                length: "30"
             },
 
             {
@@ -756,7 +756,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                    showFilterEditor: true
                 },
                 pickListFields: [
                     {
@@ -784,7 +784,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                    showFilterEditor: true
                 },
                 pickListFields: [
                     {
@@ -819,7 +819,7 @@
             },
             {
                 name: "personality.contactInfo.workAddress.fax",
-                title: "<spring:message code='telefax'/>",
+                title: "<spring:message code='telefax'/>"
             }
         ],
         itemChanged: function (item, newValue) {
@@ -946,7 +946,7 @@
                 name: "personality.contactInfo.homeAddress.postCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
-                length: "10",
+                length: "10"
             },
             {
                 name: "personality.contactInfo.homeAddress.stateId",
@@ -967,7 +967,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                    showFilterEditor: true
                 },
                 pickListFields: [
                     {
@@ -995,7 +995,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
+                    showFilterEditor: true
                 },
                 pickListFields: [
                     {
@@ -1013,7 +1013,7 @@
                 showValueIconDisabled: true,
                 showValueIconOver: true,
                 showValueIconDown: true,
-                showValueIconFocused: true,
+                showValueIconFocused: true
             },
             {
                 name: "personality.contactInfo.homeAddress.restAddr",
@@ -1031,7 +1031,7 @@
 
             {
                 name: "personality.contactInfo.homeAddress.fax",
-                title: "<spring:message code='telefax'/>",
+                title: "<spring:message code='telefax'/>"
             },
 
             {
@@ -1342,12 +1342,18 @@
             var stateValue_work = undefined;
             var cityValue_work = undefined;
 
-            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null &&
-                record.personality.contactInfo.homeAddress.stateId != null)
-                stateValue_home = record.personality.contactInfo.homeAddress.stateId;
-            if (record.personality.contactInfo != null && record.personality.contactInfo.homeAddress != null &&
-                record.personality.contactInfo.homeAddress.cityId != null)
-                cityValue_home = record.personality.contactInfo.homeAddress.cityId;
+            var HAOCEnable = false;
+            if (record.personality.contactInfo !== undefined) {
+                if (record.personality.contactInfo.homeAddress !== undefined) {
+                    if (record.personality.contactInfo.homeAddress.stateId !== undefined)
+                        stateValue_home = record.personality.contactInfo.homeAddress.stateId;
+                    if (record.personality.contactInfo.homeAddress.cityId !== undefined)
+                        cityValue_home = record.personality.contactInfo.homeAddress.cityId;
+                    if (record.personality.contactInfo.homeAddress.otherCountry !== undefined)
+                        HAOCEnable = record.personality.contactInfo.homeAddress.otherCountry;
+                }
+            }
+
             if (cityValue_home === undefined) {
                 DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
             }
@@ -1357,12 +1363,17 @@
                 DynamicForm_AddressInfo_JspTeacher.getField("personality.contactInfo.homeAddress.cityId").fetchData();
             }
 
-            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null &&
-                record.personality.contactInfo.workAddress.stateId != null)
-                stateValue_work = record.personality.contactInfo.workAddress.stateId;
-            if (record.personality.contactInfo != null && record.personality.contactInfo.workAddress != null &&
-                record.personality.contactInfo.workAddress.cityId != null)
-                cityValue_work = record.personality.contactInfo.workAddress.cityId;
+            var WAOCEnable = false;
+            if (record.personality.contactInfo !== undefined) {
+                if (record.personality.contactInfo.workAddress !== undefined) {
+                    if (record.personality.contactInfo.workAddress.stateId !== undefined)
+                        stateValue_work = record.personality.contactInfo.workAddress.stateId;
+                    if (record.personality.contactInfo.workAddress.cityId !== undefined)
+                        cityValue_work = record.personality.contactInfo.workAddress.cityId;
+                    if (record.personality.contactInfo.workAddress.otherCountry !== undefined)
+                        WAOCEnable = record.personality.contactInfo.workAddress.otherCountry;
+                }
+            }
             if (cityValue_work === undefined) {
                 DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
             }
@@ -1372,19 +1383,15 @@
                 DynamicForm_JobInfo_JspTeacher.getField("personality.contactInfo.workAddress.cityId").fetchData();
             }
 
-            var OCEnable = (record.personality.contactInfo.homeAddress.otherCountry !== undefined) ?
-                record.personality.contactInfo.homeAddress.otherCountry : false;
             set_city_state(DynamicForm_AddressInfo_JspTeacher,
-                "personality.contactInfo.homeAddress.cityId", OCEnable);
+                "personality.contactInfo.homeAddress.cityId", HAOCEnable);
             set_city_state(DynamicForm_AddressInfo_JspTeacher,
-                "personality.contactInfo.homeAddress.stateId", OCEnable);
+                "personality.contactInfo.homeAddress.stateId", HAOCEnable);
 
-            OCEnable = (record.personality.contactInfo.workAddress.otherCountry !== undefined) ?
-                record.personality.contactInfo.workAddress.otherCountry : false;
             set_city_state(DynamicForm_JobInfo_JspTeacher,
-                "personality.contactInfo.workAddress.cityId", OCEnable);
+                "personality.contactInfo.workAddress.cityId", WAOCEnable);
             set_city_state(DynamicForm_JobInfo_JspTeacher,
-                "personality.contactInfo.workAddress.stateId", OCEnable);
+                "personality.contactInfo.workAddress.stateId", WAOCEnable);
 
 
             DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
@@ -1658,7 +1665,7 @@
         set_city_state(DynamicForm_JobInfo_JspTeacher,
             "personality.contactInfo.workAddress.stateId", OCEnable);
         if (workAddress.city !== undefined)
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.cityId", workAddress.city.name);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.cityId", workAddress.cityId);
         else
             DynamicForm_JobInfo_JspTeacher.clearValue("personality.contactInfo.workAddress.cityId");
     }
@@ -1676,7 +1683,7 @@
         set_city_state(DynamicForm_AddressInfo_JspTeacher,
             "personality.contactInfo.homeAddress.stateId", OCEnable);
         if (homeAddress.city !== undefined)
-            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.cityId", homeAddress.city.name);
+            DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.cityId", homeAddress.cityId);
         else
             DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
     }
@@ -1702,8 +1709,8 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.workName);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.workJob);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
 
             if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);

@@ -41,7 +41,7 @@ public class TeacherRestController {
     private final ITeacherService teacherService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final CustomModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
