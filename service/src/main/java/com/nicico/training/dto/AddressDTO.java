@@ -19,7 +19,7 @@ import java.util.List;
 public class AddressDTO {
 
     private String restAddr;
-    private Long postCode;
+    private String postCode;
     private String phone;
     private String fax;
     private String webSite;
