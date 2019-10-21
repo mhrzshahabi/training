@@ -10,17 +10,38 @@
 // <script>
 
     var productData = [
-        {quarter:"Q1, 2016", month:"دانشی", domain:"شایستگی برنامه نویسی", product:"عملکرد ضروری", _value:"توانایی"},
-        {quarter:"Q1, 2016", month:"مهارتی", domain:"شایستگی برنامه نویسی", product:"عملکرد بهبود", _value:"آشنایی"},
-        {quarter:"Q1, 2016", month:"نگرشی", domain:"شایستگی برنامه نویسی", product:"عملکرد توسعه", _value:"مهارتییس"},
+        {quarter:"مهارت", month:"دانشی", domain:"شایستگی برنامه نویسی", product:"عملکرد ضروری", _value:"توانایی"},
+        {quarter:"مهارت", month:"مهارتی", domain:"شایستگی برنامه نویسی", product:"عملکرد بهبود", _value:"آشنایی"},
+        {quarter:"مهارت", month:"نگرشی", domain:"شایستگی برنامه نویسی", product:"عملکرد توسعه", _value:"مهارتییس"},
 
     ];
+    var productRevenue_facets = [
+        {
+            id:"quarter",
+            title:"مهارت",
+            isTree:true,
+        },
+        {
+            id:"month",
+            title:"حیطه",
+            isTree:true
+        },
+        {
+            id:"domain",
+            title:"مهارت",
+            isTree:true
+        },
+        {
+            id:"product",
+            title:"مولفه شایستگی",
+            isTree:true
+        }
+    ]
 
     var NeedAssessmentDF_First = isc.DynamicForm.create({
         numCols:8,
         margin: 20,
         border:"2px solid red",
-
         fields:[
             {
               type:"SpacerItem",
@@ -54,16 +75,26 @@
         // styleName: "fontSize1",
         autoFitFieldWidths:true,
         enableCharting: true,
-        defaultFacetWidth:200,
+        defaultFacetWidth:300,
         autoSizeHeaders:true,
         bodyMinWidth:1280,
         layoutAlign:"center",
+        baseStyle:"cell",
         // canCollapseFacets:true,
+        facts:productRevenue_facets,
+
         data: productData,
         hideEmptyFacetValues: true,
+        valueTitle:"",
+        // autoSelectValues:"both",	// both, cols, row, none
+        rowHeaderGridMode:false,
         // valueFormat: "\u00A4,0.00",
-        columnFacets: ["quarter", "month"],
-        rowFacets: ["domain", "product"],
+        columnFacets: ["quarter",
+            "month"
+        ],
+        rowFacets: ["domain",
+            "product"
+        ],
 
         // configure export colors
         exportFacetTextColor: "blue",
@@ -74,7 +105,7 @@
 
         exportDefaultBGColor: "#FFDDAA",
         cellClick :function(record, rowNum, colNum){
-            alert("")
+            isc.say(record)
         }
     });
 
