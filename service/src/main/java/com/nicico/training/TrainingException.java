@@ -53,7 +53,8 @@ public class TrainingException extends NICICOException {
         NotEditable(404),
         DuplicateRecord(404),
         NotDeletable(404),
-        JobGroupNotFound(404);
+        JobGroupNotFound(404),
+        PostGroupNotFound(404);
 
         private final Integer httpStatusCode;
 

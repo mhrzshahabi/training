@@ -63,6 +63,7 @@
         ]
     });
     var NeedAssessmentCG_First = isc.CubeGrid.create({
+        ID:"cube1",
         width:"100%",
         height:"100%",
         // autoSize:true,
@@ -70,7 +71,6 @@
         // baseStyle:"cell",
         // overflow:"hidden",
         // bodyOverflow:"auto",
-        ID: "basicCubeGrid",
         border:"2px solid red",
         // styleName: "fontSize1",
         autoFitFieldWidths:true,
@@ -110,27 +110,31 @@
     });
     var NeedAssessmentDF2 = isc.DynamicForm.create({
         numCols:5,
+        margin:10,
+        layoutAlign:"center",
+        // border:"2px solid blue",
         cellBorder:2,
+        colWidths:["20%","20%","20%","20%","20%"],
         fields:[
-            {type:"SpacerItem",showTitle:false,colSpan:2},
-            {type:"staticText",showTitle:false,colSpan:3},
-            {type:"SpacerItem",showTitle:false,colSpan:2},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"دانشی"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"مهارتی"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکردی"},
-            {type:"staticText",showTitle:false,colSpan:1,rowSpan:3,defaultValue:"مولفه های شایستگی"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکردی"},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"شناختی"},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"روشی"},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
-            {type:"staticText",showTitle:false,colSpan:1},
+            {type:"SpacerItem",showTitle:false,colSpan:2,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:3,align:"center"},
+            {type:"SpacerItem",showTitle:false,colSpan:2,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"دانشی",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"مهارتی",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"نگرشی",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,rowSpan:3,defaultValue:"مولفه های شایستگی",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد ضروری",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد بهبود",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد توسعه",align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
         ]
     })
 
@@ -140,5 +144,5 @@
         width: "100%",
         height: "100%",
         // membersMargin:10,
-        members: [NeedAssessmentDF_First,NeedAssessmentCG_First],
+        members: [NeedAssessmentDF_First,NeedAssessmentCG_First,NeedAssessmentDF2],
     });
