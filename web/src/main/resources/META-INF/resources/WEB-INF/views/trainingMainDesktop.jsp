@@ -411,17 +411,18 @@
                     }
                 },
                 {
-                    title: "<spring:message code="post.group"/>", icon: "<spring:url value="jobGroup.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/post-group/"/>");
-                    }
-                },
-                {
                     title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                {
+                    title: "<spring:message code="post.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/post-group/"/>");
+                    }
+                },
+
                 {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {

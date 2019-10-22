@@ -1,0 +1,51 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="jafari-h (generated)" id="1571724715429-120">
+        <createSequence sequenceName="seq_post_group_id"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1571724715429-121">
+        <createTable tableName="tbl_post_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1571724715429-122">
+        <createTable tableName="tbl_post_postgroup">
+            <column name="f_postgroup_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_post_id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1571724715429-125">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_post_postgroup" constraintName="FK4vag6xqdhio23g9lylh5yi47l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1571724715429-126">
+        <addForeignKeyConstraint baseColumnNames="f_postgroup_id" baseTableName="tbl_post_postgroup" constraintName="FKfc5t94j8crayqmdea8d6pqe4p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_group" validate="true"/>
+    </changeSet>
+
+
+</databaseChangeLog>

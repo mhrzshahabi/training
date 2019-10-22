@@ -12,8 +12,8 @@
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "contains"},
+            {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "contains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -40,7 +40,7 @@
                 <%--var postGrouprecord = ListGrid_Post_Group_Jsp.getSelectedRecord();--%>
                 <%--if (postGrouprecord == null || postGrouprecord.id == null) {--%>
 
-                    <%--simpleDialog("پیغام", "گروه شغلی انتخاب نشده است.", 0, "stop");--%>
+                    <%--simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "stop");--%>
 
                 <%--} else {--%>
                     <%--isc.RPCManager.sendRequest({--%>
@@ -61,7 +61,7 @@
                                     <%--ListGrid_Post_Group_remove();--%>
 
                                 <%--} else {--%>
-                                    <%--msg = " گروه شغل " + getFormulaMessage(postGrouprecord.titleFa, "2", "red", "B") + " بدلیل مرتبط بودن با شایستگی قابل حذف نمی باشد ";--%>
+                                    <%--msg = " گروه پست " + getFormulaMessage(postGrouprecord.titleFa, "2", "red", "B") + " بدلیل مرتبط بودن با شایستگی قابل حذف نمی باشد ";--%>
                                     <%--simpleDialog("خطا در حذف", msg, 0, "stop");--%>
                                 <%--}--%>
                             <%--}--%>
@@ -169,7 +169,7 @@
 
                         }}
                 ]}, {
-            title: "چاپ همه گروه شغل ها", icon: "<spring:url value="pdf.png"/>", click: function () {
+            title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>", click: function () {
                 "<spring:url value="/post-group/print/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
@@ -179,7 +179,7 @@
                 window.open('${printUrl}');
             }
         }, {isSeparator: true}, {
-            title: "حذف گروه شغل از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
+            title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
                 var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
 
@@ -199,7 +199,7 @@
 
 
                     var Dialog_Delete = isc.Dialog.create({
-                        message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                        message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                         icon: "[SKIN]ask.png",
                         title: "تائید حذف",
                         buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -222,7 +222,7 @@
             }
         },
             {isSeparator: true}, {
-                title: "لیست شغل ها", icon: "<spring:url value="post.png"/>", click: function () {
+                title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
                     var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
 
@@ -296,15 +296,15 @@
                     ListGrid_Post_Group_Competence_refresh();
                 }
             }, {
-                title: " حذف گروه شغل از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: " حذف گروه پست از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
                     activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
                     activeCompetence = ListGrid_Post_Group_Competence.getSelectedRecord();
                     if (activePostGroup == null || activeCompetence == null) {
-                        simpleDialog("پیام", "شایستگی یا گروه شغل انتخاب نشده است.", 0, "confirm");
+                        simpleDialog("پیام", "شایستگی یا گروه پست انتخاب نشده است.", 0, "confirm");
 
                     } else {
                         var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                            message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
                             buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -332,15 +332,15 @@
                     ListGrid_Post_Group_Posts_refresh();
                 }
             }, {
-                title: " حذف شغل از گروه شغل مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: " حذف پست از گروه پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
                     activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
                     activePost = ListGrid_Post_Group_Posts.getSelectedRecord();
                     if (activePostGroup == null || activePost == null) {
-                        simpleDialog("پیام", "شغل یا گروه شغل انتخاب نشده است.", 0, "confirm");
+                        simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");
 
                     } else {
                         var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  شغل:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه شغل:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                            message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
                             buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -417,14 +417,14 @@
             {
                 name: "sgTitle",
                 type: "staticText",
-                title: "افزودن شغل به گروه شغل:",
+                title: "افزودن پست به گروه پست:",
                 wrapTitle: false,
                 width: 250
             }
         ]
     });
     var ListGrid_AllPosts = isc.ListGrid.create({
-        //title:"تمام شغل ها",
+        //title:"تمام پست ها",
         width: "100%",
         height: "100%", canDragResize: true,
         canDragRecordsOut: true,
@@ -433,9 +433,9 @@
         dataSource: RestDataSource_All_Posts,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
-            {name: "titleFa", title: "نام شغل", align: "center", width: "60%"},
-            {name: "titleEn", title: "نام لاتین شغل", align: "center", hidden: true},
+            {name: "code", title: "کد پست", align: "center", width: "20%"},
+            {name: "titleFa", title: "نام پست", align: "center", width: "60%"},
+            {name: "titleEn", title: "نام لاتین پست", align: "center", hidden: true},
             {name: "description", title: "توضیحات", align: "center", hidden: true},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -500,7 +500,7 @@
 
     });
     var ListGrid_ForThisPostGroup_GetPosts = isc.ListGrid.create({
-        //title:"تمام شغل ها",
+        //title:"تمام پست ها",
         width: "100%",
         height: "100%",
         canDragRecordsOut: true,
@@ -512,8 +512,8 @@
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد شغل", align: "center", width: "20%"},
-            {name: "titleFa", title: "نام شغل", align: "center", width: "70%"},
+            {name: "code", title: "کد پست", align: "center", width: "20%"},
+            {name: "titleFa", title: "نام پست", align: "center", width: "70%"},
             {name: "OnDelete", title: "حذف", align: "center"}
         ],
 
@@ -650,7 +650,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست شغل ها",
+                title: "لیست پست ها",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -666,7 +666,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست شغل های این گروه شغل",
+                title: "لیست پست های این گروه پست",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -711,7 +711,7 @@
     });
 
     var Window_Add_Post_to_PostGroup = isc.Window.create({
-        title: "لیست شغل ها",
+        title: "لیست پست ها",
         width: "900",
         height: "400",
         align: "center",
@@ -750,8 +750,8 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام شغل", align: "center", filterOperator: "contains"},
-            {name: "code", title: "کد شغل ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام پست", align: "center", filterOperator: "contains"},
+            {name: "code", title: "کد پست ", align: "center", filterOperator: "contains"},
             // {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -809,7 +809,7 @@
         var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
 
-            simpleDialog("پیغام", "گروه شغلی انتخاب نشده است.", 0, "say");
+            simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "say");
 
         } else {
             DynamicForm_Post_Group_Jsp.clearValues();
@@ -824,10 +824,10 @@
     function ListGrid_Post_Group_remove() {
         var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
         if (record == null) {
-            simpleDialog("پیغام", "گروه شغلی انتخاب نشده است.", 0, "ask");
+            simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "ask");
         } else {
             var Dialog_Delete = isc.Dialog.create({
-                message: getFormulaMessage("آیا از حذف گروه شغل:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
                 title: "تائید حذف",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
@@ -907,7 +907,7 @@
             {name: "id", hidden: true},
             {
                 name: "titleFa",
-                title: "نام گروه شغل",
+                title: "نام گروه پست",
                 type: "text",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
@@ -924,7 +924,7 @@
                 length: "250",
                 width: "*",
                 height: "40",
-                title: "نام لاتین گروه شغل ",
+                title: "نام لاتین گروه پست ",
                 hint: "English/انگلیسی",
                 showHintInField: true,
                 keyPressFilter: "[a-z|A-Z|0-9 |]",
@@ -1014,7 +1014,7 @@
     });
 
     var Window_Post_Group_Jsp = isc.Window.create({
-        title: " گروه شغل ",
+        title: " گروه پست ",
         width: 700,
         height: 200,
         autoSize: true,
@@ -1163,7 +1163,7 @@
 
     <%--var ToolStripButton_Print_selected_Post_Group = isc.ToolStripButton.create({--%>
     <%--    icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--    title: "چاپ گروه شغل انتخاب شده",--%>
+    <%--    title: "چاپ گروه پست انتخاب شده",--%>
     <%--    click: function () {--%>
 
 
@@ -1180,7 +1180,7 @@
     <%--        if(strPostrecords==""){--%>
     <%--            isc.Dialog.create({--%>
 
-    <%--                message: "گروه شغلی انتخاب نشده است",--%>
+    <%--                message: "گروه پستی انتخاب نشده است",--%>
     <%--                icon: "[SKIN]ask.png",--%>
     <%--                title: "پیام",--%>
     <%--                buttons: [isc.Button.create({title: "تائید"})],--%>
@@ -1354,7 +1354,7 @@
     });
     var ToolStripButton_Add_Post_Group_AddPost_Jsp = isc.ToolStripButton.create({
         icon: "<spring:url value="post.png"/>",
-        title: "لیست شغل ها",
+        title: "لیست پست ها",
         click: function () {
             var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
             //  alert(Window_Add_Post_to_PostGroup.DynamicForm[0].fields[0]);
@@ -1423,7 +1423,7 @@
         tabs: [
             {
                 id: "TabPane_Post_Group_Post",
-                title: "لیست شغل ها",
+                title: "لیست پست ها",
                 pane: ListGrid_Post_Group_Posts
 
             },
@@ -1435,7 +1435,7 @@
             // }
             // ,{
             //     id: "TabPane_Post_Group_Competence",
-            //     title: "لیست پستهای این گروه شغل",
+            //     title: "لیست پستهای این گروه پست",
             //     visable:false,
             //     pane: ListGrid_Post_Group_Competence
             // }
