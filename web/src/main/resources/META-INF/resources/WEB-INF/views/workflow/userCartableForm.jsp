@@ -5,8 +5,15 @@
   Time: 4:34 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%
+	final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 
 <%--<script>--%>
 
@@ -38,7 +45,8 @@
 		loadingMessage: "Loading Grid.."
 	});
 
-	isc.Window.create({
+	isc.Window.create(
+	    {
 		ID: "taskConfirmationWindow",
 		title: "تکمیل فرآیند",
 		autoSize: false,
@@ -143,7 +151,7 @@
 		]
 	});
 
-	var RestDataSource_UserTaskList = isc.RestDataSource.create({
+	var RestDataSource_UserTaskList = isc.TrDS.create({
 		fields: [
 
 			{name: "name", title: "عنوان کار"},
@@ -161,19 +169,20 @@
 		jsonPrefix: "",
 		jsonSuffix: "",
 		transformRequest: function (dsRequest) {
+
 			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
+				"Authorization": "Bearer <%= accessToken %>"
 			};
 			return this.Super("transformRequest", arguments);
 		},
-		fetchDataURL: "${restApiUrl}/api/workflow/userTask/list?usr=${username}"
-	});
 
+		fetchDataURL: workflowUrl + "userTask/list?usr=${username}"
+	});
 
 	var ListGrid_UserTaskList = isc.ListGrid.create({
 		width: "100%",
 		height: "100%",
+		autoFetchData: true,
 		dataSource: RestDataSource_UserTaskList,
 		sortDirection: "descending",
 		contextMenu: Menu_ListGrid_UserTaskList,
