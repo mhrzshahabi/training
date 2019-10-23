@@ -319,7 +319,7 @@ var companyId;
 // width: "*"
             },
             {
-                name: "address.postCode",
+                name: "address.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 type: 'text',
                 keyPressFilter: "[1-9]",

@@ -21,4 +21,6 @@ public interface IAddressService {
     SearchDTO.SearchRs<AddressDTO.Info> search(SearchDTO.SearchRq request);
 
     AddressDTO.Info getOneByPostalCode(String postalCode);
+
+    AddressDTO.Info createOrUpdate(AddressDTO.Create request);
 }

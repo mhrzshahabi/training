@@ -23,8 +23,8 @@ public class Address extends Auditable {
     @Column(name = "c_address")
     private String restAddr;
 
-    @Column(name = "n_post_code")
-    private Long postCode;
+    @Column(name = "c_postal_code", unique = true)
+    private String postalCode;
 
     @Column(name = "n_phone")
     private String phone;

@@ -30,7 +30,6 @@ public class PersonalInfoDTO {
     private String firstNameEn;
     private String lastNameEn;
     private String nationalCode;
-    //    private String fullNameEn;
     private String fatherName;
     private String birthDate;
     private String birthLocation;

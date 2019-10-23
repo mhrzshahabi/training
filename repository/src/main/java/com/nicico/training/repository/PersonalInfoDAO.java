@@ -10,6 +10,7 @@ import org.springframework.stereotype.Repository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface PersonalInfoDAO extends JpaRepository<PersonalInfo, Long>, JpaSpecificationExecutor<PersonalInfo> {
@@ -17,6 +18,12 @@ public interface PersonalInfoDAO extends JpaRepository<PersonalInfo, Long>, JpaS
     @Query(value = "select * from TBL_PERSONAL_INFO where C_NATIONAL_CODE = :nationalCode",nativeQuery = true)
     @Transactional
     public List<PersonalInfo> findByNationalCode(@Param("nationalCode") String nationalCode);
+
+
+    @Modifying
+    @Query(value = "select * from TBL_PERSONAL_INFO where C_NATIONAL_CODE = :nationalCode",nativeQuery = true)
+    @Transactional
+    Optional<PersonalInfo> findFirstByNationalCode(@Param("nationalCode") String nationalCode);
 
     @Modifying
     @Query(value = "update TBL_PERSONAL_INFO set" +
