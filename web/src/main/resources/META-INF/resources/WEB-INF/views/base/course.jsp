@@ -1139,23 +1139,24 @@
                                     var gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     // Window_course.close();
+
+                                    // working
+                                    var varParams = [{
+                                        "processKey": "myProcess",
+                                        "id": JSON.parse(resp.data).id,
+                                        "mainObjective": JSON.parse(resp.data).mainObjective,
+                                        "titleFa": JSON.parse(resp.data).titleFa,
+                                        "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
+                                        "courseCreator": userFuulName
+                                    }]
+
+                                    startProcess(varParams);
+
+                                    // working
+
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
                                         ListGrid_Course_Edit();
-
-                                        // working
-                                        var varParams = [{
-                                            "processKey": "myProcess",
-                                            "id": JSON.parse(resp.data).id,
-                                            "mainObjective": JSON.parse(resp.data).mainObjective,
-                                            "titleFa": JSON.parse(resp.data).titleFa,
-                                            "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                            "courseCreator": userFuulName
-                                        }]
-
-                                        startProcess(varParams);
-
-                                        // working
 
                                     }, 3000);
 
@@ -1228,32 +1229,18 @@
     });
 
     // working
-
     function startProcess(varParams) {
-
-        alert("1");
-
-        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), Mycallback));
+       isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
     }
 
-    function Mycallback(resp) {
+    function startProcess_callback(resp) {
 
-        alert("1");
-
-        console.log(resp);
-
-        if (resp.status == 200)
+        if (resp.httpResponseCode == 200)
             isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
         else {
-            isc.say("کد خطا : " + resp.status);
+            isc.say("کد خطا : " + resp.httpResponseCode);
         }
     }
-
-    function getSession() {
-        console.log("${contextPath}");
-        alert("${contextPath}");
-    }
-
     // working
 
     var courseSaveOrExitHlayout = isc.HLayout.create({
