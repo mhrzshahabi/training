@@ -97,6 +97,8 @@ public class PersonalInfoService implements IPersonalInfoService {
         }
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
 
+        personalInfo.setAccountInfo(null);
+        personalInfo.setContactInfo(null);
         return save(personalInfo);
 
 
@@ -155,8 +157,8 @@ public class PersonalInfoService implements IPersonalInfoService {
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
 
         PersonalInfo personalInfo;
-        ContactInfo contactInfo = null;
-        AccountInfo accountInfo = null;
+        ContactInfo contactInfo;
+        AccountInfo accountInfo;
 
         Long contactInfoId = null;
         Long accountInfoId = null;
@@ -207,10 +209,12 @@ public class PersonalInfoService implements IPersonalInfoService {
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
         modelMapper.map(request, pUpdating);
-        pUpdating.setAccountInfo(accountInfo);
+//        pUpdating.setAccountInfo(accountInfo);
         pUpdating.setAccountInfoId(accountInfoId);
-        pUpdating.setContactInfo(contactInfo);
+//        pUpdating.setContactInfo(contactInfo);
         pUpdating.setContactInfoId(contactInfoId);
+        pUpdating.setAccountInfo(null);
+        pUpdating.setContactInfo(null);
         return save(pUpdating);
     }
 

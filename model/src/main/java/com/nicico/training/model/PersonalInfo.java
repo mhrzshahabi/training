@@ -96,14 +96,14 @@ public class PersonalInfo extends Auditable {
     @Column(name = "e_gender")
     private Integer genderId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_contact_info", insertable = false, updatable = false)
     private ContactInfo contactInfo;
 
     @Column(name = "f_contact_info")
     private Long contactInfoId;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_account_info", insertable = false, updatable = false)
     private AccountInfo accountInfo;
 

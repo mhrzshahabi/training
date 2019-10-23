@@ -72,6 +72,8 @@ public class ContactInfoService implements IContactInfoService {
 //				contactInfo.setWorkAddressId(workAddress.getId());
         }
 
+        contactInfo.setHomeAddress(null);
+        contactInfo.setWorkAddress(null);
         return save(contactInfo);
 //		return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
     }
@@ -130,9 +132,11 @@ public class ContactInfoService implements IContactInfoService {
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);
         cUpdating.setHomeAddressId(homeAddressId);
-        cUpdating.setHomeAddress(homeAddress);
+//        cUpdating.setHomeAddress(homeAddress);
         cUpdating.setWorkAddressId(workAddressId);
-        cUpdating.setWorkAddress(workAddress);
+//        cUpdating.setWorkAddress(workAddress);
+        cUpdating.setHomeAddress(null);
+        cUpdating.setWorkAddress(null);
         return save(cUpdating);
     }
 

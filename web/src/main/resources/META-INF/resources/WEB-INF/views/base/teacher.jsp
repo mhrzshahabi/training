@@ -317,17 +317,24 @@
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
-            {
-                name: "personality.fullNameEn",
-                title: "<spring:message code='firstName.latin'/>",
-                keyPressFilter: "[a-z|A-Z |]"
-            },
 
             {
                 name: "personality.fatherName",
                 title: "<spring:message code='father.name'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
+            },
+
+            {
+                name: "personality.firstNameEn",
+                title: "<spring:message code='firstName.latin'/>",
+                keyPressFilter: "[a-z|A-Z |]"
+            },
+
+            {
+                name: "personality.lastNameEn",
+                title: "<spring:message code='lastName.latin'/>",
+                keyPressFilter: "[a-z|A-Z |]"
             },
 
             {
@@ -726,7 +733,7 @@
                 length: "30"
             },
             {
-                name: "personality.contactInfo.workAddress.postCode",
+                name: "personality.contactInfo.workAddress.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10"
@@ -842,13 +849,13 @@
                     DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.cityId").enable();
                     DynamicForm_JobInfo_JspTeacher.getItem("personality.contactInfo.workAddress.stateId").enable();
                 }
-            } else if (item.name === "personality.contactInfo.workAddress.postCode") {
+            } else if (item.name === "personality.contactInfo.workAddress.postalCode") {
                 if (newValue < 1e9)
-                    DynamicForm_JobInfo_JspTeacher.addFieldErrors("personality.contactInfo.workAddress.postCode",
+                    DynamicForm_JobInfo_JspTeacher.addFieldErrors("personality.contactInfo.workAddress.postalCode",
                         "<spring:message code='msg.postal.code.validation'/>", true);
                 else {
-                    DynamicForm_JobInfo_JspTeacher.clearFieldErrors("personality.contactInfo.workAddress.postCode", true);
-                    fillWorkAddressFields(DynamicForm_JobInfo_JspTeacher.getValue("personality.contactInfo.workAddress.postCode"));
+                    DynamicForm_JobInfo_JspTeacher.clearFieldErrors("personality.contactInfo.workAddress.postalCode", true);
+                    fillWorkAddressFields(DynamicForm_JobInfo_JspTeacher.getValue("personality.contactInfo.workAddress.postalCode"));
                 }
             }
         }
@@ -943,7 +950,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "personality.contactInfo.homeAddress.postCode",
+                name: "personality.contactInfo.homeAddress.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10"
@@ -1079,13 +1086,13 @@
                     DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.cityId").enable();
                     DynamicForm_AddressInfo_JspTeacher.getItem("personality.contactInfo.homeAddress.stateId").enable();
                 }
-            } else if (item.name === "personality.contactInfo.homeAddress.postCode") {
+            } else if (item.name === "personality.contactInfo.homeAddress.postalCode") {
                 if (newValue < 1e9)
-                    DynamicForm_AddressInfo_JspTeacher.addFieldErrors("personality.contactInfo.homeAddress.postCode",
+                    DynamicForm_AddressInfo_JspTeacher.addFieldErrors("personality.contactInfo.homeAddress.postalCode",
                         "<spring:message code='msg.postal.code.validation'/>", true);
                 else {
-                    DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.homeAddress.postCode", true);
-                    fillHomeAddressFields(DynamicForm_AddressInfo_JspTeacher.getValue("personality.contactInfo.homeAddress.postCode"));
+                    DynamicForm_AddressInfo_JspTeacher.clearFieldErrors("personality.contactInfo.homeAddress.postalCode", true);
+                    fillHomeAddressFields(DynamicForm_AddressInfo_JspTeacher.getValue("personality.contactInfo.homeAddress.postalCode"));
                 }
             }
         }
@@ -1653,7 +1660,7 @@
 
     function setWorkAddressFields(workAddress) {
         DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", workAddress.restAddr);
-        DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.postCode", workAddress.postCode);
+        DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.postalCode", workAddress.postalCode);
         DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.phone", workAddress.phone);
         DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.fax", workAddress.fax);
         DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.webSite", workAddress.webSite);
@@ -1672,7 +1679,7 @@
 
     function setHomeAddressFields(homeAddress) {
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.restAddr", homeAddress.restAddr);
-        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postCode", homeAddress.postCode);
+        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postalCode", homeAddress.postalCode);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.phone", homeAddress.phone);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.fax", homeAddress.fax);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.otherCountry", homeAddress.otherCountry);

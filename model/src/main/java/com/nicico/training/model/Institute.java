@@ -34,7 +34,7 @@ public class Institute extends Auditable {
     private String restAddress;
 
     @Column(name = "c_post_code", length = 12)
-    private String postCode;
+    private String postalCode;
 
     @Column(name = "c_phone", length = 50)
     private String phone;

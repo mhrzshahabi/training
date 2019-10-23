@@ -39,7 +39,7 @@ public class InstituteDTO {
     private Long cityId;
 
     @ApiModelProperty
-    private String postCode;
+    private String postalCode;
 
     @ApiModelProperty
     private String phone;
