@@ -362,7 +362,6 @@
         ],
         autoFetchData: true,
         showFilterEditor: true,
-        allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: true,
         getCellCSSText: function (record, rowNum, colNum) {
@@ -575,12 +574,29 @@
                 },
 
                 recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                    if(dropRecords[0].titleFa == DynamicForm_course_MainTab.getItem("titleFa")._value){
+                        createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" نمیتواند پیشنیاز یا معادل خودش باشد.",
+                            "خطا");
+                        return;
+                    }
                     if (sourceWidget.ID === "courseAllGrid2") {
                         preCourseGrid.transferSelectedData(courseAllGrid2);
                         setPlus(vm_JspCourse.values.id,"PreCourse",testData);
                     }
                     if (sourceWidget.ID === "courseAllGrid") {
                         if (targetRecord) {
+                            for (let i = 0; i < equalCourseGrid.data.allRows.size(); i++) {
+                                if(equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)){
+                                    createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" قبلاً اضافه شده است.",
+                                        "خطا");
+                                    return;
+                                }
+                            }
+                            // if(targetRecord.nameEC.contains(dropRecords[0].titleFa)){
+                            //     createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" قبلاً اضافه شده است.",
+                            //     "خطا");
+                            //     return;
+                            // }
                             targetRecord.nameEC = "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + targetRecord.nameEC;
                             targetRecord.idEC = courseAllGrid.getSelectedRecord().id.toString() + "_" + targetRecord.idEC;
                             equalCourseGrid.updateData(targetRecord);
@@ -590,6 +606,13 @@
                             // });
                             // equalCourseGrid.removeData(targetRecord);
                         } else {
+                            for (let i = 0; i < equalCourseGrid.data.allRows.size(); i++) {
+                                if(equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)){
+                                    createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" قبلاً اضافه شده است.",
+                                        "خطا");
+                                    return;
+                                }
+                            }
                             equalCourseGrid.addData({
                                 nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
                                 idEC: courseAllGrid.getSelectedRecord().id.toString()
@@ -1515,7 +1538,7 @@
                                 if (courseAllGrid2.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    preCourseGrid.transferSelectedData(courseAllGrid2);
+                                    preCourseGrid.recordDrop(courseAllGrid2.getSelectedRecords(),false,false,courseAllGrid2);
                                 }
                             }
                         },
@@ -1602,14 +1625,7 @@
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    equalCourseGrid.getSelectedRecord().nameEC = "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC;
-                                    equalCourseGrid.getSelectedRecord().idEC = courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC;
-                                    equalCourseGrid.updateData(equalCourseGrid.getSelectedRecord());
-                                    // equalCourseGrid.addData({
-                                    //     nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'" + " و " + equalCourseGrid.getSelectedRecord().nameEC,
-                                    //     idEC: courseAllGrid.getSelectedRecord().id.toString() + "_" + equalCourseGrid.getSelectedRecord().idEC
-                                    // });
-                                    // equalCourseGrid.removeData(equalCourseGrid.getSelectedRecord());
+                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(),equalCourseGrid.getSelectedRecord(),false,courseAllGrid);
                                 }
                             }
                         },
@@ -1629,11 +1645,12 @@
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    equalCourseGrid.addData({
-                                        // id: courseAllGrid.getSelectedRecord().id,
-                                        nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
-                                        idEC: courseAllGrid.getSelectedRecord().id.toString()
-                                    });
+                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(),false,false,courseAllGrid);
+                                    // equalCourseGrid.addData({
+                                    //     // id: courseAllGrid.getSelectedRecord().id,
+                                    //     nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
+                                    //     idEC: courseAllGrid.getSelectedRecord().id.toString()
+                                    // });
                                 }
                             }
                         },
