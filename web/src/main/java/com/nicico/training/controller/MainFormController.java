@@ -24,6 +24,11 @@ public class MainFormController {
         return "base/post";
     }
 
+    @RequestMapping("/post-group")
+    public String showPostGroupForm() {
+        return "base/post-group";
+    }
+
     @RequestMapping("/competence")
     public String showCompetenceForm() {
         return "base/competence";
@@ -31,6 +36,6 @@ public class MainFormController {
 
     @RequestMapping("/needAssessment")
     public String showNeedAssessmentForm() {
-        return "base/needAssessment";
+        return "base/needAssessmentNew1";
     }
 }

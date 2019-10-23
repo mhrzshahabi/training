@@ -7,6 +7,7 @@ import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Entity
@@ -35,5 +36,8 @@ public class Post extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_department_id", nullable = false)
     private Department department;
+
+    @ManyToMany(mappedBy = "postSet")
+    private Set<PostGroup> postGroupSet;
 
 }

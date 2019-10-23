@@ -41,6 +41,7 @@
     const rootUrl = "${contextPath}/api";
     const workflowUrl = rootUrl + "/workflow/";
     const jobUrl = rootUrl + "/job/";
+    const postGroupUrl = rootUrl + "/post-group/";
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
@@ -415,6 +416,13 @@
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                {
+                    title: "<spring:message code="post.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/post-group/"/>");
+                    }
+                },
+
                 {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
