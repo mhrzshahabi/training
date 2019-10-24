@@ -578,8 +578,8 @@
                 },
 
                 recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
-                    if(dropRecords[0].titleFa == DynamicForm_course_MainTab.getItem("titleFa")._value){
-                        createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" نمیتواند پیشنیاز یا معادل خودش باشد.",
+                    if (dropRecords[0].titleFa == DynamicForm_course_MainTab.getItem("titleFa")._value) {
+                        createDialog("info", "دوره " + getFormulaMessage(dropRecords[0].titleFa, 2, "red", "b") + " نمیتواند پیشنیاز یا معادل خودش باشد.",
                             "خطا");
                         return;
                     }
@@ -590,8 +590,8 @@
                     if (sourceWidget.ID === "courseAllGrid") {
                         if (targetRecord) {
                             for (let i = 0; i < equalCourseGrid.data.allRows.size(); i++) {
-                                if(equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)){
-                                    createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" قبلاً اضافه شده است.",
+                                if (equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)) {
+                                    createDialog("info", "دوره " + getFormulaMessage(dropRecords[0].titleFa, 2, "red", "b") + " قبلاً اضافه شده است.",
                                         "خطا");
                                     return;
                                 }
@@ -611,8 +611,8 @@
                             // equalCourseGrid.removeData(targetRecord);
                         } else {
                             for (let i = 0; i < equalCourseGrid.data.allRows.size(); i++) {
-                                if(equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)){
-                                    createDialog("info","دوره " + getFormulaMessage(dropRecords[0].titleFa,2,"red","b")+" قبلاً اضافه شده است.",
+                                if (equalCourseGrid.data.allRows[i].nameEC.contains(dropRecords[0].titleFa)) {
+                                    createDialog("info", "دوره " + getFormulaMessage(dropRecords[0].titleFa, 2, "red", "b") + " قبلاً اضافه شده است.",
                                         "خطا");
                                     return;
                                 }
@@ -1140,9 +1140,9 @@
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     // Window_course.close();
 
-                                    // working
+// <<---------------------------------------- Workflow - Call StartProcess ----------------------------------------
                                     var varParams = [{
-                                        "processKey": "myProcess",
+                                        "processKey": "courceWorkflow",
                                         "id": JSON.parse(resp.data).id,
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,
@@ -1151,8 +1151,7 @@
                                     }]
 
                                     startProcess(varParams);
-
-                                    // working
+// ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
@@ -1228,9 +1227,9 @@
         disabled: true
     });
 
-    // working
+// <<---------------------------------------- Workflow - StartProcess ----------------------------------------
     function startProcess(varParams) {
-       isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
     }
 
     function startProcess_callback(resp) {
@@ -1241,7 +1240,7 @@
             isc.say("کد خطا : " + resp.httpResponseCode);
         }
     }
-    // working
+// ---------------------------------------- Workflow - StartProcess ---------------------------------------->>
 
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
@@ -1575,7 +1574,7 @@
                                 if (courseAllGrid2.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    preCourseGrid.recordDrop(courseAllGrid2.getSelectedRecords(),false,false,courseAllGrid2);
+                                    preCourseGrid.recordDrop(courseAllGrid2.getSelectedRecords(), false, false, courseAllGrid2);
                                 }
                             }
                         },
@@ -1662,7 +1661,7 @@
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(),equalCourseGrid.getSelectedRecord(),false,courseAllGrid);
+                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(), equalCourseGrid.getSelectedRecord(), false, courseAllGrid);
                                 }
                             }
                         },
@@ -1682,7 +1681,7 @@
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
                                 } else {
-                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(),false,false,courseAllGrid);
+                                    equalCourseGrid.recordDrop(courseAllGrid.getSelectedRecords(), false, false, courseAllGrid);
                                     // equalCourseGrid.addData({
                                     //     // id: courseAllGrid.getSelectedRecord().id,
                                     //     nameEC: "'" + courseAllGrid.getSelectedRecord().titleFa + "'",
