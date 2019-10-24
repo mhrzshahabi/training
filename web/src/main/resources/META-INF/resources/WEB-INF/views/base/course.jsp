@@ -1147,7 +1147,7 @@
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,
                                         "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                        "courseCreator": userFuulName
+                                        "courseCreator": userFullName
                                     }]
 
                                     startProcess(varParams);

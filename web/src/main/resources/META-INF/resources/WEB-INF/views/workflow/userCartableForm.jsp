@@ -15,7 +15,7 @@
 %>
 
 
-<%--<script>--%>
+// <script>
 
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -92,7 +92,6 @@
 			<spring:url value="/web/workflow/getUserCartableDetailForm/" var="getUserCartableDetailForm"/>
 			taskConfirmViewLoader.setViewURL("${getUserCartableDetailForm}" + taskID + "/" + record.assignee + "?Authorization=Bearer " + "${cookie['access_token'].getValue()}");
 			taskConfirmationWindow.show();
-
 		}
 	}
 

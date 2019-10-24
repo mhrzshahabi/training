@@ -6,7 +6,7 @@ abaspour 9803
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-<%--<script>--%>
+// <script>
 
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -301,6 +301,8 @@ abaspour 9803
 		click: function () {
 			var data = taskStartConfirmForm.getValues();
 			//console.log(data);
+
+			alert("here");
 
 			createTab(" شایستگی" + data.cId, "${addDocumentUrl}" + data.cId, false);
 

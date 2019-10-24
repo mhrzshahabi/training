@@ -664,7 +664,7 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
-    var userFuulName ='<%= SecurityUtil.getFullName()%>';
+    var userFullName ='<%= SecurityUtil.getFullName()%>';
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
