@@ -55,20 +55,19 @@
         formData.append("file", fileToLoad);
         if (fileToLoad !== undefined) {
             TrnXmlHttpRequest(formData, workflowUrl + "uploadProcessDefinition", "POST", checkUploadResult);
-        } else {
+            } else {
             isc.say("فایلی برای آپلود انتخاب نشده است.");
         }
-
-
     }
 
     function checkUploadResult(resp) {
 
-        if (resp.status == 200)
+       if (resp.status == 200)
             isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
         else {
             isc.say("کد خطا : " + resp.status);
         }
+
         // if (resp.status == "error")
         //     isc.say("آپلود فایل با مشکل مواجه شده است.");
         // if (resp.responseText == "badFile")

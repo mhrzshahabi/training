@@ -1,4 +1,4 @@
-<%--
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %><%--
   Created by IntelliJ IDEA.
   User: p-dodangeh
   Date: 1/12/2019
@@ -7,7 +7,9 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 <%--<script>--%>
 
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
@@ -143,7 +145,7 @@
 		]
 	});
 
-	var RestDataSource_UserTaskList = isc.RestDataSource.create({
+	var RestDataSource_UserTaskList = isc.TrDS.create({
 		fields: [
 
 			{name: "name", title: "عنوان کار"},
@@ -161,13 +163,14 @@
 		jsonPrefix: "",
 		jsonSuffix: "",
 		transformRequest: function (dsRequest) {
+
 			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
+				"Authorization": "Bearer <%= accessToken %>"
 			};
 			return this.Super("transformRequest", arguments);
 		},
-		fetchDataURL: "${restApiUrl}/api/workflow/userTask/list?usr=${username}"
+
+		fetchDataURL: workflowUrl + "userTask/list?usr=${username}"
 	});
 
 
