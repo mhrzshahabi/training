@@ -1143,11 +1143,15 @@
 // <<---------------------------------------- Workflow - Call StartProcess ----------------------------------------
                                     var varParams = [{
                                         "processKey": "courceWorkflow",
-                                        "id": JSON.parse(resp.data).id,
+                                        "cId": JSON.parse(resp.data).id,
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,
                                         "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                        "courseCreator": userFullName
+                                        "courseCreator": userFullName,
+                                        "REJECTVAL":"",
+                                        "REJECT":"",
+                                        "target":"/course/show-form",
+                                        "targetTitleFa":"دوره"
                                     }]
 
                                     startProcess(varParams);
