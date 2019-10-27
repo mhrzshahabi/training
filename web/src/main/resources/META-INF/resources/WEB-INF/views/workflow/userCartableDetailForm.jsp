@@ -59,24 +59,26 @@ abaspour 9803
     </c:if>
     </c:if>
 
+    <c:if test="${taskFormVariable.id =='target'}">
+    <spring:url value="${taskFormVariable.value}" var="addDocumentUrl"/>
+    </c:if>
+
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
-    var targetTitleFa =  "${taskFormVariable.value}";
+    var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
-    <spring:url value="base/competence?action=show&cId=" var="addDocumentUrl"/>
     isc.IButton.create
     ({
         ID: "viewDocButton",
         icon: "[SKIN]actions/edit.png",
-        title: "مشاهده ی شایستگی",
+        title: targetTitleFaFull,
         align: "center",
         width: "150",
         click: function () {
             var data = taskStartConfirmForm.getValues();
-            createTab(" شایستگی" + data.cId, "${addDocumentUrl}" + data.cId, false);
+            createTab(targetTitleFa , "${addDocumentUrl}" , false);
+            <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
         }
     });
-
-     viewDocButton.setTitle(targetTitleFaFull);
     </c:if>
 
     </c:forEach>
@@ -134,6 +136,10 @@ abaspour 9803
                 <c:when test="${taskFormVariable.id =='REJECT'}">,
                 type: "hidden" </c:when>
                 <c:when test="${taskFormVariable.id =='REJECTVAL'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='target'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='targetTitleFa'}">,
                 type: "hidden" </c:when>
                 <c:when test="${fn:startsWith(taskFormVariable.id,'role')}">,
                 type: "hidden" </c:when>

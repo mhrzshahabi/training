@@ -1150,7 +1150,7 @@
                                         "courseCreator": userFullName,
                                         "REJECTVAL":"",
                                         "REJECT":"",
-                                        "target":"/course/show-form",
+                                        "target":"/training/course/show-form",
                                         "targetTitleFa":"دوره"
                                     }]
 
