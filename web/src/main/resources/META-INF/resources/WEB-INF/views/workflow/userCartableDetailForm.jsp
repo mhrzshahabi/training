@@ -1,3 +1,4 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 /*
 abaspour 9803
 */
@@ -6,12 +7,18 @@ abaspour 9803
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+//
+<script>
+
+    <%--    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
+    var viewDocButton = null;
 
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
@@ -66,7 +73,7 @@ abaspour 9803
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
     var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
-    isc.IButton.create
+    viewDocButton = isc.IButton.create
     ({
         ID: "viewDocButton",
         icon: "[SKIN]actions/edit.png",
@@ -75,7 +82,7 @@ abaspour 9803
         width: "150",
         click: function () {
             var data = taskStartConfirmForm.getValues();
-            createTab(targetTitleFa , "${addDocumentUrl}" , false);
+            createTab(targetTitleFa, "${addDocumentUrl}", false);
             <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
         }
     });
@@ -140,6 +147,8 @@ abaspour 9803
                 <c:when test="${taskFormVariable.id =='target'}">,
                 type: "hidden" </c:when>
                 <c:when test="${taskFormVariable.id =='targetTitleFa'}">,
+                type: "hidden" </c:when>
+                <c:when test="${taskFormVariable.id =='cId'}">,
                 type: "hidden" </c:when>
                 <c:when test="${fn:startsWith(taskFormVariable.id,'role')}">,
                 type: "hidden" </c:when>
@@ -289,8 +298,8 @@ abaspour 9803
                             } else if (!pr.startsWith("rRRR"))
                                 ndat[pr] = data[pr];
                         isc.RPCManager.sendRequest({
-                            actionURL: "${restApiUrl}/api/workflow/doUserTask",
-                            httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            actionURL: workflowUrl + "doUserTask",
+                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -300,7 +309,7 @@ abaspour 9803
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
-                                    isc.say("شایستگی به گردش کار ارسال شد.");
+                                    isc.say(targetTitleFa + " به گردش کار ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");
@@ -327,117 +336,117 @@ abaspour 9803
         width: "150",
         click: function () {
             taskConfirmationWindow.hide();
-
         }
     });
 
+    Window_userCartableReject = isc.Window.create({
+        ID: "createWindowtblManagerCommandsInfo", title: "اعلام دلیل برگشت", width: "50%",
+        isModal: true, showModalMask: true, showMaximizeButton: true, autoCenter: true, align: "center",
+        closeClick: function () {
+            this.Super("closeClick", arguments);
+        },
+        items:
+            [
+                isc.VLayout.create({
+                    layoutMargin: 5,
+                    showEdges: false,
+                    edgeImage: "",
+                    alignLayout: "center",
+                    membersMargin: 3,
+                    width: "100%",
+                    height: "100%",
+                    members: [
+                        isc.DynamicForm.create({
+                            ID: "rejectTaskForm",
+                            dataSource: taskActionsDS,
+                            colWidths: ["10%", "80%", "10%"],
+                            width: "100%",
+                            height: "100%",
+                            numCols: "3",
+                            autoFocus: "true",
+                            cellPadding: 5,
+                            fields: [
+                                {
+                                    type: "text",
+                                    name: "processId",
+                                    title: "شناسه فرایند",
+                                    defaultValue: "${id}",
+                                    hidden: true,
+                                    width: 200
+                                },
+                                {
+                                    name: "REJECTVAL",
+                                    title: "عودت بدلیل ",
+                                    type: "text",
+                                    width: "100%",
+                                    height: 40,
+                                    required: true,
+                                    <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
+                                    <c:if test="${taskFormVariable.id =='REJECTVAL' }"><c:if test="${taskFormVariable.value !=' ' }">defaultValue: "${taskFormVariable.value}", </c:if></c:if>
+                                    </c:forEach>
+                                }
+                                , {name: "REJECT", title: "عودت بدلیل ", type: "hidden"}
+                            ]
+                        }),
+                        isc.HLayout.create({
+                            layoutMargin: 5,
+                            membersMargin: 3,
+                            showEdges: false,
+                            edgeImage: "",
+                            width: "100%",
+                            alignLayout: "center",
+                            members: [
+                                isc.Label.create({width: 400}),
+                                isc.IButton.create({
+                                    autoCenter: true, align: "center", width: 200, title: "عودت فعالیت",
+                                    click: function () {
+                                        rejectTaskForm.validate();
+                                        if (rejectTaskForm.hasErrors()) {
+                                            return;
+                                        }
+
+                                        rejectTaskForm.setValue("REJECT", "Y");
+                                        var data = rejectTaskForm.getValues();
+                                        isc.RPCManager.sendRequest({
+                                            actionURL: workflowUrl + "doUserTask",
+                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                            httpMethod: "POST",
+                                            useSimpleHttp: true,
+                                            contentType: "application/json; charset=utf-8",
+                                            showPrompt: false,
+                                            data: JSON.stringify(data),
+                                            params: {"taskId": "${id}", "usr": "${username}"},
+                                            serverOutputAsString: false,
+                                            callback: function (RpcResponse_o) {
+                                                if (RpcResponse_o.data == 'success') {
+                                                    isc.say("تعریف " + targetTitleFa + " به گردش کار ارسال شد.");
+                                                    taskConfirmationWindow.hide();
+                                                    ListGrid_UserTaskList.invalidateCache();
+                                                    userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
+                                                }
+                                            }
+                                        });
+                                        createWindowtblManagerCommandsInfo.close();
+                                        taskConfirmationWindow.closeClick();
+                                    }
+                                }) //Button
+                            ]
+                        }) //Hlayout
+                    ]
+                })//VLayout
+            ]//Window
+    });
+
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
-    // working
-    <%--console.log("${taskFormVariable.id}");--%>
 
     <c:if test="${taskFormVariable.id =='REJECT'}">
     doRejectTaskButton = isc.IButton.create({
         icon: "[SKIN]actions/edit.png", title: "عودت فعالیت", align: "center", width: "150",
         click: function () {
-            isc.Window.create({
-                ID: "createWindowtblManagerCommandsInfo", title: "اعلام دلیل برگشت", width: "90%", height: "30%",
-                isModal: true, showModalMask: true, showMaximizeButton: true, autoCenter: true, align: "center",
-                closeClick: function () {
-                    this.Super("closeClick", arguments);
-                },
-                items:
-                    [
-                        isc.VLayout.create({
-                            layoutMargin: 5, showEdges: false, edgeImage: "", alignLayout: "center", membersMargin: 3,
-                            members: [
-                                isc.DynamicForm.create({
-                                    ID: "rejectTaskForm",
-                                    dataSource: taskActionsDS,
-                                    colWidths: ["10%", "90%"],
-                                    width: "100%",
-                                    height: "100%",
-                                    numCols: "3",
-                                    autoFocus: "true",
-                                    cellPadding: 5,
-                                    fields: [
-                                        {
-                                            type: "text",
-                                            name: "processId",
-                                            title: "شناسه فرایند",
-                                            defaultValue: "${id}",
-                                            hidden: true,
-                                            width: 200
-                                        },
-                                        {
-                                            name: "REJECTVAL",
-                                            title: "عودت بدلیل ",
-                                            type: "text",
-                                            width: "100%",
-                                            height: 40,
-                                            required: true,
-                                            <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
-                                            <c:if test="${taskFormVariable.id =='REJECTVAL' }"><c:if test="${taskFormVariable.value !=' ' }">defaultValue: "${taskFormVariable.value}", </c:if></c:if>
-                                            </c:forEach>
-                                        }
-                                        , {name: "REJECT", title: "عودت بدلیل ", type: "hidden"}
-                                    ]
-                                }),
-                                isc.HLayout.create({
-                                    layoutMargin: 5,
-                                    membersMargin: 3,
-                                    showEdges: false,
-                                    edgeImage: "",
-                                    width: "100%",
-                                    alignLayout: "center",
-                                    members: [
-                                        isc.Label.create({width: 400}),
-                                        isc.IButton.create({
-                                            autoCenter: true, align: "center", width: 200, title: "عودت فعالیت",
-                                            click: function () {
-                                                rejectTaskForm.validate();
-                                                if (rejectTaskForm.hasErrors()) {
-                                                    return;
-                                                }
-
-                                                rejectTaskForm.setValue("REJECT", "Y");
-                                                var data = rejectTaskForm.getValues();
-                                                isc.RPCManager.sendRequest({
-                                                    actionURL: "${restApiUrl}/api/workflow/doUserTask",
-                                                    httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
-                                                    httpMethod: "POST",
-                                                    useSimpleHttp: true,
-                                                    contentType: "application/json; charset=utf-8",
-                                                    showPrompt: false,
-                                                    data: JSON.stringify(data),
-                                                    params: {"taskId": "${id}", "usr": "${username}"},
-                                                    serverOutputAsString: false,
-                                                    callback: function (RpcResponse_o) {
-                                                        if (RpcResponse_o.data == 'success') {
-                                                            isc.say("تعریف شایستگی به گردش کار ارسال شد.");
-                                                            taskConfirmationWindow.hide();
-                                                            ListGrid_UserTaskList.invalidateCache();
-                                                            userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
-                                                        }
-                                                    }
-                                                });
-                                                createWindowtblManagerCommandsInfo.close();
-                                                taskConfirmationWindow.closeClick();
-                                            }
-                                        }) //Button
-                                    ]
-                                }) //Hlayout
-                            ]
-                        })//VLayout
-                    ]//Window
-            });
+            Window_userCartableReject.show();
         }
     });
     </c:if>
-
-
-
-
-    // working
 
     </c:forEach>
 

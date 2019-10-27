@@ -1147,10 +1147,11 @@
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,
                                         "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
+                                        "courseCreatorId":"${username}",
                                         "courseCreator": userFullName,
                                         "REJECTVAL":"",
                                         "REJECT":"",
-                                        "target":"/training/course/show-form",
+                                        "target":"/course/show-form",
                                         "targetTitleFa":"دوره"
                                     }]
 
