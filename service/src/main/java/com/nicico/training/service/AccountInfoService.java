@@ -79,8 +79,4 @@ public class AccountInfoService implements IAccountInfoService {
 
     // ------------------------------
 
-//    private AccountInfoDTO.Info save(AccountInfo accountInfo) {
-//        final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
-//        return modelMapper.map(saved, AccountInfoDTO.Info.class);
-//    }
 }

@@ -124,5 +124,4 @@ public class PersonalInfo extends Auditable {
 
     @Column(name = "f_edu_orientation")
     private Long educationOrientationId;
-
 }

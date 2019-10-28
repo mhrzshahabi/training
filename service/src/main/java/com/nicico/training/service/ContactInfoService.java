@@ -161,8 +161,4 @@ public class ContactInfoService implements IContactInfoService {
 
     // ------------------------------
 
-//    private ContactInfoDTO.Info save(ContactInfo contactInfo) {
-//        final ContactInfo saved = contactInfoDAO.saveAndFlush(contactInfo);
-//        return modelMapper.map(saved, ContactInfoDTO.Info.class);
-//    }
 }
