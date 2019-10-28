@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.*;
@@ -71,7 +70,8 @@ public class TeacherService implements ITeacherService {
             return null;
         teacher.setPersonalityId(personalInfoServic.createOrUpdate(request.getPersonality()).getId());
         teacher.setPersonality(null);
-        return save(teacher);
+
+        return modelMapper.map(teacherDAO.save(teacher), TeacherDTO.Info.class);
     }
 
     @Transactional
@@ -83,13 +83,13 @@ public class TeacherService implements ITeacherService {
         Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
         Teacher teacher = optionalTeacher.orElseThrow(trainingExceptionSupplier);
 
-//        PersonalInfo personalInfo = teacher.getPersonality();
-//        personalInfoServic.update(personalInfo.getId(), request.getPersonality());
-
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+
+        personalInfoServic.update(teacher.getPersonality().getId(), request.getPersonality());
+
+        return modelMapper.map(teacherDAO.save(updating), TeacherDTO.Info.class);
     }
 
     @Transactional
@@ -119,10 +119,10 @@ public class TeacherService implements ITeacherService {
 
     // ------------------------------
 
-    private TeacherDTO.Info save(Teacher teacher) {
-        final Teacher saved = teacherDAO.saveAndFlush(teacher);
-        return modelMapper.map(saved, TeacherDTO.Info.class);
-    }
+//    private TeacherDTO.Info save(Teacher teacher) {
+//        final Teacher saved = teacherDAO.save(teacher);
+//        return modelMapper.map(saved, TeacherDTO.Info.class);
+//    }
 
     @Transactional
     @Override
