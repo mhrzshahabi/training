@@ -11,8 +11,7 @@ abaspour 9803
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//
-<script>
+// <script>
 
     <%--    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 
