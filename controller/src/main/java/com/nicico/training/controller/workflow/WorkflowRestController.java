@@ -258,8 +258,6 @@ public class WorkflowRestController {
 
 	}
 
-
-
 	@PostMapping(value = "/startProcess")
 	public ResponseEntity<Void> startProcess(@RequestBody List<Map<String, Object>> params) throws Exception {
 

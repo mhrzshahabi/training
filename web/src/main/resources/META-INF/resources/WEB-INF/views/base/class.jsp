@@ -6,11 +6,10 @@
 
     var classMethod = "POST";
     var classWait;
-
     var str1 = "";
     var str2 = "";
     var str3 = "";
-
+     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
 
@@ -197,7 +196,14 @@
         filterOnKeypress: false,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>"
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        dataArrived:function () {
+       if (class_userCartableId != null) {
+       var responseID = class_userCartableId;
+       var gridState = "[{id:" + responseID + "}]";
+
+    }
+    }
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -852,24 +858,32 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
 
         var courseId=JSON.parse(resp.data).courseId;
+
         var VarParams = [{
                 "processKey":"ClassWorkFlow",
-                "id":JSON.parse(resp.data).id,
+                "cId":JSON.parse(resp.data).id,
                 "code":JSON.parse(resp.data).code,
                 "course":DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code,
                 "coursetitleFa":DynamicForm_Class_JspClass.getItem("course.titleFa").getValue(),
                 "startDate":JSON.parse(resp.data).startDate,
                 "endDate":JSON.parse(resp.data).endDate,
                 "classCreator":"classCreator",
+                "classCreatorId": "${username}",
+                "classCreator":userFullName,
+                "REJECT":"",
+                "REJECTVAL":"",
+                "target":"/tclass/show-form",
+                "targetTitleFa":"کلاس"
             }]
-             isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST",JSON.stringify(VarParams) ,"callback:startProcess(rpcResponse)"));
-            var responseID = JSON.parse(resp.data).id;
-            var gridState = "[{id:" + responseID + "}]";
-            var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
+           isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST",JSON.stringify(VarParams) ,"callback:startProcess(rpcResponse)"));
+
+                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
-                OK.close();
-                ListGrid_Class_JspClass.setSelectedState(gridState);
+             var responseID = JSON.parse(resp.data).id;
+                      var gridState = "[{id:" + responseID + "}]";
+             ListGrid_Class_JspClass.setSelectedState(gridState);
+             OK.close();
 
             }, 1000);
             ListGrid_Class_refresh();
@@ -946,11 +960,9 @@
             Window_AddStudents_JspClass.show();
         }
     }
-
-
     // </script>
-    function test() {
-  var x=isc.DataSource.create({
+     function test() {
+     var x=isc.DataSource.create({
         ID: "preCourseDS",
         clientOnly: true,
           dataURL:courseUrl + "spec-list?_startRow=0&_endRow=55",
@@ -961,11 +973,17 @@
             {name: "theoryDuration"}
         ]
     });
-
-
-
-
-
-
-
 }
+
+
+     // var record=ListGrid_Class_JspClass.getSelectedRecord();
+          // classMethod = "PUT";
+          //          url = classUrl + record.id;
+          //          DynamicForm_Class_JspClass.clearValues();
+          //          DynamicForm_Class_JspClass.editRecord(record);
+          //          DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
+          //           Window_Class_JspClass.show();
+          //
+          //
+
+
