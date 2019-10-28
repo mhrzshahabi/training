@@ -38,7 +38,7 @@ public class ContactInfoDTO {
     @Getter
     @Setter
     @ApiModel("ContactInfoInfoTuple")
-    public static class ContactInfoInfoTuple extends ContactInfoDTO {
+    static class ContactInfoInfoTuple extends ContactInfoDTO {
         private Long id;
         private AddressDTO.AddressInfoTuple homeAddress;
         private AddressDTO.AddressInfoTuple workAddress;
@@ -59,6 +59,7 @@ public class ContactInfoDTO {
     @Accessors(chain = true)
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
+        private Long id;
         private AddressDTO.Update homeAddress;
         private AddressDTO.Update workAddress;
     }

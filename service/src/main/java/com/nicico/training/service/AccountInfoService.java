@@ -42,7 +42,7 @@ public class AccountInfoService implements IAccountInfoService {
     @Override
     public AccountInfoDTO.Info create(AccountInfoDTO.Create request) {
         final AccountInfo accountInfo = modelMapper.map(request, AccountInfo.class);
-        return save(accountInfo);
+        return modelMapper.map(accountInfoDAO.save(accountInfo), AccountInfoDTO.Info.class);
     }
 
     @Transactional
@@ -53,7 +53,7 @@ public class AccountInfoService implements IAccountInfoService {
         AccountInfo updating = new AccountInfo();
         modelMapper.map(accountInfo, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        return modelMapper.map(accountInfoDAO.save(updating), AccountInfoDTO.Info.class);
     }
 
     @Transactional
@@ -79,8 +79,8 @@ public class AccountInfoService implements IAccountInfoService {
 
     // ------------------------------
 
-    private AccountInfoDTO.Info save(AccountInfo accountInfo) {
-        final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
-        return modelMapper.map(saved, AccountInfoDTO.Info.class);
-    }
+//    private AccountInfoDTO.Info save(AccountInfo accountInfo) {
+//        final AccountInfo saved = accountInfoDAO.saveAndFlush(accountInfo);
+//        return modelMapper.map(saved, AccountInfoDTO.Info.class);
+//    }
 }
