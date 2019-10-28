@@ -1187,7 +1187,7 @@
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
-                            Window_course.close();
+                            // Window_course.close();
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
                             }, 3000);
@@ -1801,11 +1801,11 @@
             }), TabSet_Goal_JspCourse],
         })],
         closeClick: function () {
-            formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
-            formEqualCourse.reset();
-            formPreCourse.getItem("preCourseGrid1").title = "پیشنیازهای دوره";
-            formPreCourse.reset();
-            ListGrid_Course_refresh();
+            // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
+            // formEqualCourse.reset();
+            // formPreCourse.getItem("preCourseGrid1").title = "پیشنیازهای دوره";
+            // formPreCourse.reset();
+            // ListGrid_Course_refresh();
             this.close();
         }
     });
@@ -2060,7 +2060,6 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-
                         preCourseDS.addData(JSON.parse(resp.data)[i]);
                     }
                 }

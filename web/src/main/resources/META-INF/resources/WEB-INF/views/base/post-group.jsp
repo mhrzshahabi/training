@@ -71,114 +71,16 @@
                 <%--}--%>
             }
         }, {isSeparator: true},
-            {title:"<spring:message code="print.SelectedRecords"/>", icon: "<spring:url value="print.png"/>",submenu:[
-            {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                        click: function () {
-                            var strPostrecords="";
-                            var selectedPostGroup=new Array();
-                            var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                            for(i=0;i<selectedPostGroup.length;i++)
-                                if(i==0)
-                                    strPostrecords+=selectedPostGroup[i].id;
-                                else
-                                    strPostrecords+=","+selectedPostGroup[i].id
-
-                            if(strPostrecords==""){
-                                isc.Dialog.create({
-
-                                    message:"<spring:message code="msg.postGroup.notFound"/>",
-                                    icon:"[SKIN]ask.png",
-                                    title: "پیام",
-                                    buttons: [isc.Button.create({title: "تائید"})],
-                                    buttonClick: function (button, index) {
-                                        this.close();
-                                    }
-                                });
-
-                            }
-                            else{
-
-
-                                "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"
-                                window.open('${printUrl}'+strPostrecords);
-                            }
-
-                        }},
-                    {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                        click: function () {
-                            var strPostrecords="";
-                            var selectedPostGroup=new Array();
-                            var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                            for(i=0;i<selectedPostGroup.length;i++)
-                                if(i==0)
-                                    strPostrecords+=selectedPostGroup[i].id;
-                                else
-                                    strPostrecords+=","+selectedPostGroup[i].id
-
-                            if(strPostrecords==""){
-                                isc.Dialog.create({
-
-                                    message: "<spring:message code="msg.postGroup.notFound"/>",
-                                    icon: "[SKIN]ask.png",
-                                    title: "پیام",
-                                    buttons: [isc.Button.create({title: "تائید"})],
-                                    buttonClick: function (button, index) {
-                                        this.close();
-                                    }
-                                });
-
-                            }
-                            else{
-
-
-                                "<spring:url value="/post-group/printSelected/excel/" var="printUrl"/>"
-                                window.open('${printUrl}'+strPostrecords);
-                            }
-
-                        }},
-                    {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                        click: function () {
-                            var strPostrecords="";
-                            var selectedPostGroup=new Array();
-                            var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                            for(i=0;i<selectedPostGroup.length;i++)
-                                if(i==0)
-                                    strPostrecords+=selectedPostGroup[i].id;
-                                else
-                                    strPostrecords+=","+selectedPostGroup[i].id
-
-                            if(strPostrecords==""){
-                                isc.Dialog.create({
-
-                                    message: "<spring:message code="msg.postGroup.notFound"/>",
-                                    icon: "[SKIN]ask.png",
-                                    title: "پیام",
-                                    buttons: [isc.Button.create({title: "تائید"})],
-                                    buttonClick: function (button, index) {
-                                        this.close();
-                                    }
-                                });
-
-                            }
-                            else{
-
-
-                                "<spring:url value="/post-group/printSelected/html/" var="printUrl"/>"
-                                window.open('${printUrl}'+strPostrecords);
-                            }
-
-                        }}
-                ]}, {
-            title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>", click: function () {
-                "<spring:url value="/post-group/print/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
-            }
-        }, {
-            title: "چاپ همه با جزئیات", icon: "<spring:url value="pdf.png"/>", click: function () {
-                "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"
-                window.open('${printUrl}');
-            }
-        }, {isSeparator: true}, {
+            {
+            title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",
+                click: "window.open('post-group/print/pdf/<%=accessToken%>/')"
+            },
+            {
+            title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",
+                click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
+            },
+            {isSeparator: true},
+            {
             title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
                 var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
@@ -221,7 +123,8 @@
                 }
             }
         },
-            {isSeparator: true}, {
+            {isSeparator: true},
+            {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
                     var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
@@ -1108,21 +1011,7 @@
         icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
-            //  var xx;
-            //  yesNoDialog("taeed","salam???",0,"stop",xx);
-            //
-            // if(parseInt(xx)==0){
-            //     alert("yes selected");
-            // }
-            // else{
-            //     alert("noSelected");
-            //     }
-
-// alert("abcdef");
-
             ListGrid_Post_Group_refresh();
-            //ListGrid_Post_Group_Competence_refresh();
-            //ListGrid_Post_Group_Posts_refresh();
         }
     });
     var ToolStripButton_Edit_Post_Group_Jsp = isc.ToolStripButton.create({
@@ -1148,207 +1037,32 @@
                 ListGrid_Post_Group_remove();
         }
     });
-
-
-    <%--var ToolStripButton_PrintAll_Post_Group_Jsp = isc.ToolStripButton.create({--%>
-    <%--    icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--    title: "چاپ با جزییات",--%>
-    <%--    click: function () {--%>
-    <%--        "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"--%>
-    <%--        window.open('${printUrl}');--%>
-
-    <%--    }--%>
-    <%--});--%>
-
-
-    <%--var ToolStripButton_Print_selected_Post_Group = isc.ToolStripButton.create({--%>
-    <%--    icon: "[SKIN]/RichTextEditor/print.png",--%>
-    <%--    title: "چاپ گروه پست انتخاب شده",--%>
-    <%--    click: function () {--%>
-
-
-
-    <%--        var strPostrecords="";--%>
-    <%--        var selectedPostGroup=new Array();--%>
-    <%--        var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();--%>
-    <%--        for(i=0;i<selectedPostGroup.length;i++)--%>
-    <%--            if(i==0)--%>
-    <%--            strPostrecords+=selectedPostGroup[i].id;--%>
-    <%--        else--%>
-    <%--                strPostrecords+=","+selectedPostGroup[i].id--%>
-
-    <%--        if(strPostrecords==""){--%>
-    <%--            isc.Dialog.create({--%>
-
-    <%--                message: "گروه پستی انتخاب نشده است",--%>
-    <%--                icon: "[SKIN]ask.png",--%>
-    <%--                title: "پیام",--%>
-    <%--                buttons: [isc.Button.create({title: "تائید"})],--%>
-    <%--                buttonClick: function (button, index) {--%>
-    <%--                    this.close();--%>
-    <%--                }--%>
-    <%--            });--%>
-
-    <%--        }--%>
-    <%--        else{--%>
-
-
-    <%--        "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"--%>
-    <%--        window.open('${printUrl}'+strPostrecords);--%>
-    <%--        }--%>
-
-    <%--    }--%>
-    <%--});--%>
-
     var ToolStripButton_Print_Post_Group_Jsp = isc.TrPrintBtn.create({
-       // icon: "[SKIN]/RichTextEditor/print.png",
-       // title: "چاپ",
-
-
-
-
-        <%--click: function () {--%>
-        <%--    "<spring:url value="/post-group/print/pdf" var="printUrl"/>"--%>
-        <%--    window.open('${printUrl}');--%>
-
-        <%--}--%>
-
-
         menu: isc.Menu.create({
             data: [
                 {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
-                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,  click: function () {
-                                "<spring:url value="/post-group/print/pdf" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }},
-                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>" ,  click: function () {
-                                "<spring:url value="/post-group/print/excel" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }},
-                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>" ,  click: function () {
-                                "<spring:url value="/post-group/print/html" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }}
+                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,
+                            click: "window.open('post-group/print/pdf/<%=accessToken%>')"
+                        },
+                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>" ,
+                            click: "window.open('post-group/print/excel/<%=accessToken%>')"
+                        },
+                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>" ,
+                            click: "window.open('post-group/print/html/<%=accessToken%>')"
+                        }
 
                     ]},
                 {title:"<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu:[
-                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",click: function () {
-                                "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }},
-                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",click: function () {
-                                "<spring:url value="/post-group/printAll/excel" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }},
-                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",click: function () {
-                                "<spring:url value="/post-group/printAll/html" var="printUrl"/>"
-                                window.open('${printUrl}');
-
-                            }}
-                    ]},
-                {title:"<spring:message code="print.SelectedRecords"/>", icon: "<spring:url value="print.png"/>", submenu:[
                         {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
-                            click: function () {
-                                var strPostrecords="";
-                                var selectedPostGroup=new Array();
-                                var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                                for(i=0;i<selectedPostGroup.length;i++)
-                                    if(i==0)
-                                        strPostrecords+=selectedPostGroup[i].id;
-                                    else
-                                        strPostrecords+=","+selectedPostGroup[i].id
-
-                                if(strPostrecords==""){
-                                    isc.Dialog.create({
-
-                                        message: "<spring:message code="msg.postGroup.notFound"/>",
-                                        icon: "[SKIN]ask.png",
-                                        title: "پیام",
-                                        buttons: [isc.Button.create({title: "تائید"})],
-                                        buttonClick: function (button, index) {
-                                            this.close();
-                                        }
-                                    });
-
-                                }
-                                else{
-
-
-                                    "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"
-                                    window.open('${printUrl}'+strPostrecords);
-                                }
-
-                            }},
+                            click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
+                        },
                         {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
-                            click: function () {
-                                var strPostrecords="";
-                                var selectedPostGroup=new Array();
-                                var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                                for(i=0;i<selectedPostGroup.length;i++)
-                                    if(i==0)
-                                        strPostrecords+=selectedPostGroup[i].id;
-                                    else
-                                        strPostrecords+=","+selectedPostGroup[i].id
-
-                                if(strPostrecords==""){
-                                    isc.Dialog.create({
-
-                                        message: "<spring:message code="msg.postGroup.notFound"/>",
-                                        icon: "[SKIN]ask.png",
-                                        title: "پیام",
-                                        buttons: [isc.Button.create({title: "تائید"})],
-                                        buttonClick: function (button, index) {
-                                            this.close();
-                                        }
-                                    });
-
-                                }
-                                else{
-
-
-                                    "<spring:url value="/post-group/printSelected/excel/" var="printUrl"/>"
-                                    window.open('${printUrl}'+strPostrecords);
-                                }
-
-                            }},
+                            click: "window.open('post-group/printDetail/excel/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
+                        },
                         {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
-                            click: function () {
-                                var strPostrecords="";
-                                var selectedPostGroup=new Array();
-                                var selectedPostGroup=ListGrid_Post_Group_Jsp.getSelectedRecords();
-                                for(i=0;i<selectedPostGroup.length;i++)
-                                    if(i==0)
-                                        strPostrecords+=selectedPostGroup[i].id;
-                                    else
-                                        strPostrecords+=","+selectedPostGroup[i].id
-
-                                if(strPostrecords==""){
-                                    isc.Dialog.create({
-
-                                        message: "<spring:message code="msg.postGroup.notFound"/>",
-                                        icon: "[SKIN]ask.png",
-                                        title: "پیام",
-                                        buttons: [isc.Button.create({title: "تائید"})],
-                                        buttonClick: function (button, index) {
-                                            this.close();
-                                        }
-                                    });
-
-                                }
-                                else{
-
-
-                                    "<spring:url value="/post-group/printSelected/html/" var="printUrl"/>"
-                                    window.open('${printUrl}'+strPostrecords);
-                                }
-
-                            }}
-                    ]}
+                            click: "window.open('post-group/printDetail/html/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
+                        }
+                    ]},
             ]
         })
     });
@@ -1393,20 +1107,14 @@
             }
         }
     });
-
     var ToolStrip_Actions_Post_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
         members: [ToolStripButton_Refresh_Post_Group_Jsp,
             ToolStripButton_Add_Post_Group_Jsp,
             ToolStripButton_Edit_Post_Group_Jsp,
             ToolStripButton_Remove_Post_Group_Jsp,
+            ToolStripButton_Print_Post_Group_Jsp,
             ToolStripButton_Add_Post_Group_AddPost_Jsp]
-        // members: [ToolStripButton_Refresh_Post_Group_Jsp,
-        //     ToolStripButton_Add_Post_Group_Jsp,
-        //     ToolStripButton_Edit_Post_Group_Jsp,
-        //     ToolStripButton_Remove_Post_Group_Jsp,
-        //     ToolStripButton_Print_Post_Group_Jsp,
-        //     ToolStripButton_Add_Post_Group_AddPost_Jsp]
     });
 
 

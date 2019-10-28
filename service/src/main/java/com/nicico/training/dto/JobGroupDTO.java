@@ -50,6 +50,13 @@ public class JobGroupDTO {
 //        private Integer version;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain=true)
+    @ApiModel("JobGroupTuple")
+    public static class Tuple extends JobGroupDTO {
+    }
+
     // ------------------------------
 
     @Getter

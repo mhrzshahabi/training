@@ -8,12 +8,14 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.JobGroupDTO;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.service.PostGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,7 +24,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -291,72 +295,28 @@ public class PostGroupRestController {
     }
 
     @Loggable
+    @GetMapping(value = {"/printDetail/{type}/{id}"})
+    public void printDetail(HttpServletResponse response, @PathVariable String type, @PathVariable Long id) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put("todayDate", DateUtil.todayDate());
+        PostGroupDTO.Info postGroup = postGroupService.get(id);
+        params.put("titleFa", postGroup.getTitleFa());
+        params.put("description", postGroup.getDescription());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(postGroupService.getPosts(id)) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/postGroupWithPosts.jasper", params, jsonDataSource, response);
+    }
+
+
+    @Loggable
     @GetMapping(value = {"/print/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/postGroup.jasper", params, response);
+        params.put("todayDate", DateUtil.todayDate());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(postGroupService.list()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/postGroups.jasper", params, jsonDataSource, response);
     }
-
-
-    @Loggable
-    @GetMapping(value = {"/printAll/{type}"})
-    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/postgroupwithposts.jasper", params, response);
-    }
-
-    @Loggable
-    @GetMapping(value = {"/printSelected/{type}/{postGroupIds}"})
-    public void printWithSelectedPostGroup(HttpServletResponse response, @PathVariable String type,@PathVariable String postGroupIds) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        params.put("postGroupIds",postGroupIds);
-        reportUtil.export("/reports/selectedPostGroup.jasper", params, response);
-    }
-
-
-//
-//    @Loggable
-//    @PostMapping(value = {"/printWithCriteria/{type}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,
-//                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-//
-//        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-//        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-//
-//        final SearchDTO.SearchRs<PostGroupDTO.Info> searchRs = postGroupService.search(searchRq);
-//
-//        final Map<String, Object> params = new HashMap<>();
-//        params.put("todayDate", dateUtil.todayDate());
-//
-//        final List<SearchDTO.CriteriaRq> criteriaRqList = criteriaRq.getCriteria();
-//        criteriaRqList.forEach(criteriaRqFE -> {
-//            switch (criteriaRqFE.getFieldName()) {
-//                case "startDate":
-//                    params.put("startDate", criteriaRqFE.getValue().toString());
-//                    break;
-//                case "endDate":
-//                    params.put("endDate", criteriaRqFE.getValue().toString());
-//                    break;
-//                case "group":
-//                    params.put("group", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//                case "course.id":
-//                    params.put("course.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//                case "teacher.id":
-//                    params.put("teacher.id", criteriaRqFE.getValue().toString().replace(".0", "").replace("[", "").replace("]", ""));
-//                    break;
-//            }
-//        });
-//
-//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-//        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-//
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
-//    }
 }
