@@ -4,7 +4,6 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AddressDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IAddressService;
 import com.nicico.training.model.Address;
 import com.nicico.training.repository.AddressDAO;
@@ -41,7 +40,7 @@ public class AddressService implements IAddressService {
 
     @Transactional
     @Override
-    public AddressDTO.Info createOrUpdate(AddressDTO.Create request){
+    public AddressDTO.Info createOrUpdate(AddressDTO.Create request) {
         List<Address> byPostalCode = addressDAO.findByPostalCode(request.getPostalCode());
         if (byPostalCode == null || byPostalCode.size() == 0)
             return create(request);
@@ -95,11 +94,10 @@ public class AddressService implements IAddressService {
     public AddressDTO.Info getOneByPostalCode(String postalCode) {
         List<Address> addresses = addressDAO.findByPostalCode(postalCode);
         Address address;
-        if(addresses != null && addresses.size() != 0) {
+        if (addresses != null && addresses.size() != 0) {
             address = addresses.get(0);
             return modelMapper.map(address, AddressDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
 

@@ -5,11 +5,9 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.*;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.TypeToken;
@@ -30,16 +28,8 @@ public class TeacherService implements ITeacherService {
     private final CustomModelMapper modelMapper;
     private final TeacherDAO teacherDAO;
     private final CategoryDAO categoryDAO;
-    private final PersonalInfoDAO personalInfoDAO;
-    private final AccountInfoDAO accountInfoDAO;
-    private final ContactInfoDAO contactInfoDAO;
-    private final AddressDAO addressDAO;
-    private final PersonalInfoService personalInfoServic;
+    private final PersonalInfoService personalInfoService;
 
-
-    private final EnumsConverter.EGenderConverter eGenderConverter = new EnumsConverter.EGenderConverter();
-    private final EnumsConverter.EMarriedConverter eMarriedConverter = new EnumsConverter.EMarriedConverter();
-    private final EnumsConverter.EMilitaryConverter eMilitaryConverter = new EnumsConverter.EMilitaryConverter();
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -69,9 +59,10 @@ public class TeacherService implements ITeacherService {
         List<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(teacher.getTeacherCode());
         if (byTeacherCode != null && byTeacherCode.size() > 0)
             return null;
-        teacher.setPersonalityId(personalInfoServic.createOrUpdate(request.getPersonality()).getId());
+        teacher.setPersonalityId(personalInfoService.createOrUpdate(request.getPersonality()).getId());
         teacher.setPersonality(null);
-        return save(teacher);
+
+        return modelMapper.map(teacherDAO.save(teacher), TeacherDTO.Info.class);
     }
 
     @Transactional
@@ -83,13 +74,13 @@ public class TeacherService implements ITeacherService {
         Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
         Teacher teacher = optionalTeacher.orElseThrow(trainingExceptionSupplier);
 
-//        PersonalInfo personalInfo = teacher.getPersonality();
-//        personalInfoServic.update(personalInfo.getId(), request.getPersonality());
-
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+
+        personalInfoService.update(teacher.getPersonality().getId(), request.getPersonality());
+
+        return modelMapper.map(teacherDAO.save(updating), TeacherDTO.Info.class);
     }
 
     @Transactional
@@ -118,11 +109,6 @@ public class TeacherService implements ITeacherService {
     }
 
     // ------------------------------
-
-    private TeacherDTO.Info save(Teacher teacher) {
-        final Teacher saved = teacherDAO.saveAndFlush(teacher);
-        return modelMapper.map(saved, TeacherDTO.Info.class);
-    }
 
     @Transactional
     @Override
