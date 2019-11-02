@@ -6,10 +6,11 @@ abaspour 9803
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
+
+
 
 // <script>
 
@@ -33,7 +34,7 @@ abaspour 9803
         jsonPrefix: "",
         jsonSuffix: "",
 
-    });
+	});
 
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
     <c:if test="${taskFormVariable.objectType == 'SelectItem' && taskFormVariable.dsName != null}">
@@ -335,8 +336,9 @@ abaspour 9803
         width: "150",
         click: function () {
             taskConfirmationWindow.hide();
+}
         }
-    });
+    );
 
     Window_userCartableReject = isc.Window.create({
         ID: "createWindowtblManagerCommandsInfo", title: "اعلام دلیل برگشت", width: "50%",
