@@ -36,7 +36,7 @@ public class Syllabus extends Auditable {
     @Column(name = "n_theoretical_duration", length = 10)
     private Float theoreticalDuration;
 
-    @Column(name = "n_practical_duration", length = 10, nullable = false)
+    @Column(name = "n_practical_duration", length = 10)
     private Float practicalDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
