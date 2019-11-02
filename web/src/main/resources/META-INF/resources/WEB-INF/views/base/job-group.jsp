@@ -388,7 +388,7 @@
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
-                    src: "[skins]/actions/remove.png",
+                    src: "[SKIN]remove.png",
                     prompt: "remove",
                     height: 16,
                     width: 16,
