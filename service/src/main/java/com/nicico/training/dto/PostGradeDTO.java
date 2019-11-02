@@ -15,13 +15,14 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class PostGradeDTO implements Serializable {
 
+    private String code;
+    private String titleFa;
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGrade - Info")
-    public static class Info {
+    public static class Info extends PostGradeDTO {
         private Long id;
-        private String code;
-        private String titleFa;
     }
 }

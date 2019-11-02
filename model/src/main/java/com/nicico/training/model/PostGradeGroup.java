@@ -22,7 +22,7 @@ public class PostGradeGroup extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title_fa", nullable = false)
+    @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
 
     @Column(name = "c_title_en")
@@ -31,6 +31,9 @@ public class PostGradeGroup extends Auditable {
     @Column(name = "c_description", length = 500)
     private String description;
 
-    @OneToMany(mappedBy = "postGradeGroup", fetch = FetchType.LAZY)
+    @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH})
+    @JoinTable(name = "tbl_post_grade_post_grade_group",
+            joinColumns = {@JoinColumn(name = "f_post_grade_group_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_post_grade_id", referencedColumnName = "id")})
     private Set<PostGrade> postGradeSet;
 }

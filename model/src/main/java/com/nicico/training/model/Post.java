@@ -3,6 +3,7 @@ ghazanfari_f, 8/29/2019, 9:11 AM
 */
 package com.nicico.training.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
@@ -12,6 +13,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Immutable
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "tbl_post")
 public class Post extends Auditable {
 
