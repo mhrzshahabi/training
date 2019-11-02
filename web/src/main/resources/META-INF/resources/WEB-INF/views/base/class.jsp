@@ -197,8 +197,7 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataArrived: function () {
-            console.log(class_userCartableId);
-            if (class_userCartableId != null) {
+                if (class_userCartableId != null) {
                 var responseID = class_userCartableId;
                  class_userCartableId = null;
                 var gridState = "[{id:" + responseID + "}]";
@@ -939,7 +938,9 @@
                 "target": "/tclass/show-form",
                 "targetTitleFa": "کلاس"
             }]
-            isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+            if (classMethod.localeCompare("POST") === 0) {
+                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+            }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                 "<spring:message code="msg.command.done"/>");

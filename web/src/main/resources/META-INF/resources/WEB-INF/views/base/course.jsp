@@ -266,6 +266,19 @@
             }
             // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
         },
+        //working
+        dataArrived: function () {
+            // var gridState = "[{id:285}]";
+            // ListGrid_Course.setSelectedState(gridState);
+
+
+            // if (ListGrid_Course.getSelectedRecord() != null) {
+            //     alert("Yes");
+            // } else {
+            //     alert("No");
+            // }
+        },
+        //working
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
@@ -373,7 +386,7 @@
             if (record.hasGoal) {
                 return "color:red;font-size: 12px;";
             }
-        },
+        }
     });
     var ListGrid_CourseSkill = isc.TrLG.create({
         dataSource: RestDataSource_CourseSkill,
@@ -1147,12 +1160,12 @@
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,
                                         "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                        "courseCreatorId":"${username}",
+                                        "courseCreatorId": "${username}",
                                         "courseCreator": userFullName,
-                                        "REJECTVAL":"",
-                                        "REJECT":"",
-                                        "target":"/course/show-form",
-                                        "targetTitleFa":"دوره"
+                                        "REJECTVAL": "",
+                                        "REJECT": "",
+                                        "target": "/course/show-form",
+                                        "targetTitleFa": "دوره"
                                     }]
 
                                     startProcess(varParams);
@@ -1232,7 +1245,7 @@
         disabled: true
     });
 
-// <<---------------------------------------- Workflow - StartProcess ----------------------------------------
+    // <<---------------------------------------- Workflow - StartProcess ----------------------------------------
     function startProcess(varParams) {
         isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
     }
@@ -1245,7 +1258,8 @@
             isc.say("کد خطا : " + resp.httpResponseCode);
         }
     }
-// ---------------------------------------- Workflow - StartProcess ---------------------------------------->>
+
+    // ---------------------------------------- Workflow - StartProcess ---------------------------------------->>
 
     var courseSaveOrExitHlayout = isc.HLayout.create({
 

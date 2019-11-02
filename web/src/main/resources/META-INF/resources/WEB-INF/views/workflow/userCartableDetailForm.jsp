@@ -297,6 +297,7 @@ abaspour 9803
                                 }
                             } else if (!pr.startsWith("rRRR"))
                                 ndat[pr] = data[pr];
+
                         isc.RPCManager.sendRequest({
                             actionURL: workflowUrl + "doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
