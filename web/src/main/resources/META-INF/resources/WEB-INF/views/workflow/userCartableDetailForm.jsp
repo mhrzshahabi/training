@@ -82,7 +82,7 @@ abaspour 9803
         width: "150",
         click: function () {
             var data = taskStartConfirmForm.getValues();
-            createTab(targetTitleFa, "${addDocumentUrl}", false);
+            createTab(targetTitleFa, "${addDocumentUrl}" + "?sent_id=" + data.cId, false);
             <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
         }
     });
@@ -309,7 +309,7 @@ abaspour 9803
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
-                                    isc.say(targetTitleFa + " به گردش کار ارسال شد.");
+                                    isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");
@@ -420,7 +420,7 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    isc.say("تعریف " + targetTitleFa + " به گردش کار ارسال شد.");
+                                                    isc.say("تعریف " + targetTitleFa + " عودت داده شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
@@ -493,3 +493,5 @@ abaspour 9803
 
         ]
     });
+
+    //test
