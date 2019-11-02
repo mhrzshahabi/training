@@ -37,8 +37,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center", width: "20%"},
-            {name: "practicalDuration", title: "مدت زمان عملی", align: "center", width: "20%"},
-            {name: "theoreticalDuration", title: "مدت زمان تئوری", align: "center", width: "20%"}
+            {name: "practicalDuration", title: "مدت زمان عملی", type:"float" ,align: "center", width: "20%"},
+            {name: "theoreticalDuration", title: "مدت زمان تئوری", type:"float" ,align: "center", width: "20%"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -145,8 +145,9 @@
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
                 defaultValue: 0,
-                keyPressFilter: "^[0-9]",
-                min: 1,
+                keyPressFilter: "^[0-9.]",
+                // keyPressFilter: "^([+-]?\\d*\\.?\\d*)$",
+                min: 0,
                 max: 300,
                 step: 0.5,
                 change: function (form, item, value) {
@@ -165,8 +166,8 @@
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
                 defaultValue: 0,
-                keyPressFilter: "^[0-9]",
-                min: 1,
+                keyPressFilter: "^[0-9.]",
+                min: 0,
                 max: 300,
                 step: 0.5,
                 change: function (form, item, value) {
@@ -512,7 +513,7 @@
                 title: "مدت زمان اجرا",
                 align: "center",
                 summaryFunction: "sum",
-                format : "# ساعت"
+                format : "#.## ساعت"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
             {name: "goal.titleFa", hidden: true}
