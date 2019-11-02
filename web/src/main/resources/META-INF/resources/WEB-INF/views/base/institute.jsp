@@ -33,7 +33,7 @@
             {name: "state.name"},
             {name: "city.name"},
             {name: "restAddress"},
-            {name: "postCode"},
+            {name: "postalCode"},
             {name: "phone"},
             {name: "mobile"},
             {name: "fax"},
@@ -339,7 +339,7 @@
             {name: "restAddress", hidden: true},
             {name: "stateId", hidden: true},
             {name: "cityId", hidden: true},
-            {name: "postCode", hidden: true},
+            {name: "postalCode", hidden: true},
             {name: "phone", hidden: true},
             {name: "fax", hidden: true},
             {name: "mobile", hidden: true},
@@ -1032,7 +1032,7 @@
                     {name: "name", width: "30%", filterOperator: "iContains"}]
             },
             {
-                name: "postCode",
+                name: "postalCode",
                 title: "<spring:message code='post.code'/>",
                 keyPressFilter: "[0-9|-| ]",
                 width: "*",

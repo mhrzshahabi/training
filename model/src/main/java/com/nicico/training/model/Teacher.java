@@ -29,7 +29,7 @@ public class Teacher extends Auditable {
     @Column(name = "b_enabled")
     private Boolean enableStatus;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "f_personality", nullable = false, insertable = false, updatable = false)
     private PersonalInfo personality;
 

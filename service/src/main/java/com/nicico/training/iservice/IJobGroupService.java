@@ -7,6 +7,7 @@ com.nicico.training.iservice
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,9 @@ public interface IJobGroupService {
     JobGroupDTO.Info get(Long id);
 
     List<JobGroupDTO.Info> list();
+
+    @Transactional(readOnly = true)
+    List<JobGroupDTO.Tuple> listTuple();
 
     JobGroupDTO.Info create(JobGroupDTO.Create request);
 

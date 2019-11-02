@@ -3,14 +3,17 @@ ghazanfari_f, 8/29/2019, 9:11 AM
 */
 package com.nicico.training.model;
 
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Entity
 @Immutable
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "tbl_post")
 public class Post extends Auditable {
 
@@ -35,5 +38,8 @@ public class Post extends Auditable {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_department_id", nullable = false)
     private Department department;
+
+    @ManyToMany(mappedBy = "postSet")
+    private Set<PostGroup> postGroupSet;
 
 }

@@ -30,17 +30,11 @@ public class PersonalInfo extends Auditable {
     @Column(name = "c_last_name_fa", nullable = false)
     private String lastNameFa;
 
-//    @Column(name = "c_full_name_fa")
-//    private String fullNameFa;
-
     @Column(name = "c_first_name_en")
     private String firstNameEn;
 
     @Column(name = "c_last_name_en")
     private String lastNameEn;
-
-//    @Column(name = "c_full_name_en")
-//    private String fullNameEn;
 
     @Column(name = "c_national_code", length = 10, nullable = false, unique = true)
     private String nationalCode;
@@ -130,9 +124,4 @@ public class PersonalInfo extends Auditable {
 
     @Column(name = "f_edu_orientation")
     private Long educationOrientationId;
-
-//	public String getFullNameFa(){
-//	    return firstNameFa + " " + lastNameFa;
-//    }
-
 }

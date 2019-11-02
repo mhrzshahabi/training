@@ -51,8 +51,15 @@ public class JobGroupService implements IJobGroupService {
     @Override
     public List<JobGroupDTO.Info> list() {
         final List<JobGroup> cAll = jobGroupDAO.findAll();
-
         return modelMapper.map(cAll, new TypeToken<List<JobGroupDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<JobGroupDTO.Tuple> listTuple() {
+        final List<JobGroup> cAll = jobGroupDAO.findAll();
+        return modelMapper.map(cAll, new TypeToken<List<JobGroupDTO.Tuple>>() {
         }.getType());
     }
 
@@ -104,7 +111,6 @@ public class JobGroupService implements IJobGroupService {
         JobGroup updating = new JobGroup();
         modelMapper.map(jobGroup, updating);
         modelMapper.map(request, updating);
-
         return modelMapper.map(jobGroupDAO.saveAndFlush(updating),JobGroupDTO.Info.class);
     }
 

@@ -510,9 +510,7 @@ public class CourseService implements ICourseService {
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
-            for (SkillGroup skillGroup : skillGroupSet) {
-                set.add(skillGroup);
-            }
+            set.addAll(skillGroupSet);
         }
         Optional.ofNullable(set)
                 .ifPresent(sets ->
@@ -546,10 +544,10 @@ public class CourseService implements ICourseService {
     public String getDomain(Long id) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course info = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        Float a = Float.valueOf(0);
-        Float b = Float.valueOf(0);
-        Float c = Float.valueOf(0);
-        Long sumAll = Long.valueOf(0);
+        Float a = (float) 0;
+        Float b = (float) 0;
+        Float c = (float) 0;
+        Float sumAll = (float) 0;
         List<Goal> goalSet = info.getGoalSet();
         for (Goal goal : goalSet) {
             Set<Syllabus> syllabusSet = goal.getSyllabusSet();
@@ -558,19 +556,22 @@ public class CourseService implements ICourseService {
                 switch (eDomainTypeId) {
                     case 1:
                         a += syllabus.getPracticalDuration();
+                        a += syllabus.getTheoreticalDuration();
                         break;
                     case 2:
+                        b += syllabus.getTheoreticalDuration();
                         b += syllabus.getPracticalDuration();
                         break;
                     case 3:
+                        c += syllabus.getTheoreticalDuration();
                         c += syllabus.getPracticalDuration();
                         break;
                 }
+                sumAll += syllabus.getTheoreticalDuration();
                 sumAll += syllabus.getPracticalDuration();
             }
         }
-        String domain = "دانشی: " + round(a * 100 / (Float.valueOf(sumAll))) + "%     " + "نگرشی: " + round(c * 100 / (Float.valueOf(sumAll))) + "%    " + "مهارتی: " + round(b * 100 / (Float.valueOf(sumAll))) + "%";
-        return domain;
+        return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
     }
 }
 

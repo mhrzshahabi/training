@@ -1,0 +1,42 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="poursalehi_mos (generated)" id="1572244565423-126">
+        <createSequence sequenceName="seq_post_grade_group_id"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1572244565423-127">
+        <createTable tableName="tbl_post_grade_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_post_grade_groupPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="c_title_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1572244565423-128">
+        <addColumn tableName="tbl_post_grade">
+            <column name="f_post_grade_group_id" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1572244565423-130">
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_group_id" baseTableName="tbl_post_grade" constraintName="FKaj23s770qvujxxeg95yh06cte" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_grade_group" validate="true"/>
+    </changeSet>
+
+
+</databaseChangeLog>

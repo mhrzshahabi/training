@@ -39,7 +39,7 @@ public class Course extends Auditable {
     private String titleEn;
 
     @Column(name = "n_theory_duration", length = 5)
-    private String theoryDuration;
+    private Float theoryDuration;
 
     @Column(name = "c_description")
     private String description;

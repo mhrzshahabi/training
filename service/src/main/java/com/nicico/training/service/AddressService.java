@@ -40,6 +40,18 @@ public class AddressService implements IAddressService {
 
     @Transactional
     @Override
+    public AddressDTO.Info createOrUpdate(AddressDTO.Create request) {
+        List<Address> byPostalCode = addressDAO.findByPostalCode(request.getPostalCode());
+        if (byPostalCode == null || byPostalCode.size() == 0)
+            return create(request);
+        else {
+            AddressDTO.Update updating = modelMapper.map(request, AddressDTO.Update.class);
+            return update(byPostalCode.get(0).getId(), updating);
+        }
+    }
+
+    @Transactional
+    @Override
     public AddressDTO.Info create(AddressDTO.Create request) {
         final Address address = modelMapper.map(request, Address.class);
         return save(address);
@@ -82,11 +94,10 @@ public class AddressService implements IAddressService {
     public AddressDTO.Info getOneByPostalCode(String postalCode) {
         List<Address> addresses = addressDAO.findByPostalCode(postalCode);
         Address address;
-        if(addresses != null && addresses.size() != 0) {
+        if (addresses != null && addresses.size() != 0) {
             address = addresses.get(0);
             return modelMapper.map(address, AddressDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
 

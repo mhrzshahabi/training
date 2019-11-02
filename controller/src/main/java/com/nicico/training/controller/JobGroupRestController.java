@@ -14,6 +14,7 @@ import com.nicico.training.service.JobGroupService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -22,7 +23,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.sql.SQLException;
 import java.util.*;
 
@@ -94,11 +97,11 @@ public class JobGroupRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_job_group')")
     public ResponseEntity<JobGroupDTO.JobGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                               @RequestParam("_endRow") Integer endRow,
-                                                               @RequestParam(value = "_constructor", required = false) String constructor,
-                                                               @RequestParam(value = "operator", required = false) String operator,
-                                                               @RequestParam(value = "criteria", required = false) String criteria,
-                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                           @RequestParam("_endRow") Integer endRow,
+                                                           @RequestParam(value = "_constructor", required = false) String constructor,
+                                                           @RequestParam(value = "operator", required = false) String operator,
+                                                           @RequestParam(value = "criteria", required = false) String criteria,
+                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -107,7 +110,6 @@ public class JobGroupRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-
 
 
             request.setCriteria(criteriaRq);
@@ -119,7 +121,6 @@ public class JobGroupRestController {
 
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
 
 
         //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -198,46 +199,42 @@ public class JobGroupRestController {
     }*/
 
 
-
     @Loggable
     @PostMapping(value = "/addJob/{jobId}/{jobGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addJob(@PathVariable Long jobId,@PathVariable Long jobGroupId) {
-        jobGroupService.addJob(jobId,jobGroupId);
+    public ResponseEntity<Void> addJob(@PathVariable Long jobId, @PathVariable Long jobGroupId) {
+        jobGroupService.addJob(jobId, jobGroupId);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
 
 
     @Loggable
     @PostMapping(value = "/addJobs/{jobGroupId}/{jobIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addJobs(@PathVariable Long jobGroupId,@PathVariable Set<Long> jobIds) {
+    public ResponseEntity<Void> addJobs(@PathVariable Long jobGroupId, @PathVariable Set<Long> jobIds) {
         jobGroupService.addJobs(jobGroupId, jobIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
 
-
     @Loggable
     @DeleteMapping(value = "/removeJob/{jobGroupId}/{jobId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeJob(@PathVariable Long jobGroupId,@PathVariable Long jobId) {
-        jobGroupService.removeJob(jobGroupId,jobId);
+    public ResponseEntity<Void> removeJob(@PathVariable Long jobGroupId, @PathVariable Long jobId) {
+        jobGroupService.removeJob(jobGroupId, jobId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeCompetence/{jobGroupId}/{competenceId}")
-    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long jobGroupId,@PathVariable Long competenceId){
-        jobGroupService.removeFromCompetency(jobGroupId,competenceId);
+    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long jobGroupId, @PathVariable Long competenceId) {
+        jobGroupService.removeFromCompetency(jobGroupId, competenceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeAllCompetence/{jobGroupId}/")
-    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long jobGroupId){
+    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long jobGroupId) {
         jobGroupService.removeFromAllCompetences(jobGroupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -250,9 +247,8 @@ public class JobGroupRestController {
 
         Set<JobDTO.Info> jobs;
         jobs = jobGroupService.unAttachJobs(jobGroupId);
-        List<JobDTO.Info> jobList=new ArrayList<>();
-        for (JobDTO.Info jobDTOInfo:jobs)
-        {
+        List<JobDTO.Info> jobList = new ArrayList<>();
+        for (JobDTO.Info jobDTOInfo : jobs) {
             jobList.add(jobDTOInfo);
         }
         ISC.Response<JobDTO.Info> response = new ISC.Response<>();
@@ -261,19 +257,17 @@ public class JobGroupRestController {
                 .setEndRow(jobList.size())
                 .setTotalRows(jobList.size());
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
     @Loggable
     @DeleteMapping(value = "/removeJobs/{jobGroupId}/{jobIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeJobs(@PathVariable Long jobGroupId,@PathVariable Set<Long> jobIds) {
-        jobGroupService.removeJobs(jobGroupId,jobIds);
+    public ResponseEntity<Void> removeJobs(@PathVariable Long jobGroupId, @PathVariable Set<Long> jobIds) {
+        jobGroupService.removeJobs(jobGroupId, jobIds);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 
     @Loggable
@@ -287,15 +281,33 @@ public class JobGroupRestController {
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
         ISC<Object> objectISC = new ISC<>(response);
-        return new ResponseEntity<>(objectISC,HttpStatus.OK);
+        return new ResponseEntity<>(objectISC, HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = {"/printDetail/{type}/{id}"})
+    public void printDetail(HttpServletResponse response, @PathVariable String type, @PathVariable Long id) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        params.put("todayDate", DateUtil.todayDate());
+        JobGroupDTO.Info jobGroup = jobGroupService.get(id);
+        params.put("titleFa", jobGroup.getTitleFa());
+        params.put("description", jobGroup.getDescription());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(jobGroupService.getJobs(id)) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/jobGroupWithJobs.jasper", params, jsonDataSource, response);
+    }
+
 
     @Loggable
     @GetMapping(value = {"/print/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/jobGroup.jasper", params, response);
+        params.put("todayDate", DateUtil.todayDate());
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(jobGroupService.listTuple()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        reportUtil.export("/reports/jobGroups.jasper", params, jsonDataSource, response);
     }
 
 
@@ -309,10 +321,10 @@ public class JobGroupRestController {
 
     @Loggable
     @GetMapping(value = {"/printSelected/{type}/{jobGroupIds}"})
-    public void printWithSelectedJobGroup(HttpServletResponse response, @PathVariable String type,@PathVariable String jobGroupIds) throws SQLException, IOException, JRException {
+    public void printWithSelectedJobGroup(HttpServletResponse response, @PathVariable String type, @PathVariable String jobGroupIds) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
-        params.put("jobGroupIds",jobGroupIds);
+        params.put("jobGroupIds", jobGroupIds);
         reportUtil.export("/reports/selectedJobGroup.jasper", params, response);
     }
 

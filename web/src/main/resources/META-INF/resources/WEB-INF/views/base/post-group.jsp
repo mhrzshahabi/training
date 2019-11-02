@@ -1069,8 +1069,8 @@
         title: "لیست پست ها",
         click: function () {
             var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
-            //  alert(Window_Add_PostGrade_to_PostGradeGroup_Jsp.DynamicForm[0].fields[0]);
-            // alert(DynamicForm_thisPostGradeGroupHeader_Jsp.getItem("titleFa"));
+            //  alert(Window_Add_Post_to_PostGroup.DynamicForm[0].fields[0]);
+            // alert(DynamicForm_thisPostGroupHeader_Jsp.getItem("titleFa"));
 
             if (record == null || record.id == null) {
 
@@ -1099,8 +1099,8 @@
                 Window_Add_Post_to_PostGroup.show();
 
 
-                //Window_Add_PostGrade_to_PostGradeGroup_Jsp.
-                //   Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();
+                //Window_Add_Post_to_PostGroup.
+                //   Window_Add_Post_to_PostGroup.show();
 
             }
         }

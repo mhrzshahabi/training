@@ -15,7 +15,7 @@ import java.util.List;
 public interface AddressDAO extends JpaRepository<Address, Long>, JpaSpecificationExecutor<Address> {
 
     @Modifying
-    @Query(value = "select * from TBL_ADDRESS where N_POST_CODE = :postalCode", nativeQuery = true)
+    @Query(value = "select * from TBL_ADDRESS where C_POSTAL_CODE = :postalCode", nativeQuery = true)
     @Transactional
     List<Address> findByPostalCode(@Param("postalCode") String postalCode);
 }

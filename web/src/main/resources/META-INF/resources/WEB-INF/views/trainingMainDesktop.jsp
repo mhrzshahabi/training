@@ -41,6 +41,7 @@
     const rootUrl = "${contextPath}/api";
     const workflowUrl = rootUrl + "/workflow/";
     const jobUrl = rootUrl + "/job/";
+    const postGroupUrl = rootUrl + "/post-group/";
     const postGradeUrl = rootUrl + "/postGrade/";
     const postUrl = rootUrl + "/post/";
     const competenceUrl = rootUrl + "/competence/";
@@ -151,7 +152,7 @@
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
     isc.TrRemoveBtn.addProperties({
-        icon: "<spring:url value="remove.png"/>",
+        icon: "<spring:url value='remove.png'/>",
         title: "<spring:message code="remove"/>",
     });
 
@@ -410,11 +411,24 @@
                     }
                 },
                 {
+                    title: "<spring:message code="post.grade.group"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                {
+                    title: "<spring:message code="post.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/post-group/"/>");
+                    }
+                },
+
                 {
                     title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
                     click: function () {
@@ -656,6 +670,8 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
+    var userFullName ='<%= SecurityUtil.getFullName()%>';
+    const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
