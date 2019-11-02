@@ -13,5 +13,11 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="jafari-h (generated)" id="1572693141664-128">
+        <addColumn tableName="tbl_course">
+            <column name="n_theory_duration" type="float"/>
+        </addColumn>
+    </changeSet>
+
 
 </databaseChangeLog>

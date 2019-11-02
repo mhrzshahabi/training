@@ -510,7 +510,14 @@
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
             {
                 name: "practicalDuration",
-                title: "مدت زمان اجرا",
+                title: "مدت زمان عملی",
+                align: "center",
+                summaryFunction: "sum",
+                format : "#.## ساعت"
+            },
+            {
+                name: "theoreticalDuration",
+                title: "مدت زمان تئوری",
                 align: "center",
                 summaryFunction: "sum",
                 format : "#.## ساعت"
