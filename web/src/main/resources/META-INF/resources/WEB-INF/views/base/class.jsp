@@ -785,54 +785,43 @@
             {
                 // id: "TabPane_Goal_Syllabus",
                 title: "<spring:message code="sessions"/>",//جلسات
-                // pane: ListGrid_CourseSyllabus
+                // pane:
             },
             {
                 // id: "TabPane_Job",
                 title: "<spring:message code="alarms"/>",//هشدارها
-                // pane: ListGrid_CourseJob
+                // pane:
             },
             {
                 // id: "TabPane_Post",
                 title: "<spring:message code="licenses"/>",//مجوزها
-                // pane: isc.TrLG.create({
-                //     ID: "ListGrid_Post_JspCourse",
-                //     showResizeBar: false,
-                //     dataSource: isc.TrDS.create({
-                //         fields: [{name: "id", primaryKey: true, hidden: true},
-                //             {name: "titleFa", title: "نام فارسی", align: "center"},
-                //             {name: "titleEn", title: "نام لاتین", align: "center"}
-                //         ],
-                //         ID: "RestData_Post_JspCourse",
-                //         // fetchDataURL:courseUrl + "post/" + ListGrid_Course.getSelectedRecord().id,
-                //     }),
-                // })
+                // pane:
             },
             {
                 // id: "TabPane_Skill",
                 title: "<spring:message code="attendance"/>",//حضور و غیاب
-                // pane: ListGrid_CourseSkill
+                // pane:
 
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="teachers"/>",//مدرسان
-                // pane: ListGrid_CourseCompetence
+                // pane:
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="exam"/>",//آزمون
-                // pane: ListGrid_CourseCompetence
+                // pane:
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="assessment"/>",//ارزیابی
-                // pane: ListGrid_CourseCompetence
+                // pane:
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="checkList"/>",//چک لیست
-                // pane: ListGrid_CourseCompetence
+                // pane:
             },
 
 
