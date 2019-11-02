@@ -771,11 +771,14 @@
 
     var HLayout_Actions_Class_JspClass = isc.HLayout.create({
         width: "100%",
+        height: "2%",
         members: [ToolStrip_Actions_JspClass]
     });
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
+        width: "100%",
+        height: "40%",
         members: [ListGrid_Class_JspClass]
     });
 
@@ -783,12 +786,12 @@
         tabBarPosition: "top",
         tabs: [
             {
-                // id: "TabPane_Goal_Syllabus",
                 title: "<spring:message code="sessions"/>",//جلسات
-                // pane:
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/sessions-tab"}
+                )
             },
             {
-                // id: "TabPane_Job",
                 title: "<spring:message code="alarms"/>",//هشدارها
                 // pane:
             },
@@ -798,13 +801,10 @@
                 // pane:
             },
             {
-                // id: "TabPane_Skill",
                 title: "<spring:message code="attendance"/>",//حضور و غیاب
                 // pane:
-
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="teachers"/>",//مدرسان
                 // pane:
             },
@@ -814,12 +814,10 @@
                 // pane:
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="assessment"/>",//ارزیابی
                 // pane:
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="checkList"/>",//چک لیست
                 // pane:
             },
