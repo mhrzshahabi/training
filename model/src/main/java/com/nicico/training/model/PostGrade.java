@@ -6,10 +6,7 @@ package com.nicico.training.model;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 @Getter
 @Entity
@@ -26,4 +23,11 @@ public class PostGrade extends Auditable {
 
     @Column(name = "c_title_fa", nullable = false)
     private String titleFa;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_post_grade_group_id", insertable = false, updatable = false)
+    private PostGradeGroup postGradeGroup;
+
+    @Column(name = "f_post_grade_group_id")
+    private Long postGradeGroupId;
 }

@@ -1,16 +1,21 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %><%--
+<%--
   Created by IntelliJ IDEA.
   User: p-dodangeh
   Date: 1/12/2019
   Time: 4:34 PM
   To change this template use File | Settings | File Templates.
 --%>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+	final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-<%--<script>--%>
+
+
+// <script>
 
 	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -40,7 +45,8 @@
 		loadingMessage: "Loading Grid.."
 	});
 
-	isc.Window.create({
+	isc.Window.create(
+	    {
 		ID: "taskConfirmationWindow",
 		title: "تکمیل فرآیند",
 		autoSize: false,
@@ -86,7 +92,6 @@
 			<spring:url value="/web/workflow/getUserCartableDetailForm/" var="getUserCartableDetailForm"/>
 			taskConfirmViewLoader.setViewURL("${getUserCartableDetailForm}" + taskID + "/" + record.assignee + "?Authorization=Bearer " + "${cookie['access_token'].getValue()}");
 			taskConfirmationWindow.show();
-
 		}
 	}
 
@@ -105,9 +110,9 @@
 			});
 		} else {
 
-
 			var pId = record.processInstanceId;
 			<spring:url value="/web/workflow/getUserTaskHistoryForm/" var="getUserTaskHistoryForm"/>
+			alert("${getUserTaskHistoryForm}" + pId)
 			userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
 			userTaskViewLoader.show();
 
@@ -173,10 +178,10 @@
 		fetchDataURL: workflowUrl + "userTask/list?usr=${username}"
 	});
 
-
 	var ListGrid_UserTaskList = isc.ListGrid.create({
 		width: "100%",
 		height: "100%",
+		autoFetchData: true,
 		dataSource: RestDataSource_UserTaskList,
 		sortDirection: "descending",
 		contextMenu: Menu_ListGrid_UserTaskList,

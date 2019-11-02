@@ -23,7 +23,6 @@ import java.util.Optional;
 public class ContactInfoService implements IContactInfoService {
     private final ModelMapper modelMapper;
     private final ContactInfoDAO contactInfoDAO;
-//    private final AddressDAO addressDAO;
 
     private final AddressService addressService;
 
@@ -47,7 +46,6 @@ public class ContactInfoService implements IContactInfoService {
     @Override
     public ContactInfoDTO.Info create(ContactInfoDTO.Create request) {
 
-//        ContactInfo contactInfo;
 //		Address homeAddress;
 //		Address workAddress;
 
@@ -72,10 +70,9 @@ public class ContactInfoService implements IContactInfoService {
 //				contactInfo.setWorkAddressId(workAddress.getId());
         }
 
-        contactInfo.setHomeAddress(null);
-        contactInfo.setWorkAddress(null);
-        return save(contactInfo);
-//		return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
+//        contactInfo.setHomeAddress(null);
+//        contactInfo.setWorkAddress(null);
+        return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
     }
 
     @Transactional
@@ -132,12 +129,13 @@ public class ContactInfoService implements IContactInfoService {
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);
         cUpdating.setHomeAddressId(homeAddressId);
-//        cUpdating.setHomeAddress(homeAddress);
+        cUpdating.setHomeAddress(homeAddress);
         cUpdating.setWorkAddressId(workAddressId);
-//        cUpdating.setWorkAddress(workAddress);
-        cUpdating.setHomeAddress(null);
-        cUpdating.setWorkAddress(null);
-        return save(cUpdating);
+        cUpdating.setWorkAddress(workAddress);
+//        cUpdating.setHomeAddress(null);
+//        cUpdating.setWorkAddress(null);
+
+        return modelMapper.map(contactInfoDAO.saveAndFlush(cUpdating), ContactInfoDTO.Info.class);
     }
 
     @Transactional
@@ -163,8 +161,4 @@ public class ContactInfoService implements IContactInfoService {
 
     // ------------------------------
 
-    private ContactInfoDTO.Info save(ContactInfo contactInfo) {
-        final ContactInfo saved = contactInfoDAO.saveAndFlush(contactInfo);
-        return modelMapper.map(saved, ContactInfoDTO.Info.class);
-    }
 }

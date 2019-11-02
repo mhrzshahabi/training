@@ -88,134 +88,68 @@ public class PersonalInfoService implements IPersonalInfoService {
 
         PersonalInfo personalInfo = modelMapper.map(request, PersonalInfo.class);
 
-        if (request.getAccountInfo() != null) {
+        if (personalInfo.getAccountInfo() != null) {
             personalInfo.setAccountInfoId(accountInfoService.create(request.getAccountInfo()).getId());
         }
 
-        if (request.getContactInfo() != null) {
+        if (personalInfo.getContactInfo() != null) {
             personalInfo.setContactInfoId(contactInfoService.create(request.getContactInfo()).getId());
         }
-        setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
+        setEnums(personalInfo, personalInfo.getMarriedId(), personalInfo.getMilitaryId(), personalInfo.getGenderId());
 
-        personalInfo.setAccountInfo(null);
-        personalInfo.setContactInfo(null);
-        return save(personalInfo);
+//        personalInfo.setAccountInfo(null);
+//        personalInfo.setContactInfo(null);
 
+        return modelMapper.map(personalInfoDAO.save(personalInfo), PersonalInfoDTO.Info.class);
 
-//        ContactInfo contactInfo;
-//        AccountInfo accountInfo;
-//        Address homeAddress;
-//        Address workAddress;
-//        PersonalInfo personalInfo;
-//
-//        personalInfo = modelMapper.map(request, PersonalInfo.class);
-//
-//        if (request.getAccountInfo() != null) {
-//            accountInfo = modelMapper.map(request.getAccountInfo(), AccountInfo.class);
-//            accountInfoDAO.saveAndFlush(accountInfo);
-//            personalInfo.setAccountInfo(accountInfo);
-//            personalInfo.setAccountInfoId(accountInfo.getId());
-//        }
-//
-//        if (request.getContactInfo() != null) {
-//            contactInfo = modelMapper.map(request.getContactInfo(), ContactInfo.class);
-//            if (request.getContactInfo().getHomeAddress() != null) {
-//                homeAddress = modelMapper.map(request.getContactInfo().getHomeAddress(), Address.class);
-//                addressDAO.saveAndFlush(homeAddress);
-//                contactInfo.setHomeAddress(homeAddress);
-//                contactInfo.setHomeAddressId(homeAddress.getId());
-//            }
-//            if (request.getContactInfo().getWorkAddress() != null) {
-//                workAddress = modelMapper.map(request.getContactInfo().getWorkAddress(), Address.class);
-//                addressDAO.saveAndFlush(workAddress);
-//                contactInfo.setWorkAddress(workAddress);
-//                contactInfo.setWorkAddressId(workAddress.getId());
-//            }
-//            contactInfoDAO.saveAndFlush(contactInfo);
-//            personalInfo.setContactInfo(contactInfo);
-//            personalInfo.setContactInfoId(contactInfo.getId());
-//        }
-//
-//        if (request.getMarriedId() != null) {
-//            personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(request.getMarriedId()));
-////				personalInfo.setMarriedTitleFa(personalInfo.getMarried().getTitleFa());
-//        }
-//        if (request.getMilitaryId() != null) {
-//            personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(request.getMilitaryId()));
-////				 personalInfo.setMilitaryTitleFa(personalInfo.getMilitary().getTitleFa());
-//        }
-//        if (request.getGenderId() != null) {
-//            personalInfo.setGender(eGenderConverter.convertToEntityAttribute(request.getGenderId()));
-////				personalInfo.setGenderTitleFa(personalInfo.getGender().getTitleFa());
-//        }
-//
-//        return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
     }
 
     @Transactional
     @Override
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
 
-        PersonalInfo personalInfo;
-        ContactInfo contactInfo;
-        AccountInfo accountInfo;
+        AccountInfoDTO.Info accountInfoDto = null;
 
-        Long contactInfoId = null;
-        Long accountInfoId = null;
-
-        final Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
-        personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-
-        if (personalInfo.getAccountInfoId() != null && request.getAccountInfo() != null) {
-            AccountInfoDTO.Info accountInfoDto = accountInfoService.update(personalInfo.getAccountInfoId(), request.getAccountInfo());
-            accountInfo = modelMapper.map(accountInfoDto, AccountInfo.class);
-            accountInfoId = accountInfo.getId();
-        }
-
-        if (personalInfo.getAccountInfoId() == null && request.getAccountInfo() != null) {
-            AccountInfoDTO.Info accountInfoDto = accountInfoService.create(modelMapper.map(request.getAccountInfo(), AccountInfoDTO.Create.class));
-            accountInfo = modelMapper.map(accountInfoDto, AccountInfo.class);
-            accountInfoId = accountInfo.getId();
-        }
-
-        if (personalInfo.getAccountInfoId() != null && request.getAccountInfo() == null) {
-            accountInfoService.delete(personalInfo.getAccountInfoId());
-            accountInfo = null;
-            accountInfoId = null;
-        }
-
-
-        if (personalInfo.getContactInfoId() != null && request.getContactInfo() != null) {
-            ContactInfoDTO.Info contactInfoDto = contactInfoService.update(personalInfo.getContactInfoId(), request.getContactInfo());
-            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
-            contactInfoId = contactInfo.getId();
-        }
-
-        if (personalInfo.getContactInfoId() == null && request.getContactInfo() != null) {
-            ContactInfoDTO.Info contactInfoDto = contactInfoService.create(modelMapper.map(request.getContactInfo(), ContactInfoDTO.Create.class));
-            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
-            contactInfoId = contactInfo.getId();
-        }
-
-        if (personalInfo.getContactInfoId() != null && request.getContactInfo() == null) {
-            contactInfoService.delete(personalInfo.getContactInfoId());
-            contactInfo = null;
-            contactInfoId = null;
-        }
+        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
+        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
 
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
         modelMapper.map(request, pUpdating);
-//        pUpdating.setAccountInfo(accountInfo);
-        pUpdating.setAccountInfoId(accountInfoId);
-//        pUpdating.setContactInfo(contactInfo);
-        pUpdating.setContactInfoId(contactInfoId);
-        pUpdating.setAccountInfo(null);
-        pUpdating.setContactInfo(null);
-        return save(pUpdating);
+
+        if (personalInfo.getAccountInfoId() != null && request.getAccountInfo() != null) {
+            accountInfoDto = accountInfoService.update(personalInfo.getAccountInfoId(),
+                    modelMapper.map(pUpdating.getAccountInfo(), AccountInfoDTO.Update.class));
+        } else if (personalInfo.getAccountInfoId() == null && request.getAccountInfo() != null) {
+            accountInfoDto = accountInfoService.create(modelMapper.map(pUpdating.getAccountInfo(), AccountInfoDTO.Create.class));
+        }
+        if (accountInfoDto != null) {
+            pUpdating.setAccountInfoId(accountInfoDto.getId());
+            pUpdating.setAccountInfo(modelMapper.map(accountInfoDto, AccountInfo.class));
+        }
+
+
+//        if (personalInfo.getContactInfoId() != null && request.getContactInfo() != null) {
+//            ContactInfoDTO.Info contactInfoDto = contactInfoService.update(personalInfo.getContactInfoId(), request.getContactInfo());
+//            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
+//            contactInfoId = contactInfo.getId();
+//        }
+//
+//        if (personalInfo.getContactInfoId() == null && request.getContactInfo() != null) {
+//            ContactInfoDTO.Info contactInfoDto = contactInfoService.create(modelMapper.map(request.getContactInfo(), ContactInfoDTO.Create.class));
+//            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
+//            contactInfoId = contactInfo.getId();
+//        }
+//
+//        if (personalInfo.getContactInfoId() != null && request.getContactInfo() == null) {
+//            contactInfoService.delete(personalInfo.getContactInfoId());
+//            contactInfo = null;
+//            contactInfoId = null;
+//        }
+
+        return modelMapper.map(personalInfoDAO.save(pUpdating), PersonalInfoDTO.Info.class);
     }
 
     @Transactional
@@ -241,10 +175,10 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     // ------------------------------
 
-    private PersonalInfoDTO.Info save(PersonalInfo personalInfo) {
-        final PersonalInfo saved = personalInfoDAO.saveAndFlush(personalInfo);
-        return modelMapper.map(saved, PersonalInfoDTO.Info.class);
-    }
+//    private PersonalInfoDTO.Info save(PersonalInfo personalInfo) {
+//        final PersonalInfo saved = personalInfoDAO.saveAndFlush(personalInfo);
+//        return modelMapper.map(saved, PersonalInfoDTO.Info.class);
+//    }
 
     private void setEnums(PersonalInfo personalInfo, Integer marriedId, Integer militaryId, Integer genderId) {
         if (marriedId != null) {

@@ -9,13 +9,16 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
- // <script>
 
-    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
+
+
+// <script>
+
+    <%--    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
-
+    var viewDocButton = null;
 
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
@@ -31,7 +34,7 @@ abaspour 9803
         jsonPrefix: "",
         jsonSuffix: "",
 
-    });
+	});
 
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
     <c:if test="${taskFormVariable.objectType == 'SelectItem' && taskFormVariable.dsName != null}">
@@ -58,17 +61,19 @@ abaspour 9803
         ID: "rejectDocumentLabel",
         width: "100%", align: "center",
         styleName: "exampleTextBlock",
-        contents: "<center><hr> <b><p style='color:#FF0000';> ${taskFormVariable.value} </p></b><hr></center>"
+        contents: "<center><hr> <b> <p style='color:#FF0000';> ${taskFormVariable.value} </p></b><hr></center>"
     });
     </c:if>
     </c:if>
+
     <c:if test="${taskFormVariable.id =='target'}">
     <spring:url value="${taskFormVariable.value}" var="addDocumentUrl"/>
     </c:if>
+
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
     var targetTitleFa = "${taskFormVariable.value}";
     var targetTitleFaFull = "مشاهده ی " + targetTitleFa;
-    isc.IButton.create
+    viewDocButton = isc.IButton.create
     ({
         ID: "viewDocButton",
         icon: "[SKIN]actions/edit.png",
@@ -76,13 +81,13 @@ abaspour 9803
         align: "center",
         width: "150",
         click: function () {
-        var data = taskStartConfirmForm.getValues();
-          class_userCartableId=data.cId;
-          createTab(targetTitleFa + " " + data.cId, "http://localhost:8080/training/tclass/show-form", false);
-            taskConfirmationWindow.close();
-       }
+            var data = taskStartConfirmForm.getValues();
+            createTab(targetTitleFa, "${addDocumentUrl}", false);
+            <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
+        }
     });
     </c:if>
+
     </c:forEach>
 
     var taskStartConfirmForm = isc.DynamicForm.create({
@@ -293,8 +298,7 @@ abaspour 9803
                             } else if (!pr.startsWith("rRRR"))
                                 ndat[pr] = data[pr];
                         isc.RPCManager.sendRequest({
-                            actionURL: rootUrl + "/workflow/doUserTask",
-                            //	httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                            actionURL: workflowUrl + "doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
@@ -305,7 +309,7 @@ abaspour 9803
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
-                                    isc.say("شایستگی به گردش کار ارسال شد.");
+                                    isc.say(targetTitleFa + " به گردش کار ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
                                     userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");
@@ -332,12 +336,12 @@ abaspour 9803
         width: "150",
         click: function () {
             taskConfirmationWindow.hide();
-
+}
         }
-    });
+    );
 
-    var Window_userCartableReject = isc.Window.create({
-        ID: "createWindowtblManagerCommandsInfo", title: "اعلام دلیل برگشت", width: "90%", height: "30%",
+    Window_userCartableReject = isc.Window.create({
+        ID: "createWindowtblManagerCommandsInfo", title: "اعلام دلیل برگشت", width: "50%",
         isModal: true, showModalMask: true, showMaximizeButton: true, autoCenter: true, align: "center",
         closeClick: function () {
             this.Super("closeClick", arguments);
@@ -345,12 +349,18 @@ abaspour 9803
         items:
             [
                 isc.VLayout.create({
-                    layoutMargin: 5, showEdges: false, edgeImage: "", alignLayout: "center", membersMargin: 3,
+                    layoutMargin: 5,
+                    showEdges: false,
+                    edgeImage: "",
+                    alignLayout: "center",
+                    membersMargin: 3,
+                    width: "100%",
+                    height: "100%",
                     members: [
                         isc.DynamicForm.create({
                             ID: "rejectTaskForm",
                             dataSource: taskActionsDS,
-                            colWidths: ["10%", "90%"],
+                            colWidths: ["10%", "80%", "10%"],
                             width: "100%",
                             height: "100%",
                             numCols: "3",
@@ -373,7 +383,7 @@ abaspour 9803
                                     height: 40,
                                     required: true,
                                     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
-                                    <c:if test="${taskFormVariable.id =='REJECTVAL' }"><c:if test="${taskFormVariable.value !=' ' }">defaultValue: "${taskFormVariable.value}"</c:if></c:if>
+                                    <c:if test="${taskFormVariable.id =='REJECTVAL' }"><c:if test="${taskFormVariable.value !=' ' }">defaultValue: "${taskFormVariable.value}", </c:if></c:if>
                                     </c:forEach>
                                 }
                                 , {name: "REJECT", title: "عودت بدلیل ", type: "hidden"}
@@ -399,8 +409,7 @@ abaspour 9803
                                         rejectTaskForm.setValue("REJECT", "Y");
                                         var data = rejectTaskForm.getValues();
                                         isc.RPCManager.sendRequest({
-                                            actionURL: rootUrl + "/workflow/doUserTask",
-                                            //	httpHeaders: {"Authorization": "Bearer " + "${cookie['access_token'].getValue()}"},
+                                            actionURL: workflowUrl + "doUserTask",
                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                             httpMethod: "POST",
                                             useSimpleHttp: true,
@@ -411,8 +420,7 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                 //   isc.say("تعریف شایستگی به گردش کار ارسال شد.");
-                                                    isc.say("تعریف " + targetTitleFa + " به گردش کار ارسال شد")
+                                                    isc.say("تعریف " + targetTitleFa + " به گردش کار ارسال شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
@@ -429,19 +437,18 @@ abaspour 9803
                 })//VLayout
             ]//Window
     });
-    <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
-     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
-    var targetTitleFa = "${taskFormVariable.value}";
-       </c:if>
-    <c:if test="${taskFormVariable.id =='REJECT'}">
 
+    <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
+
+    <c:if test="${taskFormVariable.id =='REJECT'}">
     doRejectTaskButton = isc.IButton.create({
         icon: "[SKIN]actions/edit.png", title: "عودت فعالیت", align: "center", width: "150",
         click: function () {
-            Window_userCartableReject.show()
+            Window_userCartableReject.show();
         }
     });
     </c:if>
+
     </c:forEach>
 
     isc.HLayout.create({
@@ -460,7 +467,7 @@ abaspour 9803
         ID: "userTaskDocumentLabel",
         width: "100%", align: "center",
         styleName: "exampleTextBlock",
-        contents: "<center><hr> <b> ${assignee} : ${title}<br/>${description}  </p></b><hr></center>"
+        contents: "<center><hr> <b> ${assignee} : ${title} ${description}  </p></b><hr></center>"
     });
 
     isc.VLayout.create({
@@ -486,4 +493,3 @@ abaspour 9803
 
         ]
     });
-

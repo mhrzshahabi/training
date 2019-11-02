@@ -666,6 +666,7 @@
     const addressUrl = rootUrl + "/address/";
     var userFullName ='<%= SecurityUtil.getFullName()%>';
 
+
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
         xhttp = new XMLHttpRequest();

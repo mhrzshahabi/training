@@ -1,10 +1,8 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -14,11 +12,11 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/job-group")
-public class JobGroupFormController {
+@RequestMapping("/post-group")
+public class PostGroupFormController {
     @RequestMapping("/show-form")
     public String showForm() {
-        return "base/job-group";
+        return "base/post-group";
     }
 
     @RequestMapping("/print/{type}/{token}")
@@ -31,11 +29,11 @@ public class JobGroupFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         HttpEntity<String> entity = new HttpEntity<String>(headers);
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/print/pdf", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/print/pdf", HttpMethod.GET, entity, byte[].class);
         else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/print/excel", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/print/excel", HttpMethod.GET, entity, byte[].class);
         else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/print/html", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/print/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
@@ -52,28 +50,28 @@ public class JobGroupFormController {
         HttpEntity<String> entity = new HttpEntity<String>(headers);
         if (id == null) {
             if (type.equals("pdf"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/print/pdf", HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/print/pdf", HttpMethod.GET, entity, byte[].class);
             else if (type.equals("excel"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/print/excel", HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/print/excel", HttpMethod.GET, entity, byte[].class);
             else if (type.equals("html"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/print/html", HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/print/html", HttpMethod.GET, entity, byte[].class);
             else
                 return null;
         } else {
             if (type.equals("pdf"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/pdf/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/pdf/"+id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("excel"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/excel/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/excel/"+id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("html"))
-                return restTemplate.exchange(restApiUrl + "/api/job-group/printDetail/html/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/html/"+id, HttpMethod.GET, entity, byte[].class);
             else
                 return null;
         }
     }
 
 
-    @RequestMapping("/printSelected/{type}/{jobGroupIds}")
-    public ResponseEntity<?> printWithSelectedJobGroup(final HttpServletRequest request, @PathVariable String type, @PathVariable String jobGroupIds) {
+    @RequestMapping("/printSelected/{type}/{postGroupIds}")
+    public ResponseEntity<?> printWithSelectedPostGroup(final HttpServletRequest request, @PathVariable String type, @PathVariable String postGroupIds) {
 
 
         String token = (String) request.getSession().getAttribute("AccessToken");
@@ -92,11 +90,11 @@ public class JobGroupFormController {
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printSelected/pdf/" + jobGroupIds, HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printSelected/pdf/" + postGroupIds, HttpMethod.GET, entity, byte[].class);
         else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printSelected/excel/" + jobGroupIds, HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printSelected/excel/" + postGroupIds, HttpMethod.GET, entity, byte[].class);
         else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printSelected/html/" + jobGroupIds, HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printSelected/html/" + postGroupIds, HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
@@ -120,11 +118,11 @@ public class JobGroupFormController {
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printAll/pdf", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printAll/pdf", HttpMethod.GET, entity, byte[].class);
         else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printAll/excel", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printAll/excel", HttpMethod.GET, entity, byte[].class);
         else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/job-group/printAll/html", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/post-group/printAll/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
