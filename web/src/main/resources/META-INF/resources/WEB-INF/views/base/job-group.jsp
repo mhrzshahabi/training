@@ -388,13 +388,12 @@
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
+                    src: "[skins]/actions/remove.png",
                     prompt: "remove",
                     height: 16,
                     width: 16,
                     grid: this,
                     click: function () {
-
                         var activeJob = record;
                         var activeJobId = activeJob.id;
                         var activeJobGroup = ListGrid_Job_Group_Jsp.getSelectedRecord();
