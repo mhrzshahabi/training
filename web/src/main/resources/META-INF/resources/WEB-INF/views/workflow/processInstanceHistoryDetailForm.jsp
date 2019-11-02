@@ -1,4 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%
+	final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
+
 <%--
   Created by IntelliJ IDEA.
   User: p-dodangeh
@@ -6,11 +12,9 @@
   Time: 2:11 PM
   To change this template use File | Settings | File Templates.
 --%>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+
 
 <%--<script>--%>
-
-	<spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
 	var activitiRefreshButton = isc.ToolStripButton.create({
 		icon: "<spring:url value="refresh.png"/>",
@@ -25,8 +29,6 @@
 		width: "100%", height: 20,
 		members: [
 			activitiRefreshButton
-
-
 		]
 	});
 	var ListGrid_DocumentActivity = isc.ListGrid.create({
@@ -71,12 +73,12 @@
 		jsonSuffix: "",
 		transformRequest: function (dsRequest) {
 			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
+				"Authorization": "Bearer <%= accessToken %>"
+                <%--"Access-Control-Allow-Origin": "${restApiUrl}"--%>
 			};
 			return this.Super("transformRequest", arguments);
 		},
-		fetchDataURL: "${restApiUrl}/api/workflow/userTaskHistory/list/${pId}"
+		fetchDataURL: workflowUrl + "userTaskHistory/list/${pId}"
 
 
 	});

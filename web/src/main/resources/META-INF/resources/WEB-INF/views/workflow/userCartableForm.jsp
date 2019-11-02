@@ -112,7 +112,6 @@
 
 			var pId = record.processInstanceId;
 			<spring:url value="/web/workflow/getUserTaskHistoryForm/" var="getUserTaskHistoryForm"/>
-			alert("${getUserTaskHistoryForm}" + pId)
 			userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
 			userTaskViewLoader.show();
 
