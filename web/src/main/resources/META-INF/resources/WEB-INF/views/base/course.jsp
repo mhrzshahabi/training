@@ -1735,6 +1735,7 @@
                 // styleName:"paddingRight",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid LightBlue",
+                borderRadius:"6px",
                 // align: "center",
                 // vAlign: "center",
                 // wrap: false,
@@ -1745,13 +1746,15 @@
                 colWidths: ["8%", "18%", "1%"],
                 ID: "teacherForm",
                 numCols: 3,
-                // padding:10,
+                // padding: 50,
+                padding:"10px",
                 isGroup: true,
                 groupTitle: "شرایط مدرس دوره",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid lightBlue",
                 width: "96%",
                 height: "74%",
+                borderRadius:"6px",
                 // margin:20,
                 fields: [
                     {
@@ -1826,6 +1829,7 @@
             styleName: "paddingRight",
             groupLabelBackgroundColor: "lightBlue",
             groupBorderCSS: "1px solid lightBlue",
+            borderRadius:"6px",
             members: [DynamicForm_course_MainTab, DynamicForm_course_GroupTab]
         }), VLayout_Tab_JspCourse]
     });
@@ -1840,8 +1844,10 @@
             members: [isc.TrVLayout.create({
                 members: [HLayOut_Tab_JspCourse, courseSaveOrExitHlayout],
                 border: "3px solid lightBlue",
+                borderRadius:"10px",
                 height: "40%",
                 layoutMargin: 5,
+                margin:"2%",
             }), TabSet_Goal_JspCourse],
         })],
         closeClick: function () {
