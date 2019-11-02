@@ -197,8 +197,7 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataArrived: function () {
-            console.log(class_userCartableId);
-            if (class_userCartableId != null) {
+                if (class_userCartableId != null) {
                 var responseID = class_userCartableId;
                  class_userCartableId = null;
                 var gridState = "[{id:" + responseID + "}]";
@@ -779,11 +778,14 @@
 
     var HLayout_Actions_Class_JspClass = isc.HLayout.create({
         width: "100%",
+        height: "2%",
         members: [ToolStrip_Actions_JspClass]
     });
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
+        width: "100%",
+        height: "40%",
         members: [ListGrid_Class_JspClass]
     });
 
@@ -791,12 +793,12 @@
         tabBarPosition: "top",
         tabs: [
             {
-                // id: "TabPane_Goal_Syllabus",
                 title: "<spring:message code="sessions"/>",//جلسات
-                // pane:
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/sessions-tab"}
+                )
             },
             {
-                // id: "TabPane_Job",
                 title: "<spring:message code="alarms"/>",//هشدارها
                 // pane:
             },
@@ -806,13 +808,10 @@
                 // pane:
             },
             {
-                // id: "TabPane_Skill",
                 title: "<spring:message code="attendance"/>",//حضور و غیاب
                 // pane:
-
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="teachers"/>",//مدرسان
                 // pane:
             },
@@ -822,12 +821,10 @@
                 // pane:
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="assessment"/>",//ارزیابی
                 // pane:
             },
             {
-                // id: "TabPane_Competence",
                 title: "<spring:message code="checkList"/>",//چک لیست
                 // pane:
             },
@@ -941,7 +938,9 @@
                 "target": "/tclass/show-form",
                 "targetTitleFa": "کلاس"
             }]
-            isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+            if (classMethod.localeCompare("POST") === 0) {
+                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+            }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                 "<spring:message code="msg.command.done"/>");

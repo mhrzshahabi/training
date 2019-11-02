@@ -53,4 +53,9 @@ public class ClassFormController {
 		else
 			return null;
 	}
+
+	@RequestMapping("/sessions-tab")
+	public String sessionsTab() {
+		return "classTabs/sessions";
+	}
 }
