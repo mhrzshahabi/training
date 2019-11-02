@@ -1092,8 +1092,8 @@
             }
 //------------------------------------
             if (course_method == "POST") {
-                var y = (DynamicForm_course_GroupTab.getItem('subCategory.id').getSelectedRecord().code);
-                x = y + runV + eLevelTypeV + etheoTypeV;
+                // var y = (DynamicForm_course_GroupTab.getItem('subCategory.id').getSelectedRecord().code);
+                x = courseCode();
                 isc.RPCManager.sendRequest({
                     actionURL: courseUrl + "getmaxcourse/" + x,
                     httpMethod: "GET",
@@ -1867,7 +1867,7 @@
     // });
     var HLayout_Actions_Course = isc.HLayout.create({
         width: "100%",
-        height: "5%",
+        height: "1%",
         members: [ToolStrip_Actions]
     });
     var HLayout_Grid_Course = isc.HLayout.create({

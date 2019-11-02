@@ -34,10 +34,10 @@ public class Syllabus extends Auditable {
     private String description;
 
     @Column(name = "n_theoretical_duration", length = 10)
-    private Long theoreticalDuration;
+    private Float theoreticalDuration;
 
     @Column(name = "n_practical_duration", length = 10, nullable = false)
-    private Long practicalDuration;
+    private Float practicalDuration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_goal", insertable = false, updatable = false)

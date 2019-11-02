@@ -779,14 +779,14 @@
 
     var HLayout_Actions_Class_JspClass = isc.HLayout.create({
         width: "100%",
-        height: "2%",
+        height: "1%",
         members: [ToolStrip_Actions_JspClass]
     });
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
         showResizeBar: true,
         width: "100%",
-        height: "40%",
+        height: "60%",
         members: [ListGrid_Class_JspClass]
     });
 
@@ -836,7 +836,7 @@
     });
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
-        height: "50%",
+        height: "40%",
         members: [TabSet_Class]
     });
 

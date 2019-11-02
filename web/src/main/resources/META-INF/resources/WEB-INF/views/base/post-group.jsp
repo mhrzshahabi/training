@@ -434,7 +434,6 @@
                     membersMargin: 10,
                     align: "center"
                 });
-
                 var removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -445,7 +444,6 @@
                     width: 16,
                     grid: this,
                     click: function () {
-
                         var activePost = record;
                         var activePostId = activePost.id;
                         var activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
@@ -497,7 +495,7 @@
             var JSONObj = {"ids": postIds};
 
 
-            TrDSRequest()
+            TrDSRequest();
 
 
             isc.RPCManager.sendRequest({

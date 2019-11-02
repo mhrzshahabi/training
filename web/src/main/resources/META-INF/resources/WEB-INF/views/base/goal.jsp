@@ -37,7 +37,8 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "titleFa", title: "سرفصل ها", align: "center", width: "60%"},
             {name: "edomainType.titleFa", title: "حیطه", align: "center", width: "20%"},
-            {name: "practicalDuration", title: "مدت زمان اجرا", align: "center", width: "20%"}
+            {name: "practicalDuration", title: "مدت زمان عملی", align: "center", width: "20%"},
+            {name: "theoreticalDuration", title: "مدت زمان تئوری", align: "center", width: "20%"}
         ], dataFormat: "json",
         jsonPrefix: "",
         jsonSuffix: "",
@@ -140,19 +141,39 @@
             },
             {
                 name: "practicalDuration",
-                title: "مدت زمان اجرا",
+                title: "مدت زمان عملی",
                 editorType: "SpinnerItem",
                 writeStackedIcons: false,
-                defaultValue: 2,
+                defaultValue: 0,
                 keyPressFilter: "^[0-9]",
                 min: 1,
                 max: 300,
-                step: 1,
+                step: 0.5,
                 change: function (form, item, value) {
                     if (methodSyllabus == "PUT") {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + value;
                     } else {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
+                    }
+                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                    // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
+                },
+            },
+            {
+                name: "theoreticalDuration",
+                title: "مدت زمان تئوری",
+                editorType: "SpinnerItem",
+                writeStackedIcons: false,
+                defaultValue: 0,
+                keyPressFilter: "^[0-9]",
+                min: 1,
+                max: 300,
+                step: 0.5,
+                change: function (form, item, value) {
+                    if (methodSyllabus == "PUT") {
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) - (ListGrid_Syllabus_Goal.getSelectedRecord().practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
+                    } else {
+                        sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
                     }
                     Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
