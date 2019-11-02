@@ -756,13 +756,82 @@
     });
 
     var HLayout_Grid_Class_JspClass = isc.TrHLayout.create({
+        showResizeBar: true,
         members: [ListGrid_Class_JspClass]
     });
 
+    var TabSet_Class = isc.TabSet.create({
+        tabBarPosition: "top",
+        tabs: [
+            {
+                // id: "TabPane_Goal_Syllabus",
+                title: "<spring:message code="sessions"/>",//جلسات
+                // pane: ListGrid_CourseSyllabus
+            },
+            {
+                // id: "TabPane_Job",
+                title: "<spring:message code="alarms"/>",//هشدارها
+                // pane: ListGrid_CourseJob
+            },
+            {
+                // id: "TabPane_Post",
+                title: "<spring:message code="licenses"/>",//مجوزها
+                // pane: isc.TrLG.create({
+                //     ID: "ListGrid_Post_JspCourse",
+                //     showResizeBar: false,
+                //     dataSource: isc.TrDS.create({
+                //         fields: [{name: "id", primaryKey: true, hidden: true},
+                //             {name: "titleFa", title: "نام فارسی", align: "center"},
+                //             {name: "titleEn", title: "نام لاتین", align: "center"}
+                //         ],
+                //         ID: "RestData_Post_JspCourse",
+                //         // fetchDataURL:courseUrl + "post/" + ListGrid_Course.getSelectedRecord().id,
+                //     }),
+                // })
+            },
+            {
+                // id: "TabPane_Skill",
+                title: "<spring:message code="attendance"/>",//حضور و غیاب
+                // pane: ListGrid_CourseSkill
+
+            },
+            {
+                // id: "TabPane_Competence",
+                title: "<spring:message code="teachers"/>",//مدرسان
+                // pane: ListGrid_CourseCompetence
+            },
+            {
+                // id: "TabPane_Competence",
+                title: "<spring:message code="exam"/>",//آزمون
+                // pane: ListGrid_CourseCompetence
+            },
+            {
+                // id: "TabPane_Competence",
+                title: "<spring:message code="assessment"/>",//ارزیابی
+                // pane: ListGrid_CourseCompetence
+            },
+            {
+                // id: "TabPane_Competence",
+                title: "<spring:message code="checkList"/>",//چک لیست
+                // pane: ListGrid_CourseCompetence
+            },
+
+
+
+        ]
+    });
+    var HLayout_Tab_Class = isc.HLayout.create({
+        width: "100%",
+        height: "50%",
+        members: [TabSet_Class]
+    });
+
+
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
         members: [
-            HLayout_Actions_Class_JspClass
-            , HLayout_Grid_Class_JspClass
+            HLayout_Actions_Class_JspClass,
+            HLayout_Grid_Class_JspClass,
+            HLayout_Tab_Class
         ]
     });
 

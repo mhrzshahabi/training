@@ -1937,7 +1937,6 @@
                 pane: ListGrid_CourseSkill
 
             },
-
             {
                 // id: "TabPane_Competence",
                 title: "گروه مهارت",
