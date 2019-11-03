@@ -800,33 +800,47 @@
             },
             {
                 title: "<spring:message code="alarms"/>",//هشدارها
-                // pane:
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/alarms-tab"}
+                )
             },
             {
                 // id: "TabPane_Post",
                 title: "<spring:message code="licenses"/>",//مجوزها
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/licenses-tab"}
+                 )
             },
             {
                 title: "<spring:message code="attendance"/>",//حضور و غیاب
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/attendance-tab"}
+                 )
             },
             {
                 title: "<spring:message code="teachers"/>",//مدرسان
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/teachers-tab"}
+                 )
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="exam"/>",//آزمون
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/exam-tab"}
+                 )
             },
             {
                 title: "<spring:message code="assessment"/>",//ارزیابی
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/assessment-tab"}
+                 )
             },
             {
                 title: "<spring:message code="checkList"/>",//چک لیست
-                // pane:
+                 pane: isc.ViewLoader.create(
+                         {viewURL: "tclass/checkList-tab"}
+                 )
             },
 
 

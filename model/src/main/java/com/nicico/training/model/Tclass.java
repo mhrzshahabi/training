@@ -23,6 +23,26 @@ public class Tclass extends Auditable {
     @Column(name = "id", precision = 10)
     private long id;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "f_course", insertable = false, updatable = false)
+    private Course course;
+
+    @Column(name = "f_course")
+    private Long courseId;
+
+    @Column(name = "c_reason")
+    private String reason;
+
+    @Column(name = "c_title_class")
+    private String titleClass;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "f_institute", insertable = false, updatable = false)
+    private Institute institute;
+
+    @Column(name = "f_institute")
+    private Long instituteId;
+
     @Column(name = "n_group", nullable = false)
     private Long group;
 
@@ -45,13 +65,6 @@ public class Tclass extends Auditable {
     @Column(name = "f_teacher")
     private Long teacherId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "f_course", insertable = false, updatable = false)
-    private Course course;
-
-    @Column(name = "f_course")
-    private Long courseId;
-
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_student_class",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
@@ -64,4 +77,6 @@ public class Tclass extends Auditable {
 
     @Column(name = "f_term")
     private Long termId;
+
+
 }
