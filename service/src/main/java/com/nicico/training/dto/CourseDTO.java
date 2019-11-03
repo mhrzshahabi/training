@@ -37,7 +37,7 @@ public class CourseDTO implements Serializable {
 
     @NotNull
     @ApiModelProperty(required = true)
-    private Long theoryDuration;
+    private Float theoryDuration;
 
     //    @NotNull
 //    @ApiModelProperty(required = true)

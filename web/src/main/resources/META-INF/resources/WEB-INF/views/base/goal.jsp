@@ -236,12 +236,14 @@
             titleEn = DynamicForm_Syllabus.getValue('titleEn');
             goalId = DynamicForm_Syllabus.getValue('goalId');
             practicalDuration = DynamicForm_Syllabus.getValue('practicalDuration');
+            theoreticalDuration = DynamicForm_Syllabus.getValue('theoreticalDuration');
             eDomainType = DynamicForm_Syllabus.getValue('edomainTypeId');
             var data = {
                 "titleFa": titleFa,
                 "titleEn": titleEn,
                 "goalId": goalId,
                 "practicalDuration": practicalDuration,
+                "theoreticalDuration": theoreticalDuration,
                 "eDomainTypeId": eDomainType
             };
             // var data = DynamicForm_Syllabus.getValuesForm();
@@ -265,7 +267,7 @@
                             ListGrid_Syllabus_Goal.setSelectedState(gridState);
                         }, 900);
                         setTimeout(function () {
-                            sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration;
+                            sumSyllabus = ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + ListGrid_Syllabus_Goal.getGridSummaryData().get(0).theoreticalDuration;
                             if (sumSyllabus != (ListGrid_Course.getSelectedRecord().theoryDuration)) {
                                 isc.Dialog.create({
                                     message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",

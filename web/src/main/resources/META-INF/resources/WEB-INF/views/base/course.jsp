@@ -754,7 +754,7 @@
                 required: true,
                 // titleOrientation: "top",
                 textAlign: "center",
-                keyPressFilter: "[0-9]",
+                keyPressFilter: "[0-9.]",
                 requiredMessage: "لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
                 validators: [{
                     type: "integerRange", min: 0, max: 999,
