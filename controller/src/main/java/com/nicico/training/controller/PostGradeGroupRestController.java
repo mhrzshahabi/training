@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,22 +61,33 @@ public class PostGradeGroupRestController {
             PostGradeGroupDTO.Create create = modelMapper.map(req, PostGradeGroupDTO.Create.class);
             return new ResponseEntity<>(postGradeGroupService.create(create), HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<PostGradeGroupDTO.Info> update(@PathVariable Long id, @RequestBody Object req) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object req) {
         PostGradeGroupDTO.Update update = modelMapper.map(req, PostGradeGroupDTO.Update.class);
-        return new ResponseEntity<>(postGradeGroupService.update(id, update), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(postGradeGroupService.update(id, update), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        postGradeGroupService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            postGradeGroupService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    null,
+                    HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable

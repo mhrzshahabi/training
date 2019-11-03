@@ -100,8 +100,8 @@
         dataSource: RestDataSource_All_PostGrades,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center", width: "20%"},
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center", width: "60%"}
+            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"}
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -131,9 +131,9 @@
         dataSource: RestDataSource_ForThisPostGroup_GetPosts,
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center", width: "20%"},
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center", width: "70%"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"},
+            {name: "OnDelete", title: "حذف", align: "center", canFilter: false}
         ],
 
         createRecordComponent: function (record, colNum) {
@@ -156,9 +156,7 @@
                     grid: this,
                     click: function () {
                         var activePostGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-                        var postGradeIds = [record.id];
-                        // postGradeIds.add(record.id);
-                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + postGradeIds,
+                        isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + [record.id],
                             "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
                     }
                 });
@@ -174,7 +172,6 @@
             for (var i = 0; i < dropRecords.getLength(); i++) {
                 postGradeIds.add(dropRecords[i].id);
             }
-            // var JSONObj = {"ids": postGradeIds};
             isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "addPostGrades/" + postGradeGroupId + "/" + postGradeIds,
                 "POST", null, "callback: postGrade_add_result(rpcResponse)"));
         }
@@ -447,8 +444,12 @@
             ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();
 
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
     }
 
@@ -456,7 +457,6 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
-
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
@@ -468,8 +468,14 @@
             }, 1000);
             Window_Post_Grade_Group_Jsp.close();
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>",
-                "<spring:message code="message"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                    "<spring:message code="message"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
         }
     }
 
@@ -547,7 +553,12 @@
                 OK.close();
             }, 2000);
         } else {
-            createDialog("info", "<spring:message code="msg.operation.error"/>");
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
     }
 
