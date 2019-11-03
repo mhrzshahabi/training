@@ -51,15 +51,15 @@
 
     });
 
-    var RestDataSource_Course_JspClass_workFlow = isc.TrDS.create({
+      var RestDataSource_Course_JspClass_workFlow = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
             {name: "titleFa"},
             {name: "theoryDuration"}
-        ]
+        ],
 
-    });
+      });
 
 
     var RestDataSource_Class_Student_JspClass = isc.TrDS.create({
@@ -141,6 +141,18 @@
     var ListGrid_Class_JspClass = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
         doubleClick: function () {
@@ -184,7 +196,9 @@
                 sortNormalizer: function (record) {
                     return record.teacher.personality.lastNameFa;
                 }
-            }
+            },
+             {name: "information", title: "اطلاعات تکمیلی", align: "center"}
+
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -197,20 +211,58 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataArrived: function () {
-            if (class_userCartableId != null) {
+                if (class_userCartableId != null) {
                 var responseID = class_userCartableId;
-                class_userCartableId = null;
+                 class_userCartableId = null;
                 var gridState = "[{id:" + responseID + "}]";
                 ListGrid_Class_JspClass.setSelectedState(gridState);
                 var record = ListGrid_Class_JspClass.getSelectedRecord();
-                classMethod = "PUT";
-                // classUrl = classUrl + record.id;
+                 classMethod = "PUT";
+               // classUrl = classUrl + record.id;
                 Window_Class_JspClass.show();
                 DynamicForm_Class_JspClass.clearValues();
                 DynamicForm_Class_JspClass.editRecord(record);
                 DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
             }
-        }
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName === "information") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var checkIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "<spring:url value='info.png'/>",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                    pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/checkList-tab"}
+                      )
+                     alert("sdfgsdfgsdfg")
+                    //     var activePostGradeGroup = ListGrid_Class_JspClass.getSelectedRecord();
+                    //     var postGradeIds = [record.id];
+                    //     isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + postGradeIds,
+                    //         "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
+                    }
+                });
+                recordCanvas.addMember(checkIcon);
+                return recordCanvas;
+            } else
+                return null;
+        },
+         doubleClick: function () {
+            ListGrid_class_edit();
+        },
+
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -223,9 +275,9 @@
         numCols: 4,
         padding: 10,
         align: "center",
-        /*  margin: 50,
+      /*  margin: 50,
 
-          canTabToIcons: false,*/
+        canTabToIcons: false,*/
         fields: [
             {name: "id", hidden: true},
             {
@@ -311,7 +363,7 @@
                 // filterFields: ["personality.lastNameFa"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                addUnknownValues: false
+                addUnknownValues: false,
                 // pickListFields:
                 //     [{name: "personality.lastNameFa", filterOperator: "iContains"}]
             },
@@ -457,7 +509,7 @@
                 classSaveUrl += classRecord.id;
             }
 
-            isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+           isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -838,7 +890,7 @@
             },
             {
                 title: "<spring:message code="checkList"/>",//چک لیست
-                pane: isc.ViewLoader.create(
+              pane: isc.ViewLoader.create(
                     {viewURL: "tclass/checkList-tab"}
                 )
             },
@@ -949,13 +1001,14 @@
                 "coursetitleFa": DynamicForm_Class_JspClass.getItem("course.titleFa").getValue(),
                 "startDate": JSON.parse(resp.data).startDate,
                 "endDate": JSON.parse(resp.data).endDate,
+               // "classCreator": "classCreator",
                 "classCreatorId": "${username}",
                 "classCreator": userFullName,
                 "REJECT": "",
                 "REJECTVAL": "",
                 "target": "/tclass/show-form",
                 "targetTitleFa": "کلاس"
-            }];
+            }]
             if (classMethod.localeCompare("POST") === 0) {
                 isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
             }
@@ -971,7 +1024,7 @@
             }, 1000);
             ListGrid_Class_refresh();
             Window_Class_JspClass.close();
-        } else {
+                     } else {
             createDialog("info", "<spring:message code='error'/>");
         }
     }
@@ -1043,7 +1096,6 @@
             Window_AddStudents_JspClass.show();
         }
     }
-
     // </script>
 function test() {
 var x=isc.DataSource.create({

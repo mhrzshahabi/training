@@ -135,7 +135,6 @@
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"},
             {name: "OnDelete", title: "حذف", align: "center", canFilter: false}
         ],
-
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);
             if (fieldName === "OnDelete") {
