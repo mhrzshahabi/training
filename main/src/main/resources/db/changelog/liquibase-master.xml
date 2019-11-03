@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                      http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
+    <include file="classpath:/db/changelog/changes/liq-activiti.xml"/>
+    <include file="changes/liq-001.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-002.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-003.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-004.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-005.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-006.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-007.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-008.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-009.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-010.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-011.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-012.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-013.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-014.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-015.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-016.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-017.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-018.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-019.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-020.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-021.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-022.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-023.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-024.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-025.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-026.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-027.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-028.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-029.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-030.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-031.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-032.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-033.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-034.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-035.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-036.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-037.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-038.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-039.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-040.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-041.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-042.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-043.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-044.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-045.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-046.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-047.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-048.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-050.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-051.xml" relativeToChangelogFile="true"/>
+
+</databaseChangeLog>
