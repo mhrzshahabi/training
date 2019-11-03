@@ -152,7 +152,7 @@
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
     isc.TrRemoveBtn.addProperties({
-        icon: "<spring:url value="remove.png"/>",
+        icon: "<spring:url value='remove.png'/>",
         title: "<spring:message code="remove"/>",
     });
 
@@ -411,6 +411,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="post.grade.group"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
@@ -665,6 +671,7 @@
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
     var userFullName ='<%= SecurityUtil.getFullName()%>';
+    const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
