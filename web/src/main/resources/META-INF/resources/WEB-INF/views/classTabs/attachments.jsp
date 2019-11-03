@@ -5,15 +5,66 @@
 // <script>
 
 
-    var HLayout_Body_All_Goal = isc.HLayout.create({
+    isc.DynamicForm.create({
+        autoDraw: false,
+        ID: "uploadForm", width: 300,
+        // dataSource: mediaLibrary,
+        fields: [
+            { name: "title", required: true },
+            { name: "file", type: "xml", multiple:false, hint: "Maximum file size is 5 MiB" },
+            { title: "Save", type: "button",
+                click: function () {
+                    this.form.saveData("if(dsResponse.status>=0) uploadForm.editNewRecord()");
+                }
+            }
+        ]
+    });
+
+    isc.DynamicForm.create({
+        autoDraw: false,
+        ID: "searchForm",
         width: "100%",
-        height: "100%",
-        members: [isc.DynamicForm.create({
-            fields:[
-                {title:"تست"}
-            ]
-        })]
+        numCols: 3,
+        colWidths: [60, 200, "*"],
+        saveOnEnter:true,
+        fields: [
+            { name: "title", title: "Title", type: "text", width: "*" },
+            { name: "search", title: "Search", type: "SubmitItem",
+                startRow: false, endRow: false
+            }
+        ],
+        submit : function () {
+            mediaListGrid.fetchData(this.getValuesAsCriteria(), null, {textMatchStyle:"substring"});
+        }
+    });
+
+    isc.ListGrid.create({
+        autoDraw: false,
+        ID: "mediaListGrid",
+        width: "100%",
+        height: 224,
+        alternateRecordStyles: true,
+        // dataSource: mediaLibrary,
+        autoFetchData: true
+    });
+
+    isc.VLayout.create({
+        autoDraw: false,
+        ID:"mainLayout",
+        width:500,
+        height:250,
+        members:[searchForm, mediaListGrid]
+    });
+
+    isc.HStack.create({
+        width:"100%",
+        membersMargin: 10,
+        members:[uploadForm, mainLayout]
     });
 
 
-//</script>
+
+
+
+
+    //</script>
