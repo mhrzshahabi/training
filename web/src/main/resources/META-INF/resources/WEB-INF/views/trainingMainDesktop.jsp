@@ -37,6 +37,7 @@
 <script type="application/javascript">
 
     // -------------------------------------------  URLs & Filters  -----------------------------------------------
+    const userFullName = '<%= SecurityUtil.getFullName()%>';
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const rootUrl = "${contextPath}/api";
     const workflowUrl = rootUrl + "/workflow/";
@@ -60,7 +61,7 @@
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
-    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true, border: "1px solid #CCC"});
+    isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
@@ -130,6 +131,7 @@
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
+        loadingDataMessag: "<spring:message code="loading"/>",
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -152,7 +154,7 @@
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
     isc.TrRemoveBtn.addProperties({
-        icon: "<spring:url value='remove.png'/>",
+        icon: "<spring:url value="remove.png"/>",
         title: "<spring:message code="remove"/>",
     });
 
@@ -301,7 +303,7 @@
     });
 
     userLabel = isc.Label.create({
-        contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
+        contents: "<spring:message code="user"/>" + ": " + userFullName,
         styleName: "customHeader",
         padding: 4,
     });
@@ -568,6 +570,26 @@
         }),
     });
 
+    securityTSMB = isc.ToolStripMenuButton.create({
+        title: Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) + "&nbsp; <spring:message code="security"/>",
+        menu: isc.Menu.create({
+            data: [
+                {
+                    title: "<spring:message code="user.plural"/>", icon: "<spring:url value="personal.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="group.plural"/>", icon: "<spring:url value="group.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+            ]
+        }),
+    });
+
     reportTSMB = isc.ToolStripMenuButton.create({
         title: Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) + "&nbsp; <spring:message code="report"/>",
         menu: isc.Menu.create({
@@ -670,9 +692,7 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
-    var userFullName ='<%= SecurityUtil.getFullName()%>';
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
-
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
