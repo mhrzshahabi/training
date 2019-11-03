@@ -411,7 +411,7 @@
                     }
                 },
                 {
-                    title: "<spring:message code="post.grade.group"/>",
+                    title: "<spring:message code="post.grade.group"/>", icon: "<spring:url value="postGrade.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
                     }

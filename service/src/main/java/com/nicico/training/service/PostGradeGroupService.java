@@ -13,8 +13,10 @@ import com.nicico.training.model.PostGradeGroup;
 import com.nicico.training.repository.PostGradeDAO;
 import com.nicico.training.repository.PostGradeGroupDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -44,7 +46,11 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     @Override
     public PostGradeGroupDTO.Info create(PostGradeGroupDTO.Create request) {
         PostGradeGroup postGradeGroup = modelMapper.map(request, PostGradeGroup.class);
-        return modelMapper.map(postGradeGroupDAO.saveAndFlush(postGradeGroup), PostGradeGroupDTO.Info.class);
+        try {
+            return modelMapper.map(postGradeGroupDAO.saveAndFlush(postGradeGroup), PostGradeGroupDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -56,13 +62,21 @@ public class PostGradeGroupService implements IPostGradeGroupService {
         PostGradeGroup postGradeGroup = new PostGradeGroup();
         modelMapper.map(currentPostGradeGroup, postGradeGroup);
         modelMapper.map(request, postGradeGroup);
-        return modelMapper.map(postGradeGroupDAO.saveAndFlush(postGradeGroup), PostGradeGroupDTO.Info.class);
+        try {
+            return modelMapper.map(postGradeGroupDAO.saveAndFlush(postGradeGroup), PostGradeGroupDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        postGradeGroupDAO.deleteById(id);
+        try {
+            postGradeGroupDAO.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional
