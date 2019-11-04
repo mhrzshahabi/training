@@ -1,7 +1,17 @@
 package com.nicico.training.model;
 
-import javax.persistence.*;
+import lombok.*;
+import lombok.experimental.Accessors;
 
+import javax.persistence.*;
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Accessors(chain = true)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
+@Entity
+@Table(name = "tbl_check_list_item")
 public class CheckListItem extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "Check_List_Item_seq")
