@@ -141,6 +141,18 @@
     var ListGrid_Class_JspClass = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
         doubleClick: function () {
@@ -184,7 +196,9 @@
                 sortNormalizer: function (record) {
                     return record.teacher.personality.lastNameFa;
                 }
-            }
+            },
+             {name: "information", title: "اطلاعات تکمیلی", align: "center"}
+
         ],
         sortField: 1,
         sortDirection: "descending",
@@ -210,7 +224,45 @@
                 DynamicForm_Class_JspClass.editRecord(record);
                 DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
             }
-        }
+        },
+        createRecordComponent: function (record, colNum) {
+            var fieldName = this.getFieldName(colNum);
+            if (fieldName === "information") {
+                var recordCanvas = isc.HLayout.create({
+                    height: 20,
+                    width: "100%",
+                    layoutMargin: 5,
+                    membersMargin: 10,
+                    align: "center"
+                });
+                var checkIcon = isc.ImgButton.create({
+                    showDown: false,
+                    showRollOver: false,
+                    layoutAlign: "center",
+                    src: "<spring:url value='info.png'/>",
+                    height: 16,
+                    width: 16,
+                    grid: this,
+                    click: function () {
+                    pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/checkList-tab"}
+                      )
+                     alert("sdfgsdfgsdfg")
+                    //     var activePostGradeGroup = ListGrid_Class_JspClass.getSelectedRecord();
+                    //     var postGradeIds = [record.id];
+                    //     isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + postGradeIds,
+                    //         "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
+                    }
+                });
+                recordCanvas.addMember(checkIcon);
+                return recordCanvas;
+            } else
+                return null;
+        },
+         doubleClick: function () {
+            ListGrid_class_edit();
+        },
+
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -807,42 +859,47 @@
             {
                 // id: "TabPane_Post",
                 title: "<spring:message code="licenses"/>",//مجوزها
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/licenses-tab"}
-                 )
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/licenses-tab"}
+                )
             },
             {
                 title: "<spring:message code="attendance"/>",//حضور و غیاب
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/attendance-tab"}
-                 )
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/attendance-tab"}
+                )
             },
             {
                 title: "<spring:message code="teachers"/>",//مدرسان
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/teachers-tab"}
-                 )
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/teachers-tab"}
+                )
             },
             {
                 // id: "TabPane_Competence",
                 title: "<spring:message code="exam"/>",//آزمون
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/exam-tab"}
-                 )
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/exam-tab"}
+                )
             },
             {
                 title: "<spring:message code="assessment"/>",//ارزیابی
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/assessment-tab"}
-                 )
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/assessment-tab"}
+                )
             },
             {
                 title: "<spring:message code="checkList"/>",//چک لیست
-                 pane: isc.ViewLoader.create(
-                         {viewURL: "tclass/checkList-tab"}
-                 )
+              pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/checkList-tab"}
+                )
             },
-
+            {
+                title: "<spring:message code="attachments"/>",//ضمائم
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/attachments-tab"}
+                )
+            }
 
 
         ]
@@ -944,7 +1001,7 @@
                 "coursetitleFa": DynamicForm_Class_JspClass.getItem("course.titleFa").getValue(),
                 "startDate": JSON.parse(resp.data).startDate,
                 "endDate": JSON.parse(resp.data).endDate,
-                "classCreator": "classCreator",
+               // "classCreator": "classCreator",
                 "classCreatorId": "${username}",
                 "classCreator": userFullName,
                 "REJECT": "",
@@ -974,7 +1031,7 @@
 
     function startProcess(resp) {
 
-        if (resp.httpResponseCode == 200)
+        if (resp.httpResponseCode === 200)
             isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
         else {
             isc.say("کد خطا : " + resp.httpResponseCode);
@@ -1055,14 +1112,14 @@ fields: [
 }
 
 
-     // var record=ListGrid_Class_JspClass.getSelectedRecord();
-          // classMethod = "PUT";
-          //          url = classUrl + record.id;
-          //          DynamicForm_Class_JspClass.clearValues();
-          //          DynamicForm_Class_JspClass.editRecord(record);
-          //          DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
-          //           Window_Class_JspClass.show();
-          //
-          //
+// var record=ListGrid_Class_JspClass.getSelectedRecord();
+// classMethod = "PUT";
+// url = classUrl + record.id;
+// DynamicForm_Class_JspClass.clearValues();
+// DynamicForm_Class_JspClass.editRecord(record);
+// DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
+// Window_Class_JspClass.show();
+//
+//
 
 
