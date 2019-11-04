@@ -40,37 +40,7 @@
         dataArrived: function () {
 
         },
-        <%--createRecordComponent: function (record, colNum) {--%>
-        <%--    var fieldName = this.getFieldName(colNum);--%>
-        <%--    if (fieldName === "information") {--%>
-        <%--        var recordCanvas = isc.HLayout.create({--%>
-        <%--            height: 20,--%>
-        <%--            width: "100%",--%>
-        <%--            layoutMargin: 5,--%>
-        <%--            membersMargin: 10,--%>
-        <%--            align: "center"--%>
-        <%--        });--%>
-        <%--        var checkIcon = isc.ImgButton.create({--%>
-        <%--        align:"left",--%>
-        <%--            showDown: false,--%>
-        <%--            showRollOver: false,--%>
-        <%--            layoutAlign: "center",--%>
-        <%--            src: "<spring:url value='info.png'/>",--%>
-        <%--            height: 16,--%>
-        <%--            width: 16,--%>
-        <%--            grid: this,--%>
-        <%--            click: function () {--%>
-        <%--            // pane: isc.ViewLoader.create(--%>
-        <%--            // {viewURL: "tclass/checkList-tab"}--%>
-        <%--            //   )--%>
-        <%--            }--%>
-        <%--        });--%>
-        <%--        recordCanvas.addMember(checkIcon);--%>
-        <%--        return recordCanvas;--%>
-        <%--    } else--%>
-        <%--        return null;--%>
-        <%--},--%>
-         doubleClick: function () {
+           doubleClick: function () {
 
         },
 

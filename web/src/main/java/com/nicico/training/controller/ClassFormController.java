@@ -91,7 +91,7 @@ public class ClassFormController {
 
 	@RequestMapping("/checkList-tab")
 	public String checkListTab() {
-		return "classTabs/check-list";
+		return "classTabs/checkList";
 	}
 
 	@RequestMapping("/attachments-tab")

@@ -890,7 +890,7 @@
             },
             {
                 title: "<spring:message code="checkList"/>",//چک لیست
-              pane: isc.ViewLoader.create(
+                pane: isc.ViewLoader.create(
                     {viewURL: "tclass/checkList-tab"}
                 )
             },
