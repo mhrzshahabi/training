@@ -6,6 +6,7 @@ import lombok.experimental.Accessors;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -43,33 +44,11 @@ public class Tclass extends Auditable {
     @Column(name = "f_institute")
     private Long instituteId;
 
-    @Column(name = "n_group", nullable = false)
-    private Long group;
-
-    @Column(name = "c_start_date", nullable = false)
-    private String startDate;
-
-    @Column(name = "c_end_date", nullable = false)
-    private String endDate;
-
-    @Column(name = "n_duration")
-    private Long duration;
-
-    @Column(name = "c_code", nullable = false)
-    private String code;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_teacher", insertable = false, updatable = false)
-    private Teacher teacher;
-
-    @Column(name = "f_teacher")
-    private Long teacherId;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "tbl_student_class",
-            joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
-    private List<Student> studentSet;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_class_training_place",
+            joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
+    private Set<TrainingPlace> trainingPlaceSet;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_term", insertable = false, updatable = false)
@@ -77,6 +56,53 @@ public class Tclass extends Auditable {
 
     @Column(name = "f_term")
     private Long termId;
+
+    @Column(name = "n_group", nullable = false)
+    private Long group;
+
+    @Column(name = "c_teaching_type")
+    private String teachingType;//روش آموزش
+
+    @Column(name = "c_teaching_brand")
+    private String teachingBrand;//نحوه آموزش
+
+    @Column(name = "c_code", nullable = false)
+    private String code;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_class_teacher",
+            joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_teacher_id", referencedColumnName = "id")})
+    private Set<Teacher> teacherSet;
+
+    @Column(name = "c_start_date", nullable = false)
+    private String startDate;
+
+    @Column(name = "c_end_date", nullable = false)
+    private String endDate;
+
+    @Column(name = "c_week_days")
+    private String weekDays;
+
+    @Column(name = "f_supervisor")
+    private Long supervisor;
+
+    @Column(name = "c_state")
+    private String state;
+
+    @Column(name = "c_topology")
+    private String topology;//چیدمان
+
+    @Column(name = "n_duration")
+    private Long duration;
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinTable(name = "tbl_student_class",
+            joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
+    private List<Student> studentSet;
+
+
 
 
 }

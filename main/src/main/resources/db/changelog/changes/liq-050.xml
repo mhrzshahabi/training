@@ -33,6 +33,7 @@
             <column name="n_object_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
+            <column name="c_description" type="varchar2(500 CHAR)"/>
         </createTable>
     </changeSet>
     <changeSet author="poursalehi_mos (generated)" id="1572786793116-133">
