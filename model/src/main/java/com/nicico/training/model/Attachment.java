@@ -14,7 +14,7 @@ import javax.persistence.*;
 @Entity
 @Table(name = "tbl_attachment",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"c_entity_name", "n_object_id", "c_file_name","c_file_type"})})
-public class attachment extends Auditable {
+public class Attachment extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "attachment_seq")
@@ -33,4 +33,7 @@ public class attachment extends Auditable {
 
     @Column(name = "c_file_type", nullable = false)
     private String fileType;
+
+    @Column(name = "c_description", length = 500)
+    private String description;
 }
