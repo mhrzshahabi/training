@@ -71,6 +71,7 @@
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
+
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
         var RestDataSource_operational = isc.TrDS.create({});
@@ -161,7 +162,7 @@
             width: "100%",
             height: "100%",
             members: [ListGrid_operational]
-        })
+        });
 
         var VLayout_Body_operational = isc.TrVLayout.create({
             width: "100%",
