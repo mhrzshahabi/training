@@ -33,4 +33,7 @@ public class attachment extends Auditable {
 
     @Column(name = "c_file_type", nullable = false)
     private String fileType;
+
+    @Column(name = "c_description", length = 500)
+    private String description;
 }
