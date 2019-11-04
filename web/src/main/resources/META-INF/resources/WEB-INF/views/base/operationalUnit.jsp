@@ -12,7 +12,7 @@
 
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
     {
-        Menu_ListGrid_operationalUnit = isc.Menu.create({
+        Menu_ListGrid_operational = isc.Menu.create({
             data: [
                 {
                     title: "<spring:message code="refresh"/>",
@@ -71,6 +71,34 @@
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
+    // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
+    {
+        var RestDataSource_operational = isc.TrDS.create({});
+
+        var ListGrid_operational = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_operational,
+            contextMenu: Menu_ListGrid_operational,
+            canAddFormulaFields: false,
+            autoFetchData: true,
+            showFilterEditor: true,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            filterOnKeypress: true,
+            sortField: 0,
+            fields: [
+                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {name: "unitCode", title: "کد واحد", align: "center", filterOperator: "contains"},
+                {name: "operationalUnit", title: "نام واحد", align: "center", filterOperator: "contains"}
+            ],
+            doubleclick: function () {
+
+            }
+        });
+    }
+    // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
+
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
@@ -114,7 +142,7 @@
             }
         });
 
-        var ToolStrip_Operational = isc.ToolStrip.create({
+        var ToolStrip_operational = isc.ToolStrip.create({
             width: "100%",
             members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
         });
@@ -124,15 +152,21 @@
 
     // <<-------------------------------------- Create - HLayout & VLayout ------------------------------------
     {
-        var HLayout_Actions_Operational = isc.HLayout.create({
+        var HLayout_Actions_operational = isc.HLayout.create({
             width: "100%",
-            members: [ToolStrip_Operational]
+            members: [ToolStrip_operational]
         });
 
-        var VLayout_Body_Operational = isc.VLayout.create({
+        var Hlayout_Grid_operational = isc.HLayout.create({
             width: "100%",
-            height:"100%",
-            members: [HLayout_Actions_Operational]
+            height: "100%",
+            members: [ListGrid_operational]
+        })
+
+        var VLayout_Body_operational = isc.TrVLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [HLayout_Actions_operational, Hlayout_Grid_operational]
         });
     }
     // ---------------------------------------- Create - HLayout & VLayout ---------------------------------->>
