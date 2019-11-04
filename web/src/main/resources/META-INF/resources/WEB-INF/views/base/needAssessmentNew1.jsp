@@ -114,7 +114,7 @@
                 // addUnknownValues:false,
                 displayField:"titleFa", valueField:"id",
                 filterFields:["titleFa", "code"],
-                pickListPlacement: "fillScreen",
+                // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 pickListFields:[
                     {name:"code"},
