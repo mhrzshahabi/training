@@ -3,6 +3,10 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
+    // for (var i = 0; i <document.getElementsByTagName("div").length ; i++) {
+    //     document.getElementsByTagName("div")[i].style.borderRadius = "10px";
+    // }
+
 
     var classMethod = "POST";
     var classWait;
@@ -683,14 +687,17 @@
                     }
                 }
             },
-            {type:"BlurbItem", value:"روزهای هفته:"},
-            {name: "saturday", type:"checkbox", title:"شنبه", startRow:true, titleOrientation:"top", labelAsTitle :false},
-            {name: "sunday", type:"checkbox", title:"یکشنبه", titleOrientation:"top", labelAsTitle :false},
-            {name: "monday", type:"checkbox", title:"دوشنبه", titleOrientation:"top", labelAsTitle :false},
-            {name: "tuesday", type:"checkbox", title:"سه&#8202شنبه", titleOrientation:"top", labelAsTitle :false},
-            {name: "wednesday", type:"checkbox", title:"چهارشنبه", titleOrientation:"top", labelAsTitle :false},
-            {name: "thursday", type:"checkbox", title:"پنجشنبه", titleOrientation:"top", labelAsTitle :false},
-            {name: "friday", type:"checkbox", title:"جمعه", titleOrientation:"top", labelAsTitle :false},
+            {
+                type:"BlurbItem",
+                value:"روزهای هفته:",
+            },
+            {name: "saturday", type:"checkbox", title:"شنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "sunday", type:"checkbox", title:"یکشنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "monday", type:"checkbox", title:"دوشنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "tuesday", type:"checkbox", title:"سه&#8202شنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "wednesday", type:"checkbox", title:"چهارشنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "thursday", type:"checkbox", title:"پنجشنبه", titleOrientation:"top", labelAsTitle :true},
+            {name: "friday", type:"checkbox", title:"جمعه", titleOrientation:"top", labelAsTitle :true},
         ],
         itemChanged: function (item) {
             // if (item.name === "courseId" || item.name === "termId" || item.name === "group") {
