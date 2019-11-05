@@ -62,7 +62,12 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true, border: "1px solid #CCC"});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.ViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        loadingMessage: "<spring:message code="loading"/>",
+    });
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
@@ -74,7 +79,10 @@
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "", useClientFiltering: false,
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+        useClientFiltering: false,
         changeOnKeypress: false,
     });
     isc.defineClass("TrHLayout", HLayout);
@@ -558,7 +566,9 @@
                             }
                         },
                         {
-                            title: "<spring:message code="all.processes"/>", icon: "<spring:url value="processList.png"/>", click: function () {
+                            title: "<spring:message code="all.processes"/>",
+                            icon: "<spring:url value="processList.png"/>",
+                            click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
                         }
@@ -575,6 +585,19 @@
         }),
     });
 
+    securityTSMB = isc.ToolStripMenuButton.create({
+        title: Canvas.imgHTML("<spring:url value="security.png"/>", 16, 16) + "&nbsp; <spring:message code="security"/>",
+        menu: isc.Menu.create({
+            data: [{
+                title: "<spring:message code="operationalUnit"/>",
+                icon: "<spring:url value="operationalUnit.png"/>",
+                click: function () {
+                    createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
+                }
+            }]
+        }),
+    });
+
     trainingToolStrip = isc.ToolStrip.create({
         membersMargin: 5,
         members: [
@@ -584,7 +607,8 @@
             runTSMB,
             evaluationTSMB,
             cartableTSMB,
-            reportTSMB
+            reportTSMB,
+            securityTSMB
         ]
     });
 
@@ -670,7 +694,7 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
-    var userFullName ='<%= SecurityUtil.getFullName()%>';
+    var userFullName = '<%= SecurityUtil.getFullName()%>';
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 
 
