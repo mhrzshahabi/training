@@ -22,7 +22,8 @@ public interface ITermService {
     SearchDTO.SearchRs<TermDTO.Info> search(SearchDTO.SearchRq request);
 
     String checkForConflict(String sData, String eData);
+
     String checkConflictWithoutThisTerm(String sData, String eData,Long id);
 
-   String LastCreatedCode(String code);
+    String LastCreatedCode(String code);
 }
