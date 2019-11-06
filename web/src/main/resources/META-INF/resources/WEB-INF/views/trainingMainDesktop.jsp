@@ -631,20 +631,23 @@
     });
 
     trainingTabSet = isc.TabSet.create({
+        minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton]
     });
 
     isc.TrVLayout.create({
         autoDraw: true,
+        overflow: "auto",
         members: [
             isc.HLayout.create({
                 height: "1%",
+                minWidth: 1024,
                 backgroundColor: "#003168",
                 defaultLayoutAlign: "center",
                 members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
             }),
-            isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
+            isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
             trainingTabSet,
         ]
     });
@@ -694,6 +697,7 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
+    const operationalUnitUrl = rootUrl + "/operationalUnit/";
     var userFullName = '<%= SecurityUtil.getFullName()%>';
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 

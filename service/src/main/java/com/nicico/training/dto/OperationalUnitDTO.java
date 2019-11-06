@@ -106,6 +106,6 @@ public class OperationalUnitDTO implements Serializable {
         private Integer status;
         private Integer startRow;
         private Integer endRow;
-        private Integer totalRow;
+        private Integer totalRows;
     }
 }
