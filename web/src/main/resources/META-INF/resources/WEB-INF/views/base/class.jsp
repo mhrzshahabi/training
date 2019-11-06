@@ -200,16 +200,6 @@
              {name: "information", title: "اطلاعات تکمیلی", align: "center"}
 
         ],
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: false,
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataArrived: function () {
                 if (class_userCartableId != null) {
                 var responseID = class_userCartableId;
@@ -277,7 +267,7 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius:"6px",
         numCols: 8,
-        colWidths:["5%","20%","5%","10%","10%","5%","10%","10%"],
+        colWidths:["6%","24%","6%","12%","12%","6%","12%","12%"],
         padding: 10,
         align: "center",
       /*  margin: 50,
@@ -374,12 +364,14 @@
                 name:"teachingType",
                 colSpan:2,
                 title:"روش آموزش:",
-                type:"selectItem",
+                type:"radioGroup",
+                vertical:false,
+                fillHorizontalSpace:true,
+                defaultValue:1,
                 valueMap: {
                     1:"حضوری",
                     2:"غیر حضوری",
-                    3:"مجازی",
-                    4:"عملی و کارگاهی",
+                    3:"مجازی"
                 }
                 // textBoxStyle:"textItemLite"
             },
@@ -396,22 +388,12 @@
                 showHintInField: true
             },
             {
-                name:"teachingBrand",
-                title:"نحوه آموزش:",
-                type:"selectItem",
-                valueMap: {
-                    1:"تمام وقت",
-                    2:"نیمه وقت",
-                    3:"پاره وقت"
-                }
-                // textBoxStyle:"textItemLite"
-            },
-            {
                 name: "teacherId",
-                colSpan:2,
+                // colSpan:2,
                 title: "<spring:message code='trainer'/>:",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
+                multiple: true,
                 // pickListWidth: 230,
                 // changeOnKeypress: true,
                 displayField: "personality.lastNameFa",
@@ -428,9 +410,9 @@
                 //     [{name: "personality.lastNameFa", filterOperator: "iContains"}]
             },
             {
-                name:"adminRunClass",
+                name:"supervisor",
                 colSpan:2,
-                title:"مسئول اجرای کلاس:",
+                title:"مسئول اجرا:",
                 type:"selectItem",
                 valueMap: {
                     1:"آقای دکتر سعیدی",
@@ -441,8 +423,39 @@
                 // textBoxStyle:"textItemLite"
             },
             {
+                name:"reason",
+                colSpan:2,
+                title:"علت برگزاری:",
+                // type:"selectItem",
+                // valueMap: {
+                //     1:"آقای دکتر سعیدی",
+                //     2:"خانم شاکری",
+                //     3:"خانم اسماعیلی",
+                //     4:"خانم احمدی",
+                // }
+                // textBoxStyle:"textItemLite"
+            },
+            {
+                name:"classStatus",
+                // colSpan:2,
+                rowSpan:2,
+                title:"وضعیت کلاس:",
+                type:"radioGroup",
+                // vertical:false,
+                fillHorizontalSpace:true,
+                defaultValue:1,
+                startRow:true,
+                valueMap: {
+                    1:"برنامه ریزی",
+                    2:"در حال اجرا",
+                    3:"پایان یافته"
+                }
+                // textBoxStyle:"textItemLite"
+            },
+            {
                 name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
                 // width:"250",
+                colSpan:2,
                 align:"center",
                 // optionDataSource:RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -453,10 +466,27 @@
                 pickListFields:[
                     {name:"code"},
                     {name:"titleFa"}
-                ]
+                ],
+                // startRow:true,
             },
             {
-                name:"trainingPlaceSet", editorType:"TrComboAutoRefresh", title:"محل برگزار کننده:",
+                name:"topology",
+                colSpan:2,
+                // rowSpan:2,
+                title:"چیدمان:",
+                type:"radioGroup",
+                vertical:false,
+                fillHorizontalSpace:true,
+                defaultValue:1,
+                valueMap: {
+                    1:"U شکل",
+                    2:"عادی",
+                    3:"مدور"
+                }
+                // textBoxStyle:"textItemLite"
+            },
+            {
+                name:"trainingPlaceSet", editorType:"TrComboAutoRefresh", title:"محل برگزاری:",
                 colSpan:2,
                 // width:"250",
                 align:"center",
@@ -477,8 +507,7 @@
                 colSpan:2,
                 type:"staticText",textBoxStyle:"textItemLite"
             },
-
-            // {name: },
+// {name: },
             <%--{--%>
                 <%--name: "duration",--%>
                 <%--title: "<spring:message code='duration'/>",--%>
@@ -522,8 +551,8 @@
         groupTitle: "اطلاعات پایه",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius:"6px",
-        numCols: 8,
-        colWidths:["5%","20%","5%","10%","10%","5%","10%","10%"],
+        numCols: 14,
+        colWidths:["7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
         align: "center",
         /*  margin: 50,
@@ -531,7 +560,46 @@
           canTabToIcons: false,*/
         fields: [
             {
+                name: "termId",
+                titleColSpan:1,
+                title: "<spring:message code='term'/>",
+                textAlign: "center",
+                required: true,
+                editorType: "ComboBoxItem",
+                displayField: "code",
+                valueField: "id",
+                optionDataSource: RestDataSource_Term_JspClass,
+                autoFetchData: true,
+                cachePickListResults: true,
+                useClientFiltering: true,
+                filterFields: ["code"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                colSpan: 3,
+                endRow:true,
+                pickListFields: [
+                    {
+                        name: "code",
+                        title: "<spring:message code='term.code'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "startDate",
+                        title: "<spring:message code='start.date'/>",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "endDate",
+                        title: "<spring:message code='end.date'/>",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
                 name: "startDate",
+                titleColSpan:1,
+
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_jspClass",
                 required: true,
@@ -545,6 +613,7 @@
                         displayDatePicker('startDate_jspClass', this, 'ymd', '/');
                     }
                 }],
+                colSpan: 3,
                 changed: function () {
                     var dateCheck;
                     dateCheck = checkDate(DynamicForm_Class_JspClass.getValue("startDate"));
@@ -556,7 +625,25 @@
                 }
             },
             {
+                name:"teachingBrand",
+                title:"نحوه آموزش:",
+                type:"radioGroup",
+                // vertical:false,
+                rowSpan:2,
+                fillHorizontalSpace:true,
+                defaultValue:1,
+                endRow:true,
+                valueMap: {
+                    1:"تمام وقت",
+                    2:"نیمه وقت",
+                    3:"پاره وقت"
+                }
+                // textBoxStyle:"textItemLite"
+            },
+            {
                 name: "endDate",
+                titleColSpan:1,
+
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
@@ -570,6 +657,7 @@
                         displayDatePicker('endDate_jspClass', this, 'ymd', '/');
                     }
                 }],
+                colSpan: 3,
                 changed: function () {
                     var dateCheck;
                     dateCheck = checkDate(DynamicForm_Class_JspClass.getValue("endDate"));
@@ -595,41 +683,14 @@
                     }
                 }
             },
-            {
-                name: "termId",
-                title: "<spring:message code='term'/>",
-                textAlign: "center",
-                required: true,
-                editorType: "ComboBoxItem",
-                displayField: "code",
-                valueField: "id",
-                optionDataSource: RestDataSource_Term_JspClass,
-                autoFetchData: true,
-                cachePickListResults: true,
-                useClientFiltering: true,
-                filterFields: ["code"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                colSpan: 3,
-                pickListFields: [
-                    {
-                        name: "code",
-                        title: "<spring:message code='term.code'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "startDate",
-                        title: "<spring:message code='start.date'/>",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "endDate",
-                        title: "<spring:message code='end.date'/>",
-                        filterOperator: "iContains"
-                    }
-                ]
-            }
+            {type:"BlurbItem", value:"روزهای هفته:"},
+            {name: "saturday", type:"checkbox", title:"شنبه", startRow:true, titleOrientation:"top", labelAsTitle :false},
+            {name: "sunday", type:"checkbox", title:"یکشنبه", titleOrientation:"top", labelAsTitle :false},
+            {name: "monday", type:"checkbox", title:"دوشنبه", titleOrientation:"top", labelAsTitle :false},
+            {name: "tuesday", type:"checkbox", title:"سه&#8202شنبه", titleOrientation:"top", labelAsTitle :false},
+            {name: "wednesday", type:"checkbox", title:"چهارشنبه", titleOrientation:"top", labelAsTitle :false},
+            {name: "thursday", type:"checkbox", title:"پنجشنبه", titleOrientation:"top", labelAsTitle :false},
+            {name: "friday", type:"checkbox", title:"جمعه", titleOrientation:"top", labelAsTitle :false},
         ],
         itemChanged: function (item) {
             // if (item.name === "courseId" || item.name === "termId" || item.name === "group") {
@@ -687,8 +748,11 @@
 
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
-        width: "99%",
-        // height: "100%",
+        width: "90%",
+        autoSize:false,
+        height: "70%",
+        keepInParentRect:true,
+        // placement:"fillPanel",
         align: "center",
         border: "1px solid gray",
         show:function(){

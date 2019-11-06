@@ -31,11 +31,41 @@ public class Tclass extends Auditable {
     @Column(name = "f_course")
     private Long courseId;
 
-    @Column(name = "c_reason")
-    private String reason;
+    @Column(name = "n_min_capacity")
+    private Long minCapacity;
+
+    @Column(name = "n_max_capacity")
+    private Long maxCapacity;
+
+    @Column(name = "c_code", nullable = false)
+    private String code;
 
     @Column(name = "c_title_class")
     private String titleClass;
+
+    @Column(name = "c_teaching_type")
+    private String teachingType;//روش آموزش
+
+    @Column(name = "n_h_duration")
+    private Long hDuration;
+
+    @Column(name = "n_d_duration")
+    private Long dDuration;
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_class_teacher",
+            joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_teacher_id", referencedColumnName = "id")})
+    private Set<Teacher> teacherSet;
+
+    @Column(name = "f_supervisor")
+    private Long supervisor;
+
+    @Column(name = "c_reason")
+    private String reason;
+
+    @Column(name = "c_status")
+    private String classStatus;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "f_institute", insertable = false, updatable = false)
@@ -50,6 +80,9 @@ public class Tclass extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
     private Set<TrainingPlace> trainingPlaceSet;
 
+    @Column(name = "n_group", nullable = false)
+    private Long group;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_term", insertable = false, updatable = false)
     private Term term;
@@ -57,23 +90,8 @@ public class Tclass extends Auditable {
     @Column(name = "f_term")
     private Long termId;
 
-    @Column(name = "n_group", nullable = false)
-    private Long group;
-
-    @Column(name = "c_teaching_type")
-    private String teachingType;//روش آموزش
-
     @Column(name = "c_teaching_brand")
     private String teachingBrand;//نحوه آموزش
-
-    @Column(name = "c_code", nullable = false)
-    private String code;
-
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_class_teacher",
-            joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_teacher_id", referencedColumnName = "id")})
-    private Set<Teacher> teacherSet;
 
     @Column(name = "c_start_date", nullable = false)
     private String startDate;
@@ -81,20 +99,28 @@ public class Tclass extends Auditable {
     @Column(name = "c_end_date", nullable = false)
     private String endDate;
 
-    @Column(name = "c_week_days")
-    private String weekDays;
+    @Column(name = "b_saturday")
+    private Boolean saturday;
 
-    @Column(name = "f_supervisor")
-    private Long supervisor;
+    @Column(name = "b_sunday")
+    private Boolean sunday;
 
-    @Column(name = "c_state")
-    private String state;
+    @Column(name = "b_monday")
+    private Boolean monday;
+
+    @Column(name = "b_tuesday")
+    private Boolean tuesday;
+
+    @Column(name = "b_wednesday")
+    private Boolean wednesday;
+
+    @Column(name = "b_thursday")
+    private Boolean thursday;
+    @Column(name = "b_friday")
+    private Boolean friday;
 
     @Column(name = "c_topology")
     private String topology;//چیدمان
-
-    @Column(name = "n_duration")
-    private Long duration;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_student_class",
