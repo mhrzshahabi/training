@@ -4,14 +4,14 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.OperationalUnitDTO;
-import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.IOperationalUnitService;
 import com.nicico.training.model.OperationalUnit;
-import com.nicico.training.model.Term;
 import com.nicico.training.repository.OperationalUnitDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,7 +51,11 @@ public class OperationalUnitService implements IOperationalUnitService {
     @Override
     public OperationalUnitDTO.Info create(OperationalUnitDTO.Create request) {
         OperationalUnit operationalUnit = modelMapper.map(request, OperationalUnit.class);
-        return modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+        try {
+            return modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        }
     }
 
     //*********************************
@@ -64,7 +68,13 @@ public class OperationalUnitService implements IOperationalUnitService {
         OperationalUnit operationalUnit = new OperationalUnit();
         modelMapper.map(currentOperationalUnit, operationalUnit);
         modelMapper.map(request, operationalUnit);
-        return modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+
+        try {
+            return modelMapper.map(operationalUnitDAO.saveAndFlush(operationalUnit), OperationalUnitDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        }
+
     }
 
     //*********************************

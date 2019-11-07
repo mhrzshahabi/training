@@ -107,8 +107,18 @@
             sortField: 0,
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-                {name: "unitCode", title: "<spring:message code="unitCode"/>", align: "center", filterOperator: "contains"},
-                {name: "operationalUnit", title: "<spring:message code="unitName"/>", align: "center", filterOperator: "contains"}
+                {
+                    name: "unitCode",
+                    title: "<spring:message code="unitCode"/>",
+                    align: "center",
+                    filterOperator: "contains"
+                },
+                {
+                    name: "operationalUnit",
+                    title: "<spring:message code="unitName"/>",
+                    align: "center",
+                    filterOperator: "contains"
+                }
             ],
             doubleClick: function () {
                 show_OperationalUnitEditForm();
@@ -264,12 +274,12 @@
         //*****insert function*****
         function save_OperationalUnit() {
 
+            if (!DynamicForm_OperationalUnit.validate())
+                return;
+
             let operationalUnitData = DynamicForm_OperationalUnit.getValues();
             let operationalUnitSaveUrl = operationalUnitUrl;
-            if (operational_method.localeCompare("PUT") === 0) {
-                // var jobRecord = ListGrid_Term.getSelectedRecord();
-                // operationalUnitSaveUrl += jobRecord.id;
-            }
+
             isc.RPCManager.sendRequest(TrDSRequest(operationalUnitSaveUrl, operational_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
         }
 
@@ -337,31 +347,45 @@
         }
 
         //*****show action result function*****
+        var MyOkDialog_Operational;
+
         function show_OperationalUnitActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode == 200 || respCode == 201) {
                 ListGrid_operational.invalidateCache();
-                var MyOkDialog_job = isc.MyOkDialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>",
-
+                MyOkDialog_Operational = isc.MyOkDialog.create({
+                    message: "<spring:message code="global.form.request.successful"/>"
                 });
 
-                setTimeout(function () {
-                    MyOkDialog_term.close();
-
-                }, 3000);
-
+                close_MyOkDialog_Operational()
                 Window_OperationalUnit.close();
 
             } else {
-                var MyOkDialog_term = isc.MyOkDialog.create({
-                    message: "<spring:message code="global.form.response.error"/> : " + resp.httpResponseCode,
-                });
+                let respText = resp.httpResponseText;
+                if (resp.httpResponseCode === 406) {
 
-                setTimeout(function () {
-                    MyOkDialog_term.close();
-                }, 3000);
+                    MyOkDialog_Operational = isc.MyOkDialog.create({
+                        message: "<spring:message code="msg.record.duplicate"/>"
+                    });
+
+                    close_MyOkDialog_Operational()
+
+                } else {
+
+                    MyOkDialog_Operational = isc.MyOkDialog.create({
+                        message: "<spring:message code="msg.operation.error"/>"
+                    });
+
+                    close_MyOkDialog_Operational()
+                }
             }
+        }
+
+        //*****close dialog*****
+        function close_MyOkDialog_Operational() {
+            setTimeout(function () {
+                MyOkDialog_Operational.close();
+            }, 3000);
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
