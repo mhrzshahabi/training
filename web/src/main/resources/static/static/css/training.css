@@ -6,3 +6,10 @@
     direction: ltr;
 }
 
+.checkboxFalse{
+    max-width: 100% !important;
+}
+
+span{
+    display: inline-flex  !important;
+}

@@ -34,10 +34,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/term")
 public class TermRestController {
-  private final TermService termService;
-   private final ObjectMapper objectMapper;
-   private final DateUtil dateUtil;
-   private final ReportUtil reportUtil;
+    private final TermService termService;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
+    private final ReportUtil reportUtil;
 
 
     @Loggable
@@ -46,7 +46,7 @@ public class TermRestController {
         return new ResponseEntity<>(termService.get(id), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<TermDTO.Info>> list() {
         return new ResponseEntity<>(termService.list(), HttpStatus.OK);
@@ -59,7 +59,7 @@ public class TermRestController {
         return new ResponseEntity<>(termService.create(create), HttpStatus.CREATED);
     }
 
- @Loggable
+    @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         TermDTO.Update update = (new ModelMapper()).map(request, TermDTO.Update.class);
@@ -73,7 +73,7 @@ public class TermRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody TermDTO.Delete request) {
         termService.delete(request);
@@ -81,14 +81,14 @@ public class TermRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<TermDTO.TermSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                   @RequestParam("_endRow") Integer endRow,
+                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -98,7 +98,7 @@ public class TermRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -122,16 +122,15 @@ public class TermRestController {
     }
 
 
-      @Loggable
+    @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<TermDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(termService.search(request), HttpStatus.OK);
     }
 
 
-
     @Loggable
-   @PostMapping(value = {"/printWithCriteria/{type}"})
+    @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
                                   @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
@@ -158,26 +157,25 @@ public class TermRestController {
     }
 
     @Loggable
-    @GetMapping(value ={"/checkForConflict/{sData}/{eData}"})
-    public ResponseEntity<String> checkForConflict(@PathVariable String sData,@PathVariable String eData) {
-       sData= sData.substring(0,4)+"/"+sData.substring(4,6)+"/"+sData.substring(6,8);
-       eData= eData.substring(0,4)+"/"+eData.substring(4,6)+"/"+eData.substring(6,8);
-       return new ResponseEntity<>(termService.checkForConflict(sData, eData),HttpStatus.OK);
-        }
+    @GetMapping(value = {"/checkForConflict/{sData}/{eData}"})
+    public ResponseEntity<String> checkForConflict(@PathVariable String sData, @PathVariable String eData) {
+        sData = sData.substring(0, 4) + "/" + sData.substring(4, 6) + "/" + sData.substring(6, 8);
+        eData = eData.substring(0, 4) + "/" + eData.substring(4, 6) + "/" + eData.substring(6, 8);
+        return new ResponseEntity<>(termService.checkForConflict(sData, eData), HttpStatus.OK);
+    }
 
- @Loggable
-    @GetMapping(value ={"/checkForConflict/{sData}/{eData}/{id}"})
-    public ResponseEntity<String> checkConflictWithoutThisTerm(@PathVariable String sData,@PathVariable String eData,@PathVariable Long id) {
-       sData= sData.substring(0,4)+"/"+sData.substring(4,6)+"/"+sData.substring(6,8);
-       eData= eData.substring(0,4)+"/"+eData.substring(4,6)+"/"+eData.substring(6,8);
-       return new ResponseEntity<>(termService.checkConflictWithoutThisTerm(sData, eData,id),HttpStatus.OK);
-        }
+    @Loggable
+    @GetMapping(value = {"/checkForConflict/{sData}/{eData}/{id}"})
+    public ResponseEntity<String> checkConflictWithoutThisTerm(@PathVariable String sData, @PathVariable String eData, @PathVariable Long id) {
+        sData = sData.substring(0, 4) + "/" + sData.substring(4, 6) + "/" + sData.substring(6, 8);
+        eData = eData.substring(0, 4) + "/" + eData.substring(4, 6) + "/" + eData.substring(6, 8);
+        return new ResponseEntity<>(termService.checkConflictWithoutThisTerm(sData, eData, id), HttpStatus.OK);
+    }
 
-        @Loggable
-        @GetMapping(value = {"/getCode/{code}"})
-        public  ResponseEntity<String> getCode(@PathVariable String code)
-        {
-        return new ResponseEntity<>(termService.LastCreatedCode(code),HttpStatus.OK);
-        }
+    @Loggable
+    @GetMapping(value = {"/getCode/{code}"})
+    public ResponseEntity<String> getCode(@PathVariable String code) {
+        return new ResponseEntity<>(termService.LastCreatedCode(code), HttpStatus.OK);
+    }
 
 }

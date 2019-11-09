@@ -133,7 +133,6 @@ public class Institute extends Auditable {
     @Column(name = "e_license_type")
     private Integer elicenseTypeId;
 
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_institute_parent", insertable = false, updatable = false)
     private Institute parentInstitute;

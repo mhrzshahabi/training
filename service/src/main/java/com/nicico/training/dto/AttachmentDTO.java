@@ -9,8 +9,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -18,57 +16,40 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TermDTO implements Serializable {
+public class AttachmentDTO {
 
-    @ApiModelProperty(required = true)
-    private String code;
-
-    @ApiModelProperty(required = true)
-    private String titleFa;
-
-    @ApiModelProperty(required = true)
-    private String startDate;
-
-    @ApiModelProperty(required = true)
-    private String endDate;
-
-
-    @ApiModelProperty()
+    private String entityName;
+    private Long objectId;
+    private String fileName;
+    private String fileType;
     private String description;
 
-
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermInfo")
-    public static class Info extends TermDTO {
+    @ApiModel("Attachment")
+    public static class Info extends AttachmentDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermCreateRq")
-    public static class Create extends TermDTO {
-
+    @ApiModel("AttachmentCreateRq")
+    public static class Create extends AttachmentDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermUpdateRq")
-    public static class Update extends TermDTO {
-
+    @ApiModel("AttachmentUpdateRq")
+    public static class Update extends AttachmentDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermDeleteRq")
+    @ApiModel("AttachmentDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -78,20 +59,10 @@ public class TermDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermIdListRq")
-    public static class TermIdList {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private List<Long> ids;
-    }
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TermSpecRs")
-    public static class TermSpecRs {
-        private TermDTO.SpecRs response;
+    @ApiModel("AttachmentSpecRs")
+    public static class AccountInfoSpecRs {
+        private SpecRs response;
     }
 
     @Getter
@@ -99,13 +70,12 @@ public class TermDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TermDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
 
 }
 

@@ -13,35 +13,27 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
+
 @Getter
 @Setter
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class TermDTO implements Serializable {
+public class OperationalUnitDTO implements Serializable {
 
     @ApiModelProperty(required = true)
-    private String code;
+    private String unitCode;
 
     @ApiModelProperty(required = true)
-    private String titleFa;
+    private String operationalUnit;
 
-    @ApiModelProperty(required = true)
-    private String startDate;
-
-    @ApiModelProperty(required = true)
-    private String endDate;
-
-
-    @ApiModelProperty()
-    private String description;
-
+    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermInfo")
-    public static class Info extends TermDTO {
+    @ApiModel("OperationalUnitInfo")
+    public static class Info extends OperationalUnitDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -49,63 +41,71 @@ public class TermDTO implements Serializable {
         private String lastModifiedBy;
     }
 
+    //*********************************
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermCreateRq")
-    public static class Create extends TermDTO {
+    @ApiModel("OperationalUnitCreateRq")
+    public static class Create extends OperationalUnitDTO {
 
     }
 
+    //*********************************
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermUpdateRq")
-    public static class Update extends TermDTO {
+    @ApiModel("OperationalUnitUpdateRq")
+    public static class Update extends OperationalUnitDTO {
 
     }
 
+    //*********************************
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermDeleteRq")
+    @ApiModel("OperationalUnitDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
 
+    //*********************************
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TermIdListRq")
-    public static class TermIdList {
+    @ApiModel("OperationalUnitIdListRq")
+    public static class OperationalUnitIdList {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
 
+    //*********************************
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TermSpecRs")
-    public static class TermSpecRs {
-        private TermDTO.SpecRs response;
+    @ApiModel("OperationalUnitSpecRs")
+    public static class OperationalUnitSpecRs {
+        private OperationalUnitDTO.SpecRs response;
     }
+
+    //*********************************
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TermDTO.Info> data;
+        private List<OperationalUnitDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
-
 }
-

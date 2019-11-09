@@ -9,17 +9,11 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-
-
-
 // <script>
-
-    <%--    <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>--%>
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
     var viewDocButton = null;
-
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
             {name: "REJECTVAL", type: "text", required: true},
@@ -38,7 +32,7 @@ abaspour 9803
 
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
     <c:if test="${taskFormVariable.objectType == 'SelectItem' && taskFormVariable.dsName != null}">
-    var ${taskFormVariable.dsName} =
+   // var ${taskFormVariable.dsName} =
     isc.RestDataSource.create({
         fields: [
             <%--{name: "crDate", title: "تاریخ ایجاد",type:"text"},--%>
@@ -82,7 +76,8 @@ abaspour 9803
         width: "150",
         click: function () {
             var data = taskStartConfirmForm.getValues();
-            createTab(targetTitleFa, "${addDocumentUrl}" + "?sent_id=" + data.cId, false);
+            class_userCartableId=data.cId;
+            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
             <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
         }
     });
@@ -310,6 +305,10 @@ abaspour 9803
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
                                 if (RpcResponse_o.data == 'success') {
+                                    //------------------------------------------------------------------
+                                     trainingTabSet.removeTab(targetTitleFa);
+                                    createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
+                                    //-----------------------------------------------------------------------
                                     isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
@@ -337,6 +336,8 @@ abaspour 9803
         width: "150",
         click: function () {
             taskConfirmationWindow.hide();
+            trainingTabSet.removeTab(targetTitleFa);
+            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
 }
         }
     );
@@ -461,7 +462,7 @@ abaspour 9803
             viewDocButton,
             doStartTaskButton,
             doRejectTaskButton,
-            doCancelUserTaskButton
+          doCancelUserTaskButton
         ]
     });
     isc.HTMLFlow.create({
@@ -495,4 +496,3 @@ abaspour 9803
         ]
     });
 
-    //test

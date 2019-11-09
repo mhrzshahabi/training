@@ -37,7 +37,7 @@ public class CourseDTO implements Serializable {
 
     @NotNull
     @ApiModelProperty(required = true)
-    private Long theoryDuration;
+    private Float theoryDuration;
 
     //    @NotNull
 //    @ApiModelProperty(required = true)
@@ -102,6 +102,7 @@ public class CourseDTO implements Serializable {
     @Setter
     @ApiModel("CourseInfoTuple")
     public static class CourseInfoTuple {
+        private Long id;
         private String code;
         private String titleFa;
     }

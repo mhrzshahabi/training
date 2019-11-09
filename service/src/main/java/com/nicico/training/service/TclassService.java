@@ -11,17 +11,17 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -30,6 +30,7 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
+    private final TeacherDAO teacherDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -51,6 +52,8 @@ public class TclassService implements ITclassService {
     @Override
     public TclassDTO.Info create(TclassDTO.Create request) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
+        List<Long> teacherSet = request.getTeacherSet();
+        List<Teacher> allById = teacherDAO.findAllById(teacherSet);
         return save(tclass);
     }
 
@@ -59,10 +62,16 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        List<Long> teacherSet = request.getTeacherSet();
+        List<Teacher> allById = teacherDAO.findAllById(teacherSet);
+        HashSet<Teacher> teachers = new HashSet<>(allById);
         Tclass updating = new Tclass();
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        updating.setTeacherSet(teachers);
+        Tclass save = tclassDAO.save(updating);
+        TclassDTO.Info map = modelMapper.map(save, TclassDTO.Info.class);
+        return map;
     }
 
     @Transactional

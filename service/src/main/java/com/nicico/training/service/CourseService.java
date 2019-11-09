@@ -510,7 +510,9 @@ public class CourseService implements ICourseService {
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
-            set.addAll(skillGroupSet);
+            for (SkillGroup skillGroup : skillGroupSet) {
+                set.add(skillGroup);
+            }
         }
         Optional.ofNullable(set)
                 .ifPresent(sets ->

@@ -754,7 +754,7 @@
                 required: true,
                 // titleOrientation: "top",
                 textAlign: "center",
-                keyPressFilter: "[0-9]",
+                keyPressFilter: "[0-9.]",
                 requiredMessage: "لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
                 validators: [{
                     type: "integerRange", min: 0, max: 999,
@@ -2239,18 +2239,18 @@
                 return;
             }
             var allData = ListGrid_Syllabus_Goal.getData().localData;
-            let da = 0;
-            let ma = 0;
-            let ne = 0;
+            let da = 0.0;
+            let ma = 0.0;
+            let ne = 0.0;
             for (let i = 0; i < allData.length; i++) {
                 if (allData.get(i).edomainTypeId == 1) {
-                    da = da + allData.get(i).practicalDuration;
+                    da = da + allData.get(i).practicalDuration + allData.get(i).theoreticalDuration;
                 }
                 if (allData.get(i).edomainTypeId == 2) {
-                    ma = ma + allData.get(i).practicalDuration;
+                    ma = ma + allData.get(i).practicalDuration + allData.get(i).theoreticalDuration;
                 }
                 if (allData.get(i).edomainTypeId == 3) {
-                    ne = ne + allData.get(i).practicalDuration;
+                    ne = ne + allData.get(i).practicalDuration + allData.get(i).theoreticalDuration;
                 }
             }
             let sum = da + ma + ne;

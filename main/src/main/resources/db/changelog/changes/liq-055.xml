@@ -1,0 +1,75 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="jafari-h (generated)" id="1572955154397-141">
+        <addColumn tableName="tbl_class">
+            <column name="b_friday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-142">
+        <addColumn tableName="tbl_class">
+            <column name="b_monday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-143">
+        <addColumn tableName="tbl_class">
+            <column name="b_saturday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-144">
+        <addColumn tableName="tbl_class">
+            <column name="b_sunday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-145">
+        <addColumn tableName="tbl_class">
+            <column name="b_thursday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-146">
+        <addColumn tableName="tbl_class">
+            <column name="b_tuesday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-147">
+        <addColumn tableName="tbl_class">
+            <column name="b_wednesday" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-148">
+        <addColumn tableName="tbl_class">
+            <column name="c_status" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-149">
+        <addColumn tableName="tbl_class">
+            <column name="n_d_duration" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-150">
+        <addColumn tableName="tbl_class">
+            <column name="n_h_duration" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-151">
+        <addColumn tableName="tbl_class">
+            <column name="n_max_capacity" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-152">
+        <addColumn tableName="tbl_class">
+            <column name="n_min_capacity" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1572955154397-220">
+        <dropColumn columnName="C_STATE" tableName="TBL_CLASS"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-221">
+        <dropColumn columnName="C_WEEK_DAYS" tableName="TBL_CLASS"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572955154397-222">
+        <dropColumn columnName="N_DURATION" tableName="TBL_CLASS"/>
+    </changeSet>
+
+</databaseChangeLog>

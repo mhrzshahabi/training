@@ -2,7 +2,39 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
 
+    <changeSet author="jafari-h (generated)" id="1572761605016-130">
+        <addColumn tableName="tbl_class">
+            <column name="c_reason" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572761605016-131">
+        <addColumn tableName="tbl_class">
+            <column name="c_title_class" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572761605016-132">
+        <addColumn tableName="tbl_class">
+            <column name="f_institute" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1572761605016-133">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_class" constraintName="FK85kc4j7097gpad0a2a4lveis8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
 
+    <changeSet author="jafari-h (generated)" id="1572761605016-4">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16"/>
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16" referencedColumnNames="id" referencedTableName="tbl_teacher"/>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1572761605016-7">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FK2kudtmt3prra8h7mweggqfr69"/>
+        <addForeignKeyConstraint baseColumnNames="f_term" baseTableName="tbl_class" constraintName="FK2kudtmt3prra8h7mweggqfr69" referencedColumnNames="id" referencedTableName="tbl_term"/>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1572761605016-59">
+        <dropForeignKeyConstraint baseTableName="tbl_class" constraintName="FKm6x5pso1g2egu20vd6l4m3481"/>
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_class" constraintName="FKm6x5pso1g2egu20vd6l4m3481" referencedColumnNames="id" referencedTableName="tbl_course"/>
+    </changeSet>
 
 
 </databaseChangeLog>

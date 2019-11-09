@@ -303,7 +303,7 @@
     });
 
     userLabel = isc.Label.create({
-        contents: "<spring:message code="user"/>" + ": " + userFullName,
+        contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
         styleName: "customHeader",
         padding: 4,
     });
@@ -560,7 +560,9 @@
                             }
                         },
                         {
-                            title: "<spring:message code="all.processes"/>", icon: "<spring:url value="processList.png"/>", click: function () {
+                            title: "<spring:message code="all.processes"/>",
+                            icon: "<spring:url value="processList.png"/>",
+                            click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
                         }
@@ -586,6 +588,13 @@
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
                 },
+                {
+                    title: "<spring:message code="operationalUnit"/>",
+                    icon: "<spring:url value="operationalUnit.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
+                    }
+                }
             ]
         }),
     });
@@ -606,7 +615,8 @@
             runTSMB,
             evaluationTSMB,
             cartableTSMB,
-            reportTSMB
+            reportTSMB,
+            securityTSMB
         ]
     });
 
@@ -629,20 +639,23 @@
     });
 
     trainingTabSet = isc.TabSet.create({
+        minWidth: 1024,
         tabs: [],
         tabBarControls: [closeAllButton]
     });
 
     isc.TrVLayout.create({
         autoDraw: true,
+        overflow: "auto",
         members: [
             isc.HLayout.create({
                 height: "1%",
+                minWidth: 1024,
                 backgroundColor: "#003168",
                 defaultLayoutAlign: "center",
                 members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
             }),
-            isc.HLayout.create({height: "1%", members: [trainingToolStrip]}),
+            isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
             trainingTabSet,
         ]
     });
@@ -692,6 +705,8 @@
     const jobGroupUrl = rootUrl + "/job-group/";
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
+    const operationalUnitUrl = rootUrl + "/operationalUnit/";
+    var userFullName = '<%= SecurityUtil.getFullName()%>';
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
