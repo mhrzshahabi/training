@@ -39,9 +39,11 @@
     var RestDataSource_Teacher_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "personality"}
+            {name: "personality"},
+            {name: "personality.lastNameFa"}
         ],
-        fetchDataURL: teacherUrl + "fullName-list?_startRow=0&_endRow=55"
+        // fetchDataURL: teacherUrl + "fullName-list?_startRow=0&_endRow=55"
+        fetchDataURL: teacherUrl + "fullName-list"
     });
 
     var RestDataSource_Course_JspClass = isc.TrDS.create({
@@ -259,6 +261,10 @@
 
     });
 
+    var VM_JspClass = isc.ValuesManager.create({
+
+    })
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -274,6 +280,7 @@
         colWidths:["6%","24%","6%","12%","12%","6%","12%","12%"],
         padding: 10,
         align: "center",
+        valuesManager: "VM_JspClass",
       /*  margin: 50,
 
         canTabToIcons: false,*/
@@ -326,7 +333,7 @@
                 <%--}--%>
             <%--},--%>
             {
-                name:"courseId", editorType:"TrComboAutoRefresh", title:"دوره:",
+                name:"course.id", editorType:"TrComboAutoRefresh", title:"دوره:",
                 // width:"250",
                 align:"center",
                 optionDataSource:RestDataSource_Course_JspClass,
@@ -392,26 +399,37 @@
                 showHintInField: true
             },
             {
-                name: "teacherId",
+                // name: "teacher.personality.id",
+                name: "teacherSet",
+                // multipleAppearance: "picklist",
                 // colSpan:2,
                 title: "<spring:message code='trainer'/>:",
                 textAlign: "center",
-                editorType: "ComboBoxItem",
+                editorType: "select",
                 multiple: true,
                 // pickListWidth: 230,
                 // changeOnKeypress: true,
-                displayField: "personality.lastNameFa",
+                displayField: "fullNameFa",
                 valueField: "id",
                 required: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
-                autoFetchData: true,
-                cachePickListResults: false,
+                // cachePickListResults: false,
                 // filterFields: ["personality.lastNameFa"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                addUnknownValues: false,
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
+                // addUnknownValues: false,
                 // pickListFields:
                 //     [{name: "personality.lastNameFa", filterOperator: "iContains"}]
+                pickListFields:[
+                    {name:"personality.lastNameFa",title:"نام خانوادگی", titleAlign:"center"},
+                    {name:"personality.firstNameFa",title:"نام", titleAlign:"center"},
+                    {name:"personality.nationalCode",title:"کد ملی", titleAlign:"center"}
+                ],
+                filterFields:[
+                    {name:"personality.lastNameFa"},
+                    {name:"personality.firstNameFa"},
+                    {name:"personality.nationalCode"}
+                ]
             },
             {
                 name:"supervisor",
@@ -559,6 +577,7 @@
         colWidths:["7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
         align: "center",
+        valuesManager: "VM_JspClass",
         /*  margin: 50,
 
           canTabToIcons: false,*/
@@ -727,12 +746,13 @@
 
             if (startDateCheck === false || endDateCheck === false)
                 return;
-            DynamicForm_Class_JspClass.validate();
-            if (DynamicForm_Class_JspClass.hasErrors()) {
+            VM_JspClass.validate();
+            if (VM_JspClass.hasErrors()) {
                 return;
             }
 
-            var data = DynamicForm_Class_JspClass.getValues();
+            var data = VM_JspClass.getValues();
+            data.courseId = data.course.id;
 
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
@@ -1201,11 +1221,12 @@
         } else {
             classMethod = "PUT";
             url = classUrl + record.id;
-            DynamicForm_Class_JspClass.clearValues();
-            DynamicForm_Class_JspClass.editRecord(record);
+            VM_JspClass.clearValues();
+            VM_JspClass.editRecord(record);
+            console.log(VM_JspClass)
             // DynamicForm_Class_JspClass.getField("courseId").fetchData();
             // DynamicForm_Class_JspClass.getField("courseId").setValue(record.courseId);
-            DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
+            // DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
             Window_Class_JspClass.show();
         }
     }

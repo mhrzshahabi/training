@@ -56,7 +56,7 @@ public class Tclass extends Auditable {
     @JoinTable(name = "tbl_class_teacher",
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_teacher_id", referencedColumnName = "id")})
-    private Set<Teacher> teacherSet;
+    private List<Teacher> teacherSet;
 
     @Column(name = "f_supervisor")
     private Long supervisor;
@@ -116,6 +116,7 @@ public class Tclass extends Auditable {
 
     @Column(name = "b_thursday")
     private Boolean thursday;
+
     @Column(name = "b_friday")
     private Boolean friday;
 

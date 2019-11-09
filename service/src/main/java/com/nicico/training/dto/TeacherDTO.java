@@ -99,7 +99,11 @@ public class TeacherDTO {
     @ApiModel("TeacherFullNameTuple")
     public static class TeacherFullNameTuple {
         private Long id;
-        private PersonalInfoDTO.PersonalInfoFullNameTuple personality;
+        private PersonalInfoDTO personality;
+        private String fullNameFa;
+        public String getFullNameFa() {
+            return String.format("%s %s",personality.getFirstNameFa(),personality.getLastNameFa());
+        }
     }
 
     @Getter
