@@ -1483,7 +1483,7 @@
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
         if (file.size > 1024000) {
-            createDialog("info", "<spring:message code="photo.size.hint"/>", "<spring:message code='error'/>");
+            createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
         } else {
             TrnXmlHttpRequest(formData1, personalInfoUrl + "addTempAttach", "POST", personalInfo_showTempAttach_result)
         }
@@ -1496,7 +1496,7 @@
             showAttachViewLoader.show();
         } else if (req.status === 406) {
             if (req.response.data === "wrong size")
-                createDialog("info", "<spring:message code="photo.size.hint"/>", "<spring:message code='error'/>");
+                createDialog("info", "<spring:message code="file.size.hint"/>", "<spring:message code='error'/>");
             else if (req.response === "wrong dimension")
                 createDialog("info", "<spring:message code="photo.dimension.hint"/>", "<spring:message code='error'/>");
         } else {

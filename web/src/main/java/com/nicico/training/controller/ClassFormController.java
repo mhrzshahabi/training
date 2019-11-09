@@ -96,6 +96,6 @@ public class ClassFormController {
 
 	@RequestMapping("/attachments-tab")
 	public String attachmentsTab() {
-		return "classTabs/attachments";
+		return "classTabs/classAttachments";
 	}
 }

@@ -8,17 +8,25 @@ import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.model.Attachment;
 import com.nicico.training.repository.AttachmentDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.File;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
 public class AttachmentService implements IAttachmentService {
+
+    @Value("${nicico.upload.dir}")
+    private String uploadDir;
+
     private final ModelMapper modelMapper;
     private final AttachmentDAO attachmentDAO;
 
@@ -48,7 +56,11 @@ public class AttachmentService implements IAttachmentService {
     @Override
     public AttachmentDTO.Info create(AttachmentDTO.Create request) {
         final Attachment attachment = modelMapper.map(request, Attachment.class);
-        return modelMapper.map(attachmentDAO.save(attachment), AttachmentDTO.Info.class);
+        try {
+            return modelMapper.map(attachmentDAO.saveAndFlush(attachment), AttachmentDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -59,7 +71,11 @@ public class AttachmentService implements IAttachmentService {
         Attachment updating = new Attachment();
         modelMapper.map(attachment, updating);
         modelMapper.map(request, updating);
-        return modelMapper.map(attachmentDAO.save(updating), AttachmentDTO.Info.class);
+        try {
+            return modelMapper.map(attachmentDAO.saveAndFlush(updating), AttachmentDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -67,14 +83,24 @@ public class AttachmentService implements IAttachmentService {
     public void delete(Long id) {
         final Optional<Attachment> one = attachmentDAO.findById(id);
         final Attachment attachment = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        attachmentDAO.delete(attachment);
+        String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
+        try {
+            attachmentDAO.delete(attachment);
+            File file = new File(fileFullPath);
+            new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted").mkdirs();
+            File movedFile = new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted" + File.separator + attachment.getId() + "." + attachment.getFileType());
+            file.renameTo(movedFile);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional
     @Override
     public void delete(AttachmentDTO.Delete request) {
-        final List<Attachment> gAllById = attachmentDAO.findAllById(request.getIds());
-        attachmentDAO.deleteAll(gAllById);
+        for(Long id : request.getIds()){
+            delete(id);
+        }
     }
 
     @Transactional(readOnly = true)

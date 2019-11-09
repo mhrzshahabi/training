@@ -13,7 +13,8 @@ import java.util.List;
 public interface AttachmentDAO extends JpaRepository<Attachment, Long>, JpaSpecificationExecutor<Attachment> {
 
     @Transactional
-    List<Attachment> findByEntityNameAndObjectId(@Param("entityName") String entityName, @Param("objectId") Long objectId);
+    List<Attachment> findByEntityNameAndObjectId(@Param("entityName") String entityName,
+                                                 @Param("objectId") Long objectId);
 
     @Transactional
     List<Attachment> findByEntityName(@Param("entityName") String entityName);

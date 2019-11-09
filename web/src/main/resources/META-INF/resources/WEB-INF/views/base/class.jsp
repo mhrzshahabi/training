@@ -16,7 +16,7 @@
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
-
+    var selectedClassId = null;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -156,14 +156,12 @@
         filterOnKeypress: false,
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+        selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
-        doubleClick: function () {
-            ListGrid_class_edit();
-        },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "equals"},
@@ -206,6 +204,12 @@
              {name: "information", title: "اطلاعات تکمیلی", align: "center"}
 
         ],
+        selectionUpdated: function(record){
+            if(record === null)
+                return;
+            selectedClassId=record.id;
+            changeSelectedId(record);
+        },
         dataArrived: function () {
                 if (class_userCartableId != null) {
                 var responseID = class_userCartableId;

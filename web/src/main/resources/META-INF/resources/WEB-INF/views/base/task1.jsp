@@ -7,7 +7,7 @@
 %>
 
 var taskMethod="POST";
- var photoDescription = "<spring:message code='photo.size.hint'/>" + "<br/>" + "<br/>" +
+ var photoDescription = "<spring:message code='file.size.hint'/>" + "<br/>" + "<br/>" +
         "<spring:message code='photo.dimension.hint'/>" + "<br/>" + "<br/>" +
         "<spring:message code='photo.format.hint'/>";
   //******************************
