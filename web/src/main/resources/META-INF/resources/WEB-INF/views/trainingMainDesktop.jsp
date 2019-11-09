@@ -706,7 +706,6 @@
     const companyUrl = rootUrl + "/company/";
     const addressUrl = rootUrl + "/address/";
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
-    var userFullName = '<%= SecurityUtil.getFullName()%>';
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
