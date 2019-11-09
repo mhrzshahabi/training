@@ -54,6 +54,8 @@ public class TclassService implements ITclassService {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         List<Long> teacherSet = request.getTeacherSet();
         List<Teacher> allById = teacherDAO.findAllById(teacherSet);
+        HashSet<Teacher> teachers = new HashSet<>(allById);
+        tclass.setTeacherSet(teachers);
         return save(tclass);
     }
 
@@ -70,8 +72,7 @@ public class TclassService implements ITclassService {
         modelMapper.map(request, updating);
         updating.setTeacherSet(teachers);
         Tclass save = tclassDAO.save(updating);
-        TclassDTO.Info map = modelMapper.map(save, TclassDTO.Info.class);
-        return map;
+        return modelMapper.map(save, TclassDTO.Info.class);
     }
 
     @Transactional

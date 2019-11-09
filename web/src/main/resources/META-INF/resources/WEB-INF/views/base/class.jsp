@@ -1,7 +1,10 @@
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
+<%
+    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 // <script>
     // for (var i = 0; i <document.getElementsByTagName("div").length ; i++) {
     //     document.getElementsByTagName("div")[i].style.borderRadius = "10px";
@@ -345,7 +348,10 @@
                 pickListFields:[
                     {name:"code"},
                     {name:"titleFa"}
-                ]
+                ],
+                changed: function (form, item, value) {
+                    form.getItem("code").setValue(item.getSelectedRecord().code);
+                }
             },
             {
                 name:"minCapacity",
@@ -743,24 +749,50 @@
     var IButton_Class_Save_JspClass = isc.TrSaveBtn.create({
         align: "center",
         click: function () {
-
             if (startDateCheck === false || endDateCheck === false)
                 return;
             VM_JspClass.validate();
             if (VM_JspClass.hasErrors()) {
                 return;
             }
-
             var data = VM_JspClass.getValues();
             data.courseId = data.course.id;
+            delete data.course;
+            delete data.term;
 
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
                 classSaveUrl += classRecord.id;
             }
+            isc.RPCManager.sendRequest({
+                actionURL: classSaveUrl,
+                httpMethod: classMethod,
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                data: JSON.stringify(data),
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        var responseID = JSON.parse(resp.data).id;
+                        var gridState = "[{id:" + responseID + "}]";
+                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
+                        ListGrid_Class_refresh();
+                        setTimeout(function () {
+                            ListGrid_Class_JspClass.setSelectedState(gridState);
+                        }, 900);
+                        Window_Class_JspClass.close();
 
-           isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+                    } else {
+                        simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
+                    }
+
+                }
+            });
+
+           // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -1215,12 +1247,12 @@
     }
 
     function ListGrid_class_edit() {
-        DynamicForm_Class_JspClass.getField("teacherSet").fetchData();
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
             classMethod = "PUT";
+            DynamicForm_Class_JspClass.getField("teacherSet").fetchData();
             url = classUrl + record.id;
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
@@ -1240,7 +1272,7 @@
     function ListGrid_Class_add() {
         classMethod = "POST";
         url = classUrl;
-        DynamicForm_Class_JspClass.clearValues();
+        VM_JspClass.clearValues();
         Window_Class_JspClass.show();
     }
 
