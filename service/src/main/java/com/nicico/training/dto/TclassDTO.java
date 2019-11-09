@@ -15,8 +15,10 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -70,6 +72,13 @@ public class TclassDTO {
         private TermDTO term;
         private List<Student> studentSet;
         private List<TeacherDTO.TeacherInfoTuple> teacherSet;
+        public List<Long> getTeacherSet(){
+            ArrayList<Long> list = new ArrayList<>();
+            for (TeacherDTO.TeacherInfoTuple tuple : teacherSet) {
+                list.add(tuple.getId());
+            }
+            return list;
+        }
     }
 
     // ------------------------------

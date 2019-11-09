@@ -21,10 +21,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -57,7 +54,6 @@ public class TclassService implements ITclassService {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
         List<Long> teacherSet = request.getTeacherSet();
         List<Teacher> allById = teacherDAO.findAllById(teacherSet);
-        tclass.setTeacherSet(allById);
         return save(tclass);
     }
 
@@ -68,10 +64,11 @@ public class TclassService implements ITclassService {
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         List<Long> teacherSet = request.getTeacherSet();
         List<Teacher> allById = teacherDAO.findAllById(teacherSet);
-        tclass.setTeacherSet(allById);
+        HashSet<Teacher> teachers = new HashSet<>(allById);
         Tclass updating = new Tclass();
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
+        updating.setTeacherSet(teachers);
         Tclass save = tclassDAO.save(updating);
         TclassDTO.Info map = modelMapper.map(save, TclassDTO.Info.class);
         return map;

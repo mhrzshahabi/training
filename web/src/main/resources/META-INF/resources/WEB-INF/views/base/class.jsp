@@ -380,9 +380,9 @@
                 fillHorizontalSpace:true,
                 defaultValue:1,
                 valueMap: {
-                    1:"حضوری",
-                    2:"غیر حضوری",
-                    3:"مجازی"
+                    "1":"حضوری",
+                    "2":"غیر حضوری",
+                    "3":"مجازی"
                 }
                 // textBoxStyle:"textItemLite"
             },
@@ -468,9 +468,9 @@
                 defaultValue:1,
                 startRow:true,
                 valueMap: {
-                    1:"برنامه ریزی",
-                    2:"در حال اجرا",
-                    3:"پایان یافته"
+                    "1":"برنامه ریزی",
+                    "2":"در حال اجرا",
+                    "3":"پایان یافته"
                 }
                 // textBoxStyle:"textItemLite"
             },
@@ -501,9 +501,9 @@
                 fillHorizontalSpace:true,
                 defaultValue:1,
                 valueMap: {
-                    1:"U شکل",
-                    2:"عادی",
-                    3:"مدور"
+                    "1":"U شکل",
+                    "2":"عادی",
+                    "3":"مدور"
                 }
                 // textBoxStyle:"textItemLite"
             },
@@ -783,7 +783,7 @@
         align: "center",
         border: "1px solid gray",
         show:function(){
-          this.Super("show",arguments);
+            this.Super("show",arguments);
             for (let i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
                 document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "10px";
             };
@@ -1215,6 +1215,7 @@
     }
 
     function ListGrid_class_edit() {
+        DynamicForm_Class_JspClass.getField("teacherSet").fetchData();
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
