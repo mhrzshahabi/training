@@ -1,12 +1,13 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-    <changeSet author="poursalehi_mos (generated)" id="1573370179259-141">
-        <createSequence sequenceName="seq_need_assessment_skill_based_id"/>
+
+    <changeSet author="poursalehi_mos (generated)" id="1573372874322-141">
+        <createSequence sequenceName="seq_need_assessment_skill_post_id"/>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1573370179259-142">
-        <createTable tableName="tbl_need_assessment_skill_based">
+    <changeSet author="poursalehi_mos (generated)" id="1573372874322-142">
+        <createTable tableName="tbl_need_assessment_skill_post">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_basedPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_need_assessment_skill_postPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -24,10 +25,7 @@
             <column name="e_need_assessment_priority" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_entity_name" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="n_object_id" type="NUMBER(19, 0)">
+            <column name="f_post_id" type="NUMBER(19, 0)">
                 <constraints nullable="false"/>
             </column>
             <column name="f_skill_id" type="NUMBER(19, 0)">
@@ -35,12 +33,18 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1573370179259-143">
-        <addUniqueConstraint columnNames="f_skill_id, c_entity_name, n_object_id" constraintName="UKpk3ovuav00qjw9kbvmhi50wy6" tableName="tbl_need_assessment_skill_based"/>
+    <changeSet author="poursalehi_mos (generated)" id="1573372874322-143">
+        <addUniqueConstraint columnNames="f_skill_id, f_post_id" constraintName="UKllsr435txy4fjtvvg3j4a5k4e" tableName="tbl_need_assessment_skill_post"/>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1573370179259-145">
-        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment_skill_based" constraintName="FKayi7ad3mm6g5l1u43koyy766c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    <changeSet author="poursalehi_mos (generated)" id="1573372874322-145">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_need_assessment_skill_post" constraintName="FKbqm78osp274thfojk9it78hxe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1573372874322-146">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment_skill_post" constraintName="FKdr3xvm2nofkkl0tcp6yx1e3th" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>
+
+
 
 
