@@ -131,6 +131,7 @@
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
+        showRollOver: true,
         recordDoubleClick: function (viewer, record) {
             Show_Attachment_ClassAttachments(record.id);
         }
