@@ -15,7 +15,7 @@
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
-
+    var selectedClassId = null;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -157,6 +157,7 @@
         filterOnKeypress: true,
         // showRecordComponents: true,
         // showRecordComponentsByCell: true,
+        selectionType: "single",
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",

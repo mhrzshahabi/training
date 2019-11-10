@@ -61,7 +61,7 @@ public class AttachmentDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("AttachmentSpecRs")
-    public static class AccountInfoSpecRs {
+    public static class AttachmentSpecRs {
         private SpecRs response;
     }
 

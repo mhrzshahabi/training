@@ -26,4 +26,34 @@ public class OperationalUnitFormController {
         return "base/operationalUnit";
     }
 
+    @PostMapping("/printWithCriteria/{type}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
+//		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
+        String token = request.getParameter("myToken");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+
+        if(type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if(type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if(type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
+
 }

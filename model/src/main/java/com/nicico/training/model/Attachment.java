@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_attachment",
-        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_entity_name", "n_object_id", "c_file_name","c_file_type"})})
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_entity_name", "n_object_id", "c_file_name", "c_file_type"})})
 public class Attachment extends Auditable {
 
     @Id

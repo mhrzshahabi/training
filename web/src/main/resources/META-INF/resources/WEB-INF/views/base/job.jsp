@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-//<script>
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({
@@ -24,6 +24,23 @@
                     refreshJobLG_job();
                 }
             }),
+            isc.TrPrintBtn.create({
+                menu: isc.Menu.create({
+                    data: [
+                        {
+                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
+                                printJobLG_job("pdf");
+                            }
+                        },
+                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
+                                printJobLG_job("excel");
+                            }},
+                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
+                                printJobLG_job("html");
+                            }},
+                    ]
+                })
+            }),
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -31,7 +48,8 @@
                 ID: "totalsLabel_job"
             }),
         ]
-    });
+    })
+    ;
 
     // ------------------------------------------- TabSet -------------------------------------------
 
@@ -109,16 +127,63 @@
             } else {
                 totalsLabel_job.setContents("&nbsp;");
             }
-        }
+        },
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        // members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
-        members: [JobLG_job],
+        members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.filterByEditor();
     };
+
+    function printJobLG_job(type) {
+        alert(jobUrl + "print/" + type, "POST", null, "test");
+        let criteria = JobLG_job.getCriteria();
+        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "POST", null, "test"));
+
+        <%--isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,--%>
+        <%--    "callback: homeAddress_findOne_result(rpcResponse)"));--%>
+
+        <%--var advancedCriteria_course = ListGrid_Course.getCriteria();--%>
+        <%--var criteriaForm_course = isc.DynamicForm.create({--%>
+        <%--    method: "POST",--%>
+        <%--    action: "<spring:url value="/course/printWithCriteria/"/>" + type,--%>
+        <%--    target: "_Blank",--%>
+        <%--    canSubmit: true,--%>
+        <%--    fields:--%>
+        <%--        [--%>
+        <%--            {name: "CriteriaStr", type: "hidden"},--%>
+        <%--            {name: "myToken", type: "hidden"}--%>
+        <%--        ]--%>
+        <%--})--%>
+        <%--criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));--%>
+        <%--criteriaForm_course.setValue("myToken", "<%=accessToken%>");--%>
+        <%--criteriaForm_course.show();--%>
+        <%--criteriaForm_course.submitForm();--%>
+    };
+
+    function test() {
+        alert("done");
+    }
+
+    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
+    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
+    <%--        method: "POST",--%>
+    <%--        action: url,--%>
+    <%--        target: "_Blank",--%>
+    <%--        canSubmit: true,--%>
+    <%--        fields:--%>
+    <%--            [--%>
+    <%--                {name: "CriteriaStr", type: "hidden"},--%>
+    <%--                {name: "token", type: "hidden"}--%>
+    <%--            ]--%>
+    <%--    });--%>
+    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
+    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
+    <%--    trCriteriaForm.show();--%>
+    <%--    trCriteriaForm.submitForm();--%>
+<%--}--%>
