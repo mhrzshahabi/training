@@ -108,4 +108,14 @@ public class OperationalUnitDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("OperationalUnitInfoTuple")
+    public static class InfoTuple {
+        private String unitCode;
+        private String operationalUnit;
+    }
 }

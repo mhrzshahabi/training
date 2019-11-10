@@ -51,21 +51,21 @@
                     title: "<spring:message code="print.pdf"/>",
                     icon: "<spring:url value="pdf.png"/>",
                     click: function () {
-
+                        print_OperationalUnitListGrid("pdf");
                     }
                 },
                 {
                     title: "<spring:message code="print.excel"/>",
                     icon: "<spring:url value="excel.png"/>",
                     click: function () {
-
+                        print_OperationalUnitListGrid("excel");
                     }
                 },
                 {
                     title: "<spring:message code="print.html"/>",
                     icon: "<spring:url value="html.png"/>",
                     click: function () {
-
+                        print_OperationalUnitListGrid("html");
                     }
                 }
             ]
@@ -166,7 +166,7 @@
             icon: "[SKIN]/RichTextEditor/print.png",
             title: "<spring:message code="print"/>",
             click: function () {
-
+                print_OperationalUnitListGrid("pdf");
             }
         });
 
@@ -188,13 +188,15 @@
                         name: "unitCode",
                         title: "<spring:message code="unitCode"/>",
                         type: "text",
-                        required: true
+                        required: true,
+                        length: 10
                     },
                     {
                         name: "operationalUnit",
                         title: "<spring:message code="unitName"/>",
                         type: "text",
-                        required: true
+                        required: true,
+                        length: 100
                     }
                 ]
         });
@@ -376,7 +378,7 @@
                         message: "<spring:message code="msg.operation.error"/>"
                     });
 
-                    close_MyOkDialog_Operational()
+                    close_MyOkDialog_Operational();
                 }
             }
         }
@@ -386,6 +388,26 @@
             setTimeout(function () {
                 MyOkDialog_Operational.close();
             }, 3000);
+        }
+
+        //*****print*****
+        function print_OperationalUnitListGrid(type) {
+            var advancedCriteria_course = ListGrid_operational.getCriteria();
+            var criteriaForm_course = isc.DynamicForm.create({
+                method: "POST",
+                action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
+                target: "_Blank",
+                canSubmit: true,
+                fields:
+                    [
+                        {name: "CriteriaStr", type: "hidden"},
+                        {name: "myToken", type: "hidden"}
+                    ]
+            })
+            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+            criteriaForm_course.setValue("myToken", "<%=accessToken%>");
+            criteriaForm_course.show();
+            criteriaForm_course.submitForm();
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>

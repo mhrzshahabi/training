@@ -12,7 +12,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_operational_unit", uniqueConstraints = {@UniqueConstraint(columnNames = {"c_unitcode","c_operational_unit"})})
+@Table(name = "tbl_operational_unit")
 public class OperationalUnit extends Auditable {
 
     @Id
@@ -21,9 +21,9 @@ public class OperationalUnit extends Auditable {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_unitcode")
+    @Column(name = "c_unitcode", unique = true)
     private String unitCode;
 
-    @Column(name="c_operational_unit")
+    @Column(name="c_operational_unit", unique = true)
     private String operationalUnit;
 }
