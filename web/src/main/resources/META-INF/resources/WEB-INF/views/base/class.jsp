@@ -6,10 +6,6 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 // <script>
-    // for (var i = 0; i <document.getElementsByTagName("div").length ; i++) {
-    //     document.getElementsByTagName("div")[i].style.borderRadius = "10px";
-    // }
-
 
     var classMethod = "POST";
     var classWait;
@@ -24,21 +20,6 @@
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var RestDataSource_Class_JspClass = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "group"},
-            {name: "startDate"},
-            {name: "endDate"},
-            {name: "code"},
-            {name: "duration"},
-            {name: "teacher.personality.lastNameFa"},
-            {name: "course.code"},
-            {name: "course.titleFa"}
-        ],
-        fetchDataURL: classUrl + "spec-list"
-    });
-
     var RestDataSource_Teacher_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -48,6 +29,23 @@
         // fetchDataURL: teacherUrl + "fullName-list?_startRow=0&_endRow=55"
         fetchDataURL: teacherUrl + "fullName-list"
     });
+
+    var RestDataSource_Class_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "group"},
+            {name: "startDate"},
+            {name: "endDate"},
+            {name: "code"},
+            {name: "teacher.personality.lastNameFa"},
+            // {name: "course.code"},
+            {name: "course.titleFa"},
+            {name:"teacherSet"},
+            {name:"teachers"},
+        ],
+        fetchDataURL: classUrl + "spec-list"
+    });
+
 
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
@@ -156,9 +154,9 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
-        showRecordComponents: true,
-        showRecordComponentsByCell: true,
+        filterOnKeypress: true,
+        // showRecordComponents: true,
+        // showRecordComponentsByCell: true,
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
@@ -169,16 +167,7 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "equals"},
-            {
-                name: "course.code",
-                title: "<spring:message code='course.code'/>",
-                align: "center",
-                filterOperator: "equals",
-                sortNormalizer: function (record) {
-                    return record.course.code;
-                }
-            },
+            {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "iContains"},
             {
                 name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
@@ -188,7 +177,6 @@
                     return record.course.titleFa;
                 }
             },
-            {name: "duration", title: "<spring:message code='duration'/>", align: "center", filterOperator: "equals"},
             {
                 name: "startDate",
                 title: "<spring:message code='start.date'/>",
@@ -197,76 +185,11 @@
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
-            {
-                name: "teacher.personality.lastNameFa",
-                title: "<spring:message code='trainer'/>",
-                align: "center",
-                filterOperator: "iContains",
-                sortNormalizer: function (record) {
-                    return record.teacher.personality.lastNameFa;
-                }
-            },
-             {name: "information", title: "اطلاعات تکمیلی", align: "center"}
-
-        ],
-        dataArrived: function () {
-                if (class_userCartableId != null) {
-                var responseID = class_userCartableId;
-                 class_userCartableId = null;
-                var gridState = "[{id:" + responseID + "}]";
-                ListGrid_Class_JspClass.setSelectedState(gridState);
-                var record = ListGrid_Class_JspClass.getSelectedRecord();
-                 classMethod = "PUT";
-               // classUrl = classUrl + record.id;
-                Window_Class_JspClass.show();
-                DynamicForm_Class_JspClass.clearValues();
-                DynamicForm_Class_JspClass.editRecord(record);
-                DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
-            }
-        },
-        createRecordComponent: function (record, colNum) {
-            var fieldName = this.getFieldName(colNum);
-            if (fieldName === "information") {
-                var recordCanvas = isc.HLayout.create({
-                    height: 20,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                var checkIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "<spring:url value='info.png'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    click: function () {
-                    pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/checkList-tab"}
-                      )
-                     alert("sdfgsdfgsdfg")
-                    //     var activePostGradeGroup = ListGrid_Class_JspClass.getSelectedRecord();
-                    //     var postGradeIds = [record.id];
-                    //     isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + postGradeIds,
-                    //         "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
-                    }
-                });
-                recordCanvas.addMember(checkIcon);
-                return recordCanvas;
-            } else
-                return null;
-        },
-         doubleClick: function () {
-            ListGrid_class_edit();
-        },
-
+            {name:"teachers",  title:"مدرس/مدرسان", align: "center", filterOperator: "contains"}
+        ]
     });
 
-    var VM_JspClass = isc.ValuesManager.create({
-
-    })
+    var VM_JspClass = isc.ValuesManager.create({});
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
@@ -282,80 +205,33 @@
         numCols: 8,
         colWidths:["6%","24%","6%","12%","12%","6%","12%","12%"],
         padding: 10,
-        align: "center",
         valuesManager: "VM_JspClass",
-      /*  margin: 50,
-
-        canTabToIcons: false,*/
         fields: [
             {name: "id", hidden: true},
-            <%--{--%>
-                <%--name: "course.titleFa",--%>
-                <%--title: "<spring:message code='course.title'/>",--%>
-                <%--disabled: true--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "code",--%>
-                <%--title: "<spring:message code='class.code'/>",--%>
-                <%--disabled: true--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "courseId",--%>
-                <%--title: "<spring:message code='course.code'/>",--%>
-                <%--textAlign: "center",--%>
-                <%--required: true,--%>
-                <%--editorType: "ComboBoxItem",--%>
-                <%--// pickListWidth: 230,--%>
-                <%--displayField: "code",--%>
-                <%--valueField: "id",--%>
-                <%--optionDataSource: RestDataSource_Course_JspClass,--%>
-                <%--autoFetchData: true,--%>
-                <%--cachePickListResults: true,--%>
-                <%--useClientFiltering: true,--%>
-                <%--filterFields: ["titleFa"],--%>
-                <%--sortField: ["id"],--%>
-                <%--textMatchStyle: "startsWith",--%>
-                <%--generateExactMatchCriteria: true,--%>
-                <%--pickListFields: [--%>
-                    <%--{--%>
-                        <%--name: "code",--%>
-                        <%--title: "<spring:message code='course.code'/>",--%>
-                        <%--width: "70%",--%>
-                        <%--filterOperator: "iContains"--%>
-                    <%--},--%>
-                    <%--{--%>
-                        <%--name: "titleFa",--%>
-                        <%--title: "<spring:message code='course.title'/>",--%>
-                        <%--width: "70%",--%>
-                        <%--filterOperator: "iContains"--%>
-                    <%--}--%>
-                <%--],--%>
-                <%--changed: function (form) {--%>
-                    <%--(form.getItem("course.titleFa")).setValue(form.getItem("courseId").getSelectedRecord().titleFa);--%>
-                    <%--(form.getItem("duration")).setValue(form.getItem("courseId").getSelectedRecord().theoryDuration);--%>
-                <%--}--%>
-            <%--},--%>
             {
                 name:"course.id", editorType:"TrComboAutoRefresh", title:"دوره:",
                 // width:"250",
-                align:"center",
+                textAlign: "center",
                 optionDataSource:RestDataSource_Course_JspClass,
                 // addUnknownValues:false,
                 displayField:"titleFa", valueField:"id",
                 filterFields:["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
+                required: true,
                 pickListFields:[
                     {name:"code"},
                     {name:"titleFa"}
                 ],
-                changed: function (form, item, value) {
-                    form.getItem("code").setValue(item.getSelectedRecord().code);
+                changed: function (form) {
+                    classCode();
+                    form.clearValue("teacherSet")
                 }
             },
             {
                 name:"minCapacity",
                 title:"ظرفیت:",
+                textAlign: "center",
                 hint:"حداقل",
                 showHintInField: true
             },
@@ -363,16 +239,19 @@
                 name:"maxCapacity",
                 showTitle:false,
                 hint:"حداکثر",
+                textAlign: "center",
                 showHintInField: true
             },
             {
                 name:"code",
                 title:"کد کلاس:",
                 colSpan:2,
+                textAlign: "center",
                 type:"staticText",textBoxStyle:"textItemLite"
             },
             {
                 name:"titleClass",
+                textAlign: "center",
                 title:"عنوان کلاس:",
                 // type:"staticText",
                 // textBoxStyle:"textItemLite"
@@ -384,7 +263,7 @@
                 type:"radioGroup",
                 vertical:false,
                 fillHorizontalSpace:true,
-                defaultValue:1,
+                defaultValue:"1",
                 valueMap: {
                     "1":"حضوری",
                     "2":"غیر حضوری",
@@ -396,16 +275,17 @@
                 name:"hDuration",
                 title:"مدت:",
                 hint:"ساعت",
+                textAlign: "center",
                 showHintInField: true
             },
             {
                 name:"dDuration",
                 showTitle:false,
                 hint:"روز",
+                textAlign: "center",
                 showHintInField: true
             },
             {
-                // name: "teacher.personality.id",
                 name: "teacherSet",
                 // multipleAppearance: "picklist",
                 // colSpan:2,
@@ -435,13 +315,18 @@
                     {name:"personality.lastNameFa"},
                     {name:"personality.firstNameFa"},
                     {name:"personality.nationalCode"}
-                ]
+                ],
+                // getPickListFilterCriteria : function () {
+                //     VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                //     return {category:category};
+                // }
             },
             {
                 name:"supervisor",
                 colSpan:2,
                 title:"مسئول اجرا:",
                 type:"selectItem",
+                textAlign: "center",
                 valueMap: {
                     1:"آقای دکتر سعیدی",
                     2:"خانم شاکری",
@@ -453,6 +338,7 @@
             {
                 name:"reason",
                 colSpan:2,
+                textAlign: "center",
                 title:"علت برگزاری:",
                 // type:"selectItem",
                 // valueMap: {
@@ -471,7 +357,7 @@
                 type:"radioGroup",
                 // vertical:false,
                 fillHorizontalSpace:true,
-                defaultValue:1,
+                defaultValue:"1",
                 startRow:true,
                 valueMap: {
                     "1":"برنامه ریزی",
@@ -491,6 +377,7 @@
                 filterFields:["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
+                textAlign: "center",
                 pickListFields:[
                     {name:"code"},
                     {name:"titleFa"}
@@ -505,7 +392,7 @@
                 type:"radioGroup",
                 vertical:false,
                 fillHorizontalSpace:true,
-                defaultValue:1,
+                defaultValue:"2",
                 valueMap: {
                     "1":"U شکل",
                     "2":"عادی",
@@ -524,6 +411,7 @@
                 filterFields:["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
+                textAlign: "center",
                 pickListFields:[
                     {name:"code"},
                     {name:"titleFa"}
@@ -532,45 +420,16 @@
             {
                 name:"group",
                 title:"گروه:",
+                defaultValue:"1",
+                required: true,
                 colSpan:2,
-                type:"staticText",textBoxStyle:"textItemLite"
+                textAlign:"center",
+                // type:"staticText",textBoxStyle:"textItemLite",
+                changed: function () {
+                    classCode();
+                }
             },
-// {name: },
-            <%--{--%>
-                <%--name: "duration",--%>
-                <%--title: "<spring:message code='duration'/>",--%>
-                <%--keyPressFilter: "[0-9]",--%>
-                <%--length: "4",--%>
-                <%--validators: [{--%>
-                    <%--type: "isInteger", validateOnExit: true, stopOnError: true,--%>
-                    <%--errorMessage: "<spring:message code='msg.number.type'/>"--%>
-                <%--}]--%>
-            <%--},--%>
-            <%--{--%>
-                <%--name: "group",--%>
-                <%--title: "<spring:message code='group'/>",--%>
-                <%--required: true,--%>
-                <%--keyPressFilter: "[0-9]",--%>
-                <%--length: "4",--%>
-                <%--validators: [{--%>
-                    <%--type: "isInteger", validateOnExit: true, stopOnError: true,--%>
-                    <%--errorMessage: "<spring:message code='msg.number.type'/>"--%>
-                <%--}]--%>
-            <%--},--%>
-
         ],
-        itemChanged: function (item) {
-            if (item.name === "courseId" || item.name === "termId" || item.name === "group") {
-                if (DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord() !== undefined)
-                    str1 = DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().code;
-                if (DynamicForm_Class_JspClass.getItem("termId").getSelectedRecord() !== undefined)
-                    str2 = DynamicForm_Class_JspClass.getItem("termId").getSelectedRecord().code;
-                if (DynamicForm_Class_JspClass.getItem("group").getValue() !== undefined)
-                    str3 = DynamicForm_Class_JspClass.getItem("group").getValue();
-                var code_value = str1 + "/" + str2 + "/" + str3;
-                DynamicForm_Class_JspClass.getItem("code").setValue(code_value);
-            }
-        }
     });
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
@@ -623,7 +482,10 @@
                         title: "<spring:message code='end.date'/>",
                         filterOperator: "iContains"
                     }
-                ]
+                ],
+                changed: function () {
+                    classCode();
+                }
             },
             {
                 name: "startDate",
@@ -642,6 +504,7 @@
                         displayDatePicker('startDate_jspClass', this, 'ymd', '/');
                     }
                 }],
+                textAlign: "center",
                 colSpan: 3,
                 changed: function () {
                     var dateCheck;
@@ -686,6 +549,7 @@
                         displayDatePicker('endDate_jspClass', this, 'ymd', '/');
                     }
                 }],
+                textAlign: "center",
                 colSpan: 3,
                 changed: function () {
                     var dateCheck;
@@ -1214,7 +1078,6 @@
         members: [TabSet_Class]
     });
 
-
     var VLayout_Body_Class_JspClass = isc.TrVLayout.create({
         members: [
             HLayout_Actions_Class_JspClass,
@@ -1256,10 +1119,6 @@
             url = classUrl + record.id;
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
-            console.log(VM_JspClass)
-            // DynamicForm_Class_JspClass.getField("courseId").fetchData();
-            // DynamicForm_Class_JspClass.getField("courseId").setValue(record.courseId);
-            // DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
             Window_Class_JspClass.show();
         }
     }
@@ -1291,6 +1150,10 @@
         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
         criteriaForm.show();
         criteriaForm.submitForm();
+    }
+
+    function classCode() {
+        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"/"+VM_JspClass.getItem("termId").getSelectedRecord().code+"/"+VM_JspClass.getValue("group"));
     }
 
     function class_action_result(resp) {
@@ -1403,29 +1266,4 @@
         }
     }
     // </script>
-function test() {
-var x=isc.DataSource.create({
-ID: "preCourseDS",
-clientOnly: true,
-dataURL:courseUrl + "spec-list?_startRow=0&_endRow=55",
-fields: [
-{name: "id", primaryKey: true},
-{name: "code"},
-{name: "titleFa"},
-{name: "theoryDuration"}
-]
-});
-}
-
-
-// var record=ListGrid_Class_JspClass.getSelectedRecord();
-// classMethod = "PUT";
-// url = classUrl + record.id;
-// DynamicForm_Class_JspClass.clearValues();
-// DynamicForm_Class_JspClass.editRecord(record);
-// DynamicForm_Class_JspClass.getItem("course.titleFa").setValue(DynamicForm_Class_JspClass.getItem("courseId").getSelectedRecord().titleFa);
-// Window_Class_JspClass.show();
-//
-//
-
 

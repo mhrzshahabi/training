@@ -122,7 +122,6 @@
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
         alternateRecordStyles: true,
-        showResizeBar: true,
         showFilterEditor: true,
         autoFitWidthApproach: "both",
         showRowNumbers: true,

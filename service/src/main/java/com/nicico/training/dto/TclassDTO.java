@@ -79,6 +79,13 @@ public class TclassDTO {
             }
             return list;
         }
+        public String getTeachers(){
+            String data = "";
+            for (TeacherDTO.TeacherInfoTuple teacher : teacherSet) {
+                data = data + "، " +teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+            }
+            return data.substring(2);
+        }
     }
 
     // ------------------------------

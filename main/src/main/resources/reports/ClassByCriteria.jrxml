@@ -44,7 +44,7 @@
 		<field name="course.code" class="java.lang.String"/>
 		<field name="endDate" class="java.lang.String"/>
 		<field name="course.titleFa" class="java.lang.String"/>
-		<field name="teacher.personality.fullNameFa" class="java.lang.String"/>
+		<field name="teachers" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -123,7 +123,7 @@
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{teacher.personality.fullNameFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{teachers}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
