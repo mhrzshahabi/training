@@ -24,11 +24,6 @@ public class CheckList extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_class_id", insertable = false, updatable = false)
-    private Tclass tclass ;
-
-
     @OneToMany(mappedBy = "checkList")
     private Set<CheckListItem> checkListItems;
 }
