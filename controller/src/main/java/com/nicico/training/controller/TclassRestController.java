@@ -65,7 +65,7 @@ public class TclassRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
-    public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
+    public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
         TclassDTO.Update update = modelMapper.map(request, TclassDTO.Update.class);
         return new ResponseEntity<>(tclassService.update(id, update), HttpStatus.OK);
     }
@@ -226,6 +226,4 @@ public class TclassRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
     }
-
-
 }
