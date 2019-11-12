@@ -646,7 +646,7 @@
 
     isc.TrVLayout.create({
         autoDraw: true,
-        overflow: "auto",
+        styleName: "relativePosition",
         members: [
             isc.HLayout.create({
                 height: "1%",

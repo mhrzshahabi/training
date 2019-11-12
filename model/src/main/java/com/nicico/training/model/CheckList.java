@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -22,4 +23,7 @@ public class CheckList extends Auditable {
 
     @Column(name = "c_title_fa")
     private String titleFa;
+
+    @OneToMany(mappedBy = "checkList")
+    private Set<CheckListItem> checkListItems;
 }

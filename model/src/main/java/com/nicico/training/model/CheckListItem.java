@@ -22,11 +22,8 @@ public class CheckListItem extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @Column(name = "c_description")
-    private String description;
-
-    @Column(name = "b_enabled")
-    private Boolean enableStatus;
+    @Column(name = "c_group")
+    private String group;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_check_list_id", insertable = false, updatable = false)
