@@ -1219,6 +1219,7 @@
         align: "center",
         autoDraw: false,
         border: "1px solid gray",
+        minWidth:1024,
         items: [isc.TrVLayout.create({
             members: [
                 HLayOut_Temp_JspTeacher,
