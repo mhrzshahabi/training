@@ -49,6 +49,7 @@
     const needAssessmentUrl = rootUrl + "/needAssessment/";
     const skillUrl = rootUrl + "/skill/";
     const attachmentUrl = rootUrl + "/attachment/";
+    const trainingPlaceUrl = rootUrl + "/training-place/";
 
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -210,7 +211,7 @@
                 if (value !== undefined) {
                     var trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
-                    item.setValue(trimmed);
+                    // item.setValue(trimmed); #TODO
                 }
                 return true;
             }
@@ -707,6 +708,9 @@
     const addressUrl = rootUrl + "/address/";
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
+    const checklistUrl =rootUrl +"/checklist/";
+    const checklistItemUrl =rootUrl +"/checklistItem/";
+    const classCheckListUrl=rootUrl +"/class-checklist/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
@@ -774,6 +778,7 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
+
             isc.say("خطا در اتصال به سرور!");
         }
     });
