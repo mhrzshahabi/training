@@ -1,0 +1,27 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+
+
+
+    <changeSet author="jafari-h (generated)" id="1573618578242-151">
+        <addColumn tableName="tbl_class">
+            <column name="f_teacher" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573618578242-152">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573618578242-170">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_TEACHER" constraintName="FKED03SBO8UBK17HYJR5B3UIKUB"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573618578242-172">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_TEACHER" constraintName="FKHYDQO7S91X578WLKLPVPHO2DX"/>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573618578242-217">
+        <dropTable tableName="TBL_CLASS_TEACHER"/>
+    </changeSet>
+
+
+
+</databaseChangeLog>
