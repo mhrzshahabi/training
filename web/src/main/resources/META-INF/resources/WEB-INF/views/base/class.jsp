@@ -97,6 +97,28 @@
         ],
         fetchDataURL: termUrl + "spec-list?_startRow=0&_endRow=55"
     });
+    var RestDataSource_Institute_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa",title:"نام موسسه"},
+            {name: "manager.firstNameFa",title:"نام مدیر"},
+            {name: "manager.lastNameFa",title:"نام خانوادگی مدیر"},
+            {name: "mobile",title:"موبایل"},
+            {name: "restAddress",title:"آدرس"},
+            {name: "phone",title:"تلفن"}
+        ],
+        fetchDataURL: instituteUrl + "spec-list"
+    });
+    var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa",title:"نام مکان"},
+            {name: "capacity",title:"ظرفیت"}
+        ],
+        // fetchDataURL: instituteUrl + "id" + /training-places"
+        fetchDataURL: trainingPlaceUrl + "spec-list"
+    });
+
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -210,12 +232,13 @@
     var DynamicForm_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
         height: "100%",
+        wrapItemTitles:true,
         isGroup: true,
         groupTitle: "اطلاعات پایه",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius:"6px",
         numCols: 8,
-        colWidths:["6%","24%","6%","12%","12%","6%","12%","12%"],
+        colWidths:["5%","24%","5%","12%","12%","5%","12%","12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -237,7 +260,7 @@
                 ],
                 changed: function (form, item, value) {
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                    form.getField("teacherSet").fetchData();
+                    form.getField("teacherId").fetchData();
                     form.getField("titleClass").setValue(item.getSelectedRecord().titleFa);
                     classCode();
                 }
@@ -267,6 +290,7 @@
                 name:"titleClass",
                 textAlign: "center",
                 title:"عنوان کلاس:",
+                wrapTitle:true,
                 // type:"staticText",
                 // textBoxStyle:"textItemLite"
             },
@@ -281,7 +305,8 @@
                 valueMap: [
                     "حضوری",
                     "غیر حضوری",
-                    "مجازی"
+                    "مجازی",
+                    "عملی و کارگاهی"
                 ]
                 // textBoxStyle:"textItemLite"
             },
@@ -353,6 +378,7 @@
                 name:"reason",
                 colSpan:2,
                 textAlign: "center",
+                wrapTitle:true,
                 title:"درخواست آموزشی:",
                 type:"selectItem",
                 valueMap: [
@@ -367,6 +393,7 @@
                 // colSpan:2,
                 rowSpan:2,
                 title:"وضعیت کلاس:",
+                wrapTitle:true,
                 type:"radioGroup",
                 // vertical:false,
                 fillHorizontalSpace:true,
@@ -383,17 +410,20 @@
                 name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
                 // width:"250",
                 colSpan:2,
-                align:"center",
-                // optionDataSource:RestDataSource_Institute_JspClass,
+                optionDataSource:RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
                 displayField:"titleFa", valueField:"id",
-                filterFields:["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
+                filterFields:["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
+                // pickListPlacement: "fillScreen",
+                // pickListWidth:300,
+                required: true,
                 pickListFields:[
-                    {name:"code"},
-                    {name:"titleFa"}
+                    {name:"titleFa"},
+                    {name:"manager.firstNameFa"},
+                    {name:"manager.lastNameFa"}
                 ],
                 // startRow:true,
             },
@@ -449,11 +479,14 @@
         // width: "700",
         height: "100%",
         isGroup: true,
+        wrapItemTitles:true,
         groupTitle: "اطلاعات پایه",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius:"6px",
-        numCols: 14,
-        colWidths:["7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%"],
+        // numCols: 14,
+        numCols: 10,
+        // colWidths:["7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%","7%"],
+        // colWidths:["5%","5%","5%","5%","5%","5%","5%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
         align: "center",
         valuesManager: "VM_JspClass",
@@ -536,6 +569,7 @@
                 type:"radioGroup",
                 // vertical:false,
                 rowSpan:2,
+                colSpan:2,
                 fillHorizontalSpace:true,
                 defaultValue:1,
                 endRow:true,
@@ -622,11 +656,8 @@
                 return;
             }
             var data = VM_JspClass.getValues();
-            data.courseId = data.course.id;
-            data.teacherSet = [data.teacherSet];
             delete data.course;
             delete data.term;
-
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
