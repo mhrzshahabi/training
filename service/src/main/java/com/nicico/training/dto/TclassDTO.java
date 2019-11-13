@@ -6,8 +6,6 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Student;
-import com.nicico.training.model.Teacher;
-import com.nicico.training.model.TrainingPlace;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -15,10 +13,7 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
-import java.util.stream.Stream;
 
 @Getter
 @Setter
@@ -34,7 +29,7 @@ public class TclassDTO {
     private Long maxCapacity;
     @ApiModelProperty(required = true)
     private String code;
-
+    private Long teacherId;
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
@@ -71,20 +66,12 @@ public class TclassDTO {
         private CourseDTO.CourseInfoTuple course;
         private TermDTO term;
         private List<Student> studentSet;
-        private List<TeacherDTO.TeacherInfoTuple> teacherSet;
-        public List<Long> getTeacherSet(){
-            ArrayList<Long> list = new ArrayList<>();
-            for (TeacherDTO.TeacherInfoTuple tuple : teacherSet) {
-                list.add(tuple.getId());
-            }
-            return list;
-        }
-        public String getTeachers(){
-            String data = "";
-            for (TeacherDTO.TeacherInfoTuple teacher : teacherSet) {
-                data = data + "، " +teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
-            }
-            return data.substring(2);
+        private TeacherDTO.TeacherInfoTuple teacher;
+        public String getTeacher(){
+            if (teacher!=null)
+               return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
         }
     }
 
@@ -96,7 +83,6 @@ public class TclassDTO {
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
         private Long courseId;
-        private List<Long> teacherSet;
 //        private List<Long> studentSet;
     }
 
@@ -108,7 +94,6 @@ public class TclassDTO {
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
         private Long courseId;
-        private List<Long> teacherSet;
     }
 
     // ------------------------------
