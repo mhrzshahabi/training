@@ -15,10 +15,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -39,7 +37,6 @@ public class TclassRestController {
     private final ITclassService tclassService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
-    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -65,9 +62,8 @@ public class TclassRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_tclass')")
-    public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        TclassDTO.Update update = modelMapper.map(request, TclassDTO.Update.class);
-        return new ResponseEntity<>(tclassService.update(id, update), HttpStatus.OK);
+    public ResponseEntity<TclassDTO.Info> update(@PathVariable Long id, @RequestBody TclassDTO.Update request) {
+        return new ResponseEntity<>(tclassService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable

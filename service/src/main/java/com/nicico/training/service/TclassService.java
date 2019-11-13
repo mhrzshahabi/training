@@ -11,7 +11,6 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
@@ -21,7 +20,9 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -52,10 +53,6 @@ public class TclassService implements ITclassService {
     @Override
     public TclassDTO.Info create(TclassDTO.Create request) {
         final Tclass tclass = modelMapper.map(request, Tclass.class);
-        List<Long> teacherSet = request.getTeacherSet();
-        List<Teacher> allById = teacherDAO.findAllById(teacherSet);
-        HashSet<Teacher> teachers = new HashSet<>(allById);
-        tclass.setTeacherSet(teachers);
         return save(tclass);
     }
 
@@ -64,15 +61,10 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        List<Long> teacherSet = request.getTeacherSet();
-        List<Teacher> allById = teacherDAO.findAllById(teacherSet);
-        HashSet<Teacher> teachers = new HashSet<>(allById);
         Tclass updating = new Tclass();
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
-        updating.setTeacherSet(teachers);
-        Tclass save = tclassDAO.save(updating);
-        return modelMapper.map(save, TclassDTO.Info.class);
+        return save(updating);
     }
 
     @Transactional

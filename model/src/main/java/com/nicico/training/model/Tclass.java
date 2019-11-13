@@ -52,11 +52,12 @@ public class Tclass extends Auditable {
     @Column(name = "n_d_duration")
     private Long dDuration;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_class_teacher",
-            joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_teacher_id", referencedColumnName = "id")})
-    private Set<Teacher> teacherSet;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_teacher", insertable = false, updatable = false)
+    private Teacher teacher;
+
+    @Column(name = "f_teacher")
+    private Long teacherId;
 
     @Column(name = "f_supervisor")
     private Long supervisor;

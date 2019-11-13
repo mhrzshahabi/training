@@ -37,11 +37,11 @@
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
-            {name: "teacher.personality.lastNameFa"},
+            // {name: "teacher.personality.lastNameFa"},
             // {name: "course.code"},
-            {name: "course.titleFa"},
-            {name:"teacherSet"},
-            {name:"teachers"},
+            {name:"course.titleFa"},
+            {name:"teacherId"},
+            {name:"teacher"},
             {name:"reason"},
             {name:"classStatus"},
             {name:"topology"}
@@ -189,7 +189,7 @@
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
             {name: "reason", title:"درخواست آموزشی", align:"center"},
-            {name: "teachers",  title:"مدرس/مدرسان", align: "center", filterOperator: "contains"},
+            {name: "teacher",  title:"مدرس اصلی", align: "center", filterOperator: "contains"},
             {name:"classStatus",title:"وضعیت کلاس",align:"center"},
             {name:"topology",title:"چیدمان",align:"center",valueMap:{
                     "1":"U شکل",
@@ -300,7 +300,7 @@
                 showHintInField: true
             },
             {
-                name: "teacherSet",
+                name: "teacherId",
                 // multipleAppearance: "picklist",
                 // colSpan:2,
                 title: "<spring:message code='trainer'/>:",
