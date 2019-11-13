@@ -1117,7 +1117,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            DynamicForm_Class_JspClass.getField("teacherSet").fetchData();
+            DynamicForm_Class_JspClass.getField("teacherId").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
             VM_JspClass.clearValues();

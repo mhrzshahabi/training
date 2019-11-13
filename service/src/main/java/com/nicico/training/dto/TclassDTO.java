@@ -68,8 +68,10 @@ public class TclassDTO {
         private List<Student> studentSet;
         private TeacherDTO.TeacherInfoTuple teacher;
         public String getTeacher(){
-               String data = teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
-            return data;
+            if (teacher!=null)
+               return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
         }
     }
 
