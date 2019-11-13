@@ -30,7 +30,7 @@ public class CheckListItem extends Auditable {
     private CheckList checkList;
 
     @Column(name = "f_check_list_id")
-    private Long CheckListId;
+    private Long checkListId;
 
 
 }

@@ -211,7 +211,7 @@
                 if (value !== undefined) {
                     var trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
-                    item.setValue(trimmed);
+                    // item.setValue(trimmed); #TODO
                 }
                 return true;
             }
@@ -708,6 +708,9 @@
     const addressUrl = rootUrl + "/address/";
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
+    const checklistUrl =rootUrl +"/checklist/";
+    const checklistItemUrl =rootUrl +"/checklistItem/";
+    const classCheckListUrl=rootUrl +"/class-checklist/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
@@ -775,6 +778,7 @@
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
+
             isc.say("خطا در اتصال به سرور!");
         }
     });
