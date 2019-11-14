@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -24,16 +25,16 @@ public class ClassSessionsDTO implements Serializable {
     private Long idClass;
 
     @ApiModelProperty(required = true)
-    private Integer dayCode;
+    private String dayCode;
 
     @ApiModelProperty(required = true)
     private String sessionDate;
 
     @ApiModelProperty(required = true)
-    private String startHour;
+    private String sessionStartHour;
 
     @ApiModelProperty(required = true)
-    private String endHour;
+    private String sessionEndHour;
 
     @ApiModelProperty(required = true)
     private Integer idSessionType;
@@ -70,31 +71,52 @@ public class ClassSessionsDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("AutoSessionsRequirement")
+    @AllArgsConstructor
     public static class AutoSessionsRequirement {
 
         @NotNull
         @ApiModelProperty(required = true)
-        private List<Integer> daysCode;
+        private List<String> daysCode;
 
         @NotNull
         @ApiModelProperty(required = true)
-        private String trainingType;
+        private Integer trainingType;
 
         @NotNull
         @ApiModelProperty(required = true)
-        private String startDate;
+        private String classStartDate;
 
         @NotNull
         @ApiModelProperty(required = true)
-        private String endDate;
+        private String classEndDate;
+
+        @NotNull
+        @ApiModelProperty
+        private List<Integer> classHoursRange;
+    }
+
+    //*********************************
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("GeneratedSessions")
+    @AllArgsConstructor
+    public static class GeneratedSessions {
+
+        @ApiModelProperty(required = true)
+        private String dayCode;
 
         @NotNull
         @ApiModelProperty(required = true)
-        private String startHour;
+        private String sessionDate;
 
-        @NotNull
         @ApiModelProperty(required = true)
-        private String endHour;
+        private String sessionStartHour;
+
+        @ApiModelProperty(required = true)
+        private String sessionEndHour;
+
     }
 
     //*********************************
