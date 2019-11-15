@@ -51,7 +51,7 @@ public class CheckListItemRestController {
         return new ResponseEntity<>(checkListItemService.create(create), HttpStatus.CREATED);
     }
 
- @Loggable
+    @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CheckListItemDTO.Info> update(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
@@ -139,11 +139,19 @@ public class CheckListItemRestController {
     }
 
 
-      @Loggable
+    @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CheckListItemDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(checkListItemService.search(request), HttpStatus.OK);
     }
+
+    @Loggable
+    @PutMapping(value = "is_Delete/{id}")
+    public ResponseEntity<CheckListItemDTO.Info> is_Delete(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) {
+        CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
+        return new ResponseEntity<>(checkListItemService.is_Delete(id, update), HttpStatus.OK);
+    }
+
 
 
 

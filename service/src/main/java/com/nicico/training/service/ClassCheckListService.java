@@ -100,7 +100,7 @@ public class ClassCheckListService implements IClassCheckListService {
         final List<CheckListItem> checkListItemTotal = checkListItemDAO.findAll();
 
         for (CheckListItem x : checkListItemTotal) {
-            if (!checkListItemIdsByTclassId.contains(x.getId())) {
+            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted()==null) ) {
                 ClassCheckList classCheckList1 = new ClassCheckList();
                 classCheckList1.setTclassId(classId);
                 classCheckList1.setCheckListItemId(x.getId());

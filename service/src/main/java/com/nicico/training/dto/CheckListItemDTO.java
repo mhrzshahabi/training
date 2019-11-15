@@ -29,6 +29,9 @@ public class CheckListItemDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long checkListId;
 
+    @ApiModelProperty(required = true)
+    private Boolean isDeleted;
+
     @Getter
     @Setter
     @Accessors(chain = true)
