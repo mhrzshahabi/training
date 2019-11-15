@@ -115,7 +115,7 @@
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
         doubleClick: function () {
-            show_CommitteEditForm();
+         show_CommitteEditForm();
         },
 
         selectionChanged: function (record, state) {

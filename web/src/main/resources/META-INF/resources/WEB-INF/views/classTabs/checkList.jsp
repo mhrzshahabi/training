@@ -18,7 +18,7 @@
             {name: "titleFa"},
 
         ],
-
+        autoFetchData:true,
         fetchDataURL: checklistUrl + "spec-list"
     });
 
@@ -294,8 +294,8 @@
         },
         show: function () {
             this.Super("show", arguments);
-            ListGrid_CheckList.fetchData();
-            ListGrid_CheckList.refreshCells();
+         //  ListGrid_CheckList.fetchData();
+        //   ListGrid_CheckList.refreshCells();
 
            // ListGrid_CheckListItem.fetchData();
            // ListGrid_CheckListItem.refreshCells();
