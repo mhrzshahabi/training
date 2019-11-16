@@ -1,13 +1,12 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.training.dto.ClassSessionsDTO;
-import com.nicico.training.iservice.IClassSessions;
+import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.iservice.IClassSession;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.time.DateUtils;
 
-import java.lang.reflect.Array;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -15,7 +14,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class ClassSessionsService implements IClassSessions {
+public class ClassSessionService implements IClassSession {
 
     public static void main(String[] args) {
 
@@ -24,14 +23,15 @@ public class ClassSessionsService implements IClassSessions {
 
         List<Integer> hours_range = Arrays.asList(3);
 
-        ClassSessionsDTO.AutoSessionsRequirement AS = new ClassSessionsDTO.AutoSessionsRequirement(days_code, 1, "1398/08/18", "1398/09/01", hours_range);
+        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement(days_code, 1, "1398/08/18", "1398/09/01", hours_range);
 
-        ClassSessionsService fff = new ClassSessionsService();
+        ClassSessionService fff = new ClassSessionService();
         fff.generateSessions(AS);
+
     }
 
     @Override
-    public List<ClassSessionsDTO.GeneratedSessions> generateSessions(ClassSessionsDTO.AutoSessionsRequirement autoSessionsRequirement) {
+    public List<ClassSessionDTO.GeneratedSessions> generateSessions(ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement) {
 
         //********sending data from class*********
         List<String> DaysCode = autoSessionsRequirement.getDaysCode();
@@ -62,7 +62,7 @@ public class ClassSessionsService implements IClassSessions {
         }
 
         //********generated sessions*********
-        List<ClassSessionsDTO.GeneratedSessions> Sessions = new ArrayList<ClassSessionsDTO.GeneratedSessions>();
+        List<ClassSessionDTO.GeneratedSessions> Sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
 
 
         //*********************************
@@ -82,7 +82,7 @@ public class ClassSessionsService implements IClassSessions {
 
                 for (Integer range : ClassHoursRange) {
 
-                    Sessions.add(new ClassSessionsDTO.GeneratedSessions(
+                    Sessions.add(new ClassSessionDTO.GeneratedSessions(
                             dayNames[calendar.get(Calendar.DAY_OF_WEEK)],
                             DateUtil.convertMiToKh(formatter.format(G_StartDate)),
                             MainHoursRange.get(range).get(0),

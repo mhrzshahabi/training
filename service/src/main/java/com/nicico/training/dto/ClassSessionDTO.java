@@ -19,10 +19,10 @@ import java.util.Date;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ClassSessionsDTO implements Serializable {
+public class ClassSessionDTO implements Serializable {
 
     @ApiModelProperty(required = true)
-    private Long idClass;
+    private Long classId;
 
     @ApiModelProperty(required = true)
     private String dayCode;
@@ -37,13 +37,16 @@ public class ClassSessionsDTO implements Serializable {
     private String sessionEndHour;
 
     @ApiModelProperty(required = true)
-    private Integer idSessionType;
+    private Integer SessionTypeId;
 
     @ApiModelProperty(required = true)
-    private Integer idLocation;
+    private Integer instituteId;
 
     @ApiModelProperty(required = true)
-    private Long idTeacher;
+    private Integer trainingPlaceId;
+
+    @ApiModelProperty(required = true)
+    private Long teacherId;
 
     @ApiModelProperty(required = true)
     private Integer sessionState;
@@ -57,7 +60,7 @@ public class ClassSessionsDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassSessionsInfo")
-    public static class Info extends ClassSessionsDTO {
+    public static class Info extends ClassSessionDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;

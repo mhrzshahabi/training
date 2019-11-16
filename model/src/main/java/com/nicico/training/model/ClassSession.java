@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_class_sessions")
-public class ClassSessions extends Auditable {
+@Table(name = "tbl_session")
+public class ClassSession extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_sessions_seq")
@@ -28,7 +28,7 @@ public class ClassSessions extends Auditable {
 
     @NotNull
     @Column(name = "f_class_id")
-    private Long idClass;
+    private Long classId;
 
     @Column(name = "c_day_code")
     private String dayCode;
@@ -42,18 +42,29 @@ public class ClassSessions extends Auditable {
     @Column(name = "c_session_end_hour")
     private String sessionEndHour;
 
-    @Column(name = "c_id_session_type")
-    private Integer idSessionType;
-
-    @Column(name = "c_id_location")
-    private Integer idLocation;
+    @Column(name = "c_session_type_id")
+    private Integer SessionTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_id_teacher", insertable = false, updatable = false)
+    @JoinColumn(name="f_institute_id", insertable = false, updatable = false)
+    private Institute institute;
+
+    @Column(name = "f_institute_id")
+    private Long instituteId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_training_place_id", insertable = false, updatable = false)
+    private TrainingPlace trainingPlace;
+
+    @Column(name = "f_training_place_id")
+    private Long trainingPlaceId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
     private Teacher teacher;
 
-    @Column(name = "f_id_teacher")
-    private Long idTeacher;
+    @Column(name = "f_teacher_id")
+    private Long teacherId;
 
     @Column(name = "c_session_state")
     private Integer sessionState;
