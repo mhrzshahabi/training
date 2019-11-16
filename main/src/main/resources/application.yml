@@ -101,6 +101,7 @@ nicico:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
     upload-class: /var/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
@@ -137,6 +138,7 @@ nicico:
     dir: /var/nicico/${spring.application.name}/upload
   dirs:
     upload-class: /var/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
     upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
@@ -175,6 +177,7 @@ nicico:
     dir: c:/nicico/${spring.application.name}/upload
   dirs:
     upload-class: c:/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: c:/nicico/${spring.application.name}/upload/class/deleted
     upload-person-img: c:/nicico/${spring.application.name}/upload/person/img
     upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn

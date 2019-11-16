@@ -708,9 +708,9 @@
     const addressUrl = rootUrl + "/address/";
     const operationalUnitUrl = rootUrl + "/operationalUnit/";
     const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
-    const checklistUrl =rootUrl +"/checklist/";
-    const checklistItemUrl =rootUrl +"/checklistItem/";
-    const classCheckListUrl=rootUrl +"/class-checklist/";
+    const checklistUrl = rootUrl + "/checklist/";
+    const checklistItemUrl = rootUrl + "/checklistItem/";
+    const classCheckListUrl = rootUrl + "/class-checklist/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;
