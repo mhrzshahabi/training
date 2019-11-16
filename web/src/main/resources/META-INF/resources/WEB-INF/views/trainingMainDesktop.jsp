@@ -431,13 +431,6 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
-
-                {
-                    title: "<spring:message code="competence"/>", icon: "<spring:url value="competence.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/competence/"/>");
-                    }
-                },
                 {
                     title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
                     click: function () {
@@ -590,7 +583,7 @@
                     }
                 },
                 {
-                    title: "<spring:message code="operationalUnit"/>",
+                    title: "<spring:message code="operational.unit"/>",
                     icon: "<spring:url value="operationalUnit.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
@@ -627,7 +620,7 @@
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
-            dialog = createDialog("ask", "<spring:message code="close.all.the.tabs?"/>");
+            dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
