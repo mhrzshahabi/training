@@ -9,8 +9,11 @@
 
 // <script>
 
+    // <<========== Global - Variables ==========
+    {
     var operational_method = "POST";
-
+    }
+    // ============ Global - Variables ========>>
 
     // <<-------------------------------------- Create - contextMenu ------------------------------------------
     {
@@ -313,12 +316,12 @@
         //*****update function*****
         function edit_OperationalUnit() {
             let operationalUnitData = DynamicForm_OperationalUnit.getValues();
-            let operationalUnitSaveUrl = operationalUnitUrl;
+            let operationalUnitEditUrl = operationalUnitUrl;
             if (operational_method.localeCompare("PUT") === 0) {
                 let selectedRecord = ListGrid_operational.getSelectedRecord();
-                operationalUnitSaveUrl += selectedRecord.id;
+                operationalUnitEditUrl += selectedRecord.id;
             }
-            isc.RPCManager.sendRequest(TrDSRequest(operationalUnitSaveUrl, operational_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
+            isc.RPCManager.sendRequest(TrDSRequest(operationalUnitEditUrl, operational_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
         }
 
         //*****delete function*****
@@ -339,7 +342,7 @@
                     message: "<spring:message code="global.grid.record.remove.ask"/>",
                     buttonClick: function (button, index) {
                         this.close();
-                        if (index == 0) {
+                        if (index === 0) {
                             isc.RPCManager.sendRequest(TrDSRequest(operationalUnitUrl + record.id, "DELETE", null, show_OperationalUnitActionResult));
                         }
                     }
@@ -353,13 +356,13 @@
 
         function show_OperationalUnitActionResult(resp) {
             var respCode = resp.httpResponseCode;
-            if (respCode == 200 || respCode == 201) {
+            if (respCode === 200 || respCode === 201) {
                 ListGrid_operational.invalidateCache();
                 MyOkDialog_Operational = isc.MyOkDialog.create({
                     message: "<spring:message code="global.form.request.successful"/>"
                 });
 
-                close_MyOkDialog_Operational()
+                close_MyOkDialog_Operational();
                 Window_OperationalUnit.close();
 
             } else {
@@ -403,7 +406,7 @@
                         {name: "CriteriaStr", type: "hidden"},
                         {name: "myToken", type: "hidden"}
                     ]
-            })
+            });
             criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
             criteriaForm_course.setValue("myToken", "<%=accessToken%>");
             criteriaForm_course.show();

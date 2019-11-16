@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.iservice.IClassCheckListService;
+import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListDAO;
@@ -72,6 +73,7 @@ public class ClassCheckListService implements IClassCheckListService {
     @Transactional
     @Override
     public void delete(Long id) {
+
         classCheckListDAO.deleteById(id);
     }
 
@@ -156,4 +158,6 @@ public class ClassCheckListService implements IClassCheckListService {
         ClassCheckListDTO.Info update = update(id, mapper.map(classCheckList, ClassCheckListDTO.Update.class));
         return mapper.map(classCheckList, ClassCheckListDTO.Info.class);
     }
+
+
 }

@@ -2,6 +2,8 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
 @Getter
@@ -34,6 +36,5 @@ public class CheckListItem extends Auditable {
 
     @Column(name = "f_check_list_id")
     private Long checkListId;
-
 
 }

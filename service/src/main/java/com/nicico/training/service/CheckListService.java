@@ -8,7 +8,9 @@ import com.nicico.training.dto.CheckListItemDTO;
 import com.nicico.training.iservice.ICheckListService;
 import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
+import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListDAO;
+import com.nicico.training.repository.ClassCheckListDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -17,12 +19,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
 public class CheckListService implements ICheckListService {
 
     private final CheckListDAO checkListDAO;
+    private final ClassCheckListDAO classCheckListDAO;
     private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
@@ -88,5 +92,21 @@ public class CheckListService implements ICheckListService {
         }.getType());
     }
 
+    @Override
+    @Transactional
+    public boolean checkForDelete(Long checkListId)
+  {
+    List<Long> checkListItemList=null;
+  Optional<CheckList> CheckList=checkListDAO.findById(checkListId);
+  final CheckList checkList=CheckList.orElseThrow(()->new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
+  Set<CheckListItem> checkListItemSet=checkList.getCheckListItems();
+      for (CheckListItem x:checkListItemSet) {
 
+            checkListItemList= classCheckListDAO.getCheckListItemIdsBychecklistItemId(x.getId());
+          if(checkListItemList.size() > 0 && checkListItemList !=null)
+          break;
+      }
+
+   return ((checkListItemList != null && checkListItemList.size()>0 ?false:true));
+  }
 }
