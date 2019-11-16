@@ -24,6 +24,6 @@ public class CheckList extends Auditable {
     @Column(name = "c_title_fa")
     private String titleFa;
 
-    @OneToMany(mappedBy = "checkList")
+    @OneToMany(mappedBy = "checkList",cascade = CascadeType.REMOVE)
     private Set<CheckListItem> checkListItems;
 }

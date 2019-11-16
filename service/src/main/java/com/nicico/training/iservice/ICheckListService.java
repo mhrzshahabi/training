@@ -29,4 +29,6 @@ public interface ICheckListService {
     SearchDTO.SearchRs<CheckListDTO.Info> search(SearchDTO.SearchRq request);
 
     List<CheckListItemDTO.Info> getCheckListItem(Long CheckListId);
+
+    boolean checkForDelete(Long checkListId);
 }
