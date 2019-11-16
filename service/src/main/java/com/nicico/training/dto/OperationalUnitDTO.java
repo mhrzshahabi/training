@@ -109,6 +109,7 @@ public class OperationalUnitDTO implements Serializable {
         private Integer totalRows;
     }
 
+    //*********************************
 
     @Getter
     @Setter

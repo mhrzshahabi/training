@@ -7,18 +7,16 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CheckListItemDTO;
 import com.nicico.training.iservice.ICheckListItemService;
 import com.nicico.training.model.CheckListItem;
+import com.nicico.training.repository.CheckListDAO;
 import com.nicico.training.repository.CheckListItemDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
-
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -26,7 +24,6 @@ import java.util.Set;
 public class CheckListItemService implements ICheckListItemService {
     private final CheckListItemDAO checkListItemDAO;
     private final ModelMapper mapper;
-    private final ObjectMapper objectMapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -91,54 +88,9 @@ public class CheckListItemService implements ICheckListItemService {
         mapper.map(currentCheckListItem, checkListItem);
         mapper.map(request, checkListItem);
         return mapper.map(checkListItemDAO.saveAndFlush(checkListItem), CheckListItemDTO.Info.class);
-//        Long id = Long.parseLong(body.get("id").get(0));
-//        CheckListItem checkListItem = checkListItemDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListItemNotFound));
-//        Set<String> strings = body.keySet();
-//
-//        if (strings.contains("enableStatus")) {
-//            String enableStatus = body.get("enableStatus").get(0);
-//            // String description = descriptionList.get(0);
-//            //  String oldValues = body.get("_oldValues").toString();
-//            //  List<Map> map;
-//            //  map = objectMapper.readValue(oldValues, List.class);
-//            Boolean status = enableStatus.toLowerCase().equals("true") ? true : false;
-//            checkListItem.setEnableStatus(status);
-//        }
-//        if (strings.contains("description")) {
-//            String description = body.get("description").get(0);
-//            // String description = descriptionList.get(0);
-//            //  String oldValues = body.get("_oldValues").toString();
-//            //  List<Map> map;
-//            //  map = objectMapper.readValue(oldValues, List.class);
-//             checkListItem.setDescription(description);
-//        }
-//        CheckListItemDTO.Info update = update(id, mapper.map(checkListItem, CheckListItemDTO.Update.class));
-//        return mapper.map(checkListItem, CheckListItemDTO.Info.class);
+
     }
 
-
-//    @Transactional
-//    @Override
-//    public CheckListItemDTO.Info updateDescriptionCheck( MultiValueMap<String,String> body) throws IOException {
-//
-//        Long id = Long.parseLong(body.get("id").get(0));
-//        CheckListItem checkListItem = checkListItemDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListItemNotFound));
-//        Set<String> strings = body.keySet();
-//
-//        if (strings.contains("enableStatus")) {
-//            String enableStatus = body.get("enableStatus").get(0);
-//
-//            Boolean status = enableStatus.toLowerCase().equals("true") ? true : false;
-//            checkListItem.setEnableStatus(status);
-//        }
-//        if (strings.contains("description")) {
-//            String description = body.get("description").get(0);
-//
-//            checkListItem.setDescription(description);
-//        }
-//        CheckListItemDTO.Info update = update(id, mapper.map(checkListItem, CheckListItemDTO.Update.class));
-//        return mapper.map(checkListItem, CheckListItemDTO.Info.class);
-//    }
 
    @Transactional
    @Override
@@ -148,8 +100,9 @@ public class CheckListItemService implements ICheckListItemService {
         CheckListItem checkListItem = new CheckListItem();
         mapper.map(currentCheckListItem, checkListItem);
         checkListItem.setIsDeleted(true);
-      //  mapper.map(request, checkListItem);
         return mapper.map(checkListItemDAO.saveAndFlush(checkListItem), CheckListItemDTO.Info.class);
     }
+
+
 
 }

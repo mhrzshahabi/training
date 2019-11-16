@@ -119,7 +119,6 @@
                 required: true,
                 type: 'text',
                 readonly: true,
-                required: true,
                 height: 35,
                 requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",

@@ -16,6 +16,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,12 +59,12 @@ public class CheckListRestController {
         return new ResponseEntity<>(checkListService.update(id, update), HttpStatus.OK);
     }
 
-    @Loggable
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        checkListService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @Loggable
+//    @DeleteMapping("/{id}")
+//    public ResponseEntity<Void> delete(@PathVariable Long id) {
+//        checkListService.delete(id);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
      @Loggable
     @DeleteMapping(value = "/list")
@@ -139,5 +140,14 @@ public class CheckListRestController {
 
     }
 
+    @Loggable
+    @DeleteMapping("delete/{id}")
+    public ResponseEntity<Boolean> delete1(@PathVariable Long id) {
+    boolean check=checkListService.checkForDelete(id);
+      if(check) {
+          checkListService.delete(id);
+      }
+        return new ResponseEntity<>(check,HttpStatus.OK);
+    }
 
 }
