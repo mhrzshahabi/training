@@ -25,6 +25,9 @@ public class CheckListItem extends Auditable {
     @Column(name = "c_group")
     private String group;
 
+    @Column(name="b_is_deleted")
+    private Boolean isDeleted;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_check_list_id", insertable = false, updatable = false)
     private CheckList checkList;

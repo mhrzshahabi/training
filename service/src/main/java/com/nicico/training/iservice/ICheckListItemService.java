@@ -33,6 +33,9 @@ public interface ICheckListItemService {
     @Transactional
     CheckListItemDTO.Info updateDescription(Long id, CheckListItemDTO.Update request) throws IOException;
 
+    @Transactional
+    CheckListItemDTO.Info is_Delete(Long id, CheckListItemDTO.Update request);
+
 //    @Transactional
 //    CheckListItemDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
 }
