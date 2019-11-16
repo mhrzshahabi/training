@@ -16,6 +16,7 @@
     var startDateCheck = true;
     var endDateCheck = true;
     var selectedClassId = null;
+    var ckeckList;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -188,6 +189,12 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
+
+         selectionChanged: function (record, state)
+         {
+         ckeckList=record.id;
+         },
+
         doubleClick: function () {
             ListGrid_class_edit();
         },
