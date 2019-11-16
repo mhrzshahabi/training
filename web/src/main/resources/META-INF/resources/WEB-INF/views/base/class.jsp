@@ -44,7 +44,8 @@
             {name:"teacher"},
             {name:"reason"},
             {name:"classStatus"},
-            {name:"topology"}
+            {name:"topology"},
+            {name:"trainingPlaceSet"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -445,21 +446,42 @@
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"trainingPlaceSet", editorType:"TrComboAutoRefresh", title:"محل برگزاری:",
+                name:"trainingPlaceSet", editorType:"select", title:"محل برگزاری:",
+                multiSelect:true,
                 colSpan:2,
                 // width:"250",
                 align:"center",
-                // optionDataSource:RestDataSource_Institute_JspClass,
+                optionDataSource:RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
                 displayField:"titleFa", valueField:"id",
-                filterFields:["titleFa", "code"],
+                cachePickListResults:false,
+                autoFetchData:false,
+                // autoFetchData:false,
+                filterFields:["titleFa", "capacity"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
                 pickListFields:[
-                    {name:"code"},
-                    {name:"titleFa"}
-                ]
+                    {name:"titleFa"},
+                    {name:"capacity"}
+                ],
+                click : function (form,item) {
+                    if(form.getValue("instituteId")) {
+                        alert("1");
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                        item.fetchData();
+                    }
+                    else{
+                        // DynamicForm_Class_JspClass.showItem("instituteId");
+                        isc.MyOkDialog.create({
+                            message:"ابتدا برگزار کننده را انتخاب کنید",
+                        });
+                    }
+                    // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                    // return {category:category};
+                }
+
+
             },
             {
                 name:"group",
@@ -656,6 +678,7 @@
                 return;
             }
             var data = VM_JspClass.getValues();
+            data.courseId = data.course.id;
             delete data.course;
             delete data.term;
             var classSaveUrl = classUrl;
@@ -1151,6 +1174,7 @@
             DynamicForm_Class_JspClass.getField("teacherId").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
+            VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
             Window_Class_JspClass.show();
@@ -1167,6 +1191,7 @@
     function ListGrid_Class_add() {
         classMethod = "POST";
         url = classUrl;
+        VM_JspClass.clearErrors();
         VM_JspClass.clearValues();
         Window_Class_JspClass.show();
     }

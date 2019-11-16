@@ -8,21 +8,22 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
+import com.nicico.training.model.TrainingPlace;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.repository.TrainingPlaceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -32,6 +33,7 @@ public class TclassService implements ITclassService {
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
+    private final TrainingPlaceDAO trainingPlaceDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -61,9 +63,14 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
+        List<Long> trainingPlaceIds = request.getTrainingPlaceSet();
+        List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
+        Set<TrainingPlace> set = new HashSet<>(allById);
         Tclass updating = new Tclass();
+//        request.setTrainingPlaceSet(null);
         modelMapper.map(tclass, updating);
         modelMapper.map(request, updating);
+        updating.setTrainingPlaceSet(set);
         return save(updating);
     }
 

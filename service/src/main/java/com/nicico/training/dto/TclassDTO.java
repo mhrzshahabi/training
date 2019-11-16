@@ -5,7 +5,10 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.iservice.ITrainingPlaceService;
 import com.nicico.training.model.Student;
+import com.nicico.training.repository.TrainingPlaceDAO;
+import com.nicico.training.service.TrainingPlaceService;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -63,7 +66,6 @@ public class TclassDTO {
         trainingPlaceSet.forEach(c->trainingPlaceIds.add(c.getId()));
         return trainingPlaceIds;
     }
-
 
     @Getter
     @Setter
