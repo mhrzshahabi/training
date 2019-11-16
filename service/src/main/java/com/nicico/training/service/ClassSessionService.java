@@ -1,11 +1,21 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IClassSession;
+import com.nicico.training.model.ClassSession;
+import com.nicico.training.repository.ClassSessionDAO;
 import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
 import org.apache.commons.lang3.time.DateUtils;
+import org.hibernate.exception.ConstraintViolationException;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
@@ -16,6 +26,92 @@ import java.util.*;
 @RequiredArgsConstructor
 public class ClassSessionService implements IClassSession {
 
+    private final ClassSessionDAO classSessionDAO;
+    private final ModelMapper modelMapper;
+
+    //*********************************
+
+    @Transactional(readOnly = true)
+    @Override
+    public ClassSessionDTO.Info get(Long id) {
+        final Optional<ClassSession> optionalOperationalUnit = classSessionDAO.findById(id);
+        final ClassSession operationalUnit = optionalOperationalUnit.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+        return modelMapper.map(operationalUnit, ClassSessionDTO.Info.class);
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public List<ClassSessionDTO.Info> list() {
+        List<ClassSession> operationalUnitList = classSessionDAO.findAll();
+        return modelMapper.map(operationalUnitList, new TypeToken<List<ClassSessionDTO.Info>>() {
+        }.getType());
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public ClassSessionDTO.Info create(ClassSessionDTO.Create request) {
+        ClassSession operationalUnit = modelMapper.map(request, ClassSession.class);
+        try {
+            return modelMapper.map(classSessionDAO.saveAndFlush(operationalUnit), ClassSessionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        }
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request) {
+        Optional<ClassSession> optionalOperationalUnit = classSessionDAO.findById(id);
+        ClassSession currentOperationalUnit = optionalOperationalUnit.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+        ClassSession operationalUnit = new ClassSession();
+        modelMapper.map(currentOperationalUnit, operationalUnit);
+        modelMapper.map(request, operationalUnit);
+
+        try {
+            return modelMapper.map(classSessionDAO.saveAndFlush(operationalUnit), ClassSessionDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        }
+
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        classSessionDAO.deleteById(id);
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public void delete(ClassSessionDTO.Delete request) {
+        final List<ClassSession> operationalUnitList = classSessionDAO.findAllById(request.getIds());
+        classSessionDAO.deleteAll(operationalUnitList);
+    }
+
+    //*********************************
+
+    @Transactional
+    @Override
+    public SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(classSessionDAO, request, operationalUnit -> modelMapper.map(operationalUnit, ClassSessionDTO.Info.class));
+    }
+
+
+    //**********************
+    //**********************
+    //**********************
+    //**********************
+
     public static void main(String[] args) {
 
 //        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
@@ -23,13 +119,27 @@ public class ClassSessionService implements IClassSession {
 
         List<Integer> hours_range = Arrays.asList(3);
 
-        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement(days_code, 1, "1398/08/18", "1398/09/01", hours_range);
+        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
+                (
+                        301L,
+                        days_code,
+                        1,
+                        "1398/08/18",
+                        "1398/09/01",
+                        hours_range, 1,
+                        221,
+                        22,
+                        602L,
+                        1,
+                        "توضیحات"
+                );
 
-        ClassSessionService fff = new ClassSessionService();
+        ClassSessionService fff = new ClassSessionService(null, null);
         fff.generateSessions(AS);
 
     }
 
+    @Transactional
     @Override
     public List<ClassSessionDTO.GeneratedSessions> generateSessions(ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement) {
 
@@ -71,6 +181,7 @@ public class ClassSessionService implements IClassSession {
 
         boolean validation = true;
 
+        //validation data here
         if (!validation)
             return null;
 
@@ -83,24 +194,33 @@ public class ClassSessionService implements IClassSession {
                 for (Integer range : ClassHoursRange) {
 
                     Sessions.add(new ClassSessionDTO.GeneratedSessions(
+                            autoSessionsRequirement.getClassId(),
                             dayNames[calendar.get(Calendar.DAY_OF_WEEK)],
                             DateUtil.convertMiToKh(formatter.format(G_StartDate)),
                             MainHoursRange.get(range).get(0),
-                            MainHoursRange.get(range).get(1)
+                            MainHoursRange.get(range).get(1),
+                            autoSessionsRequirement.getSessionTypeId(),
+                            autoSessionsRequirement.getInstituteId(),
+                            autoSessionsRequirement.getTrainingPlaceId(),
+                            autoSessionsRequirement.getTeacherId(),
+                            autoSessionsRequirement.getSessionState(),
+                            autoSessionsRequirement.getDescription()
+
                     ));
 
                 }
-
-
-//                System.out.println(G_StartDate);
-//                System.out.println(dayNames[calendar.get(Calendar.DAY_OF_WEEK)]);
             }
 
             G_StartDate = DateUtils.addDays(G_StartDate, 1);
 
         }
 
-        System.out.println(Arrays.toString(Sessions.toArray()));
+
+        if (Sessions.size() > 0) {
+            // save data here
+        }
+
+
         return Sessions;
     }
 }
