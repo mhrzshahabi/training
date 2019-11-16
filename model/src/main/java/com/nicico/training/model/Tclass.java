@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -80,6 +81,13 @@ public class Tclass extends Auditable {
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
     private Set<TrainingPlace> trainingPlaceSet;
+
+    @Transient
+    public List<Long> getTrainingPlaceIds() {
+        List<Long> ids = new ArrayList<>();
+        trainingPlaceSet.forEach(c->ids.add(c.getId()));
+        return ids;
+    }
 
     @Column(name = "n_group", nullable = false)
     private Long group;

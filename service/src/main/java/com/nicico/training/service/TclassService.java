@@ -8,7 +8,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
@@ -54,7 +53,12 @@ public class TclassService implements ITclassService {
     @Transactional
     @Override
     public TclassDTO.Info create(TclassDTO.Create request) {
+        List<Long> list = request.getTrainingPlaceIds();
+        List<TrainingPlace> allById = trainingPlaceDAO.findAllById(list);
+        Set<TrainingPlace> set = new HashSet<>(allById);
         final Tclass tclass = modelMapper.map(request, Tclass.class);
+        tclass.setTrainingPlaceSet(set);
+//        TclassDTO.Info tclass = modelMapper.map(request, TclassDTO.Info.class);
         return save(tclass);
     }
 
@@ -63,7 +67,7 @@ public class TclassService implements ITclassService {
     public TclassDTO.Info update(Long id, TclassDTO.Update request) {
         final Optional<Tclass> cById = tclassDAO.findById(id);
         final Tclass tclass = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
-        List<Long> trainingPlaceIds = request.getTrainingPlaceSet();
+        List<Long> trainingPlaceIds = request.getTrainingPlaceIds();
         List<TrainingPlace> allById = trainingPlaceDAO.findAllById(trainingPlaceIds);
         Set<TrainingPlace> set = new HashSet<>(allById);
         Tclass updating = new Tclass();
@@ -163,6 +167,20 @@ public class TclassService implements ITclassService {
         for (Student student : gAllById) {
             tclass.getStudentSet().add(student);
         }
+    }
+
+
+    @Transactional
+    @Override
+    public Long getEndGroup(Long courseId, Long termId) {
+        List<Tclass> classes = tclassDAO.findByCourseIdAndTermId(courseId, termId);
+        Long max = 0L;
+        for (Tclass aClass : classes) {
+            if(aClass.getGroup()>max){
+                max= aClass.getGroup();
+            }
+        }
+        return max+1;
     }
 
 

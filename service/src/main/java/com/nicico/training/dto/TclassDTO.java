@@ -60,12 +60,8 @@ public class TclassDTO {
     private Boolean thursday;
     private Boolean friday;
     private String topology;//چیدمان
-    private Set<TrainingPlaceDTO.Info> trainingPlaceSet;
-    public List<Long> getTrainingPlaceSet(){
-        List<Long> trainingPlaceIds = new ArrayList<>();
-        trainingPlaceSet.forEach(c->trainingPlaceIds.add(c.getId()));
-        return trainingPlaceIds;
-    }
+    private List<Long> trainingPlaceIds;
+
 
     @Getter
     @Setter
