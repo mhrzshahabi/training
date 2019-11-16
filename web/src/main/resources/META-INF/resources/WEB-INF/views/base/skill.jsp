@@ -9,7 +9,7 @@
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     %>
 
-    var skill_Level_Symbol = ""
+    var skill_Level_Symbol = "";
     var skill_Method = "GET";
     var skill_SkillHomeUrl = rootUrl + "/skill";
     var skill_CategoryHomeUrl = rootUrl + "/category";
