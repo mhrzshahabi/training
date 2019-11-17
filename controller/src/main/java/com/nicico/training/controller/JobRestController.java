@@ -48,21 +48,21 @@ public class JobRestController {
     }
 
 //    @Loggable
-//    @PostMapping(value = {"/printWithCriteria/{type}"})
+//    @PostMapping(value = {"/print/{type}"})
 //    public void printWithCriteria(HttpServletResponse response,
 //                                  @PathVariable String type,
 //                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 //
 //        final SearchDTO.CriteriaRq criteriaRq;
 //        final SearchDTO.SearchRq searchRq;
-//        if (criteriaStr.equalsIgnoreCase("{}")) {
+//        if (criteriaStr == null || criteriaStr.equalsIgnoreCase("{}")) {
 //            searchRq = new SearchDTO.SearchRq();
 //        } else {
 //            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
 //            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
 //        }
 //
-//        final SearchDTO.SearchRs<EducationOrientationDTO.Info> searchRs = educationOrientationService.search(searchRq);
+//        final SearchDTO.SearchRs<JobDTO.Info> searchRs = jobService.search(searchRq);
 //
 //        final Map<String, Object> params = new HashMap<>();
 //        params.put("todayDate", DateUtil.todayDate());
@@ -74,35 +74,4 @@ public class JobRestController {
 //        reportUtil.export("/reports/EducationOrientationByCriteria.jasper", params, jsonDataSource, response);
 //    }
 
-
-//    @Loggable
-//    @GetMapping(value = {"/print/{type}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,
-//                                  @RequestParam(value = "CriteriaStr", required = false) String criteriaStr) throws Exception {
-//
-//        Map<String, Object> params = new HashMap<>();
-//        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/Course.jasper", params, response);
-////
-////        final SearchDTO.CriteriaRq criteriaRq;
-////        final SearchDTO.SearchRq searchRq;
-////        if (criteriaStr== null || criteriaStr.equalsIgnoreCase("{}")) {
-////            searchRq = new SearchDTO.SearchRq();
-////        } else {
-////            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-////            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-////        }
-////
-////        final SearchDTO.SearchRs<CourseDTO.Info> searchRs = courseService.search(searchRq);
-////
-////        final Map<String, Object> params = new HashMap<>();
-////        params.put("todayDate", dateUtil.todayDate());
-////
-////        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-////        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-////
-////        params.put(ConstantVARs.REPORT_TYPE, type);
-////        reportUtil.export("/reports/CourseByCriteria.jasper", params, jsonDataSource, response);
-//    }
 }
