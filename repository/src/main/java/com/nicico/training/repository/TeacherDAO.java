@@ -29,7 +29,7 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     Integer getUnAttachedTeachersCountByInstituteId(Long instituteID);
 
 //    List<Teacher> findByCategoriesAndPersonality_EducationLevelId(Set<Category> categories,Long educationLevelId );
-    List<Teacher> findByCategoriesContains(Category category);
+    List<Teacher> findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(Long id, Integer code);
 //    List<Teacher> findTeachersBy
 
 

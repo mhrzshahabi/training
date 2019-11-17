@@ -17,4 +17,5 @@ public interface EducationLevelDAO extends JpaRepository<EducationLevel, Long>, 
     @Query(value = "select * from TBL_EDUCATION_LEVEL where C_TITLE_FA = :titleFa", nativeQuery = true)
     @Transactional
     List<EducationLevel> findByTitleFa(@Param("titleFa") String titleFa);
+
 }

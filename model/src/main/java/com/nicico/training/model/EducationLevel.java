@@ -24,6 +24,9 @@ public class EducationLevel extends Auditable {
     @Column(name = "c_title_fa", nullable = false, unique = true)
     private String titleFa;
 
+    @Column(name = "n_code")
+    private Integer code;
+
     @Column(name = "c_title_en")
     private String titleEn;
 

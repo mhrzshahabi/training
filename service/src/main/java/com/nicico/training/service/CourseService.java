@@ -26,6 +26,7 @@ public class CourseService implements ICourseService {
 
     private final ModelMapper modelMapper;
     private final GoalDAO goalDAO;
+    private final EducationLevelDAO educationLevelDAO;
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
@@ -579,9 +580,11 @@ public class CourseService implements ICourseService {
     public List<TeacherDTO.Info> getTeachers(Long courseId) {
         final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        Category category = course.getCategory();
-        String degree = course.getMinTeacherDegree();
-        List<Teacher> teachers = teacherDAO.findByCategoriesContains(category);
+        String minTeacherDegree = course.getMinTeacherDegree();
+        List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
+        EducationLevel educationLevel = byTitleFa.get(0);
+        Long categoryId = course.getCategoryId();
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
         return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.Info>>() {
         }.getType());
     }

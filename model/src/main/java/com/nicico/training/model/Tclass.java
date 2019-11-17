@@ -128,6 +128,12 @@ public class Tclass extends Auditable {
 
     @Column(name = "b_friday")
     private Boolean friday;
+    @Column(name = "b_first")
+    private Boolean first;
+    @Column(name = "b_second")
+    private Boolean second;
+    @Column(name = "b_third")
+    private Boolean third;
 
     @Column(name = "c_topology")
     private String topology;//چیدمان
