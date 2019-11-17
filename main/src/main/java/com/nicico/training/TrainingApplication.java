@@ -10,21 +10,7 @@ import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 @EnableJpaAuditing(modifyOnCreate = false, auditorAwareRef = "auditorProvider")
 @EnableJpaRepositories("com.nicico")
 public class TrainingApplication {
-
 	public static void main(String[] args) {
 		SpringApplication.run(TrainingApplication.class, args);
 	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

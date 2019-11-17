@@ -15,12 +15,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.util.List;
-import java.util.Set;
 
 @Slf4j
 @RestController
@@ -58,30 +57,12 @@ public class CheckListItemRestController {
         return new ResponseEntity<>(checkListItemService.update(id, update), HttpStatus.OK);
     }
 
-//     @Loggable
-//    @PostMapping(value = "/edit")
-//     public ResponseEntity<CheckListItemDTO.Info> update(@RequestParam MultiValueMap request){
-//
-//       Set set = request.keySet();
-//      //   set.contains("description");
-//   //   CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
-//        return null;
-//    }
-
-     @Loggable
+    @Loggable
     @PostMapping(value = "/edit/{id}")
     public ResponseEntity<CheckListItemDTO.Info> updateDescription(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) throws IOException {
           CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
         return new ResponseEntity( checkListItemService.updateDescription(id,update),HttpStatus.OK);
     }
-
-
-//     @Loggable
-//    @PostMapping(value = "/edit")
-//    public ResponseEntity<CheckListItemDTO.Info> updateDescription( @RequestParam MultiValueMap<String,String> body) throws IOException {
-//        return new ResponseEntity( checkListItemService.updateDescriptionCheck(body),HttpStatus.OK);
-//    }
-
 
     @Loggable
     @DeleteMapping("/{id}")

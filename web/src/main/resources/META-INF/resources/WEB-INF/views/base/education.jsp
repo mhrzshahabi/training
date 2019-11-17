@@ -17,7 +17,12 @@
     /////////////////////////////////////////////////////////
 
     var RestDataSourceEducationLevel = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}],
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+            {name: "titleEn"},
+            {name: "code"}
+            ],
         fetchDataURL: educationLevelUrl + "spec-list"
     });
 
@@ -612,7 +617,14 @@
                 type: 'text',
                 length: "100",
                 keyPressFilter: "[a-z|A-Z|0-9|' ']"
-            }
+            },
+            {
+                name: "code",
+                title: "کد",
+                // type: '',
+                length: "100",
+                keyPressFilter: "[0-9]"
+            },
         ]
     });
 

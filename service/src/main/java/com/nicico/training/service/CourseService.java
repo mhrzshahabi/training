@@ -8,10 +8,7 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICourseService;
 import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
-import com.nicico.training.repository.CompetenceDAO;
-import com.nicico.training.repository.CourseDAO;
-import com.nicico.training.repository.GoalDAO;
-import com.nicico.training.repository.SkillDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -29,6 +26,8 @@ public class CourseService implements ICourseService {
 
     private final ModelMapper modelMapper;
     private final GoalDAO goalDAO;
+    private final EducationLevelDAO educationLevelDAO;
+    private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
     private final CompetenceDAO competenceDAO;
@@ -574,6 +573,20 @@ public class CourseService implements ICourseService {
             }
         }
         return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<TeacherDTO.Info> getTeachers(Long courseId) {
+        final Optional<Course> optionalCourse = courseDAO.findById(courseId);
+        final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        String minTeacherDegree = course.getMinTeacherDegree();
+        List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(minTeacherDegree);
+        EducationLevel educationLevel = byTitleFa.get(0);
+        Long categoryId = course.getCategoryId();
+        List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
+        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.Info>>() {
+        }.getType());
     }
 }
 

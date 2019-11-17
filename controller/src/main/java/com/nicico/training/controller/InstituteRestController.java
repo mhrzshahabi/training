@@ -25,6 +25,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -483,21 +484,20 @@ public class InstituteRestController {
     @GetMapping(value = "/teacher-dummy")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> teacherDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<TeacherDTO.TeacherSpecRs>(new TeacherDTO.TeacherSpecRs(), HttpStatus.OK);
+        return new ResponseEntity<>(new TeacherDTO.TeacherSpecRs(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/equipment-dummy")
 //    @PreAuthorize("hasAuthority('r_equipment')")
     public ResponseEntity<EquipmentDTO.EquipmentSpecRs> equipmentDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-        return new ResponseEntity<EquipmentDTO.EquipmentSpecRs>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
+        return new ResponseEntity<>(new EquipmentDTO.EquipmentSpecRs(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "{instituteId}/accounts")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
     public ResponseEntity<InstituteAccountDTO.AccountSpecRs> getAccounts(@PathVariable Long instituteId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         List<InstituteAccountDTO.Info> instituteAccountList = instituteService.getInstituteAccounts(instituteId);
 
@@ -517,9 +517,10 @@ public class InstituteRestController {
     @GetMapping(value = "{instituteId}/training-places")
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
     public ResponseEntity<TrainingPlaceDTO.TrainingPlaceSpecRs> getTrainingPlaces(@PathVariable Long instituteId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        List<TrainingPlaceDTO.Info> trainingPlaces = instituteService.getTrainingPlaces(instituteId);
+        List<TrainingPlaceDTO.Info> trainingPlaces = new ArrayList<>();
+        if(instituteId != 0) {
+            trainingPlaces = instituteService.getTrainingPlaces(instituteId);
+        }
 
         final TrainingPlaceDTO.SpecRs specResponse = new TrainingPlaceDTO.SpecRs();
         specResponse.setData(trainingPlaces)

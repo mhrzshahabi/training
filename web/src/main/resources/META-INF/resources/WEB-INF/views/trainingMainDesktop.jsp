@@ -438,6 +438,12 @@
                     }
                 },
                 {
+                    title: "<spring:message code="need.assessment.skill.based"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="skill"/>", icon: "<spring:url value="skill.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
@@ -704,6 +710,7 @@
     const checklistUrl = rootUrl + "/checklist/";
     const checklistItemUrl = rootUrl + "/checklistItem/";
     const classCheckListUrl = rootUrl + "/class-checklist/";
+    const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         var xhttp;

@@ -33,10 +33,10 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
     private Long skillId;
 
     @Column(name = "e_need_assessment_priority", insertable = false, updatable = false, nullable = false)
-    private ENeedAssessmentPriority eNeedAssessmentPriority;
+    private ENeedAssessmentPriority eneedAssessmentPriority;
 
     @Column(name = "e_need_assessment_priority", nullable = false)
-    private Integer eNeedAssessmentPriorityId;
+    private Integer eneedAssessmentPriorityId;
 
     @Any(
             metaColumn = @Column(name = "c_object_type", nullable = false, length = 30),
@@ -45,10 +45,10 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
     @AnyMetaDef(
             idType = "long", metaType = "string",
             metaValues = {
-                    @MetaValue(targetEntity = Job.class, value = "job"),
-                    @MetaValue(targetEntity = JobGroup.class, value = "job_group"),
-                    @MetaValue(targetEntity = Post.class, value = "post"),
-                    @MetaValue(targetEntity = PostGroup.class, value = "post_group")
+                    @MetaValue(targetEntity = Job.class, value = "Job"),
+                    @MetaValue(targetEntity = JobGroup.class, value = "JobGroup"),
+                    @MetaValue(targetEntity = Post.class, value = "Post"),
+                    @MetaValue(targetEntity = PostGroup.class, value = "PostGroup")
             }
     )
     @JoinColumn(name = "f_object_id", nullable = false, insertable = false, updatable = false)
@@ -56,4 +56,8 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
 
     @Column(name = "f_object_id", nullable = false)
     private Long objectId;
+
+    @Column(name = "c_object_type", insertable = false, updatable = false)
+    String objectType;
+
 }

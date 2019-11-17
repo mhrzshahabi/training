@@ -45,7 +45,8 @@
             {name:"teacher"},
             {name:"reason"},
             {name:"classStatus"},
-            {name:"topology"}
+            {name:"topology"},
+            {name:"trainingPlaceIds"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -116,8 +117,7 @@
             {name: "titleFa",title:"نام مکان"},
             {name: "capacity",title:"ظرفیت"}
         ],
-        // fetchDataURL: instituteUrl + "id" + /training-places"
-        fetchDataURL: trainingPlaceUrl + "spec-list"
+        fetchDataURL : instituteUrl + "0/training-places"
     });
 
 
@@ -269,7 +269,7 @@
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
                     form.getField("teacherId").fetchData();
                     form.getField("titleClass").setValue(item.getSelectedRecord().titleFa);
-                    classCode();
+                    evalGroup();
                 }
             },
             {
@@ -362,6 +362,10 @@
                     {name:"personality.firstNameFa"},
                     {name:"personality.nationalCode"}
                 ],
+                click:function (form,item) {
+                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
+                    item.fetchData();
+                }
                 // getPickListFilterCriteria : function () {
                 //     VM_JspClass.getField("course.id").getSelectedRecord().category.id;
                 //     return {category:category};
@@ -417,6 +421,7 @@
                 name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
                 // width:"250",
                 colSpan:2,
+                autoFetchData:false,
                 optionDataSource:RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
                 displayField:"titleFa", valueField:"id",
@@ -433,6 +438,9 @@
                     {name:"manager.lastNameFa"}
                 ],
                 // startRow:true,
+                changed: function (form,item) {
+                    form.clearValue("trainingPlaceIds")
+                }
             },
             {
                 name:"topology",
@@ -452,33 +460,49 @@
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"trainingPlaceSet", editorType:"TrComboAutoRefresh", title:"محل برگزاری:",
+                name:"trainingPlaceIds", editorType:"select", title:"محل برگزاری:",
+                multiple:true,
                 colSpan:2,
                 // width:"250",
                 align:"center",
-                // optionDataSource:RestDataSource_Institute_JspClass,
+                optionDataSource:RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
-                displayField:"titleFa", valueField:"id",
-                filterFields:["titleFa", "code"],
+                displayField:"titleFa",
+                valueField:"id",
+                // cachePickListResults:false,
+                // autoFetchData:false,
+                // autoFetchData:false,
+                filterFields:["titleFa", "capacity"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
                 pickListFields:[
-                    {name:"code"},
-                    {name:"titleFa"}
-                ]
+                    {name:"titleFa"},
+                    {name:"capacity"}
+                ],
+                click : function (form,item) {
+                    if(form.getValue("instituteId")) {
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                        item.fetchData();
+                    }
+                    else{
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
+                        item.fetchData();
+                        isc.MyOkDialog.create({
+                            message:"ابتدا برگزار کننده را انتخاب کنید",
+                        });
+                    }
+                    // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                    // return {category:category};
+                }
             },
             {
                 name:"group",
                 title:"گروه:",
-                defaultValue:"1",
                 required: true,
                 colSpan:2,
                 textAlign:"center",
-                // type:"staticText",textBoxStyle:"textItemLite",
-                changed: function () {
-                    classCode();
-                }
+                type:"staticText",textBoxStyle:"textItemLite"
             },
         ],
     });
@@ -538,7 +562,7 @@
                     }
                 ],
                 changed: function () {
-                    classCode();
+                    evalGroup();
                 }
             },
             {
@@ -663,6 +687,7 @@
                 return;
             }
             var data = VM_JspClass.getValues();
+            data.courseId = data.course.id;
             delete data.course;
             delete data.term;
             var classSaveUrl = classUrl;
@@ -1156,8 +1181,12 @@
             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
             DynamicForm_Class_JspClass.getField("teacherId").fetchData();
+            DynamicForm_Class_JspClass.getField("instituteId").fetchData();
+            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places"
+            DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
+            VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
             Window_Class_JspClass.show();
@@ -1174,6 +1203,7 @@
     function ListGrid_Class_add() {
         classMethod = "POST";
         url = classUrl;
+        VM_JspClass.clearErrors();
         VM_JspClass.clearValues();
         Window_Class_JspClass.show();
     }
@@ -1197,6 +1227,29 @@
 
     function classCode() {
         VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"/"+VM_JspClass.getItem("termId").getSelectedRecord().code+"/"+VM_JspClass.getValue("group"));
+    }
+
+    function evalGroup(){
+            let tid = VM_JspClass.getValue("termId");
+            let cid = VM_JspClass.getValue("course.id");
+            if(tid && cid) {
+                isc.RPCManager.sendRequest({
+                    actionURL: classUrl + "end_group/" + cid + "/" + tid,
+                    httpMethod: "GET",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    serverOutputAsString: false,
+                    callback: function (resp) {
+                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                            VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
+                            classCode();
+                        }
+                    }
+                });
+
+            }
     }
 
     function class_action_result(resp) {

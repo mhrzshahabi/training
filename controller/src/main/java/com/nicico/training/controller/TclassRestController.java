@@ -222,4 +222,14 @@ public class TclassRestController {
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
     }
+    //----------------------------------------------------
+
+    @Loggable
+    @GetMapping(value = "/end_group/{courseId}/{termId}")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId,@PathVariable Long termId) {
+        return new ResponseEntity<>(tclassService.getEndGroup(courseId,termId), HttpStatus.OK);
+    }
+
+
 }

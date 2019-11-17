@@ -133,7 +133,7 @@
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center"},
             {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"},
-            {name: "OnDelete", title: "حذف", align: "center", canFilter: false}
+            {name: "OnDelete", title: "<spring:message code='global.form.remove'/>", align: "center", canFilter: false}
         ],
         createRecordComponent: function (record, colNum) {
             var fieldName = this.getFieldName(colNum);

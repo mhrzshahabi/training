@@ -418,4 +418,19 @@ public class CourseRestController {
         params.put("theo",eTheo.getTitleFa());
         reportUtil.export("/reports/test1.jasper", params, response);
     }
+
+    @Loggable
+    @GetMapping(value = "/get_teachers/{id}")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> getTeachers(@PathVariable Long id) {
+        List<TeacherDTO.Info> infoList = courseService.getTeachers(id);
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(infoList)
+                .setStartRow(0)
+                .setEndRow(infoList.size())
+                .setTotalRows(infoList.size());
+
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 }

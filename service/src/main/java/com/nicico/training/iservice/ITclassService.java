@@ -6,6 +6,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -35,4 +36,6 @@ public interface ITclassService {
 
     void addStudents(StudentDTO.Delete  request, Long classId);
 
+    @Transactional
+    Long getEndGroup(Long courseId, Long termId);
 }

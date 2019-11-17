@@ -14,6 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_post_group")
+@DiscriminatorValue("PostGroup")
 public class PostGroup extends Auditable {
 
     @Id

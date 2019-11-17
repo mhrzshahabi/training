@@ -62,4 +62,7 @@ public interface ICourseService {
 
     @Transactional
     String getDomain(Long id);
+
+    @Transactional(readOnly = true)
+    List<TeacherDTO.Info> getTeachers(Long courseId);
 }
