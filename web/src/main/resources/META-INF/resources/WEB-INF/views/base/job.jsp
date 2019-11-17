@@ -145,6 +145,7 @@
         members: [JobLG_job],
     });
 
+
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.filterByEditor();
