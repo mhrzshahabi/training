@@ -35,9 +35,18 @@ public class MainFormController {
     }
 
     @RequestMapping("/needAssessment")
-    public String showNeedAssessmentForm() { return "base/needAssessmentNew1"; }
+    public String showNeedAssessmentForm() {
+        return "base/needAssessmentNew1";
+    }
 
     @RequestMapping("/postGradeGroup")
-    public String showPostGradeGroupForm() { return "base/postGradeGroup"; }
+    public String showPostGradeGroupForm() {
+        return "base/postGradeGroup";
+    }
+
+    @RequestMapping("/needAssessmentSkillBased")
+    public String showNeedAssessmentSkillBasedForm() {
+        return "base/needAssessmentSkillBased";
+    }
 
 }

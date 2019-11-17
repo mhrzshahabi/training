@@ -12,6 +12,7 @@ import java.util.Set;
 @Getter
 @Entity
 @Immutable
+@DiscriminatorValue("Job")
 @Table(name = "tbl_job")
 public class Job extends Auditable {
 

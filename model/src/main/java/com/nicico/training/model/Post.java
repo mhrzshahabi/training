@@ -15,6 +15,7 @@ import java.util.Set;
 @Immutable
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Table(name = "tbl_post")
+@DiscriminatorValue("Post")
 public class Post extends Auditable {
 
     @Id
