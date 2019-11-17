@@ -11,9 +11,7 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.model.Category;
 import com.nicico.training.repository.CategoryDAO;
-import com.nicico.training.repository.CommitteeDAO;
 import com.nicico.training.service.CommitteeService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -258,10 +257,33 @@ public class CommitteeRestController {
 
     }
 
-// @Loggable
-//    @PostMapping(value = {"/printWithCriteria/{type}/{committeeId}"})
-//    public void printWithCriteria(HttpServletResponse response,
-//                                  @PathVariable String type,@PathVariable int committeeId,
+
+//
+//    @Loggable
+//    @PostMapping(value = {"/printCommitteeWithMember/{type}"})
+//    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+//        Map<String, Object> params = new HashMap<>();
+//        params.put(ConstantVARs.REPORT_TYPE, type);
+//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
+//    }
+
+ @Loggable
+    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
+    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
+//        reportUtil.export("/reports/skillGroup.jasper", params, response);
+
+    }
+
+//
+    //--------------
+//
+//    @Loggable
+//   @PostMapping(value = {"/printCommitteeWithMember/{type}"})
+//    public void printAll(HttpServletResponse response,
+//                                  @PathVariable String type,
 //                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 //
 //        final SearchDTO.CriteriaRq criteriaRq;
@@ -282,17 +304,31 @@ public class CommitteeRestController {
 //        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 //
 //        params.put(ConstantVARs.REPORT_TYPE, type);
-//        reportUtil.export("/reports/CommitteeByCriteria.jasper", params, jsonDataSource, response);
+//        reportUtil.export("/reports/CommitteeWithMember.jasper", params, jsonDataSource, response);
 //    }
+//    //---------------
+
+
+
+
+
+
+
+
+
 
 
     @Loggable
-    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
-    public void printAll(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-        Map<String, Object> params = new HashMap<>();
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
-    }
+    @GetMapping(value = {"/findConflictCommittee/{category}/{subcategory}"})
+      public  ResponseEntity<String> findConflictCommittee(@PathVariable Long category,@PathVariable Long subcategory)
+     {
+     return  new ResponseEntity<>(committeeService.findConflictCommittee(category,subcategory),HttpStatus.OK);
+     }
 
-
+       @Loggable
+    @GetMapping(value = {"/findConflictWhenEdit/{category}/{subcategory}/{id}"})
+      public  ResponseEntity<String> fincConflictWhenEdit(@PathVariable Long category,@PathVariable Long subcategory,@PathVariable Long id)
+     {
+     return  new ResponseEntity<>(committeeService.findConflictWhenEdit(category,subcategory,id),HttpStatus.OK);
+     }
 }

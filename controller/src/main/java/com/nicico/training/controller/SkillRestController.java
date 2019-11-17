@@ -12,7 +12,10 @@ import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.CourseDTO;
+import com.nicico.training.dto.NeedAssessmentDTO;
+import com.nicico.training.dto.SkillDTO;
+import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -72,8 +75,8 @@ public class SkillRestController {
         try {
             maxSkillCode = skillService.getMaxSkillCode(create.getCode());
             if (maxSkillCode == null || (maxSkillCode.length() != 8 && !maxSkillCode.equals("0")))
-                   throw new Exception("Skill with this Code wrong");
-            maxId =maxSkillCode.equals("0")?0:Integer.parseInt(maxSkillCode.substring(4));
+                throw new Exception("Skill with this Code wrong");
+            maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
             maxId++;
             newSkillCode = create.getCode() + String.format("%04d", maxId);
             create.setCode(newSkillCode);
@@ -101,42 +104,44 @@ public class SkillRestController {
 //    @PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-        flag=skillService.isSkillDeletable(id);
-        if(flag)
-            skillService.delete(id);
+            flag = skillService.isSkillDeletable(id);
+            if (flag)
+                skillService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
+            httpStatus = HttpStatus.NO_CONTENT;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
+
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody SkillDTO.Delete request) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            flag=true;
-            for (Long id : request.getIds() ) {
-                if(!skillService.isSkillDeletable(id)){
-                    flag=false;
+            flag = true;
+            for (Long id : request.getIds()) {
+                if (!skillService.isSkillDeletable(id)) {
+                    flag = false;
                     break;
                 }
             }
 //            flag=skillService.isSkillDeletable(id);
-            if(flag)
+            if (flag)
                 skillService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
+            httpStatus = HttpStatus.NO_CONTENT;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
+
 
     @Loggable
     @GetMapping(value = "/spec-list")
@@ -198,6 +203,20 @@ public class SkillRestController {
     // skill group methods ------------------------------------------------------------------------------------------------
 
 
+    @GetMapping(value = "/{skillId}/need-assessment")
+    public ResponseEntity<ISC<NeedAssessmentDTO.Info>> getNeedAssessment(@PathVariable Long skillId) throws IOException {
+//        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+//        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        List<NeedAssessmentDTO.Info> infos = skillService.getNeedAssessment(skillId);
+
+        SearchDTO.SearchRs<NeedAssessmentDTO.Info> searchRs = new SearchDTO.SearchRs<NeedAssessmentDTO.Info>();
+        searchRs.setList(infos);
+        searchRs.setTotalCount(Long.valueOf(infos.size()));
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, 0), HttpStatus.OK);
+    }
+
+
     @Loggable
     @GetMapping(value = "{skillId}/skill-groups")
 //    @PreAuthorize("hasAnyAuthority('r_skill_group')")
@@ -226,13 +245,13 @@ public class SkillRestController {
                                                                                    @RequestParam(value = "_constructor", required = false) String constructor,
                                                                                    @RequestParam(value = "operator", required = false) String operator,
                                                                                    @RequestParam(value = "criteria", required = false) String criteria,
-                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy,@PathVariable Long skillId) {
+                                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy, @PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        Integer pageSize=endRow-startRow;
-        Integer pageNumber=(endRow-1)/pageSize;
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Integer pageSize = endRow - startRow;
+        Integer pageNumber = (endRow - 1) / pageSize;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId,pageable);
+        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId, pageable);
 
         final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
         specResponse.setData(skillGroups)
@@ -245,6 +264,7 @@ public class SkillRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
 
     @Loggable
     @GetMapping(value = "/skill-groups")
@@ -275,17 +295,16 @@ public class SkillRestController {
                                                                               @RequestParam(value = "operator", required = false) String operator,
                                                                               @RequestParam(value = "criteria", required = false) String criteria,
                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy
-                                                                              ,@RequestParam("skillId") String skillID) {
-
+            , @RequestParam("skillId") String skillID) {
 
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        Integer pageSize=endRow-startRow;
-        Integer pageNumber=(endRow-1)/pageSize;
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Integer pageSize = endRow - startRow;
+        Integer pageNumber = (endRow - 1) / pageSize;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
         Long skillId = Long.parseLong(skillID);
 
-        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId,pageable);
+        List<SkillGroupDTO.Info> skillGroups = skillService.getUnAttachedSkillGroups(skillId, pageable);
 
         final SkillGroupDTO.SpecRs specResponse = new SkillGroupDTO.SpecRs();
         specResponse.setData(skillGroups)
@@ -302,67 +321,67 @@ public class SkillRestController {
     @Loggable
     @DeleteMapping(value = "/remove-skill-group/{skillGroupId}/{skillId}")
     public ResponseEntity<Boolean> removeSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.removeSkillGroup(skillGroupId, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
 
     }
 
     @Loggable
     @DeleteMapping(value = "/remove-skill-group-list/{skillGroupIds}/{skillId}")
     public ResponseEntity<Boolean> removeSkillGroups(@PathVariable List<Long> skillGroupIds, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.removeSkillGroups(skillGroupIds, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
 
     }
 
     @Loggable
     @PostMapping(value = "/add-skill-group/{skillGroupId}/{skillId}")
     public ResponseEntity<Boolean> addSkillGroup(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.addSkillGroup(skillGroupId, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-skill-group-list/{skillId}")
     public ResponseEntity<Boolean> addSkillGroups(@Validated @RequestBody SkillGroupDTO.SkillGroupIdList request, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.addSkillGroups(request.getIds(), skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
 
@@ -394,9 +413,6 @@ public class SkillRestController {
 //
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
 //    }
-
-
-
 
 
 //    @Loggable
@@ -517,7 +533,6 @@ public class SkillRestController {
 //    }
 
 
-
 //    @Loggable
 //    @PostMapping(value = "/add-competence/{competenceId}/{skillId}")
 //    public ResponseEntity<Boolean> addCompetence(@PathVariable Long competenceId, @PathVariable Long skillId) {
@@ -561,6 +576,7 @@ public class SkillRestController {
 
     // Course methods ------------------------------------------------------------------------------------------------
 
+
     @Loggable
     @GetMapping(value = "{skillId}/courses")
 //    @PreAuthorize("hasAnyAuthority('r_course')")
@@ -594,11 +610,11 @@ public class SkillRestController {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
 
-        Integer pageSize=endRow-startRow;
-        Integer pageNumber=(endRow-1)/pageSize;
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Integer pageSize = endRow - startRow;
+        Integer pageNumber = (endRow - 1) / pageSize;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId,pageable);
+        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId, pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -644,12 +660,12 @@ public class SkillRestController {
                                                                   @RequestParam("skillId") String skillID) {
         Long skillId = Long.parseLong(skillID);
 
-        Integer pageSize=endRow-startRow;
-        Integer pageNumber=(endRow-1)/pageSize;
-        Pageable pageable= PageRequest.of(pageNumber,pageSize);
+        Integer pageSize = endRow - startRow;
+        Integer pageNumber = (endRow - 1) / pageSize;
+        Pageable pageable = PageRequest.of(pageNumber, pageSize);
 
 
-        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId,pageable);
+        List<CourseDTO.Info> courses = skillService.getUnAttachedCourses(skillId, pageable);
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -667,65 +683,65 @@ public class SkillRestController {
     @Loggable
     @DeleteMapping(value = "/remove-course/{courseId}/{skillId}")
     public ResponseEntity<Boolean> removeCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.removeCourse(courseId, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/remove-course-list/{courseIds}/{skillId}")
     public ResponseEntity<Boolean> removeCourses(@PathVariable List<Long> courseIds, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.removeCourses(courseIds, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-course/{courseId}/{skillId}")
     public ResponseEntity<Boolean> addCourse(@PathVariable Long courseId, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.addCourse(courseId, skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @PostMapping(value = "/add-course-list/{skillId}")
     public ResponseEntity<Boolean> addCourses(@Validated @RequestBody CourseDTO.CourseIdList request, @PathVariable Long skillId) {
-        boolean flag=false;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = false;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             skillService.addCourses(request.getIds(), skillId);
-            flag=true;
+            flag = true;
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
 
@@ -776,6 +792,8 @@ public class SkillRestController {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/Print_All_Skill.jasper", params, response);
+//        reportUtil.export("/reports/skillGroup.jasper", params, response);
+
     }
 
 

@@ -13,12 +13,10 @@
 	<artifactId>service</artifactId>
 
 	<dependencies>
-
 		<dependency>
 			<groupId>com.nicico.training</groupId>
 			<artifactId>repository</artifactId>
 			<version>1.0-SNAPSHOT</version>
 		</dependency>
-
 	</dependencies>
 </project>

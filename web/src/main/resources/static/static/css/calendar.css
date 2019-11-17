@@ -2,24 +2,24 @@
 
 .dpDiv {
 }
-
+/*
 @font-face {
 	font-family: 'IRANSans';
-	src: url("../font/IRANSans-web.woff") format('woff');
+	src: url("../fonts/IRANSans-web.woff") format('woff');
 	font-weight: normal;
 }
 
 @font-face {
 	font-family: 'IRANSans';
-	src: url("../font/IRANSans-Bold-web.woff") format('woff');
+	src: url("../fonts/IRANSans-Bold-web.woff") format('woff');
 	font-weight: bold;
 }
 
 @font-face {
 	font-family: 'IRANSans';
-	src: url("../font/IRANSans-Medium-web.woff") format('woff');
+	src: url("../fonts/IRANSans-Medium-web.woff") format('woff');
 	font-weight: 500;
-}
+}*/
 
 /* the table (within the div) that holds the date picker calendar */
 

@@ -30,24 +30,18 @@ public abstract class Auditable {
     @CreatedBy
     @Column(name = "c_created_by", nullable = false, updatable = false)
     protected String createdBy;
-
+    @Column(name = "e_enabled")
+    EEnabled eEnabled;
+    @Column(name = "e_deleted")
+    EDeleted eDeleted;
     @LastModifiedDate
     @Column(name = "d_last_modified_date")
     private Date lastModifiedDate;
-
     @LastModifiedBy
     @Column(name = "c_last_modified_by")
     private String lastModifiedBy;
-
     @Version
     @Column(name = "n_version", nullable = false)
     private Integer version;
-
-    @Column(name = "e_enabled")
-    EEnabled eEnabled;
-
-    @Column(name = "e_deleted")
-    EDeleted eDeleted;
-
 
 }

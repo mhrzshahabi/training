@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.data.domain.Page;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
@@ -48,11 +49,9 @@ public class ISC<T> {
         String sortBy = rq.getParameter("_sortBy");
         String criteria = rq.getParameter("criteria");
         String operator = rq.getParameter("operator");
-        Integer startRow;
-        Integer endRow;
 
-        startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
-        endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 100;
+        Integer startRow = (startRowStr != null) ? Integer.parseInt(startRowStr) : 0;
+        Integer endRow = (endRowStr != null) ? Integer.parseInt(endRowStr) : 50;
 
         searchRq.setStartIndex(startRow);
         searchRq.setCount(endRow - startRow);
@@ -73,11 +72,20 @@ public class ISC<T> {
         }
         return searchRq;
     }
+
     public static <T> ISC<T> convertToIscRs(SearchDTO.SearchRs<T> searchRs, Integer startRow) {
         Response<T> response = new Response<T>();
         response.setData(searchRs.getList()).setStartRow(startRow)
                 .setEndRow(startRow + searchRs.getTotalCount().intValue())
                 .setTotalRows(searchRs.getTotalCount().intValue());
+        return new ISC(response);
+    }
+
+    public static <T> ISC<T> convertToIscRs(Page<T> page, Integer startRow) {
+        Response<T> response = new Response<T>();
+        response.setData(page.getContent()).setStartRow(startRow)
+                .setEndRow(startRow + page.getNumberOfElements())
+                .setTotalRows((int) page.getTotalElements());
         return new ISC(response);
     }
 

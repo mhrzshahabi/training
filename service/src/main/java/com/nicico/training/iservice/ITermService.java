@@ -1,7 +1,7 @@
 package com.nicico.training.iservice;
+
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.TermDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,4 +22,8 @@ public interface ITermService {
     SearchDTO.SearchRs<TermDTO.Info> search(SearchDTO.SearchRq request);
 
     String checkForConflict(String sData, String eData);
+
+    String checkConflictWithoutThisTerm(String sData, String eData,Long id);
+
+    String LastCreatedCode(String code);
 }

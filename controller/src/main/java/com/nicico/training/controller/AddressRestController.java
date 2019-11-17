@@ -6,7 +6,6 @@ import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.iservice.IAddressService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -99,5 +98,15 @@ public class AddressRestController {
     public ResponseEntity<SearchDTO.SearchRs<AddressDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(addressService.search(request), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/getOneByPostalCode/{postalCode}")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity<AddressDTO.Info> getOneByPostalCode(@PathVariable String postalCode) {
+        if (postalCode == null || postalCode.equals("undefined"))
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        return new ResponseEntity<>(addressService.getOneByPostalCode(postalCode), HttpStatus.OK);
+    }
+
 
 }

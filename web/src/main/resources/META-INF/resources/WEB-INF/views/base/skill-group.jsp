@@ -12,7 +12,7 @@
 
 
 
-    var RestDataSource_Skill_Group_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام گروه مهارت", align: "center", filterOperator: "contains"},
@@ -99,8 +99,8 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
-                                    icon: "[SKIN]ask.png",
+                                    message:"<spring:message code="msg.skillGroup.notFound"/>",
+                                    icon:"[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
                                     buttonClick: function (button, index) {
@@ -131,7 +131,7 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
+                                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                                     icon: "[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
@@ -163,7 +163,7 @@
                             if(strSkillrecords==""){
                                 isc.Dialog.create({
 
-                                    message: "گروه مهارتی انتخاب نشده است",
+                                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                                     icon: "[SKIN]ask.png",
                                     title: "پیام",
                                     buttons: [isc.Button.create({title: "تائید"})],
@@ -200,7 +200,7 @@
 
                     isc.Dialog.create({
 
-                        message: "گروه مهارتی انتخاب نشده است",
+                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                         icon: "[SKIN]ask.png",
                         title: "پیام",
                         buttons: [isc.Button.create({title: "تائید"})],
@@ -235,7 +235,7 @@
             }
         },
             {isSeparator: true}, {
-                title: "لیست مهارت ها", icon: "pieces/512/skill-standard.png", click: function () {
+                title: "لیست مهارت ها", icon: "<spring:url value="skill.png"/>", click: function () {
                     var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 
 
@@ -243,7 +243,7 @@
 
                         isc.Dialog.create({
 
-                            message: "گروه مهارتی انتخاب نشده است",
+                            message: "<spring:message code="msg.skillGroup.notFound"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
                             buttons: [isc.Button.create({title: "تائید"})],
@@ -276,7 +276,7 @@
 
 
 
-    var ListGrid_Skill_Group_Jsp = isc.MyListGrid.create({
+    var ListGrid_Skill_Group_Jsp = isc.TrLG.create({
         color: "red",
         selectionType:"multiple",
         dataSource: RestDataSource_Skill_Group_Jsp,
@@ -402,7 +402,7 @@
     }
 
 
-    var RestDataSource_Skill_Group_Skills_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Skills_Jsp = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -414,7 +414,7 @@
     });
 
 
-    var RestDataSource_All_Skills = isc.MyRestDataSource.create({
+    var RestDataSource_All_Skills = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -426,7 +426,7 @@
         , fetchDataURL: skillGroupUrl + "spec-list"
     });
 
-    var RestDataSource_ForThisSkillGroup_GetSkills = isc.MyRestDataSource.create({
+    var RestDataSource_ForThisSkillGroup_GetSkills = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "code"},
@@ -633,7 +633,7 @@
             var JSONObj = {"ids": skillIds};
 
 
-            MyDsRequest()
+            TrDSRequest()
 
 
             isc.RPCManager.sendRequest({
@@ -732,10 +732,7 @@
         border: "0px solid yellow",
         layoutMargin: 5,
         align: "center",
-        onCreate: function () {
-            alert("man toye hlayout hastam");
 
-        },
         members: [
             DynamicForm_thisSkillGroupHeader_Jsp
         ]
@@ -778,7 +775,7 @@
     });
 
 
-    var RestDataSource_Skill_Group_Competencies_Jsp = isc.MyRestDataSource.create({
+    var RestDataSource_Skill_Group_Competencies_Jsp = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleFa"},
@@ -1319,7 +1316,7 @@
         <%--}--%>
 
 
-        menu: isc.TrMenu.create({
+        menu: isc.Menu.create({
             data: [
                 {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
                         {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,  click: function () {
@@ -1371,7 +1368,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1403,7 +1400,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1435,7 +1432,7 @@
                                 if(strSkillrecords==""){
                                     isc.Dialog.create({
 
-                                        message: "گروه مهارتی انتخاب نشده است",
+                                        message: "<spring:message code="msg.skillGroup.notFound"/>",
                                         icon: "[SKIN]ask.png",
                                         title: "پیام",
                                         buttons: [isc.Button.create({title: "تائید"})],
@@ -1458,7 +1455,7 @@
         })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
-        icon: "pieces/512/skill-standard.png",
+        icon: "<spring:url value="skill.png"/>",
         title: "لیست مهارت ها",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
@@ -1470,7 +1467,7 @@
 
                 isc.Dialog.create({
 
-                    message: "گروه مهارتی انتخاب نشده است",
+                    message: "<spring:message code="msg.skillGroup.notFound"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
                     buttons: [isc.Button.create({title: "تائید"})],

@@ -8,8 +8,10 @@ import com.nicico.training.iservice.IEducationLevelService;
 import com.nicico.training.model.EducationLevel;
 import com.nicico.training.repository.EducationLevelDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -43,10 +45,15 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public EducationLevelDTO.Info create(EducationLevelDTO.Create request) {
         final EducationLevel educationLevel = modelMapper.map(request, EducationLevel.class);
-        if(educationLevelDAO.findByTitleFa(educationLevel.getTitleFa()).isEmpty())
+//        if (educationLevelDAO.findByTitleFa(educationLevel.getTitleFa()).isEmpty())
+//            return save(educationLevel);
+//        else
+//            return null;
+        try {
             return save(educationLevel);
-        else
-            return null;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -54,23 +61,38 @@ public class EducationLevelService implements IEducationLevelService {
     public EducationLevelDTO.Info update(Long id, EducationLevelDTO.Update request) {
         final Optional<EducationLevel> cById = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
+//        if (request.getTitleFa() != null) {
+//            List<EducationLevel> byTitleFa = educationLevelDAO.findByTitleFa(request.getTitleFa());
+//            if (byTitleFa.size() > 1)
+//                return null;
+//            if (byTitleFa.size() == 1 && !Objects.equals(educationLevel.getId(), byTitleFa.get(0).getId()))
+//                return null;
+//        }
         EducationLevel updating = new EducationLevel();
         modelMapper.map(educationLevel, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        try {
+            return save(updating);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
-    public Boolean delete(Long id) {
+    public void delete(Long id) {
         final Optional<EducationLevel> one = educationLevelDAO.findById(id);
         final EducationLevel educationLevel = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.EducationLevelNotFound));
-        if(educationLevel.getPersonalInfoList().isEmpty() && educationLevel.getEducationOrientationList().isEmpty()) {
+//        if (educationLevel.getPersonalInfoList().isEmpty() && educationLevel.getEducationOrientationList().isEmpty()) {
+//            educationLevelDAO.delete(educationLevel);
+//            return true;
+//        } else {
+//            return false;
+//        }
+        try {
             educationLevelDAO.delete(educationLevel);
-            return true;
-        }
-        else{
-            return false;
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
 
@@ -78,8 +100,8 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public void delete(EducationLevelDTO.Delete request) {
         final List<EducationLevel> gAllById = educationLevelDAO.findAllById(request.getIds());
-        for (EducationLevel educationLevel: gAllById) {
-            if(!educationLevel.getPersonalInfoList().isEmpty() || !educationLevel.getEducationOrientationList().isEmpty())
+        for (EducationLevel educationLevel : gAllById) {
+            if (!educationLevel.getPersonalInfoList().isEmpty() || !educationLevel.getEducationOrientationList().isEmpty())
                 gAllById.remove(educationLevel);
         }
         educationLevelDAO.deleteAll(gAllById);
@@ -89,7 +111,7 @@ public class EducationLevelService implements IEducationLevelService {
     @Override
     public SearchDTO.SearchRs<EducationLevelDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(educationLevelDAO, request, educationLevel -> modelMapper.map(educationLevel, EducationLevelDTO.Info.class));
-    }   
+    }
 
     // ------------------------------
 

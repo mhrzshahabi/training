@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -9,7 +8,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -26,13 +24,11 @@ public class InstituteFormController {
         return "base/institute";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
+    @RequestMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
-
+		String token=(String) request.getParameter("token");
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
 		final HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + token);
 

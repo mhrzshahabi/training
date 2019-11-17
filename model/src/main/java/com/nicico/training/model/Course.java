@@ -17,7 +17,7 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Accessors(chain = true)
-@EqualsAndHashCode(of = {"id"},callSuper = false)
+@EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_course")
 public class Course extends Auditable {
@@ -38,7 +38,7 @@ public class Course extends Auditable {
     private String titleEn;
 
     @Column(name = "n_theory_duration", length = 5)
-    private String theoryDuration;
+    private Float theoryDuration;
 
     @Column(name = "c_description")
     private String description;
@@ -55,63 +55,71 @@ public class Course extends Auditable {
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "category_id",insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
 
-    @Column(name="category_id")
+    @Column(name = "category_id")
     private Long categoryId;
 
-    @ManyToOne(fetch = FetchType.LAZY,cascade = {CascadeType.PERSIST})
-    @JoinColumn(name = "subcategory_id",insertable = false, updatable = false)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinColumn(name = "subcategory_id", insertable = false, updatable = false)
     private SubCategory subCategory;
 
-    @Column(name="subcategory_id")
+    @Column(name = "subcategory_id")
     private Long subCategoryId;
 
     @ManyToMany(mappedBy = "courseSet")
     private Set<Skill> skillSet;
 
-    @OneToMany(mappedBy = "course" ,fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
-
-    @PreRemove
-    private void preRemove() {
-        tclassSet.forEach( c -> c.setCourse(null));
-    }
-
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "tbl_course_goal",
+    @JoinTable(name = "tbl_course_goal",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
-
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_pre_course",
+            joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
+    private List<Course> perCourseList;
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "tbl_pre_course",
+            joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
+    private List<Course> perCourseListOf;
     @Column(name = "e_run_type")
     private ERunType eRunType;
-
     @Column(name = "e_level_type")
     private ELevelType eLevelType;
-
     @Column(name = "e_theo_type")
     private ETheoType eTheoType;
-
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
-
-    @Transient
-    private Long knowledge = Long.valueOf(0);
-
-    @Transient
-    private Long skill = Long.valueOf(0);
-
-    @Transient
-    private Long attitude = Long.valueOf(0);
-
     @Column(name = "c_pre_course")
     private String preCourse;
 
+    //    @Transient
+//    private Long knowledge = Long.valueOf(0);
+//
+//    @Transient
+//    private Long skill = Long.valueOf(0);
+//
+//    @Transient
+//    private Long attitude = Long.valueOf(0);
     @Column(name = "c_equal_course")
     private String equalCourse;
+    @Column(name = "c_need_text")
+    private String needText;
+    @OneToMany()
+    @JoinColumn(name = "f_course", insertable = false, updatable = false)
+    private Set<EqualCourse> equalCourseSet;
+
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Boolean hasGoal;
 
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
@@ -120,26 +128,14 @@ public class Course extends Auditable {
 //    @OneToMany(mappedBy="preCourse")
 //    private List<Course> preCourseList = new ArrayList<>();
 
-//    @Transient
-//    private Long calDomainType(Integer n){
-//        Long x = Long.valueOf(0);
-//        Long sumTime = Long.valueOf(0);
-//        Long sumAllTime = Long.valueOf(0);
-//        List<Goal> goalList = this.getGoalSet();
-//        for (Goal goal : goalList) {
-//            Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-//            for (Syllabus syllabus : syllabusSet) {
-//                if(syllabus.getEDomainTypeId().equals(n)) {
-//                    sumTime += syllabus.getPracticalDuration();
-//                }
-//              sumAllTime += syllabus.getPracticalDuration();
-//            }
-//            x = (sumTime/sumAllTime)*100;
-//        }
-//        return x;
-//    }
+    @PreRemove
+    private void preRemove() {
+        tclassSet.forEach(c -> c.setCourse(null));
+    }
 
-    @OneToMany()
-    @JoinColumn(name = "f_course",insertable = false, updatable = false)
-    private Set<EqualCourse> equalCourseSet;
+    @Transient
+    public Boolean getHasGoal() {
+        if(goalSet == null)return false;
+        else return goalSet.isEmpty();
+    }
 }

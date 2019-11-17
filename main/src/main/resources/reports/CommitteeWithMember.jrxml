@@ -13,8 +13,7 @@
   FROM
     tbl_committee,tbl_personal_info, tbl_committee_personal_info 
     where 
-    tbl_committee.ID = tbl_committee_personal_info.f_committee_id and  tbl_personal_info.ID =  tbl_committee_personal_info.f_personal_info_id order by sgname
-      ]]>
+    tbl_committee.ID = tbl_committee_personal_info.f_committee_id and  tbl_personal_info.ID =  tbl_committee_personal_info.f_personal_info_id order by sgname]]>
 	</queryString>
 	<field name="SGNAME" class="java.lang.String">
 		<property name="com.jaspersoft.studio.field.label" value="SGNAME"/>

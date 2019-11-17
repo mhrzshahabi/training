@@ -14,12 +14,14 @@ public interface IEducationOrientationService {
 
     EducationOrientationDTO.Info update(Long id, EducationOrientationDTO.Update request);
 
-    Boolean delete(Long id);
+    void delete(Long id);
 
     void delete(EducationOrientationDTO.Delete request);
 
 
     SearchDTO.SearchRs<EducationOrientationDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<EducationOrientationDTO.Info> listByLevelIdAndMajorId(Long levelId, Long majorId);
 
     //------------------------
 }

@@ -7,6 +7,7 @@ package com.nicico.training.service;/* com.nicico.training.service
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
 import com.nicico.training.iservice.IGoalService;
@@ -109,7 +110,7 @@ public class GoalService implements IGoalService {
     @Override
     public List<SyllabusDTO.Info> getSyllabusSet(Long goalId) {
         final Optional<Goal> ssById = goalDAO.findById(goalId);
-        final Goal goal = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillStandardNotFound));
+        final Goal goal = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
         List<SyllabusDTO.Info> syllabusInfoSet = new ArrayList<>();
         Optional.ofNullable(goal.getSyllabusSet())
                 .ifPresent(syllabusSet ->
@@ -117,6 +118,20 @@ public class GoalService implements IGoalService {
                                 syllabusInfoSet.add(modelMapper.map(syllabus, SyllabusDTO.Info.class))
                         ));
         return syllabusInfoSet;
+    }
+
+    @Transactional
+    @Override
+    public List<CourseDTO.Info> getCourses(Long goalId){
+        final Optional<Goal> ssById = goalDAO.findById(goalId);
+        final Goal goal = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
+        List<CourseDTO.Info> courses = new ArrayList<>();
+        Optional.ofNullable(goal.getCourseSet())
+                .ifPresent(courseSet ->
+                        courseSet.forEach(course ->
+                                courses.add(modelMapper.map(course, CourseDTO.Info.class))
+                        ));
+        return courses;
     }
 
     // ------------------------------

@@ -5,8 +5,10 @@ package com.nicico.training.iservice;/* com.nicico.training.iservice
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.SyllabusDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -29,4 +31,7 @@ public interface IGoalService {
     //------------------------
 
     List<SyllabusDTO.Info> getSyllabusSet(Long goalId);
+
+    @Transactional
+    List<CourseDTO.Info> getCourses(Long goalId);
 }

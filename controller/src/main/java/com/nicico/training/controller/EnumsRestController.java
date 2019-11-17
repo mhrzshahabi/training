@@ -85,4 +85,15 @@ public class EnumsRestController {
     public ResponseEntity<ENeedAssessmentPriorityDTO.ENeedAssessmentPrioritySpecRs> getENeedAssessmentPriority() {
         return new ResponseEntity<>(new ENeedAssessmentPriorityDTO.ENeedAssessmentPrioritySpecRs(), HttpStatus.OK);
     }
+
+    @GetMapping("ePlaceType/spec-list")
+    public ResponseEntity<EPlaceTypeDTO.EPlaceTypeSpecRs> getEPlaceType() {
+        return new ResponseEntity<>(new EPlaceTypeDTO.EPlaceTypeSpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping("eArrangementType/spec-list")
+    public ResponseEntity<EArrangementTypeDTO.EArrangementTypeSpecRs> getEArrangementType() {
+        return new ResponseEntity<>(new EArrangementTypeDTO.EArrangementTypeSpecRs(), HttpStatus.OK);
+    }
+
 }

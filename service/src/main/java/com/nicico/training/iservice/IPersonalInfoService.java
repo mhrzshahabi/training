@@ -6,11 +6,11 @@ import com.nicico.training.dto.PersonalInfoDTO;
 import java.util.List;
 
 public interface IPersonalInfoService {
-   PersonalInfoDTO.Info get(Long id);
+    PersonalInfoDTO.Info get(Long id);
 
-   List<PersonalInfoDTO.Info> list();
+    List<PersonalInfoDTO.Info> list();
 
-   PersonalInfoDTO.Info create(PersonalInfoDTO.Create request);
+    PersonalInfoDTO.Info create(PersonalInfoDTO.Create request);
 
     PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request);
 
@@ -21,4 +21,6 @@ public interface IPersonalInfoService {
     SearchDTO.SearchRs<PersonalInfoDTO.Info> search(SearchDTO.SearchRq request);
 
     PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
+
+    PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request);
 }

@@ -32,6 +32,11 @@ spring:
     db-history-used: true
   redis:
     port: 6379
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+
 
 server:
   port: 8080
@@ -59,23 +64,11 @@ nicico:
     url:
     username:
     password:
-  upload:
-    dir: /var/nicico/${spring.application.name}/
-  person:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
-  temp:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
   rest-api:
-      url: /var/nicico/${spring.application.name}/
+    url: /var/nicico/${spring.application.name}/
   workflow:
     update:
       mode: false
-  bpmn:
-    upload:
-      dir: /var/nicico/${spring.application.name}/
-
 ---
 
 spring:
@@ -103,7 +96,16 @@ spring:
             token-uri: http://apps.icico.net.ir/oauth/token
             user-info-uri: http://apps.icico.net.ir/user/info
             user-name-attribute: username
-
+nicico:
+  upload:
+    dir: /var/nicico/${spring.application.name}/upload
+  dirs:
+    upload-class: /var/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
+    upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
 ---
 
 spring:
@@ -131,7 +133,16 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
-
+nicico:
+  upload:
+    dir: /var/nicico/${spring.application.name}/upload
+  dirs:
+    upload-class: /var/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: /var/nicico/${spring.application.name}/upload/class/deleted
+    upload-person-img: /var/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: /var/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: /var/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: /var/nicico/${spring.application.name}/upload/bpmn/img
 ---
 
 spring:
@@ -161,3 +172,13 @@ spring:
             token-uri: http://devapp01.icico.net.ir/oauth/token
             user-info-uri: http://devapp01.icico.net.ir/user/info
             user-name-attribute: username
+nicico:
+  upload:
+    dir: c:/nicico/${spring.application.name}/upload
+  dirs:
+    upload-class: c:/nicico/${spring.application.name}/upload/class
+    upload-class-deleted: c:/nicico/${spring.application.name}/upload/class/deleted
+    upload-person-img: c:/nicico/${spring.application.name}/upload/person/img
+    upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
+    upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
+    upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img

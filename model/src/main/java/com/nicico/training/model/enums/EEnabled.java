@@ -17,10 +17,11 @@ import lombok.ToString;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum EEnabled {
 
-    Enabled(1),
-    Disabled(0);
+    Enabled(1, "فعال"),
+    Disabled(0, "غیر فعال");
 
     private final Integer id;
+    private final String titleFa;
 
     public String getLiteral() {
         return name();

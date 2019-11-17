@@ -32,7 +32,7 @@
             }
         },]
     });
-    var RestDataSource_Equipment = isc.MyRestDataSource.create({
+    var RestDataSource_Equipment = isc.TrDS.create({
         fields: [{name: "id"}, {name: "code"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "description"}
         ],

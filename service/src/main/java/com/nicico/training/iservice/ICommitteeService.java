@@ -3,8 +3,6 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.model.PersonalInfo;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Set;
@@ -31,4 +29,6 @@ public interface ICommitteeService {
      List<PersonalInfoDTO.Info> getMembers(Long committeeId);
      Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
       boolean checkForDelete(Long CommitteeId);
+    String findConflictCommittee(Long category, Long subcategory);
+    String findConflictWhenEdit(Long category, Long subcategory, Long id);
 }

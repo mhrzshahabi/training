@@ -4,13 +4,9 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AccountInfoDTO;
-import com.nicico.training.dto.AddressDTO;
-import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.model.AccountInfo;
-import com.nicico.training.model.Address;
-import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.AccountInfoDAO;
@@ -50,16 +46,15 @@ public class PersonalInfoService implements IPersonalInfoService {
         return modelMapper.map(personalInfo, PersonalInfoDTO.Info.class);
     }
 
-   @Transactional(readOnly = true)
-   @Override
-   public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
+    @Transactional(readOnly = true)
+    @Override
+    public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
         List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
         PersonalInfo personalInfo = null;
-        if(personalInfoList != null && personalInfoList.size() != 0) {
+        if (personalInfoList != null && personalInfoList.size() != 0) {
             personalInfo = personalInfoList.get(0);
             return modelMapper.map(personalInfo, PersonalInfoDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
 
@@ -73,129 +68,85 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     @Transactional
     @Override
+    public PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request) {
+
+        List<PersonalInfo> byNationalCode = personalInfoDAO.findByNationalCode(request.getNationalCode());
+        if (byNationalCode == null || byNationalCode.size() == 0)
+            return create(request);
+        else {
+            PersonalInfoDTO.Update updating = modelMapper.map(request, PersonalInfoDTO.Update.class);
+            return update(byNationalCode.get(0).getId(), updating);
+        }
+    }
+
+    @Transactional
+    @Override
     public PersonalInfoDTO.Info create(PersonalInfoDTO.Create request) {
-        ContactInfo contactInfo;
-		AccountInfo accountInfo;
-		Address homeAddress;
-		Address workAddress;
-		PersonalInfo personalInfo;
 
-		personalInfo = modelMapper.map(request,PersonalInfo.class);;
+        PersonalInfo personalInfo = modelMapper.map(request, PersonalInfo.class);
 
-		if (request.getAccountInfo() != null) {
-				accountInfo = modelMapper.map(request.getAccountInfo(), AccountInfo.class);
-				accountInfoDAO.saveAndFlush(accountInfo);
-				personalInfo.setAccountInfo(accountInfo);
-				personalInfo.setAccountInfoId(accountInfo.getId());
-		}
+        if (personalInfo.getAccountInfo() != null) {
+            personalInfo.setAccountInfoId(accountInfoService.create(request.getAccountInfo()).getId());
+        }
 
-		if (request.getContactInfo() != null) {
-				contactInfo = modelMapper.map(request.getContactInfo(), ContactInfo.class);
-				if (request.getContactInfo().getHomeAddress() != null) {
-					homeAddress = modelMapper.map(request.getContactInfo().getHomeAddress(), Address.class);
-					addressDAO.saveAndFlush(homeAddress);
-					contactInfo.setHomeAddress(homeAddress);
-					contactInfo.setHomeAddressId(homeAddress.getId());
-				}
-				if (request.getContactInfo().getWorkAddress() != null) {
-					workAddress = modelMapper.map(request.getContactInfo().getWorkAddress(), Address.class);
-					addressDAO.saveAndFlush(workAddress);
-					contactInfo.setWorkAddress(workAddress);
-					contactInfo.setWorkAddressId(workAddress.getId());
-				}
-				contactInfoDAO.saveAndFlush(contactInfo);
-				personalInfo.setContactInfo(contactInfo);
-				personalInfo.setContactInfoId(contactInfo.getId());
-		}
+        if (personalInfo.getContactInfo() != null) {
+            personalInfo.setContactInfoId(contactInfoService.create(request.getContactInfo()).getId());
+        }
+        setEnums(personalInfo, personalInfo.getMarriedId(), personalInfo.getMilitaryId(), personalInfo.getGenderId());
 
-		if(request.getEMarriedId() != null) {
-				personalInfo.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-				personalInfo.setEMarriedTitleFa(personalInfo.getEMarried().getTitleFa());
-		}
-		if(request.getEMilitaryId() != null) {
-				 personalInfo.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-				 personalInfo.setEMilitaryTitleFa(personalInfo.getEMilitary().getTitleFa());
-		}
-		if(request.getEGenderId() != null) {
-				personalInfo.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-				personalInfo.setEGenderTitleFa(personalInfo.getEGender().getTitleFa());
-		}
+//        personalInfo.setAccountInfo(null);
+//        personalInfo.setContactInfo(null);
 
-		return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
+        return modelMapper.map(personalInfoDAO.save(personalInfo), PersonalInfoDTO.Info.class);
+
     }
 
     @Transactional
     @Override
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
-		PersonalInfo personalInfo = null;
-		ContactInfo contactInfo = null;
-		AccountInfo accountInfo = null;
 
-		Long contactInfoId = null;
-		Long accountInfoId = null;
+        AccountInfoDTO.Info accountInfoDto = null;
 
-        final Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
-        personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
+        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
+        setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
 
-        if(personalInfo.getAccountInfoId() != null && request.getAccountInfo() != null) {
-			AccountInfoDTO.Info accountInfoDto = accountInfoService.update(personalInfo.getAccountInfoId(),request.getAccountInfo());
-			accountInfo = modelMapper.map(accountInfoDto,AccountInfo.class);
-			accountInfoId = accountInfo.getId();
-		}
+        PersonalInfo pUpdating = new PersonalInfo();
+        modelMapper.map(personalInfo, pUpdating);
+        modelMapper.map(request, pUpdating);
 
-		if(personalInfo.getAccountInfoId() == null && request.getAccountInfo() != null) {
-				AccountInfoDTO.Info accountInfoDto = accountInfoService.create(modelMapper.map(request.getAccountInfo(),AccountInfoDTO.Create.class));
-				accountInfo = modelMapper.map(accountInfoDto,AccountInfo.class);
-				accountInfoId = accountInfo.getId();
-		}
-
-		if(personalInfo.getAccountInfoId() != null && request.getAccountInfo()==null) {
-			accountInfoService.delete(personalInfo.getAccountInfoId());
-			accountInfo = null;
-			accountInfoId = null;
-		}
+        if (personalInfo.getAccountInfoId() != null && request.getAccountInfo() != null) {
+            accountInfoDto = accountInfoService.update(personalInfo.getAccountInfoId(),
+                    modelMapper.map(pUpdating.getAccountInfo(), AccountInfoDTO.Update.class));
+        } else if (personalInfo.getAccountInfoId() == null && request.getAccountInfo() != null) {
+            accountInfoDto = accountInfoService.create(modelMapper.map(pUpdating.getAccountInfo(), AccountInfoDTO.Create.class));
+        }
+        if (accountInfoDto != null) {
+            pUpdating.setAccountInfoId(accountInfoDto.getId());
+            pUpdating.setAccountInfo(modelMapper.map(accountInfoDto, AccountInfo.class));
+        }
 
 
-   		if(personalInfo.getContactInfoId() != null && request.getContactInfo() != null) {
-			ContactInfoDTO.Info contactInfoDto = contactInfoService.update(personalInfo.getContactInfoId(),request.getContactInfo());
-			contactInfo = modelMapper.map(contactInfoDto,ContactInfo.class);
-			contactInfoId = contactInfo.getId();
-		}
+//        if (personalInfo.getContactInfoId() != null && request.getContactInfo() != null) {
+//            ContactInfoDTO.Info contactInfoDto = contactInfoService.update(personalInfo.getContactInfoId(), request.getContactInfo());
+//            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
+//            contactInfoId = contactInfo.getId();
+//        }
+//
+//        if (personalInfo.getContactInfoId() == null && request.getContactInfo() != null) {
+//            ContactInfoDTO.Info contactInfoDto = contactInfoService.create(modelMapper.map(request.getContactInfo(), ContactInfoDTO.Create.class));
+//            contactInfo = modelMapper.map(contactInfoDto, ContactInfo.class);
+//            contactInfoId = contactInfo.getId();
+//        }
+//
+//        if (personalInfo.getContactInfoId() != null && request.getContactInfo() == null) {
+//            contactInfoService.delete(personalInfo.getContactInfoId());
+//            contactInfo = null;
+//            contactInfoId = null;
+//        }
 
-		if(personalInfo.getContactInfoId() == null && request.getContactInfo() != null) {
-				ContactInfoDTO.Info contactInfoDto = contactInfoService.create(modelMapper.map(request.getContactInfo(),ContactInfoDTO.Create.class));
-				contactInfo = modelMapper.map(contactInfoDto,ContactInfo.class);
-				contactInfoId = contactInfo.getId();
-		}
-
-		if(personalInfo.getContactInfoId() != null && request.getContactInfo()==null) {
-			contactInfoService.delete(personalInfo.getContactInfoId());
-			contactInfo = null;
-			contactInfoId = null;
-		}
-
-		if(request.getEMarriedId() != null) {
-				personalInfo.setEMarried(eMarriedConverter.convertToEntityAttribute(request.getEMarriedId()));
-				personalInfo.setEMarriedTitleFa(personalInfo.getEMarried().getTitleFa());
-		}
-		if(request.getEMilitaryId() != null) {
-				 personalInfo.setEMilitary(eMilitaryConverter.convertToEntityAttribute(request.getEMilitaryId()));
-				 personalInfo.setEMilitaryTitleFa(personalInfo.getEMilitary().getTitleFa());
-		}
-		if(request.getEGenderId() != null) {
-				personalInfo.setEGender(eGenderConverter.convertToEntityAttribute(request.getEGenderId()));
-				personalInfo.setEGenderTitleFa(personalInfo.getEGender().getTitleFa());
-		}
-
-        PersonalInfo pupdating = new PersonalInfo();
-        modelMapper.map(personalInfo, pupdating);
-        modelMapper.map(request, pupdating);
-        pupdating.setAccountInfo(accountInfo);
-        pupdating.setAccountInfoId(accountInfoId);
-        pupdating.setContactInfo(contactInfo);
-        pupdating.setContactInfoId(contactInfoId);
-        return save(pupdating);
+        return modelMapper.map(personalInfoDAO.save(pUpdating), PersonalInfoDTO.Info.class);
     }
 
     @Transactional
@@ -221,8 +172,20 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     // ------------------------------
 
-    private PersonalInfoDTO.Info save(PersonalInfo personalInfo) {
-        final PersonalInfo saved = personalInfoDAO.saveAndFlush(personalInfo);
-        return modelMapper.map(saved, PersonalInfoDTO.Info.class);
+//    private PersonalInfoDTO.Info save(PersonalInfo personalInfo) {
+//        final PersonalInfo saved = personalInfoDAO.saveAndFlush(personalInfo);
+//        return modelMapper.map(saved, PersonalInfoDTO.Info.class);
+//    }
+
+    private void setEnums(PersonalInfo personalInfo, Integer marriedId, Integer militaryId, Integer genderId) {
+        if (marriedId != null) {
+            personalInfo.setMarried(eMarriedConverter.convertToEntityAttribute(marriedId));
+        }
+        if (militaryId != null) {
+            personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(militaryId));
+        }
+        if (genderId != null) {
+            personalInfo.setGender(eGenderConverter.convertToEntityAttribute(genderId));
+        }
     }
 }

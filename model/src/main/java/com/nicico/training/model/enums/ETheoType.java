@@ -14,12 +14,13 @@ import lombok.ToString;
 @ToString(of = {"id"})
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ETheoType {
-    Theory(1, "تئوري"),
-    Practical(2, "عملي"),
-    TheoryPractical(3, "تئوري_عملي");
+    Theory(1, "تئوري", "T"),
+    Practical(2, "عملي", "P"),
+    TheoryPractical(3, "تئوري_عملي", "M");
 
     private final Integer id;
     private final String titleFa;
+    private final String code;
 
     public String getLiteral() {
         return name();

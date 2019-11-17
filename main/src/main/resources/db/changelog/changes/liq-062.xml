@@ -1,0 +1,49 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="rastegari_h (generated)" id="1573891586321-153">
+        <createTable tableName="tbl_session">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sessionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_session_type_id" type="NUMBER(10, 0)"/>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_day_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_institute_id" type="NUMBER(19, 0)"/>
+            <column name="c_session_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_end_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_start_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_state" type="NUMBER(10, 0)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+            <column name="f_training_place_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1573891586321-154">
+        <addForeignKeyConstraint baseColumnNames="f_institute_id" baseTableName="tbl_session" constraintName="FK2phqr7w8ap2p2dxin51m35qpg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1573891586321-155">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_session" constraintName="FK99rk91lilyy6vpdhbbnevflgi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1573891586321-156">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_session" constraintName="FKi2v68fcqk54bfnn1evpn6oaai" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1573891586321-157">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_session" constraintName="FKobi5ni30lnpwqkk46091xo63x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>

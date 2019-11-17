@@ -7,7 +7,7 @@
     let needAssessmentMethod_needAssessment;
 
     // ------------------------------------------- Menu -------------------------------------------
-    NeedAssessmentMenu_needAssessment = isc.TrMenu.create({
+    NeedAssessmentMenu_needAssessment = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    NeedAssessmentTS_needAssessment = isc.TrTS.create({
+    NeedAssessmentTS_needAssessment = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -63,11 +63,11 @@
                     showRemoveForm_needAssessment();
                 }
             }),
-           /* isc.TrPrintBtnCommon.create({
-                click: function () {
-                    printNeedAssessment_needAssessment();
-                }
-            }),*/
+            /* isc.TrPrintBtnCommon.create({
+                 click: function () {
+                     printNeedAssessment_needAssessment();
+                 }
+             }),*/
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -114,7 +114,7 @@
             {name: "description",},
         ],
         autoFetchData: true,
-        gridComponents: [NeedAssessmentTS_needAssessment, "header", "filterEditor", "body",],
+        gridComponents: [NeedAssessmentTS_needAssessment, "filterEditor", "header", "body",],
         contextMenu: NeedAssessmentMenu_needAssessment,
         sortField: 0,
         dataChanged: function () {
@@ -182,14 +182,14 @@
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    let NeedAssessmentDF_needAssessment = isc.TrDynamicForm.create({
+    let NeedAssessmentDF_needAssessment = isc.DynamicForm.create({
         ID: "NeedAssessmentDF_needAssessment",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "postId",
                 title: "<spring:message code="post"/>",
-                editorType: "TrComboBoxItem", optionDataSource: PostDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: PostDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 pickListFields: [{name: "code"}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}],
                 filterFields: [{name: "titleFa"},],
@@ -197,25 +197,25 @@
             },
             {
                 name: "competenceId", title: "<spring:message code="competence"/>",
-                editorType: "TrComboBoxItem", optionDataSource: CompetenceDS_needAssessment,
+                editorType: "TrComboAutoRefresh", optionDataSource: CompetenceDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
             },
             {
                 name: "edomainTypeId", title: "<spring:message code="domain"/>",
-                editorType: "TrComboBoxItem", optionDataSource: EDomainTypeDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: EDomainTypeDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
             {
                 name: "eneedAssessmentPriorityId", title: "<spring:message code="priority"/>",
-                editorType: "TrComboBoxItem", optionDataSource: ENeedAssessmentPriorityDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: ENeedAssessmentPriorityDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
             {
                 name: "skillId", title: "<spring:message code="skill"/>",
-                editorType: "TrComboBoxItem", optionDataSource: SkillDS_needAssessment,
+                editorType: "TrComboAutoRefresh", optionDataSource: SkillDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
@@ -223,18 +223,24 @@
                 name: "description", title: "<spring:message code="description"/>",
                 type: "TextAreaItem",
             },
+            {
+                name: "error", title: "<spring:message code="error"/>",
+                type: "TextAreaItem",
+                visible: false,
+            },
         ]
     });
 
-    let NeedAssessmentWin_needAssessment = isc.TrWindow.create({
+    let NeedAssessmentWin_needAssessment = isc.Window.create({
+        width: 800,
         items: [NeedAssessmentDF_needAssessment, isc.TrHLayoutButtons.create({
             members: [
-                isc.TrSaveButton.create({
+                isc.TrSaveBtn.create({
                     click: function () {
                         saveNeedAssessment_needAssessment();
                     }
                 }),
-                isc.TrCancelButton.create({
+                isc.TrCancelBtn.create({
                     click: function () {
                         NeedAssessmentWin_needAssessment.close();
                     }
@@ -313,15 +319,21 @@
         if (respCode == 200) {
             msg = entityType + '&nbsp;' + action + '.';
             showOkDialog(msg);
+            refresh_needAssessment();
         } else {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
-            switch (respCode) {
-                case 0:
-                    break;
-                default:
+            let respText = resp.httpResponseText;
+            NeedAssessmentDF_needAssessment.getItem('error').setValue('');
+            NeedAssessmentDF_needAssessment.getItem('error').show();
+            if (respText === 'CompetenceNotFound') {
+                NeedAssessmentDF_needAssessment.getItem('error').setValue('شایستگی انتخاب شده، لحظاتی قبل حذف گردیده است. مجددا شایستگی را انتخاب نمائید.');
+                NeedAssessmentDF_needAssessment.getItem('competenceId').setValue('');
+            } else if (respText === 'SkillNotFound') {
+                NeedAssessmentDF_needAssessment.getItem('error').setValue(NeedAssessmentDF_needAssessment.getItem('error').getValue() + 'مهارت انتخاب شده، لحظاتی قبل حذف گردیده است. مجددا مهارت را انتخاب نمائید.');
+            } else {
+                showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
             }
+                NeedAssessmentDF_needAssessment.validate();
         }
-        refresh_needAssessment();
     };
 
     // To check the 'record' argument is a valid selected record of list grid
@@ -342,19 +354,19 @@
         let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
         Timer.setTimeout(function () {
             dialog.close();
-        }, okDialogShowTime);
+        }, 3000);
     };
 
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    /*let NeedAssessmentDF_needAssessment1 = isc.TrDynamicForm.create({
+    /*let NeedAssessmentDF_needAssessment1 = isc.DynamicForm.create({
         ID: "NeedAssessmentDF_needAssessment",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "postId",
                 title: "<spring:message code="post"/>",
-                editorType: "TrComboBoxItem", optionDataSource: PostDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: PostDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 pickListFields: [{name: "code"}, {name: "titleFa"}, {name: "job.titleFa"}, {name: "postGrade.titleFa"}],
                 filterFields: [{name: "titleFa"},],
@@ -362,25 +374,25 @@
             },
             {
                 name: "competenceId", title: "<spring:message code="competence"/>",
-                editorType: "TrComboBoxItem", optionDataSource: CompetenceDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: CompetenceDS_needAssessment,
                 valueField: "id", displayField: "titleFa", sortField: "titleFa",
                 required: true,
             },
             {
                 name: "edomainTypeId", title: "<spring:message code="domain"/>",
-                editorType: "TrComboBoxItem", optionDataSource: EDomainTypeDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: EDomainTypeDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
             {
                 name: "eneedAssessmentPriorityId", title: "<spring:message code="priority"/>",
-                editorType: "TrComboBoxItem", optionDataSource: ENeedAssessmentPriorityDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: ENeedAssessmentPriorityDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
             {
                 name: "skillId", title: "<spring:message code="skill"/>",
-                editorType: "TrComboBoxItem", optionDataSource: SkillDS_needAssessment,
+                editorType: "ComboBoxItem", optionDataSource: SkillDS_needAssessment,
                 valueField: "id", displayField: "titleFa",
                 required: true,
             },
@@ -391,15 +403,15 @@
         ]
     });
 
-    let NeedAssessmentWin_needAssessment1 = isc.TrWindow.create({
+    let NeedAssessmentWin_needAssessment1 = isc.Window.create({
         items: [NeedAssessmentDF_needAssessment, isc.TrHLayoutButtons.create({
             members: [
-                isc.TrSaveButton.create({
+                isc.TrSaveBtn.create({
                     click: function () {
                         saveNeedAssessment_needAssessment();
                     }
                 }),
-                isc.TrCancelButton.create({
+                isc.TrCancelBtn.create({
                     click: function () {
                         NeedAssessmentWin_needAssessment.close();
                     }

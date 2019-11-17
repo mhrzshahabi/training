@@ -25,7 +25,6 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class CourseDTO implements Serializable {
 
-
     @ApiModelProperty(required = true)
     private String code;
 
@@ -33,13 +32,12 @@ public class CourseDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String titleFa;
 
-
     @ApiModelProperty(required = true)
     private String titleEn;
 
     @NotNull
     @ApiModelProperty(required = true)
-    private Long theoryDuration;
+    private Float theoryDuration;
 
     //    @NotNull
 //    @ApiModelProperty(required = true)
@@ -60,6 +58,9 @@ public class CourseDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String mainObjective;
+
+    @ApiModelProperty(required = true)
+    private String needText;
 
 
 //    @ApiModelProperty(required = true)
@@ -90,9 +91,10 @@ public class CourseDTO implements Serializable {
         private ETheoType eTheoType;
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-        private Long knowledge;
-        private Long skill;
-        private Long attitude;
+        private Boolean hasGoal;
+//        private Long knowledge;
+//        private Long skill;
+//        private Long attitude;
     }
 
     //-------------------------------
@@ -100,6 +102,7 @@ public class CourseDTO implements Serializable {
     @Setter
     @ApiModel("CourseInfoTuple")
     public static class CourseInfoTuple {
+        private Long id;
         private String code;
         private String titleFa;
     }
@@ -132,12 +135,12 @@ public class CourseDTO implements Serializable {
 
         @ApiModelProperty(required = true)
         private Long subCategoryId;
-
-        @ApiModelProperty(required = true)
-        private List<Long> preCourseListId;
-
-        @ApiModelProperty(required = true)
-        private List<String> equalCourseListId;
+//
+//        @ApiModelProperty(required = true)
+//        private List<Long> preCourseListId;
+//
+//        @ApiModelProperty(required = true)
+//        private List<String> equalCourseListId;
     }
 
     // ------------------------------

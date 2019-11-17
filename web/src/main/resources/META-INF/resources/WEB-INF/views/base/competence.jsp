@@ -7,7 +7,7 @@
     let competenceMethod_competence;
 
     // ------------------------------------------- Menu -------------------------------------------
-    CompetenceMenu_competence = isc.TrMenu.create({
+    CompetenceMenu_competence = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -41,7 +41,7 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    CompetenceTS_competence = isc.TrTS.create({
+    CompetenceTS_competence = isc.ToolStrip.create({
         members: [
             isc.TrRefreshBtn.create({
                 click: function () {
@@ -75,9 +75,6 @@
                 padding: 5,
                 ID: "totalsLabel_competence"
             }),
-            isc.LayoutSpacer.create({
-                width: "40"
-            }),
         ]
     });
 
@@ -88,26 +85,26 @@
             {
                 name: "titleFa",
                 title: "<spring:message code="competence.title"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "titleEn",
                 title: "<spring:message code="title.en"/>",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 autoFitWidth: true
             },
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
             {
                 name: "ecompetenceInputType.titleFa",
                 title: "<spring:message code="input"/>",
-                filterOperator: "contains", autoFitWidth: true
+                filterOperator: "iContains", autoFitWidth: true
             },
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: competenceUrl + "iscList"
     });
@@ -122,13 +119,13 @@
             {name: "description",},
         ],
         autoFetchData: true,
-        gridComponents: [CompetenceTS_competence, "header", "filterEditor", "body",],
+        gridComponents: [CompetenceTS_competence, "filterEditor", "header", "body",],
         contextMenu: CompetenceMenu_competence,
         sortField: 0,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             var totalRows = this.data.getLength();
-            if (totalRows > 0 && this.data.lengthIsKnown()) {
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
                 totalsLabel_competence.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
                 totalsLabel_competence.setContents("&nbsp;");
@@ -154,7 +151,7 @@
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
-    let CompetenceDF_competence = isc.TrDynamicForm.create({
+    let CompetenceDF_competence = isc.DynamicForm.create({
         ID: "CompetenceDF_competence",
         fields: [
             {name: "id", hidden: true},
@@ -164,7 +161,7 @@
             },
             {
                 name: "titleEn", title: "<spring:message code="title.en"/>",
-                keyPressFilter: EnNumSpcFilter,
+                keyPressFilter: enNumSpcFilter,
             },
             {
                 name: "etechnicalTypeId", title: "<spring:message code="technical.type"/>",
@@ -185,15 +182,16 @@
         ]
     });
 
-    let CompetenceWin_competence = isc.TrWindow.create({
+    let CompetenceWin_competence = isc.Window.create({
+        width: 800,
         items: [CompetenceDF_competence, isc.TrHLayoutButtons.create({
             members: [
-                isc.TrSaveButton.create({
+                isc.TrSaveBtn.create({
                     click: function () {
                         saveCompetence_competence();
                     }
                 }),
-                isc.TrCancelButton.create({
+                isc.TrCancelBtn.create({
                     click: function () {
                         CompetenceWin_competence.close();
                     }
@@ -279,7 +277,7 @@
             let msg = entityType + '&nbsp;\'<b>' + name + '</b>\'&nbsp;' + action + '.';
             showOkDialog(msg);
         } else {
-            showOkDialog("<spring:message code="msg.error.connecting.to.server"/>");
+            showOkDialog("این شایستگی به دلیل استفاده در نیازسنجی، قابل حذف شدن نمی باشد.");
             switch (respCode) {
                 case 0:
                     break;
@@ -303,9 +301,13 @@
 
     // To show an ok dialog
     function showOkDialog(msg, iconName) {
+        // createDialog('info', 'info');
+        // createDialog('ask', 'ask');
+        // createDialog('confirm', 'confirm');
         iconName = iconName ? iconName : 'say';
-        let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png",});
+        // let dialog = isc.TrOkDialog.create({message: msg, icon: "[SKIN]" + iconName + ".png", autoDraw: true});
+        let dialog = isc.MyOkDialog.create({message: msg, autoDraw: true});
         Timer.setTimeout(function () {
             dialog.close();
-        }, okDialogShowTime);
+        }, 3000);
     };

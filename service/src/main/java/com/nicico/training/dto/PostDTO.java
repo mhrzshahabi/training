@@ -19,12 +19,12 @@ public class PostDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Post - Info")
-    public static class Info extends PostDTO {
+    public static class Info {
         private Long id;
         private String code;
         private String titleFa;
         private JobDTO.Info job;
         private PostGradeDTO.Info postGrade;
-        private DepartmentDTO.Info department;
+//        private DepartmentDTO.Info department;
     }
 }

@@ -7,6 +7,14 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
+
+
+<%
+	final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
 <%--<script>--%>
 
@@ -128,7 +136,16 @@
 		dataFormat: "json",
 		jsonPrefix: "",
 		jsonSuffix: "",
-		fetchDataURL: "<spring:url value="/rest/workflow/groupTask/list?roles=${userRoles}"/>"
+		transformRequest: function (dsRequest) {
+
+			dsRequest.httpHeaders = {
+				"Authorization": "Bearer <%= accessToken %>"
+			};
+			return this.Super("transformRequest", arguments);
+		},
+
+<%--		fetchDataURL: "<spring:url value="/rest/workflow/groupTask/list?roles=${userRoles}"/>"--%>
+		fetchDataURL: workflowUrl + "groupTask/list?roles=${userRoles}"
 	});
 
 	var ListGrid_GroupTaskList = isc.ListGrid.create({

@@ -58,11 +58,7 @@ public class InstituteService implements IInstituteService {
         PersonalInfo manager = null;
         Institute parentInstitute = null;
         final InstituteDTO.Create create = modelMapper.map(request, InstituteDTO.Create.class);
-        AddressDTO.Create addressCreate = modelMapper.map(create.getAddress(), AddressDTO.Create.class);
-        AccountInfoDTO.Create accountCreate = modelMapper.map(create.getAccountInfo(), AccountInfoDTO.Create.class);
 
-        final Address address = modelMapper.map(addressCreate, Address.class);
-        final AccountInfo accountInfo = modelMapper.map(accountCreate, AccountInfo.class);
 
         final Institute institute = modelMapper.map(create, Institute.class);
 
@@ -74,13 +70,6 @@ public class InstituteService implements IInstituteService {
             institute.setELicenseType(eLicenseTypeConverter.convertToEntityAttribute(create.getElicenseTypeId()));
 //            institute.setELicenseTypeTitleFa(institute.getELicenseType().getTitleFa());
         }
-        addressDAO.save(address);
-        accountInfoDAO.save(accountInfo);
-
-        institute.setAccountInfoId(accountInfo.getId());
-        institute.setAddressId(address.getId());
-        institute.setAddress(address);
-        institute.setAccountInfo(accountInfo);
 
         if (institute.getParentInstituteId() != null) {
             Optional<Institute> optionalInstitute = instituteDAO.findById(institute.getParentInstituteId());
@@ -113,17 +102,10 @@ public class InstituteService implements IInstituteService {
         Institute parentInstitute = null;
         AccountInfo accountInfo = new AccountInfo();
 
-        modelMapper.map(updating.getAddress(), address);
-        modelMapper.map(updating.getAccountInfo(), accountInfo);
-
 
         addressDAO.save(address);
         accountInfoDAO.save(accountInfo);
 
-        updating.setAddress(address);
-        updating.setAccountInfo(accountInfo);
-        updating.setAddressId(address.getId());
-        updating.setAccountInfoId(accountInfo.getId());
 
         if (updating.getEinstituteTypeId() != null) {
             updating.setEInstituteType(eInstituteTypeConverter.convertToEntityAttribute(update.getEinstituteTypeId()));
@@ -157,16 +139,8 @@ public class InstituteService implements IInstituteService {
         final Institute institute = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
         Long adId = null, acId = null;
 
-        if (institute.getAddressId() != null)
-            adId = institute.getAddressId();
-        if (institute.getAccountInfoId() != null)
-            acId = institute.getAccountInfoId();
 
         instituteDAO.deleteById(id);
-        if (adId != null)
-            addressDAO.deleteById(institute.getAddressId());
-        if (acId != null)
-            accountInfoDAO.deleteById(institute.getAccountInfoId());
     }
 
     @Transactional
@@ -175,12 +149,6 @@ public class InstituteService implements IInstituteService {
         List<Long> adIds = new ArrayList<>();
         List<Long> acIds = new ArrayList<>();
         final List<Institute> gAllById = instituteDAO.findAllById(request.getIds());
-        for (Institute institute : gAllById) {
-            if (institute.getAddressId() != null)
-                adIds.add(institute.getAddressId());
-            if (institute.getAccountInfoId() != null)
-                acIds.add(institute.getAccountInfoId());
-        }
         final List<Address> addresses = addressDAO.findAllById(adIds);
         final List<AccountInfo> accountInfos = accountInfoDAO.findAllById(acIds);
         instituteDAO.deleteAll(gAllById);
@@ -209,6 +177,28 @@ public class InstituteService implements IInstituteService {
 
         return modelMapper.map(institute.getTeacherSet(), new TypeToken<List<TeacherDTO.Info>>() {
         }.getType());
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<InstituteAccountDTO.Info> getInstituteAccounts(Long instituteId) {
+        final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
+        final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
+
+        return modelMapper.map(institute.getInstituteAccountSet(), new TypeToken<List<InstituteAccountDTO.Info>>() {
+        }.getType());
+
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<TrainingPlaceDTO.Info> getTrainingPlaces(Long instituteId) {
+        final Optional<Institute> optionalInstitute = instituteDAO.findById(instituteId);
+        final Institute institute = optionalInstitute.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.InstituteNotFound));
+
+        return modelMapper.map(institute.getTrainingPlaceSet(), new TypeToken<List<TrainingPlaceDTO.Info>>() {
+        }.getType());
+
     }
 
 
@@ -345,10 +335,6 @@ public class InstituteService implements IInstituteService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<InstituteDTO.Info> search(SearchDTO.SearchRq request) {
-        int b=1;
-        Institute i=new Institute();
-        InstituteDTO.Info info=new InstituteDTO.Info();
-        modelMapper.map(i,info);
         return SearchUtil.search(instituteDAO, request, institute -> modelMapper.map(institute, InstituteDTO.Info.class));
     }
 
@@ -370,15 +356,6 @@ public class InstituteService implements IInstituteService {
         Optional.ofNullable(trainingPleceIds).ifPresent(trainingPleceIdSet -> trainingPleceIdSet.forEach(trainingPleceId -> trainingPlaceSet.add(trainingPlaceDAO.findById(trainingPleceId).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TrainingPlaceNotFound)))));
 
 
-        if (institute.getAccountInfoId() != null) {
-            Optional<AccountInfo> optionalAccountInfo = accountInfoDAO.findById(institute.getAccountInfoId());
-            accountInfo = optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-        }
-        if (institute.getAddressId() != null) {
-            Optional<Address> optionalAddress = addressDAO.findById(institute.getAddressId());
-            address = optionalAddress.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AddressNotFound));
-
-        }
         if (institute.getManagerId() != null) {
             Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(institute.getManagerId());
             manager = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
@@ -393,8 +370,6 @@ public class InstituteService implements IInstituteService {
         institute.setTeacherSet(teacherSet);
         institute.setTrainingPlaceSet(trainingPlaceSet);
 
-        institute.setAccountInfo(accountInfo);
-        institute.setAddress(address);
         institute.setManager(manager);
         institute.setParentInstitute(parentInstitute);
 

@@ -17,15 +17,14 @@
 		data: [
 
 			{
-				icon: "pieces/512/contact.png",
+				icon: "contact.png",
 				title: "تصویر فرایند",
 				click: function () {
 					ListGrid_WorkflowProcessList_showProcessImage();
 				}
 			},
-
 			{
-				title: "وضعیت نمونه فرایند", icon: "pieces/512/upload.png",
+				title: "وضعیت نمونه فرایند", icon: "upload.png",
 				click: function () {
 					ListGrid_WorkflowProcessInstance_showImage();
 				}
@@ -77,7 +76,7 @@
 	});
 
 	var ToolStripButton_showProcessImage = isc.ToolStripButton.create({
-		icon: "pieces/512/contact.png",
+		icon: "contact.png",
 		title: "تصویر فرایند",
 		click: function () {
 			ListGrid_WorkflowProcessList_showProcessImage();
@@ -100,7 +99,7 @@
 		]
 	});
 
-	var RestDataSource_ProcessInstanceList = isc.RestDataSource.create({
+	var RestDataSource_ProcessInstanceList = isc.TrDS.create({
 		fields: [
 			{name: "startDateEn", title: "تاریخ شروع"},
 			{name: "endDate", title: "تاریخ خاتمه"},
@@ -109,17 +108,7 @@
 			{name: "processDefinitionVersion", title: "نسخه"},
 			{name: "id", title: "id", type: "text"}
 		],
-		dataFormat: "json",
-		jsonPrefix: "",
-		jsonSuffix: "",
-		transformRequest: function (dsRequest) {
-			dsRequest.httpHeaders = {
-				"Authorization": "Bearer " + "${cookie['access_token'].getValue()}",
-				"Access-Control-Allow-Origin": "${restApiUrl}"
-			};
-			return this.Super("transformRequest", arguments);
-		},
-		fetchDataURL: "${restApiUrl}/api/workflow/allProcessInstance/list"
+		fetchDataURL:  workflowUrl + "allProcessInstance/list"
 	});
 
 

@@ -1,23 +1,21 @@
-/*
-ghazanfari_f, 8/29/2019, 9:11 AM
-*/
 package com.nicico.training.model;
 
-import com.nicico.training.model.enums.EActive;
-import com.nicico.training.model.enums.EDeleted;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
+import org.hibernate.annotations.Immutable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
-@EqualsAndHashCode(of = "id")
 @Entity
+@Immutable
 @Table(name = "tbl_department")
-public class Department {
+public class Department extends Auditable {
 
     @Id
-    @Column(name = "id")
+    @Column(name = "id", precision = 10)
     private String id;
 
     @Column(name = "c_area")
@@ -35,15 +33,9 @@ public class Department {
     @Column(name = "c_unit")
     private String unit;
 
-    @Column(name = "c_cost_center_code")
+    @Column(name = "c_cost_center_code", nullable = false)
     private String costCenterCode;
 
-    @Column(name = "c_cost_center_title_fa")
+    @Column(name = "c_cost_center_title_fa", nullable = false)
     private String costCenterTitleFa;
-
-    @Column(name = "e_active")
-    EActive eActive;
-
-    @Column(name = "e_deleted")
-    EDeleted eDeleted;
 }

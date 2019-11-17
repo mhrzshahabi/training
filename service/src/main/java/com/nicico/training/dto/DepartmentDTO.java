@@ -19,10 +19,13 @@ public class DepartmentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("Department - Info")
-    public static class Info extends DepartmentDTO {
-        private String id;
-        private String area;
+    public static class Info {
+        private Long id;
         private String assistance;
         private String affairs;
+        private String section;
+        private String unit;
+        private String costCenterCode;
+        private String costCenterTitleFa;
     }
 }

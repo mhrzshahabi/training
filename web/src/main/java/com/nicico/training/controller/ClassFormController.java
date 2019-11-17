@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -23,7 +22,7 @@ public class ClassFormController {
 
     @RequestMapping("/show-form")
     public String showForm() {
-        return "training/class";
+        return "base/class";
     }
 
     @PostMapping("/printWithCriteria/{type}")
@@ -53,5 +52,50 @@ public class ClassFormController {
 			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
 		else
 			return null;
+	}
+
+	@RequestMapping("/sessions-tab")
+	public String sessionsTab() {
+		return "classTabs/sessions";
+	}
+
+	@RequestMapping("/alarms-tab")
+	public String alarmsTab() {
+		return "classTabs/alarms";
+	}
+
+	@RequestMapping("/licenses-tab")
+	public String licensesTab() {
+		return "classTabs/licenses";
+	}
+
+	@RequestMapping("/attendance-tab")
+	public String attendanceTab() {
+		return "classTabs/attendance";
+	}
+
+	@RequestMapping("/exam-tab")
+	public String examTab() {
+		return "classTabs/exam";
+	}
+
+	@RequestMapping("/teachers-tab")
+	public String teachersTab() {
+		return "classTabs/teachers";
+	}
+
+	@RequestMapping("/assessment-tab")
+	public String assessmentTab() {
+		return "classTabs/assessment";
+	}
+
+	@RequestMapping("/checkList-tab")
+	public String checkListTab() {
+		return "classTabs/checkList";
+	}
+
+	@RequestMapping("/attachments-tab")
+	public String attachmentsTab() {
+		return "classTabs/classAttachments";
 	}
 }

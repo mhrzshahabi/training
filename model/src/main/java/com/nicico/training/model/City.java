@@ -13,21 +13,20 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_city")
-public class City extends Auditable
-{
-	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
-	@SequenceGenerator(name = "city_seq", sequenceName = "seq_city_id", allocationSize = 1)
-	@Column(name = "id", precision = 10)
-	private Long id;
+public class City extends Auditable {
+    @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "city_seq")
+    @SequenceGenerator(name = "city_seq", sequenceName = "seq_city_id", allocationSize = 1)
+    @Column(name = "id", precision = 10)
+    private Long id;
 
-	@Column(name = "name", nullable = false)
-	private String name;
+    @Column(name = "c_name", nullable = false)
+    private String name;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "f_state", insertable = false, updatable = false)
-	private State state;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_state", insertable = false, updatable = false)
+    private State state;
 
-	@Column(name = "f_state")
-	private Long stateId;
+    @Column(name = "f_state")
+    private Long stateId;
 }

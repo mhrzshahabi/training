@@ -45,8 +45,20 @@ public class TrainingException extends NICICOException {
         PersonalInfoNotFound(404),
         CommitteeNotFound(404),
         TermNotFound(404),
+        CheckListNotFound(404),
+        ClassCheckListNotFound(404),
+        CheckListItemNotFound(404),
+        CompanyNotFound(404),
         PostNotFound(404),
-        NeedAssessmentNotFound(404);
+        NeedAssessmentNotFound(404),
+        BankNotFound(404),
+        BankBranchNotFound(404),
+        NotEditable(404),
+        DuplicateRecord(404),
+        NotDeletable(404),
+        JobGroupNotFound(404),
+        PostGroupNotFound(404),
+        OperationalUnitDuplicateRecord(406);
 
         private final Integer httpStatusCode;
 
@@ -54,6 +66,8 @@ public class TrainingException extends NICICOException {
         public String getName() {
             return name();
         }
+
+
     }
 
     // ------------------------------

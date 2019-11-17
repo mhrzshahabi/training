@@ -5,6 +5,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.Student;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -12,7 +13,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -22,25 +22,40 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class TclassDTO {
 
-    @ApiModelProperty(required = true)
-    private Long group;
+//    @ApiModelProperty(required = true)
+//    private Long courseId;
 
-    @ApiModelProperty(required = true)
-    private String startDate;
-
-    @ApiModelProperty(required = true)
-    private String endDate;
-
+    private Long minCapacity;
+    private Long maxCapacity;
     @ApiModelProperty(required = true)
     private String code;
-
-    private Long duration;
-
-    @ApiModelProperty(required = true)
     private Long teacherId;
-
+    private Long instituteId;
+    private String titleClass;
+    private String teachingType;//روش آموزش
+    private Long hDuration;
+    private Long dDuration;
+    private Long supervisor;
+    private String reason;
+    private String classStatus;
     @ApiModelProperty(required = true)
-    private Long courseId;
+    private Long group;
+    @ApiModelProperty(required = true)
+    private Long termId;
+    private String teachingBrand;//نحوه آموزش
+    @ApiModelProperty(required = true)
+    private String startDate;
+    @ApiModelProperty(required = true)
+    private String endDate;
+    private Boolean saturday;
+    private Boolean sunday;
+    private Boolean monday;
+    private Boolean tuesday;
+    private Boolean wednesday;
+    private Boolean thursday;
+    private Boolean friday;
+    private String topology;//چیدمان
+    private List<Long> trainingPlaceIds;
 
 
     @Getter
@@ -49,12 +64,17 @@ public class TclassDTO {
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
-        private TeacherDTO.TeacherInfoTuple teacher;
         private CourseDTO.CourseInfoTuple course;
+        private TermDTO term;
+        private List<Student> studentSet;
+        private TeacherDTO.TeacherInfoTuple teacher;
+        public String getTeacher(){
+            if (teacher!=null)
+               return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
+
     }
 
     // ------------------------------
@@ -64,7 +84,9 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassCreateRq")
     public static class Create extends TclassDTO {
-       }
+        private Long courseId;
+//        private List<Long> studentSet;
+    }
 
     // ------------------------------
 
@@ -73,6 +95,7 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassUpdateRq")
     public static class Update extends TclassDTO {
+        private Long courseId;
     }
 
     // ------------------------------

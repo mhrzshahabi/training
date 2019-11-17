@@ -1,7 +1,6 @@
 package com.nicico.training.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
@@ -29,14 +28,15 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		return "base/term";
 	}
 
+
+
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
-
+		//String token = (String) request.getSession().getAttribute("AccessToken");
+		String token=(String) request.getParameter("token");
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-		final HttpHeaders headers = new HttpHeaders();
+	   final HttpHeaders headers = new HttpHeaders();
 		headers.add("Authorization", "Bearer " + token);
 
 		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
@@ -57,5 +57,4 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		else
 			return null;
 	}
-
 }

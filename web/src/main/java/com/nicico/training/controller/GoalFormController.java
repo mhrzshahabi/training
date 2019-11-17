@@ -5,14 +5,10 @@ package com.nicico.training.controller;
 @Date:6/9/2019
 @Time:7:58 AM
 */
+
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClient;
-import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
-import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
@@ -36,9 +32,9 @@ public class GoalFormController {
         return "base/goal";
     }
 
-    @RequestMapping("/print-all/{type}")
-    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
-        String token = (String) request.getSession().getAttribute("AccessToken");
+    @RequestMapping("/print-all/{type}/{token}")
+    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type, @PathVariable String token) {
+//        String token = (String) request.getSession().getAttribute("AccessToken");
 
         final RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -64,9 +60,9 @@ public class GoalFormController {
         else
             return null;
     }
-    @RequestMapping("/print-one-course/{courseId}/{type}")
-    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId) {
-        String token = (String) request.getSession().getAttribute("AccessToken");
+    @RequestMapping("/print-one-course/{courseId}/{type}/{token}")
+    public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId, @PathVariable String token) {
+//        String token = (String) request.getSession().getAttribute("AccessToken");
 
 
         RestTemplate restTemplate = new RestTemplate();

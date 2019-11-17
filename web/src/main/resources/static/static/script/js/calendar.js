@@ -405,7 +405,7 @@ window.onclick = function (event) {
 	}else if (document.getElementById(event.target.id) != null) {
 		var windowClickVar = document.getElementById(event.target.id);
 
-		if (typeof windowClickVar.src == 'undefined' || (typeof windowClickVar.src !== 'undefined' && windowClickVar.src.substr(windowClickVar.src.length - 8, 8) != "pcal.png")) {
+		if (typeof windowClickVar.src == 'undefined' || (typeof windowClickVar.src !== 'undefined' && windowClickVar.src.substr(windowClickVar.src.length - 12, 12) != "calendar.png")) {
 			closeCalendarWindow();
 		}
 	} else {

@@ -9,7 +9,6 @@ import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -19,72 +18,45 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AddressDTO {
 
+    private String restAddr;
+    private String postalCode;
+    private String phone;
+    private String fax;
+    private String webSite;
+    private Boolean otherCountry;
+    private Long cityId;
+    private Long stateId;
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressInfo")
-    public static class Info{
+    public static class Info extends AddressDTO {
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private CityDTO.CityInfoTuple city;
         private StateDTO.StateInfoTuple state;
-        private String restAddr;
-        private Long postCode;
-        private String phone;
-        private String fax;
-        private String webSite;
-        private Boolean otherCountry;
-        private Long cityId;
-        private Long stateId;
     }
 
     @Getter
-	@Setter
-	@ApiModel("AddressInfoTuple")
-	public static class AddressInfoTuple {
-        private String restAddr;
-        private Long postCode;
-        private String phone;
-        private String fax;
-        private String webSite;
-        private Boolean otherCountry;
+    @Setter
+    @ApiModel("AddressInfoTuple")
+    static class AddressInfoTuple extends AddressDTO {
         private CityDTO.CityInfoTuple city;
         private StateDTO.StateInfoTuple state;
-        private Long cityId;
-        private Long stateId;
-	}
+    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
-    public static class Create{
-        private String restAddr;
-        private Long postCode;
-        private String phone;
-        private String fax;
-        private String webSite;
-        private Boolean otherCountry;
-        private Long cityId;
-        private Long stateId;
+    public static class Create extends AddressDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("AddressUpdateRq")
-    public static class Update{
-        private String restAddr;
-        private Long postCode;
-        private String phone;
-        private String fax;
-        private String webSite;
-        private Boolean otherCountry;
-        private Long cityId;
-        private Long stateId;
+    public static class Update extends AddressDTO {
     }
 
     @Getter

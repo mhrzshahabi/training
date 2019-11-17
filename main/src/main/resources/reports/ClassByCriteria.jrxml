@@ -44,7 +44,7 @@
 		<field name="course.code" class="java.lang.String"/>
 		<field name="endDate" class="java.lang.String"/>
 		<field name="course.titleFa" class="java.lang.String"/>
-		<field name="teacher.fullNameFa" class="java.lang.String"/>
+		<field name="teachers" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -115,15 +115,15 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
-									<reportElement x="0" y="0" width="80" height="30" uuid="273fe532-7b50-4594-b4ad-dd806805ec40"/>
+								<textField isBlankWhenNull="true">
+									<reportElement positionType="FixRelativeToBottom" x="0" y="0" width="80" height="30" uuid="273fe532-7b50-4594-b4ad-dd806805ec40"/>
 									<box>
 										<pen lineWidth="0.5"/>
 									</box>
 									<textElement textAlignment="Center" verticalAlignment="Middle">
 										<font fontName="Shabnam-FD" size="8" isBold="true"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{teacher.fullNameFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{teachers}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -151,7 +151,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="cb3dd6c7-ebd0-4a06-851f-e1efa63a5208"/>
 									<box>
 										<pen lineWidth="0.5"/>
@@ -190,7 +190,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="e4b1dbfb-687d-4325-93e5-0bdf69440434"/>
 									<box>
 										<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -232,7 +232,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="376768c0-6602-463d-bb45-ee7874058650"/>
 									<box>
 										<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
@@ -271,7 +271,7 @@
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField>
+								<textField isBlankWhenNull="true">
 									<reportElement x="0" y="0" width="80" height="30" uuid="1c692ec3-46d9-45bb-99a5-a012155bcb04"/>
 									<box>
 										<pen lineWidth="0.5"/>
@@ -305,7 +305,7 @@
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
-							<textField>
+							<textField isBlankWhenNull="true">
 								<reportElement x="0" y="0" width="80" height="30" uuid="cafa63aa-d675-4f98-a8d0-2beddc00bf7e"/>
 								<box>
 									<pen lineWidth="0.5"/>

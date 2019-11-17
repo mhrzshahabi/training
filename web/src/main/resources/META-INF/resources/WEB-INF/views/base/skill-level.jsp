@@ -33,7 +33,7 @@
             }
         },]
     });
-    var RestDataSource_skill_level = isc.MyRestDataSource.create({
+    var RestDataSource_skill_level = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}, {name: "titleEn"},
             {name: "version"}
         ],

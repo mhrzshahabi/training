@@ -11,7 +11,6 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -22,10 +21,15 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import javax.servlet.http.HttpServletResponse;
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -35,8 +39,8 @@ public class TeacherRestController {
 
     private final ITeacherService teacherService;
     private final ReportUtil reportUtil;
-    private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     // ------------------------------
 
@@ -58,7 +62,7 @@ public class TeacherRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_teacher')")
     public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
-        TeacherDTO.Create create = (new ModelMapper()).map(request, TeacherDTO.Create.class);
+        TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
         return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
     }
 
@@ -69,7 +73,7 @@ public class TeacherRestController {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
         ((LinkedHashMap) request).remove("categories");
-        TeacherDTO.Update update = (new ModelMapper()).map(request, TeacherDTO.Update.class);
+        TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
         return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
     }
 
@@ -88,7 +92,7 @@ public class TeacherRestController {
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_teacher')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody TeacherDTO.Delete request) {
+    public ResponseEntity delete(@Validated @RequestBody TeacherDTO.Delete request) {
         teacherService.delete(request);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -97,36 +101,72 @@ public class TeacherRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam("_endRow") Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
-        SearchDTO.CriteriaRq criteriaRq;
-        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-            criteria = "[" + criteria + "]";
-            criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.valueOf(operator))
-                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-                    }));
-
-
-            request.setCriteria(criteriaRq);
-        }
-
-        if (StringUtils.isNotEmpty(sortBy)) {
-            request.setSortBy(sortBy);
-        }
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
 
         SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
 
         final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/fullName-list")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam("_startRow") Integer startRow,
+                                                                         @RequestParam("_endRow") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/fullName-list/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameListFilter(@PathVariable Long id,
+                                                                               @RequestParam("_startRow") Integer startRow,
+                                                                               @RequestParam("_endRow") Integer endRow,
+                                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
+
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
@@ -150,7 +190,7 @@ public class TeacherRestController {
     @PostMapping(value = "/addCategories/{teacherId}")
     @Transactional
 //    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<Void> addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
+    public ResponseEntity addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
         teacherService.addCategories(request, teacherId);
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -165,31 +205,58 @@ public class TeacherRestController {
         return new ResponseEntity(categorySet, HttpStatus.OK);
     }
 
-	@Loggable
-	@PostMapping(value = {"/printWithCriteria/{type}"})
-	public void printWithCriteria(HttpServletResponse response,
-								  @PathVariable String type,
-								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
-        if(criteriaStr.equalsIgnoreCase("{}")) {
+        if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
-        }
-        else{
+        } else {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-		final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-		final Map<String, Object> params = new HashMap<>();
-		params.put("todayDate", dateUtil.todayDate());
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
 
-		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
-	}
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
+    }
+
+    private SearchDTO.SearchRq setSearchCriteria(@RequestParam("_startRow") Integer startRow,
+                                                 @RequestParam("_endRow") Integer endRow,
+                                                 @RequestParam(value = "_constructor", required = false) String constructor,
+                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                 @RequestParam(value = "criteria", required = false) String criteria,
+                                                 @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+
+
+            request.setCriteria(criteriaRq);
+        }
+
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        return request;
+    }
 
 }

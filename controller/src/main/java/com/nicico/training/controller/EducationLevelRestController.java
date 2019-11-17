@@ -1,5 +1,6 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
@@ -7,17 +8,18 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EducationLevelDTO;
 import com.nicico.training.iservice.IEducationLevelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.apache.commons.lang3.StringUtils;
-import com.fasterxml.jackson.core.type.TypeReference;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
@@ -53,29 +55,52 @@ public class EducationLevelRestController {
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_educationLevel')")
-    public ResponseEntity<EducationLevelDTO.Info> create(@Validated @RequestBody EducationLevelDTO.Create request) {
-        EducationLevelDTO.Info educationLevelInfo = educationLevelService.create(request);
-        if (educationLevelInfo != null)
-            return new ResponseEntity<>(educationLevelInfo, HttpStatus.CREATED);
-        else
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+    public ResponseEntity create(@Validated @RequestBody EducationLevelDTO.Create request) {
+//        EducationLevelDTO.Info educationLevelInfo = educationLevelService.create(request);
+//        if (educationLevelInfo != null)
+//            return new ResponseEntity<>(educationLevelInfo, HttpStatus.CREATED);
+//        else
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        try {
+            return new ResponseEntity<>(educationLevelService.create(request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
-    public ResponseEntity<EducationLevelDTO.Info> update(@PathVariable Long id, @Validated @RequestBody EducationLevelDTO.Update request) {
-        return new ResponseEntity<>(educationLevelService.update(id, request), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody EducationLevelDTO.Update request) {
+//        EducationLevelDTO.Info educationLevelInfo = educationLevelService.update(id, request);
+//        if (educationLevelInfo != null)
+//            return new ResponseEntity<>(educationLevelInfo, HttpStatus.OK);
+//        else
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        try {
+            return new ResponseEntity<>(educationLevelService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_educationLevel')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        if (educationLevelService.delete(id))
+    public ResponseEntity delete(@PathVariable Long id) {
+//        if (educationLevelService.delete(id))
+//            return new ResponseEntity<>(HttpStatus.OK);
+//        else {
+//            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+//        }
+        try {
+            educationLevelService.delete(id);
             return new ResponseEntity<>(HttpStatus.OK);
-        else {
-            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
+                    null,
+                    HttpStatus.NOT_ACCEPTABLE);
         }
     }
 

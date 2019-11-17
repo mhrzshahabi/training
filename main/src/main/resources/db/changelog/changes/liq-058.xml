@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+<changeSet author="heydaripoor (generated)" id="1573536476211-150">
+        <addColumn tableName="tbl_check_list_item">
+            <column name="c_group" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1573536476211-169">
+        <dropForeignKeyConstraint baseTableName="TBL_CHECK_LIST" constraintName="FKJKDGMENTWXRQ25MH7NHEYVBEE"/>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1573536476211-219">
+        <dropColumn columnName="B_ENABLED" tableName="TBL_CHECK_LIST_ITEM"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1573536476211-220">
+        <dropColumn columnName="C_DESCRIPTION" tableName="TBL_CHECK_LIST_ITEM"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1573536476211-221">
+        <dropColumn columnName="F_CLASS_ID" tableName="TBL_CHECK_LIST"/>
+    </changeSet>
+
+</databaseChangeLog>

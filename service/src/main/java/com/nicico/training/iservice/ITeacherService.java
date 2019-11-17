@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,7 +23,12 @@ public interface ITeacherService {
 
 	SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
 
-	void addCategories(CategoryDTO.Delete  request, Long teacherId);
+	SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
+
+    @Transactional(readOnly = true)
+    SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
+
+    void addCategories(CategoryDTO.Delete  request, Long teacherId);
 
 	List<Long> getCategories(Long teacherId);
 }

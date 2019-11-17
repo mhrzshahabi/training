@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Map;
@@ -12,7 +13,14 @@ public interface ICourseService {
 
 	List<CourseDTO.Info> list();
 	List<CourseDTO.Info> preCourseList(Long id);
-	List<Map> equalCourseList(Long id);
+
+    @Transactional
+    void setPreCourse(Long id, List<Long> preCourseList);
+
+    @Transactional
+    void setEqualCourse(Long id, List<String> equalCourseList);
+
+    List<Map> equalCourseList(Long id);
 
 	CourseDTO.Info create(CourseDTO.Create request);
 
@@ -35,7 +43,12 @@ public interface ICourseService {
     List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
 
     List<CompetenceDTO.Info> getCompetence(Long courseId);
-    List<JobDTOOld.Info> getJob(Long courseId);
+
+    List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
+
+    List<JobDTO.Info> getJob(Long courseId);
+
+    List<PostDTO.Info> getPost(Long courseId);
 
     String getMaxCourseCode(String str);
 
@@ -46,4 +59,10 @@ public interface ICourseService {
 	boolean  checkForDelete(Long id);
 
 	void deletGoal(Long id);
+
+    @Transactional
+    String getDomain(Long id);
+
+    @Transactional(readOnly = true)
+    List<TeacherDTO.Info> getTeachers(Long courseId);
 }

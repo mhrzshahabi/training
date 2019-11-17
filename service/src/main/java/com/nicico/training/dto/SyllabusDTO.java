@@ -27,7 +27,11 @@ public class SyllabusDTO {
 	private String titleEn;
     @NotNull
     @ApiModelProperty(required = true)
-	private Long practicalDuration;
+	private Float practicalDuration;
+    @NotNull
+    @ApiModelProperty(required = true)
+    private Float theoreticalDuration;
+
 
 	private String description;
 
