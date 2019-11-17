@@ -15,17 +15,17 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/operational-unit")
-public class OperationalUnitFormController {
+@RequestMapping("/class-session")
+public class ClassSessionFormController {
 
     @RequestMapping("/show-form")
     public String showForm() {
-        return "base/operationalUnit";
+        return "base/classSession";
     }
 
     @PostMapping("/printWithCriteria/{type}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-//		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+
         String token = request.getParameter("myToken");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -44,11 +44,11 @@ public class OperationalUnitFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
         if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
         else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/operationalUnit/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;
     }

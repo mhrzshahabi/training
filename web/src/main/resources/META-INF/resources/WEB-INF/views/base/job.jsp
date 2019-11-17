@@ -138,52 +138,10 @@
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.filterByEditor();
-    };
-
-    function printJobLG_job(type) {
-        alert(jobUrl + "print/" + type, "POST", null, "test");
-        let criteria = JobLG_job.getCriteria();
-        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "POST", null, "test"));
-
-        <%--isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,--%>
-        <%--    "callback: homeAddress_findOne_result(rpcResponse)"));--%>
-
-        <%--var advancedCriteria_course = ListGrid_Course.getCriteria();--%>
-        <%--var criteriaForm_course = isc.DynamicForm.create({--%>
-        <%--    method: "POST",--%>
-        <%--    action: "<spring:url value="/course/printWithCriteria/"/>" + type,--%>
-        <%--    target: "_Blank",--%>
-        <%--    canSubmit: true,--%>
-        <%--    fields:--%>
-        <%--        [--%>
-        <%--            {name: "CriteriaStr", type: "hidden"},--%>
-        <%--            {name: "myToken", type: "hidden"}--%>
-        <%--        ]--%>
-        <%--})--%>
-        <%--criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));--%>
-        <%--criteriaForm_course.setValue("myToken", "<%=accessToken%>");--%>
-        <%--criteriaForm_course.show();--%>
-        <%--criteriaForm_course.submitForm();--%>
-    };
-
-    function test() {
-        alert("done");
     }
 
-    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
-    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
-    <%--        method: "POST",--%>
-    <%--        action: url,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields:--%>
-    <%--            [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"},--%>
-    <%--                {name: "token", type: "hidden"}--%>
-    <%--            ]--%>
-    <%--    });--%>
-    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
-    <%--    trCriteriaForm.show();--%>
-    <%--    trCriteriaForm.submitForm();--%>
-<%--}--%>
+    function printJobLG_job(type) {
+        trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
+            JobLG_job.getCriteria());
+        <%--isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));--%>
+    }

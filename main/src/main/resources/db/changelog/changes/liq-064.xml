@@ -1,10 +1,15 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-  <changeSet author="heydaripoor (generated)" id="1572812408876-134">
-        <createTable tableName="tbl_check_list">
+
+    <changeSet author="rastegari_h (generated)" id="1573987843878-157">
+        <createSequence sequenceName="seq_holiday_id"/>
+    </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1573987843878-158">
+        <createTable tableName="tbl_holiday">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_check_listPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_holidayPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -19,7 +24,12 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="c_title_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_holiday" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-  </databaseChangeLog>
+
+    <changeSet author="rastegari_h (generated)" id="1573987843878-159">
+        <addUniqueConstraint columnNames="c_holiday" constraintName="UC_TBL_HOLIDAYC_HOLIDAY_COL" tableName="tbl_holiday"/>
+    </changeSet>
+
+</databaseChangeLog>

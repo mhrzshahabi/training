@@ -8,7 +8,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.iservice.IClassCheckListService;
-import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListDAO;

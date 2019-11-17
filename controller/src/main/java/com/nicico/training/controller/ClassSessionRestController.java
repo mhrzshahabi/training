@@ -1,6 +1,5 @@
 package com.nicico.training.controller;
 
-
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
@@ -9,8 +8,8 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.OperationalUnitDTO;
-import com.nicico.training.service.OperationalUnitService;
+import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -32,11 +31,9 @@ import java.util.Map;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/operationalUnit")
-public class OperationalUnitRestController {
-
-
-    private final OperationalUnitService operationalUnitService;
+@RequestMapping("/api/sessionService")
+public class ClassSessionRestController {
+    private final ClassSessionService classSessionService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
@@ -45,34 +42,34 @@ public class OperationalUnitRestController {
 
     @Loggable
     @GetMapping(value = "/{id}")
-    public ResponseEntity<OperationalUnitDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(operationalUnitService.get(id), HttpStatus.OK);
+    public ResponseEntity<ClassSessionDTO.Info> get(@PathVariable Long id) {
+        return new ResponseEntity<>(classSessionService.get(id), HttpStatus.OK);
     }
 
     //*********************************
 
     @Loggable
     @GetMapping(value = "/list")
-    public ResponseEntity<List<OperationalUnitDTO.Info>> list() {
-        return new ResponseEntity<>(operationalUnitService.list(), HttpStatus.OK);
+    public ResponseEntity<List<ClassSessionDTO.Info>> list() {
+        return new ResponseEntity<>(classSessionService.list(), HttpStatus.OK);
     }
 
     //*********************************
 
     @Loggable
     @PostMapping
-    public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req) {
-        OperationalUnitDTO.Create create = (new ModelMapper()).map(req, OperationalUnitDTO.Create.class);
-        return new ResponseEntity<>(operationalUnitService.create(create), HttpStatus.CREATED);
+    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.Create req) {
+        ClassSessionDTO.Create create = (new ModelMapper()).map(req, ClassSessionDTO.Create.class);
+        return new ResponseEntity<>(classSessionService.create(create), HttpStatus.CREATED);
     }
 
     //*********************************
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        OperationalUnitDTO.Update update = (new ModelMapper()).map(request, OperationalUnitDTO.Update.class);
-        return new ResponseEntity<>(operationalUnitService.update(id, update), HttpStatus.OK);
+    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+        ClassSessionDTO.Update update = (new ModelMapper()).map(request, ClassSessionDTO.Update.class);
+        return new ResponseEntity<>(classSessionService.update(id, update), HttpStatus.OK);
     }
 
     //*********************************
@@ -80,7 +77,7 @@ public class OperationalUnitRestController {
     @Loggable
     @DeleteMapping(value = "/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
-        operationalUnitService.delete(id);
+        classSessionService.delete(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -88,8 +85,8 @@ public class OperationalUnitRestController {
 
     @Loggable
     @DeleteMapping(value = "/list")
-    public ResponseEntity<Void> delete(@Validated @RequestBody OperationalUnitDTO.Delete request) {
-        operationalUnitService.delete(request);
+    public ResponseEntity<Void> delete(@Validated @RequestBody ClassSessionDTO.Delete request) {
+        classSessionService.delete(request);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
@@ -97,12 +94,12 @@ public class OperationalUnitRestController {
 
     @Loggable
     @GetMapping(value = "/spec-list")
-    public ResponseEntity<OperationalUnitDTO.OperationalUnitSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                         @RequestParam("_endRow") Integer endRow,
-                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                                         @RequestParam(value = "criteria", required = false) String criteria,
-                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+    public ResponseEntity<ClassSessionDTO.ClassSessionsSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                                    @RequestParam("_endRow") Integer endRow,
+                                                                    @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                    @RequestParam(value = "operator", required = false) String operator,
+                                                                    @RequestParam(value = "criteria", required = false) String criteria,
+                                                                    @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -121,15 +118,15 @@ public class OperationalUnitRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<OperationalUnitDTO.Info> response = operationalUnitService.search(request);
+        SearchDTO.SearchRs<ClassSessionDTO.Info> response = classSessionService.search(request);
 
-        final OperationalUnitDTO.SpecRs specResponse = new OperationalUnitDTO.SpecRs();
+        final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());
 
-        final OperationalUnitDTO.OperationalUnitSpecRs specRs = new OperationalUnitDTO.OperationalUnitSpecRs();
+        final ClassSessionDTO.ClassSessionsSpecRs specRs = new ClassSessionDTO.ClassSessionsSpecRs();
         specRs.setResponse(specResponse);
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -152,7 +149,7 @@ public class OperationalUnitRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<OperationalUnitDTO.Info> searchRs = operationalUnitService.search(searchRq);
+        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
@@ -165,6 +162,4 @@ public class OperationalUnitRestController {
     }
 
     //*********************************
-
-
 }

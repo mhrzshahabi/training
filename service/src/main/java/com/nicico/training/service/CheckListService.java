@@ -8,7 +8,6 @@ import com.nicico.training.dto.CheckListItemDTO;
 import com.nicico.training.iservice.ICheckListService;
 import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
-import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListDAO;
 import com.nicico.training.repository.ClassCheckListDAO;
 import lombok.RequiredArgsConstructor;

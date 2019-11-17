@@ -6,7 +6,9 @@ com.nicico.training.iservice
     */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.JobGroupDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
