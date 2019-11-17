@@ -121,7 +121,7 @@ public class ClassSessionService implements IClassSession {
 
         ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
                 (
-                        301L,
+                        null,
                         days_code,
                         1,
                         "1398/08/18",
@@ -137,13 +137,14 @@ public class ClassSessionService implements IClassSession {
         ClassSessionService fff = new ClassSessionService(null, null);
         fff.generateSessions(AS);
 
+
     }
 
     @Transactional
     @Override
     public List<ClassSessionDTO.GeneratedSessions> generateSessions(ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement) {
 
-        //********sending data from class*********
+        //********sending data from t_class*********
         List<String> DaysCode = autoSessionsRequirement.getDaysCode();
         Integer TrainingType = autoSessionsRequirement.getTrainingType();
         String ClassStartDate = autoSessionsRequirement.getClassStartDate();
@@ -171,6 +172,30 @@ public class ClassSessionService implements IClassSession {
             e.printStackTrace();
         }
 
+        //********validate sending data from t_class*********
+        if (G_StartDate.compareTo(G_EndDate) > 0) {
+            //start-date bigger than end-date
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+
+        } else if (DaysCode.size() == 0) {
+            //days code is null
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+
+        } else if (MainHoursRange.size() == 0) {
+            //hours rage is null
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+
+        } else if (autoSessionsRequirement.getClassId() == null ||
+                autoSessionsRequirement.getTrainingType() == null ||
+                autoSessionsRequirement.getInstituteId() == null ||
+                autoSessionsRequirement.getTrainingPlaceId() == null ||
+                autoSessionsRequirement.getTeacherId() == null ||
+                autoSessionsRequirement.getSessionState() == null) {
+
+            //require data is null
+            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        }
+
         //********generated sessions*********
         List<ClassSessionDTO.GeneratedSessions> Sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
 
@@ -178,12 +203,6 @@ public class ClassSessionService implements IClassSession {
         //*********************************
         //*********************************
         //*********************************
-
-        boolean validation = true;
-
-        //validation data here
-        if (!validation)
-            return null;
 
         //********generating sessions*********
         while (G_StartDate.compareTo(G_EndDate) <= 0) {
@@ -205,21 +224,17 @@ public class ClassSessionService implements IClassSession {
                             autoSessionsRequirement.getTeacherId(),
                             autoSessionsRequirement.getSessionState(),
                             autoSessionsRequirement.getDescription()
-
                     ));
 
                 }
             }
 
             G_StartDate = DateUtils.addDays(G_StartDate, 1);
-
         }
-
 
         if (Sessions.size() > 0) {
             // save data here
         }
-
 
         return Sessions;
     }
