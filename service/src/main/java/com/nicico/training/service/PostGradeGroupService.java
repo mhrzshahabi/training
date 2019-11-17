@@ -4,7 +4,6 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPostGradeGroupService;
