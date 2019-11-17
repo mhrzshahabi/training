@@ -135,6 +135,7 @@
         members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
     });
 
+
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.filterByEditor();
