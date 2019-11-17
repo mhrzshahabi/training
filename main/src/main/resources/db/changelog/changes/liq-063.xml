@@ -1,0 +1,25 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="jafari-h (generated)" id="1573965564520-157">
+        <addColumn tableName="tbl_class">
+            <column name="b_first" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573965564520-158">
+        <addColumn tableName="tbl_class">
+            <column name="b_second" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573965564520-159">
+        <addColumn tableName="tbl_class">
+            <column name="b_third" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1573965564520-160">
+        <addColumn tableName="tbl_education_level">
+            <column name="n_code" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+</databaseChangeLog>

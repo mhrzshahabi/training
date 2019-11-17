@@ -23,7 +23,7 @@ public class EducationLevelDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-
+    private Integer code;
     private String titleEn;
 
     // ------------------------------
