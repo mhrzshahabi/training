@@ -8,6 +8,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.repository.ClassSessionDAO;
+import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.exception.ConstraintViolationException;
@@ -115,17 +116,17 @@ public class ClassSessionService implements IClassSession {
     public static void main(String[] args) {
 
 //        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
-        List<String> days_code = Arrays.asList("Fri");
+        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
 
-        List<Integer> hours_range = Arrays.asList(3);
+        List<Integer> hours_range = Arrays.asList(1, 2, 3);
 
         ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
                 (
-                        null,
+                        1L,
                         days_code,
                         1,
-                        "1398/08/18",
-                        "1398/09/01",
+                        "1398/07/01",
+                        "1398/08/30",
                         hours_range, 1,
                         221,
                         22,
@@ -133,7 +134,6 @@ public class ClassSessionService implements IClassSession {
                         1,
                         "توضیحات"
                 );
-
         ClassSessionService fff = new ClassSessionService(null, null);
         fff.generateSessions(AS);
 
@@ -199,6 +199,10 @@ public class ClassSessionService implements IClassSession {
         //********generated sessions*********
         List<ClassSessionDTO.GeneratedSessions> Sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
 
+        //********fetch holidays*********
+        List<String> Holidays = Arrays.asList("", "", "");
+//        List<String> Holidays =  holidayDAO.Holidays(ClassStartDate, ClassEndDate);
+
 
         //*********************************
         //*********************************
@@ -210,22 +214,25 @@ public class ClassSessionService implements IClassSession {
             calendar.setTime(G_StartDate);
             if (DaysCode.contains(dayNames[calendar.get(Calendar.DAY_OF_WEEK)])) {
 
-                for (Integer range : ClassHoursRange) {
+                if (!Holidays.contains(DateUtil.convertMiToKh(formatter.format(G_StartDate)))) {
 
-                    Sessions.add(new ClassSessionDTO.GeneratedSessions(
-                            autoSessionsRequirement.getClassId(),
-                            dayNames[calendar.get(Calendar.DAY_OF_WEEK)],
-                            DateUtil.convertMiToKh(formatter.format(G_StartDate)),
-                            MainHoursRange.get(range).get(0),
-                            MainHoursRange.get(range).get(1),
-                            autoSessionsRequirement.getSessionTypeId(),
-                            autoSessionsRequirement.getInstituteId(),
-                            autoSessionsRequirement.getTrainingPlaceId(),
-                            autoSessionsRequirement.getTeacherId(),
-                            autoSessionsRequirement.getSessionState(),
-                            autoSessionsRequirement.getDescription()
-                    ));
+                    for (Integer range : ClassHoursRange) {
 
+                        Sessions.add(new ClassSessionDTO.GeneratedSessions(
+                                autoSessionsRequirement.getClassId(),
+                                dayNames[calendar.get(Calendar.DAY_OF_WEEK)],
+                                DateUtil.convertMiToKh(formatter.format(G_StartDate)),
+                                MainHoursRange.get(range).get(0),
+                                MainHoursRange.get(range).get(1),
+                                autoSessionsRequirement.getSessionTypeId(),
+                                autoSessionsRequirement.getInstituteId(),
+                                autoSessionsRequirement.getTrainingPlaceId(),
+                                autoSessionsRequirement.getTeacherId(),
+                                autoSessionsRequirement.getSessionState(),
+                                autoSessionsRequirement.getDescription()
+                        ));
+
+                    }
                 }
             }
 
