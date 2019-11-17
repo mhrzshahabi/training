@@ -31,11 +31,6 @@
 			<groupId>org.liquibase</groupId>
 			<artifactId>liquibase-core</artifactId>
 		</dependency>
-		<dependency>
-			<groupId></groupId>
-			<artifactId></artifactId>
-		</dependency>
-
 	</dependencies>
 
 	<build>
