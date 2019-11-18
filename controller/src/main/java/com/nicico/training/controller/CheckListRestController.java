@@ -149,4 +149,31 @@ public class CheckListRestController {
         return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
+
+
+//    @Loggable
+//    @GetMapping(value = "/getchecklist/{classId}")
+//      public ResponseEntity<List<CheckListDTO.Info>> getCheckList(@PathVariable Long classId) {
+//            return new ResponseEntity<>(checkListService.getCheckList(classId),HttpStatus.OK);
+//         }
+
+        @Loggable
+        @GetMapping(value = "/getchecklist/{classId}")
+        public ResponseEntity<CheckListDTO.CheckListSpecRs> getCheckList(@PathVariable Long classId) {
+
+        List<CheckListDTO.Info> list = checkListService.getCheckList(classId);
+
+        final CheckListDTO.SpecRs specResponse = new CheckListDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final CheckListDTO.CheckListSpecRs specRs = new CheckListDTO.CheckListSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+
 }

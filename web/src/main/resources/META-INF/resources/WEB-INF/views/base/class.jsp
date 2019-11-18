@@ -190,9 +190,13 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
 
-         selectionChanged: function (record, state)
+        selectionChanged: function (record, state)
          {
-         ckeckList=record.id;
+          ckeckList=record.id;
+          RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + record.id;
+          ListGrid_ClassCheckList.setFieldProperties(1,{title:'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
+          ListGrid_ClassCheckList.fetchData();
+          ListGrid_ClassCheckList.invalidateCache();
          },
 
         doubleClick: function () {
