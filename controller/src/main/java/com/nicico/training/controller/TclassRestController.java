@@ -212,7 +212,6 @@ public class TclassRestController {
         }
 
         final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
-
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 

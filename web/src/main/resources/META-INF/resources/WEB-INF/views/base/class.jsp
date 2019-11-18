@@ -8,6 +8,7 @@
 // <script>
 
     var classMethod = "POST";
+    var autoValid = false;
     var classWait;
     var str1 = "";
     var str2 = "";
@@ -251,8 +252,8 @@
         groupTitle: "اطلاعات پایه کلاس",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius:"6px",
-        numCols: 8,
-        colWidths:["5%","24%","5%","12%","12%","5%","12%","12%"],
+        numCols: 9,
+        colWidths:["5%","24%","5%","12%","6%","6%","5%","12%","12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -273,10 +274,12 @@
                     {name:"titleFa"}
                 ],
                 changed: function (form, item, value) {
-                    RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                    form.getField("teacherId").fetchData();
-                    form.getField("titleClass").setValue(item.getSelectedRecord().titleFa);
+                    form.getItem("titleClass").setValue(item.getSelectedRecord().titleFa);
+                    form.clearValue("teacherId");
                     evalGroup();
+                    RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                    form.getItem("teacherId").fetchData();
+
                 }
             },
             {
@@ -288,6 +291,7 @@
             },
             {
                 name:"maxCapacity",
+                colSpan:2,
                 showTitle:false,
                 hint:"حداکثر",
                 textAlign: "center",
@@ -310,10 +314,12 @@
             },
             {
                 name:"teachingType",
-                colSpan:2,
+                // titleOrientation:"top",
+                colSpan:1,
+                rowSpan:3,
                 title:"روش آموزش:",
                 type:"radioGroup",
-                vertical:false,
+                // vertical:false,
                 fillHorizontalSpace:true,
                 defaultValue:"حضوری",
                 valueMap: [
@@ -322,6 +328,24 @@
                     "مجازی",
                     "عملی و کارگاهی"
                 ]
+                // textBoxStyle:"textItemLite"
+            },
+            {
+                name:"topology",
+                colSpan:1,
+                rowSpan:3,
+                // rowSpan:2,
+                title:"چیدمان:",
+                type:"radioGroup",
+                // vertical:false,
+                fillHorizontalSpace:true,
+                defaultValue:"2",
+                valueMap: {
+                    "1":"U شکل",
+                    "2":"عادی",
+                    "3":"مدور",
+                    "4":"سالن"
+                }
                 // textBoxStyle:"textItemLite"
             },
             {
@@ -408,7 +432,7 @@
             },
             {
                 name:"reason",
-                colSpan:2,
+                colSpan:1,
                 textAlign: "center",
                 wrapTitle:true,
                 title:"درخواست آموزشی:",
@@ -421,27 +445,17 @@
                 textBoxStyle:"textItemLite"
             },
             {
-                name:"classStatus",
-                // colSpan:2,
-                rowSpan:2,
-                title:"وضعیت کلاس:",
-                wrapTitle:true,
-                type:"radioGroup",
-                // vertical:false,
-                fillHorizontalSpace:true,
-                defaultValue:"برنامه ریزی",
-                startRow:true,
-                valueMap: [
-                    "برنامه ریزی",
-                    "در حال اجرا",
-                    "پایان یافته"
-                ]
-                // textBoxStyle:"textItemLite"
+                name:"group",
+                title:"گروه:",
+                required: true,
+                colSpan:2,
+                textAlign:"center",
+                type:"staticText",textBoxStyle:"textItemLite"
             },
             {
                 name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
                 // width:"250",
-                colSpan:2,
+                colSpan:1,
                 autoFetchData:false,
                 optionDataSource:RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -464,26 +478,27 @@
                 }
             },
             {
-                name:"topology",
-                colSpan:2,
-                // rowSpan:2,
-                title:"چیدمان:",
+                name:"classStatus",
+                // colSpan:2,
+                rowSpan:2,
+                title:"وضعیت کلاس:",
+                wrapTitle:true,
                 type:"radioGroup",
-                vertical:false,
+                // vertical:false,
                 fillHorizontalSpace:true,
-                defaultValue:"2",
-                valueMap: {
-                    "1":"U شکل",
-                    "2":"عادی",
-                    "3":"مدور",
-                    "4":"سالن"
-                }
+                defaultValue:"برنامه ریزی",
+                endRow:true,
+                valueMap: [
+                    "برنامه ریزی",
+                    "در حال اجرا",
+                    "پایان یافته"
+                ]
                 // textBoxStyle:"textItemLite"
             },
             {
                 name:"trainingPlaceIds", editorType:"select", title:"محل برگزاری:",
                 multiple:true,
-                colSpan:2,
+                colSpan:1,
                 // width:"250",
                 align:"center",
                 optionDataSource:RestDataSource_TrainingPlace_JspClass,
@@ -517,19 +532,13 @@
                     // return {category:category};
                 }
             },
-            {
-                name:"group",
-                title:"گروه:",
-                required: true,
-                colSpan:2,
-                textAlign:"center",
-                type:"staticText",textBoxStyle:"textItemLite"
-            },
+
+
         ],
     });
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
-        validateOnChange:true,
+        // validateOnChange:true,
         height: "100%",
         isGroup: true,
         wrapItemTitles:true,
@@ -541,7 +550,7 @@
         colWidths:["6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%"],
         // colWidths:["5%","5%","5%","5%","5%","5%","5%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
-        align: "center",
+        // align: "center",
         valuesManager: "VM_JspClass",
         /*  margin: 50,
 
@@ -557,7 +566,7 @@
                 displayField: "code",
                 valueField: "id",
                 optionDataSource: RestDataSource_Term_JspClass,
-                autoFetchData: true,
+                // autoFetchData: true,
                 cachePickListResults: true,
                 useClientFiltering: true,
                 filterFields: ["code"],
@@ -565,7 +574,7 @@
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
                 colSpan: 3,
-                endRow:true,
+                // endRow:true,
                 pickListFields: [
                     {
                         name: "code",
@@ -586,6 +595,15 @@
                 changed: function () {
                     evalGroup();
                 }
+            },
+            {
+                name: "autoValid",
+                type:"checkbox",
+                title:"تولید اتوماتیک جلسات",
+                endRow:true,
+                // titleOrientation:"top",
+                labelAsTitle :true,
+                colSpan:2
             },
             {
                 name: "startDate",
@@ -639,6 +657,7 @@
                 changed: function (form, item, value) {
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
                     var dateCheck;
+                    var endDate = form.getValue("endDate");
                     // alert(termStart)
                     dateCheck = checkDate(value);
                     // alert(value)
@@ -651,6 +670,9 @@
                     else if (value < termStart) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع ترم باشد", true);
                     }
+                    else if (endDate){
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع باشد", true);
+                    }
                     else{
                         form.clearFieldErrors("startDate", true);
                     }
@@ -662,7 +684,7 @@
                 type:"radioGroup",
                 // vertical:false,
                 rowSpan:2,
-                colSpan:2,
+                colSpan:1,
                 fillHorizontalSpace:true,
                 defaultValue:1,
                 endRow:true,
@@ -750,8 +772,24 @@
     var IButton_Class_Save_JspClass = isc.TrSaveBtn.create({
         align: "center",
         click: function () {
-            if (startDateCheck === false || endDateCheck === false)
-                return;
+            // if (startDateCheck === false || endDateCheck === false)
+            //     return;
+            autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
+            if(DynamicForm1_Class_JspClass.getValue("autoValid")){
+                if(!(DynamicForm1_Class_JspClass.getValue("first")||DynamicForm1_Class_JspClass.getValue("second")||DynamicForm1_Class_JspClass.getValue("third"))){
+                    isc.MyOkDialog.create({
+                        message:"به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
+                    });
+                    return;
+                }
+                else if(!(DynamicForm1_Class_JspClass.getValue("saturday")||DynamicForm1_Class_JspClass.getValue("sunday")||DynamicForm1_Class_JspClass.getValue("monday")||
+                    DynamicForm1_Class_JspClass.getValue("tuesday")||DynamicForm1_Class_JspClass.getValue("wednesday")||DynamicForm1_Class_JspClass.getValue("thursday")||DynamicForm1_Class_JspClass.getValue("friday"))){
+                    isc.MyOkDialog.create({
+                        message:"به منظور تولید اتوماتیک جلسات باید حداقل یکی از روزهای هفته را انتخاب کنید.",
+                    });
+                    return;
+                }
+            }
             if (VM_JspClass.hasErrors()) {
                 return;
             }
@@ -776,15 +814,14 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        ListGrid_Class_refresh();
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
-                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", "3000", "say");
-                        ListGrid_Class_refresh();
+                        simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", 3000, "say");
                         setTimeout(function () {
                             ListGrid_Class_JspClass.setSelectedState(gridState);
-                        }, 900);
+                        }, 3000);
                         Window_Class_JspClass.close();
-
                     } else {
                         simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
                     }
@@ -1310,7 +1347,7 @@
     }
 
     function classCode() {
-        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"/"+VM_JspClass.getItem("termId").getSelectedRecord().code+"/"+VM_JspClass.getValue("group"));
+        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"-"+VM_JspClass.getItem("termId").getSelectedRecord().code+"-"+VM_JspClass.getValue("group"));
     }
 
     function evalGroup(){
