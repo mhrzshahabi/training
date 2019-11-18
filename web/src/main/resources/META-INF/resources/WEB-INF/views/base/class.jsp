@@ -1306,7 +1306,7 @@
     }
 
     function classCode() {
-        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"/"+VM_JspClass.getItem("termId").getSelectedRecord().code+"/"+VM_JspClass.getValue("group"));
+        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"-"+VM_JspClass.getItem("termId").getSelectedRecord().code+"-"+VM_JspClass.getValue("group"));
     }
 
     function evalGroup(){
