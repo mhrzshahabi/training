@@ -9,6 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -37,6 +38,17 @@ public class ClassSessionRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+
+    //*********************************
+
+    @Loggable
+    @PostMapping(value = "/generateSessions")
+    public void generateSessions(@RequestBody Object  req) {
+        String ddd = "dfdf";
+//        TclassDTO.Info
+//        ClassSessionDTO.AutoSessionsRequirement sessionsRequirement = (new ModelMapper()).map(req, ClassSessionDTO.AutoSessionsRequirement.class);
+//        classSessionService.generateSessions(sessionsRequirement);
+    }
 
     //*********************************
 

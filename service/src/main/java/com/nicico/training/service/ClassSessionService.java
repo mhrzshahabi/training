@@ -14,6 +14,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,17 +32,15 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
 
     //*********************************
-
-    @Transactional(readOnly = true)
-    @Override
-    public ClassSessionDTO.Info get(Long id) {
+        @Transactional(readOnly = true)
+        @Override
+        public ClassSessionDTO.Info get (Long id){
         final Optional<ClassSession> optionalOperationalUnit = classSessionDAO.findById(id);
         final ClassSession operationalUnit = optionalOperationalUnit.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
         return modelMapper.map(operationalUnit, ClassSessionDTO.Info.class);
     }
 
-    //*********************************
-
+        //*********************************
     @Transactional
     @Override
     public List<ClassSessionDTO.Info> list() {
@@ -134,6 +133,8 @@ public class ClassSessionService implements IClassSession {
                         1,
                         "توضیحات"
                 );
+
+
         ClassSessionService fff = new ClassSessionService(null, null);
         fff.generateSessions(AS);
 
