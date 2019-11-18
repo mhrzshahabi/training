@@ -1,0 +1,66 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1574072514923-159">
+        <createSequence sequenceName="seq_personnel_auto_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1574072514923-160">
+        <createTable tableName="tbl_personnel">
+            <column name="autoId" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
+            </column>
+            <column name="Active" type="NUMBER(10, 0)"/>
+            <column name="sen" type="NUMBER(10, 0)"/>
+            <column name="IDNumber" type="VARCHAR2(255 CHAR)"/>
+            <column name="BirthDate" type="VARCHAR2(255 CHAR)"/>
+            <column name="BirthPlace" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Omur" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Hozae" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Moavenat" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Ghesmat" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_Vahed" type="VARCHAR2(255 CHAR)"/>
+            <column name="SherkatName" type="VARCHAR2(255 CHAR)"/>
+            <column name="FirstWorkPlaceTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="SharhGharardad" type="VARCHAR2(255 CHAR)"/>
+            <column name="ShomareGharardad" type="VARCHAR2(255 CHAR)"/>
+            <column name="Deleted" type="NUMBER(10, 0)"/>
+            <column name="DepartmentCode" type="VARCHAR2(255 CHAR)"/>
+            <column name="DepartmentTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="FieldTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="EducationLevelTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="EducationLicenseTypeTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="EmpNo" type="VARCHAR2(255 CHAR)"/>
+            <column name="EmploymentDate" type="VARCHAR2(255 CHAR)"/>
+            <column name="EmploymentStatusTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="EmploymentTypeTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="FatherName" type="VARCHAR2(255 CHAR)"/>
+            <column name="FirstName" type="VARCHAR2(255 CHAR)"/>
+            <column name="GenderTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="ID" type="NUMBER(19, 0)"/>
+            <column name="BimeCode" type="VARCHAR2(255 CHAR)"/>
+            <column name="JobEducationLevelTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="JobNo" type="VARCHAR2(255 CHAR)"/>
+            <column name="jobTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="LastName" type="VARCHAR2(255 CHAR)"/>
+            <column name="MaritalStatusTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="MilitaryStatusTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="SSN" type="VARCHAR2(255 CHAR)"/>
+            <column name="OperationalUnitTitles" type="VARCHAR2(255 CHAR)"/>
+            <column name="PersonnelNo" type="VARCHAR2(255 CHAR)"/>
+            <column name="AssignmentDate" type="VARCHAR2(255 CHAR)"/>
+            <column name="PostCode" type="VARCHAR2(255 CHAR)"/>
+            <column name="PostGradeCode" type="VARCHAR2(255 CHAR)"/>
+            <column name="PostGradeTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="postTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="Sanavatkol_rooz" type="VARCHAR2(255 CHAR)"/>
+            <column name="Sanavatkol_mah" type="VARCHAR2(255 CHAR)"/>
+            <column name="WorkPlaceTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="WorkTurnTitle" type="VARCHAR2(255 CHAR)"/>
+            <column name="Sanavatkol_sal" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
