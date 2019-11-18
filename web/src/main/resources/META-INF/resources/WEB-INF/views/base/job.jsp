@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+//<script>
 
     // ------------------------------------------- Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({

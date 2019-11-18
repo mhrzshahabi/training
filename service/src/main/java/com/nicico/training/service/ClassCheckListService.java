@@ -6,8 +6,10 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CheckListItemDTO;
 import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.iservice.IClassCheckListService;
+import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.repository.CheckListDAO;
@@ -32,8 +34,7 @@ public class ClassCheckListService implements IClassCheckListService {
 
     private final ClassCheckListDAO classCheckListDAO;
     private final CheckListItemDAO checkListItemDAO;
-    private final CheckListDAO checkListDAO;
-    private final ModelMapper mapper;
+     private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -90,29 +91,39 @@ public class ClassCheckListService implements IClassCheckListService {
     }
 
 
+
+
+
+
     @Transactional
     @Override
-    public List<ClassCheckListDTO.Info> fillTable(Long classId) {
+    public List<ClassCheckListDTO.Info> fillTable(Long classId, Long checkListId) {
 
-        List<ClassCheckList> classCheckList = new ArrayList<>();
-        List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);
-        //لیستی از checklistItemID را از جدول classchecklist  بر می گرداند که tclassid برابر با classid است
+        List<ClassCheckList> ClassCheckListArray = new ArrayList<>();
 
-        final List<CheckListItem> checkListItemTotal = checkListItemDAO.findAll();
+        List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);   //لیست تمام چک لیست های مربوط به این کلاس گرفته شده
 
-        for (CheckListItem x : checkListItemTotal) {
-            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted()==null) ) {
-                ClassCheckList classCheckList1 = new ClassCheckList();
-                classCheckList1.setTclassId(classId);
-                classCheckList1.setCheckListItemId(x.getId());
-                classCheckList.add(classCheckList1);
-            }
+        List<CheckListItem> checkListItemsListId=checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
 
-        }
-        List<ClassCheckList> save = classCheckListDAO.saveAll(classCheckList);
-        return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {
-        }.getType());
+
+
+             for (CheckListItem x: checkListItemsListId)
+        {
+           if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted()==null))
+           {
+                 ClassCheckList classCheckList = new ClassCheckList();
+                 classCheckList.setTclassId(classId);
+                 classCheckList.setCheckListItemId(x.getId());
+                 ClassCheckListArray.add(classCheckList);
+           }
+
+         }
+         List<ClassCheckList> save = classCheckListDAO.saveAll(ClassCheckListArray);
+           return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {}.getType());
+
+
     }
+
 
  @Transactional
     @Override
