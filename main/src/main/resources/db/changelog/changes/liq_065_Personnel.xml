@@ -2,65 +2,61 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1574072514923-159">
-        <createSequence sequenceName="seq_personnel_auto_id"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1574072514923-160">
+    <changeSet author="ghazanfari_f (generated)" id="1574074293227-160">
         <createTable tableName="tbl_personnel">
-            <column name="autoId" type="NUMBER(19, 0)">
+            <column name="auto_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
             </column>
-            <column name="Active" type="NUMBER(10, 0)"/>
-            <column name="sen" type="NUMBER(10, 0)"/>
-            <column name="IDNumber" type="VARCHAR2(255 CHAR)"/>
-            <column name="BirthDate" type="VARCHAR2(255 CHAR)"/>
-            <column name="BirthPlace" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Omur" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Hozae" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Moavenat" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Code" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Ghesmat" type="VARCHAR2(255 CHAR)"/>
+            <column name="active" type="NUMBER(10, 0)"/>
+            <column name="age" type="NUMBER(10, 0)"/>
+            <column name="birth_certificate_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_place" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_section" type="VARCHAR2(255 CHAR)"/>
             <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="ccp_Vahed" type="VARCHAR2(255 CHAR)"/>
-            <column name="SherkatName" type="VARCHAR2(255 CHAR)"/>
-            <column name="FirstWorkPlaceTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="SharhGharardad" type="VARCHAR2(255 CHAR)"/>
-            <column name="ShomareGharardad" type="VARCHAR2(255 CHAR)"/>
-            <column name="Deleted" type="NUMBER(10, 0)"/>
-            <column name="DepartmentCode" type="VARCHAR2(255 CHAR)"/>
-            <column name="DepartmentTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="FieldTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="EducationLevelTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="EducationLicenseTypeTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="EmpNo" type="VARCHAR2(255 CHAR)"/>
-            <column name="EmploymentDate" type="VARCHAR2(255 CHAR)"/>
-            <column name="EmploymentStatusTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="EmploymentTypeTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="FatherName" type="VARCHAR2(255 CHAR)"/>
-            <column name="FirstName" type="VARCHAR2(255 CHAR)"/>
-            <column name="GenderTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="ID" type="NUMBER(19, 0)"/>
-            <column name="BimeCode" type="VARCHAR2(255 CHAR)"/>
-            <column name="JobEducationLevelTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="JobNo" type="VARCHAR2(255 CHAR)"/>
-            <column name="jobTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="LastName" type="VARCHAR2(255 CHAR)"/>
-            <column name="MaritalStatusTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="MilitaryStatusTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="SSN" type="VARCHAR2(255 CHAR)"/>
-            <column name="OperationalUnitTitles" type="VARCHAR2(255 CHAR)"/>
-            <column name="PersonnelNo" type="VARCHAR2(255 CHAR)"/>
-            <column name="AssignmentDate" type="VARCHAR2(255 CHAR)"/>
-            <column name="PostCode" type="VARCHAR2(255 CHAR)"/>
-            <column name="PostGradeCode" type="VARCHAR2(255 CHAR)"/>
-            <column name="PostGradeTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="postTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="Sanavatkol_rooz" type="VARCHAR2(255 CHAR)"/>
-            <column name="Sanavatkol_mah" type="VARCHAR2(255 CHAR)"/>
-            <column name="WorkPlaceTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="WorkTurnTitle" type="VARCHAR2(255 CHAR)"/>
-            <column name="Sanavatkol_sal" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="deleted" type="NUMBER(10, 0)"/>
+            <column name="department_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="department_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="first_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="id" type="NUMBER(19, 0)"/>
+            <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="marital_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_days" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_months" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_place_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_turn_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_years" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-
 </databaseChangeLog>
