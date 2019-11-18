@@ -54,6 +54,9 @@ public class TclassDTO {
     private Boolean wednesday;
     private Boolean thursday;
     private Boolean friday;
+    private Boolean first;
+    private Boolean second;
+    private Boolean third;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
 

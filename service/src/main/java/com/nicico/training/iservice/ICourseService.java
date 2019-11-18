@@ -64,5 +64,5 @@ public interface ICourseService {
     String getDomain(Long id);
 
     @Transactional(readOnly = true)
-    List<TeacherDTO.Info> getTeachers(Long courseId);
+    List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId);
 }

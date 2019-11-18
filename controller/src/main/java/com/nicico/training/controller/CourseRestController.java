@@ -30,6 +30,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -421,10 +422,13 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/get_teachers/{id}")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> getTeachers(@PathVariable Long id) {
-        List<TeacherDTO.Info> infoList = courseService.getTeachers(id);
-        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
-        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
+        List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
+        if(id != 0) {
+            infoList = courseService.getTeachers(id);
+        }
+        final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();
+        final TeacherDTO.TeacherFullNameSpecRs specRs = new TeacherDTO.TeacherFullNameSpecRs();
         specResponse.setData(infoList)
                 .setStartRow(0)
                 .setEndRow(infoList.size())

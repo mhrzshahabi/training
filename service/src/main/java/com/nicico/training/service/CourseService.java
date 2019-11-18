@@ -575,9 +575,10 @@ public class CourseService implements ICourseService {
         return "دانشی: " + round(a * 100 / (sumAll)) + "%     " + "نگرشی: " + round(c * 100 / (sumAll)) + "%    " + "مهارتی: " + round(b * 100 / (sumAll)) + "%";
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public List<TeacherDTO.Info> getTeachers(Long courseId) {
+    public List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId) {
         final Optional<Course> optionalCourse = courseDAO.findById(courseId);
         final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String minTeacherDegree = course.getMinTeacherDegree();
@@ -585,7 +586,7 @@ public class CourseService implements ICourseService {
         EducationLevel educationLevel = byTitleFa.get(0);
         Long categoryId = course.getCategoryId();
         List<Teacher> teachers = teacherDAO.findByCategories_IdAndPersonality_EducationLevel_CodeGreaterThanEqual(categoryId, educationLevel.getCode());
-        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.Info>>() {
+        return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
         }.getType());
     }
 }
