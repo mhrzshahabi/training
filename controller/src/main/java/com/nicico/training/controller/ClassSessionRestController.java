@@ -42,12 +42,9 @@ public class ClassSessionRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = "/generateSessions")
-    public void generateSessions(@RequestBody Object  req) {
-        String ddd = "dfdf";
-//        TclassDTO.Info
-//        ClassSessionDTO.AutoSessionsRequirement sessionsRequirement = (new ModelMapper()).map(req, ClassSessionDTO.AutoSessionsRequirement.class);
-//        classSessionService.generateSessions(sessionsRequirement);
+    @PostMapping(value = "/generateSessions/{classId}")
+    public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement) {
+        classSessionService.generateSessions(classId,autoSessionsRequirement);
     }
 
     //*********************************
