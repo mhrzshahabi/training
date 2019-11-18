@@ -27,10 +27,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/checklist")
 public class CheckListRestController {
-  private final CheckListService checkListService;
-   private final ObjectMapper objectMapper;
-   private final DateUtil dateUtil;
-   private final ReportUtil reportUtil;
+    private final CheckListService checkListService;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
+    private final ReportUtil reportUtil;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -38,7 +38,7 @@ public class CheckListRestController {
         return new ResponseEntity<>(checkListService.get(id), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CheckListDTO.Info>> list() {
         return new ResponseEntity<>(checkListService.list(), HttpStatus.OK);
@@ -51,9 +51,9 @@ public class CheckListRestController {
         return new ResponseEntity<>(checkListService.create(create), HttpStatus.CREATED);
     }
 
- @Loggable
+    @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CheckListDTO.Info> update(@PathVariable Long id, @RequestBody  CheckListDTO.Update request) {
+    public ResponseEntity<CheckListDTO.Info> update(@PathVariable Long id, @RequestBody CheckListDTO.Update request) {
         CheckListDTO.Update update = (new ModelMapper()).map(request, CheckListDTO.Update.class);
         return new ResponseEntity<>(checkListService.update(id, update), HttpStatus.OK);
     }
@@ -65,7 +65,7 @@ public class CheckListRestController {
 //        return new ResponseEntity<>(HttpStatus.OK);
 //    }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CheckListDTO.Delete request) {
         checkListService.delete(request);
@@ -73,14 +73,14 @@ public class CheckListRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<CheckListDTO.CheckListSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                             @RequestParam("_endRow") Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -90,7 +90,7 @@ public class CheckListRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -114,7 +114,7 @@ public class CheckListRestController {
     }
 
 
-      @Loggable
+    @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CheckListDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(checkListService.search(request), HttpStatus.OK);
@@ -122,7 +122,7 @@ public class CheckListRestController {
 
     @Loggable
     @GetMapping(value = "/{CheckListId}/getCheckListItem")
-    public ResponseEntity<CheckListItemDTO.Info>  getCheckListItem(@PathVariable Long CheckListId) {
+    public ResponseEntity<CheckListItemDTO.CheckListItemSpecRs> getCheckListItem(@PathVariable Long CheckListId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -131,22 +131,22 @@ public class CheckListRestController {
         final CheckListItemDTO.SpecRs specResponse = new CheckListItemDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
-                .setEndRow( list.size())
+                .setEndRow(list.size())
                 .setTotalRows(list.size());
-        final CheckListItemDTO.CheckListItemSpecRs specRs=new CheckListItemDTO.CheckListItemSpecRs();
+        final CheckListItemDTO.CheckListItemSpecRs specRs = new CheckListItemDTO.CheckListItemSpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity(specRs,HttpStatus.OK);
 
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("delete/{id}")
     public ResponseEntity<Boolean> delete1(@PathVariable Long id) {
-    boolean check=checkListService.checkForDelete(id);
-      if(check) {
-          checkListService.delete(id);
-      }
-        return new ResponseEntity<>(check,HttpStatus.OK);
+        boolean check = checkListService.checkForDelete(id);
+        if (check) {
+            checkListService.delete(id);
+        }
+        return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
 }
