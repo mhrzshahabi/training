@@ -1540,7 +1540,7 @@
                     if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
                        setTimeout(function () {
                            fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                       },1000)
+                       },100)
                     }
                     else{
                         setTimeout(function () {
