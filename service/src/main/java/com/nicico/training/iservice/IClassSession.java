@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.TclassDTO;
 
 import java.util.List;
 
@@ -21,6 +22,6 @@ public interface IClassSession {
 
    SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
 
-   List<ClassSessionDTO.GeneratedSessions> generateSessions (ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement);
+   List<ClassSessionDTO.GeneratedSessions> generateSessions (Long classId, TclassDTO.Create autoSessionsRequirement);
 
 }

@@ -33,3 +33,8 @@ body
 span{
     display: inline-flex  !important;
 }
+
+.myparent .headerButton
+{
+color: black !important;
+}

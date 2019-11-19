@@ -9,6 +9,7 @@ import com.nicico.training.iservice.ICheckListService;
 import com.nicico.training.model.CheckList;
 import com.nicico.training.model.CheckListItem;
 import com.nicico.training.repository.CheckListDAO;
+import com.nicico.training.repository.CheckListItemDAO;
 import com.nicico.training.repository.ClassCheckListDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -16,9 +17,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +25,7 @@ public class CheckListService implements ICheckListService {
 
     private final CheckListDAO checkListDAO;
     private final ClassCheckListDAO classCheckListDAO;
+    private final CheckListItemDAO checkListItemDAO;
     private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
@@ -85,7 +85,7 @@ public class CheckListService implements ICheckListService {
     @Override
     public List<CheckListItemDTO.Info> getCheckListItem(Long CheckListId) {
 
-        final Optional<CheckList> optionalCheckList =checkListDAO.findById(CheckListId);
+        final Optional<CheckList> optionalCheckList = checkListDAO.findById(CheckListId);
         final CheckList checkList = optionalCheckList.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListNotFound));
         return mapper.map(checkList.getCheckListItems(), new TypeToken<List<CheckListItemDTO.Info>>() {
         }.getType());
@@ -93,19 +93,37 @@ public class CheckListService implements ICheckListService {
 
     @Override
     @Transactional
-    public boolean checkForDelete(Long checkListId)
-  {
-    List<Long> checkListItemList=null;
-  Optional<CheckList> CheckList=checkListDAO.findById(checkListId);
-  final CheckList checkList=CheckList.orElseThrow(()->new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
-  Set<CheckListItem> checkListItemSet=checkList.getCheckListItems();
-      for (CheckListItem x:checkListItemSet) {
+    public boolean checkForDelete(Long checkListId) {
+        List<Long> checkListItemList = null;
+        Optional<CheckList> CheckList = checkListDAO.findById(checkListId);
+        final CheckList checkList = CheckList.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
+        Set<CheckListItem> checkListItemSet = checkList.getCheckListItems();
+        for (CheckListItem x : checkListItemSet) {
 
-            checkListItemList= classCheckListDAO.getCheckListItemIdsBychecklistItemId(x.getId());
-          if(checkListItemList.size() > 0 && checkListItemList !=null)
-          break;
-      }
+            checkListItemList = classCheckListDAO.getCheckListItemIdsBychecklistItemId(x.getId());
+            if (checkListItemList.size() > 0 && checkListItemList != null)
+                break;
+        }
 
-   return ((checkListItemList != null && checkListItemList.size()>0 ?false:true));
-  }
+        return ((checkListItemList != null && checkListItemList.size() > 0 ? false : true));
+    }
+
+
+    @Override
+    @Transactional
+    public List<CheckListDTO.Info> getCheckList(Long classId) {
+        List<CheckList> Array_checkList = new ArrayList<CheckList>();
+        Set<Long> checklistSetId = new HashSet<>();
+        Set<Long> checkListItemIdsByTclassId = classCheckListDAO.getSetCheckListItemIdsByTclassId(classId);
+        for (Long x : checkListItemIdsByTclassId) {
+            checklistSetId.add(checkListItemDAO.getCheckListId(x));
+        }
+        for (Long x : checklistSetId) {
+            final Optional<CheckList> optionalCheckList = checkListDAO.findById(x);
+            final CheckList checkList = optionalCheckList.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListNotFound));
+            Array_checkList.add(checkList);
+        }
+        return mapper.map(Array_checkList, new TypeToken<List<CheckListDTO.Info>>() {
+        }.getType());
+    }
 }

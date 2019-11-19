@@ -5,14 +5,17 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.repository.ClassSessionDAO;
+import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,9 +31,9 @@ public class ClassSessionService implements IClassSession {
 
     private final ClassSessionDAO classSessionDAO;
     private final ModelMapper modelMapper;
+    private final HolidayDAO holidayDAO;
 
     //*********************************
-
     @Transactional(readOnly = true)
     @Override
     public ClassSessionDTO.Info get(Long id) {
@@ -40,7 +43,6 @@ public class ClassSessionService implements IClassSession {
     }
 
     //*********************************
-
     @Transactional
     @Override
     public List<ClassSessionDTO.Info> list() {
@@ -112,92 +114,121 @@ public class ClassSessionService implements IClassSession {
     //**********************
     //**********************
 
-    public static void main(String[] args) {
-
+//    public static void main(String[] args) {
+//
+////        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
 //        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
-        List<String> days_code = Arrays.asList("Fri");
-
-        List<Integer> hours_range = Arrays.asList(3);
-
-        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
-                (
-                        null,
-                        days_code,
-                        1,
-                        "1398/08/18",
-                        "1398/09/01",
-                        hours_range, 1,
-                        221,
-                        22,
-                        602L,
-                        1,
-                        "توضیحات"
-                );
-
-        ClassSessionService fff = new ClassSessionService(null, null);
-        fff.generateSessions(AS);
-
-
-    }
+//
+//        List<Integer> hours_range = Arrays.asList(1, 2, 3);
+//
+//        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
+//                (
+//                        1L,
+//                        days_code,
+//                        1,
+//                        "1398/07/01",
+//                        "1398/08/30",
+//                        hours_range, 1,
+//                        221,
+//                        22,
+//                        602L,
+//                        1,
+//                        "توضیحات"
+//                );
+//
+//
+//        ClassSessionService fff = new ClassSessionService(null, null);
+//        fff.generateSessions(AS);
+//
+//
+//    }
 
     @Transactional
     @Override
-    public List<ClassSessionDTO.GeneratedSessions> generateSessions(ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement) {
+    public List<ClassSessionDTO.GeneratedSessions> generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {
 
         //********sending data from t_class*********
-        List<String> DaysCode = autoSessionsRequirement.getDaysCode();
-        Integer TrainingType = autoSessionsRequirement.getTrainingType();
-        String ClassStartDate = autoSessionsRequirement.getClassStartDate();
-        String ClassEndDate = autoSessionsRequirement.getClassEndDate();
-        List<Integer> ClassHoursRange = autoSessionsRequirement.getClassHoursRange();
+        //-----make days code list-----
+        List<String> daysCode = new ArrayList<String>();
+        if (autoSessionsRequirement.getSaturday() != null && autoSessionsRequirement.getSaturday())
+            daysCode.add("Sat");
+        if (autoSessionsRequirement.getSunday() != null && autoSessionsRequirement.getSunday())
+            daysCode.add("Sun");
+        if (autoSessionsRequirement.getMonday() != null && autoSessionsRequirement.getMonday())
+            daysCode.add("Mon");
+        if (autoSessionsRequirement.getTuesday() != null && autoSessionsRequirement.getTuesday())
+            daysCode.add("Tue");
+        if (autoSessionsRequirement.getWednesday() != null && autoSessionsRequirement.getWednesday())
+            daysCode.add("Wed");
+        if (autoSessionsRequirement.getThursday() != null && autoSessionsRequirement.getThursday())
+            daysCode.add("Thu");
+        if (autoSessionsRequirement.getFriday() != null && autoSessionsRequirement.getFriday())
+            daysCode.add("Fri");
+        //-----make class hours range list-----
+        List<Integer> classHoursRange = new ArrayList<Integer>();
+        if (autoSessionsRequirement.getFirst() != null && autoSessionsRequirement.getFirst())
+            classHoursRange.add(1);
+        if (autoSessionsRequirement.getSecond() != null && autoSessionsRequirement.getSecond())
+            classHoursRange.add(2);
+        if (autoSessionsRequirement.getThird() != null && autoSessionsRequirement.getThird())
+            classHoursRange.add(3);
+
+        Integer sessionTypeId = 1;
+        Integer sessionState = 1;
+        String classStartDate = autoSessionsRequirement.getStartDate();
+        String classEndDate = autoSessionsRequirement.getEndDate();
+
 
         //********main hours range*********
-        Map<Integer, List<String>> MainHoursRange = new HashMap<>();
-        MainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
-        MainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
-        MainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
+        Map<Integer, List<String>> mainHoursRange = new HashMap<>();
+        mainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
+        mainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
+        mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
 
         //********date utils*********
         Calendar calendar = Calendar.getInstance();
-        String dayNames[] = new DateFormatSymbols().getShortWeekdays();
+        String daysName[] = new DateFormatSymbols().getShortWeekdays();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date G_StartDate = null, G_EndDate = null;
+        Date gregorianStartDate = null, gregorianEndDate = null;
 
         try {
-            G_StartDate = formatter.parse(DateUtil.convertKhToMi1(ClassStartDate));
-            G_EndDate = formatter.parse(DateUtil.convertKhToMi1(ClassEndDate));
+            gregorianStartDate = formatter.parse(DateUtil.convertKhToMi1(classStartDate));
+            gregorianEndDate = formatter.parse(DateUtil.convertKhToMi1(classEndDate));
 
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
         //********validate sending data from t_class*********
-        if (G_StartDate.compareTo(G_EndDate) > 0) {
+        if (gregorianStartDate.compareTo(gregorianEndDate) > 0) {
             //start-date bigger than end-date
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
-        } else if (DaysCode.size() == 0) {
+        } else if (daysCode.size() == 0) {
             //days code is null
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
-        } else if (MainHoursRange.size() == 0) {
+        } else if (mainHoursRange.size() == 0) {
             //hours rage is null
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
-        } else if (autoSessionsRequirement.getClassId() == null ||
-                autoSessionsRequirement.getTrainingType() == null ||
+        } else if (classId == null ||
+                sessionTypeId == null ||
                 autoSessionsRequirement.getInstituteId() == null ||
-                autoSessionsRequirement.getTrainingPlaceId() == null ||
+                autoSessionsRequirement.getTrainingPlaceIds() == null ||
                 autoSessionsRequirement.getTeacherId() == null ||
-                autoSessionsRequirement.getSessionState() == null) {
+                sessionState == null) {
 
             //require data is null
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
 
-        //********generated sessions*********
-        List<ClassSessionDTO.GeneratedSessions> Sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
+        //********generated sessions list*********
+        List<ClassSessionDTO.GeneratedSessions> sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
+
+        //********fetch holidays*********
+        List<String> holidays = holidayDAO.Holidays(classStartDate, classEndDate);
 
 
         //*********************************
@@ -205,37 +236,43 @@ public class ClassSessionService implements IClassSession {
         //*********************************
 
         //********generating sessions*********
-        while (G_StartDate.compareTo(G_EndDate) <= 0) {
+        while (gregorianStartDate.compareTo(gregorianEndDate) <= 0) {
 
-            calendar.setTime(G_StartDate);
-            if (DaysCode.contains(dayNames[calendar.get(Calendar.DAY_OF_WEEK)])) {
+            calendar.setTime(gregorianStartDate);
+            if (daysCode.contains(daysName[calendar.get(Calendar.DAY_OF_WEEK)])) {
 
-                for (Integer range : ClassHoursRange) {
+                if (!holidays.contains(DateUtil.convertMiToKh(formatter.format(gregorianStartDate)))) {
 
-                    Sessions.add(new ClassSessionDTO.GeneratedSessions(
-                            autoSessionsRequirement.getClassId(),
-                            dayNames[calendar.get(Calendar.DAY_OF_WEEK)],
-                            DateUtil.convertMiToKh(formatter.format(G_StartDate)),
-                            MainHoursRange.get(range).get(0),
-                            MainHoursRange.get(range).get(1),
-                            autoSessionsRequirement.getSessionTypeId(),
-                            autoSessionsRequirement.getInstituteId(),
-                            autoSessionsRequirement.getTrainingPlaceId(),
-                            autoSessionsRequirement.getTeacherId(),
-                            autoSessionsRequirement.getSessionState(),
-                            autoSessionsRequirement.getDescription()
-                    ));
+                    for (Integer range : classHoursRange) {
 
+                        sessions.add(new ClassSessionDTO.GeneratedSessions(
+                                classId,
+                                daysName[calendar.get(Calendar.DAY_OF_WEEK)],
+                                DateUtil.convertMiToKh(formatter.format(gregorianStartDate)),
+                                mainHoursRange.get(range).get(0),
+                                mainHoursRange.get(range).get(1),
+                                sessionTypeId,
+                                autoSessionsRequirement.getInstituteId().intValue(),
+                                autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
+                                autoSessionsRequirement.getTeacherId(),
+                                sessionState,
+                                null
+                        ));
+
+                    }
                 }
             }
 
-            G_StartDate = DateUtils.addDays(G_StartDate, 1);
+            gregorianStartDate = DateUtils.addDays(gregorianStartDate, 1);
         }
 
-        if (Sessions.size() > 0) {
-            // save data here
+        //********save generated sessions*********
+        if (sessions.size() > 0) {
+            classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
+            }.getType()));
+
         }
 
-        return Sessions;
+        return sessions;
     }
 }
