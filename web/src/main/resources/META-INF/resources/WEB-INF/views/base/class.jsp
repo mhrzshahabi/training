@@ -196,7 +196,7 @@
 
 
          },
-         selectionUpdated:function(record)
+        selectionUpdated:function(record)
          {
          selectedClass=record;
          },
@@ -226,7 +226,13 @@
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
             {name: "reason", title:"درخواست آموزشی", align:"center"},
             {name: "teacher",  title:"مدرس اصلی", align: "center", filterOperator: "contains"},
-            {name:"classStatus",title:"وضعیت کلاس",align:"center"},
+            {name:"classStatus",title:"وضعیت کلاس",align:"center",
+                valueMap: {
+                    "1":"برنامه ریزی",
+                    "2":"در حال اجرا",
+                    "3":"پایان یافته",
+                },
+            },
             {name:"topology",title:"چیدمان",align:"center",valueMap:{
                     "1":"U شکل",
                     "2":"عادی",
@@ -489,12 +495,11 @@
                 fillHorizontalSpace:true,
                 defaultValue:"برنامه ریزی",
                 endRow:true,
-                valueMap: [
-                    "برنامه ریزی",
-                    "در حال اجرا",
-                    "پایان یافته"
-                ]
-                // textBoxStyle:"textItemLite"
+                valueMap: {
+                    "1":"برنامه ریزی",
+                    "2":"در حال اجرا",
+                    "3":"پایان یافته",
+                },
             },
             {
                 name:"trainingPlaceIds", editorType:"select", title:"محل برگزاری:",
