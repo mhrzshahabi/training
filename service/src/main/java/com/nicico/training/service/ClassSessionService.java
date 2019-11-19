@@ -146,8 +146,6 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public List<ClassSessionDTO.GeneratedSessions> generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {
-//        ClassSessionDTO.AutoSessionsRequirement autoSessionsRequirement;
-
 
         //********sending data from t_class*********
         //-----make days code list-----
@@ -230,7 +228,6 @@ public class ClassSessionService implements IClassSession {
         List<ClassSessionDTO.GeneratedSessions> sessions = new ArrayList<ClassSessionDTO.GeneratedSessions>();
 
         //********fetch holidays*********
-//        List<String> holidays = Arrays.asList("", "", "");
         List<String> holidays = holidayDAO.Holidays(classStartDate, classEndDate);
 
 

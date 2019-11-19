@@ -818,17 +818,19 @@
                         Window_Class_JspClass.close();
 
                         //**********generate class sessions**********
-                        let ClassID = JSON.parse(resp.data).id;
-                        isc.RPCManager.sendRequest({
-                            actionURL: sessionServiceUrl + "generateSessions"+ "/" + ClassID,
-                            httpMethod: "POST",
-                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                            useSimpleHttp: true,
-                            contentType: "application/json; charset=utf-8",
-                            showPrompt: false,
-                            data: JSON.stringify(data),
-                            serverOutputAsString: false
-                        });
+                        if (autoValid) {
+                            let ClassID = JSON.parse(resp.data).id;
+                            isc.RPCManager.sendRequest({
+                                actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
+                                httpMethod: "POST",
+                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                useSimpleHttp: true,
+                                contentType: "application/json; charset=utf-8",
+                                showPrompt: false,
+                                data: JSON.stringify(data),
+                                serverOutputAsString: false
+                            });
+                        }
                         //**********generate class sessions**********
 
                     } else {
@@ -838,7 +840,7 @@
                 }
             });
 
-           // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+            // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -847,8 +849,8 @@
     });
 
     var VLayOut_FormClass_JspClass = isc.TrVLayout.create({
-        margin:10,
-        members:[DynamicForm_Class_JspClass,DynamicForm1_Class_JspClass]
+        margin: 10,
+        members: [DynamicForm_Class_JspClass, DynamicForm1_Class_JspClass]
     });
 
     var Window_Class_JspClass = isc.Window.create({
