@@ -8,9 +8,9 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.service.CourseService;
-import com.nicico.training.service.JobService;
+import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -26,10 +26,10 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/job/")
-public class JobRestController {
+@RequestMapping("/api/personnel/")
+public class PersonnelRestController {
 
-    private final JobService jobService;
+    private final PersonnelService personnelService;
     final ObjectMapper objectMapper;
     final CourseService courseService;
     final DateUtil dateUtil;
@@ -37,13 +37,13 @@ public class JobRestController {
 
 
     @GetMapping("list")
-    public ResponseEntity<List<JobDTO.Info>> list() {
-        return new ResponseEntity<>(jobService.list(), HttpStatus.OK);
+    public ResponseEntity<List<PersonnelDTO.Info>> list() {
+        return new ResponseEntity<>(personnelService.list(), HttpStatus.OK);
     }
 
     @GetMapping(value = "iscList")
-    public ResponseEntity<TotalResponse<JobDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
+    public ResponseEntity<TotalResponse<PersonnelDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(jobService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
     }
 }
