@@ -13,12 +13,15 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -41,7 +44,7 @@ public class NeedAssessmentSkillBasedRestController {
     public ResponseEntity<ISC<NeedAssessmentSkillBasedDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = needAssessmentSkillBasedService.search(searchRq);
+        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = needAssessmentSkillBasedService.deepSearch(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
@@ -49,11 +52,11 @@ public class NeedAssessmentSkillBasedRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_educationLevel')")
     public ResponseEntity<NeedAssessmentSkillBasedDTO.NeedAssessmentSkillBasedSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                       @RequestParam("_endRow") Integer endRow,
-                                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                                           @RequestParam("_endRow") Integer endRow,
+                                                                                           @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                                           @RequestParam(value = "operator", required = false) String operator,
+                                                                                           @RequestParam(value = "criteria", required = false) String criteria,
+                                                                                           @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -71,7 +74,7 @@ public class NeedAssessmentSkillBasedRestController {
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
-        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> response = needAssessmentSkillBasedService.search(request);
+        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> response = needAssessmentSkillBasedService.deepSearch(request);
 
         final NeedAssessmentSkillBasedDTO.SpecRs specResponse = new NeedAssessmentSkillBasedDTO.SpecRs();
         specResponse.setData(response.getList())
@@ -91,28 +94,72 @@ public class NeedAssessmentSkillBasedRestController {
         return new ResponseEntity<>(needAssessmentSkillBasedService.get(id), HttpStatus.OK);
     }
 
+//    @Loggable
+//    @PostMapping
+//    public ResponseEntity create(@RequestBody Object req) {
+//        try {
+//            NeedAssessmentSkillBasedDTO.Create create = modelMapper.map(req, NeedAssessmentSkillBasedDTO.Create.class);
+//            return new ResponseEntity<>(needAssessmentSkillBasedService.create(create), HttpStatus.OK);
+//        } catch (TrainingException ex) {
+//            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_FOUND);
+//        }
+//    }
+
     @Loggable
-    @PostMapping
-    public ResponseEntity create(@RequestBody Object req) {
-        try {
-            NeedAssessmentSkillBasedDTO.Create create = modelMapper.map(req, NeedAssessmentSkillBasedDTO.Create.class);
-            return new ResponseEntity<>(needAssessmentSkillBasedService.create(create), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_FOUND);
+    @PostMapping(value = "/add-all")
+    public ResponseEntity addAll(@Validated @RequestBody NeedAssessmentSkillBasedDTO.Create[] request) {
+
+        List<String> responseList = new ArrayList<>();
+        for (NeedAssessmentSkillBasedDTO.Create creating : request) {
+            try {
+                needAssessmentSkillBasedService.create(creating);
+            } catch (TrainingException ex) {
+                responseList.add("id:" + creating + ",msg:" + ex.getMessage());
+            }
         }
+        if (responseList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(responseList, null, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<NeedAssessmentSkillBasedDTO.Info> update(@PathVariable Long id, @RequestBody Object req) {
-        NeedAssessmentSkillBasedDTO.Update update = modelMapper.map(req, NeedAssessmentSkillBasedDTO.Update.class);
-        return new ResponseEntity<>(needAssessmentSkillBasedService.update(id, update), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody NeedAssessmentSkillBasedDTO.Update request) {
+        try {
+            return new ResponseEntity<>(needAssessmentSkillBasedService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        needAssessmentSkillBasedService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            needAssessmentSkillBasedService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+        }
     }
+
+    @Loggable
+    @DeleteMapping(value = "/list")
+    public ResponseEntity delete(@RequestBody Object request) {
+
+        List deletingList = modelMapper.map(request, List.class);
+        List<String> responseList = new ArrayList<>();
+        for (Object deleting : deletingList) {
+            try {
+                needAssessmentSkillBasedService.delete((Long)deleting);
+            } catch (TrainingException | DataIntegrityViolationException e) {
+                responseList.add("id:" + deleting + ",msg:" + new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage());
+            }
+        }
+        if (responseList.isEmpty())
+            return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(responseList, null, HttpStatus.NOT_ACCEPTABLE);
+    }
+
 }
