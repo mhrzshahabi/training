@@ -191,13 +191,7 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
 
-        selectionChanged: function (record, state)
-         {
-          ckeckList=record.id;
-          RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + record.id;
-          ListGrid_ClassCheckList.setFieldProperties(1,{title:'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
-          ListGrid_ClassCheckList.fetchData();
-          ListGrid_ClassCheckList.invalidateCache();
+        selectionChanged: function (record, state) {
          },
 
         doubleClick: function () {
@@ -1245,7 +1239,16 @@
                 title: "<spring:message code="checkList"/>",//چک لیست
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/checkList-tab"}
-                )
+                ),
+                tabSelected:function(tabSet, tabNum, tabPane, ID, tab, name) {
+                    setTimeout(function () {
+                        selectedRecordClassJsp(ListGrid_Class_JspClass.getSelectedRecord());
+                    },1000)
+                },
+                tabDeselected:function(tabSet, tabNum, tabPane, ID, tab, newTab, name) {
+                    alert("godby")
+                    
+                }
             },
             {
                 title: "<spring:message code="attachments"/>",//ضمائم
@@ -1253,8 +1256,6 @@
                     {viewURL: "tclass/attachments-tab"}
                 )
             }
-
-
         ]
     });
 
