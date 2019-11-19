@@ -4,7 +4,11 @@
 
 // <script>
 
-    var All_Priorities;
+    var All_Priorities_ValueMap_NASB = [];
+    var Wait_NASB;
+    var objectType_NASB = null;
+    var objectId_NASB = null;
+    var test;
 
     //////////////////////////////////////////////////////////
     ///////////////////////DataSource/////////////////////////
@@ -14,7 +18,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains"},
+                {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"}
             ],
         fetchDataURL: skillUrl + "spec-list"
@@ -24,7 +28,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", width: "15%"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
         fetchDataURL: jobUrl + "iscList"
@@ -34,7 +38,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", width: "15%"},
+                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
         fetchDataURL: postUrl + "iscList"
@@ -62,26 +66,33 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                // {name: "object", hidden: true},
+                {name: "object", hidden: true},
                 {name: "objectId", hidden: true},
                 {name: "objectType", hidden: true},
-                {name: "skill.titleFa"},
-                {name: "skill.code"},
-                {name: "eneedAssessmentPriority.titleFa"},
+                {name: "skill"},
+                {name: "eneedAssessmentPriority"},
             ],
-        fetchDataURL: needAssessmentSkillBasedUrl + "iscList"
+        fetchDataURL: needAssessmentSkillBasedUrl + "spec-list",
+        // addDataURL: needAssessmentSkillBasedUrl,
+        // updateDataURL: needAssessmentSkillBasedUrl + "edit",
+        // removeDataURL: needAssessmentSkillBasedUrl,
+        // DSDataFormat: "json",
+        // operationBindings:[
+        //     {operationType:"fetch", dataProtocol:"getParams", requestProperties:{httpMethod:"GET"}},
+        //     {operationType:"add", dataProtocol:"postParams", requestProperties:{httpMethod:"POST"}},
+        //     {operationType:"remove", dataProtocol:"getParams", requestProperties:{httpMethod:"DELETE"}},
+        //     {operationType:"update", dataProtocol:"postParams", requestProperties:{httpMethod:"PUT"}}
+        // ],
     });
 
-    isc.RPCManager.sendRequest(TrDSRequest(enumUrl + "eNeedAssessmentPriority/spec-list", "GET", null,
-        "callback: All_Priority_Result_NASB_JPA(rpcResponse)"));
-
-    function All_Priority_Result_NASB_JPA(resp){
-        All_Priorities = (JSON.parse(resp.data)).response.data;
-        for (let i = 0; i < All_Priorities.length; i++) {
-            delete(All_Priorities[i].id);
-            delete(All_Priorities[i].literal);
-        }
-    }
+    restData_Need_Assessment_Priority_NASB_JPA = isc.TrDS.create({
+        fields:
+            [
+                {name: "id", primaryKey: true, hidden: true},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            ],
+        fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
+    });
 
     //////////////////////////////////////////////////////////
     ////////////////////////////UI////////////////////////////
@@ -89,12 +100,53 @@
 
     ListGrid_For_This_Object_Skills_NASB = isc.TrLG.create({
         dataSource: restData_For_This_Object_Skills_NASB_JPA,
+
         sortField: 1,
+
+        selectionAppearance:"checkbox",
+
         showRowNumbers: false,
-        canDragRecordsOut: true,
-        canAcceptDroppedRecords: true,
+
         showRecordComponents: true,
         showRecordComponentsByCell: true,
+
+        groupByField: "objectType",
+        groupStartOpen: "first",
+
+        canDragResize: true,
+        canDragRecordsOut: true,
+        canAcceptDroppedRecords: true,
+        dragTrackerMode: "title",
+
+        canRemoveRecords: true,
+        // deferRemoval: true,
+        // warnOnRemoval: true,
+        // warnOnRemovalMessage: "hamed",
+
+        editByCell: true,
+        // saveByCell: true,
+        editEvent: "click",
+        confirmDiscardEdits: false,
+        confirmCancelEditing: false,
+        modalEditing: true,
+        autoSaveEdits: false,
+        // saveEdits: function([editCompletionEvent, callback, rowNum])
+        // saveAllEdits: function([rows, saveCallback])
+        // getEditValues: function(valuesID)
+        // getEditValue: function(rowNum, colNum)
+        // getEditedCell: function(record, field)
+        // getAllEditRows: function()
+        // enterKeyEditAction: "done",
+        // escapeKeyEditAction: "cancel",
+        // discardEditsSaveButtonTitle: "اوکی",
+        // confirmDiscardEditsMessage: "تغییرات ذخیره شود؟",
+        // saveLocally: true,
+        // editComplete: function(rowNum, colNum, newValues, oldValues, editCompletionEvent, dsResponse)
+        // editFailed: function(rowNum, colNum, newValues, oldValues, editCompletionEvent, dsResponse)
+        // editorExit: function(editCompletionEvent, record, newValue, rowNum, colNum)
+        // endEditing: function()
+
+
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
@@ -105,57 +157,69 @@
                     width: "15%",
                     autoFitWidth: true
                 },
-                {name: "skill.titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
-                {name: "eneedAssessmentPriority.titleFa", title: "اولویت", type: "SelectItem", filterOperator: "iContains", canEdit: true, valueMap: ["عملکردی ضروری", "11111" , "222222"]},
                 {
-                    name: "OnDelete",
-                    title: "<spring:message code='global.form.remove'/>",
-                    align: "center",
-                    canFilter: false,
-                    autoFitWidth: true
+                    name: "skill.titleFa",
+                    title: "<spring:message code="title"/>",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "object.titleFa",
+                    hidden: true,
+                },
+                {
+                    name: "objectType",
+                    hidden: true,
+                },
+                {
+                    name: "eneedAssessmentPriority.id",
+                    type: "IntegerItem",
+                    title: "اولویت",
+                    editorType: "SelectItem",
+                    displayField: "titleFa",
+                    valueField: "id",
+                    optionDataSource: restData_Need_Assessment_Priority_NASB_JPA,
+                    addUnknownValues: false,
+                    // cachePickListResults: false,
+                    // sortField: ["id"],
+                    pickListProperties: {
+                        showFilterEditor: false
+                    },
+                    filterOperator: "iContains",
+                    // canEdit: true,
+                    pickListFields: [
+                        {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                    ],
+                    change: function(form, item, value){
+                        ListGrid_For_This_Object_Skills_Edit_NASB(this.grid.getRecord(this.rowNum), value);
+                    }
                 }
             ],
-
-        createRecordComponent: function (record, colNum) {
-            let fieldName = this.getFieldName(colNum);
-            if (fieldName === "OnDelete") {
-                let recordCanvas = isc.HLayout.create({
-                    height: 20,
-                    width: "100%",
-                    layoutMargin: 5,
-                    membersMargin: 10,
-                    align: "center"
-                });
-                let removeIcon = isc.ImgButton.create({
-                    showDown: false,
-                    showRollOver: false,
-                    layoutAlign: "center",
-                    src: "<spring:url value='remove.png'/>",
-                    height: 16,
-                    width: 16,
-                    grid: this,
-                    // click: function () {
-                    //     var activePostGradeGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-                    //     isc.RPCManager.sendRequest(TrDSRequest(postGradeGroupUrl + "removePostGrades/" + activePostGradeGroup.id + "/" + [record.id],
-                    //         "DELETE", null, "callback: postGrade_remove_result(rpcResponse)"));
-                    // }
-                });
-                recordCanvas.addMember(removeIcon);
-                return recordCanvas;
-            } else
-                return null;
+        removeRecordClick: function (rowNum) {
+            let deleting = [];
+            deleting.add(this.getRecord(rowNum));
+            ListGrid_For_This_Object_Skills_Remove_NASB(deleting);
         },
+        recordDrop: function (dropRecords) {
+            ListGrid_For_This_Object_Skills_Add_NASB(dropRecords);
+        },
+        canEditCell: function (rowNum, colNum) {
+            let record = this.getRecord(rowNum),
+                fieldName = this.getFieldName(colNum);
+            return fieldName === "eneedAssessmentPriority.id" &&
+                record.objectType === objectType_NASB;
+        }
+
     });
 
     DynamicForm_For_This_Object_NASB_Jsp = isc.DynamicForm.create({
-        numCols: 3,
+        numCols: 1,
+
         fields: [
-            {
-                type: "SpacerItem",
-            },
             {
                 name: "Left_LG_Title_NASB",
                 type: "staticText",
+                title: "نیازسنجی",
+                titleAlign: "center",
                 wrapTitle: false,
             },
         ]
@@ -165,34 +229,96 @@
         members: [DynamicForm_For_This_Object_NASB_Jsp, ListGrid_For_This_Object_Skills_NASB]
     });
 
-    ListGrid_All_Skills_NASB = isc.TrLG.create({
-        autoFetchData: true,
-        dataSource: RestDataSource_All_Skills_NASB_JSP,
-        sortField: 1,
-        showRowNumbers: false,
-    });
-
-    DynamicForm_All_Skills_NASB_Jsp = isc.DynamicForm.create({
-        numCols: 3,
+    DynamicForm_Buttons_NASB_JPA = isc.DynamicForm.create({
+        width: "90%",
+        numCols: 1,
         fields: [
             {
                 type: "SpacerItem",
             },
             {
-                // name: "Right_LG_Title_NASB",
+                name: "eneedAssessmentPriorityId",
+                type: "IntegerItem",
+                title: "اولویت پیش فرض",
+                titleOrientation: "top",
+                align: "center",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                defaultToFirstOption: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: restData_Need_Assessment_Priority_NASB_JPA,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                sortField: ["id"],
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+            },
+            {
+                type: "SpacerItem",
+            },
+            {
+                name: "removeButton",
+                type: "Button",
+                title: "<<",
+                align: "center",
+                click: function(){
+                    ListGrid_For_This_Object_Skills_Remove_NASB();
+                }
+            },
+            {
+                name: "addButton",
+                type: "Button",
+                title: ">>",
+                align: "center",
+                click: function(){
+                    if(ListGrid_All_Skills_NASB.getSelectedRecords() === null || ListGrid_All_Skills_NASB.getSelectedRecords().length ===0)
+                        return;
+                    ListGrid_For_This_Object_Skills_Add_NASB(ListGrid_All_Skills_NASB.getSelectedRecords());
+                }
+            }
+        ]
+    });
+
+    VLayout_Buttons_NASB_JPA = isc.TrVLayout.create({
+        width: "150px",
+        members: [DynamicForm_Buttons_NASB_JPA]
+    });
+
+    ListGrid_All_Skills_NASB = isc.TrLG.create({
+        canDragResize: true,
+        canDragRecordsOut: true,
+        canAcceptDroppedRecords: true,
+        dragTrackerMode: "title",
+        autoFetchData: true,
+        dataSource: RestDataSource_All_Skills_NASB_JSP,
+        sortField: 1,
+        showRowNumbers: false,
+        selectionAppearance: "checkbox",
+    });
+
+    DynamicForm_All_Skills_NASB_Jsp = isc.DynamicForm.create({
+        numCols: 1,
+        fields: [
+            {
                 type: "staticText",
+                name: "Right_LG_Title_NASB",
                 title: "<spring:message code='skill'/>",
+                titleAlign: "center",
                 wrapTitle: false,
             },
         ]
     });
 
     VLayout_All_Skills_NASB_JPA = isc.TrVLayout.create({
+        width: "50%",
         members: [DynamicForm_All_Skills_NASB_Jsp, ListGrid_All_Skills_NASB]
     });
 
     HLayout_Grids_NASB_JPA = isc.TrHLayout.create({
-        members: [VLayout_All_Skills_NASB_JPA, VLayout_For_This_Object_NASB_JPA]
+        members: [VLayout_All_Skills_NASB_JPA, VLayout_Buttons_NASB_JPA, VLayout_For_This_Object_NASB_JPA]
     });
 
     ListGrid_All_Jobs_NASB = isc.TrLG.create({
@@ -299,157 +425,176 @@
         Set_Left_LG_Title();
     }
 
+    function ListGrid_For_This_Object_Skills_Edit_NASB(record, newValue) {
+        Wait_NASB = createDialog('wait');
+        let Editing_NASB = {
+            "skillId": record.skill.id,
+            "objectId": objectId_NASB,
+            "objectType": objectType_NASB,
+            "eneedAssessmentPriorityId": newValue
+        };
+        isc.RPCManager.sendRequest(TrDSRequest(needAssessmentSkillBasedUrl + record.id,
+            "PUT", JSON.stringify(Editing_NASB), "callback: Edit_Result_NASB(rpcResponse)"));
+    }
+
+    function Edit_Result_NASB(resp) {
+        Wait_NASB.close();
+        if(resp.httpResponseCode !== 200 && resp.httpResponseCode !== 201){
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                    "<spring:message code="message"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
+        }
+    }
+
+    function ListGrid_For_This_Object_Skills_Remove_NASB(records) {
+        if (records == null)
+            records = ListGrid_For_This_Object_Skills_NASB.getSelectedRecords();
+        if (records == null || records.length === 0) {
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        } else {
+            var Dialog_remove_NASB = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='global.warning'/>");
+            Dialog_remove_NASB.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        Wait_NASB = createDialog("wait");
+                        let Deleting_NASB = [];
+                        for (let i = 0; i < records.length; i++) {
+                            Deleting_NASB.add(records[i].id);
+                        }
+                        isc.RPCManager.sendRequest(TrDSRequest(needAssessmentSkillBasedUrl + "list",
+                            "DELETE", JSON.stringify(Deleting_NASB), "callback: Remove_Result_NASB(rpcResponse)"));
+                    }
+                }
+            });
+        }
+    }
+
+    function Remove_Result_NASB(resp) {
+        Wait_NASB.close();
+        <%--if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {--%>
+        <%--    ListGrid_For_This_Object_Skills_NASB.invalidateCache();--%>
+        <%--    ListGrid_For_This_Object_Skills_NASB.filterByEditor();--%>
+        <%--    var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",--%>
+        <%--        "<spring:message code="msg.command.done"/>");--%>
+        <%--    setTimeout(function () {--%>
+        <%--        OK.close();--%>
+        <%--    }, 2000);--%>
+        <%--} else {--%>
+        <%--    let respText = resp.httpResponseText;--%>
+        <%--    if (resp.httpResponseCode === 406 && respText === "NotDeletable") {--%>
+        <%--        createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");--%>
+        <%--    } else {--%>
+        <%--        createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
+        <%--    }--%>
+        <%--}--%>
+    }
+
+    function ListGrid_For_This_Object_Skills_Add_NASB(Records) {
+        if (objectType_NASB === null || objectId_NASB === null) {
+            createDialog("info", "رکوردی از جدول بالا انتخاب نشده است.");
+            return;
+        }
+        let Adding_NASB = [];
+        Wait_NASB = createDialog("wait");
+        for (let i = 0; i < Records.getLength(); i++) {
+            Adding_NASB.add({
+                "skillId": Records[i].id,
+                "objectId": objectId_NASB,
+                "objectType": objectType_NASB,
+                "eneedAssessmentPriorityId": DynamicForm_Buttons_NASB_JPA.getItem("eneedAssessmentPriorityId").getSelectedRecord().id
+            });
+        }
+        isc.RPCManager.sendRequest(TrDSRequest(needAssessmentSkillBasedUrl + "add-all",
+            "POST", JSON.stringify(Adding_NASB), "callback: Add_Result_NASB(rpcResponse)"));
+    }
+
+    function Add_Result_NASB(resp) {
+        Wait_NASB.close();
+        test = resp;
+        // console.log(resp.httpResponseText);
+        ListGrid_For_This_Object_Skills_NASB.invalidateCache();
+        ListGrid_For_This_Object_Skills_NASB.filterByEditor();
+        // if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+        //     ListGrid_For_This_Object_Skills_NASB.invalidateCache();
+        <%--    let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",--%>
+        <%--        "<spring:message code="msg.command.done"/>");--%>
+        <%--    ListGrid_For_This_Object_Skills_NASB.setData([]);--%>
+        <%--    setTimeout(function () {--%>
+        <%--        OK.close();--%>
+        <%--    }, 2000);--%>
+        <%--} else {--%>
+        <%--    let respText = resp.httpResponseText;--%>
+        <%--    if (resp.httpResponseCode === 406 && respText === "NotDeletable") {--%>
+        <%--        createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");--%>
+        <%--    } else {--%>
+        <%--        createDialog("info", "<spring:message code="msg.operation.error"/>");--%>
+        <%--    }--%>
+        <%--}--%>
+    }
+
     function Set_Left_LG_Title() {
         switch (Tabset_Object_NASB_JPA.getSelectedTabNumber()) {
             case 0:
-                ListGrid_For_This_Object_Skills_NASB.setImplicitCriteria({
-                    "objectType": "Job"
-                });
+                objectType_NASB = "Job";
                 if (ListGrid_All_Jobs_NASB.getSelectedRecord() === null) {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "";
-                    ListGrid_For_This_Object_Skills_NASB.setData([]);
+                    objectId_NASB = null;
                 } else {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی شغل " + getFormulaMessage(ListGrid_All_Jobs_NASB.getSelectedRecord().titleFa, 2, "red", "b");
-                    ListGrid_For_This_Object_Skills_NASB.fetchData({
-                        "objectId": ListGrid_All_Jobs_NASB.getSelectedRecord().id,
-                        "objectType": "Job"
-                    });
+                    objectId_NASB = ListGrid_All_Jobs_NASB.getSelectedRecord().id;
+                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی شغل " +
+                        getFormulaMessage(ListGrid_All_Jobs_NASB.getSelectedRecord().titleFa, 2, "red", "b");
                 }
                 break;
             case 1:
-                ListGrid_For_This_Object_Skills_NASB.setImplicitCriteria({
-                    "objectType": "Post"
-                });
+                objectType_NASB = "Post";
                 if (ListGrid_All_Posts_NASB.getSelectedRecord() === null) {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "";
-                    ListGrid_For_This_Object_Skills_NASB.setData([]);
+                    objectId_NASB = null;
                 } else {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی پست " + getFormulaMessage(ListGrid_All_Posts_NASB.getSelectedRecord().titleFa, 2, "red", "b");
-                    ListGrid_For_This_Object_Skills_NASB.fetchData({
-                        "objectId": ListGrid_All_Posts_NASB.getSelectedRecord().id,
-                        "objectType": "Post"
-                    });
+                    objectId_NASB = ListGrid_All_Posts_NASB.getSelectedRecord().id;
+                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی پست " +
+                        getFormulaMessage(ListGrid_All_Posts_NASB.getSelectedRecord().titleFa, 2, "red", "b");
                 }
                 break;
             case 2:
-                ListGrid_For_This_Object_Skills_NASB.setImplicitCriteria({
-                    "objectType": "JobGroup"
-                });
+                objectType_NASB = "JobGroup";
                 if (ListGrid_All_JobGroups_NASB.getSelectedRecord() === null) {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "";
-                    ListGrid_For_This_Object_Skills_NASB.setData([]);
+                    objectId_NASB = null;
                 } else {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی گروه شغلی " + getFormulaMessage(ListGrid_All_JobGroups_NASB.getSelectedRecord().titleFa, 2, "red", "b");
-                    ListGrid_For_This_Object_Skills_NASB.fetchData({
-                        "objectId": ListGrid_All_JobGroups_NASB.getSelectedRecord().id,
-                        "objectType": "JobGroup"
-                    });
+                    objectId_NASB = ListGrid_All_JobGroups_NASB.getSelectedRecord().id;
+                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی گروه شغلی " +
+                        getFormulaMessage(ListGrid_All_JobGroups_NASB.getSelectedRecord().titleFa, 2, "red", "b");
                 }
                 break;
             case 3:
-                ListGrid_For_This_Object_Skills_NASB.setImplicitCriteria({
-                    "objectType": "PostGroup"
-                });
+                objectType_NASB = "PostGroup";
                 if (ListGrid_All_PostGroups_NASB.getSelectedRecord() === null) {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "";
-                    ListGrid_For_This_Object_Skills_NASB.setData([]);
+                    objectId_NASB = null;
                 } else {
-                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی گروه پستی " + getFormulaMessage(ListGrid_All_PostGroups_NASB.getSelectedRecord().titleFa, 2, "red", "b");
-                    ListGrid_For_This_Object_Skills_NASB.fetchData({
-                        "objectId": ListGrid_All_PostGroups_NASB.getSelectedRecord().id,
-                        "objectType": "PostGroup"
-                    });
+                    objectId_NASB = ListGrid_All_PostGroups_NASB.getSelectedRecord().id;
+                    DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی گروه پستی " +
+                        getFormulaMessage(ListGrid_All_PostGroups_NASB.getSelectedRecord().titleFa, 2, "red", "b");
                 }
                 break;
+        }
+        ListGrid_For_This_Object_Skills_NASB.setImplicitCriteria({
+            "objectType": objectType_NASB
+        });
+        if (objectId_NASB === null) {
+            DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").title = "نیازسنجی";
+            ListGrid_For_This_Object_Skills_NASB.setData([]);
+        } else {
+            ListGrid_For_This_Object_Skills_NASB.fetchData({
+                "objectId": objectId_NASB,
+                "objectType": objectType_NASB
+            });
         }
         DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").redraw();
     }
 
     // </script>
-
-
-<%--NeedAssessmentDF_First = isc.DynamicForm.create({--%>
-<%--    numCols: 8,--%>
-<%--    margin: 20,--%>
-<%--    border: "2px solid blue",--%>
-<%--    fields: [--%>
-<%--        {--%>
-<%--            type: "SpacerItem",--%>
-<%--            colSpan: 2--%>
-<%--        },--%>
-<%--        {--%>
-<%--            name: "objectType",--%>
-<%--            type: "radioGroup",--%>
-<%--            showTitle: false,--%>
-<%--            valueMap: ["شغل", "گروه شغلی", "پست", "گروه پستی"],--%>
-<%--            defaultValue: "شغل",--%>
-<%--            change: function (form, item, value) {--%>
-<%--                if (value === "شغل") {--%>
-<%--                    // form.getField("GroupObjectCombo").setValue("");--%>
-<%--                    form.getField("GroupObjectCombo").clearValue();--%>
-<%--                    form.getField("GroupObjectCombo").hide();--%>
-<%--                    form.getField("objectCombo").show();--%>
-<%--                    restData_Object_NASB_JPA.fetchDataURL = jobUrl + "iscList";--%>
-<%--                    form.getField("objectCombo").fetchData();--%>
-<%--                } else if (value === "پست") {--%>
-<%--                    // form.getField("GroupObjectCombo").setValue("");--%>
-<%--                    form.getField("GroupObjectCombo").clearValue();--%>
-<%--                    form.getField("GroupObjectCombo").hide();--%>
-<%--                    form.getField("objectCombo").show();--%>
-<%--                    restData_Object_NASB_JPA.fetchDataURL = postUrl + "iscList";--%>
-<%--                    form.getField("objectCombo").fetchData();--%>
-<%--                } else if (value === "گروه شغلی") {--%>
-<%--                    // form.getField("objectCombo").setValue("");--%>
-<%--                    form.getField("objectCombo").clearValue();--%>
-<%--                    form.getField("objectCombo").hide();--%>
-<%--                    form.getField("GroupObjectCombo").show();--%>
-<%--                    restData_ObjectGroup_NASB_JPA.fetchDataURL = jobGroupUrl + "spec-list";--%>
-<%--                    form.getField("GroupObjectCombo").fetchData();--%>
-<%--                } else if (value === "گروه پستی") {--%>
-<%--                    // form.getField("objectCombo").setValue("");--%>
-<%--                    form.getField("objectCombo").clearValue();--%>
-<%--                    form.getField("objectCombo").hide();--%>
-<%--                    form.getField("GroupObjectCombo").show();--%>
-<%--                    restData_ObjectGroup_NASB_JPA.fetchDataURL = postGroupUrl + "spec-list";--%>
-<%--                    form.getField("GroupObjectCombo").fetchData();--%>
-<%--                }--%>
-<%--            },--%>
-<%--            align: "center",--%>
-<%--        },--%>
-<%--        {--%>
-<%--            name: "GroupObjectCombo",--%>
-<%--            type: "TrComboAutoRefresh",--%>
-<%--            hidden: true,--%>
-<%--            showTitle: false,--%>
-<%--            align: "center",--%>
-<%--            optionDataSource: restData_ObjectGroup_NASB_JPA,--%>
-<%--            autoFetchData: false,--%>
-<%--            addUnknownValues: false,--%>
-<%--            displayField: "titleFa",--%>
-<%--            valueField: "id",--%>
-<%--            // filterFields: ["titleFa", "id"],--%>
-<%--            colSpan: 3,--%>
-<%--            &lt;%&ndash;pickListFields: [&ndash;%&gt;--%>
-<%--            &lt;%&ndash;    {name: "titleFa", title: "<spring:message code="title"/>"}&ndash;%&gt;--%>
-<%--            &lt;%&ndash;]&ndash;%&gt;--%>
-<%--        },--%>
-<%--        {--%>
-<%--            name: "objectCombo",--%>
-<%--            type: "TrComboAutoRefresh",--%>
-<%--            showTitle: false,--%>
-<%--            align: "center",--%>
-<%--            optionDataSource: restData_Object_NASB_JPA,--%>
-<%--            autoFetchData: false,--%>
-<%--            addUnknownValues: false,--%>
-<%--            displayField: "titleFa",--%>
-<%--            valueField: "id",--%>
-<%--            filterFields: ["titleFa", "code"],--%>
-<%--            colSpan: 3,--%>
-<%--            pickListFields: [--%>
-<%--                {name: "titleFa"},--%>
-<%--                {name: "code"}--%>
-<%--            ]--%>
-
-<%--        },--%>
-<%--    ]--%>
-<%--});--%>
