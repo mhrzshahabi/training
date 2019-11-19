@@ -270,7 +270,6 @@ public class ClassSessionService implements IClassSession {
         if (sessions.size() > 0) {
             classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
             }.getType()));
-
         }
 
         return sessions;
