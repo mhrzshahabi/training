@@ -18,6 +18,7 @@
     var endDateCheck = true;
     var selectedClass = null;
     var ckeckList;
+    var selectedTabCheckList=null;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -190,15 +191,13 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
-
-        selectionChanged: function (record, state)
-         {
-
-
-         },
          selectionUpdated:function(record)
          {
-         selectedClass=record;
+            selectedClass=record;
+            if(selectedTabCheckList == 7)
+            {
+            selectedRecordClassJsp(selectedClass)
+            }
          },
 
         doubleClick: function () {
@@ -861,7 +860,7 @@
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
         width: "90%",
-        minWidth: 1280,
+        minWidth: 1024,
         autoSize:false,
         height: "80%",
         keepInParentRect:true,
@@ -1211,6 +1210,7 @@
     });
 
     var TabSet_Class = isc.TabSet.create({
+        ID:"tabSetClass",
         tabBarPosition: "top",
         tabs: [
             {
@@ -1258,17 +1258,16 @@
                 )
             },
             {
+                name:"checkList",
                 title: "<spring:message code="checkList"/>",//چک لیست
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/checkList-tab"}
                 ),
                 tabSelected:function(tabSet, tabNum, tabPane, ID, tab, name) {
-                    setTimeout(function () {
-                        selectedRecordClassJsp(ListGrid_Class_JspClass.getSelectedRecord());
-                    },1000)
+                       selectedTabCheckList=tabNum;
                 },
                 tabDeselected:function(tabSet, tabNum, tabPane, ID, tab, newTab, name) {
-
+                   selectedTabCheckList=null;
                 }
             },
             {
