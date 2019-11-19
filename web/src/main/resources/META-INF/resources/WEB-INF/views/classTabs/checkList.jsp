@@ -21,9 +21,15 @@
             {name: "titleFa"},
 
         ],
-
-        //  autoFetchData: true,
         fetchDataURL: checklistUrl + "spec-list",
+
+    });
+
+      var RestDataSource_ClassCheckList =isc.TrDS.create({
+        fields: [
+               {name: "id", primaryKey: true},
+               {name: "titleFa"},
+        ],
 
     });
 
@@ -62,6 +68,8 @@
         ],
 
     });
+
+
 
 
     var ToolStripButton_CheckList_Refresh = isc.ToolStripButton.create({
@@ -185,9 +193,11 @@
         },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
-            let totalRows = this.data.getLength();
+            var totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalRecords_Item.setContents("تعداد آیتم ها" + ":&nbsp;<b>" + totalRows + "</b>");
+
+              totalRecords_Item.setContents("تعداد آیتم ها" + ":&nbsp;<b>" + totalRows + "</b>");
+
             } else {
                 totalRecords_Item.setContents("&nbsp;");
             }
@@ -343,6 +353,7 @@
         members: [VLayout_Body_CheckList, VLayout_Body_CheckListItem]
     });
 
+
     //==========================================Window========================
     var Window_CheckList_Design = isc.Window.create({
         title: "طراحی چک لیست",
@@ -493,19 +504,34 @@
     });
 
     //==================================   تب چک لیست  =====================================
-    isc.DynamicForm.create({
+
+
+    var ListGrid_ClassCheckList = isc.TrLG.create({
+        showFilterEditor: false,
+        dataSource: RestDataSource_ClassCheckList,
+        styleName:"myparent",
+        // showRowNumbers:false,
+            fields: [
+            {name: "id", hidden: true},
+            {name: "titleFa", title: "فرم", align: "center"},
+        ],
+
+
+    })
+
+   var DynamicForm_ClassCheckList= isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
         canSubmit: true,
-        isGroup: true,
+
         // titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
         numCols: 6,
-        padding: 25,
+        padding: 20,
         colWidths: ["1%", "30%", "49%", "20%", "30"],
         items: [
 
@@ -565,11 +591,46 @@
 
                 }
             },
-
+            // {
+            // type:"button",
+            // title:"نمایش فرم های کلاس",
+            // width:130,
+            // startRow:true,
+            // endRow:false,
+            // click:function () {
+            // var a2 = ListGrid_Class_JspClass.getSelectedRecord().id;
+            // RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + a2.toString();
+            // ListGrid_ClassCheckList.fetchData();
+            // ListGrid_ClassCheckList.invalidateCache();
+            // }
+            // },
 
         ]
     })
 
+
+
+
+    var HLayout_Body_Top = isc.HLayout.create({
+        width: "100%",
+        height: "50%",
+
+        members: [DynamicForm_ClassCheckList],
+    });
+
+
+    var HLayout_Body_Down = isc.HLayout.create({
+        width: "100%",
+        height: "100%",
+        members: [ListGrid_ClassCheckList],
+    });
+
+
+     var All_Body = isc.VLayout.create({
+        width: "100%",
+        showEdges: true,
+        members: [HLayout_Body_Top, HLayout_Body_Down]
+    });
     //========================================FUNCTION=======================================
 
 

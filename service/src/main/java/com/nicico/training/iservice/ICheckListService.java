@@ -3,6 +3,7 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CheckListDTO;
 import com.nicico.training.dto.CheckListItemDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -30,4 +31,7 @@ public interface ICheckListService {
     List<CheckListItemDTO.Info> getCheckListItem(Long CheckListId);
 
     boolean checkForDelete(Long checkListId);
+
+    @Transactional
+    List<CheckListDTO.Info> getCheckList(Long id);
 }

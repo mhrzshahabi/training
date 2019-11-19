@@ -61,16 +61,19 @@ public class TclassDTO {
     private List<Long> trainingPlaceIds;
 
 
-    @Getter
+//    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
+        @Getter
         private Long id;
+        @Getter
         private CourseDTO.CourseInfoTuple course;
+        @Getter
         private TermDTO term;
-        private List<Student> studentSet;
-        private TeacherDTO.TeacherInfoTuple teacher;
+//        private List<Student> studentSet;
+        private TeacherDTO.TeacherFullNameTuple teacher;
         public String getTeacher(){
             if (teacher!=null)
                return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
