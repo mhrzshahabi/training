@@ -16,7 +16,7 @@
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
-    var selectedClassId = null;
+    var selectedClass = null;
     var ckeckList;
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -191,7 +191,14 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
 
-        selectionChanged: function (record, state) {
+        selectionChanged: function (record, state)
+         {
+
+
+         },
+         selectionUpdated:function(record)
+         {
+         selectedClass=record;
          },
 
         doubleClick: function () {
@@ -1261,7 +1268,6 @@
                     },1000)
                 },
                 tabDeselected:function(tabSet, tabNum, tabPane, ID, tab, newTab, name) {
-                    alert("godby")
 
                 }
             },
