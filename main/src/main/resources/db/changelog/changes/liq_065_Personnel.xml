@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1574074293227-160">
+    <changeSet author="ghazanfari_f (generated)" id="1574147357699-160">
         <createTable tableName="tbl_personnel">
             <column name="auto_id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
@@ -26,10 +26,9 @@
             <column name="deleted" type="NUMBER(10, 0)"/>
             <column name="department_code" type="VARCHAR2(255 CHAR)"/>
             <column name="department_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
             <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
             <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
             <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
             <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
             <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
@@ -38,7 +37,6 @@
             <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
             <column name="id" type="NUMBER(19, 0)"/>
             <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
-            <column name="job_education_level_title" type="VARCHAR2(255 CHAR)"/>
             <column name="job_no" type="VARCHAR2(255 CHAR)"/>
             <column name="job_title" type="VARCHAR2(255 CHAR)"/>
             <column name="last_name" type="VARCHAR2(255 CHAR)"/>
@@ -47,6 +45,7 @@
             <column name="national_code" type="VARCHAR2(255 CHAR)"/>
             <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
             <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="personnel_no_2" type="VARCHAR2(255 CHAR)"/>
             <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
             <column name="post_code" type="VARCHAR2(255 CHAR)"/>
             <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>

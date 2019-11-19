@@ -18,6 +18,7 @@ public class PersonnelDTO implements Serializable {
     @Accessors
     @ApiModel("Personnel - Info")
     public static class Info {
+
         private Long autoId;
         private Long id;
         private String personnelNo;
@@ -44,21 +45,20 @@ public class PersonnelDTO implements Serializable {
         private String educationLevelTitle;
         private String jobNo;
         private String jobTitle;
-        private String employmentStatusTitle;
+        private String employmentStatus;
         private String companyName;
         private String contractNo;
-        private String educationFieldTitle;
-        private String genderTitle;
-        private String militaryStatusTitle;
-        private String educationLicenseTypeTitle;
-        private String jobEducationLevelTitle;
+        private String educationMajorTitle;
+        private String gender;
+        private String militaryStatus;
+        private String educationLicenseType;
         private String departmentTitle;
         private String departmentCode;
         private String contractDescription;
         private String workYears;
         private String workMonths;
         private String workDays;
-        private String empNo;
+        private String personnelNo2;
         private String insuranceCode;
         private String postGradeTitle;
         private String postGradeCode;

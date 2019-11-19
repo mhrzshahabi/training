@@ -141,7 +141,39 @@
     }
 
     function printJobLG_job(type) {
-        trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
-            JobLG_job.getCriteria());
-        <%--isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));--%>
+        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
+
+        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
+
+
+        // isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
+
+        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
+
+        // trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
+        // trPrintWithCriteria(,
+        //     JobLG_job.getCriteria());
+        // isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));
     }
+
+    function test(resp) {
+        alert('hi');
+    }
+
+    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
+    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
+    <%--        method: "POST",--%>
+    <%--        action: url,--%>
+    <%--        target: "_Blank",--%>
+    <%--        canSubmit: true,--%>
+    <%--        fields:--%>
+    <%--            [--%>
+    <%--                {name: "CriteriaStr", type: "hidden"},--%>
+    <%--                {name: "token", type: "hidden"}--%>
+    <%--            ]--%>
+    <%--    });--%>
+    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
+    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
+    <%--    trCriteriaForm.show();--%>
+    <%--    trCriteriaForm.submitForm();--%>
+    <%--}--%>

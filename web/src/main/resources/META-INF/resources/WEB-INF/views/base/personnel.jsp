@@ -68,12 +68,12 @@
             {name: "age", title: "<spring:message code="age"/>", filterOperator: "iContains"},
             {name: "birthPlace", title: "<spring:message code="birth.place"/>", filterOperator: "iContains"},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains"},
+            {name: "active", title: "<spring:message code="active.status"/>"},
+            {name: "deleted", title: "<spring:message code="deleted.status"/>"},
             {name: "employmentDate", title: "<spring:message code="employment.date"/>", filterOperator: "iContains"},
             {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains"},
             {name: "postCode", title: "<spring:message code="post.code"/>", filterOperator: "iContains"},
             {name: "postAssignmentDate", title: "<spring:message code="post.assignment.date"/>", filterOperator: "iContains"},
-            {name: "active", title: "<spring:message code="active.status"/>"},
-            {name: "deleted", title: "<spring:message code="deleted.status"/>"},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains"},
             {name: "operationalUnitTitle", title: "<spring:message code="operational.unit"/>", filterOperator: "iContains"},
             {name: "employmentTypeTitle", title: "<spring:message code="employment.type"/>", filterOperator: "iContains"},
@@ -90,25 +90,23 @@
             {name: "genderTitle", title: "<spring:message code="gender"/>", filterOperator: "iContains"},
             {name: "militaryStatusTitle", title: "<spring:message code="military"/>", filterOperator: "iContains"},
             {name: "educationLicenseTypeTitle", title: "<spring:message code="education.license.type"/>", filterOperator: "iContains"},
-            {name: "jobEducationLevelTitle", title: "<spring:message code="jobEducationLevelTitle"/>", filterOperator: "iContains"},
-            {name: "departmentTitle", title: "<spring:message code="departmentTitle"/>", filterOperator: "iContains"},
-            {name: "departmentCode", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "contractDescription", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "departmentCode", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "workYears", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "workMonths", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "workDays", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "empNo", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "insuranceCode", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "postGradeTitle", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "postGradeCode", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpCode", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpArea", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpAssistant", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpAffairs", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpSection", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpUnit", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
-            {name: "ccpTitle", title: "<spring:message code="departmentCode"/>", filterOperator: "iContains"},
+            {name: "departmentTitle", title: "<spring:message code="department"/>", filterOperator: "iContains"},
+            {name: "departmentCode", title: "<spring:message code="department.code"/>", filterOperator: "iContains"},
+            {name: "contractDescription", title: "<spring:message code="contract.description"/>", filterOperator: "iContains"},
+            {name: "workYears", title: "<spring:message code="work.years"/>", filterOperator: "iContains"},
+            {name: "workMonths", title: "<spring:message code="work.months"/>", filterOperator: "iContains"},
+            {name: "workDays", title: "<spring:message code="work.days"/>", filterOperator: "iContains"},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "insuranceCode", title: "<spring:message code="insurance.code"/>", filterOperator: "iContains"},
+            {name: "postGradeTitle", title: "<spring:message code="post.grade"/>", filterOperator: "iContains"},
+            {name: "postGradeCode", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
+            {name: "ccpCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains"},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {name: "ccpTitle", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: personnelUrl + "iscList"
     });
@@ -142,41 +140,3 @@
     function refreshPersonnelLG_personnel() {
         PersonnelLG_personnel.filterByEditor();
     }
-
-    function printPersonnelLG_personnel(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
-
-        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
-
-
-        // isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
-
-        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
-
-        // trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", PersonnelLG_personnel.getCriteria());
-        // trPrintWithCriteria(,
-        //     PersonnelLG_personnel.getCriteria());
-        // isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": PersonnelLG_personnel.getCriteria()}), "test"));
-    }
-
-    function test(resp) {
-        alert('hi');
-    }
-
-    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
-    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
-    <%--        method: "POST",--%>
-    <%--        action: url,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields:--%>
-    <%--            [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"},--%>
-    <%--                {name: "token", type: "hidden"}--%>
-    <%--            ]--%>
-    <%--    });--%>
-    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
-    <%--    trCriteriaForm.show();--%>
-    <%--    trCriteriaForm.submitForm();--%>
-    <%--}--%>
