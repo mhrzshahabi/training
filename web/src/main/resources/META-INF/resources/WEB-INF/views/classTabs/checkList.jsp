@@ -982,5 +982,16 @@
     //
     //         }
     // };
+       function selectedRecordClassJsp(record)
+       {
 
+       if(record !== null || record !==undefined)
+       {
+         RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + record.id;
+         ListGrid_ClassCheckList.setFieldProperties(1,{title:'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
+         ListGrid_ClassCheckList.fetchData();
+         ListGrid_ClassCheckList.invalidateCache();
+
+       }
+       }
 
