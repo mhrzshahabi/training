@@ -414,7 +414,7 @@
             {
                 name: "personality.marriedId",
                 type: "IntegerItem",
-                title: "<spring:message code='married.status'/>",
+                title: "<spring:message code='marital.status'/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
