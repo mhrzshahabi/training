@@ -510,7 +510,7 @@
         showFilterEditor: false,
         dataSource: RestDataSource_ClassCheckList,
         styleName:"myparent",
-        // showRowNumbers:false,
+       // showRowNumbers:false,
             fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "فرم", align: "center"},
@@ -982,14 +982,18 @@
     //
     //         }
     // };
-       function selectedRecordClassJsp(record)
+       function fireCheckList(record)
        {
-       if(record !== null || record !==undefined)
+       if(record != -1)
        {
          RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + record.id;
          ListGrid_ClassCheckList.setFieldProperties(1,{title:'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
          ListGrid_ClassCheckList.fetchData();
          ListGrid_ClassCheckList.invalidateCache();
        }
+       else{
+            ListGrid_ClassCheckList.setFieldProperties(1,{title:" "});
+            ListGrid_ClassCheckList.setData([]);
+        }
        }
 

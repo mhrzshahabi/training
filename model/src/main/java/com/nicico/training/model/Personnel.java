@@ -93,7 +93,7 @@ public class Personnel {
     private String jobTitle;
 
     @Column(name = "employment_status_title")
-    private String employmentStatusTitle;
+    private String employmentStatus;
 
     @Column(name = "company_name")
     private String companyName;
@@ -102,19 +102,16 @@ public class Personnel {
     private String contractNo;
 
     @Column(name = "education_field_title")
-    private String educationFieldTitle;
+    private String educationMajorTitle;
 
     @Column(name = "gender_title")
-    private String genderTitle;
+    private String gender;
 
     @Column(name = "military_status_title")
-    private String militaryStatusTitle;
+    private String militaryStatus;
 
     @Column(name = "education_license_type_title")
-    private String educationLicenseTypeTitle;
-
-    @Column(name = "job_education_level_title")
-    private String jobEducationLevelTitle;
+    private String educationLicenseType;
 
     @Column(name = "department_title")
     private String departmentTitle;
@@ -134,8 +131,8 @@ public class Personnel {
     @Column(name = "work_days")
     private String workDays;
 
-    @Column(name = "emp_no")
-    private String empNo;
+    @Column(name = "personnel_no_2")
+    private String personnelNo2;
 
     @Column(name = "insurance_code")
     private String insuranceCode;

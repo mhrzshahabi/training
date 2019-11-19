@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//  <script>
 
     var classMethod = "POST";
     var autoValid = false;
@@ -16,8 +16,10 @@
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
-    var selectedClass = null;
-    var ckeckList;
+
+
+
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -191,15 +193,9 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
 
-        selectionChanged: function (record, state)
-         {
-
-
-         },
-        selectionUpdated:function(record)
-         {
-         selectedClass=record;
-         },
+        selectionUpdated: function (record) {
+            refreshClassTabs(tabSetClass.getSelectedTab());
+        },
 
         doubleClick: function () {
             ListGrid_class_edit();
@@ -410,7 +406,6 @@
                         dialogTeacher.addProperties({
                             buttonClick: function () {
                                 this.close();
-                                // alert("")
                                 form.getItem("course.id").selectValue();
                                 // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
                             }
@@ -631,7 +626,6 @@
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
                                     this.close();
-                                    // alert("")
                                     form.getItem("termId").selectValue();
                                     // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
                                 }
@@ -653,7 +647,6 @@
                         dialogTeacher.addProperties({
                             buttonClick: function () {
                                 this.close();
-                                // alert("")
                                 form.getItem("termId").selectValue();
                                 // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
                             }
@@ -664,11 +657,7 @@
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
                     var dateCheck;
                     var endDate = form.getValue("endDate");
-                    // alert(termStart)
                     dateCheck = checkDate(value);
-                    // alert(value)
-                    // alert(termStart)
-                    // alert(value>=termStart)
                     startDateCheck = dateCheck;
                     if (dateCheck === false) {
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
@@ -852,7 +841,7 @@
                 }
             });
 
-            // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+           // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -868,7 +857,7 @@
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
         width: "90%",
-        minWidth: 1280,
+        minWidth: 1024,
         autoSize:false,
         height: "80%",
         keepInParentRect:true,
@@ -1218,6 +1207,7 @@
     });
 
     var TabSet_Class = isc.TabSet.create({
+        ID:"tabSetClass",
         tabBarPosition: "top",
         tabs: [
             {
@@ -1265,18 +1255,11 @@
                 )
             },
             {
+                name:"checkList",
                 title: "<spring:message code="checkList"/>",//چک لیست
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/checkList-tab"}
-                ),
-                tabSelected:function(tabSet, tabNum, tabPane, ID, tab, name) {
-                    setTimeout(function () {
-                        selectedRecordClassJsp(ListGrid_Class_JspClass.getSelectedRecord());
-                    },1000)
-                },
-                tabDeselected:function(tabSet, tabNum, tabPane, ID, tab, newTab, name) {
-
-                }
+                )
             },
             {
                 title: "<spring:message code="attachments"/>",//ضمائم
@@ -1284,7 +1267,10 @@
                     {viewURL: "tclass/attachments-tab"}
                 )
             }
-        ]
+        ],
+        tabSelected: function (tabNum, tabPane, ID, tab, name){
+            refreshClassTabs(tab);
+        }
     });
 
     var HLayout_Tab_Class = isc.HLayout.create({
@@ -1321,6 +1307,7 @@
                     }
                 }
             });
+
         }
     }
 
@@ -1346,8 +1333,14 @@
     }
 
     function ListGrid_Class_refresh() {
+        var gridState = "[{id:"+ListGrid_Class_JspClass.getSelectedRecord().id+"}]";
+
         ListGrid_Class_JspClass.invalidateCache();
         ListGrid_Class_JspClass.filterByEditor();
+        setTimeout(function () {
+            ListGrid_Class_JspClass.setSelectedState(gridState);
+        },3000);
+        refreshClassTabs(tabSetClass.getSelectedTab());
     }
 
     function ListGrid_Class_add() {
@@ -1463,6 +1456,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
+            refreshClassTabs(tabSetClass.getSelectedTab());
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
@@ -1511,5 +1505,54 @@
             Window_AddStudents_JspClass.show();
         }
     }
-    // </script>
+
+    function refreshClassTabs(tab){
+        switch (tab.title) {
+                case "جلسات": {
+                    // fireCheckList();
+                    break;
+                }
+                case "هشدارها": {
+                    // fireCheckList();
+                    break;
+                }
+                case "مجوزها": {
+                    // fireCheckList();
+                    break;
+                }
+                case "حضور و غیاب": {
+                    // fireCheckList();
+                    break;
+                }
+                case "مدرسان": {
+                    // fireCheckList();
+                    break;
+                }
+                case "آزمون": {
+                    // fireCheckList();
+                    break;
+                }
+                case "ارزیابی": {
+                    // fireCheckList();
+                    break;
+                }
+                case "چک لیست": {
+                    if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
+                       setTimeout(function () {
+                           fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
+                       },1000)
+                    }
+                    else{
+                        setTimeout(function () {
+                           fireCheckList(-1);
+                       },100)
+                    }
+                    break;
+                }
+                case "ضمائم": {
+                    // fireCheckList();
+                    break;
+                }
+            }
+    }
 
