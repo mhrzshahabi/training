@@ -1,7 +1,6 @@
 
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ENeedAssessmentPriority;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -33,8 +32,6 @@ public class NeedAssessmentSkillBasedDTO implements Serializable {
     @NotNull
     @ApiModelProperty(required = true)
     private Long objectId;
-
-
 
 
     @Getter
@@ -74,26 +71,4 @@ public class NeedAssessmentSkillBasedDTO implements Serializable {
         private Long objectId;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("NeedAssessmentSkillBased - SpecRs")
-    public static class NeedAssessmentSkillBasedSpecRs {
-        private NeedAssessmentSkillBasedDTO.SpecRs response;
-    }
-
-    // ---------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<NeedAssessmentSkillBasedDTO.Info> data;
-        private Integer status;
-        private Integer startRow;
-        private Integer endRow;
-        private Integer totalRows;
-    }
 }

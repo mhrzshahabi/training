@@ -2,6 +2,7 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -10,11 +11,14 @@ import com.nicico.training.model.*;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -24,12 +28,7 @@ import java.util.function.Supplier;
 public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBasedService {
 
     private final PostDAO postDAO;
-    private final PostGroupDAO postGroupDAO;
     private final JobDAO jobDAO;
-    private final JobGroupDAO jobGroupDAO;
-
-//    private final CompetenceDAO competenceDAO;
-//    private final SkillDAO skillDAO;
 
     private final NeedAssessmentSkillBasedDAO needAssessmentSkillBasedDAO;
     private final ModelMapper modelMapper;
@@ -46,37 +45,13 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
     @Transactional
     @Override
     public NeedAssessmentSkillBasedDTO.Info create(NeedAssessmentSkillBasedDTO.Create request) {
-
-//        final Optional<Skill> optionalSkill = skillDAO.findById(request.getSkillId());
-//        final Skill skill = optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        Object object;
-
-        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
-
         NeedAssessmentSkillBased needAssessment = modelMapper.map(request, NeedAssessmentSkillBased.class);
         needAssessment.setEneedAssessmentPriority(eNeedAssessmentPriorityConverter.convertToEntityAttribute(request.getEneedAssessmentPriorityId()));
-        switch (needAssessment.getObjectType()) {
-            case "Job":
-                final Optional<Job> optionalJob = jobDAO.findById(needAssessment.getObjectId());
-                object = optionalJob.orElseThrow(trainingExceptionSupplier);
-                break;
-            case "JobGroup":
-                final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(needAssessment.getObjectId());
-                object = optionalJobGroup.orElseThrow(trainingExceptionSupplier);
-                break;
-            case "Post":
-                final Optional<Post> optionalPost = postDAO.findById(needAssessment.getObjectId());
-                object = optionalPost.orElseThrow(trainingExceptionSupplier);
-                break;
-            case "PostGroup":
-                final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(needAssessment.getObjectId());
-                object = optionalPostGroup.orElseThrow(trainingExceptionSupplier);
-                break;
-            default:
-                return null;
+        try {
+            return modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment), NeedAssessmentSkillBasedDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
-        needAssessment.setObject(object);
-        return modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment), NeedAssessmentSkillBasedDTO.Info.class);
     }
 
     @Transactional
@@ -88,20 +63,36 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
         NeedAssessmentSkillBased needAssessment = new NeedAssessmentSkillBased();
         modelMapper.map(currentNeedAssessment, needAssessment);
         modelMapper.map(request, needAssessment);
-        return modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment), NeedAssessmentSkillBasedDTO.Info.class);
+        List<NeedAssessmentSkillBasedDTO.Info> updated = new ArrayList<>();
+        try {
+            updated.add(modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment),
+                    NeedAssessmentSkillBasedDTO.Info.class));
+            setObjectType(updated);
+            return updated.get(0);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        needAssessmentSkillBasedDAO.deleteById(id);
+        try {
+            needAssessmentSkillBasedDAO.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional
     @Override
     public void delete(NeedAssessmentSkillBasedDTO.Delete request) {
         final List<NeedAssessmentSkillBased> needAssessmentList = needAssessmentSkillBasedDAO.findAllById(request.getIds());
-        needAssessmentSkillBasedDAO.deleteAll(needAssessmentList);
+        try {
+            needAssessmentSkillBasedDAO.deleteAll(needAssessmentList);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional(readOnly = true)
@@ -117,23 +108,102 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
     public SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> search(SearchDTO.SearchRq request) {
         SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = SearchUtil.search(needAssessmentSkillBasedDAO, request, needAssessment -> modelMapper.map(needAssessment,
                 NeedAssessmentSkillBasedDTO.Info.class));
-        for (NeedAssessmentSkillBasedDTO.Info test : searchRs.getList()) {
-            switch (test.getObjectType()) {
+        setObjectType(searchRs.getList());
+        return searchRs;
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> deepSearch(SearchDTO.SearchRq request, String objectType, Long objectId) {
+
+        if (objectId != null && objectType != null) {
+
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.or);
+            criteriaRq.setCriteria(new ArrayList<>());
+            addCriteria(criteriaRq, objectType, objectId);
+
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else {
+                    criteriaRqList.add(criteriaRq);
+                    request.getCriteria().setCriteria(criteriaRqList);
+                }
+            } else
+                request.setCriteria(criteriaRq);
+        }
+
+        SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = SearchUtil.search(needAssessmentSkillBasedDAO, request, needAssessment -> modelMapper.map(needAssessment,
+                NeedAssessmentSkillBasedDTO.Info.class));
+        setObjectType(searchRs.getList());
+
+        return searchRs;
+    }
+
+    private void setObjectType(List<NeedAssessmentSkillBasedDTO.Info> searchRs) {
+        for (NeedAssessmentSkillBasedDTO.Info object : searchRs) {
+            switch (object.getObjectType()) {
                 case "Job":
-                    test.setObject(modelMapper.map(test.getObject(), JobDTO.Info.class));
+                    object.setObject(modelMapper.map(object.getObject(), JobDTO.Info.class));
                     break;
                 case "Post":
-                    test.setObject(modelMapper.map(test.getObject(), PostDTO.Info.class));
+                    object.setObject(modelMapper.map(object.getObject(), PostDTO.Info.class));
                     break;
                 case "JobGroup":
-                    test.setObject(modelMapper.map(test.getObject(), JobGroupDTO.Info.class));
+                    object.setObject(modelMapper.map(object.getObject(), JobGroupDTO.Info.class));
                     break;
                 case "PostGroup":
-                    test.setObject(modelMapper.map(test.getObject(), PostGroupDTO.Info.class));
+                    object.setObject(modelMapper.map(object.getObject(), PostGroupDTO.Info.class));
                     break;
             }
         }
-        return  searchRs;
+    }
+
+    private void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId) {
+        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
+        criteriaRq.getCriteria().add(makeNewCriteria(objectType, objectId));
+        switch (objectType) {
+            case "Post":
+                Optional<Post> optionalPost = postDAO.findById(objectId);
+                Post currentPost = optionalPost.orElseThrow(trainingExceptionSupplier);
+                if (currentPost.getJob() != null)
+                    addCriteria(criteriaRq, "Job", currentPost.getJob().getId());
+                for (PostGroup postGroup : currentPost.getPostGroupSet()) {
+                    addCriteria(criteriaRq, "PostGroup", postGroup.getId());
+                }
+                break;
+            case "Job":
+                Optional<Job> optionalJob = jobDAO.findById(objectId);
+                Job currentJob = optionalJob.orElseThrow(trainingExceptionSupplier);
+                for (JobGroup jobGroup : currentJob.getJobGroupSet()) {
+                    addCriteria(criteriaRq, "JobGroup", jobGroup.getId());
+                }
+                break;
+        }
+    }
+
+    private SearchDTO.CriteriaRq makeNewCriteria(String objectType, Long objectId) {
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+
+        SearchDTO.CriteriaRq idRq = new SearchDTO.CriteriaRq();
+        idRq.setOperator(EOperator.equals);
+        idRq.setFieldName("objectId");
+        idRq.setValue(objectId);
+        list.add(idRq);
+
+        SearchDTO.CriteriaRq typeRq = new SearchDTO.CriteriaRq();
+        typeRq.setOperator(EOperator.equals);
+        typeRq.setFieldName("objectType");
+        typeRq.setValue(objectType);
+        list.add(typeRq);
+
+        SearchDTO.CriteriaRq rq = new SearchDTO.CriteriaRq();
+        rq.setOperator(EOperator.and);
+        rq.setCriteria(list);
+
+        return rq;
     }
 
 }

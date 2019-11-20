@@ -1255,43 +1255,49 @@
                 )
             },
             {
-                title: "<spring:message code="alarms"/>",//هشدارها
+                title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/alarms-tab"}
+                    {viewURL: "tclass/personnel"}
                 )
             },
-            {
-                // id: "TabPane_Post",
-                title: "<spring:message code="licenses"/>",//مجوزها
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/licenses-tab"}
-                )
-            },
-            {
-                title: "<spring:message code="attendance"/>",//حضور و غیاب
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/attendance-tab"}
-                )
-            },
-            {
-                title: "<spring:message code="teachers"/>",//مدرسان
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/teachers-tab"}
-                )
-            },
-            {
-                // id: "TabPane_Competence",
-                title: "<spring:message code="exam"/>",//آزمون
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/exam-tab"}
-                )
-            },
-            {
-                title: "<spring:message code="assessment"/>",//ارزیابی
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/assessment-tab"}
-                )
-            },
+            <%--{--%>
+            <%--    title: "<spring:message code="alarms"/>",//هشدارها--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/alarms-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    // id: "TabPane_Post",--%>
+            <%--    title: "<spring:message code="licenses"/>",//مجوزها--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/licenses-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    title: "<spring:message code="attendance"/>",//حضور و غیاب--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/attendance-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    title: "<spring:message code="teachers"/>",//مدرسان--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/teachers-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    // id: "TabPane_Competence",--%>
+            <%--    title: "<spring:message code="exam"/>",//آزمون--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/exam-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
+            <%--{--%>
+            <%--    title: "<spring:message code="assessment"/>",//ارزیابی--%>
+            <%--    pane: isc.ViewLoader.create(--%>
+            <%--        {viewURL: "tclass/assessment-tab"}--%>
+            <%--    )--%>
+            <%--},--%>
             {
                 name:"checkList",
                 title: "<spring:message code="checkList"/>",//چک لیست
@@ -1580,7 +1586,7 @@
                     if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
                        setTimeout(function () {
                            fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                       },1000)
+                       },100)
                     }
                     else{
                         setTimeout(function () {

@@ -14,6 +14,52 @@
     var changed_field;
     var All_Priorities;
 
+      Menu_ListGrid_CheckList = isc.Menu.create({
+        data: [
+            {
+                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+                    ListGrid_CheckList.invalidateCache();
+                }
+            }, {
+                     title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
+                      show_CheckListAddForm();
+                }
+            }, {
+               title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                     show_CheckListEditForm();
+                }
+            }, {
+                title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                     show_CheckListDeleteForm();
+                }
+            }]
+    });
+
+        Menu_ListGrid_CheckListItem = isc.Menu.create({
+        data: [
+            {
+                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+                   ListGrid_CheckListItem.invalidateCache();
+                     ListGrid_CheckListItem_DetailViewer.setData([]);
+                }
+            }, {
+                title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
+                     show_CheckListItemAddForm();
+                }
+            }, {
+               title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                 show_CheckListItemEditForm();
+                }
+            }, {
+
+
+                title: "<spring:message code="deactivate"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                      is_Delete();
+                }
+            }]
+    });
+
+
 
     var RestDataSource_CheckList = isc.TrDS.create({
         fields: [
@@ -37,9 +83,8 @@
     var RestDataSource_Class_Item = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "checkListItem.titleFa", title: "نام فارسی", align: "center"},
-            {name: "description", title: "توضیحات", align: "center",},
-
+            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
+            {name: "description", title: "<spring:message code="description"/>", align: "center",},
             {name: "enableStatus", title: "وضعیت", align: "center"},
         ],
 
@@ -53,7 +98,7 @@
             {name: "id", primaryKey: true},
             {name: "titleFa"}
         ],
-        fetchDataURL: checklistUrl + "spec-list?_startRow=0&_endRow=55",
+        fetchDataURL: checklistUrl + "spec-list",
     });
 
 
@@ -62,8 +107,9 @@
             {name: "id", hidden: true},
             {name: "checkListId", hidden: true},
             {name: "titleFa", title: "آیتم", align: "center"},
-            {name: "group", title: "گروه", align: "center"},
+            {name: "group", title: "<spring:message code="group"/>", align: "center"},
             {name: "isDeleted", hidden: true}
+
 
         ],
 
@@ -74,28 +120,28 @@
 
     var ToolStripButton_CheckList_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckList.invalidateCache();
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+       title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListEditForm();
         }
     });
     var ToolStripButton_CheckList_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+          title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListAddForm();
         }
     });
     var ToolStripButton_CheckList_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+         title: "<spring:message code="remove"/>",
         click: function () {
             show_CheckListDeleteForm();
         }
@@ -103,7 +149,7 @@
     //---------------------------------------------------------------------------
     var ToolStripButton_CheckListItem_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
             ListGrid_CheckListItem_DetailViewer.setData([]);
@@ -111,21 +157,21 @@
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+       title: "<spring:message code="edit"/>",
         click: function () {
-
+            show_CheckListItemEditForm();
         }
     });
     var ToolStripButton_CheckListItem_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+          title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListItemAddForm();
         }
     });
     var ToolStripButton_CheckListItem_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+        title:"<spring:message code="deactivate"/>",
         click: function () {
             is_Delete();
         }
@@ -175,12 +221,13 @@
     var ListGrid_CheckListItem = isc.TrLG.create({
         alternateRecordStyles: true,
         showFilterEditor: false,
+        contextMenu: Menu_ListGrid_CheckListItem,
         dataSource: RestDataSource_CheckListItem,
         fields: [
             {name: "id", hidden: true},
             {name: "checkListId", hidden: true},
             {name: "titleFa", title: "آیتم", width: "80%"},
-            {name: "group", title: "گروه", width: "20%"},
+            {name: "group",  title: "<spring:message code="group"/>", width: "20%"},
             {name: "isDeleted", hidden: true}],
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.isDeleted) {
@@ -208,6 +255,7 @@
         //  alternateRecordStyles: true,
         showFilterEditor: false,
         dataSource: RestDataSource_CheckList,
+        contextMenu:Menu_ListGrid_CheckList,
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "فرم", align: "center"},
@@ -231,25 +279,16 @@
         ID: "ListGrid_CheckListItem_DetailViewer",
         width: "100%",
         fields: [
-            {name: "titleFa", title: "نام فارسی"},
+            {name: "titleFa",title: "<spring:message code="title"/>"},
             {
-                name: "group", title: "گروه",
+                name: "group",title: "<spring:message code="group"/>",
                 formatCellValue: function (value, record, rowNum, colNum, grid) {
                     if (typeof value === "undefined")
                         return "ندارد"; else return value
                 },
                 length: "250"
             },
-
-            // {
-            //     name: "enableStatus", title: "وضعیت",
-            //     formatCellValue: function (value, record, rowNum, colNum, grid) {
-            //         if (value === false) return "غیر فعال";
-            //         if (value === true) return "فعال"
-            //     }
-            //
-            // },
-        ],
+                ],
         emptyMessage: "click a row in the grid"
     })
 
@@ -296,11 +335,11 @@
 
             {
                 name: "titleFa",
-                title: "نام فارسی",
+              title: "<spring:message code="title"/>",
                 required: true,
                 type: 'text',
                 height: 35,
-                requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
+               //requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                 width: "171",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber, TrValidators.NotContainSpecialChar]
             },
@@ -318,14 +357,14 @@
                 {name: "checkListId", hidden: true,},
                 {
                     name: "titleFa",
-                    title: "نام فارسی",
+                  title: "<spring:message code="title"/>",
                     type: 'text',
                     required: true,
                     height: 35,
                     requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                     width: "*",
                 },
-                {name: "group", title: " گروه", type: 'text', height: 35, width: "*"},
+                {name: "group",title: "<spring:message code="group"/>", type: 'text', height: 35, width: "*"},
             ]
     });
 
@@ -416,8 +455,15 @@
                 click: function () {
                     if (CheckListItem_method === "POST") {
                         save_CheckListItem()
+                          }
+                          else
+                         {
+                           edit_CheckListItem();
+                         }
+
+
                     }
-                }
+
 
 
             }), isc.Button.create({
@@ -446,13 +492,13 @@
         nullGroupTitle: "",
         dataSource: RestDataSource_Class_Item,
         fields: [
-            {name: "checkListItem.group", title: "گروه", align: "center", hidden: true},
+            {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
             {name: "id", primaryKey: true, hidden: true},
-            {name: "checkListItem.titleFa", title: "نام فارسی", canEdit: false, align: "center"},
+            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
 
             {
                 name: "description",
-                title: "توضیحات",
+               title: "<spring:message code="description"/>",
                 canEdit: true,
                 align: "center",
                 change: function (form, item, value) {
@@ -462,22 +508,22 @@
                 }
 
             },
-            {name: "enableStatus", title: "وضعیت", canEdit: true, type: "boolean", align: "center"},
+            {name: "enableStatus", title: "فعال/غیرفعال", canEdit: true, type: "boolean", align: "center"},
         ],
 
     });
 
 
     var HLayOut_thisCommittee_AddUsers_Jsp = isc.HLayout.create({
-        width: 700,
-        height: 30,
+        width: "100%",
+       // height: 30,
         border: "0px solid yellow",
         // layoutMargin: 2,
         align: "center",
         members: [ListGrid_Class_Item]
     });
     var VLayOut_User_Committee_Jsp = isc.VLayout.create({
-        width: "*",
+        width: "100%",
         // height: "350",
         autoDraw: false,
         border: "3px solid gray", layoutMargin: 5,
@@ -485,8 +531,9 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
+    minWidth:1024,
         title: "تکمیل چک لیست",
-        width: 500,
+        width: 1024,
         autoSize: true,
         autoCenter: true,
         isModal: true,
@@ -540,7 +587,6 @@
                 ID: "checkListDynamicFormField",
                 title: "انتخاب فرم مورد نظر ",
                 textAlign: "center",
-
                 optionDataSource: RestDataSource_SelectCheckList,
                 width: "270",
                 changeOnKeypress: true,
@@ -556,9 +602,9 @@
 
             {
                 type: "button",
-                title: "تکمیل چک لیست",
+                title: "اضافه و تکمیل چک لیست",
                 icon: "<spring:url value="check-mark.png"/>",
-                width: 150,
+                width: 180,
                 showDownIcon: true,
                 startRow: false,
                 endRow: false,
@@ -591,21 +637,7 @@
 
                 }
             },
-            // {
-            // type:"button",
-            // title:"نمایش فرم های کلاس",
-            // width:130,
-            // startRow:true,
-            // endRow:false,
-            // click:function () {
-            // var a2 = ListGrid_Class_JspClass.getSelectedRecord().id;
-            // RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + a2.toString();
-            // ListGrid_ClassCheckList.fetchData();
-            // ListGrid_ClassCheckList.invalidateCache();
-            // }
-            // },
-
-        ]
+            ]
     })
 
 
@@ -673,13 +705,13 @@
                 ]
             }
         );
-        Window_Add_User_TO_Committee.show();
+            Window_Add_User_TO_Committee.show();
+             setTimeout(function () {
+                   ListGrid_ClassCheckList.fetchData();
+                   ListGrid_ClassCheckList.invalidateCache();
+                }, 2000);
 
-        //     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-        //         // }
-
-
-    }
+         }
     ;
 
     function checkselected() {
@@ -722,7 +754,7 @@
             var Record = DynamicForm_CheckList.getSelectedRecord();
             CheckList_Save_Url += Record.id;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url, CheckList_method, JSON.stringify(CheckList), "callback:show_CheckListActionResult(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url, CheckList_method, JSON.stringify(CheckList), "callback:show_checkListDynamicFormField(rpcResponse)"));
     };
 
     function save_CheckListItem() {
@@ -748,6 +780,16 @@
         isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + record.id, CheckList_method, JSON.stringify(data), "callback:show_CheckListActionResult(rpcResponse)"));
     }
 
+
+        function  edit_CheckListItem() {
+        if (!DynamicForm_CheckListItem_Add.validate()) {
+            return;
+        }
+        var record = ListGrid_CheckListItem.getSelectedRecord();
+        data = DynamicForm_CheckListItem_Add.getValues();
+        var CheckList_Edit_Url = checklistItemUrl;
+        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Edit_Url + record.id, CheckListItem_method, JSON.stringify(data), "callback:show_CheckListItemActionResult(rpcResponse)"));
+    }
 
     function show_CheckListAddForm() {
         CheckList_method = "POST";
@@ -834,6 +876,33 @@
         }
     };
 
+
+    function show_CheckListItemEditForm() {
+
+        var record =  ListGrid_CheckListItem.getSelectedRecord();
+
+        if (record == null || record.id == null) {
+            isc.Dialog.create({
+                message: "<spring:message code="msg.not.selected.record"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="course_Warning"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
+        } else {
+
+            CheckListItem_method = "PUT";
+            DynamicForm_CheckListItem_Add.clearValues();
+            DynamicForm_CheckListItem_Add.editRecord(record);
+            Window_CheckListItem_Add.setTitle("<spring:message code="edit"/>");
+            Window_CheckListItem_Add.show();
+
+        }
+    };
+
+
     function show_CheckListActionResult_Delete(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
@@ -841,14 +910,18 @@
 
                 ListGrid_CheckListItem.setData([]);
                 ListGrid_CheckList.invalidateCache();
+
+                checkListDynamicFormField.fetchData();
+                // checkListDynamicFormField.invalidateCache();
+
                 var OK = isc.Dialog.create({
                     message: "عملیات با موفقیت انجام شد",
                     icon: "[SKIN]say.png",
                     title: "انجام فرمان"
                 });
                 setTimeout(function () {
-                    OK.close();
-                }, 3000);
+                 OK.close();
+                }, 2000);
             } else {
                 var OK = isc.Dialog.create({
                     message: "آیتم های فرم مورد نظر در کلاس استفاده شده",
@@ -908,9 +981,7 @@
                 OK.close();
             }, 3000);
             Window_CheckList_Add.close();
-            // } else {
-            //
-            //     }
+
 
         } else {
             var OK = isc.Dialog.create({
@@ -924,6 +995,40 @@
         }
 
     };
+
+    function show_checkListDynamicFormField(resp) {
+
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
+
+            ListGrid_CheckList.invalidateCache();
+             checkListDynamicFormField.fetchData();
+                var OK = isc.Dialog.create({
+                message: "عملیات با موفقیت انجام شد",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+            });
+            Window_CheckList_Add.close();
+
+
+            setTimeout(function () {
+                OK.close();
+            }, 1000);
+
+
+
+        } else {
+            var OK = isc.Dialog.create({
+                message: "ارتباط با سرور قطع می باشد",
+                icon: "[SKIN]say.png",
+                title: "انجام فرمان"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        }
+
+    };
+
 
 
     function show_CheckListItemActionResult1111111(resp) {
@@ -944,7 +1049,8 @@
     function show_CheckListItemActionResult(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_CheckListItem.invalidateCache();
-            // if (resp.data.length > 0) {
+           ListGrid_Class_Item.invalidateCache();
+
             var OK = isc.Dialog.create({
                 message: "عملیات با موفقیت انجام شد",
                 icon: "[SKIN]say.png",
@@ -987,7 +1093,7 @@
        if(record != -1)
        {
          RestDataSource_ClassCheckList.fetchDataURL=checklistUrl + "getchecklist" + "/" + record.id;
-         ListGrid_ClassCheckList.setFieldProperties(1,{title:'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
+         ListGrid_ClassCheckList.setFieldProperties(1,{title:"&nbsp;<b>"+'فرم های دوره'+ "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>"+'با کد کلاس'+"&nbsp;<b>"+record.code});
          ListGrid_ClassCheckList.fetchData();
          ListGrid_ClassCheckList.invalidateCache();
        }
