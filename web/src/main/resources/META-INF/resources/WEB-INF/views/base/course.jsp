@@ -1864,6 +1864,7 @@
                 margin:"2%",
             }), TabSet_Goal_JspCourse],
         })],
+        minWidth: 1024,
         closeClick: function () {
             // formEqualCourse.getItem("equalCourseGrid1").title = "معادل های دوره";
             // formEqualCourse.reset();

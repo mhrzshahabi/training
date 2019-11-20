@@ -7,6 +7,7 @@ TIME: 10:40 AM
 */
 
 import com.nicico.training.dto.enums.*;
+import com.nicico.training.model.enums.ETechnicalType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -14,6 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +37,24 @@ public class EnumsRestController {
 
     @GetMapping("eTechnicalType/spec-list")
     public ResponseEntity<ETechnicalTypeDTO.ETechnicalTypeSpecRs> getETechnicalType() {
+        ETechnicalTypeDTO.ETechnicalTypeSpecRs rs = new ETechnicalTypeDTO.ETechnicalTypeSpecRs();
+        ETechnicalTypeDTO.SpecRs response = rs.getResponse();
+        Map<Integer, String> map = new HashMap<>();
+        ETechnicalType[] data = response.getData();
+        for (ETechnicalType datum : data) {
+            map.put(datum.getId(),datum.getTitleFa());
+        }
         return  new ResponseEntity<>(new ETechnicalTypeDTO.ETechnicalTypeSpecRs(),HttpStatus.OK);
+    }
+
+    @GetMapping("eTechnicalType/map")
+    public ResponseEntity<Map<Integer, String>> getETechnicalTypeMap() {
+        ETechnicalType[] data = ETechnicalType.values();
+        Map<Integer, String> map = new HashMap<>();
+        for (ETechnicalType datum : data) {
+            map.put(datum.getId(),datum.getTitleFa());
+        }
+        return  new ResponseEntity<>(map,HttpStatus.OK);
     }
 
     @GetMapping("eTheoType")

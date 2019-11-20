@@ -17,9 +17,6 @@
     var startDateCheck = true;
     var endDateCheck = true;
 
-
-
-
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -289,16 +286,18 @@
                 name:"minCapacity",
                 title:"ظرفیت:",
                 textAlign: "center",
-                hint:"حداقل",
-                showHintInField: true
+                hint:"حداقل نفر",
+                showHintInField: true,
+                keyPressFilter:"[0-9]"
             },
             {
                 name:"maxCapacity",
                 colSpan:2,
                 showTitle:false,
-                hint:"حداکثر",
+                hint:"حداکثر نفر",
                 textAlign: "center",
-                showHintInField: true
+                showHintInField: true,
+                keyPressFilter:"[0-9]"
             },
             {
                 name:"code",
@@ -488,7 +487,7 @@
                 type:"radioGroup",
                 // vertical:false,
                 fillHorizontalSpace:true,
-                defaultValue:"برنامه ریزی",
+                defaultValue:"1",
                 endRow:true,
                 valueMap: {
                     "1":"برنامه ریزی",
@@ -665,8 +664,8 @@
                     else if (value < termStart) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع ترم باشد", true);
                     }
-                    else if (endDate){
-                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع باشد", true);
+                    else if (endDate < value){
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
                     }
                     else{
                         form.clearFieldErrors("startDate", true);
@@ -702,14 +701,43 @@
                 showHintInField: true,
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('endDate_jspClass', this, 'ymd', '/');
+                    click: function (form) {
+                        if(!(form.getValue("termId"))){
+                            let dialogTeacher = isc.MyOkDialog.create({
+                                message:"ابتدا ترم را انتخاب کنید",
+                            });
+                            dialogTeacher.addProperties({
+                                buttonClick: function () {
+                                    this.close();
+                                    form.getItem("termId").selectValue();
+                                    // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
+                                }
+                            });
+                        }
+                        else {
+                            closeCalendarWindow();
+                            displayDatePicker('endDate_jspClass', this, 'ymd', '/');
+                        }
                     }
                 }],
                 textAlign: "center",
                 colSpan: 3,
+                click: function(form){
+                    if(!(form.getValue("termId"))){
+                        let dialogTeacher = isc.MyOkDialog.create({
+                            message:"ابتدا ترم را انتخاب کنید",
+                        });
+                        dialogTeacher.addProperties({
+                            buttonClick: function () {
+                                this.close();
+                                form.getItem("termId").selectValue();
+                                // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
+                            }
+                        });
+                    }
+                },
                 changed: function (form, item, value) {
+                    var termStart = form.getItem("termId").getSelectedRecord().startDate;
                     var dateCheck;
                     dateCheck = checkDate(value);
                     var startDate = form.getValue("startDate");
@@ -717,6 +745,9 @@
                         form.clearFieldErrors("endDate", true);
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheck = false;
+                    }
+                    else if (value < termStart) {
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
                     }
                     else if (dateCheck === true) {
                         if (startDate === undefined)
@@ -1176,6 +1207,12 @@
         title: "کپی از کلاس",
         click: function () {
             ListGrid_class_edit();
+            setTimeout(function () {
+                evalGroup();
+            },200);
+            setTimeout(function () {
+                classCode();
+            },700);
             classMethod = "POST";
             url = classUrl;
         }
@@ -1190,7 +1227,8 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
-            ToolStripButton_Add_Student_JspClass]
+            // ToolStripButton_Add_Student_JspClass
+        ]
     });
 
     var HLayout_Actions_Class_JspClass = isc.HLayout.create({
@@ -1333,8 +1371,10 @@
     }
 
     function ListGrid_Class_refresh() {
-        var gridState = "[{id:"+ListGrid_Class_JspClass.getSelectedRecord().id+"}]";
-
+        var gridState;
+        if(ListGrid_Class_JspClass.getSelectedRecord()) {
+            gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
+        }
         ListGrid_Class_JspClass.invalidateCache();
         ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
