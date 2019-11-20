@@ -3,7 +3,10 @@ package com.nicico.training.model;
 import lombok.Getter;
 import org.hibernate.annotations.Immutable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.Id;
+import javax.persistence.Table;
 
 @Getter
 @Entity
@@ -11,15 +14,10 @@ import javax.persistence.*;
 @Table(name = "tbl_personnel")
 public class Personnel {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_personnel_auto_id")
-    @SequenceGenerator(name = "seq_personnel_auto_id", sequenceName = "seq_personnel_auto_id", allocationSize = 1)
-    @Column(name = "auto_id", precision = 10)
-    private Long autoId;
-
     @Column(name = "id")
     private Long id;
 
+    @Id
     @Column(name = "personnel_no")
     private String personnelNo;
 
@@ -92,6 +90,9 @@ public class Personnel {
     @Column(name = "job_title")
     private String jobTitle;
 
+    @Column(name = "employment_status_id")
+    private Integer employmentStatusId;
+
     @Column(name = "employment_status_title")
     private String employmentStatus;
 
@@ -131,7 +132,7 @@ public class Personnel {
     @Column(name = "work_days")
     private String workDays;
 
-    @Column(name = "personnel_no_2")
+    @Column(name = "emp_no")
     private String personnelNo2;
 
     @Column(name = "insurance_code")
