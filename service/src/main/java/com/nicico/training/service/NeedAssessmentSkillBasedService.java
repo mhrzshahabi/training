@@ -28,12 +28,7 @@ import java.util.function.Supplier;
 public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBasedService {
 
     private final PostDAO postDAO;
-    private final PostGroupDAO postGroupDAO;
     private final JobDAO jobDAO;
-    private final JobGroupDAO jobGroupDAO;
-
-//    private final CompetenceDAO competenceDAO;
-//    private final SkillDAO skillDAO;
 
     private final NeedAssessmentSkillBasedDAO needAssessmentSkillBasedDAO;
     private final ModelMapper modelMapper;
@@ -50,38 +45,13 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
     @Transactional
     @Override
     public NeedAssessmentSkillBasedDTO.Info create(NeedAssessmentSkillBasedDTO.Create request) {
-
-//        final Optional<Skill> optionalSkill = skillDAO.findById(request.getSkillId());
-//        final Skill skill = optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-//        Object object;
-
-//        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
-
         NeedAssessmentSkillBased needAssessment = modelMapper.map(request, NeedAssessmentSkillBased.class);
         needAssessment.setEneedAssessmentPriority(eNeedAssessmentPriorityConverter.convertToEntityAttribute(request.getEneedAssessmentPriorityId()));
-
-//        switch (needAssessment.getObjectType()) {
-//            case "Job":
-//                final Optional<Job> optionalJob = jobDAO.findById(needAssessment.getObjectId());
-//                object = optionalJob.orElseThrow(trainingExceptionSupplier);
-//                break;
-//            case "JobGroup":
-//                final Optional<JobGroup> optionalJobGroup = jobGroupDAO.findById(needAssessment.getObjectId());
-//                object = optionalJobGroup.orElseThrow(trainingExceptionSupplier);
-//                break;
-//            case "Post":
-//                final Optional<Post> optionalPost = postDAO.findById(needAssessment.getObjectId());
-//                object = optionalPost.orElseThrow(trainingExceptionSupplier);
-//                break;
-//            case "PostGroup":
-//                final Optional<PostGroup> optionalPostGroup = postGroupDAO.findById(needAssessment.getObjectId());
-//                object = optionalPostGroup.orElseThrow(trainingExceptionSupplier);
-//                break;
-//            default:
-//                return null;
-//        }
-//        needAssessment.setObject(object);
-        return modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment), NeedAssessmentSkillBasedDTO.Info.class);
+        try {
+            return modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment), NeedAssessmentSkillBasedDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -93,7 +63,7 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
         NeedAssessmentSkillBased needAssessment = new NeedAssessmentSkillBased();
         modelMapper.map(currentNeedAssessment, needAssessment);
         modelMapper.map(request, needAssessment);
-        List <NeedAssessmentSkillBasedDTO.Info> updated = new ArrayList<>();
+        List<NeedAssessmentSkillBasedDTO.Info> updated = new ArrayList<>();
         try {
             updated.add(modelMapper.map(needAssessmentSkillBasedDAO.saveAndFlush(needAssessment),
                     NeedAssessmentSkillBasedDTO.Info.class));
@@ -133,21 +103,6 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
         }.getType());
     }
 
-//    @Transactional
-//    @Override
-//    public void updatePriority(MultiValueMap<String, String> body) {
-//        Long id = Long.parseLong(body.get("id").get(0));
-//        NeedAssessmentSkillBased currentNeedAssessment = needAssessmentSkillBasedDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-//        Set<String> strings = body.keySet();
-//
-//        if (strings.contains("eneedAssessmentPriority")) {
-//            String newId = ((body.get("eneedAssessmentPriority").get(0).split("\"id\":"))[1]).split(",")[0];
-//            currentNeedAssessment.setEneedAssessmentPriorityId(Integer.valueOf(newId));
-//        }
-//        needAssessmentSkillBasedDAO.saveAndFlush(currentNeedAssessment);
-////        return update(id, modelMapper.map(currentNeedAssessment, NeedAssessmentSkillBasedDTO.Update.class));
-//    }
-
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> search(SearchDTO.SearchRq request) {
@@ -159,31 +114,26 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> deepSearch(SearchDTO.SearchRq request) {
+    public SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> deepSearch(SearchDTO.SearchRq request, String objectType, Long objectId) {
 
-        String objectType = null;
-        Long objectId = null;
+        if (objectId != null && objectType != null) {
 
-        List<SearchDTO.CriteriaRq> willRemove = new ArrayList<>();
-        for (SearchDTO.CriteriaRq criteriaRq : request.getCriteria().getCriteria()) {
-            if (criteriaRq.getFieldName().equals("objectType")) {
-                objectType = (String) criteriaRq.getValue().get(0);
-                willRemove.add(criteriaRq);
-            } else if (criteriaRq.getFieldName().equals("objectId")) {
-                objectId = Long.valueOf(criteriaRq.getValue().get(0).toString());
-                willRemove.add(criteriaRq);
-            }
+            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.or);
+            criteriaRq.setCriteria(new ArrayList<>());
+            addCriteria(criteriaRq, objectType, objectId);
+
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else {
+                    criteriaRqList.add(criteriaRq);
+                    request.getCriteria().setCriteria(criteriaRqList);
+                }
+            } else
+                request.setCriteria(criteriaRq);
         }
-        request.getCriteria().getCriteria().removeAll(willRemove);
-
-        if (objectId == null || objectType == null)
-            return null;
-
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.or);
-        criteriaRq.setCriteria(new ArrayList<>());
-        addCriteria(criteriaRq, objectType, objectId);
-        request.getCriteria().getCriteria().add(criteriaRq);
 
         SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> searchRs = SearchUtil.search(needAssessmentSkillBasedDAO, request, needAssessment -> modelMapper.map(needAssessment,
                 NeedAssessmentSkillBasedDTO.Info.class));
@@ -255,6 +205,5 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
 
         return rq;
     }
-
 
 }
