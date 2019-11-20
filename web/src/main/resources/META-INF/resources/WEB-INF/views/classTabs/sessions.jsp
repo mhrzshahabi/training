@@ -140,6 +140,16 @@
             ],
             fetchDataURL: instituteUrl + "spec-list"
         });
+
+        var RestDataSource_TrainingPlace_JspSession = isc.TrDS.create({
+            fields: [
+                {name: "id", primaryKey: true},
+                {name: "titleFa", title: "نام مکان"},
+                {name: "capacity", title: "ظرفیت"}
+            ],
+            fetchDataURL: instituteUrl + "0/training-places"
+        });
+
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
@@ -198,75 +208,168 @@
     {
         //*****create fields*****
         var DynamicForm_Session = isc.DynamicForm.create({
-            fields:
-                [
-                    {
-                        name: "sessionDate",
-                        titleColSpan: 1,
-                        title: "<spring:message code='date'/>",
-                        ID: "sessionDate_jspSession",
-                        required: true,
-                        hint: "YYYY/MM/DD",
-                        keyPressFilter: "[0-9/]",
-                        showHintInField: true,
-                        icons: [{
-                            src: "<spring:url value="calendar.png"/>",
+                numCols: 5,
+                colWidths: ["10%", "30%", "10%", "10%", "30%"],
+                padding: 5,
+                fields:
+                    [
+                        {
+                            name: "sessionDate",
+                            title: "<spring:message code='date'/>",
+                            ID: "sessionDate_jspSession",
+                            required: true,
+                            hint: "YYYY/MM/DD",
+                            keyPressFilter: "[0-9/]",
+                            showHintInField: true,
+                            icons: [{
+                                src: "<spring:url value="calendar.png"/>",
+                                click: function (form) {
+                                    closeCalendarWindow();
+                                    displayDatePicker('sessionDate_jspSession', this, 'ymd', '/');
+                                }
+                            }],
+                            textAlign: "center",
                             click: function (form) {
-                                closeCalendarWindow();
-                                displayDatePicker('sessionDate_jspSession', this, 'ymd', '/');
-                            }
-                        }],
-                        textAlign: "center",
-                        colSpan: 3,
-                        click: function (form) {
 
+                            },
+                            changed: function (form, item, value) {
+
+                                if (checkDate(value) === false) {
+                                    form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
+                                } else {
+                                    form.clearFieldErrors("sessionDate", true);
+                                }
+                            }
                         },
-                        changed: function (form, item, value) {
+                        {
+                            type: "SpacerItem"
+                        },
+                        {
+                            name: "sessionInstitute",
+                            editorType: "TrComboAutoRefresh",
+                            title: "برگزار کننده",
+                            autoFetchData: false,
+                            optionDataSource: RestDataSource_Institute_JspSession,
+                            displayField: "titleFa",
+                            valueField: "id",
+                            textAlign: "center",
+                            filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
+                            required: true,
+                            pickListFields: [
+                                {name: "titleFa"},
+                                {name: "manager.firstNameFa"},
+                                {name: "manager.lastNameFa"}
+                            ],
+                            changed: function (form, item) {
+                                form.clearValue("sessionTrainingPlace")
+                            }
+                        },
+                        {
+                            name: "sessionTrainingPlace",
+                            editorType: "TrComboAutoRefresh",
+                            title: "محل برگزاری:",
+                            align: "center",
+                            optionDataSource: RestDataSource_TrainingPlace_JspSession,
+                            displayField: "titleFa",
+                            valueField: "id",
+                            filterFields: ["titleFa", "capacity"],
+                            required: true,
+                            textAlign: "center",
+                            pickListFields: [
+                                {name: "titleFa"},
+                                {name: "capacity"}
+                            ],
+                            click: function (form, item) {
+                                if (form.getValue("sessionInstitute")) {
+                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("sessionInstitute") + "/training-places";
+                                    item.fetchData();
+                                } else {
+                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
+                                    item.fetchData();
+                                    isc.MyOkDialog.create({
+                                        message: "ابتدا برگزار کننده را انتخاب کنید",
+                                    });
+                                }
+                            }
+                        },
+                        {
+                            type: "SpacerItem"
+                        },
+                        {
+                            name: "sessionTeacher",
+                            title: "<spring:message code='trainer'/>:",
+                            textAlign: "center",
+                            type: "ComboBoxItem",
+                            multiple: false,
+                            displayField: "fullNameFa",
+                            valueField: "id",
+                            autoFetchData: false,
+                            required: true,
+                            useClientFiltering: true,
+                            optionDataSource: RestDataSource_Teacher_JspClass,
+                            pickListFields: [
+                                {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
+                                {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
+                                {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
+                            ],
+                            filterFields: [
+                                "personality.lastNameFa",
+                                "personality.firstNameFa",
+                                "personality.nationalCode"
+                            ],
+                            click: function (form, item) {
 
-                            if (checkDate(value) === false) {
-                                form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
-                            } else {
-                                form.clearFieldErrors("sessionDate", true);
+                                if (ListGrid_Class_JspClass.getSelectedRecord() != null) {
+
+                                    var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                                    var courseId = ClassRecord.course.id;
+
+                                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                                    item.fetchData();
+                                } else {
+                                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                                    item.fetchData();
+                                    let dialogTeacher = isc.MyOkDialog.create({
+                                        message: "ابتدا کلاس را انتخاب کنید",
+                                    });
+                                    dialogTeacher.addProperties({
+                                        buttonClick: function () {
+                                            this.close();
+                                        }
+                                    });
+                                }
+                            }
+                        },
+
+                        {
+                            name: "", type: "radioGroup", title: "hi",
+                            valueMap: {
+                                "1":"برنامه ریزی",
+                                "2":"در حال اجرا",
+                                "3":"پایان یافته",
                             }
                         }
-                    },
-                    {
-                        name: "instituteId",
-                        editorType: "TrComboAutoRefresh",
-                        title: "برگزار کننده:",
-                        colSpan: 1,
-                        autoFetchData: false,
-                        optionDataSource: RestDataSource_Institute_JspSession,
-                        displayField: "titleFa",
-                        valueField: "id",
-                        textAlign: "center",
-                        filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
-                        required: true,
-                        pickListFields: [
-                            {name: "titleFa"},
-                            {name: "manager.firstNameFa"},
-                            {name: "manager.lastNameFa"}
-                        ],
-                        changed: function (form, item) {
-                            form.clearValue("trainingPlaceIds")
-                        }
-                    },
-                    {
-                        name: "unitCode",
-                        title: "<spring:message code="unitCode"/>",
-                        type: "text",
-                        required: true,
-                        length: 10
-                    },
-                    {
-                        name: "operationalUnit",
-                        title: "<spring:message code="unitName"/>",
-                        type: "text",
-                        required: true,
-                        length: 100
-                    }
-                ]
-        });
+                        ,
+                        {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true},
+                        {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true},
+                        {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true},
+                        <%--{--%>
+                        <%--    name: "unitCode",--%>
+                        <%--    title: "<spring:message code="unitCode"/>",--%>
+                        <%--    type: "text",--%>
+                        <%--    required: true,--%>
+                        <%--    length: 10--%>
+                        <%--},--%>
+                        <%--{--%>
+                        <%--    name: "operationalUnit",--%>
+                        <%--    title: "<spring:message code="unitName"/>",--%>
+                        <%--    type: "text",--%>
+                        <%--    required: true,--%>
+                        <%--    length: 100--%>
+                        <%--}--%>
+                    ]
+            })
+        ;
 
         //*****create buttons*****
         var create_Buttons = isc.MyHLayoutButtons.create({
