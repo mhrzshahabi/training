@@ -22,6 +22,6 @@ public interface INeedAssessmentSkillBasedService {
 
     SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> search(SearchDTO.SearchRq request);
 
-    SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> deepSearch(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<NeedAssessmentSkillBasedDTO.Info> deepSearch(SearchDTO.SearchRq request, String objectType, Long objectId);
 
 }
