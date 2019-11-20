@@ -51,7 +51,9 @@
                  show_CheckListItemEditForm();
                 }
             }, {
-                title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+
+
+                title: "<spring:message code="deactivate"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                       is_Delete();
                 }
             }]
@@ -81,9 +83,8 @@
     var RestDataSource_Class_Item = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "checkListItem.titleFa", title: "نام فارسی", align: "center"},
-            {name: "description", title: "توضیحات", align: "center",},
-
+            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
+            {name: "description", title: "<spring:message code="description"/>", align: "center",},
             {name: "enableStatus", title: "وضعیت", align: "center"},
         ],
 
@@ -106,8 +107,9 @@
             {name: "id", hidden: true},
             {name: "checkListId", hidden: true},
             {name: "titleFa", title: "آیتم", align: "center"},
-            {name: "group", title: "گروه", align: "center"},
+            {name: "group", title: "<spring:message code="group"/>", align: "center"},
             {name: "isDeleted", hidden: true}
+
 
         ],
 
@@ -118,28 +120,28 @@
 
     var ToolStripButton_CheckList_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckList.invalidateCache();
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+       title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListEditForm();
         }
     });
     var ToolStripButton_CheckList_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+          title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListAddForm();
         }
     });
     var ToolStripButton_CheckList_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+         title: "<spring:message code="remove"/>",
         click: function () {
             show_CheckListDeleteForm();
         }
@@ -147,7 +149,7 @@
     //---------------------------------------------------------------------------
     var ToolStripButton_CheckListItem_Refresh = isc.ToolStripButton.create({
         icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
             ListGrid_CheckListItem_DetailViewer.setData([]);
@@ -155,21 +157,21 @@
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+       title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListItemEditForm();
         }
     });
     var ToolStripButton_CheckListItem_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+          title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListItemAddForm();
         }
     });
     var ToolStripButton_CheckListItem_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+        title:"<spring:message code="deactivate"/>",
         click: function () {
             is_Delete();
         }
@@ -225,7 +227,7 @@
             {name: "id", hidden: true},
             {name: "checkListId", hidden: true},
             {name: "titleFa", title: "آیتم", width: "80%"},
-            {name: "group", title: "گروه", width: "20%"},
+            {name: "group",  title: "<spring:message code="group"/>", width: "20%"},
             {name: "isDeleted", hidden: true}],
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.isDeleted) {
@@ -277,25 +279,16 @@
         ID: "ListGrid_CheckListItem_DetailViewer",
         width: "100%",
         fields: [
-            {name: "titleFa", title: "نام فارسی"},
+            {name: "titleFa",title: "<spring:message code="title"/>"},
             {
-                name: "group", title: "گروه",
+                name: "group",title: "<spring:message code="group"/>",
                 formatCellValue: function (value, record, rowNum, colNum, grid) {
                     if (typeof value === "undefined")
                         return "ندارد"; else return value
                 },
                 length: "250"
             },
-
-            // {
-            //     name: "enableStatus", title: "وضعیت",
-            //     formatCellValue: function (value, record, rowNum, colNum, grid) {
-            //         if (value === false) return "غیر فعال";
-            //         if (value === true) return "فعال"
-            //     }
-            //
-            // },
-        ],
+                ],
         emptyMessage: "click a row in the grid"
     })
 
@@ -342,11 +335,11 @@
 
             {
                 name: "titleFa",
-                title: "نام فارسی",
+              title: "<spring:message code="title"/>",
                 required: true,
                 type: 'text',
                 height: 35,
-                requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
+               //requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                 width: "171",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber, TrValidators.NotContainSpecialChar]
             },
@@ -364,14 +357,14 @@
                 {name: "checkListId", hidden: true,},
                 {
                     name: "titleFa",
-                    title: "نام فارسی",
+                  title: "<spring:message code="title"/>",
                     type: 'text',
                     required: true,
                     height: 35,
                     requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                     width: "*",
                 },
-                {name: "group", title: " گروه", type: 'text', height: 35, width: "*"},
+                {name: "group",title: "<spring:message code="group"/>", type: 'text', height: 35, width: "*"},
             ]
     });
 
@@ -499,13 +492,13 @@
         nullGroupTitle: "",
         dataSource: RestDataSource_Class_Item,
         fields: [
-            {name: "checkListItem.group", title: "گروه", align: "center", hidden: true},
+            {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
             {name: "id", primaryKey: true, hidden: true},
-            {name: "checkListItem.titleFa", title: "نام فارسی", canEdit: false, align: "center"},
+            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
 
             {
                 name: "description",
-                title: "توضیحات",
+               title: "<spring:message code="description"/>",
                 canEdit: true,
                 align: "center",
                 change: function (form, item, value) {
@@ -515,7 +508,7 @@
                 }
 
             },
-            {name: "enableStatus", title: "وضعیت", canEdit: true, type: "boolean", align: "center"},
+            {name: "enableStatus", title: "فعال/غیرفعال", canEdit: true, type: "boolean", align: "center"},
         ],
 
     });
@@ -1056,7 +1049,8 @@
     function show_CheckListItemActionResult(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_CheckListItem.invalidateCache();
-            // if (resp.data.length > 0) {
+           ListGrid_Class_Item.invalidateCache();
+
             var OK = isc.Dialog.create({
                 message: "عملیات با موفقیت انجام شد",
                 icon: "[SKIN]say.png",
