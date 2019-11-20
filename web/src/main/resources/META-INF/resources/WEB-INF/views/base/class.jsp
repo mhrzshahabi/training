@@ -1217,6 +1217,12 @@
                 )
             },
             {
+                title: "<spring:message code="student.plural"/>",//جلسات
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/personnel"}
+                )
+            },
+            {
                 title: "<spring:message code="alarms"/>",//هشدارها
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/alarms-tab"}

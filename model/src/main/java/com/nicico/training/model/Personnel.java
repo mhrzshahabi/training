@@ -90,6 +90,9 @@ public class Personnel {
     @Column(name = "job_title")
     private String jobTitle;
 
+    @Column(name = "employment_status_id")
+    private Integer employmentStatusId;
+
     @Column(name = "employment_status_title")
     private String employmentStatus;
 
@@ -129,7 +132,7 @@ public class Personnel {
     @Column(name = "work_days")
     private String workDays;
 
-    @Column(name = "personnel_no_2")
+    @Column(name = "emp_no")
     private String personnelNo2;
 
     @Column(name = "insurance_code")
