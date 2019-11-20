@@ -210,7 +210,10 @@
         var DynamicForm_Session = isc.DynamicForm.create({
                 numCols: 5,
                 colWidths: ["10%", "30%", "10%", "10%", "30%"],
-                padding: 5,
+                padding: 10,
+                isGroup: true,
+                groupTitle: "اطلاعات جلسه",
+                groupBorderCSS: "1px solid lightBlue",
                 fields:
                     [
                         {
@@ -340,33 +343,54 @@
                                 }
                             }
                         },
-
                         {
-                            name: "", type: "radioGroup", title: "hi",
+                            name: "sessionType",
+                            title: "نوع جلسه:",
+                            type: "selectItem",
+                            textAlign: "center",
+                            required: true,
                             valueMap: {
-                                "1":"برنامه ریزی",
-                                "2":"در حال اجرا",
-                                "3":"پایان یافته",
+                                1: "آموزش",
+                                2: "آزمون"
                             }
+                        },
+                        {
+                            type: "SpacerItem"
+                        },
+                        {
+                            name: "sessionState",
+                            title: "وضعیت جلسه:",
+                            type: "selectItem",
+                            textAlign: "center",
+                            required: true,
+                            valueMap: {
+                                1: "شروع نشده",
+                                2: "برگزاری",
+                                3: "پایان"
+                            }
+                        },
+                        {
+                            name:"sessionTime",
+                            title:"ساعت جلسه :",
+                            wrapTitle:true,
+                            type:"radioGroup",
+                            fillHorizontalSpace:true,
+                            defaultValue:"1",
+                            required:true,
+                            valueMap: {
+                                "1":"8-10",
+                                "2":"10-12",
+                                "3":"14-16",
+                            },
+                        },
+                        {
+                            type: "SpacerItem"
+                        },
+                        {
+                            name: "description",
+                            title: "توضیحات",
+                            width: "*"
                         }
-                        ,
-                        {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true},
-                        {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true},
-                        {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true},
-                        <%--{--%>
-                        <%--    name: "unitCode",--%>
-                        <%--    title: "<spring:message code="unitCode"/>",--%>
-                        <%--    type: "text",--%>
-                        <%--    required: true,--%>
-                        <%--    length: 10--%>
-                        <%--},--%>
-                        <%--{--%>
-                        <%--    name: "operationalUnit",--%>
-                        <%--    title: "<spring:message code="unitName"/>",--%>
-                        <%--    type: "text",--%>
-                        <%--    required: true,--%>
-                        <%--    length: 100--%>
-                        <%--}--%>
                     ]
             })
         ;
