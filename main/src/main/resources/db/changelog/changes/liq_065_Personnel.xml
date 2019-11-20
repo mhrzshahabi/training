@@ -2,9 +2,9 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1574147357699-160">
+    <changeSet author="ghazanfari_f (generated)" id="1574236344509-159">
         <createTable tableName="tbl_personnel">
-            <column name="auto_id" type="NUMBER(19, 0)">
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)">
                 <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
             </column>
             <column name="active" type="NUMBER(10, 0)"/>
@@ -44,7 +44,6 @@
             <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
             <column name="national_code" type="VARCHAR2(255 CHAR)"/>
             <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
             <column name="personnel_no_2" type="VARCHAR2(255 CHAR)"/>
             <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
             <column name="post_code" type="VARCHAR2(255 CHAR)"/>

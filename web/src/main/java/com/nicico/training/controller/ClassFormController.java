@@ -98,4 +98,9 @@ public class ClassFormController {
 	public String attachmentsTab() {
 		return "classTabs/classAttachments";
 	}
+
+	@RequestMapping("/personnel")
+	public String showStudentsForm() {
+		return "classTabs/personnel";
+	}
 }

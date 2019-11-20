@@ -13,13 +13,12 @@ import java.io.Serializable;
 @Accessors(chain = true)
 public class PersonnelDTO implements Serializable {
 
+
     @Getter
     @Setter
     @Accessors
     @ApiModel("Personnel - Info")
     public static class Info {
-
-        private Long autoId;
         private Long id;
         private String personnelNo;
         private String firstName;
