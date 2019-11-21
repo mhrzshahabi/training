@@ -89,8 +89,16 @@
             fields:
                 [
                     {name: "id", primaryKey: true},
-                    {name: "unitCode"},
-                    {name: "operationalUnit"}
+                    {name: "dayCode"},
+                    {name: "sessionDate"},
+                    {name: "sessionStartHour"},
+                    {name: "sessionEndHour"},
+                    {name: "sessionTypeId"},
+                    {name: "instituteId"},
+                    {name: "trainingPlaceId"},
+                    {name: "teacherId"},
+                    {name: "sessionState"},
+                    {name: "description"}
                 ],
             dataFormat: "json",
             fetchDataURL: sessionServiceUrl + "spec-list"
@@ -111,14 +119,54 @@
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
-                    name: "unitCode",
-                    title: "<spring:message code="unitCode"/>",
+                    name: "dayCode",
+                    title: "dayCode",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "sessionDate",
+                    title: "sessionDate",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "sessionStartHour",
+                    title: "sessionStartHour",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "sessionEndHour",
+                    title: "sessionEndHour",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "sessionTypeId",
+                    title: "sessionTypeId",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "instituteId",
+                    title: "instituteId",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "trainingPlaceId",
+                    title: "trainingPlaceId",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "teacherId",
+                    title: "teacherId",
                     align: "center",
                     filterOperator: "contains"
                 },
                 {
-                    name: "operationalUnit",
-                    title: "<spring:message code="unitName"/>",
+                    name: "sessionState",
+                    title: "sessionState",
+                    align: "center",
+                    filterOperator: "contains"
+                },                {
+                    name: "description",
+                    title: "description",
                     align: "center",
                     filterOperator: "contains"
                 }
@@ -248,7 +296,7 @@
                             type: "SpacerItem"
                         },
                         {
-                            name: "sessionInstitute",
+                            name: "instituteId",
                             editorType: "TrComboAutoRefresh",
                             title: "برگزار کننده",
                             autoFetchData: false,
@@ -268,7 +316,7 @@
                             }
                         },
                         {
-                            name: "sessionTrainingPlace",
+                            name: "trainingPlaceId",
                             editorType: "TrComboAutoRefresh",
                             title: "محل برگزاری:",
                             align: "center",
@@ -283,8 +331,8 @@
                                 {name: "capacity"}
                             ],
                             click: function (form, item) {
-                                if (form.getValue("sessionInstitute")) {
-                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("sessionInstitute") + "/training-places";
+                                if (form.getValue("instituteId")) {
+                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
                                     item.fetchData();
                                 } else {
                                     RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
@@ -299,7 +347,7 @@
                             type: "SpacerItem"
                         },
                         {
-                            name: "sessionTeacher",
+                            name: "teacherId",
                             title: "<spring:message code='trainer'/>:",
                             textAlign: "center",
                             type: "ComboBoxItem",
@@ -324,8 +372,8 @@
 
                                 if (ListGrid_Class_JspClass.getSelectedRecord() != null) {
 
-                                    var ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                                    var courseId = ClassRecord.course.id;
+                                    let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                                    let courseId = ClassRecord.course.id;
 
                                     RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
                                     item.fetchData();
@@ -344,7 +392,7 @@
                             }
                         },
                         {
-                            name: "sessionType",
+                            name: "sessionTypeId",
                             title: "نوع جلسه:",
                             type: "selectItem",
                             textAlign: "center",
@@ -370,17 +418,17 @@
                             }
                         },
                         {
-                            name:"sessionTime",
-                            title:"ساعت جلسه :",
-                            wrapTitle:true,
-                            type:"radioGroup",
-                            fillHorizontalSpace:true,
-                            defaultValue:"1",
-                            required:true,
+                            name: "sessionTime",
+                            title: "ساعت جلسه :",
+                            wrapTitle: true,
+                            type: "radioGroup",
+                            fillHorizontalSpace: true,
+                            defaultValue: "1",
+                            required: true,
                             valueMap: {
-                                "1":"8-10",
-                                "2":"10-12",
-                                "3":"14-16",
+                                "1": "8-10",
+                                "2": "10-12",
+                                "3": "14-16",
                             },
                         },
                         {
@@ -473,7 +521,13 @@
             if (!DynamicForm_Session.validate())
                 return;
 
+            let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            let classId = ClassRecord.id;
+
             let sessionData = DynamicForm_Session.getValues();
+
+            //**add new property to form values**
+            sessionData["classId"] = classId;
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }

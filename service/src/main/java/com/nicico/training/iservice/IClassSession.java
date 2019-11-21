@@ -12,7 +12,7 @@ public interface IClassSession {
 
    List<ClassSessionDTO.Info> list();
 
-   ClassSessionDTO.Info create(ClassSessionDTO.Create request);
+   ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request);
 
    ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request);
 

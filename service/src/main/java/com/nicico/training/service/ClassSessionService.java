@@ -15,7 +15,6 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,12 +52,64 @@ public class ClassSessionService implements IClassSession {
 
     //*********************************
 
+    public Map<Integer, List<String>> MainHoursRange() {
+        //********main hours range*********
+        Map<Integer, List<String>> mainHoursRange = new HashMap<>();
+        mainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
+        mainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
+        mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
+
+        return mainHoursRange;
+    }
+
+    //*********************************
+
+    public String[] daysName() {
+        //********short week days*********
+        return new DateFormatSymbols().getShortWeekdays();
+    }
+
+    //*********************************
+
     @Transactional
     @Override
-    public ClassSessionDTO.Info create(ClassSessionDTO.Create request) {
-        ClassSession operationalUnit = modelMapper.map(request, ClassSession.class);
+    public ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request) {
+
+        //********generated sessions list*********
+        ClassSessionDTO.GeneratedSessions session;
+
+        //********date utils*********
+        Calendar calendar = Calendar.getInstance();
+        Date gregorianSessionDate = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
         try {
-            return modelMapper.map(classSessionDAO.saveAndFlush(operationalUnit), ClassSessionDTO.Info.class);
+            gregorianSessionDate = formatter.parse(DateUtil.convertKhToMi1(request.getSessionDate()));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        calendar.setTime(gregorianSessionDate);
+
+        session = new ClassSessionDTO.GeneratedSessions(
+                request.getClassId(),
+                daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                request.getSessionDate(),
+                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                request.getSessionTypeId(),
+                request.getInstituteId(),
+                request.getTrainingPlaceId(),
+                request.getTeacherId(),
+                request.getSessionState(),
+                request.getDescription()
+        );
+
+
+        ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+        try {
+            return modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
@@ -108,40 +159,7 @@ public class ClassSessionService implements IClassSession {
         return SearchUtil.search(classSessionDAO, request, operationalUnit -> modelMapper.map(operationalUnit, ClassSessionDTO.Info.class));
     }
 
-
-    //**********************
-    //**********************
-    //**********************
-    //**********************
-
-//    public static void main(String[] args) {
-//
-////        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
-//        List<String> days_code = Arrays.asList("Sat", "Sun", "Mon", "Tue", "Wed", "Thu", "Fri");
-//
-//        List<Integer> hours_range = Arrays.asList(1, 2, 3);
-//
-//        ClassSessionDTO.AutoSessionsRequirement AS = new ClassSessionDTO.AutoSessionsRequirement
-//                (
-//                        1L,
-//                        days_code,
-//                        1,
-//                        "1398/07/01",
-//                        "1398/08/30",
-//                        hours_range, 1,
-//                        221,
-//                        22,
-//                        602L,
-//                        1,
-//                        "توضیحات"
-//                );
-//
-//
-//        ClassSessionService fff = new ClassSessionService(null, null);
-//        fff.generateSessions(AS);
-//
-//
-//    }
+    //*********************************
 
     @Transactional
     @Override
@@ -178,16 +196,8 @@ public class ClassSessionService implements IClassSession {
         String classStartDate = autoSessionsRequirement.getStartDate();
         String classEndDate = autoSessionsRequirement.getEndDate();
 
-
-        //********main hours range*********
-        Map<Integer, List<String>> mainHoursRange = new HashMap<>();
-        mainHoursRange.put(1, Arrays.asList("08:00", "10:00"));
-        mainHoursRange.put(2, Arrays.asList("10:00", "12:00"));
-        mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
-
         //********date utils*********
         Calendar calendar = Calendar.getInstance();
-        String daysName[] = new DateFormatSymbols().getShortWeekdays();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
         Date gregorianStartDate = null, gregorianEndDate = null;
@@ -209,7 +219,7 @@ public class ClassSessionService implements IClassSession {
             //days code is null
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
-        } else if (mainHoursRange.size() == 0) {
+        } else if (MainHoursRange().size() == 0) {
             //hours rage is null
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
@@ -239,7 +249,7 @@ public class ClassSessionService implements IClassSession {
         while (gregorianStartDate.compareTo(gregorianEndDate) <= 0) {
 
             calendar.setTime(gregorianStartDate);
-            if (daysCode.contains(daysName[calendar.get(Calendar.DAY_OF_WEEK)])) {
+            if (daysCode.contains(daysName()[calendar.get(Calendar.DAY_OF_WEEK)])) {
 
                 if (!holidays.contains(DateUtil.convertMiToKh(formatter.format(gregorianStartDate)))) {
 
@@ -247,10 +257,10 @@ public class ClassSessionService implements IClassSession {
 
                         sessions.add(new ClassSessionDTO.GeneratedSessions(
                                 classId,
-                                daysName[calendar.get(Calendar.DAY_OF_WEEK)],
+                                daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
                                 DateUtil.convertMiToKh(formatter.format(gregorianStartDate)),
-                                mainHoursRange.get(range).get(0),
-                                mainHoursRange.get(range).get(1),
+                                MainHoursRange().get(range).get(0),
+                                MainHoursRange().get(range).get(1),
                                 sessionTypeId,
                                 autoSessionsRequirement.getInstituteId().intValue(),
                                 autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -195,6 +196,7 @@ public class ClassSessionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("GeneratedSessions")
     @AllArgsConstructor
+    @NoArgsConstructor
     public static class GeneratedSessions {
 
         @NotNull
@@ -220,6 +222,52 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer SessionTypeId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer instituteId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer trainingPlaceId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long teacherId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer sessionState;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String description;
+
+    }
+
+    //*********************************
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ManualSession")
+    public static class ManualSession implements Serializable {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Long classId;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionDate;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionTime;
+
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer sessionTypeId;
 
         @NotNull
         @ApiModelProperty(required = true)

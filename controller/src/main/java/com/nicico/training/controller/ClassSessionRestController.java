@@ -67,10 +67,17 @@ public class ClassSessionRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.Create req) {
-        ClassSessionDTO.Create create = (new ModelMapper()).map(req, ClassSessionDTO.Create.class);
+    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req) {
+        ClassSessionDTO.ManualSession create = (new ModelMapper()).map(req, ClassSessionDTO.ManualSession.class);
         return new ResponseEntity<>(classSessionService.create(create), HttpStatus.CREATED);
     }
+
+//    @Loggable
+//    @PostMapping
+//    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.Create req) {
+//        ClassSessionDTO.Create create = (new ModelMapper()).map(req, ClassSessionDTO.Create.class);
+//        return new ResponseEntity<>(classSessionService.create(create), HttpStatus.CREATED);
+//    }
 
     //*********************************
 
