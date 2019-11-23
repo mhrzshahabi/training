@@ -19,8 +19,8 @@ import javax.persistence.*;
 public class Student extends Auditable {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "student_seq")
-    @SequenceGenerator(name = "student_seq", sequenceName = "seq_student_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_student_id")
+    @SequenceGenerator(name = "seq_student_id", sequenceName = "seq_student_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private long id;
 

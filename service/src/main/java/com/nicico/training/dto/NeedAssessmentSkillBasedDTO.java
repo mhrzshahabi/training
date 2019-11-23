@@ -69,6 +69,21 @@ public class NeedAssessmentSkillBasedDTO implements Serializable {
         private E object;
         private String objectType;
         private Long objectId;
+
+        public String getObjectTypeFa(){
+            switch (this.objectType) {
+                case "Job":
+                    return "شغل";
+                case "Post":
+                    return "پست";
+                case "JobGroup":
+                    return "گروه شغلی";
+                case "PostGroup":
+                    return "گروه پستی";
+                default:
+                    return null;
+            }
+        }
     }
 
 }

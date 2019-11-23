@@ -68,6 +68,7 @@
                 {name: "object"},
                 {name: "objectId"},
                 {name: "objectType"},
+                {name: "objectTypeFa"},
                 {name: "skill.code"},
                 {name: "skill.titleFa"},
                 {name: "skill.id"},
@@ -101,7 +102,7 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
 
-        groupByField: "objectType",
+        groupByField: "objectTypeFa",
         groupStartOpen: "all",
 
         canDragResize: true,
@@ -150,16 +151,15 @@
                     ],
                     change: function (form, item, value) {
                         ListGrid_For_This_Object_Skills_Edit_NASB(this.grid.getRecord(this.rowNum), value);
+                    },
+                    sortNormalizer: function (record) {
+                        return record.eneedAssessmentPriority.titleFa;
                     }
                 },
                 {
-                    name: "object.titleFa",
+                    name: "objectTypeFa",
                     hidden: true,
-                },
-                {
-                    name: "objectType",
-                    hidden: true,
-                },
+                }
             ],
         removeRecordClick: function (rowNum) {
             if (this.getRecord(rowNum).objectType !== objectType_NASB) {
