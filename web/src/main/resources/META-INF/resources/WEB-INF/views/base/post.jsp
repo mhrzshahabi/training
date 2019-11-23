@@ -24,6 +24,13 @@
                     refreshPostLG_post();
                 }
             }),
+            isc.ToolStripButton.create({
+                icon:"[SKIN]/RichTextEditor/print.png",
+                title: "<spring:message code='print'/>",
+                click:function () {
+                    print_PostListGrid("PDF");
+                }
+            }),
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -115,4 +122,21 @@
     // ------------------------------------------- Functions -------------------------------------------
     function refreshPostLG_post() {
         PostLG_post.filterByEditor();
+    };
+    function print_PostListGrid(type) {
+        var advancedCriteria_post = PostLG_post.getCriteria();
+        var print_form_post = isc.DynamicForm.create({
+            method:"POST",
+            action: "<spring:url value="/post/print_list"/>"+type,
+            target: "_Blank",
+            canSubmit: true,
+            fields:[
+                {name:"CriteriaStr",type:"hidden"},
+                {name:"myToken",type:"hidden"}
+            ]
+        })
+        print_form_post.setValue("CriteriaStr",JSON.stringify(advancedCriteria_post));
+        print_form_post.setValue("myToken","<%=accessToken%>");
+        print_form_post.show();
+        print_form_post.submitForm();
     };

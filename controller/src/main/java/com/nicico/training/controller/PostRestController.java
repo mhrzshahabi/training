@@ -3,22 +3,30 @@ ghazanfari_f, 8/29/2019, 11:41 AM
 */
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.service.PostService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -27,7 +35,11 @@ import java.util.List;
 public class PostRestController {
 
     private final PostService postService;
+    private final ReportUtil reportUtil;
     private final ModelMapper modelMapper;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
+
 
     @GetMapping("/list")
     public ResponseEntity<List<PostDTO.Info>> list() {
@@ -45,6 +57,33 @@ public class PostRestController {
     @GetMapping(value = "/iscList/job/{jobId}")
     public ResponseEntity<ISC<PostDTO.Info>> listByJobId(HttpServletRequest iscRq, @PathVariable Long jobId) throws IOException {
         return null;
+    }
+
+    @Loggable
+    @PostMapping(value = {"/print_list/{type}"})
+    public void printList(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+
+        final SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/PostList.jasper", params, jsonDataSource, response);
     }
 
 //        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));

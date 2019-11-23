@@ -85,7 +85,7 @@ public class Tclass extends Auditable {
     @Transient
     public List<Long> getTrainingPlaceIds() {
         List<Long> ids = new ArrayList<>();
-        trainingPlaceSet.forEach(c->ids.add(c.getId()));
+        trainingPlaceSet.forEach(c -> ids.add(c.getId()));
         return ids;
     }
 
@@ -139,12 +139,9 @@ public class Tclass extends Auditable {
     private String topology;//چیدمان
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "tbl_student_class",
+    @JoinTable(name = "tbl_class_student",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
-
-
-
 
 }

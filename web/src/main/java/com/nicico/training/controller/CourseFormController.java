@@ -28,7 +28,6 @@ public class CourseFormController {
 
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
-//		String token = (String) request.getSession().getAttribute(ConstantVARs.ACCESS_TOKEN);
 		String token = request.getParameter("myToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
