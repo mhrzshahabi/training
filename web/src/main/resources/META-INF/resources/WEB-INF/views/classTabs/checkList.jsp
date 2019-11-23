@@ -13,12 +13,70 @@
     var CheckListItem_method = "POST";
     var changed_field;
     var All_Priorities;
+    var totalRows;
+    var RestDataSource_CheckList = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"},
+
+        ],
+        fetchDataURL: checklistUrl + "spec-list?_startRow=0&_endRow=1000",
+
+    });
+
+      var RestDataSource_ClassCheckList =isc.TrDS.create({
+        fields: [
+               {name: "id", primaryKey: true},
+               {name: "titleFa"},
+        ],
+
+    });
+
+
+    var RestDataSource_Class_Item = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
+            {name: "description", title: "<spring:message code="description"/>", align: "center",},
+            {name: "enableStatus", title: "وضعیت", align: "center"},
+        ],
+
+        fetchDataURL: classCheckListUrl + "spec-list?_startRow=0&_endRow=1000",
+        updateDataURL: classCheckListUrl + "edit",
+    });
+
+
+    var RestDataSource_SelectCheckList = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true},
+            {name: "titleFa"}
+        ],
+        fetchDataURL: checklistUrl + "spec-list",
+    });
+
+
+    var RestDataSource_CheckListItem = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "checkListId", hidden: true},
+            {name: "titleFa", title: "آیتم", align: "center"},
+            {name: "group", title: "<spring:message code="group"/>", align: "center"},
+            {name: "isDeleted", hidden: true}
+
+
+        ],
+
+    });
+
+
 
       Menu_ListGrid_CheckList = isc.Menu.create({
         data: [
             {
                  title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
                     ListGrid_CheckList.invalidateCache();
+
+
                 }
             }, {
                      title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
@@ -61,60 +119,6 @@
 
 
 
-    var RestDataSource_CheckList = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"},
-
-        ],
-        fetchDataURL: checklistUrl + "spec-list",
-
-    });
-
-      var RestDataSource_ClassCheckList =isc.TrDS.create({
-        fields: [
-               {name: "id", primaryKey: true},
-               {name: "titleFa"},
-        ],
-
-    });
-
-
-    var RestDataSource_Class_Item = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
-            {name: "description", title: "<spring:message code="description"/>", align: "center",},
-            {name: "enableStatus", title: "وضعیت", align: "center"},
-        ],
-
-        fetchDataURL: classCheckListUrl + "spec-list",
-        updateDataURL: classCheckListUrl + "edit",
-    });
-
-
-    var RestDataSource_SelectCheckList = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"}
-        ],
-        fetchDataURL: checklistUrl + "spec-list",
-    });
-
-
-    var RestDataSource_CheckListItem = isc.TrDS.create({
-        fields: [
-            {name: "id", hidden: true},
-            {name: "checkListId", hidden: true},
-            {name: "titleFa", title: "آیتم", align: "center"},
-            {name: "group", title: "<spring:message code="group"/>", align: "center"},
-            {name: "isDeleted", hidden: true}
-
-
-        ],
-
-    });
-
 
 
 
@@ -122,7 +126,9 @@
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_CheckList.invalidateCache();
+
+            ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
+             totalRecords_Item.setContents("تعداد آیتم ها" + ":&nbsp;<b>" + "" + "</b>");
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButton.create({
@@ -216,11 +222,13 @@
         ]
     });
 
-
-    // RestDataSource_CheckListItem.findAll("isDeleted",true).setProperty("enabled", false);
     var ListGrid_CheckListItem = isc.TrLG.create({
+        filterOperator: "iContains",
         alternateRecordStyles: true,
-        showFilterEditor: false,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        showFilterEditor: true,
         contextMenu: Menu_ListGrid_CheckListItem,
         dataSource: RestDataSource_CheckListItem,
         fields: [
@@ -240,7 +248,7 @@
         },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
-            var totalRows = this.data.getLength();
+             totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
 
               totalRecords_Item.setContents("تعداد آیتم ها" + ":&nbsp;<b>" + totalRows + "</b>");
@@ -252,8 +260,11 @@
     })
 
     var ListGrid_CheckList = isc.TrLG.create({
-        //  alternateRecordStyles: true,
-        showFilterEditor: false,
+         filterOperator: "iContains",
+       allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        showFilterEditor: true,
         dataSource: RestDataSource_CheckList,
         contextMenu:Menu_ListGrid_CheckList,
         fields: [
@@ -279,17 +290,17 @@
         ID: "ListGrid_CheckListItem_DetailViewer",
         width: "100%",
         fields: [
-            {name: "titleFa",title: "<spring:message code="title"/>"},
+            {name: "titleFa",title: "<spring:message code="title"/>",},
             {
                 name: "group",title: "<spring:message code="group"/>",
                 formatCellValue: function (value, record, rowNum, colNum, grid) {
-                    if (typeof value === "undefined")
-                        return "ندارد"; else return value
+                if (typeof value === "undefined")
+                      return "ندارد";  else return value;
                 },
                 length: "250"
             },
                 ],
-        emptyMessage: "click a row in the grid"
+        emptyMessage: " "
     })
 
 
@@ -396,8 +407,9 @@
     //==========================================Window========================
     var Window_CheckList_Design = isc.Window.create({
         title: "طراحی چک لیست",
+        minWidth:1024,
         autoSize: false,
-        width: 950,
+        width: 1000,
         height: 500,
         closeClick: function () {
             this.hide();
@@ -438,6 +450,8 @@
 
             }), isc.Button.create({
                 title: "لغو",
+
+                icon: "[SKIN]ask.png",
                 click: function () {
                     Window_CheckList_Add.close();
                 }
@@ -477,9 +491,10 @@
 
     //================================= تکمیل چک لیست===============================================تکمیل چک لیست=========================================تکمیل چک لیست======================================تکمیل چک لیست=====================
     var ListGrid_Class_Item = isc.ListGrid.create({
+
         showRowNumbers: false,
         alternateRecordStyles: true,
-        showFilterEditor: true,
+        showFilterEditor: false,
         autoFetchData: true,
         editEvent: "click",
         editByCell: true,
@@ -531,7 +546,7 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
-    minWidth:1024,
+        minWidth:1024,
         title: "تکمیل چک لیست",
         width: 1024,
         autoSize: true,
@@ -554,6 +569,7 @@
 
 
     var ListGrid_ClassCheckList = isc.TrLG.create({
+         selectionType: "none",
         showFilterEditor: false,
         dataSource: RestDataSource_ClassCheckList,
         styleName:"myparent",
@@ -586,14 +602,27 @@
                 name: "checkList",
                 ID: "checkListDynamicFormField",
                 title: "انتخاب فرم مورد نظر ",
+
+                editorType: "ComboBoxItem",
+                filterOperator: "iContains",
+                 changeOnKeypress: true,
+                  textMatchStyle: "startsWith",
+
                 textAlign: "center",
                 optionDataSource: RestDataSource_SelectCheckList,
                 width: "270",
-                changeOnKeypress: true,
+
                 filterOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
                 filterFields: ["titleFa"],
+                 pickListFields: [
+                    {
+                        name: "titleFa",
+                        changeOnKeypress: true,
+                        filterOperator: "iContains"
+                    }
+                ],
                 changed: function (form, item, value) {
 
                 },
@@ -794,7 +823,7 @@
     function show_CheckListAddForm() {
         CheckList_method = "POST";
         DynamicForm_CheckList.clearValues();
-        Window_CheckList_Add.setTitle("<spring:message code="create"/>");
+        Window_CheckList_Add.setTitle("<spring:message code="create"/>"+"&nbsp;"+"عنوان چک لیست");
         Window_CheckList_Add.show();
 
 
@@ -829,7 +858,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -870,7 +899,7 @@
             CheckList_method = "PUT";
             DynamicForm_CheckList.clearValues();
             DynamicForm_CheckList.editRecord(record);
-            Window_CheckList_Add.setTitle("<spring:message code="edit"/>");
+            Window_CheckList_Add.setTitle("<spring:message code="edit"/>"+"&nbsp;"+"عنوان چک لیست");
             Window_CheckList_Add.show();
 
         }
@@ -924,7 +953,7 @@
                 }, 2000);
             } else {
                 var OK = isc.Dialog.create({
-                    message: "آیتم های فرم مورد نظر در کلاس استفاده شده",
+                    message: "آیتم های فرم مورد نظر در کلاس استفاده شده و قابل حذف نمی باشد",
                     icon: "[SKIN]say.png",
                     title: "هشدار"
                 });
