@@ -6,8 +6,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-//
-<script>
+// <script>
 
     // <<========== Global - Variables ==========
     {
@@ -91,14 +90,19 @@
                 [
                     {name: "id", primaryKey: true},
                     {name: "dayCode"},
+                    {name: "dayName"},
                     {name: "sessionDate"},
                     {name: "sessionStartHour"},
                     {name: "sessionEndHour"},
                     {name: "sessionTypeId"},
+                    {name: "sessionType"},
                     {name: "instituteId"},
+                    {name: "institute.titleFa"},
                     {name: "trainingPlaceId"},
                     {name: "teacherId"},
+                    {name: "teacher"},
                     {name: "sessionState"},
+                    {name: "sessionStateFa"},
                     {name: "description"}
                 ],
             dataFormat: "json",
@@ -142,6 +146,12 @@
                     title: "dayCode",
                     align: "center",
                     filterOperator: "contains"
+                },
+                {
+                    name: "dayName",
+                    title: "dayName",
+                    align: "center",
+                    filterOperator: "contains"
                 }, {
                     name: "sessionDate",
                     title: "sessionDate",
@@ -162,12 +172,24 @@
                     title: "sessionTypeId",
                     align: "center",
                     filterOperator: "contains"
+                },
+                {
+                    name: "sessionType",
+                    title: "sessionType",
+                    align: "center",
+                    filterOperator: "contains"
                 }, {
                     name: "instituteId",
                     title: "instituteId",
                     align: "center",
                     filterOperator: "contains"
-                }, {
+                },
+                {
+                    name: "institute.titleFa",
+                    title: "institute",
+                    align: "center",
+                    filterOperator: "contains"
+                },{
                     name: "trainingPlaceId",
                     title: "trainingPlaceId",
                     align: "center",
@@ -179,8 +201,20 @@
                     filterOperator: "contains"
                 },
                 {
+                    name: "teacher",
+                    title: "teacher",
+                    align: "center",
+                    filterOperator: "contains"
+                },
+                {
                     name: "sessionState",
                     title: "sessionState",
+                    align: "center",
+                    filterOperator: "contains"
+                },
+                {
+                    name: "sessionStateFa",
+                    title: "sessionStateFa",
                     align: "center",
                     filterOperator: "contains"
                 }, {
@@ -413,10 +447,8 @@
                     {
                         name: "sessionTypeId",
                         title: "نوع جلسه:",
-                        wrapTitle: true,
-                        type: "radioGroup",
-                        fillHorizontalSpace: true,
-                        defaultValue: "1",
+                        type: "selectItem",
+                        textAlign: "center",
                         required: true,
                         valueMap: {
                             "1": "آموزش",
@@ -429,10 +461,8 @@
                     {
                         name: "sessionState",
                         title: "وضعیت جلسه:",
-                        wrapTitle: true,
-                        type: "radioGroup",
-                        fillHorizontalSpace: true,
-                        defaultValue: "1",
+                        type: "selectItem",
+                        textAlign: "center",
                         required: true,
                         valueMap: {
                             "1": "شروع نشده",
@@ -443,15 +473,13 @@
                     {
                         name: "sessionTime",
                         title: "ساعت جلسه :",
-                        wrapTitle: true,
-                        type: "radioGroup",
-                        fillHorizontalSpace: true,
-                        defaultValue: "1",
+                        type: "selectItem",
+                        textAlign: "center",
                         required: true,
                         valueMap: {
                             "1": "8-10",
                             "2": "10-12",
-                            "3": "14-16",
+                            "3": "14-16"
                         },
                     },
                     {
@@ -550,6 +578,8 @@
 
             //**add new property to form values**
             sessionData["classId"] = classId;
+            sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
+            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
 
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }

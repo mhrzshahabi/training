@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.Institute;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
@@ -27,6 +28,9 @@ public class ClassSessionDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String dayCode;
+
+    @ApiModelProperty(required = true)
+    private String dayName;
 
     @ApiModelProperty(required = true)
     private String sessionDate;
@@ -73,6 +77,16 @@ public class ClassSessionDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+
+        private InstituteDTO.InstituteTitle institute;
+
+        private TeacherDTO.TeacherFullNameTuple teacher;
+        public String getTeacher(){
+            if (teacher!=null)
+                return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+            else
+                return " ";
+        }
     }
 
     //*********************************
@@ -212,6 +226,10 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private String dayCode;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String dayName;
 
         @NotNull
         @ApiModelProperty(required = true)

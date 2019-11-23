@@ -8,7 +8,6 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
-import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
@@ -38,17 +37,17 @@ public class ClassSessionService implements IClassSession {
     @Transactional(readOnly = true)
     @Override
     public ClassSessionDTO.Info get(Long id) {
-        final Optional<ClassSession> optionalOperationalUnit = classSessionDAO.findById(id);
-        final ClassSession operationalUnit = optionalOperationalUnit.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        return modelMapper.map(operationalUnit, ClassSessionDTO.Info.class);
+        final Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
+        final ClassSession classSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+        return modelMapper.map(classSession, ClassSessionDTO.Info.class);
     }
 
     //*********************************
     @Transactional
     @Override
     public List<ClassSessionDTO.Info> list() {
-        List<ClassSession> operationalUnitList = classSessionDAO.findAll();
-        return modelMapper.map(operationalUnitList, new TypeToken<List<ClassSessionDTO.Info>>() {
+        List<ClassSession> classSessionList = classSessionDAO.findAll();
+        return modelMapper.map(classSessionList, new TypeToken<List<ClassSessionDTO.Info>>() {
         }.getType());
     }
 
@@ -62,6 +61,31 @@ public class ClassSessionService implements IClassSession {
         mainHoursRange.put(3, Arrays.asList("14:00", "16:00"));
 
         return mainHoursRange;
+    }
+
+    //*********************************
+
+    public String getDayNameFa(String dayCode) {
+
+        switch (dayCode) {
+            case "Sat":
+                return "شنبه";
+            case "Sun":
+                return "یکشنبه";
+            case "Mon":
+                return "دوشنبه";
+            case "Tue":
+                return "سه شنبه";
+            case "Wed":
+                return "چهارشنبه";
+            case "Thu":
+                return "پنجشنبه";
+            case "Fri":
+                return "جمعه";
+            default:
+                return "";
+        }
+
     }
 
     //*********************************
@@ -97,6 +121,7 @@ public class ClassSessionService implements IClassSession {
         session = new ClassSessionDTO.GeneratedSessions(
                 request.getClassId(),
                 daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                 request.getSessionDate(),
                 MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
                 MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
@@ -126,14 +151,14 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request) {
-        Optional<ClassSession> optionalOperationalUnit = classSessionDAO.findById(id);
-        ClassSession currentOperationalUnit = optionalOperationalUnit.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        ClassSession operationalUnit = new ClassSession();
-        modelMapper.map(currentOperationalUnit, operationalUnit);
-        modelMapper.map(request, operationalUnit);
+        Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
+        ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+        ClassSession classSession = new ClassSession();
+        modelMapper.map(currentClassSession, classSession);
+        modelMapper.map(request, classSession);
 
         try {
-            return modelMapper.map(classSessionDAO.saveAndFlush(operationalUnit), ClassSessionDTO.Info.class);
+            return modelMapper.map(classSessionDAO.saveAndFlush(classSession), ClassSessionDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
@@ -153,8 +178,8 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public void delete(ClassSessionDTO.Delete request) {
-        final List<ClassSession> operationalUnitList = classSessionDAO.findAllById(request.getIds());
-        classSessionDAO.deleteAll(operationalUnitList);
+        final List<ClassSession> classSessionList = classSessionDAO.findAllById(request.getIds());
+        classSessionDAO.deleteAll(classSessionList);
     }
 
     //*********************************
@@ -162,7 +187,7 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(classSessionDAO, request, operationalUnit -> modelMapper.map(operationalUnit, ClassSessionDTO.Info.class));
+        return SearchUtil.search(classSessionDAO, request, classSession -> modelMapper.map(classSession, ClassSessionDTO.Info.class));
     }
 
     //*********************************
@@ -264,6 +289,7 @@ public class ClassSessionService implements IClassSession {
                         sessions.add(new ClassSessionDTO.GeneratedSessions(
                                 classId,
                                 daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                                getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                                 DateUtil.convertMiToKh(formatter.format(gregorianStartDate)),
                                 MainHoursRange().get(range).get(0),
                                 MainHoursRange().get(range).get(1),

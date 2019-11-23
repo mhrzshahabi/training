@@ -33,6 +33,9 @@ public class ClassSession extends Auditable {
     @Column(name = "c_day_code")
     private String dayCode;
 
+    @Column(name = "c_day_name")
+    private String dayName;
+
     @Column(name = "c_session_date")
     private String sessionDate;
 
