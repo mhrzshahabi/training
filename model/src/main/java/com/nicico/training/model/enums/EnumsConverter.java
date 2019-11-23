@@ -387,4 +387,64 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class ESessionStateConverter implements AttributeConverter<ESessionState, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(ESessionState entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public ESessionState convertToEntityAttribute(Integer id) {
+
+            for (ESessionState entry : ESessionState.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class ESessionTimeConverter implements AttributeConverter<ESessionTime, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(ESessionTime entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public ESessionTime convertToEntityAttribute(Integer id) {
+
+            for (ESessionTime entry : ESessionTime.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class ESessionTypeConverter implements AttributeConverter<ESessionType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(ESessionType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public ESessionType convertToEntityAttribute(Integer id) {
+
+            for (ESessionType entry : ESessionType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }

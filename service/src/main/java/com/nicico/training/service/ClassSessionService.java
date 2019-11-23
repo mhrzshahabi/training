@@ -8,6 +8,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
+import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +33,12 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
 
+    private final EnumsConverter.ESessionStateConverter eSessionStateConverter = new EnumsConverter.ESessionStateConverter();
+    private final EnumsConverter.ESessionTimeConverter eSessionTimeConverter = new EnumsConverter.ESessionTimeConverter();
+    private final EnumsConverter.ESessionTypeConverter eSessionTypeConverter = new EnumsConverter.ESessionTypeConverter();
+
     //*********************************
+
     @Transactional(readOnly = true)
     @Override
     public ClassSessionDTO.Info get(Long id) {
@@ -108,6 +114,7 @@ public class ClassSessionService implements IClassSession {
 
 
         ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+
         try {
             return modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -163,7 +170,7 @@ public class ClassSessionService implements IClassSession {
 
     @Transactional
     @Override
-    public List<ClassSessionDTO.GeneratedSessions> generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {
+    public void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {
 
         //********sending data from t_class*********
         //-----make days code list-----
@@ -211,7 +218,7 @@ public class ClassSessionService implements IClassSession {
         }
 
         //********validate sending data from t_class*********
-        if (gregorianStartDate.compareTo(gregorianEndDate) > 0) {
+        if (gregorianStartDate != null && gregorianEndDate != null && gregorianStartDate.compareTo(gregorianEndDate) > 0) {
             //start-date bigger than end-date
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
 
@@ -281,7 +288,19 @@ public class ClassSessionService implements IClassSession {
             classSessionDAO.saveAll(modelMapper.map(sessions, new TypeToken<List<ClassSession>>() {
             }.getType()));
         }
+    }
 
-        return sessions;
+    //*********************************
+
+    private void setEnums(ClassSession classSession, Integer marriedId) {
+        if (marriedId != null) {
+            classSession.setSessionState(modelMapper.map(eSessionStateConverter.convertToEntityAttribute(marriedId),Integer.class));
+        }
+//        if (militaryId != null) {
+//            personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(militaryId));
+//        }
+//        if (genderId != null) {
+//            personalInfo.setGender(eGenderConverter.convertToEntityAttribute(genderId));
+//        }
     }
 }

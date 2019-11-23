@@ -104,6 +104,24 @@
             fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
+        var RestDataSource_ESessionType = isc.TrDS.create({
+            fields: [{name: "id"}, {name: "titleFa"}
+            ],
+            fetchDataURL: enumUrl + "eSessionType/spec-list"
+        });
+
+        var RestDataSource_ESessionState = isc.TrDS.create({
+            fields: [{name: "id"}, {name: "titleFa"}
+            ],
+            fetchDataURL: enumUrl + "eSessionState/spec-list"
+        });
+
+        var RestDataSource_ESessionTime = isc.TrDS.create({
+            fields: [{name: "id"}, {name: "titleFa"}
+            ],
+            fetchDataURL: enumUrl + "eSessionTime/spec-list"
+        });
+
         var ListGrid_session = isc.TrLG.create({
             width: "100%",
             height: "100%",
@@ -123,37 +141,37 @@
                     title: "dayCode",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "sessionDate",
                     title: "sessionDate",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "sessionStartHour",
                     title: "sessionStartHour",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "sessionEndHour",
                     title: "sessionEndHour",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "sessionTypeId",
                     title: "sessionTypeId",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "instituteId",
                     title: "instituteId",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "trainingPlaceId",
                     title: "trainingPlaceId",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "teacherId",
                     title: "teacherId",
                     align: "center",
@@ -164,7 +182,7 @@
                     title: "sessionState",
                     align: "center",
                     filterOperator: "contains"
-                },                {
+                }, {
                     name: "description",
                     title: "description",
                     align: "center",
@@ -256,192 +274,243 @@
     {
         //*****create fields*****
         var DynamicForm_Session = isc.DynamicForm.create({
-                numCols: 5,
-                colWidths: ["10%", "30%", "10%", "10%", "30%"],
-                padding: 10,
-                isGroup: true,
-                groupTitle: "اطلاعات جلسه",
-                groupBorderCSS: "1px solid lightBlue",
-                fields:
-                    [
-                        {
-                            name: "sessionDate",
-                            title: "<spring:message code='date'/>",
-                            ID: "sessionDate_jspSession",
-                            required: true,
-                            hint: "YYYY/MM/DD",
-                            keyPressFilter: "[0-9/]",
-                            showHintInField: true,
-                            icons: [{
-                                src: "<spring:url value="calendar.png"/>",
-                                click: function (form) {
-                                    closeCalendarWindow();
-                                    displayDatePicker('sessionDate_jspSession', this, 'ymd', '/');
-                                }
-                            }],
-                            textAlign: "center",
+            numCols: 5,
+            colWidths: ["10%", "30%", "10%", "10%", "30%"],
+            padding: 10,
+            isGroup: true,
+            groupTitle: "اطلاعات جلسه",
+            groupBorderCSS: "1px solid lightBlue",
+            fields:
+                [
+                    {
+                        name: "sessionDate",
+                        title: "<spring:message code='date'/>",
+                        ID: "sessionDate_jspSession",
+                        required: true,
+                        hint: "YYYY/MM/DD",
+                        keyPressFilter: "[0-9/]",
+                        showHintInField: true,
+                        icons: [{
+                            src: "<spring:url value="calendar.png"/>",
                             click: function (form) {
+                                closeCalendarWindow();
+                                displayDatePicker('sessionDate_jspSession', this, 'ymd', '/');
+                            }
+                        }],
+                        textAlign: "center",
+                        click: function (form) {
 
-                            },
-                            changed: function (form, item, value) {
+                        },
+                        changed: function (form, item, value) {
 
-                                if (checkDate(value) === false) {
-                                    form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
-                                } else {
-                                    form.clearFieldErrors("sessionDate", true);
-                                }
+                            if (checkDate(value) === false) {
+                                form.addFieldErrors("sessionDate", "<spring:message code='msg.correct.date'/>", true);
+                            } else {
+                                form.clearFieldErrors("sessionDate", true);
                             }
-                        },
-                        {
-                            type: "SpacerItem"
-                        },
-                        {
-                            name: "instituteId",
-                            editorType: "TrComboAutoRefresh",
-                            title: "برگزار کننده",
-                            autoFetchData: false,
-                            optionDataSource: RestDataSource_Institute_JspSession,
-                            displayField: "titleFa",
-                            valueField: "id",
-                            textAlign: "center",
-                            filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
-                            required: true,
-                            pickListFields: [
-                                {name: "titleFa"},
-                                {name: "manager.firstNameFa"},
-                                {name: "manager.lastNameFa"}
-                            ],
-                            changed: function (form, item) {
-                                form.clearValue("sessionTrainingPlace")
-                            }
-                        },
-                        {
-                            name: "trainingPlaceId",
-                            editorType: "TrComboAutoRefresh",
-                            title: "محل برگزاری:",
-                            align: "center",
-                            optionDataSource: RestDataSource_TrainingPlace_JspSession,
-                            displayField: "titleFa",
-                            valueField: "id",
-                            filterFields: ["titleFa", "capacity"],
-                            required: true,
-                            textAlign: "center",
-                            pickListFields: [
-                                {name: "titleFa"},
-                                {name: "capacity"}
-                            ],
-                            click: function (form, item) {
-                                if (form.getValue("instituteId")) {
-                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
-                                    item.fetchData();
-                                } else {
-                                    RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
-                                    item.fetchData();
-                                    isc.MyOkDialog.create({
-                                        message: "ابتدا برگزار کننده را انتخاب کنید",
-                                    });
-                                }
-                            }
-                        },
-                        {
-                            type: "SpacerItem"
-                        },
-                        {
-                            name: "teacherId",
-                            title: "<spring:message code='trainer'/>:",
-                            textAlign: "center",
-                            type: "ComboBoxItem",
-                            multiple: false,
-                            displayField: "fullNameFa",
-                            valueField: "id",
-                            autoFetchData: false,
-                            required: true,
-                            useClientFiltering: true,
-                            optionDataSource: RestDataSource_Teacher_JspClass,
-                            pickListFields: [
-                                {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
-                                {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
-                                {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
-                            ],
-                            filterFields: [
-                                "personality.lastNameFa",
-                                "personality.firstNameFa",
-                                "personality.nationalCode"
-                            ],
-                            click: function (form, item) {
-
-                                if (ListGrid_Class_JspClass.getSelectedRecord() != null) {
-
-                                    let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
-                                    let courseId = ClassRecord.course.id;
-
-                                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
-                                    item.fetchData();
-                                } else {
-                                    RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
-                                    item.fetchData();
-                                    let dialogTeacher = isc.MyOkDialog.create({
-                                        message: "ابتدا کلاس را انتخاب کنید",
-                                    });
-                                    dialogTeacher.addProperties({
-                                        buttonClick: function () {
-                                            this.close();
-                                        }
-                                    });
-                                }
-                            }
-                        },
-                        {
-                            name: "sessionTypeId",
-                            title: "نوع جلسه:",
-                            type: "selectItem",
-                            textAlign: "center",
-                            required: true,
-                            valueMap: {
-                                1: "آموزش",
-                                2: "آزمون"
-                            }
-                        },
-                        {
-                            type: "SpacerItem"
-                        },
-                        {
-                            name: "sessionState",
-                            title: "وضعیت جلسه:",
-                            type: "selectItem",
-                            textAlign: "center",
-                            required: true,
-                            valueMap: {
-                                1: "شروع نشده",
-                                2: "برگزاری",
-                                3: "پایان"
-                            }
-                        },
-                        {
-                            name: "sessionTime",
-                            title: "ساعت جلسه :",
-                            wrapTitle: true,
-                            type: "radioGroup",
-                            fillHorizontalSpace: true,
-                            defaultValue: "1",
-                            required: true,
-                            valueMap: {
-                                "1": "8-10",
-                                "2": "10-12",
-                                "3": "14-16",
-                            },
-                        },
-                        {
-                            type: "SpacerItem"
-                        },
-                        {
-                            name: "description",
-                            title: "توضیحات",
-                            width: "*"
                         }
-                    ]
-            })
-        ;
+                    },
+                    {
+                        type: "SpacerItem"
+                    },
+                    {
+                        name: "instituteId",
+                        editorType: "TrComboAutoRefresh",
+                        title: "برگزار کننده",
+                        autoFetchData: false,
+                        optionDataSource: RestDataSource_Institute_JspSession,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        textAlign: "center",
+                        filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
+                        required: true,
+                        pickListFields: [
+                            {name: "titleFa"},
+                            {name: "manager.firstNameFa"},
+                            {name: "manager.lastNameFa"}
+                        ],
+                        changed: function (form, item) {
+                            form.clearValue("sessionTrainingPlace")
+                        }
+                    },
+                    {
+                        name: "trainingPlaceId",
+                        editorType: "TrComboAutoRefresh",
+                        title: "محل برگزاری:",
+                        align: "center",
+                        optionDataSource: RestDataSource_TrainingPlace_JspSession,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        filterFields: ["titleFa", "capacity"],
+                        required: true,
+                        textAlign: "center",
+                        pickListFields: [
+                            {name: "titleFa"},
+                            {name: "capacity"}
+                        ],
+                        click: function (form, item) {
+                            if (form.getValue("instituteId")) {
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                                item.fetchData();
+                            } else {
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
+                                item.fetchData();
+                                isc.MyOkDialog.create({
+                                    message: "ابتدا برگزار کننده را انتخاب کنید",
+                                });
+                            }
+                        }
+                    },
+                    {
+                        type: "SpacerItem"
+                    },
+                    {
+                        name: "teacherId",
+                        title: "<spring:message code='trainer'/>:",
+                        textAlign: "center",
+                        type: "ComboBoxItem",
+                        multiple: false,
+                        displayField: "fullNameFa",
+                        valueField: "id",
+                        autoFetchData: false,
+                        required: true,
+                        useClientFiltering: true,
+                        optionDataSource: RestDataSource_Teacher_JspClass,
+                        pickListFields: [
+                            {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
+                            {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
+                            {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
+                        ],
+                        filterFields: [
+                            "personality.lastNameFa",
+                            "personality.firstNameFa",
+                            "personality.nationalCode"
+                        ],
+                        click: function (form, item) {
+
+                            if (ListGrid_Class_JspClass.getSelectedRecord() != null) {
+
+                                let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                                let courseId = ClassRecord.course.id;
+
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+                                item.fetchData();
+                            } else {
+                                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
+                                item.fetchData();
+                                let dialogTeacher = isc.MyOkDialog.create({
+                                    message: "ابتدا کلاس را انتخاب کنید",
+                                });
+                                dialogTeacher.addProperties({
+                                    buttonClick: function () {
+                                        this.close();
+                                    }
+                                });
+                            }
+                        }
+                    },
+                    {
+                        name: "sessionTypeId",
+                        type: "IntegerItem",
+                        title: "نوع جلسه:",
+                        textAlign: "center",
+                        editorType: "ComboBoxItem",
+                        changeOnKeypress: true,
+                        defaultToFirstOption: false,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        optionDataSource: RestDataSource_ESessionType,
+                        autoFetchData: false,
+                        addUnknownValues: false,
+                        cachePickListResults: false,
+                        useClientFiltering: true,
+                        filterFields: ["titleFa"],
+                        sortField: ["id"],
+                        textMatchStyle: "startsWith",
+                        generateExactMatchCriteria: true,
+                        pickListProperties: {
+                            showFilterEditor: true
+                        },
+                        pickListFields: [
+                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                    },
+                    {
+                        type: "SpacerItem"
+                    },
+                    {
+                        name: "sessionState",
+                        type: "IntegerItem",
+                        title: "وضعیت جلسه:",
+                        textAlign: "center",
+                        editorType: "ComboBoxItem",
+                        changeOnKeypress: true,
+                        defaultToFirstOption: false,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        optionDataSource: RestDataSource_ESessionState,
+                        autoFetchData: false,
+                        addUnknownValues: false,
+                        cachePickListResults: false,
+                        useClientFiltering: true,
+                        filterFields: ["titleFa"],
+                        sortField: ["id"],
+                        textMatchStyle: "startsWith",
+                        generateExactMatchCriteria: true,
+                        pickListProperties: {
+                            showFilterEditor: true
+                        },
+                        pickListFields: [
+                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                    },
+                    // {
+                    //     name: "sessionTime",
+                    //     title: "ساعت جلسه :",
+                    //     wrapTitle: true,
+                    //     type: "radioGroup",
+                    //     fillHorizontalSpace: true,
+                    //     defaultValue: "1",
+                    //     required: true,
+                    //     valueMap: {
+                    //         "1": "8-10",
+                    //         "2": "10-12",
+                    //         "3": "14-16",
+                    //     },
+                    // },
+                    {
+                        name: "sessionTime",
+                        type: "IntegerItem",
+                        title: "ساعت جلسه:",
+                        textAlign: "center",
+                        editorType: "ComboBoxItem",
+                        changeOnKeypress: true,
+                        defaultToFirstOption: false,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        optionDataSource: RestDataSource_ESessionTime,
+                        autoFetchData: false,
+                        addUnknownValues: false,
+                        cachePickListResults: false,
+                        useClientFiltering: true,
+                        filterFields: ["titleFa"],
+                        sortField: ["id"],
+                        textMatchStyle: "startsWith",
+                        generateExactMatchCriteria: true,
+                        pickListProperties: {
+                            showFilterEditor: true
+                        },
+                        pickListFields: [
+                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                    },
+                    {
+                        type: "SpacerItem"
+                    },
+                    {
+                        name: "description",
+                        title: "توضیحات",
+                        textAlign: "center"
+                    }
+                ]
+        });
 
         //*****create buttons*****
         var create_Buttons = isc.MyHLayoutButtons.create({
@@ -601,12 +670,21 @@
         function show_SessionActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
+
+                let responseID = JSON.parse(resp.data).id;
+                let gridState = "[{id:" + responseID + "}]";
+
                 ListGrid_session.invalidateCache();
                 MyOkDialog_Session = isc.MyOkDialog.create({
                     message: "<spring:message code="global.form.request.successful"/>"
                 });
 
-                close_MyOkDialog_Session();
+                setTimeout(function () {
+                    close_MyOkDialog_Session();
+                    ListGrid_session.scrollToRow(ListGrid_session.getTotalRows(), 10);
+                    ListGrid_session.setSelectedState(gridState);
+                }, 1000);
+
                 Window_Session.close();
 
             } else {

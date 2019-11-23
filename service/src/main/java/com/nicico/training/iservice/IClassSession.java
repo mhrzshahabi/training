@@ -22,6 +22,6 @@ public interface IClassSession {
 
    SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
 
-   List<ClassSessionDTO.GeneratedSessions> generateSessions (Long classId, TclassDTO.Create autoSessionsRequirement);
+   void generateSessions (Long classId, TclassDTO.Create autoSessionsRequirement);
 
 }
