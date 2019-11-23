@@ -117,19 +117,4 @@ public class EnumsRestController {
         return new ResponseEntity<>(new EArrangementTypeDTO.EArrangementTypeSpecRs(), HttpStatus.OK);
     }
 
-    @GetMapping("eSessionType/spec-list")
-    public ResponseEntity<ESessionTypeDTO.ESessionTypeSpecRs> getESessionType() {
-        return new ResponseEntity<>(new ESessionTypeDTO.ESessionTypeSpecRs(), HttpStatus.OK);
-    }
-
-    @GetMapping("eSessionState/spec-list")
-    public ResponseEntity<ESessionStateDTO.ESessionStateSpecRs> getESessionState() {
-        return new ResponseEntity<>(new ESessionStateDTO.ESessionStateSpecRs(), HttpStatus.OK);
-    }
-
-    @GetMapping("eSessionTime/spec-list")
-    public ResponseEntity<ESessionTimeDTO.ESessionTimeSpecRs> getESessionTime() {
-        return new ResponseEntity<>(new ESessionTimeDTO.ESessionTimeSpecRs(), HttpStatus.OK);
-    }
-
 }

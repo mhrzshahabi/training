@@ -41,6 +41,9 @@ public class ClassSessionDTO implements Serializable {
     private Integer SessionTypeId;
 
     @ApiModelProperty(required = true)
+    private String sessionType;
+
+    @ApiModelProperty(required = true)
     private Integer instituteId;
 
     @ApiModelProperty(required = true)
@@ -51,6 +54,9 @@ public class ClassSessionDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private Integer sessionState;
+
+    @ApiModelProperty(required = true)
+    private String sessionStateFa;
 
     @ApiModelProperty(required = true)
     private String description;
@@ -225,6 +231,10 @@ public class ClassSessionDTO implements Serializable {
 
         @NotNull
         @ApiModelProperty(required = true)
+        private String sessionType;
+
+        @NotNull
+        @ApiModelProperty(required = true)
         private Integer instituteId;
 
         @NotNull
@@ -238,6 +248,10 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer sessionState;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionStateFa;
 
         @NotNull
         @ApiModelProperty(required = true)
@@ -271,6 +285,10 @@ public class ClassSessionDTO implements Serializable {
 
         @NotNull
         @ApiModelProperty(required = true)
+        private String sessionType;
+
+        @NotNull
+        @ApiModelProperty(required = true)
         private Integer instituteId;
 
         @NotNull
@@ -284,6 +302,10 @@ public class ClassSessionDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private Integer sessionState;
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionStateFa;
 
         @NotNull
         @ApiModelProperty(required = true)

@@ -45,6 +45,9 @@ public class ClassSession extends Auditable {
     @Column(name = "c_session_type_id")
     private Integer SessionTypeId;
 
+    @Column(name = "c_session_type")
+    private String sessionType;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name="f_institute_id", insertable = false, updatable = false)
     private Institute institute;
@@ -68,6 +71,9 @@ public class ClassSession extends Auditable {
 
     @Column(name = "c_session_state")
     private Integer sessionState;
+
+    @Column(name = "c_session_state_fa")
+    private String sessionStateFa;
 
     @Column(name = "c_description")
     private String description;

@@ -6,7 +6,8 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+//
+<script>
 
     // <<========== Global - Variables ==========
     {
@@ -411,95 +412,47 @@
                     },
                     {
                         name: "sessionTypeId",
-                        type: "IntegerItem",
                         title: "نوع جلسه:",
-                        textAlign: "center",
-                        editorType: "ComboBoxItem",
-                        changeOnKeypress: true,
-                        defaultToFirstOption: false,
-                        displayField: "titleFa",
-                        valueField: "id",
-                        optionDataSource: RestDataSource_ESessionType,
-                        autoFetchData: false,
-                        addUnknownValues: false,
-                        cachePickListResults: false,
-                        useClientFiltering: true,
-                        filterFields: ["titleFa"],
-                        sortField: ["id"],
-                        textMatchStyle: "startsWith",
-                        generateExactMatchCriteria: true,
-                        pickListProperties: {
-                            showFilterEditor: true
+                        wrapTitle: true,
+                        type: "radioGroup",
+                        fillHorizontalSpace: true,
+                        defaultValue: "1",
+                        required: true,
+                        valueMap: {
+                            "1": "آموزش",
+                            "2": "آزمون"
                         },
-                        pickListFields: [
-                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
                     },
                     {
                         type: "SpacerItem"
                     },
                     {
                         name: "sessionState",
-                        type: "IntegerItem",
                         title: "وضعیت جلسه:",
-                        textAlign: "center",
-                        editorType: "ComboBoxItem",
-                        changeOnKeypress: true,
-                        defaultToFirstOption: false,
-                        displayField: "titleFa",
-                        valueField: "id",
-                        optionDataSource: RestDataSource_ESessionState,
-                        autoFetchData: false,
-                        addUnknownValues: false,
-                        cachePickListResults: false,
-                        useClientFiltering: true,
-                        filterFields: ["titleFa"],
-                        sortField: ["id"],
-                        textMatchStyle: "startsWith",
-                        generateExactMatchCriteria: true,
-                        pickListProperties: {
-                            showFilterEditor: true
+                        wrapTitle: true,
+                        type: "radioGroup",
+                        fillHorizontalSpace: true,
+                        defaultValue: "1",
+                        required: true,
+                        valueMap: {
+                            "1": "شروع نشده",
+                            "2": "در حال اجرا",
+                            "3": "پایان"
                         },
-                        pickListFields: [
-                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
                     },
-                    // {
-                    //     name: "sessionTime",
-                    //     title: "ساعت جلسه :",
-                    //     wrapTitle: true,
-                    //     type: "radioGroup",
-                    //     fillHorizontalSpace: true,
-                    //     defaultValue: "1",
-                    //     required: true,
-                    //     valueMap: {
-                    //         "1": "8-10",
-                    //         "2": "10-12",
-                    //         "3": "14-16",
-                    //     },
-                    // },
                     {
                         name: "sessionTime",
-                        type: "IntegerItem",
-                        title: "ساعت جلسه:",
-                        textAlign: "center",
-                        editorType: "ComboBoxItem",
-                        changeOnKeypress: true,
-                        defaultToFirstOption: false,
-                        displayField: "titleFa",
-                        valueField: "id",
-                        optionDataSource: RestDataSource_ESessionTime,
-                        autoFetchData: false,
-                        addUnknownValues: false,
-                        cachePickListResults: false,
-                        useClientFiltering: true,
-                        filterFields: ["titleFa"],
-                        sortField: ["id"],
-                        textMatchStyle: "startsWith",
-                        generateExactMatchCriteria: true,
-                        pickListProperties: {
-                            showFilterEditor: true
+                        title: "ساعت جلسه :",
+                        wrapTitle: true,
+                        type: "radioGroup",
+                        fillHorizontalSpace: true,
+                        defaultValue: "1",
+                        required: true,
+                        valueMap: {
+                            "1": "8-10",
+                            "2": "10-12",
+                            "3": "14-16",
                         },
-                        pickListFields: [
-                            {name: "titleFa", width: "30%", filterOperator: "iContains"}]
                     },
                     {
                         type: "SpacerItem"

@@ -33,10 +33,6 @@ public class ClassSessionService implements IClassSession {
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
 
-    private final EnumsConverter.ESessionStateConverter eSessionStateConverter = new EnumsConverter.ESessionStateConverter();
-    private final EnumsConverter.ESessionTimeConverter eSessionTimeConverter = new EnumsConverter.ESessionTimeConverter();
-    private final EnumsConverter.ESessionTypeConverter eSessionTypeConverter = new EnumsConverter.ESessionTypeConverter();
-
     //*********************************
 
     @Transactional(readOnly = true)
@@ -105,10 +101,12 @@ public class ClassSessionService implements IClassSession {
                 MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
                 MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
                 request.getSessionTypeId(),
+                request.getSessionType(),
                 request.getInstituteId(),
                 request.getTrainingPlaceId(),
                 request.getTeacherId(),
                 request.getSessionState(),
+                request.getSessionStateFa(),
                 request.getDescription()
         );
 
@@ -120,6 +118,7 @@ public class ClassSessionService implements IClassSession {
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
+
     }
 
     //*********************************
@@ -269,10 +268,12 @@ public class ClassSessionService implements IClassSession {
                                 MainHoursRange().get(range).get(0),
                                 MainHoursRange().get(range).get(1),
                                 sessionTypeId,
+                                "آموزش",
                                 autoSessionsRequirement.getInstituteId().intValue(),
                                 autoSessionsRequirement.getTrainingPlaceIds().get(0).intValue(),
                                 autoSessionsRequirement.getTeacherId(),
                                 sessionState,
+                                "شروع نشده",
                                 null
                         ));
 
@@ -292,15 +293,4 @@ public class ClassSessionService implements IClassSession {
 
     //*********************************
 
-    private void setEnums(ClassSession classSession, Integer marriedId) {
-        if (marriedId != null) {
-            classSession.setSessionState(modelMapper.map(eSessionStateConverter.convertToEntityAttribute(marriedId),Integer.class));
-        }
-//        if (militaryId != null) {
-//            personalInfo.setMilitary(eMilitaryConverter.convertToEntityAttribute(militaryId));
-//        }
-//        if (genderId != null) {
-//            personalInfo.setGender(eGenderConverter.convertToEntityAttribute(genderId));
-//        }
-    }
 }
