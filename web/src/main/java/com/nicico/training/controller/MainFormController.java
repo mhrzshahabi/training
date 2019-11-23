@@ -58,7 +58,7 @@ public class MainFormController {
         return "base/needAssessmentSkillBased";
     }
 
-    @PostMapping("/post/print_list")
+    @PostMapping("/post_print_list/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");
 
