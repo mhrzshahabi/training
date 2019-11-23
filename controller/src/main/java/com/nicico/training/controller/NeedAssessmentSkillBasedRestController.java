@@ -63,17 +63,18 @@ public class NeedAssessmentSkillBasedRestController {
     @PostMapping(value = "/add-all")
     public ResponseEntity addAll(@Validated @RequestBody NeedAssessmentSkillBasedDTO.Create[] request) {
 
-        List<Long> responseList = new ArrayList<>();
+        List<Long> notAddedList = new ArrayList<>();
+        List<NeedAssessmentSkillBasedDTO.Info> addedList = new ArrayList<>();
         for (NeedAssessmentSkillBasedDTO.Create creating : request) {
             try {
-                needAssessmentSkillBasedService.create(creating);
+                addedList.add(needAssessmentSkillBasedService.create(creating));
             } catch (TrainingException ex) {
-                responseList.add(creating.getSkillId());
+                notAddedList.add(creating.getSkillId());
             }
         }
-        if (responseList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(responseList, null, HttpStatus.NOT_ACCEPTABLE);
+        if (notAddedList.isEmpty())
+            return new ResponseEntity<>(addedList, HttpStatus.OK);
+        return new ResponseEntity<>(notAddedList, HttpStatus.NOT_ACCEPTABLE);
     }
 
     @Loggable
@@ -101,17 +102,19 @@ public class NeedAssessmentSkillBasedRestController {
     @Loggable
     @DeleteMapping(value = "/remove-all/{ids}")
     public ResponseEntity delete(@PathVariable Set<Long> ids) {
-        List<Long> responseList = new ArrayList<>();
+        List<Long> notDeletedList = new ArrayList<>();
+        List<Long> deletedList = new ArrayList<>();
         for (Long deleting : ids) {
             try {
                 needAssessmentSkillBasedService.delete(deleting);
+                deletedList.add(deleting);
             } catch (TrainingException | DataIntegrityViolationException e) {
-                responseList.add(deleting);
+                notDeletedList.add(deleting);
             }
         }
-        if (responseList.isEmpty())
-            return new ResponseEntity<>(HttpStatus.OK);
-        return new ResponseEntity<>(responseList, null, HttpStatus.NOT_ACCEPTABLE);
+        if (notDeletedList.isEmpty())
+            return new ResponseEntity<>(deletedList, HttpStatus.OK);
+        return new ResponseEntity<>(notDeletedList, HttpStatus.NOT_ACCEPTABLE);
     }
 
 }
