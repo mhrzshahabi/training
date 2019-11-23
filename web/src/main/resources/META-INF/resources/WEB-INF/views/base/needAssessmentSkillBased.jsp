@@ -465,6 +465,10 @@
                     ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
                     skillTitles.add(ListGrid_For_This_Object_Skills_NASB.getSelectedRecord().skill.titleFa + "&nbsp;");
                 }
+                let gridState = [];
+                for (let i = 0; i < respText.length; i++)
+                    gridState.add({"id": respText[i]});
+                ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>" + "&nbsp;" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
@@ -497,10 +501,18 @@
 
     function Add_Result_NASB(resp) {
         Wait_NASB.close();
+        let respText = JSON.parse(resp.httpResponseText);
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_For_This_Object_Skills_Refresh_NASB();
+            let gridState = [];
+            for (let i = 0; i < respText.length; i++) {
+                gridState.add({"id": respText[i].id});
+            }
+            setTimeout(function () {
+                ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
+            }, 1000);
         } else {
-            let respText = JSON.parse(resp.httpResponseText);
+
             if (resp.httpResponseCode === 406) {
                 ListGrid_For_This_Object_Skills_Refresh_NASB();
                 let skillTitles = [];
@@ -509,6 +521,10 @@
                     ListGrid_All_Skills_NASB.setSelectedState(gridState);
                     skillTitles.add(ListGrid_All_Skills_NASB.getSelectedRecord().titleFa + "&nbsp;");
                 }
+                let gridState = [];
+                for (let i = 0; i < respText.length; i++)
+                    gridState.add({"id": respText[i]});
+                ListGrid_All_Skills_NASB.setSelectedState(gridState);
                 createDialog("info", "<spring:message code='msg.record.duplicate'/>" + "&nbsp;" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
