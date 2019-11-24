@@ -116,7 +116,7 @@
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
-            sortField: 1,
+            sortField: 3,
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -363,6 +363,7 @@
                             "1": "آموزش",
                             "2": "آزمون"
                         },
+                        defaultValue: "1"
                     },
                     {
                         type: "SpacerItem"
@@ -384,7 +385,7 @@
                             {name: "manager.lastNameFa"}
                         ],
                         changed: function (form, item) {
-                            form.clearValue("sessionTrainingPlace")
+                            form.clearValue("trainingPlaceId")
                         }
                     },
                     {
@@ -474,6 +475,7 @@
                             "2": "در حال اجرا",
                             "3": "پایان"
                         },
+                        defaultValue: "1"
                     },
                     {
                         type: "SpacerItem"
@@ -626,6 +628,10 @@
 
         //*****update function*****
         function edit_Session() {
+
+            if (!DynamicForm_Session.validate())
+                return;
+
             let sessionData = DynamicForm_Session.getValues();
             let sessionEditUrl = sessionServiceUrl;
             if (session_method.localeCompare("PUT") === 0) {
@@ -683,8 +689,10 @@
 
                 setTimeout(function () {
                     close_MyOkDialog_Session();
-                    ListGrid_session.scrollToRow(ListGrid_session.getTotalRows(), 10);
+
                     ListGrid_session.setSelectedState(gridState);
+
+                    ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
                 }, 1000);
 
                 Window_Session.close();
