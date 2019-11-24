@@ -207,13 +207,13 @@
         ]
     });
 
-    var ToolStripButton_Refresh_EducationOrientation = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_EducationOrientation = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationOrientation);
         }
     });
 
-    var ToolStripButton_Edit_EducationOrientation = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_EducationOrientation = isc.ToolStripButtonEdit.create({
         click: function () {
             DynamicForm_EducationOrientation.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
@@ -221,22 +221,22 @@
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Add_EducationOrientation = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_EducationOrientation = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Education_Add(educationOrientationUrl, "<spring:message code='education.add.orientation'/>",
                 DynamicForm_EducationOrientation, Window_EducationOrientation);
         }
     });
-    var ToolStripButton_Remove_EducationOrientation = isc.TrRemoveBtn.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove_EducationOrientation = isc.ToolStripButtonRemove.create({
+       // icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
             EducationListGrid = ListGrid_EducationOrientation;
             ListGrid_Education_Remove(educationOrientationUrl, "<spring:message code='msg.education.orientation.remove'/>");
         }
     });
-    var ToolStripButton_Print_EducationOrientation = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_EducationOrientation = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf",
@@ -245,15 +245,25 @@
     });
     var ToolStrip_Actions_EducationOrientation = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_EducationOrientation,
+        membersMargin: 5,
+        members: [
             ToolStripButton_Add_EducationOrientation,
             ToolStripButton_Edit_EducationOrientation,
             ToolStripButton_Remove_EducationOrientation,
-            ToolStripButton_Print_EducationOrientation]
+            ToolStripButton_Print_EducationOrientation,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_EducationOrientation,
+                ]
+            }),
+        ]
     });
 
 
-    var IButton_EducationOrientation_Save = isc.TrSaveBtn.create({
+    var IButton_EducationOrientation_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
             DynamicForm_EducationOrientation.validate();
@@ -270,10 +280,10 @@
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_EducationOrientation_Save, isc.TrCancelBtn.create({
+        members: [IButton_EducationOrientation_Save, isc.IButtonCancel.create({
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+           // icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 DynamicForm_EducationOrientation.clearValues();
@@ -414,13 +424,13 @@
         ]
     });
 
-    var ToolStripButton_Refresh_EducationMajor = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_EducationMajor = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationMajor);
         }
     });
 
-    var ToolStripButton_Edit_EducationMajor = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_EducationMajor = isc.ToolStripButtonEdit.create({
         click: function () {
             DynamicForm_EducationMajor.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
@@ -428,20 +438,20 @@
                 DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Add_EducationMajor = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_EducationMajor = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Education_Add(educationMajorUrl, "<spring:message code='education.add.major'/>",
                 DynamicForm_EducationMajor, Window_EducationMajor);
         }
     });
-    var ToolStripButton_Remove_EducationMajor = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_EducationMajor = isc.ToolStripButtonRemove.create({
         click: function () {
             EducationListGrid = ListGrid_EducationMajor;
             ListGrid_Education_Remove(educationMajorUrl, "<spring:message code='msg.education.major.remove'/>");
         }
     });
-    var ToolStripButton_Print_EducationMajor = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_EducationMajor = isc.ToolStripButtonPrint.create({
+       // icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
@@ -450,15 +460,26 @@
     });
     var ToolStrip_Actions_EducationMajor = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_EducationMajor,
+        membersMargin: 5,
+        members: [
             ToolStripButton_Add_EducationMajor,
             ToolStripButton_Edit_EducationMajor,
             ToolStripButton_Remove_EducationMajor,
-            ToolStripButton_Print_EducationMajor]
+            ToolStripButton_Print_EducationMajor,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_EducationMajor,
+                ]
+            }),
+
+        ]
     });
 
 
-    var IButton_EducationMajor_Save = isc.TrSaveBtn.create({
+    var IButton_EducationMajor_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
             DynamicForm_EducationMajor.validate();
@@ -476,10 +497,10 @@
         edgeImage: "",
         width: "100%",
         padding: 10,
-        members: [IButton_EducationMajor_Save, isc.TrCancelBtn.create({
+        members: [IButton_EducationMajor_Save, isc.IButtonCancel.create({
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 DynamicForm_EducationMajor.clearValues();
@@ -628,13 +649,13 @@
         ]
     });
 
-    var ToolStripButton_Refresh_EducationLevel = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_EducationLevel = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Education_refresh(ListGrid_EducationLevel);
         }
     });
 
-    var ToolStripButton_Edit_EducationLevel = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_EducationLevel = isc.ToolStripButtonEdit.create({
         click: function () {
             DynamicForm_EducationLevel.clearValues();
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
@@ -642,20 +663,20 @@
                 DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Add_EducationLevel = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_EducationLevel = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Education_Add(educationLevelUrl, "<spring:message code='education.add.level'/>",
                 DynamicForm_EducationLevel, Window_EducationLevel);
         }
     });
-    var ToolStripButton_Remove_EducationLevel = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_EducationLevel = isc.ToolStripButtonRemove.create({
         click: function () {
             EducationListGrid = ListGrid_EducationLevel;
             ListGrid_Education_Remove(educationLevelUrl, "<spring:message code='msg.education.level.remove'/>");
         }
     });
-    var ToolStripButton_Print_EducationLevel = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_EducationLevel = isc.ToolStripButtonPrint.create({
+       // icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
@@ -664,15 +685,26 @@
     });
     var ToolStrip_Actions_EducationLevel = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_EducationLevel,
+        membersMargin: 5,
+        members: [
             ToolStripButton_Add_EducationLevel,
             ToolStripButton_Edit_EducationLevel,
             ToolStripButton_Remove_EducationLevel,
-            ToolStripButton_Print_EducationLevel]
+            ToolStripButton_Print_EducationLevel,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_EducationLevel,
+                ]
+            }),
+
+        ]
     });
 
 
-    var IButton_EducationLevel_Save = isc.TrSaveBtn.create({
+    var IButton_EducationLevel_Save = isc.IButtonSave.create({
         top: 260,
         click: function () {
             DynamicForm_EducationLevel.validate();
@@ -690,10 +722,10 @@
         edgeImage: "",
         width: "100%",
         padding: 10,
-        members: [IButton_EducationLevel_Save, isc.TrCancelBtn.create({
+        members: [IButton_EducationLevel_Save, isc.IButtonCancel.create({
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+           // icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 DynamicForm_EducationLevel.clearValues();

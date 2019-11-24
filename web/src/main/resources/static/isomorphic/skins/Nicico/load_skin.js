@@ -8,7 +8,11 @@ isc.loadSkin = function (theWindow) {
             remove: 'حذف',
             edit: 'ویرایش',
             refresh: 'بازیابی اطلاعات',
-            excel: 'ارسال به Excel'
+            excel: 'ارسال به Excel',
+            print: 'چاپ',
+            closeAll: 'بستن همه',
+            cancel: 'لغو',
+            save: 'ذخیره'
         }
         isc.Page.setSkinDir("[ISOMORPHIC]/skins/Nicico/");
         var cssLoaded = isc.Page.loadStyleSheet("[SKIN]/skin_styles.css", theWindow, "isc.FontLoader.loadCustomFonts()");
@@ -119,19 +123,36 @@ isc.loadSkin = function (theWindow) {
         });
         isc.ClassFactory.defineClass("IButtonSave", "Button").addProperties({
             baseStyle: "buttonSave",
+            title: actions_btn.save,
             showFocusedAsOver: false,
             showFocusOutline: false
         });
         isc.ClassFactory.defineClass("IButtonCancel", "Button").addProperties({
             baseStyle: "buttonCancel",
+            title: actions_btn.cancel,
             showFocusedAsOver: false,
             showFocusOutline: false
         });
         isc.ClassFactory.defineClass("IButtonClose", "Button").addProperties({
             baseStyle: "buttonClose",
+            title: actions_btn.closeAll,
             showFocusedAsOver: false,
-            icon: "icon/nicico_closeAllTabs.png",
+            icon: "[SKIN]/actions/nicico_closeAllTabs.png",
             showFocusOutline: false
+        });
+        isc.ClassFactory.defineClass("ToolStripButtonPrint", "Button").addProperties({
+            baseStyle: "toolStripButtonPrint",
+            icon: "[SKIN]/actions/print.png",
+            title: actions_btn.print,
+            autoFit: true,
+            iconSize: 15,
+            height: 17,
+            labelVPad: 0,
+            showTitle: false,
+            showRollOver: true,
+            showDown: true,
+            showDownIcon: true,
+            showSelectedIcon: true,
         });
         isc.ClassFactory.defineClass("ToolStripButtonAdd", "Button").addProperties({
             baseStyle: "toolStripButtonAdd",

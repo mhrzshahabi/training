@@ -8934,6 +8934,12 @@ a.calMonthEventLink:active {
   background: #d9d9d9;
 }
 
+.specialCol, .specialColOver, .specialColSelected, .specialColSelectedOver {
+  border-bottom: 3px solid #e6e6e6;
+  font-weight: bold;
+  position: relative;
+}
+
 .cell, .cellOver, .cellSelected, .cellSelectedOver {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
@@ -9282,6 +9288,93 @@ hr {
 
 .buttonCancelOver {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
+}
+
+/* tool strip button */
+.toolStripButtonPrint,
+.toolStripButtonPrintOver,
+.toolStripButtonPrintFocused,
+.toolStripButtonPrintFocusedOver,
+.toolStripButtonPrintDown,
+.toolStripButtonPrintFocusedDown,
+.toolStripButtonPrintSelected,
+.toolStripButtonPrintSelectedFocused,
+.toolStripButtonPrintSelectedDown,
+.toolStripButtonPrintSelectedFocusedDown,
+.toolStripButtonPrintSelectedOver,
+.toolStripButtonPrintSelectedFocusedOver,
+.toolStripButtonPrintDisabled,
+.toolStripButtonPrintSelectedDisabled,
+.toolStripButtonPrintOpened,
+.toolStripButtonPrintOverOpened,
+.toolStripButtonPrintDownOpened,
+.toolStripButtonPrintFocusedOpened,
+.toolStripButtonPrintFocusedDownOpened,
+.toolStripButtonPrintFocusedOverOpened,
+.toolStripButtonPrintSelectedOpened,
+.toolStripButtonPrintSelectedDownOpened,
+.toolStripButtonPrintSelectedOverOpened {
+  border: 1px solid transparent;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  color: #000000;
+  font-size: 12px;
+  padding: 3px 4px 3px 4px;
+  border-radius: 3px;
+  background-color: #e6e6e6;
+  border: solid 1px #3f3f3f;
+}
+.toolStripButtonPrint:hover,
+.toolStripButtonPrintOver:hover,
+.toolStripButtonPrintFocused:hover,
+.toolStripButtonPrintFocusedOver:hover,
+.toolStripButtonPrintDown:hover,
+.toolStripButtonPrintFocusedDown:hover,
+.toolStripButtonPrintSelected:hover,
+.toolStripButtonPrintSelectedFocused:hover,
+.toolStripButtonPrintSelectedDown:hover,
+.toolStripButtonPrintSelectedFocusedDown:hover,
+.toolStripButtonPrintSelectedOver:hover,
+.toolStripButtonPrintSelectedFocusedOver:hover,
+.toolStripButtonPrintDisabled:hover,
+.toolStripButtonPrintSelectedDisabled:hover,
+.toolStripButtonPrintOpened:hover,
+.toolStripButtonPrintOverOpened:hover,
+.toolStripButtonPrintDownOpened:hover,
+.toolStripButtonPrintFocusedOpened:hover,
+.toolStripButtonPrintFocusedDownOpened:hover,
+.toolStripButtonPrintFocusedOverOpened:hover,
+.toolStripButtonPrintSelectedOpened:hover,
+.toolStripButtonPrintSelectedDownOpened:hover,
+.toolStripButtonPrintSelectedOverOpened:hover {
+  box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.toolStripButtonPrint td,
+.toolStripButtonPrintOver td,
+.toolStripButtonPrintFocused td,
+.toolStripButtonPrintFocusedOver td,
+.toolStripButtonPrintDown td,
+.toolStripButtonPrintFocusedDown td,
+.toolStripButtonPrintSelected td,
+.toolStripButtonPrintSelectedFocused td,
+.toolStripButtonPrintSelectedDown td,
+.toolStripButtonPrintSelectedFocusedDown td,
+.toolStripButtonPrintSelectedOver td,
+.toolStripButtonPrintSelectedFocusedOver td,
+.toolStripButtonPrintDisabled td,
+.toolStripButtonPrintSelectedDisabled td,
+.toolStripButtonPrintOpened td,
+.toolStripButtonPrintOverOpened td,
+.toolStripButtonPrintDownOpened td,
+.toolStripButtonPrintFocusedOpened td,
+.toolStripButtonPrintFocusedDownOpened td,
+.toolStripButtonPrintFocusedOverOpened td,
+.toolStripButtonPrintSelectedOpened td,
+.toolStripButtonPrintSelectedDownOpened td,
+.toolStripButtonPrintSelectedOverOpened td {
+  color: #3f3f3f;
+  font-weight: bold;
 }
 
 /* tool strip button */
@@ -9731,6 +9824,9 @@ hr {
 .menuTable tr {
   text-align: center;
 }
+.menuTable tr .menuIconField img, .menuTable tr .menuIconFieldOver img, .menuTable tr .menuIconFieldSelected img, .menuTable tr .menuIconFieldSelectedOver img {
+  display: none;
+}
 
 .selectItemPickerIcon,
 .selectItemPickerIconOver,
@@ -9923,4 +10019,19 @@ hr {
   border-top: 1px solid #d0d0d0;
   border-bottom-left-radius: 6px;
   border-bottom-right-radius: 6px;
+}
+
+.tabButtonRightDown,
+.tabButtonRightSelectedFocused,
+.tabButtonRightSelectedFocusedOver,
+.tabButtonRightSelectedFocusedDown,
+.tabButtonRightSelectedOver,
+.tabButtonRightSelectedDown,
+.tabButtonRightSelected {
+  border: 2px solid #fe9d2a;
+  background: #fe9d2a;
+}
+
+.toolStrip {
+  border: 1px solid #d9d9d9;
 }

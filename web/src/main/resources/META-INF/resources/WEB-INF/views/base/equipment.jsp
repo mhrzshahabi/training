@@ -138,8 +138,10 @@
         ]
     });
 
-    var IButton_Equipment_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
+    var IButton_Equipment_Save = isc.IButtonSave.create({
+        top: 260, title: "ذخیره",
+        //icon: "pieces/16/save.png",
+        click: function () {
 
             DynamicForm_Equipment.validate();
             if (DynamicForm_Equipment.hasErrors()) {
@@ -189,12 +191,12 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Equipment_Save, isc.IButton.create({
+        members: [IButton_Equipment_Save, isc.IButtonCancel.create({
             ID: "courseEditExitIButton",
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Equipment.close();
@@ -329,29 +331,29 @@
         }
     };
 
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+       // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Equipment_refresh();
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Equipment_edit();
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
             ListGrid_Equipment_Add();
         }
     });
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Equipment_remove();
@@ -359,7 +361,20 @@
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+                ToolStripButton_Refresh
+            ]
+            })
+        ]
     });
     var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
     var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_Equipment]});

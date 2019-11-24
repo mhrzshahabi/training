@@ -18,13 +18,10 @@
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     JobTS_job = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
         members: [
-            isc.TrRefreshBtn.create({
-                click: function () {
-                    refreshJobLG_job();
-                }
-            }),
-            isc.TrPrintBtn.create({
+            isc.ToolStripButtonPrint.create({
                 menu: isc.Menu.create({
                     data: [
                         {
@@ -44,9 +41,21 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.Label.create({
+         isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+                isc.Label.create({
                 ID: "totalsLabel_job"
-            }),
+                }),
+                isc.ToolStripButtonRefresh.create({
+                click: function () {
+                 refreshJobLG_job();
+                }
+                }),
+            ]
+            })
         ]
     })
     ;

@@ -108,9 +108,9 @@
         ]
     });
 
-    var IButton_Category_Save = isc.IButton.create({
+    var IButton_Category_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+       // icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_Category.validate();
             if (DynamicForm_Category.hasErrors()) {
@@ -164,12 +164,12 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Category_Save, isc.IButton.create({
+        members: [IButton_Category_Save, isc.IButtonCancel.create({
             ID: "IButton_Category_Exit",
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Category.close();
@@ -297,9 +297,9 @@
         ]
     });
 
-    var IButton_Sub_Category_Save = isc.IButton.create({
+    var IButton_Sub_Category_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+       // icon: "pieces/16/save.png",
         click: function () {
             if (method == "POST") {
                 DynamicForm_Sub_Category.getItem("code").setValue(DynamicForm_Sub_Category.getItem("categoryCode").getValue() + DynamicForm_Sub_Category.getItem("codeNumber").getValue());
@@ -371,12 +371,12 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Sub_Category_Save, isc.IButton.create({
+        members: [IButton_Sub_Category_Save, isc.IButtonCancel.create({
             ID: "IButton_Sub_Category_Exit",
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Sub_Category.close();
@@ -805,30 +805,30 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButtonRefresh.create({
+      //  icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Sub_Category_refresh();
         }
     });
 
-    var ToolStripButton_Sub_Category_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Sub_Category_Edit = isc.ToolStripButtonEdit.create({
+      //  icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Sub_Category_Edit();
         }
     });
-    var ToolStripButton_Sub_Category_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Sub_Category_Add = isc.ToolStripButtonAdd.create({
+      //  icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
             ListGrid_Sub_Category_Add();
         }
     });
-    var ToolStripButton_Sub_Category_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Sub_Category_Remove = isc.ToolStripButtonRemove.create({
+      //  icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Sub_Category_Remove();
@@ -837,33 +837,46 @@
 
     var ToolStrip_Actions_Sub_Category = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Sub_Category_Refresh, ToolStripButton_Sub_Category_Add, ToolStripButton_Sub_Category_Edit, ToolStripButton_Sub_Category_Remove]
+        membersMargin: 5,
+        members: [,
+            ToolStripButton_Sub_Category_Add,
+            ToolStripButton_Sub_Category_Edit,
+            ToolStripButton_Sub_Category_Remove,
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+            ToolStripButton_Sub_Category_Refresh
+            ]
+            }),
+         ]
     });
 
 
-    var ToolStripButton_Category_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Category_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Category_refresh();
         }
     });
-    var ToolStripButton_Category_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Category_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Category_Edit();
         }
     });
-    var ToolStripButton_Category_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Category_Add = isc.ToolStripButtonAdd.create({
+       // icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
             ListGrid_Category_Add();
         }
     });
-    var ToolStripButton_Category_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Category_Remove = isc.ToolStripButtonRemove.create({
+       // icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Category_Remove();
@@ -872,7 +885,20 @@
 
     var ToolStrip_Actions_Category = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Category_Refresh, ToolStripButton_Category_Add, ToolStripButton_Category_Edit, ToolStripButton_Category_Remove]
+        membersMargin: 5,
+        members: [,
+                ToolStripButton_Category_Add,
+                ToolStripButton_Category_Edit,
+                ToolStripButton_Category_Remove,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                         ToolStripButton_Category_Refresh
+                     ]
+                })
+                ]
     });
 
 

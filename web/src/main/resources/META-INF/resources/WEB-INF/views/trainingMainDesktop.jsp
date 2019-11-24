@@ -385,12 +385,12 @@
     var languageForm = isc.DynamicForm.create({
         width: 120,
         //height: "100%",
+        height: 30,
         styleName: "header-change-lng",
         fields: [{
             name: "languageName",
             showTitle: false,
             width: "100%",
-            height: "100%",
             type: "select",
             valueMap: {
                 "fa": "پارسی",
@@ -486,6 +486,7 @@
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="job.group"/>",
                     //icon: "<spring:url value="jobGroup.png"/>",
@@ -493,6 +494,7 @@
                         createTab(this.title, "<spring:url value="job-group/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade"/>",
                     //icon: "<spring:url value="postGrade.png"/>",
@@ -500,6 +502,7 @@
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade.group"/>",
                     //icon: "<spring:url value="postGrade.png"/>",
@@ -507,6 +510,7 @@
                         createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="post"/>",
                     //icon: "<spring:url value="post.png"/>",
@@ -514,6 +518,7 @@
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="post.group"/>",
                     //icon: "<spring:url value="jobGroup.png"/>",
@@ -521,6 +526,7 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment"/>",
                     //icon: "<spring:url value="research.png"/>",
@@ -528,6 +534,7 @@
                         createTab(this.title, "<spring:url value="web/needAssessment/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>",
                     //icon: "<spring:url value="research.png"/>",
@@ -535,6 +542,7 @@
                         createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="skill"/>",
                     //icon: "<spring:url value="skill.png"/>",
@@ -542,6 +550,7 @@
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="skill.group"/>",
                     //icon: "<spring:url value="skillGroup.png"/>",
@@ -564,6 +573,7 @@
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="term"/>",
                     //icon: "<spring:url value="term.png"/>",
@@ -571,6 +581,7 @@
                         createTab(this.title, "<spring:url value="/term/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="specialized.committee"/>",
                   //  icon: "<spring:url value="committee.png"/>",
@@ -578,6 +589,7 @@
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="company"/>",
                  //   icon: "<spring:url value="company.png"/>",
@@ -600,6 +612,7 @@
                         createTab(this.title, "<spring:url value="/tclass/show-form"/>");
                     },
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="student"/>",
                     //icon: "<spring:url value="student.png"/>",
@@ -607,6 +620,7 @@
                         createTab(this.title, "<spring:url value="/student/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="teacher"/>",
                     //icon: "<spring:url value="teacher.png"/>",
@@ -614,6 +628,7 @@
                         createTab(this.title, "<spring:url value="/teacher/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="institute"/>",
                     //icon: "<spring:url value="institute.png"/>",
@@ -643,6 +658,7 @@
                         createTab(this.title, "<spring:url value="/web/workflow/userCartable/showForm"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="group"/>",
                     //icon: "<spring:url value="group.png"/>",
@@ -650,6 +666,7 @@
                         createTab(this.title, "<spring:url value="/web/workflow/groupCartable/showForm"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="workflow"/>",
                     //icon: "<spring:url value="workflow.png"/>",
@@ -661,6 +678,7 @@
                                 createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>");
                             }
                         },
+                        {isSeparator: true},
                         {
                             title: "<spring:message code="all.processes"/>",
                            // icon: "<spring:url value="processList.png"/>",
@@ -685,6 +703,7 @@
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="group.plural"/>",
                     //icon: "<spring:url value="group.png"/>",
@@ -692,6 +711,7 @@
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="operational.unit"/>",
                     //icon: "<spring:url value="operationalUnit.png"/>",
@@ -717,6 +737,7 @@
         showShadow: true,
         shadowDepth: 3,
         shadowColor: "#153560",
+
         members: [
             basicTSMB,
             needAssessmentTSMB,
@@ -731,7 +752,7 @@
 
     var closeAllButton = isc.IButtonClose.create({
         width: 100,
-        icon: "<spring:url value="closeAllTabs.png"/>",
+      //  icon: "<spring:url value="closeAllTabs.png"/>",
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
@@ -773,7 +794,7 @@
 
     var MainDesktopMenuH = isc.HLayout.create({
         width: "100%",
-        height: "3%",
+        height: "4%",
         styleName: "main-menu",
         align: "center",
         members: [
@@ -801,7 +822,6 @@
             trainingTabSet,
         ]
     });
-
     // -------------------------------------------  Functions  -----------------------------------------------
 
     function logout() {
