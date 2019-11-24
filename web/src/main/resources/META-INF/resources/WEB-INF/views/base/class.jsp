@@ -1585,16 +1585,18 @@
                     break;
                 }
                 case "چک لیست": {
-                    if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
-                       setTimeout(function () {
-                           fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                       },100)
-                    }
-                    else{
-                        setTimeout(function () {
-                           fireCheckList(-1);
-                       },100)
-                    }
+                    if(typeof fireCheckList!= "undefined")
+                    fireCheckList();
+                    // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
+                    //    setTimeout(function () {
+                    //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
+                    //    },100)
+                    // }
+                    // else{
+                    //     setTimeout(function () {
+                    //        fireCheckList(-1);
+                    //    },100)
+                    // }
                     break;
                 }
                 case "ضمائم": {
