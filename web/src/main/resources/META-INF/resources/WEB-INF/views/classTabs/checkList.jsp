@@ -692,7 +692,7 @@
         var record = ListGrid_CheckListItem.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -849,7 +849,7 @@
         if (record == null || record.id == null) {
 
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="global.message"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -879,7 +879,7 @@
 
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -905,7 +905,7 @@
 
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
