@@ -533,7 +533,7 @@
         var record = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='global.grid.record.not.selected'/>",
+                message: "<spring:message code='msg.no.records.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
@@ -570,7 +570,7 @@
         var record = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code='global.grid.record.not.selected'/>",
+                message: "<spring:message code='msg.no.records.selected'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],

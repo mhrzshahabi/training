@@ -1309,7 +1309,7 @@
     function ListGrid_teacher_edit() {
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
 
             showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personalityId);
@@ -1438,7 +1438,7 @@
     function ListGrid_teacher_remove() {
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");
