@@ -99,8 +99,8 @@ public class ClassFormController {
 		return "classTabs/classAttachments";
 	}
 
-	@RequestMapping("/personnel")
+	@RequestMapping("/student")
 	public String showStudentsForm() {
-		return "classTabs/personnel";
+		return "classTabs/student";
 	}
 }
