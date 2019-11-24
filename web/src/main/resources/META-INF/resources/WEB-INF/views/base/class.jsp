@@ -446,17 +446,9 @@
                 textBoxStyle:"textItemLite"
             },
             {
-                name:"group",
-                title:"گروه:",
-                required: true,
-                colSpan:2,
-                textAlign:"center",
-                type:"staticText",textBoxStyle:"textItemLite"
-            },
-            {
                 name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
                 // width:"250",
-                colSpan:1,
+                colSpan:2,
                 autoFetchData:false,
                 optionDataSource:RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -479,16 +471,24 @@
                 }
             },
             {
+                name:"group",
+                title:"گروه:",
+                required: true,
+                colSpan:1,
+                textAlign:"center",
+                type:"staticText",textBoxStyle:"textItemLite"
+            },
+            {
                 name:"classStatus",
-                // colSpan:2,
-                rowSpan:2,
+                colSpan:3,
+                rowSpan:1,
                 title:"وضعیت کلاس:",
                 wrapTitle:true,
                 type:"radioGroup",
-                // vertical:false,
+                vertical:false,
                 fillHorizontalSpace:true,
                 defaultValue:"1",
-                endRow:true,
+                // endRow:true,
                 valueMap: {
                     "1":"برنامه ریزی",
                     "2":"در حال اجرا",
@@ -498,7 +498,7 @@
             {
                 name:"trainingPlaceIds", editorType:"select", title:"محل برگزاری:",
                 multiple:true,
-                colSpan:1,
+                colSpan:2,
                 // width:"250",
                 align:"center",
                 optionDataSource:RestDataSource_TrainingPlace_JspClass,
@@ -532,6 +532,7 @@
                     // return {category:category};
                 }
             },
+
 
 
         ],
