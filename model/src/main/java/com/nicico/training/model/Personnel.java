@@ -13,7 +13,7 @@ import javax.persistence.Table;
 @Immutable
 @Table(name = "tbl_personnel")
 public class Personnel {
-    @Id
+
     @Column(name = "id")
     private Long id;
 
