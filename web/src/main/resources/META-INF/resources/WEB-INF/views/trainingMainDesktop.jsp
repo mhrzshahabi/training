@@ -51,6 +51,8 @@
     const attachmentUrl = rootUrl + "attachment/";
     const trainingPlaceUrl = rootUrl + "training-place/";
     const personnelUrl = rootUrl + "personnel/"
+    const personnelRegUrl = rootUrl + "personnelRegistered/"
+
 
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -506,7 +508,7 @@
                 {
                     title: "<spring:message code="student"/>", icon: "<spring:url value="student.png"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/student/show-form"/>");
+                        createTab(this.title, "<spring:url value="/personnelRegistered/show-form"/>");
                     }
                 },
                 {
@@ -690,7 +692,7 @@
     const courseUrl = rootUrl + "course/";
     const categoryUrl = rootUrl + "category/";
     const teacherUrl = rootUrl + "teacher/";
-    const studentUrl = rootUrl + "student/";
+    const studentUrl = rootUrl + "personnelRegistered/";
     const classUrl = rootUrl + "tclass/";
     const classReportUrl = rootUrl + "classReport/";
     const instituteUrl = rootUrl + "institute/";

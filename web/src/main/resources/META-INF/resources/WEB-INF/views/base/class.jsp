@@ -1228,7 +1228,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
-            // ToolStripButton_Add_Student_JspClass
+            ToolStripButton_Add_Student_JspClass
         ]
     });
 
@@ -1258,7 +1258,7 @@
             {
                 title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/personnel"}
+                    {viewURL: "tclass/student"}
                 )
             },
             <%--{--%>

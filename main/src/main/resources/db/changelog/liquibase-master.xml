@@ -71,4 +71,8 @@
     <include file="changes/liq-063.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-064.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-065-personnel.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-066-PersonnelRegistered.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-067-student.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-068-class_student.xml" relativeToChangelogFile="true"/>
+
 </databaseChangeLog>

@@ -16,17 +16,17 @@ import javax.servlet.http.HttpServletRequest;
 
 @RequiredArgsConstructor
 @Controller
-@RequestMapping("/tclass")
-public class ClassFormController {
+@RequestMapping("/personnelRegistered")
+public class PersonnelRegisteredFormController {
     private final OAuth2AuthorizedClientService authorizedClientService;
 
     @RequestMapping("/show-form")
     public String showForm() {
-        return "base/class";
+        return "base/personnelRegistered";
     }
 
     @PostMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
+	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("AccessToken");
 
 		final RestTemplate restTemplate = new RestTemplate();
@@ -45,62 +45,12 @@ public class ClassFormController {
 		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/personnelRegistered/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/personnelRegistered/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/tclass/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+			return restTemplate.exchange(restApiUrl + "/api/personnelRegistered/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
 		else
 			return null;
-	}
-
-	@RequestMapping("/sessions-tab")
-	public String sessionsTab() {
-		return "classTabs/sessions";
-	}
-
-	@RequestMapping("/alarms-tab")
-	public String alarmsTab() {
-		return "classTabs/alarms";
-	}
-
-	@RequestMapping("/licenses-tab")
-	public String licensesTab() {
-		return "classTabs/licenses";
-	}
-
-	@RequestMapping("/attendance-tab")
-	public String attendanceTab() {
-		return "classTabs/attendance";
-	}
-
-	@RequestMapping("/exam-tab")
-	public String examTab() {
-		return "classTabs/exam";
-	}
-
-	@RequestMapping("/teachers-tab")
-	public String teachersTab() {
-		return "classTabs/teachers";
-	}
-
-	@RequestMapping("/assessment-tab")
-	public String assessmentTab() {
-		return "classTabs/assessment";
-	}
-
-	@RequestMapping("/checkList-tab")
-	public String checkListTab() {
-		return "classTabs/checkList";
-	}
-
-	@RequestMapping("/attachments-tab")
-	public String attachmentsTab() {
-		return "classTabs/classAttachments";
-	}
-
-	@RequestMapping("/student")
-	public String showStudentsForm() {
-		return "classTabs/student";
 	}
 }
