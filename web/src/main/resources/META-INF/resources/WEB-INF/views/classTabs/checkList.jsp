@@ -8,6 +8,7 @@
 <%--<script>--%>
     var CheckList_method = "POST";
     var CheckListItem_method = "POST";
+
     var totalRows;
 
     var RestDataSource_CheckList = isc.TrDS.create({
@@ -780,7 +781,7 @@
     function show_CheckListAddForm() {
         CheckList_method = "POST";
         DynamicForm_CheckList.clearValues();
-        Window_CheckList_Add.setTitle("<spring:message code="create.checklistTitle"/>)
+        Window_CheckList_Add.setTitle("<spring:message code="create.checklistTitle"/>");
         Window_CheckList_Add.show();
 
 
@@ -815,7 +816,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="global.message"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -823,11 +824,14 @@
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "global.grid.record.remove.ask",
+                message: "<spring:message code="global.grid.record.remove.ask"/>",
+                 title: "<spring:message code="verify.delete"/>",
+
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
                         var CheckList_Save_Url = checklistUrl;
+
                         isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
                     }
                 }
@@ -842,6 +846,7 @@
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
+
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -1042,9 +1047,23 @@
     //
     // }
     // };
-    function fireCheckList(record) {
+    // function fireCheckList(record) {
+    //
+    //     if (record != -1) {
+    //         RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
+    //         ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
+    //         ListGrid_ClassCheckList.fetchData();
+    //         ListGrid_ClassCheckList.invalidateCache();
+    //     } else {
+    //         ListGrid_ClassCheckList.setFieldProperties(1, {title: " "});
+    //         ListGrid_ClassCheckList.setData([]);
+    //     }
+    // };
 
-        if (record != -1) {
+       function fireCheckList() {
+
+        if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
+           var record =ListGrid_Class_JspClass.getSelectedRecord();
             RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
             ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
             ListGrid_ClassCheckList.fetchData();
@@ -1053,6 +1072,8 @@
             ListGrid_ClassCheckList.setFieldProperties(1, {title: " "});
             ListGrid_ClassCheckList.setData([]);
         }
-    };
+    }
+
+    fireCheckList();
 
 
