@@ -156,4 +156,14 @@ public class InstituteDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InstituteTitle {
+
+        private String titleFa;
+
+    }
 }
