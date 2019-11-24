@@ -1,7 +1,12 @@
 package com.nicico.training.iservice;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.dto.TermDTO;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 
@@ -26,4 +31,7 @@ public interface ITermService {
     String checkConflictWithoutThisTerm(String sData, String eData,Long id);
 
     String LastCreatedCode(String code);
+
+    @Transactional
+    TotalResponse<TermDTO.Info> search(NICICOCriteria request);
 }

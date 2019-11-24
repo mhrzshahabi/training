@@ -191,7 +191,7 @@
             },
             {
                 name: "personality.educationLevel.titleFa",
-                title: "<spring:message code='education.level'/>",
+               title: "<spring:message code='education.level'/>",
                 align: "center",
                 sortNormalizer: function (record) {
                     return record.personality.educationLevel.titleFa;
