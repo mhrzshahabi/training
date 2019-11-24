@@ -660,23 +660,16 @@
     function is_Delete() {
         var record = ListGrid_CheckListItem.getSelectedRecord();
         if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
+        createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        }else {
+               var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.deactivate.ask"/>",
+               "<spring:message code="verify.deactivate"/>");
+                       Dialog_Class_remove.addProperties({
+                   buttonClick: function (button, index) {
                     this.close();
-                }
-            });
-        } else {
-            isc.MyYesNoDialog.create({
-                message: "<spring:message code="msg.record.deactivate.ask"/>",
-                buttonClick: function (button, index) {
-                    this.close();
-                    if (index == 0) {
-                        var CheckListItem_Save_Url = checklistItemUrl;
-                        isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
+                    if (index === 0) {
+                          var CheckListItem_Save_Url = checklistItemUrl;
+                          isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -793,7 +786,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.select.form.ask"/>",
                 icon: "[SKIN]ask.png",
-                title: "توجه",
+                title: "<spring:message code="warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -803,7 +796,7 @@
             CheckListItem_method = "POST";
             DynamicForm_CheckListItem_Add.clearValues();
             DynamicForm_CheckListItem_Add.getItem("checkListId").setValue(SelectedCheckList.id);
-            Window_CheckListItem_Add.setTitle("<spring:message code="create"/>");
+            Window_CheckListItem_Add.setTitle("<spring:message code="create.item"/>");
             Window_CheckListItem_Add.show();
         }
     };
@@ -812,27 +805,16 @@
     function show_CheckListDeleteForm() {
         var record = ListGrid_CheckList.getSelectedRecord();
         if (record == null || record.id == null) {
-
-            isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="global.message"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+              createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            isc.MyYesNoDialog.create({
-                message: "<spring:message code="global.grid.record.remove.ask"/>",
-                 title: "<spring:message code="verify.delete"/>",
-
+         var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+               "<spring:message code="verify.delete"/>");
+                       Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
-                    if (index == 0) {
-                        var CheckList_Save_Url = checklistUrl;
-
-                        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
+                    if (index === 0) {
+                          var CheckList_Save_Url = checklistUrl;
+                          isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -878,7 +860,7 @@
             CheckListItem_method = "PUT";
             DynamicForm_CheckListItem_Add.clearValues();
             DynamicForm_CheckListItem_Add.editRecord(record);
-            Window_CheckListItem_Add.setTitle("<spring:message code="edit"/>");
+            Window_CheckListItem_Add.setTitle("<spring:message code="edit.Item"/>");
             Window_CheckListItem_Add.show();
         }
     };
@@ -923,7 +905,9 @@
 
     function show_CheckListItem_is_Delete(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            ListGrid_Class_Item.invalidateCache();
+            ListGrid_CheckListItem.fetchData();
+            ListGrid_CheckListItem.invalidateCache();
+             ListGrid_Class_Item.invalidateCache();
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
@@ -931,7 +915,7 @@
             });
             setTimeout(function () {
                 OK.close();
-            }, 3000);
+            }, 2000);
         } else {
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.error"/>",

@@ -10,7 +10,7 @@
 <head>
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
-    <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
+    <SCRIPT>isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Containers.js></SCRIPT>
@@ -51,7 +51,7 @@
     const attachmentUrl = rootUrl + "attachment/";
     const trainingPlaceUrl = rootUrl + "training-place/";
     const personnelUrl = rootUrl + "personnel/"
-    const personnelRegUrl = rootUrl + "personnelRegistered/"
+    const personnelRegUrl = rootUrl + "personnelRegistered/";
 
 
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -89,7 +89,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
-    let TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+    TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -143,16 +143,21 @@
         title: "<spring:message code="refresh"/>",
     });
 
-    isc.defineClass("TrEditBtn", ToolStripButton);
-    isc.TrEditBtn.addProperties({
-        icon: "<spring:url value="edit.png"/>",
-        title: "<spring:message code="edit"/>",
-    });
-
     isc.defineClass("TrCreateBtn", ToolStripButton);
     isc.TrCreateBtn.addProperties({
         icon: "<spring:url value="create.png"/>",
         title: "<spring:message code="create"/>",
+    });
+
+    isc.defineClass("TrAddBtn", TrCreateBtn);
+    isc.TrAddBtn.addProperties({
+        title: "<spring:message code="add"/>",
+    });
+
+    isc.defineClass("TrEditBtn", ToolStripButton);
+    isc.TrEditBtn.addProperties({
+        icon: "<spring:url value="edit.png"/>",
+        title: "<spring:message code="edit"/>",
     });
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
@@ -211,7 +216,7 @@
             type: "custom",
             condition: function (item, validator, value) {
                 if (value !== undefined) {
-                    var trimmed = trTrim(value);
+                    trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
                     // item.setValue(trimmed); #TODO
                 }
@@ -221,7 +226,7 @@
     };
 
     function trTrim(value) {
-        let trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
+        trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
     }
 
@@ -320,7 +325,7 @@
         }
     });
 
-    var languageForm = isc.DynamicForm.create({
+    languageForm = isc.DynamicForm.create({
         width: 120,
         height: "100%",
         fields: [{
@@ -339,8 +344,8 @@
                 "en": "<spring:url value="flags/united-kingdom"/>",
             },
             changed: function () {
-                var newUrl = window.location.href;
-                var newLang = languageForm.getValue("languageName");
+                newUrl = window.location.href;
+                newLang = languageForm.getValue("languageName");
                 if (newUrl.indexOf("lang") > 0) {
                     newUrl = newUrl.replace(new RegExp("lang=[a-zA-Z_]+"), "lang=" + newLang);
                 } else {
@@ -621,7 +626,7 @@
         ]
     });
 
-    var closeAllButton = isc.Button.create({
+    closeAllButton = isc.Button.create({
         width: 100,
         icon: "<spring:url value="closeAllTabs.png"/>",
         title: "<spring:message code="close.all"/>",
@@ -668,7 +673,7 @@
     }
 
     function createTab(title, url, autoRefresh) {
-        let tab = trainingTabSet.getTabObject(title);
+        tab = trainingTabSet.getTabObject(title);
         if (tab !== undefined) {
             if ((autoRefresh !== undefined) && (autoRefresh == true)) {
                 trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
@@ -692,7 +697,7 @@
     const courseUrl = rootUrl + "course/";
     const categoryUrl = rootUrl + "category/";
     const teacherUrl = rootUrl + "teacher/";
-    const studentUrl = rootUrl + "personnelRegistered/";
+    const studentUrl = rootUrl + "student/";
     const classUrl = rootUrl + "tclass/";
     const classReportUrl = rootUrl + "classReport/";
     const instituteUrl = rootUrl + "institute/";
@@ -715,7 +720,7 @@
     const sessionServiceUrl = rootUrl + "sessionService/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
-        var xhttp;
+        xhttp;
         xhttp = new XMLHttpRequest();
         xhttp.willHandleError = true;
         xhttp.onreadystatechange = function () {
@@ -786,7 +791,7 @@
     });
 
     function trPrintWithCriteria(url, advancedCriteria) {
-        let trCriteriaForm = isc.DynamicForm.create({
+        trCriteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: url,
             target: "_Blank",

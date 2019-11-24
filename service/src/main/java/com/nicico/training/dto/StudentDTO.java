@@ -1,7 +1,4 @@
 package com.nicico.training.dto;
-/* com.nicico.training.dto
-@Author:roya
-*/
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
@@ -18,8 +15,6 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class StudentDTO {
     
     @ApiModelProperty(required = true)
@@ -38,13 +33,89 @@ public class StudentDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("StudentInfo")
-    public static class Info extends StudentDTO {
-        private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
+    @ApiModel("Student - Info")
+    public static class Info {
+        private long id;
+        private String firstName;
+        private String lastName;
+        private String nationalCode;
+        private String companyName;
+        private String personnelNo;
+        private String personnelNo2;
+        private String employmentStatus;
+        private String complexTitle;
+        private String workPlaceTitle;
+        private String workTurnTitle;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Student- Info All")
+    public static class InfoAll  {
+
+        private long id;
+        private String firstName;
+        private String lastName;
+        private String fatherName;
+
+        private String companyName;
+        private String personnelNo;
+        private String birthCertificateNo;
+        private String birthDate;
+
+        private Integer age;
+        private String birthPlace;
+        private String nationalCode;
+        private Integer active;
+
+        private Integer deleted;
+        private String employmentDate;
+        private String postTitle;
+        private String postCode;
+
+        private String postAssignmentDate;
+        private String complexTitle;
+        private String operationalUnitTitle;
+        private String employmentTypeTitle;
+
+        private String maritalStatusTitle;
+        private String workPlaceTitle;
+        private String workTurnTitle;
+        private String educationLevelTitle;
+
+        private String jobNo;
+        private String jobTitle;
+        private Integer employmentStatusId;
+        private String employmentStatus;
+
+        private String contractNo;
+        private String educationMajorTitle;
+        private String gender;
+        private String militaryStatus;
+
+        private String educationLicenseType;
+        private String departmentTitle;
+        private String departmentCode;
+        private String contractDescription;
+
+        private String workYears;
+        private String workMonths;
+        private String workDays;
+
+
+        private String insuranceCode;
+        private String postGradeTitle;
+        private String postGradeCode;
+        private String ccpCode;
+
+        private String ccpArea;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+
+        private String ccpUnit;
+        private String ccpTitle;
     }
 
     // ------------------------------
