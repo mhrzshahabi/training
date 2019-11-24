@@ -6,7 +6,6 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-
 // <script>
 
     var CheckList_method = "POST";
@@ -38,7 +37,7 @@
             {name: "id", primaryKey: true},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", align: "center"},
             {name: "description", title: "<spring:message code="description"/>", align: "center",},
-            {name: "enableStatus", title: "وضعیت", align: "center"},
+            {name: "enableStatus", title: "<spring:message code="status"/>", align: "center"},
         ],
 
         fetchDataURL: classCheckListUrl + "spec-list?_startRow=0&_endRow=1000",
@@ -59,7 +58,7 @@
         fields: [
             {name: "id", hidden: true},
             {name: "checkListId", hidden: true},
-            {name: "titleFa", title: "آیتم", align: "center"},
+            {name: "titleFa",title: "<spring:message code="item"/>", align: "center"},
             {name: "group", title: "<spring:message code="group"/>", align: "center"},
             {name: "isDeleted", hidden: true}
 
@@ -269,7 +268,7 @@
         contextMenu:Menu_ListGrid_CheckList,
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa", title: "فرم", align: "center"},
+            {name: "titleFa",title: "<spring:message code="form"/>", align: "center"},
         ],
         click: function () {
             var record = ListGrid_CheckList.getSelectedRecord();
@@ -406,7 +405,7 @@
 
     //==========================================Window========================
     var Window_CheckList_Design = isc.Window.create({
-        title: "طراحی چک لیست",
+        title: <spring:message code="checkList_Design"/>,
         minWidth:1024,
         autoSize: false,
         width: 1000,
@@ -436,8 +435,8 @@
 
         items: [DynamicForm_CheckList, isc.MyHLayoutButtons.create({
             members: [isc.Button.create({
-                title: "ذخیره",
-                // icon: "pieces/16/save.png",
+                title: <spring:message code="save"/>,
+                icon: "pieces/16/save.png",
                 click: function () {
                     if (CheckList_method === "POST") {
                         save_CheckList()
@@ -446,11 +445,8 @@
 
                     }
                 }
-
-
             }), isc.Button.create({
-                title: "لغو",
-
+                title: <spring:message code="cancel"/>,
                 icon: "[SKIN]ask.png",
                 click: function () {
                     Window_CheckList_Add.close();
@@ -460,12 +456,11 @@
     });
 
     var Window_CheckListItem_Add = isc.Window.create({
-
         width: 500,
         items: [DynamicForm_CheckListItem_Add, isc.MyHLayoutButtons.create({
             members: [isc.Button.create({
-                title: "ذخیره",
-                // icon: "pieces/16/save.png",
+                 title: <spring:message code="save"/>,
+                 icon: "pieces/16/save.png",
                 click: function () {
                     if (CheckListItem_method === "POST") {
                         save_CheckListItem()
@@ -477,11 +472,9 @@
 
 
                     }
-
-
-
             }), isc.Button.create({
-                title: "لغو",
+                title: <spring:message code="cancel"/>,
+                  icon: "[SKIN]ask.png",
                 click: function () {
                     Window_CheckListItem_Add.close();
                 }
@@ -523,7 +516,7 @@
                 }
 
             },
-            {name: "enableStatus", title: "فعال/غیرفعال", canEdit: true, type: "boolean", align: "center"},
+            {name: "enableStatus", title: "<spring:message code="active/deactivate"/>",canEdit: true, type: "boolean", align: "center"},
         ],
 
     });
@@ -547,7 +540,7 @@
 
     var Window_Add_User_TO_Committee = isc.Window.create({
         minWidth:1024,
-        title: "تکمیل چک لیست",
+        title:"<spring:message code="complete.checkList"/>",
         width: 1024,
         autoSize: true,
         autoCenter: true,
@@ -576,7 +569,7 @@
        // showRowNumbers:false,
             fields: [
             {name: "id", hidden: true},
-            {name: "titleFa", title: "فرم", align: "center"},
+            {name: "titleFa",title:"<spring:message code="form"/>", align: "center"},
         ],
 
 
@@ -601,7 +594,7 @@
             {
                 name: "checkList",
                 ID: "checkListDynamicFormField",
-                title: "انتخاب فرم مورد نظر ",
+              title:"<spring:message code="selectForm"/>",
 
                 editorType: "ComboBoxItem",
                 filterOperator: "iContains",
@@ -631,7 +624,7 @@
 
             {
                 type: "button",
-                title: "اضافه و تکمیل چک لیست",
+                title:"<spring:message code="add.complete.checkList"/>",
                 icon: "<spring:url value="check-mark.png"/>",
                 width: 180,
                 showDownIcon: true,
@@ -653,7 +646,7 @@
             },
             {
                 type: "button",
-                title: "طراحی چک لیست",
+                title:"<spring:message code="checkList_Design"/>",
                 icon: "<spring:url value="editCheckList.png"/>",
                 iconOrientation: "right",
                 showDownIcon: true,
@@ -709,8 +702,8 @@
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده غیر فعال گردد؟",
-                buttonClick: function (button, index) {
+               message: "<spring:message code="msg.record.deactivate.ask"/>",
+                    buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
                         var CheckListItem_Save_Url = checklistItemUrl;
@@ -747,9 +740,9 @@
         if (ListGrid_Class_JspClass.getSelectedRecord() == null) {
             {
                 var OK = isc.Dialog.create({
-                    message: "لطفا  کلاس مورد نظر را انتخاب کنید",
+                    message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]say.png",
-                    title: "انجام فرمان"
+                    title: "<spring:message code="global.form.command.done"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -761,9 +754,9 @@
 
         if (typeof (checkListDynamicFormField.getValue()) === "undefined") {
             var OK = isc.Dialog.create({
-                message: "لطفا فرم مورد نظر را انتخاب کنید",
+               message: "<spring:message code="msg.select.form.ask"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title: "<spring:message code="global.form.command.done"/>",
             });
             setTimeout(function () {
                 OK.close();
@@ -833,10 +826,10 @@
         var SelectedCheckList = ListGrid_CheckList.getSelectedRecord();
         if (SelectedCheckList == null || SelectedCheckList.id == null) {
             isc.Dialog.create({
-                message: "فرمی انتخاب نشده است.",
+                message: "<spring:message code="msg.select.form.ask"/>",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -858,7 +851,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="verify.delete"/>",
+                title: "<spring:message code="global.message"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -866,7 +859,7 @@
             });
         } else {
             isc.MyYesNoDialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
+                message: "global.grid.record.remove.ask",
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -944,9 +937,9 @@
                 // checkListDynamicFormField.invalidateCache();
 
                 var OK = isc.Dialog.create({
-                    message: "عملیات با موفقیت انجام شد",
+                    message: "global.form.request.successful",
                     icon: "[SKIN]say.png",
-                    title: "انجام فرمان"
+                    title:"<spring:message code="global.form.command.done"/>"
                 });
                 setTimeout(function () {
                  OK.close();
@@ -955,7 +948,7 @@
                 var OK = isc.Dialog.create({
                     message: "آیتم های فرم مورد نظر در کلاس استفاده شده و قابل حذف نمی باشد",
                     icon: "[SKIN]say.png",
-                    title: "هشدار"
+                    title:"<spring:message code="warning"/>"
                 });
                 setTimeout(function () {
                     OK.close();
@@ -963,9 +956,9 @@
             }
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع شده",
+                message:"<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
-                title: "هشدار"
+                 title:"<spring:message code="warning"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -977,18 +970,19 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_Class_Item.invalidateCache();
             var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد",
+                  message:"<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+              title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع می باشد",
+              message:"<spring:message code="msg.operation.error"/>",
+
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                 title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1002,9 +996,9 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_CheckList.invalidateCache();
             var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد",
+                 message:"<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1014,9 +1008,9 @@
 
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع می باشد",
+              message:"<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                 title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1032,9 +1026,9 @@
             ListGrid_CheckList.invalidateCache();
              checkListDynamicFormField.fetchData();
                 var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد",
+                message:"<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title:"<spring:message code="global.form.command.done"/>"
             });
             Window_CheckList_Add.close();
 
@@ -1047,9 +1041,9 @@
 
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع می باشد",
+                message:"<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                 title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1064,9 +1058,9 @@
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد",
+                  message:"<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                 title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1081,9 +1075,9 @@
            ListGrid_Class_Item.invalidateCache();
 
             var OK = isc.Dialog.create({
-                message: "عملیات با موفقیت انجام شد",
-                icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                message:"<spring:message code="msg.operation.successful"/>",
+                 icon: "[SKIN]say.png",
+                  title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -1095,9 +1089,9 @@
 
         } else {
             var OK = isc.Dialog.create({
-                message: "ارتباط با سرور قطع می باشد",
+                message:"<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                 title:"<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
                 OK.close();
