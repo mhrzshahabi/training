@@ -120,5 +120,19 @@ public class TrainingPlaceDTO {
 
     //----------------------
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class TrainingPlaceTitle {
+
+        private String titleFa;
+
+    }
+
+    //----------------------
+
+
+
 
 }

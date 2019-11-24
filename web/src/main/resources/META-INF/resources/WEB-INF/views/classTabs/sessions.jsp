@@ -23,7 +23,7 @@
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
-                        ListGrid_session.invalidateCache();
+                        // ListGrid_session.invalidateCache();
                     }
                 },
                 {
@@ -80,12 +80,6 @@
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
         var RestDataSource_session = isc.TrDS.create({
-            transformRequest: function (dsRequest) {
-                dsRequest.httpHeaders = {
-                    "Authorization": "Bearer <%= accessToken %>"
-                };
-                return this.Super("transformRequest", arguments);
-            },
             fields:
                 [
                     {name: "id", primaryKey: true},
@@ -99,33 +93,17 @@
                     {name: "instituteId"},
                     {name: "institute.titleFa"},
                     {name: "trainingPlaceId"},
+                    {name: "trainingPlace.titleFa"},
                     {name: "teacherId"},
                     {name: "teacher"},
                     {name: "sessionState"},
                     {name: "sessionStateFa"},
                     {name: "description"}
-                ],
-            dataFormat: "json",
-            fetchDataURL: sessionServiceUrl + "spec-list"
+                ]
+            // fetchDataURL: sessionServiceUrl + "load-sessions/428"
+            // fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
-        var RestDataSource_ESessionType = isc.TrDS.create({
-            fields: [{name: "id"}, {name: "titleFa"}
-            ],
-            fetchDataURL: enumUrl + "eSessionType/spec-list"
-        });
-
-        var RestDataSource_ESessionState = isc.TrDS.create({
-            fields: [{name: "id"}, {name: "titleFa"}
-            ],
-            fetchDataURL: enumUrl + "eSessionState/spec-list"
-        });
-
-        var RestDataSource_ESessionTime = isc.TrDS.create({
-            fields: [{name: "id"}, {name: "titleFa"}
-            ],
-            fetchDataURL: enumUrl + "eSessionTime/spec-list"
-        });
 
         var ListGrid_session = isc.TrLG.create({
             width: "100%",
@@ -133,76 +111,87 @@
             dataSource: RestDataSource_session,
             contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
-            autoFetchData: true,
+            // autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
-            sortField: 0,
+            sortField: 1,
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
                     name: "dayCode",
                     title: "dayCode",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "contains",
+                    hidden: true
                 },
                 {
                     name: "dayName",
-                    title: "dayName",
+                    title: "روز هفته",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionDate",
-                    title: "sessionDate",
+                    title: "تاریخ",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionStartHour",
-                    title: "sessionStartHour",
+                    title: "ساعت شروع",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionEndHour",
-                    title: "sessionEndHour",
+                    title: "ساعت پایان",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionTypeId",
                     title: "sessionTypeId",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "contains",
+                    hidden: true
                 },
                 {
                     name: "sessionType",
-                    title: "sessionType",
+                    title: "نوع جلسه",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "instituteId",
                     title: "instituteId",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "contains",
+                    hidden: true
                 },
                 {
                     name: "institute.titleFa",
-                    title: "institute",
+                    title: "برگزار کننده",
                     align: "center",
                     filterOperator: "contains"
-                },{
+                }, {
                     name: "trainingPlaceId",
                     title: "trainingPlaceId",
+                    align: "center",
+                    filterOperator: "contains",
+                    hidden: true
+                }
+                , {
+                    name: "trainingPlace.titleFa",
+                    title: "محل برگزاری",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "teacherId",
                     title: "teacherId",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "contains",
+                    hidden: true
                 },
                 {
                     name: "teacher",
-                    title: "teacher",
+                    title: "مدرس",
                     align: "center",
                     filterOperator: "contains"
                 },
@@ -210,22 +199,26 @@
                     name: "sessionState",
                     title: "sessionState",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "contains",
+                    hidden: true
                 },
                 {
                     name: "sessionStateFa",
-                    title: "sessionStateFa",
+                    title: "وضعیت جلسه",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "description",
-                    title: "description",
+                    title: "توضیحات",
                     align: "center",
                     filterOperator: "contains"
                 }
             ],
             doubleClick: function () {
                 show_SessionEditForm();
+            },
+            showMember: function () {
+                alert("done");
             }
         });
 
@@ -349,6 +342,32 @@
                         type: "SpacerItem"
                     },
                     {
+                        name: "sessionTime",
+                        title: "ساعت جلسه :",
+                        type: "selectItem",
+                        textAlign: "center",
+                        required: true,
+                        valueMap: {
+                            "1": "08-10",
+                            "2": "10-12",
+                            "3": "14-16"
+                        },
+                    },
+                    {
+                        name: "sessionTypeId",
+                        title: "نوع جلسه:",
+                        type: "selectItem",
+                        textAlign: "center",
+                        required: true,
+                        valueMap: {
+                            "1": "آموزش",
+                            "2": "آزمون"
+                        },
+                    },
+                    {
+                        type: "SpacerItem"
+                    },
+                    {
                         name: "instituteId",
                         editorType: "TrComboAutoRefresh",
                         title: "برگزار کننده",
@@ -423,7 +442,7 @@
                         ],
                         click: function (form, item) {
 
-                            if (ListGrid_Class_JspClass.getSelectedRecord() != null) {
+                            if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
 
                                 let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
                                 let courseId = ClassRecord.course.id;
@@ -445,20 +464,6 @@
                         }
                     },
                     {
-                        name: "sessionTypeId",
-                        title: "نوع جلسه:",
-                        type: "selectItem",
-                        textAlign: "center",
-                        required: true,
-                        valueMap: {
-                            "1": "آموزش",
-                            "2": "آزمون"
-                        },
-                    },
-                    {
-                        type: "SpacerItem"
-                    },
-                    {
                         name: "sessionState",
                         title: "وضعیت جلسه:",
                         type: "selectItem",
@@ -468,18 +473,6 @@
                             "1": "شروع نشده",
                             "2": "در حال اجرا",
                             "3": "پایان"
-                        },
-                    },
-                    {
-                        name: "sessionTime",
-                        title: "ساعت جلسه :",
-                        type: "selectItem",
-                        textAlign: "center",
-                        required: true,
-                        valueMap: {
-                            "1": "8-10",
-                            "2": "10-12",
-                            "3": "14-16"
                         },
                     },
                     {
@@ -559,10 +552,22 @@
     {
         //*****open insert window*****
         function create_Session() {
-            session_method = "POST";
-            DynamicForm_Session.clearValues();
-            Window_Session.setTitle("<spring:message code="create"/>");
-            Window_Session.show();
+            if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
+                isc.Dialog.create({
+                    message: "ابتدا کلاس موردنظر را انتخاب نمایید.",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="course_Warning"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+                session_method = "POST";
+                DynamicForm_Session.clearValues();
+                Window_Session.setTitle("<spring:message code="create"/>");
+                Window_Session.show();
+            }
         }
 
         //*****insert function*****
@@ -601,6 +606,16 @@
                 });
             } else {
 
+                let ClassRecord = ListGrid_Class_JspClass.getSelectedRecord();
+                let courseId = ClassRecord.course.id;
+
+                let startHour_ = record.sessionStartHour.split(':')[0].trim();
+                record["sessionTime"] = (startHour_ === "08" ? "1" : startHour_ === "10" ? "2" : startHour_ === "14" ? "3" : "");
+
+                DynamicForm_Session.getField("instituteId").fetchData();
+                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+                RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + courseId;
+
                 session_method = "PUT";
                 DynamicForm_Session.clearValues();
                 DynamicForm_Session.editRecord(record);
@@ -617,6 +632,10 @@
                 let selectedRecord = ListGrid_session.getSelectedRecord();
                 sessionEditUrl += selectedRecord.id;
             }
+
+            sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
+            sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
+
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
@@ -653,11 +672,11 @@
         function show_SessionActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
-
+                fireClassSession();
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
-                ListGrid_session.invalidateCache();
+                // ListGrid_session.invalidateCache();
                 MyOkDialog_Session = isc.MyOkDialog.create({
                     message: "<spring:message code="global.form.request.successful"/>"
                 });
@@ -717,6 +736,20 @@
             criteriaForm_course.show();
             criteriaForm_course.submitForm();
         }
+
+
+        function fireClassSession() {
+
+            if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
+                RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                ListGrid_session.fetchData();
+                ListGrid_session.invalidateCache();
+            } else {
+                ListGrid_session.setData([]);
+            }
+        }
+
+        fireClassSession();
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

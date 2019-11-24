@@ -1556,7 +1556,11 @@
     function refreshClassTabs(tab){
         switch (tab.title) {
                 case "جلسات": {
-                    // fireCheckList();
+
+                    if (typeof fireClassSession !== "undefined") {
+                        fireClassSession();
+                    }
+
                     break;
                 }
                 case "هشدارها": {

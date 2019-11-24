@@ -192,6 +192,15 @@ public class ClassSessionService implements IClassSession {
 
     //*********************************
 
+    @Override
+    @Transactional
+    public List<ClassSessionDTO.Info> loadSessions(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
+        }.getType());
+    }
+
+    //*********************************
+
     @Transactional
     @Override
     public void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement) {

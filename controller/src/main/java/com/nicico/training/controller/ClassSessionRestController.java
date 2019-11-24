@@ -44,7 +44,7 @@ public class ClassSessionRestController {
     @Loggable
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement) {
-        classSessionService.generateSessions(classId,autoSessionsRequirement);
+        classSessionService.generateSessions(classId, autoSessionsRequirement);
     }
 
     //*********************************
@@ -175,6 +175,25 @@ public class ClassSessionRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/operationalUnit_Report.jasper", params, jsonDataSource, response);
+    }
+
+    //*********************************
+
+    @Loggable
+    @GetMapping(value = "/load-sessions/{classId}")
+    public ResponseEntity<ClassSessionDTO.ClassSessionsSpecRs> getClassSessions(@PathVariable Long classId) {
+
+        List<ClassSessionDTO.Info> list = classSessionService.loadSessions((classId));
+
+        final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final ClassSessionDTO.ClassSessionsSpecRs specRs = new ClassSessionDTO.ClassSessionsSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     //*********************************
