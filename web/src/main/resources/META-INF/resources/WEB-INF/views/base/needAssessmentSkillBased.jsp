@@ -352,7 +352,7 @@
         }
     });
 
-    ToolStripButton_Refresh_NASB = isc.TrRefreshBtn.create({
+    ToolStripButton_Refresh_NASB = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Top_refresh_NASB();
         }
@@ -360,6 +360,8 @@
 
     ToolStrip_Actions_NASB = isc.ToolStrip.create({
         width: "100%",
+        align: "left",
+        border: '0px',
         members: [
             ToolStripButton_Refresh_NASB,
         ]

@@ -118,59 +118,59 @@
 
 
 
-    var ToolStripButton_CheckList_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_CheckList_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckList.invalidateCache();
         }
     });
-    var ToolStripButton_CheckList_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_CheckList_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
        title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListEditForm();
         }
     });
-    var ToolStripButton_CheckList_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_CheckList_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
           title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListAddForm();
         }
     });
-    var ToolStripButton_CheckList_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_CheckList_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
          title: "<spring:message code="remove"/>",
         click: function () {
             show_CheckListDeleteForm();
         }
     });
     //---------------------------------------------------------------------------
-    var ToolStripButton_CheckListItem_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_CheckListItem_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
             ListGrid_CheckListItem_DetailViewer.setData([]);
         }
     });
-    var ToolStripButton_CheckListItem_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_CheckListItem_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
        title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListItemEditForm();
         }
     });
-    var ToolStripButton_CheckListItem_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_CheckListItem_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
           title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListItemAddForm();
         }
     });
-    var ToolStripButton_CheckListItem_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_CheckListItem_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title:"<spring:message code="deactivate"/>",
         click: function () {
             is_Delete();
@@ -296,12 +296,40 @@
     //============================================================================
     var ToolStrip_Actions_CheckList = isc.ToolStrip.create({
         width: "40%",
-        members: [ToolStripButton_CheckList_Refresh, ToolStripButton_CheckList_Add, ToolStripButton_CheckList_Edit, ToolStripButton_CheckList_Remove]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_CheckList_Add,
+            ToolStripButton_CheckList_Edit,
+            ToolStripButton_CheckList_Remove,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_CheckList_Refresh,
+                ]
+            }),
+        ]
     });
 
     var ToolStrip_Actions_CheckListItem = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_CheckListItem_Refresh, ToolStripButton_CheckListItem_Add, ToolStripButton_CheckListItem_Edit, ToolStripButton_CheckListItem_Remove, ToolStripButton_CheckListItem_Space, ToolStripButton_CheckListItem_Label]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_CheckListItem_Add,
+            ToolStripButton_CheckListItem_Edit,
+            ToolStripButton_CheckListItem_Remove,
+            ToolStripButton_CheckListItem_Space,
+            ToolStripButton_CheckListItem_Label,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_CheckListItem_Refresh,
+                ]
+            })
+        ]
     });
 
 
@@ -423,7 +451,7 @@
         width: 300,
 
         items: [DynamicForm_CheckList, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
+            members: [isc.IButtonSave.create({
                 title: "ذخیره",
                 // icon: "pieces/16/save.png",
                 click: function () {
@@ -436,7 +464,7 @@
                 }
 
 
-            }), isc.Button.create({
+            }), isc.IButtonCancel.create({
                 title: "لغو",
                 click: function () {
                     Window_CheckList_Add.close();
@@ -449,7 +477,7 @@
 
         width: 500,
         items: [DynamicForm_CheckListItem_Add, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
+            members: [isc.IButtonSave.create({
                 title: "ذخیره",
                 // icon: "pieces/16/save.png",
                 click: function () {
@@ -466,7 +494,7 @@
 
 
 
-            }), isc.Button.create({
+            }), isc.IButtonCancel.create({
                 title: "لغو",
                 click: function () {
                     Window_CheckListItem_Add.close();
@@ -673,7 +701,7 @@
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -807,7 +835,7 @@
                 message: "فرمی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -830,7 +858,7 @@
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -860,7 +888,7 @@
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -886,7 +914,7 @@
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }

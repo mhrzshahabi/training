@@ -307,14 +307,14 @@
     });
 
 
-    var IButton_Post_Grade_Group_Exit_Jsp = isc.TrCancelBtn.create({
-        icon: "<spring:url value="remove.png"/>",
+    var IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
+      //  icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Post_Grade_Group_Jsp.close();
         }
     });
 
-    var IButton_Post_Grade_Group_Save_Jsp = isc.TrSaveBtn.create({
+    var IButton_Post_Grade_Group_Save_Jsp = isc.IButtonSave.create({
         click: function () {
             DynamicForm_Post_Grade_Group_Jsp.validate();
             if (DynamicForm_Post_Grade_Group_Jsp.hasErrors()) {
@@ -344,22 +344,22 @@
         })]
     });
 
-    var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_Post_Grade_Group_Jsp = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Post_Grade_Group_refresh();
         }
     });
-    var ToolStripButton_Edit_Post_Grade_Group_Jsp = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_Post_Grade_Group_Jsp = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Post_Grade_Group_edit();
         }
     });
-    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_Post_Grade_Group_Jsp = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Post_Grade_Group_add();
         }
     });
-    var ToolStripButton_Remove_Post_Grade_Group_Jsp = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_Post_Grade_Group_Jsp = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_Post_Grade_Group_remove();
         }
@@ -388,11 +388,22 @@
 
     var ToolStrip_Actions_Post_Grade_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_Post_Grade_Group_Jsp,
+        membersMargin: 5,
+        members: [
             ToolStripButton_Add_Post_Grade_Group_Jsp,
             ToolStripButton_Edit_Post_Grade_Group_Jsp,
             ToolStripButton_Remove_Post_Grade_Group_Jsp,
-            ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp]
+            ToolStripButton_Add_Post_Grade_Group_AddPostGrade_Jsp,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_Post_Grade_Group_Jsp,
+                ]
+            }),
+
+        ]
     });
 
 

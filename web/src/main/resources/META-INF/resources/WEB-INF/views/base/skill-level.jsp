@@ -303,7 +303,7 @@
                 message: "رکوردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }

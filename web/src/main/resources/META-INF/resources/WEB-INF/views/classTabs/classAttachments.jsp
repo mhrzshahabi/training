@@ -62,7 +62,7 @@
         }
     });
 
-    var IButton_Save_JspClassAttachments = isc.TrSaveBtn.create({
+    var IButton_Save_JspClassAttachments = isc.IButtonSave.create({
         top: 260,
         click: function () {
             DynamicForm_JspClassAttachments.validate();
@@ -89,10 +89,10 @@
         }
     });
 
-    var IButton_Cancel_JspClassAttachments = isc.TrCancelBtn.create({
+    var IButton_Cancel_JspClassAttachments = isc.IButtonCancel.create({
         prompt: "",
         width: 100,
-        icon: "<spring:url value="remove.png"/>",
+        //icon: "<spring:url value="remove.png"/>",
         orientation: "vertical",
         click: function () {
             DynamicForm_JspClassAttachments.clearValues();
@@ -137,23 +137,23 @@
         }
     });
 
-    var ToolStripButton_Refresh_JspClassAttachment = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_JspClassAttachment = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_ClassAttachments_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspClassAttachment = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_JspClassAttachment = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_ClassAttachments_Edit();
         }
     });
-    var ToolStripButton_Add_JspClassAttachment = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_JspClassAttachment = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_ClassAttachments_Add();
         }
     });
-    var ToolStripButton_Remove_JspClassAttachment = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_JspClassAttachment = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_ClassAttachments_Remove();
         }
@@ -161,12 +161,20 @@
 
     var ToolStrip_Actions_JspClassAttachment = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members:
             [
-                ToolStripButton_Refresh_JspClassAttachment,
                 ToolStripButton_Add_JspClassAttachment,
                 ToolStripButton_Edit_JspClassAttachment,
-                ToolStripButton_Remove_JspClassAttachment
+                ToolStripButton_Remove_JspClassAttachment,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh_JspClassAttachment
+                    ]
+                })
             ]
     });
 

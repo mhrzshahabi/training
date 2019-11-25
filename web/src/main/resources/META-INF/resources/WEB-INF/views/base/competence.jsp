@@ -43,22 +43,22 @@
     // ------------------------------------------- ToolStrip -------------------------------------------
     CompetenceTS_competence = isc.ToolStrip.create({
         members: [
-            isc.TrRefreshBtn.create({
+            isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refresh_competence();
                 }
             }),
-            isc.TrCreateBtn.create({
+            isc.ToolStripButtonAdd.create({
                 click: function () {
                     showNewForm_competence();
                 }
             }),
-            isc.TrEditBtn.create({
+            isc.ToolStripButtonEdit.create({
                 click: function () {
                     showEditForm_competence();
                 }
             }),
-            isc.TrRemoveBtn.create({
+            isc.ToolStripButtonRemove.create({
                 click: function () {
                     showRemoveForm_competence();
                 }

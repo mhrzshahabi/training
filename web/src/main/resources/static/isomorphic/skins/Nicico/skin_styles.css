@@ -8843,6 +8843,11 @@ a.calMonthEventLink:active {
   color: #374b71;
 }
 
+.formTitleFocusedRTL {
+  font-size: 12.5px;
+  font-weight: bold;
+}
+
 .header-change-lng span {
   color: #374b71;
 }
@@ -9049,6 +9054,7 @@ hr {
   box-shadow: none;
   font-weight: bold;
   font-size: 13px;
+  background: none !important;
 }
 .main-menu div .toolStripButtonOver {
   color: #fe9d2a;
@@ -9056,6 +9062,7 @@ hr {
   box-shadow: none;
   font-weight: bold;
   font-size: 13px;
+  background: none !important;
 }
 
 .toolStripButton,
@@ -9082,11 +9089,20 @@ hr {
 .toolStripButtonSelectedDownOpened,
 .toolStripButtonSelectedOverOpened {
   border-radius: 3px;
-  border: solid 1px #b3b3b3;
+  background-color: #f3f3f3;
+  border: solid 1px #3f3f3f;
+  color: #000000;
 }
 
 .menuTable td {
   font-weight: bold;
+}
+
+.toolStripButtonDisabled,
+.toolStripButtonSelectedDisabled {
+  background-color: #f3f3f3;
+  border: solid 1px #929292;
+  color: #3f3f3f;
 }
 
 .buttonSave,
@@ -10034,4 +10050,34 @@ hr {
 
 .toolStrip {
   border: 1px solid #d9d9d9;
+}
+
+.toolStripButtonAddDisabled,
+.toolStripButtonAddSelectedDisabled,
+.toolStripButtonRefreshDisabled,
+.toolStripButtonRefreshSelectedDisabled,
+.toolStripButtonEditDisabled,
+.toolStripButtonEditSelectedDisabled,
+.toolStripButtonRemoveDisabled,
+.toolStripButtonRemoveSelectedDisabled,
+.toolStripButtonPrintDisabled,
+.toolStripButtonPrintSelectedDisabled,
+.toolStripButtonRefreshDisabled,
+.toolStripButtonRefreshSelectedDisabled {
+  background-color: #f3f3f3;
+  border: solid 1px #929292;
+}
+.toolStripButtonAddDisabled td,
+.toolStripButtonAddSelectedDisabled td,
+.toolStripButtonRefreshDisabled td,
+.toolStripButtonRefreshSelectedDisabled td,
+.toolStripButtonEditDisabled td,
+.toolStripButtonEditSelectedDisabled td,
+.toolStripButtonRemoveDisabled td,
+.toolStripButtonRemoveSelectedDisabled td,
+.toolStripButtonPrintDisabled td,
+.toolStripButtonPrintSelectedDisabled td,
+.toolStripButtonRefreshDisabled td,
+.toolStripButtonRefreshSelectedDisabled td {
+  color: #8e8e8e;
 }

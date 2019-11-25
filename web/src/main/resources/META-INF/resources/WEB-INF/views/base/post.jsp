@@ -18,14 +18,10 @@
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     PostTS_post = isc.ToolStrip.create({
+        membersMargin: 5,
         members: [
-            isc.TrRefreshBtn.create({
-                click: function () {
-                    refreshPostLG_post();
-                }
-            }),
-            isc.ToolStripButton.create({
-                icon:"[SKIN]/RichTextEditor/print.png",
+            isc.ToolStripButtonPrint.create({
+                //icon:"[SKIN]/RichTextEditor/print.png",
                 title: "<spring:message code='print'/>",
                 click:function () {
                     print_PostListGrid("PDF");
@@ -34,9 +30,21 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.Label.create({
-                ID: "totalsLabel_post"
-            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.Label.create({
+                        ID: "totalsLabel_post"
+                    }),
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            refreshPostLG_post();
+                        }
+                    })
+                ]
+            })
         ]
     });
 

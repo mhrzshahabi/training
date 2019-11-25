@@ -468,8 +468,8 @@
         showResizeBar: false,
 
     });
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/> ",
 
         click: function () {
@@ -477,15 +477,15 @@
 
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
 
         click: function () {
@@ -499,15 +499,15 @@
     <%--openTabGoal();--%>
     <%--}--%>
     <%--});--%>
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
-    var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             print_CourseListGrid("pdf");
@@ -515,7 +515,22 @@
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            ToolStripButton_Print,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh
+                ]
+            }),
+
+        ]
     });
 
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
@@ -1093,10 +1108,10 @@
         valuesManager: "vm_JspCourse"
     });
 
-    var IButton_course_Save = isc.IButton.create({
+    var IButton_course_Save = isc.IButtonSave.create({
         ID: "courseSaveBtn",
         title: "<spring:message code="save"/>",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
 
             vm_JspCourse.validate();
@@ -1269,12 +1284,12 @@
         membersMargin: 15,
         autoDraw: false,
         // defaultLayoutAlign: "center",
-        members: [IButton_course_Save, isc.IButton.create({
+        members: [IButton_course_Save, isc.IButtonCancel.create({
             ID: "EditExitIButton",
             <%--title: "<spring:message code="cancel"/>",--%>
             title: "خروج",
             prompt: "",
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
                 Window_course.closeClick();
@@ -1769,6 +1784,7 @@
                 width: "96%",
                 height: "74%",
                 borderRadius:"6px",
+                textAlign: "right",
                 // margin:20,
                 fields: [
                     {
@@ -1779,7 +1795,7 @@
                         required: true,
                         // height: "30",
                         width: "*",
-                        textAlign: "center",
+                        textAlign: "right",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
@@ -2028,7 +2044,7 @@
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -2040,7 +2056,7 @@
         code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="yes"/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code="no"/>"
                 })],
                 buttonClick: function (button, index) {
@@ -2104,7 +2120,7 @@
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }

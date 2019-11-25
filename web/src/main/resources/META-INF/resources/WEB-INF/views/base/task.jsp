@@ -735,7 +735,7 @@ var dummy;
                 message: "<spring:message code='msg.not.selected.record'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function () {
                     this.close();
                 }
@@ -825,7 +825,7 @@ var dummy;
                 message: "<spring:message code='msg.not.selected.record'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -835,7 +835,7 @@ var dummy;
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='msg.remove.title'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='yes'/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code='no'/>"
                 })],
                 buttonClick: function (button, index) {

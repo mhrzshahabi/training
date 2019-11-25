@@ -347,8 +347,9 @@
         ]
     });
 
-    var IButton_Skill_Skill_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png",
+    var IButton_Skill_Skill_Save = isc.IButtonSave.create({
+        top: 260, title: "ذخیره",
+        //icon: "pieces/16/save.png",
         click: function () {
             if (skill_Method == "POST") {
                 var sub_cat_code;
@@ -410,11 +411,11 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Skill_Skill_Save, isc.IButton.create({
+        members: [IButton_Skill_Skill_Save, isc.IButtonCancel.create({
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Skill_Skill.close();
@@ -536,7 +537,7 @@
                     message: "لطفا یک مهارت را انتخاب کنید.",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -557,7 +558,7 @@
                     message: "لطفا یک مهارت را انتخاب کنید",
                     icon: "[SKIN]ask.png",
                     title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -597,7 +598,7 @@
                 message: "مهارتی برای حذف انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -607,7 +608,7 @@
                 message: "آيا مي خواهيد اين مهارت حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -665,7 +666,7 @@
                 message: "مهارتی برای ویرایش انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -825,36 +826,36 @@
     });
 
 
-    var ToolStripButton_Skill_Skill_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Skill_Skill_Refresh = isc.ToolStripButtonRefresh.create({
+       // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Skill_Skill_refresh();
         }
     });
-    var ToolStripButton_Skill_Skill_Edit = isc.ToolStripButton.create({
+    var ToolStripButton_Skill_Skill_Edit = isc.ToolStripButtonEdit.create({
         icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Skill_Skill_Edit();
         }
     });
-    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
             ListGrid_Skill_Skill_Add();
         }
     });
-    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Skill_Skill_Remove();
         }
     });
-    var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Skill_Skill_Print = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "چاپ",
         click: function () {
             "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
@@ -864,12 +865,20 @@
     });
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
-            ToolStripButton_Skill_Skill_Refresh,
             ToolStripButton_Skill_Skill_Add,
             ToolStripButton_Skill_Skill_Edit,
             ToolStripButton_Skill_Skill_Remove,
-            ToolStripButton_Skill_Skill_Print
+            ToolStripButton_Skill_Skill_Print,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                ToolStripButton_Skill_Skill_Refresh
+                 ]
+            }),
         ]
     });
 
@@ -1281,7 +1290,7 @@
                 message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تایید"})],
+                buttons: [isc.IButtonSave.create({title: "تایید"})],
                 buttonClick: function () {
                     this.close();
                 }
@@ -1723,7 +1732,7 @@
                 message: "لطفا یک مهارت را انتخاب کنید.",
                 icon: "<spring:url value='[SKIN]ask.png'/>",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تایید"})],
+                buttons: [isc.IButtonSave.create({title: "تایید"})],
                 buttonClick: function () {
                     this.close();
                 }

@@ -88,7 +88,7 @@
                         message: "<spring:message code="msg.jobGroup.notFound"/>",
                         icon: "[SKIN]ask.png",
                         title: "پیام",
-                        buttons: [isc.Button.create({title: "تائید"})],
+                        buttons: [isc.IButtonSave.create({title: "تائید"})],
                         buttonClick: function (button, index) {
                             this.close();
                         }
@@ -100,7 +100,7 @@
                         message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                         icon: "[SKIN]ask.png",
                         title: "تائید حذف",
-                        buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                             title: "خیر"
                         })],
                         buttonClick: function (button, index) {
@@ -131,7 +131,7 @@
                             message: "<spring:message code="msg.jobGroup.notFound"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
-                            buttons: [isc.Button.create({title: "تائید"})],
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
                             buttonClick: function (button, index) {
                                 this.close();
                             }
@@ -204,7 +204,7 @@
                             message: getFormulaMessage("آیا از حذف  گروه شغل:' ", "2", "black", "c") + getFormulaMessage(activeJobGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                                 title: "خیر"
                             })],
                             buttonClick: function (button, index) {
@@ -240,7 +240,7 @@
                             message: getFormulaMessage("آیا از حذف  شغل:' ", "2", "black", "c") + getFormulaMessage(activeJob.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه شغل:' ", "2", "black", "c") + getFormulaMessage(activeJobGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                                 title: "خیر"
                             })],
                             buttonClick: function (button, index) {
@@ -899,7 +899,7 @@
                     message: "<spring:message code="msg.jobGroup.notFound"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1103,7 +1103,7 @@
                 message: getFormulaMessage("آیا از حذف گروه شغل:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه شغل:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
                 title: "تائید حذف",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خیر"
                 })],
                 buttonClick: function (button, index) {

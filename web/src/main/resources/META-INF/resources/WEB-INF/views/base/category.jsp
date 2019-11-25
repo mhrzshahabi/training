@@ -421,7 +421,7 @@
                 message: "رکوردی انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -431,7 +431,7 @@
                 message: "آيا مي خواهيد اين ركورد حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -488,7 +488,7 @@
                 message: "گروهی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -525,7 +525,7 @@
                 message: "گروه یا زیر گروه انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -634,7 +634,7 @@
                 message: "رکوردی انتخاب نشده است!",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -644,7 +644,7 @@
                 message: "آيا مي خواهيد اين ركورد حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خير"
                 })],
                 buttonClick: function (button, index) {
@@ -701,7 +701,7 @@
                 message: "رکوردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }

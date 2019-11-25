@@ -76,7 +76,7 @@
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
-        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
+        titleSuffix: "<span style='color:#ff0842;font-size:21px; padding-right: 2px;'> *</span>", requiredTitlePrefix: "",
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
@@ -264,7 +264,7 @@
 
         if (type === 'info') {
             dialog.setButtons([
-                isc.Button.create({
+                isc.IButtonSave.create({
                     title: "<spring:message code="ok"/>",
                     click: function () {
                         dialog.close();
@@ -273,13 +273,13 @@
             ]);
         } else if (type === 'ask') {
             dialog.setButtons([
-                isc.Button.create({title: "<spring:message code="yes"/>",}),
-                isc.Button.create({title: "<spring:message code="no"/>",})
+                isc.IButtonSave.create({title: "<spring:message code="yes"/>",}),
+                isc.IButtonCancel.create({title: "<spring:message code="no"/>",})
             ]);
         } else if (type === 'confirm') {
             dialog.setButtons([
-                isc.Button.create({title: "<spring:message code="ok"/>",}),
-                isc.Button.create({title: "<spring:message code="cancel"/>",})
+                isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
+                isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
         } else if (type === 'wait') {
             dialog.message = message ? message : "<spring:message code='in.operation'/>";
@@ -302,13 +302,13 @@
         contents: "<img width='50' height='50' src='static/img/logo03.png'/>"
     });
 
-/*    nicicoIcon = isc.Img.create({
-        src: "<spring:url value="nicico.png"/>",
-        width: 24,
-        height: 24,
-        imageType: "stretch",
-        padding: 4,
-    });*/
+    <%--nicicoIcon = isc.Img.create({--%>
+        <%--src: "<spring:url value="nicico.png"/>",--%>
+        <%--width: 24,--%>
+        <%--height: 24,--%>
+        <%--imageType: "stretch",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
 
     var headerFlow = isc.HTMLFlow.create({
 
@@ -318,13 +318,13 @@
         contents: "<span><spring:message code="training.system.version"/></span>"
     });
 
-/*
-    systemLabel = isc.Label.create({
-        contents: "<spring:message code="training.system.version"/>",
-        styleName: "customHeader",
-        padding: 4,
-    });
-*/
+
+    <%--systemLabel = isc.Label.create({--%>
+        <%--contents: "<spring:message code="training.system.version"/>",--%>
+        <%--styleName: "customHeader",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
+
 
 
     var label_Username = isc.Label.create({
@@ -343,11 +343,11 @@
 
 
 
-/*    userLabel = isc.Label.create({
-        contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
-        styleName: "customHeader",
-        padding: 4,
-    });*/
+    <%--userLabel = isc.Label.create({--%>
+        <%--contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,--%>
+        <%--styleName: "customHeader",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
 
     var logoutButton = isc.IButton.create({
 
@@ -372,14 +372,14 @@
 
 
 
-/*    logoutButton = isc.Button.create({
-        title: "<spring:message code="logout"/>",
-        width: "100",
-        icon: "logout.png",
-        click: function () {
-            logout();
-        }
-    });*/
+    <%--logoutButton = isc.Button.create({--%>
+        <%--title: "<spring:message code="logout"/>",--%>
+        <%--width: "100",--%>
+        <%--icon: "logout.png",--%>
+        <%--click: function () {--%>
+            <%--logout();--%>
+        <%--}--%>
+    <%--});--%>
 
 
     var languageForm = isc.DynamicForm.create({
@@ -442,7 +442,7 @@
             data: [
                 {
                     title: "<spring:message code="skill.categorize"/>",
-                    //icon: "<spring:url value="categorize.png"/>",
+                    <%--icon: "<spring:url value="categorize.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
@@ -450,7 +450,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="skill.level"/>",
-                    //icon: "<spring:url value="level.png"/>",
+                    <%--icon: "<spring:url value="level.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-level/show-form"/>");
                     }
@@ -458,7 +458,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="education.degree"/>",
-                    //icon: "<spring:url value="education.png"/>",
+                    <%--icon: "<spring:url value="education.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
@@ -466,7 +466,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="equipment.plural"/>",
-                    //icon: "<spring:url value="equipment.png"/>",
+                    <%--icon: "<spring:url value="equipment.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
@@ -481,7 +481,7 @@
             data: [
                 {
                     title: "<spring:message code="job"/>",
-                    //icon: "<spring:url value="job.png"/>",
+                    <%--icon: "<spring:url value="job.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
@@ -489,7 +489,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="job.group"/>",
-                    //icon: "<spring:url value="jobGroup.png"/>",
+                    <%--icon: "<spring:url value="jobGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="job-group/show-form"/>");
                     }
@@ -497,7 +497,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade"/>",
-                    //icon: "<spring:url value="postGrade.png"/>",
+                    <%--icon: "<spring:url value="postGrade.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
@@ -505,7 +505,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade.group"/>",
-                    //icon: "<spring:url value="postGrade.png"/>",
+                    <%--icon: "<spring:url value="postGrade.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
                     }
@@ -513,7 +513,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="post"/>",
-                    //icon: "<spring:url value="post.png"/>",
+                    <%--icon: "<spring:url value="post.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
@@ -521,7 +521,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="post.group"/>",
-                    //icon: "<spring:url value="jobGroup.png"/>",
+                    <%--icon: "<spring:url value="jobGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
@@ -529,7 +529,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment"/>",
-                    //icon: "<spring:url value="research.png"/>",
+                    <%--icon: "<spring:url value="research.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needAssessment/"/>");
                     }
@@ -537,7 +537,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>",
-                    //icon: "<spring:url value="research.png"/>",
+                    <%--icon: "<spring:url value="research.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
                     }
@@ -545,7 +545,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="skill"/>",
-                    //icon: "<spring:url value="skill.png"/>",
+                    <%--icon: "<spring:url value="skill.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
@@ -553,7 +553,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="skill.group"/>",
-                    //icon: "<spring:url value="skillGroup.png"/>",
+                    <%--icon: "<spring:url value="skillGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
@@ -568,7 +568,7 @@
             data: [
                 {
                     title: "<spring:message code="course"/>",
-                    //icon: "<spring:url value="course.png"/>",
+                    <%--icon: "<spring:url value="course.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
@@ -576,7 +576,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="term"/>",
-                    //icon: "<spring:url value="term.png"/>",
+                    <%--icon: "<spring:url value="term.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/term/show-form"/>");
                     }
@@ -584,7 +584,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="specialized.committee"/>",
-                  //  icon: "<spring:url value="committee.png"/>",
+                    <%--icon: "<spring:url value="committee.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
@@ -592,7 +592,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="company"/>",
-                 //   icon: "<spring:url value="company.png"/>",
+                    <%--icon: "<spring:url value="company.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
@@ -607,7 +607,7 @@
             data: [
                 {
                     title: "<spring:message code="class"/>",
-                   // icon: "<spring:url value="class.png"/>",
+                    <%--icon: "<spring:url value="class.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/tclass/show-form"/>");
                     },
@@ -615,7 +615,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="student"/>",
-                    //icon: "<spring:url value="student.png"/>",
+                    <%--icon: "<spring:url value="student.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/student/show-form"/>");
                     }
@@ -623,7 +623,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="teacher"/>",
-                    //icon: "<spring:url value="teacher.png"/>",
+                    <%--icon: "<spring:url value="teacher.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/teacher/show-form"/>");
                     }
@@ -631,7 +631,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="institute"/>",
-                    //icon: "<spring:url value="institute.png"/>",
+                    <%--icon: "<spring:url value="institute.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
@@ -661,7 +661,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="group"/>",
-                    //icon: "<spring:url value="group.png"/>",
+                    <%--icon: "<spring:url value="group.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/workflow/groupCartable/showForm"/>");
                     }
@@ -669,7 +669,7 @@
                 {isSeparator: true},
                 {
                     title: "<spring:message code="workflow"/>",
-                    //icon: "<spring:url value="workflow.png"/>",
+                    <%--icon: "<spring:url value="workflow.png"/>",--%>
                     submenu: [
                         {
                             title: "<spring:message code="process.definition"/>",
@@ -681,7 +681,7 @@
                         {isSeparator: true},
                         {
                             title: "<spring:message code="all.processes"/>",
-                           // icon: "<spring:url value="processList.png"/>",
+                            <%--icon: "<spring:url value="processList.png"/>",--%>
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
@@ -752,7 +752,7 @@
 
     var closeAllButton = isc.IButtonClose.create({
         width: 100,
-      //  icon: "<spring:url value="closeAllTabs.png"/>",
+       <%--icon: "<spring:url value="closeAllTabs.png"/>",--%>
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
@@ -806,8 +806,8 @@
 
     isc.TrVLayout.create({
         autoDraw: true,
-      //  styleName: "relativePosition",
-        styleName: "header",
+        styleName: "relativePosition",
+       // styleName: "header",
         members: [
             headerLayout,
 /*            isc.HLayout.create({
@@ -822,6 +822,7 @@
             trainingTabSet,
         ]
     });
+
     // -------------------------------------------  Functions  -----------------------------------------------
 
     function logout() {
@@ -917,7 +918,7 @@
     isc.MyOkDialog.addProperties({
         title: "<spring:message code='message'/>",
         isModal: true,
-        buttons: [isc.Button.create({title: "تائید"})],
+        buttons: [isc.IButtonSave.create({title: "تائید"})],
         icon: "[SKIN]say.png",
         buttonClick: function (button, index) {
             this.close();
@@ -930,8 +931,8 @@
         icon: "[SKIN]say.png",
         title: "<spring:message code='message'/>",
         buttons: [
-            isc.Button.create({title: "بله",}),
-            isc.Button.create({title: "خير",})],
+            isc.IButtonSave.create({title: "بله",}),
+            isc.IButtonCancel.create({title: "خير",})],
         buttonClick: function (button, index) {
             this.close();
         }

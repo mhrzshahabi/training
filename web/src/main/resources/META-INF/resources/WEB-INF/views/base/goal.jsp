@@ -187,9 +187,9 @@
         }
     });
 
-    var IButton_Goal_Save = isc.Button.create({
+    var IButton_Goal_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -224,9 +224,9 @@
 
         }
     });
-    var IButton_Syllabus_Save = isc.Button.create({
+    var IButton_Syllabus_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
@@ -273,7 +273,7 @@
                                     message: "مدت زمان اجرای دوره به " + sumSyllabus + " ساعت تغییر کند؟",
                                     icon: "[SKIN]ask.png",
                                     title: "سوال؟",
-                                    buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                                    buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
                                     buttonClick: function (button, index) {
                                         if (index) {
                                             this.close();
@@ -301,11 +301,11 @@
     });
 
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
-        members: [IButton_Goal_Save, isc.Button.create({
+        members: [IButton_Goal_Save, isc.IButtonCancel.create({
             ID: "IButton_Goal_Exit",
             title: "لغو",
             // prompt: "",
-            icon: "<spring:url value="remove.png"/>",
+           // icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
@@ -322,12 +322,12 @@
         // align: "center",
         // padding: 10,
         // membersMargin: 10,
-        members: [IButton_Syllabus_Save, isc.Button.create({
+        members: [IButton_Syllabus_Save, isc.IButtonCancel.create({
             ID: "IButton_Syllabus_Exit",
             title: "لغو",
             prompt: "",
             width: 100,
-            icon: "<spring:url value="remove.png"/>",
+            //icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Syllabus.close();
@@ -501,7 +501,7 @@
             if (ListGrid_Goal.getSelectedRecord() != null && record.goalId == selectedRecord) {
                 return "color: brown;font-size: 14px;";
             } else {
-                return "color:gray;font-size: 10px;";
+                return "color:white;font-size: 10px;";
             }
         },
         fields: [
@@ -635,22 +635,22 @@
             addToListGrid()
         }
     });
-    var ToolStripButton_Syllabus_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Syllabus_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Syllabus_Goal_Edit();
         }
     });
-    var ToolStripButton_Syllabus_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Syllabus_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
             ListGrid_Syllabus_Goal_Add();
         }
     });
-    var ToolStripButton_Syllabus_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Syllabus_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Syllabus_Goal_Remove();
@@ -662,7 +662,7 @@
         showShadow: true,
         shadowDepth: 10
     });
-    var ToolStripButton_Syllabus_Print = isc.ToolStripMenuButton.create({
+    var ToolStripButton_Syllabus_Print = isc.ToolStripButtonPrint.create({
         // icon: "[SKIN]/RichTextEditor/print.png",
         autoDraw: false,
         width: 100,
@@ -706,16 +706,16 @@
             }
         }
     });
-    var ToolStripButton_Goal_Refresh = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/refresh.png",
+    var ToolStripButton_Goal_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "[SKIN]/actions/refresh.png",
         title: "بازخوانی",
         click: function () {
             ListGrid_Goal_refresh();
             ListGrid_Syllabus_Goal_refresh();
         }
     });
-    var ToolStripButton_Goal_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Goal_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
         hoverWidth: 320,
@@ -723,8 +723,8 @@
             ListGrid_Goal_Edit();
         }
     });
-    var ToolStripButton_Goal_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
+       // icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
@@ -732,8 +732,8 @@
             ListGrid_Goal_Add();
         }
     });
-    var ToolStripButton_Goal_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         prompt: "اخطار<br/>هدف انتخاب شده از تمامی دوره های موجود حذف خواهد شد.",
         hoverWidth: 280,
@@ -741,8 +741,8 @@
             ListGrid_Goal_Remove();
         }
     });
-    var ToolStripButton_Goal_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/plus.png",
+    var ToolStripButton_Goal_Print = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/plus.png",
         prompt: "افزودن اهداف انتخاب شده به دوره مذکور و یا گرفتن اهداف انتخاب شده از دوره مذکور",
         hoverWidth: "12%",
         title: "افزودن",
@@ -757,16 +757,16 @@
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
     });
-    var ToolStripButton_Add_Vertical = isc.ToolStripButton.create({
-        icon: "[SKIN]/TransferIcons/left.png",
+    var ToolStripButton_Add_Vertical = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/TransferIcons/left.png",
         title: "",
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
         click: function () {
             addToListGrid()
         }
     });
-    var ToolStripButton_Remove_Vertical = isc.ToolStripButton.create({
-        icon: "[SKIN]/TransferIcons/right.png",
+    var ToolStripButton_Remove_Vertical = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/TransferIcons/right.png",
         title: "",
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
@@ -775,18 +775,36 @@
     });
     var ToolStrip_Actions_Goal = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Goal_Refresh, "separator", ToolStripButton_Goal_Add, ToolStripButton_Goal_Edit, ToolStripButton_Goal_Remove, ToolStripButton_Goal_Print]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Goal_Add,
+            ToolStripButton_Goal_Edit,
+            ToolStripButton_Goal_Remove,
+            ToolStripButton_Goal_Print,
+            "separator",
+            ToolStripButton_Goal_Refresh,
+        ]
     });
     var ToolStrip_Actions_Syllabus = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Syllabus_Print, "separator", ToolStripButton_Syllabus_Add, ToolStripButton_Syllabus_Edit, ToolStripButton_Syllabus_Remove]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Syllabus_Add,
+            ToolStripButton_Syllabus_Edit,
+            ToolStripButton_Syllabus_Remove,
+            "separator",
+            ToolStripButton_Syllabus_Print
+        ]
     });
     var ToolStrip_Vertical_Goals = isc.ToolStrip.create({
         width: "100%",
         height: "100%",
         align: "center",
         vertical: "center",
-        members: [ToolStripButton_Add_Vertical, ToolStripButton_Remove_Vertical]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add_Vertical,
+            ToolStripButton_Remove_Vertical]
     });
 
     var VLayout_Grid_GoalAll = isc.VLayout.create({
@@ -884,7 +902,7 @@
                 message: "<spring:message code='msg.no.records.selected'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -915,7 +933,7 @@
                             message: "با حذف هدف " + getFormulaMessage(record.titleFa, 2, "red", "b"),
                             icon: "[SKIN]ask.png",
                             title: "اخطار",
-                            buttons: [isc.Button.create({title: "موافقم"}), isc.Button.create({
+                            buttons: [isc.IButtonSave.create({title: "موافقم"}), isc.IButtonCancel.create({
                                 title: "مخالفم"
                             })],
                             buttonClick: function (button, index) {
@@ -963,7 +981,7 @@
                 message: "رکوردی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -999,7 +1017,7 @@
                 message: "لطفاً ابتدا اطلاعات دوره را وارد کنید.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1020,7 +1038,7 @@
                 message: "<spring:message code='msg.no.records.selected'/> !",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
-                buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='ok'/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1030,7 +1048,7 @@
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
                 title: "هشدار",
-                buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
                     title: "<spring:message
         code='global.no'/>"
                 })],
@@ -1081,7 +1099,7 @@
                 message: "هدف مرتبط انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1104,7 +1122,7 @@
                 message: "سرفصلی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1139,7 +1157,7 @@
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1151,7 +1169,7 @@
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1192,7 +1210,7 @@
                 message: "دوره اي انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -1204,7 +1222,7 @@
                     message: "هدفي انتخاب نشده است.",
                     icon: "[SKIN]ask.png",
                     title: "پیغام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }

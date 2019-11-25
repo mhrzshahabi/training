@@ -133,40 +133,40 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
-        var ToolStripButton_Refresh = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/refresh.png",
+        var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+           // icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_operational.invalidateCache();
             }
         });
 
-        var ToolStripButton_Add = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/add.png",
+        var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+            //icon: "[SKIN]/actions/add.png",
             title: "<spring:message code="create"/>",
             click: function () {
                 create_OperationalUnit();
             }
         });
 
-        var ToolStripButton_Edit = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/edit.png",
+        var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+            //icon: "[SKIN]/actions/edit.png",
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_OperationalUnitEditForm();
             }
         });
 
-        var ToolStripButton_Remove = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/remove.png",
+        var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+            //icon: "[SKIN]/actions/remove.png",
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_OperationalUnit();
             }
         });
 
-        var ToolStripButton_Print = isc.ToolStripButton.create({
-            icon: "[SKIN]/RichTextEditor/print.png",
+        var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+            //icon: "[SKIN]/RichTextEditor/print.png",
             title: "<spring:message code="print"/>",
             click: function () {
                 print_OperationalUnitListGrid("pdf");
@@ -175,7 +175,22 @@
 
         var ToolStrip_operational = isc.ToolStrip.create({
             width: "100%",
-            members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+            membersMargin: 5,
+            members: [
+                ToolStripButton_Add,
+                ToolStripButton_Edit,
+                ToolStripButton_Remove,
+                ToolStripButton_Print,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh
+                    ]
+                })
+
+            ]
         });
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
@@ -208,7 +223,7 @@
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
-                    isc.Button.create
+                    isc.IButtonSave.create
                     ({
                         title: "<spring:message code="save"/> ",
                         click: function () {
@@ -219,7 +234,7 @@
                             }
                         }
                     }),
-                    isc.Button.create
+                    isc.IButtonCancel.create
                     ({
                         title: "<spring:message code="cancel"/>",
                         click: function () {
@@ -298,7 +313,7 @@
                     message: "<spring:message code="msg.not.selected.record"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -332,7 +347,7 @@
                     message: "<spring:message code="msg.not.selected.record"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
