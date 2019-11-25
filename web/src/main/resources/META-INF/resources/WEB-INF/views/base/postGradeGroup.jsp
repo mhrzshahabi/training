@@ -371,7 +371,7 @@
         click: function () {
             var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
             if (record == null || record.id == null) {
-                createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             } else {
                 ListGrid_AllPostGrades.fetchData();
                 ListGrid_AllPostGrades.invalidateCache();
@@ -511,7 +511,7 @@
     function ListGrid_Post_Grade_Group_edit() {
         var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             DynamicForm_Post_Grade_Group_Jsp.clearValues();
             method = "PUT";
@@ -524,7 +524,7 @@
     function ListGrid_Post_Grade_Group_remove() {
         var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
         if (record == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Post_Grade_Group_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");

@@ -182,3 +182,4 @@ nicico:
     upload-person-tmp: c:/nicico/${spring.application.name}/upload/person/img/tmp
     upload-bpmn: c:/nicico/${spring.application.name}/upload/bpmn
     upload-bpmn-img: c:/nicico/${spring.application.name}/upload/bpmn/img
+    upload-post: c:/nicico/${spring.application.name}/upload/post

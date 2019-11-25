@@ -1228,7 +1228,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
-            // ToolStripButton_Add_Student_JspClass
+            ToolStripButton_Add_Student_JspClass
         ]
     });
 
@@ -1250,17 +1250,18 @@
         tabBarPosition: "top",
         tabs: [
             {
+                title: "<spring:message code="student.plural"/>",
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/student"}
+                )
+            },
+            {
                 title: "<spring:message code="sessions"/>",//جلسات
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/sessions-tab"}
                 )
             },
-            {
-                title: "<spring:message code="student.plural"/>",
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/personnel"}
-                )
-            },
+
             <%--{--%>
             <%--    title: "<spring:message code="alarms"/>",//هشدارها--%>
             <%--    pane: isc.ViewLoader.create(--%>
@@ -1339,7 +1340,7 @@
     function ListGrid_class_remove() {
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");
@@ -1359,7 +1360,7 @@
     function ListGrid_class_edit() {
         let record = classListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
             // DynamicForm_Class_JspClass.getField("teacherId").fetchData();
@@ -1539,7 +1540,7 @@
     function Add_Student() {
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             ListGrid_All_Students_JspClass.invalidateCache();
             ListGrid_Current_Students_JspClass.invalidateCache();
@@ -1556,7 +1557,11 @@
     function refreshClassTabs(tab){
         switch (tab.title) {
                 case "جلسات": {
-                    // fireCheckList();
+
+                    if (typeof fireClassSession !== "undefined") {
+                        fireClassSession();
+                    }
+
                     break;
                 }
                 case "هشدارها": {
@@ -1584,16 +1589,18 @@
                     break;
                 }
                 case "چک لیست": {
-                    if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
-                       setTimeout(function () {
-                           fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                       },100)
-                    }
-                    else{
-                        setTimeout(function () {
-                           fireCheckList(-1);
-                       },100)
-                    }
+                    if(typeof fireCheckList!= "undefined")
+                    fireCheckList();
+                    // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
+                    //    setTimeout(function () {
+                    //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
+                    //    },100)
+                    // }
+                    // else{
+                    //     setTimeout(function () {
+                    //        fireCheckList(-1);
+                    //    },100)
+                    // }
                     break;
                 }
                 case "ضمائم": {

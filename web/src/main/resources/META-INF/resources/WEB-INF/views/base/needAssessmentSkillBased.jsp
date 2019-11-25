@@ -429,7 +429,7 @@
         if (records == null)
             records = ListGrid_For_This_Object_Skills_NASB.getSelectedRecords();
         if (records == null || records.length === 0) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let Dialog_remove_NASB = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");

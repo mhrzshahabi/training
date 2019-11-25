@@ -658,7 +658,7 @@ var companyId;
         var record_company = ListGrid_Company.getSelectedRecord();
         if (record_company == null || record_company.id == null) {
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -685,7 +685,7 @@ var companyId;
         if (record == null || record.id == null) {
 
             isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],

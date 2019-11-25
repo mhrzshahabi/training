@@ -1,76 +1,57 @@
 package com.nicico.training.dto;
-
+/* com.nicico.training.dto
+@Author:Lotfy
+*/
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.enums.EArrangementType;
-import com.nicico.training.model.enums.EPlaceType;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
-import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
+public class PersonnelRegisteredDTO {
 
-public class TrainingPlaceDTO {
-
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private String titleFa;
-
-    @ApiModelProperty
-    private String titleEn;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer capacity;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer eplaceTypeId;
-
-    @NotEmpty
-    @ApiModelProperty(required = true)
-    private Integer earrangementTypeId;
 
     @ApiModelProperty(required = true)
-    private String description;
+    private String personnelNo;
 
-    // ------------------------------
+    @ApiModelProperty(required = true)
+    private String firstName;
+
+    @ApiModelProperty(required = true)
+    private String lastName;
+
+    @ApiModelProperty(required = true)
+    private String nationalCode;
+
+    @ApiModelProperty(required = true)
+    private String birthCertificateNo;
+
+    @ApiModelProperty(required = true)
+    private String companyName;
+
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingPlaceInfo")
-    public static class Info extends TrainingPlaceDTO {
-
+    @ApiModel("PersonnelRegisteredInfo")
+    public static class Info extends PersonnelRegisteredDTO {
         private Long id;
-//        private InstituteDTO.Info institute;
-        private EPlaceType ePlaceType;
-        private EArrangementType eArrangementType;
-
-    }
-    //-------------------------------
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("TrainingPlaceCreateRq")
-    public static class Create extends TrainingPlaceDTO {
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private Long instituteId;
-
-        Set<Long> equipmentIds;
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
     }
 
     // ------------------------------
@@ -78,8 +59,17 @@ public class TrainingPlaceDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingPlaceUpdateRq")
-    public static class Update extends TrainingPlaceDTO {
+    @ApiModel("PersonnelRegisteredCreateRq")
+    public static class Create extends PersonnelRegisteredDTO {
+       }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonnelRegisteredUpdateRq")
+    public static class Update extends PersonnelRegisteredDTO {
     }
 
     // ------------------------------
@@ -87,7 +77,7 @@ public class TrainingPlaceDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TrainingPlaceDeleteRq")
+    @ApiModel("PersonnelRegisteredDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -95,13 +85,14 @@ public class TrainingPlaceDTO {
     }
 
     // ------------------------------
+
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TrainingPlaceSpecRs")
-    public static class TrainingPlaceSpecRs {
-        private TrainingPlaceDTO.SpecRs response;
+    @ApiModel("PersonnelRegisteredSpecRs")
+    public static class PersonnelRegisteredSpecRs {
+        private SpecRs response;
     }
 
     // ---------------
@@ -111,28 +102,10 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<TrainingPlaceDTO.Info> data;
+        private List<Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
-
-    //----------------------
-
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class TrainingPlaceTitle {
-
-        private String titleFa;
-
-    }
-
-    //----------------------
-
-
-
-
 }
