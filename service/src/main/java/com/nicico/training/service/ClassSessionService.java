@@ -151,6 +151,26 @@ public class ClassSessionService implements IClassSession {
     @Transactional
     @Override
     public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request) {
+
+        //********date utils*********
+        Calendar calendar = Calendar.getInstance();
+        Date gregorianSessionDate = null;
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            gregorianSessionDate = formatter.parse(DateUtil.convertKhToMi1(request.getSessionDate()));
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        calendar.setTime(gregorianSessionDate);
+
+        request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
+        request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
+        request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
+        request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+
         Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
         ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
         ClassSession classSession = new ClassSession();
@@ -188,6 +208,15 @@ public class ClassSessionService implements IClassSession {
     @Override
     public SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(classSessionDAO, request, classSession -> modelMapper.map(classSession, ClassSessionDTO.Info.class));
+    }
+
+    //*********************************
+
+    @Override
+    @Transactional
+    public List<ClassSessionDTO.Info> loadSessions(Long classId) {
+        return modelMapper.map(classSessionDAO.findByClassId(classId), new TypeToken<List<ClassSessionDTO.Info>>() {
+        }.getType());
     }
 
     //*********************************

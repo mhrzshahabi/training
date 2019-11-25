@@ -5,10 +5,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.Institute;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
@@ -80,6 +77,8 @@ public class ClassSessionDTO implements Serializable {
 
         private InstituteDTO.InstituteTitle institute;
 
+        private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
+
         private TeacherDTO.TeacherFullNameTuple teacher;
         public String getTeacher(){
             if (teacher!=null)
@@ -106,6 +105,10 @@ public class ClassSessionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ClassSessionsUpdateRq")
     public static class Update extends ClassSessionDTO {
+
+        @NotNull
+        @ApiModelProperty(required = true)
+        private String sessionTime;
 
     }
 
