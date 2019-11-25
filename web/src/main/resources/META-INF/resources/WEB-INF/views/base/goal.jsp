@@ -224,9 +224,9 @@
 
         }
     });
-    var IButton_Syllabus_Save = isc.Button.create({
-        top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+    var IButton_Syllabus_Save = isc.TrSaveBtn.create({
+        // top: 260, title: "ذخیره",
+        // icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Syllabus.validate();
             if (DynamicForm_Syllabus.hasErrors()) {
@@ -301,11 +301,11 @@
     });
 
     var Hlayout_Goal_SaveOrExit = isc.TrHLayoutButtons.create({
-        members: [IButton_Goal_Save, isc.Button.create({
+        members: [IButton_Goal_Save, isc.TrCancelBtn.create({
             ID: "IButton_Goal_Exit",
-            title: "لغو",
-            // prompt: "",
-            icon: "<spring:url value="remove.png"/>",
+            <%--title: "لغو",--%>
+            <%--prompt: "",--%>
+            <%--icon: "<spring:url value="remove.png"/>",--%>
             // orientation: "vertical",
             click: function () {
                 DynamicForm_Goal.clearValues();
