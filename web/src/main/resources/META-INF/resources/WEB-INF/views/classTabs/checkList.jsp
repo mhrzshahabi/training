@@ -220,11 +220,9 @@
         contextMenu: Menu_ListGrid_CheckListItem,
         dataSource: RestDataSource_CheckListItem,
         fields: [
-            {name: "id", hidden: true},
-            {name: "checkListId", hidden: true},
             {name: "titleFa",  title: "<spring:message code="item"/>", width: "80%"},
             {name: "group", title: "<spring:message code="group"/>", width: "20%"},
-            {name: "isDeleted", hidden: true}],
+       ],
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.isDeleted) {
                 return "color:red;font-size: 12px;";
@@ -256,7 +254,7 @@
         dataSource: RestDataSource_CheckList,
         contextMenu: Menu_ListGrid_CheckList,
         fields: [
-            {name: "id", hidden: true},
+
             {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
         ],
         click: function () {
@@ -477,7 +475,6 @@
         dataSource: RestDataSource_Class_Item,
         fields: [
             {name: "checkListItem.group", title: "<spring:message code="group"/>", align: "center", hidden: true},
-            {name: "id", primaryKey: true, hidden: true},
             {name: "checkListItem.titleFa", title: "<spring:message code="title"/>", canEdit: false, align: "center"},
 
             {
@@ -704,7 +701,7 @@
                 var OK = isc.Dialog.create({
                     message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]say.png",
-                    title: "<spring:message code="global.form.command.done"/>",
+                    title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -718,7 +715,7 @@
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.select.form.ask"/>",
                 icon: "[SKIN]say.png",
-                title: "<spring:message code="global.form.command.done"/>",
+                title: "<spring:message code="warning"/>",
             });
             setTimeout(function () {
                 OK.close();
@@ -827,7 +824,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="message"/>",
 
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
@@ -850,7 +847,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="message"/>",
                 buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -874,7 +871,7 @@
                 ListGrid_CheckList.invalidateCache();
                 checkListDynamicFormField.fetchData();
                 var OK = isc.Dialog.create({
-                    message: "global.form.request.successful",
+                    message: "<spring:message code="global.form.request.successful"/>",
                     icon: "[SKIN]say.png",
                     title: "<spring:message code="global.form.command.done"/>"
                 });
@@ -883,8 +880,8 @@
                 }, 2000);
             } else {
                 var OK = isc.Dialog.create({
-                    message: "آیتم های فرم مورد نظر در کلاس استفاده شده و قابل حذف نمی باشد",
-                    icon: "[SKIN]say.png",
+                   message: "<spring:message code="msg.Item.cannot.delete"/>",
+                   icon: "[SKIN]say.png",
                     title: "<spring:message code="warning"/>"
                 });
                 setTimeout(function () {
