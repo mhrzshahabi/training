@@ -44,11 +44,11 @@ public class ClassSessionFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
         if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
         else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;
     }

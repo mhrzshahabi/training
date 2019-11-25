@@ -34,6 +34,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/sessionService")
 public class ClassSessionRestController {
+
+
     private final ClassSessionService classSessionService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
@@ -167,7 +169,7 @@ public class ClassSessionRestController {
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/operationalUnit_Report.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/SessionsList.jasper", params, jsonDataSource, response);
     }
 
     //*********************************
