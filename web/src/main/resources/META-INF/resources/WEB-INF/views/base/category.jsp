@@ -164,7 +164,7 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Category_Save, isc.IButton.create({
+        members: [IButton_Category_Save, isc.TrCancelBtn.create({
             ID: "IButton_Category_Exit",
             title: "لغو",
             prompt: "",

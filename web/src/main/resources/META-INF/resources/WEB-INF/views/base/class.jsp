@@ -789,7 +789,7 @@
     });
 
     var IButton_Class_Exit_JspClass = isc.TrCancelBtn.create({
-        icon: "<spring:url value="remove.png"/>",
+        <%--icon: "<spring:url value="remove.png"/>",--%>
         align: "center",
         click: function () {
             Window_Class_JspClass.close();

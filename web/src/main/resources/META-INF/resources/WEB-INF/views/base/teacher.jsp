@@ -1122,8 +1122,8 @@
     });
 
     var IButton_Teacher_Exit_JspTeacher = isc.TrCancelBtn.create({
-        icon: "<spring:url value="remove.png"/>",
-        prompt: "",
+        <%--icon: "<spring:url value="remove.png"/>",--%>
+        // prompt: "",
         width: 100,
         orientation: "vertical",
         click: function () {

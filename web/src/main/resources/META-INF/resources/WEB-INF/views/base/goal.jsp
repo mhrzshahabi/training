@@ -187,7 +187,7 @@
         }
     });
 
-    var IButton_Goal_Save = isc.Button.create({
+    var IButton_Goal_Save = isc.TrSaveBtn.create({
         top: 260, title: "ذخیره",
         icon: "[SKIN]/actions/save.png",
         click: function () {
@@ -322,13 +322,13 @@
         // align: "center",
         // padding: 10,
         // membersMargin: 10,
-        members: [IButton_Syllabus_Save, isc.Button.create({
-            ID: "IButton_Syllabus_Exit",
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
+        members: [IButton_Syllabus_Save, isc.TrCancelBtn.create({
+            // ID: "IButton_Syllabus_Exit",
+            // title: "لغو",
+            // prompt: "",
+            // width: 100,
+            <%--icon: "<spring:url value="remove.png"/>",--%>
+            // orientation: "vertical",
             click: function () {
                 Window_Syllabus.close();
             }

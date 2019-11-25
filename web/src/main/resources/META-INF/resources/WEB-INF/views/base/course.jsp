@@ -1093,10 +1093,10 @@
         valuesManager: "vm_JspCourse"
     });
 
-    var IButton_course_Save = isc.IButton.create({
+    var IButton_course_Save = isc.TrSaveBtn.create({
         ID: "courseSaveBtn",
-        title: "<spring:message code="save"/>",
-        icon: "[SKIN]/actions/save.png",
+        <%--title: "<spring:message code="save"/>",--%>
+        <%--icon: "[SKIN]/actions/save.png",--%>
         click: function () {
 
             vm_JspCourse.validate();
@@ -1269,12 +1269,12 @@
         membersMargin: 15,
         autoDraw: false,
         // defaultLayoutAlign: "center",
-        members: [IButton_course_Save, isc.IButton.create({
+        members: [IButton_course_Save, isc.TrCancelBtn.create({
             ID: "EditExitIButton",
             <%--title: "<spring:message code="cancel"/>",--%>
-            title: "خروج",
-            prompt: "",
-            icon: "<spring:url value="remove.png"/>",
+            // title: "خروج",
+            // prompt: "",
+            <%--icon: "<spring:url value="remove.png"/>",--%>
             // orientation: "vertical",
             click: function () {
                 Window_course.closeClick();
