@@ -116,7 +116,7 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
-            totalRecords_Item.setContents("تعداد آیتم ها" + ":&nbsp;<b>" + "" + "</b>");
+            totalRecords_Item.setContents("<spring:message code="number.of.Items"/>" + ":&nbsp;<b>" + "" + "</b>");
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButton.create({
@@ -352,7 +352,6 @@
                     type: 'text',
                     required: true,
                     height: 35,
-                    requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
                     width: "*",
                 },
                 {name: "group", title: "<spring:message code="group"/>", type: 'text', height: 35, width: "*"},
@@ -413,9 +412,9 @@
     var Window_CheckList_Add = isc.Window.create({
         width: 300,
         items: [DynamicForm_CheckList, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
+            members: [isc.TrSaveBtn.create({
                 title: "<spring:message code="save"/>",
-                icon: "pieces/16/save.png",
+
                 click: function () {
                     if (CheckList_method === "POST") {
                         save_CheckList()
@@ -424,9 +423,9 @@
 
                     }
                 }
-            }), isc.Button.create({
+            }), isc.TrCancelBtn.create({
                 title: "<spring:message code="cancel"/>",
-                icon: "[SKIN]ask.png",
+
                 click: function () {
                     Window_CheckList_Add.close();
                 }
@@ -437,9 +436,9 @@
     var Window_CheckListItem_Add = isc.Window.create({
         width: 500,
         items: [DynamicForm_CheckListItem_Add, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
+            members: [isc.TrSaveBtn.create({
                 title: "<spring:message code="save"/>",
-                icon: "pieces/16/save.png",
+
                 click: function () {
                     if (CheckListItem_method === "POST") {
                         save_CheckListItem()
@@ -447,9 +446,9 @@
                         edit_CheckListItem();
                     }
                 }
-            }), isc.Button.create({
+            }), isc.TrCancelBtn.create({
                 title: "<spring:message code="cancel"/>",
-                icon: "[SKIN]ask.png",
+
                 click: function () {
                     Window_CheckListItem_Add.close();
                 }
