@@ -5,14 +5,11 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//  <script>
+// <script>
 
     var classMethod = "POST";
     var autoValid = false;
     var classWait;
-    var str1 = "";
-    var str2 = "";
-    var str3 = "";
     var class_userCartableId;
     var startDateCheck = true;
     var endDateCheck = true;
@@ -41,13 +38,13 @@
             {name: "code"},
             // {name: "teacher.personality.lastNameFa"},
             // {name: "course.code"},
-            {name:"course.titleFa"},
-            {name:"teacherId"},
-            {name:"teacher"},
-            {name:"reason"},
-            {name:"classStatus"},
-            {name:"topology"},
-            {name:"trainingPlaceIds"}
+            {name: "course.titleFa"},
+            {name: "teacherId"},
+            {name: "teacher"},
+            {name: "reason"},
+            {name: "classStatus"},
+            {name: "topology"},
+            {name: "trainingPlaceIds"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -55,8 +52,8 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code", title:"کد دوره"},
-            {name: "titleFa", title:"نام دوره"},
+            {name: "code", title: "کد دوره"},
+            {name: "titleFa", title: "نام دوره"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list?_startRow=0&_endRow=55"
@@ -103,22 +100,22 @@
     var RestDataSource_Institute_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa",title:"نام موسسه"},
-            {name: "manager.firstNameFa",title:"نام مدیر"},
-            {name: "manager.lastNameFa",title:"نام خانوادگی مدیر"},
-            {name: "mobile",title:"موبایل"},
-            {name: "restAddress",title:"آدرس"},
-            {name: "phone",title:"تلفن"}
+            {name: "titleFa", title: "نام موسسه"},
+            {name: "manager.firstNameFa", title: "نام مدیر"},
+            {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
+            {name: "mobile", title: "موبایل"},
+            {name: "restAddress", title: "آدرس"},
+            {name: "phone", title: "تلفن"}
         ],
         fetchDataURL: instituteUrl + "spec-list"
     });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa",title:"نام مکان"},
-            {name: "capacity",title:"ظرفیت"}
+            {name: "titleFa", title: "نام مکان"},
+            {name: "capacity", title: "ظرفیت"}
         ],
-        fetchDataURL : instituteUrl + "0/training-places"
+        fetchDataURL: instituteUrl + "0/training-places"
     });
 
 
@@ -171,7 +168,7 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     var ListGrid_Class_JspClass = isc.TrLG.create({
-        ID:"classListGrid",
+        ID: "classListGrid",
         width: "100%",
         height: "100%",
         sortField: 1,
@@ -189,9 +186,9 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
-
         selectionUpdated: function (record) {
             refreshClassTabs(tabSetClass.getSelectedTab());
+            loadSelectedTab_class(tabSetClass.getSelectedTab());
         },
 
         doubleClick: function () {
@@ -217,27 +214,28 @@
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
-            {name: "reason", title:"درخواست آموزشی", align:"center"},
-            {name: "teacher",  title:"مدرس اصلی", align: "center", filterOperator: "contains"},
-            {name:"classStatus",title:"وضعیت کلاس",align:"center",
+            {name: "reason", title: "درخواست آموزشی", align: "center"},
+            {name: "teacher", title: "مدرس اصلی", align: "center", filterOperator: "contains"},
+            {
+                name: "classStatus", title: "وضعیت کلاس", align: "center",
                 valueMap: {
-                    "1":"برنامه ریزی",
-                    "2":"در حال اجرا",
-                    "3":"پایان یافته",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
                 },
             },
-            {name:"topology",title:"چیدمان",align:"center",valueMap:{
-                    "1":"U شکل",
-                    "2":"عادی",
-                    "3":"مدور",
-                    "4":"سالن"
+            {
+                name: "topology", title: "چیدمان", align: "center", valueMap: {
+                    "1": "U شکل",
+                    "2": "عادی",
+                    "3": "مدور",
+                    "4": "سالن"
                 }
             }
         ]
     });
 
-    var VM_JspClass = isc.ValuesManager.create({
-    });
+    var VM_JspClass = isc.ValuesManager.create({});
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*DynamicForm Add Or Edit*/
@@ -245,33 +243,33 @@
 
     var DynamicForm_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
-        validateOnChange:true,
+        validateOnChange: true,
         height: "100%",
-        wrapItemTitles:true,
+        wrapItemTitles: true,
         isGroup: true,
         groupTitle: "اطلاعات پایه کلاس",
         groupBorderCSS: "1px solid lightBlue",
-        borderRadius:"6px",
+        borderRadius: "6px",
         numCols: 9,
-        colWidths:["5%","24%","5%","12%","6%","6%","5%","12%","12%"],
+        colWidths: ["5%", "24%", "5%", "12%", "6%", "6%", "5%", "12%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
             {name: "id", hidden: true},
             {
-                name:"course.id", editorType:"TrComboAutoRefresh", title:"دوره:",
+                name: "course.id", editorType: "TrComboAutoRefresh", title: "دوره:",
                 // width:"250",
                 textAlign: "center",
-                optionDataSource:RestDataSource_Course_JspClass,
+                optionDataSource: RestDataSource_Course_JspClass,
                 // addUnknownValues:false,
-                displayField:"titleFa", valueField:"id",
-                filterFields:["titleFa", "code"],
+                displayField: "titleFa", valueField: "id",
+                filterFields: ["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
-                pickListFields:[
-                    {name:"code"},
-                    {name:"titleFa"}
+                pickListFields: [
+                    {name: "code"},
+                    {name: "titleFa"}
                 ],
                 changed: function (form, item, value) {
                     form.getItem("titleClass").setValue(item.getSelectedRecord().titleFa);
@@ -283,47 +281,47 @@
                 }
             },
             {
-                name:"minCapacity",
-                title:"ظرفیت:",
+                name: "minCapacity",
+                title: "ظرفیت:",
                 textAlign: "center",
-                hint:"حداقل نفر",
+                hint: "حداقل نفر",
                 showHintInField: true,
-                keyPressFilter:"[0-9]"
+                keyPressFilter: "[0-9]"
             },
             {
-                name:"maxCapacity",
-                colSpan:2,
-                showTitle:false,
-                hint:"حداکثر نفر",
+                name: "maxCapacity",
+                colSpan: 2,
+                showTitle: false,
+                hint: "حداکثر نفر",
                 textAlign: "center",
                 showHintInField: true,
-                keyPressFilter:"[0-9]"
+                keyPressFilter: "[0-9]"
             },
             {
-                name:"code",
-                title:"کد کلاس:",
-                colSpan:2,
+                name: "code",
+                title: "کد کلاس:",
+                colSpan: 2,
                 textAlign: "center",
-                type:"staticText",textBoxStyle:"textItemLite"
+                type: "staticText", textBoxStyle: "textItemLite"
             },
             {
-                name:"titleClass",
+                name: "titleClass",
                 textAlign: "center",
-                title:"عنوان کلاس:",
-                wrapTitle:true,
+                title: "عنوان کلاس:",
+                wrapTitle: true,
                 // type:"staticText",
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"teachingType",
+                name: "teachingType",
                 // titleOrientation:"top",
-                colSpan:1,
-                rowSpan:3,
-                title:"روش آموزش:",
-                type:"radioGroup",
+                colSpan: 1,
+                rowSpan: 3,
+                title: "روش آموزش:",
+                type: "radioGroup",
                 // vertical:false,
-                fillHorizontalSpace:true,
-                defaultValue:"حضوری",
+                fillHorizontalSpace: true,
+                defaultValue: "حضوری",
                 valueMap: [
                     "حضوری",
                     "غیر حضوری",
@@ -333,34 +331,34 @@
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"topology",
-                colSpan:1,
-                rowSpan:3,
+                name: "topology",
+                colSpan: 1,
+                rowSpan: 3,
                 // rowSpan:2,
-                title:"چیدمان:",
-                type:"radioGroup",
+                title: "چیدمان:",
+                type: "radioGroup",
                 // vertical:false,
-                fillHorizontalSpace:true,
-                defaultValue:"2",
+                fillHorizontalSpace: true,
+                defaultValue: "2",
                 valueMap: {
-                    "1":"U شکل",
-                    "2":"عادی",
-                    "3":"مدور",
-                    "4":"سالن"
+                    "1": "U شکل",
+                    "2": "عادی",
+                    "3": "مدور",
+                    "4": "سالن"
                 }
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"hDuration",
-                title:"مدت:",
-                hint:"ساعت",
+                name: "hDuration",
+                title: "مدت:",
+                hint: "ساعت",
                 textAlign: "center",
                 showHintInField: true
             },
             {
-                name:"dDuration",
-                showTitle:false,
-                hint:"روز",
+                name: "dDuration",
+                showTitle: false,
+                hint: "روز",
                 textAlign: "center",
                 showHintInField: true
             },
@@ -379,28 +377,27 @@
                 autoFetchData: false,
                 required: true,
                 // filterLocally:true,
-                useClientFiltering:true,
+                useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
-                pickListFields:[
-                    {name:"personality.lastNameFa",title:"نام خانوادگی", titleAlign:"center"},
-                    {name:"personality.firstNameFa",title:"نام", titleAlign:"center"},
-                    {name:"personality.nationalCode",title:"کد ملی", titleAlign:"center"}
+                pickListFields: [
+                    {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
+                    {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
+                    {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
                 ],
-                filterFields:[
+                filterFields: [
                     "personality.lastNameFa",
                     "personality.firstNameFa",
                     "personality.nationalCode"
                 ],
-                click:function (form,item) {
-                    if(form.getValue("course.id")) {
+                click: function (form, item) {
+                    if (form.getValue("course.id")) {
                         RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + form.getValue("course.id");
                         item.fetchData();
-                    }
-                    else{
+                    } else {
                         RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
                         item.fetchData();
-                        let dialogTeacher = isc.MyOkDialog.create({
-                            message:"ابتدا دوره را انتخاب کنید",
+                        dialogTeacher = isc.MyOkDialog.create({
+                            message: "ابتدا دوره را انتخاب کنید",
                         });
                         dialogTeacher.addProperties({
                             buttonClick: function () {
@@ -418,121 +415,119 @@
                 // }
             },
             {
-                name:"supervisor",
-                colSpan:2,
-                title:"مسئول اجرا:",
-                type:"selectItem",
+                name: "supervisor",
+                colSpan: 2,
+                title: "مسئول اجرا:",
+                type: "selectItem",
                 textAlign: "center",
                 valueMap: {
-                    1:"آقای دکتر سعیدی",
-                    2:"خانم شاکری",
-                    3:"خانم اسماعیلی",
-                    4:"خانم احمدی",
+                    1: "آقای دکتر سعیدی",
+                    2: "خانم شاکری",
+                    3: "خانم اسماعیلی",
+                    4: "خانم احمدی",
                 }
                 // textBoxStyle:"textItemLite"
             },
             {
-                name:"reason",
-                colSpan:1,
+                name: "reason",
+                colSpan: 1,
                 textAlign: "center",
-                wrapTitle:true,
-                title:"درخواست آموزشی:",
-                type:"selectItem",
+                wrapTitle: true,
+                title: "درخواست آموزشی:",
+                type: "selectItem",
                 valueMap: [
-                   "نیازسنجی",
-                   "نامه اداری",
-                   "داوطلب آزاد",
+                    "نیازسنجی",
+                    "نامه اداری",
+                    "داوطلب آزاد",
                 ],
-                textBoxStyle:"textItemLite"
+                textBoxStyle: "textItemLite"
             },
             {
-                name:"instituteId", editorType:"TrComboAutoRefresh", title:"برگزار کننده:",
+                name: "instituteId", editorType: "TrComboAutoRefresh", title: "برگزار کننده:",
                 // width:"250",
-                colSpan:2,
-                autoFetchData:false,
-                optionDataSource:RestDataSource_Institute_JspClass,
+                colSpan: 2,
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
-                displayField:"titleFa", valueField:"id",
+                displayField: "titleFa", valueField: "id",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
-                filterFields:["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
+                filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
-                pickListFields:[
-                    {name:"titleFa"},
-                    {name:"manager.firstNameFa"},
-                    {name:"manager.lastNameFa"}
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "manager.firstNameFa"},
+                    {name: "manager.lastNameFa"}
                 ],
                 // startRow:true,
-                changed: function (form,item) {
+                changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
                 }
             },
             {
-                name:"group",
-                title:"گروه:",
+                name: "group",
+                title: "گروه:",
                 required: true,
-                colSpan:1,
-                textAlign:"center",
-                type:"staticText",textBoxStyle:"textItemLite"
+                colSpan: 1,
+                textAlign: "center",
+                type: "staticText", textBoxStyle: "textItemLite"
             },
             {
-                name:"classStatus",
-                colSpan:3,
-                rowSpan:1,
-                title:"وضعیت کلاس:",
-                wrapTitle:true,
-                type:"radioGroup",
-                vertical:false,
-                fillHorizontalSpace:true,
-                defaultValue:"1",
+                name: "classStatus",
+                colSpan: 3,
+                rowSpan: 1,
+                title: "وضعیت کلاس:",
+                wrapTitle: true,
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
                 // endRow:true,
                 valueMap: {
-                    "1":"برنامه ریزی",
-                    "2":"در حال اجرا",
-                    "3":"پایان یافته",
+                    "1": "برنامه ریزی",
+                    "2": "در حال اجرا",
+                    "3": "پایان یافته",
                 },
             },
             {
-                name:"trainingPlaceIds", editorType:"select", title:"محل برگزاری:",
-                multiple:true,
-                colSpan:2,
+                name: "trainingPlaceIds", editorType: "select", title: "محل برگزاری:",
+                multiple: true,
+                colSpan: 2,
                 // width:"250",
-                align:"center",
-                optionDataSource:RestDataSource_TrainingPlace_JspClass,
+                align: "center",
+                optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
-                displayField:"titleFa",
-                valueField:"id",
+                displayField: "titleFa",
+                valueField: "id",
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                filterFields:["titleFa", "capacity"],
+                filterFields: ["titleFa", "capacity"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
-                pickListFields:[
-                    {name:"titleFa"},
-                    {name:"capacity"}
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "capacity"}
                 ],
-                click : function (form,item) {
-                    if(form.getValue("instituteId")) {
+                click: function (form, item) {
+                    if (form.getValue("instituteId")) {
                         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
                         item.fetchData();
-                    }
-                    else{
+                    } else {
                         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
                         item.fetchData();
                         isc.MyOkDialog.create({
-                            message:"ابتدا برگزار کننده را انتخاب کنید",
+                            message: "ابتدا برگزار کننده را انتخاب کنید",
                         });
                     }
                     // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
                     // return {category:category};
                 }
             },
-
 
 
         ],
@@ -542,13 +537,13 @@
         // validateOnChange:true,
         height: "100%",
         isGroup: true,
-        wrapItemTitles:true,
+        wrapItemTitles: true,
         groupTitle: "زمان جلسات کلاس",
         groupBorderCSS: "1px solid lightBlue",
-        borderRadius:"6px",
+        borderRadius: "6px",
         // numCols: 14,
         numCols: 16,
-        colWidths:["6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%","6%"],
+        colWidths: ["6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%"],
         // colWidths:["5%","5%","5%","5%","5%","5%","5%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
         // align: "center",
@@ -559,7 +554,7 @@
         fields: [
             {
                 name: "termId",
-                titleColSpan:1,
+                titleColSpan: 1,
                 title: "<spring:message code='term'/>",
                 textAlign: "center",
                 required: true,
@@ -599,16 +594,16 @@
             },
             {
                 name: "autoValid",
-                type:"checkbox",
-                title:"تولید اتوماتیک جلسات",
-                endRow:true,
+                type: "checkbox",
+                title: "تولید اتوماتیک جلسات",
+                endRow: true,
                 // titleOrientation:"top",
-                labelAsTitle :true,
-                colSpan:2
+                labelAsTitle: true,
+                colSpan: 2
             },
             {
                 name: "startDate",
-                titleColSpan:1,
+                titleColSpan: 1,
                 // type:"staticText",
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_jspClass",
@@ -619,9 +614,9 @@
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
-                        if(!(form.getValue("termId"))){
-                            let dialogTeacher = isc.MyOkDialog.create({
-                                message:"ابتدا ترم را انتخاب کنید",
+                        if (!(form.getValue("termId"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا ترم را انتخاب کنید",
                             });
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
@@ -630,8 +625,7 @@
                                     // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
                                 }
                             });
-                        }
-                        else{
+                        } else {
                             closeCalendarWindow();
                             displayDatePicker('startDate_jspClass', this, 'ymd', '/');
                         }
@@ -639,10 +633,10 @@
                 }],
                 textAlign: "center",
                 colSpan: 3,
-                click: function(form){
-                    if(!(form.getValue("termId"))){
-                        let dialogTeacher = isc.MyOkDialog.create({
-                            message:"ابتدا ترم را انتخاب کنید",
+                click: function (form) {
+                    if (!(form.getValue("termId"))) {
+                        dialogTeacher = isc.MyOkDialog.create({
+                            message: "ابتدا ترم را انتخاب کنید",
                         });
                         dialogTeacher.addProperties({
                             buttonClick: function () {
@@ -661,38 +655,35 @@
                     startDateCheck = dateCheck;
                     if (dateCheck === false) {
                         form.addFieldErrors("startDate", "<spring:message code='msg.correct.date'/>", true);
-                    }
-                    else if (value < termStart) {
+                    } else if (value < termStart) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع ترم باشد", true);
-                    }
-                    else if (endDate < value){
+                    } else if (endDate < value) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    }
-                    else{
+                    } else {
                         form.clearFieldErrors("startDate", true);
                     }
                 }
             },
             {
-                name:"teachingBrand",
-                title:"نحوه آموزش:",
-                type:"radioGroup",
+                name: "teachingBrand",
+                title: "نحوه آموزش:",
+                type: "radioGroup",
                 // vertical:false,
-                rowSpan:2,
-                colSpan:1,
-                fillHorizontalSpace:true,
-                defaultValue:1,
-                endRow:true,
+                rowSpan: 2,
+                colSpan: 1,
+                fillHorizontalSpace: true,
+                defaultValue: 1,
+                endRow: true,
                 valueMap: {
-                    1:"تمام وقت",
-                    2:"نیمه وقت",
-                    3:"پاره وقت"
+                    1: "تمام وقت",
+                    2: "نیمه وقت",
+                    3: "پاره وقت"
                 }
                 // textBoxStyle:"textItemLite"
             },
             {
                 name: "endDate",
-                titleColSpan:1,
+                titleColSpan: 1,
 
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
@@ -703,9 +694,9 @@
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
-                        if(!(form.getValue("termId"))){
-                            let dialogTeacher = isc.MyOkDialog.create({
-                                message:"ابتدا ترم را انتخاب کنید",
+                        if (!(form.getValue("termId"))) {
+                            dialogTeacher = isc.MyOkDialog.create({
+                                message: "ابتدا ترم را انتخاب کنید",
                             });
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
@@ -714,8 +705,7 @@
                                     // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
                                 }
                             });
-                        }
-                        else {
+                        } else {
                             closeCalendarWindow();
                             displayDatePicker('endDate_jspClass', this, 'ymd', '/');
                         }
@@ -723,10 +713,10 @@
                 }],
                 textAlign: "center",
                 colSpan: 3,
-                click: function(form){
-                    if(!(form.getValue("termId"))){
-                        let dialogTeacher = isc.MyOkDialog.create({
-                            message:"ابتدا ترم را انتخاب کنید",
+                click: function (form) {
+                    if (!(form.getValue("termId"))) {
+                        dialogTeacher = isc.MyOkDialog.create({
+                            message: "ابتدا ترم را انتخاب کنید",
                         });
                         dialogTeacher.addProperties({
                             buttonClick: function () {
@@ -746,19 +736,16 @@
                         form.clearFieldErrors("endDate", true);
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheck = false;
-                    }
-                    else if (value < termStart) {
+                    } else if (value < termStart) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
-                    }
-                    else if (dateCheck === true) {
+                    } else if (dateCheck === true) {
                         if (startDate === undefined)
                             form.clearFieldErrors("endDate", true);
                         else if (startDate !== undefined && startDate > value) {
                             form.clearFieldErrors("endDate", true);
                             form.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                             endDateCheck = false;
-                        }
-                        else {
+                        } else {
                             form.clearFieldErrors("endDate", true);
                             endDateCheck = true;
                         }
@@ -766,25 +753,25 @@
                 }
             },
             {
-                type:"BlurbItem",
-                value:"ساعت جلسات:",
+                type: "BlurbItem",
+                value: "ساعت جلسات:",
                 // rowSpan:3
             },
-            {name: "first", type:"checkbox", title:"8-10", titleOrientation:"top", labelAsTitle :true},
-            {name: "second", type:"checkbox", title:"10-12", titleOrientation:"top", labelAsTitle :true},
-            {name: "third", type:"checkbox", title:"14-16", titleOrientation:"top", labelAsTitle :true},
+            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true},
+            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true},
+            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true},
 
             {
-                type:"BlurbItem",
-                value:"روزهای هفته:",
+                type: "BlurbItem",
+                value: "روزهای هفته:",
             },
-            {name: "saturday", type:"checkbox", title:"شنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "sunday", type:"checkbox", title:"یکشنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "monday", type:"checkbox", title:"دوشنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "tuesday", type:"checkbox", title:"سه&#8202شنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "wednesday", type:"checkbox", title:"چهارشنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "thursday", type:"checkbox", title:"پنجشنبه", titleOrientation:"top", labelAsTitle :true},
-            {name: "friday", type:"checkbox", title:"جمعه", titleOrientation:"top", labelAsTitle :true},
+            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
         ],
     });
 
@@ -802,17 +789,16 @@
             // if (startDateCheck === false || endDateCheck === false)
             //     return;
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
-            if(DynamicForm1_Class_JspClass.getValue("autoValid")){
-                if(!(DynamicForm1_Class_JspClass.getValue("first")||DynamicForm1_Class_JspClass.getValue("second")||DynamicForm1_Class_JspClass.getValue("third"))){
+            if (DynamicForm1_Class_JspClass.getValue("autoValid")) {
+                if (!(DynamicForm1_Class_JspClass.getValue("first") || DynamicForm1_Class_JspClass.getValue("second") || DynamicForm1_Class_JspClass.getValue("third"))) {
                     isc.MyOkDialog.create({
-                        message:"به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
+                        message: "به منظور تولید اتوماتیک جلسات حداقل یک ساعت جلسه، باید انتخاب شود.",
                     });
                     return;
-                }
-                else if(!(DynamicForm1_Class_JspClass.getValue("saturday")||DynamicForm1_Class_JspClass.getValue("sunday")||DynamicForm1_Class_JspClass.getValue("monday")||
-                    DynamicForm1_Class_JspClass.getValue("tuesday")||DynamicForm1_Class_JspClass.getValue("wednesday")||DynamicForm1_Class_JspClass.getValue("thursday")||DynamicForm1_Class_JspClass.getValue("friday"))){
+                } else if (!(DynamicForm1_Class_JspClass.getValue("saturday") || DynamicForm1_Class_JspClass.getValue("sunday") || DynamicForm1_Class_JspClass.getValue("monday") ||
+                    DynamicForm1_Class_JspClass.getValue("tuesday") || DynamicForm1_Class_JspClass.getValue("wednesday") || DynamicForm1_Class_JspClass.getValue("thursday") || DynamicForm1_Class_JspClass.getValue("friday"))) {
                     isc.MyOkDialog.create({
-                        message:"به منظور تولید اتوماتیک جلسات باید حداقل یکی از روزهای هفته را انتخاب کنید.",
+                        message: "به منظور تولید اتوماتیک جلسات باید حداقل یکی از روزهای هفته را انتخاب کنید.",
                     });
                     return;
                 }
@@ -852,7 +838,7 @@
 
                         //**********generate class sessions**********
                         if (autoValid) {
-                            let ClassID = JSON.parse(resp.data).id;
+                            ClassID = JSON.parse(resp.data).id;
                             isc.RPCManager.sendRequest({
                                 actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
                                 httpMethod: "POST",
@@ -873,7 +859,7 @@
                 }
             });
 
-           // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
+            // isc.RPCManager.sendRequest(TrDSRequest(classSaveUrl, classMethod, JSON.stringify(data), "callback: class_action_result(rpcResponse)"));
         }
     });
 
@@ -890,23 +876,26 @@
         title: "<spring:message code='class'/>",
         width: "90%",
         minWidth: 1024,
-        autoSize:false,
+        autoSize: false,
         height: "80%",
-        keepInParentRect:true,
+        keepInParentRect: true,
         // placement:"fillPanel",
         align: "center",
         border: "1px solid gray",
-        show:function(){
-            this.Super("show",arguments);
-            for (let i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
+        show: function () {
+            this.Super("show", arguments);
+            for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
                 document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "10px";
-            };
-            for (let j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
+            }
+            ;
+            for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
                 document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "10px";
-            };
-            for (let c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
+            }
+            ;
+            for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
                 document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "10px";
-            };
+            }
+            ;
         },
         closeClick: function () {
             this.Super("closeClick", arguments);
@@ -1210,10 +1199,10 @@
             ListGrid_class_edit();
             setTimeout(function () {
                 evalGroup();
-            },200);
+            }, 200);
             setTimeout(function () {
                 classCode();
-            },700);
+            }, 700);
             classMethod = "POST";
             url = classUrl;
         }
@@ -1246,10 +1235,11 @@
     });
 
     var TabSet_Class = isc.TabSet.create({
-        ID:"tabSetClass",
+        ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
             {
+                id: "classStudentsTab",
                 title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/student"}
@@ -1261,6 +1251,19 @@
                     {viewURL: "tclass/sessions-tab"}
                 )
             },
+            {
+                name: "checkList",
+                title: "<spring:message code="checkList"/>",//چک لیست
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/checkList-tab"}
+                )
+            },
+            {
+                title: "<spring:message code="attachments"/>",//ضمائم
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/attachments-tab"}
+                )
+            }
 
             <%--{--%>
             <%--    title: "<spring:message code="alarms"/>",//هشدارها--%>
@@ -1300,21 +1303,10 @@
             <%--        {viewURL: "tclass/assessment-tab"}--%>
             <%--    )--%>
             <%--},--%>
-            {
-                name:"checkList",
-                title: "<spring:message code="checkList"/>",//چک لیست
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/checkList-tab"}
-                )
-            },
-            {
-                title: "<spring:message code="attachments"/>",//ضمائم
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/attachments-tab"}
-                )
-            }
+
         ],
-        tabSelected: function (tabNum, tabPane, ID, tab, name){
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            loadSelectedTab_class(ID);
             refreshClassTabs(tab);
         }
     });
@@ -1358,7 +1350,7 @@
     }
 
     function ListGrid_class_edit() {
-        let record = classListGrid.getSelectedRecord();
+        record = classListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -1380,14 +1372,14 @@
 
     function ListGrid_Class_refresh() {
         var gridState;
-        if(ListGrid_Class_JspClass.getSelectedRecord()) {
+        if (ListGrid_Class_JspClass.getSelectedRecord()) {
             gridState = "[{id:" + ListGrid_Class_JspClass.getSelectedRecord().id + "}]";
         }
         ListGrid_Class_JspClass.invalidateCache();
         ListGrid_Class_JspClass.filterByEditor();
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
-        },3000);
+        }, 3000);
         refreshClassTabs(tabSetClass.getSelectedTab());
     }
 
@@ -1417,30 +1409,30 @@
     }
 
     function classCode() {
-        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code+"-"+VM_JspClass.getItem("termId").getSelectedRecord().code+"-"+VM_JspClass.getValue("group"));
+        VM_JspClass.getItem("code").setValue(VM_JspClass.getItem("course.id").getSelectedRecord().code + "-" + VM_JspClass.getItem("termId").getSelectedRecord().code + "-" + VM_JspClass.getValue("group"));
     }
 
-    function evalGroup(){
-            let tid = VM_JspClass.getValue("termId");
-            let cid = VM_JspClass.getValue("course.id");
-            if(tid && cid) {
-                isc.RPCManager.sendRequest({
-                    actionURL: classUrl + "end_group/" + cid + "/" + tid,
-                    httpMethod: "GET",
-                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                    useSimpleHttp: true,
-                    contentType: "application/json; charset=utf-8",
-                    showPrompt: false,
-                    serverOutputAsString: false,
-                    callback: function (resp) {
-                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                            VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
-                            classCode();
-                        }
+    function evalGroup() {
+        tid = VM_JspClass.getValue("termId");
+        cid = VM_JspClass.getValue("course.id");
+        if (tid && cid) {
+            isc.RPCManager.sendRequest({
+                actionURL: classUrl + "end_group/" + cid + "/" + tid,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                        VM_JspClass.getItem("group").setValue(JSON.parse(resp.data));
+                        classCode();
                     }
-                });
+                }
+            });
 
-            }
+        }
     }
 
     function class_action_result(resp) {
@@ -1457,7 +1449,7 @@
                 "coursetitleFa": DynamicForm_Class_JspClass.getItem("course.titleFa").getValue(),
                 "startDate": JSON.parse(resp.data).startDate,
                 "endDate": JSON.parse(resp.data).endDate,
-               // "classCreator": "classCreator",
+                // "classCreator": "classCreator",
                 "classCreatorId": "${username}",
                 "classCreator": userFullName,
                 "REJECT": "",
@@ -1480,7 +1472,7 @@
             }, 1000);
             ListGrid_Class_refresh();
             Window_Class_JspClass.close();
-                     } else {
+        } else {
             createDialog("info", "<spring:message code='error'/>");
         }
     }
@@ -1554,55 +1546,67 @@
         }
     }
 
-    function refreshClassTabs(tab){
+    function refreshClassTabs(tab) {
         switch (tab.title) {
-                case "جلسات": {
-                    // fireCheckList();
-                    break;
-                }
-                case "هشدارها": {
-                    // fireCheckList();
-                    break;
-                }
-                case "مجوزها": {
-                    // fireCheckList();
-                    break;
-                }
-                case "حضور و غیاب": {
-                    // fireCheckList();
-                    break;
-                }
-                case "مدرسان": {
-                    // fireCheckList();
-                    break;
-                }
-                case "آزمون": {
-                    // fireCheckList();
-                    break;
-                }
-                case "ارزیابی": {
-                    // fireCheckList();
-                    break;
-                }
-                case "چک لیست": {
-                    if(typeof fireCheckList!= "undefined")
+            case "جلسات": {
+                // fireCheckList();
+                break;
+            }
+            case "هشدارها": {
+                // fireCheckList();
+                break;
+            }
+            case "مجوزها": {
+                // fireCheckList();
+                break;
+            }
+            case "حضور و غیاب": {
+                // fireCheckList();
+                break;
+            }
+            case "مدرسان": {
+                // fireCheckList();
+                break;
+            }
+            case "آزمون": {
+                // fireCheckList();
+                break;
+            }
+            case "ارزیابی": {
+                // fireCheckList();
+                break;
+            }
+            case "چک لیست": {
+                if (typeof fireCheckList != "undefined")
                     fireCheckList();
-                    // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
-                    //    setTimeout(function () {
-                    //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                    //    },100)
-                    // }
-                    // else{
-                    //     setTimeout(function () {
-                    //        fireCheckList(-1);
-                    //    },100)
-                    // }
-                    break;
-                }
-                case "ضمائم": {
-                    // fireCheckList();
-                    break;
+                // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
+                //    setTimeout(function () {
+                //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
+                //    },100)
+                // }
+                // else{
+                //     setTimeout(function () {
+                //        fireCheckList(-1);
+                //    },100)
+                // }
+                break;
+            }
+            case "ضمائم": {
+                // fireCheckList();
+                break;
+            }
+        }
+    }
+
+    function loadSelectedTab_class(tab) {
+        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        if (!(classRecord == undefined || classRecord == null)) {
+            console.log(tab.id);
+            switch (tab.id) {
+                case "classStudentsTab": {
+                    ListGrid_Current_Students_JspClass.fetchData({"classID": classRecord.id});
                 }
             }
+        }
     }
 

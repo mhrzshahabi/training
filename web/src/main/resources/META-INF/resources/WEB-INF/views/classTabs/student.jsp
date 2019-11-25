@@ -24,7 +24,7 @@
                 title: "<spring:message code="remove"/>",
                 icon: "<spring:url value="remove.png"/>",
                 click: function () {
-                    addStudent_student();
+                    removeStudent_student();
                 }
             },
         ]
@@ -45,7 +45,7 @@
             }),
             isc.TrRemoveBtn.create({
                 click: function () {
-                    addStudent_student();
+                    removeStudent_student();
                 }
             }),
             isc.TrPrintBtn.create({
@@ -79,7 +79,7 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    StudentDS_student = isc.TrDS.create({
+    ClassStudentsDS_student = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -88,16 +88,25 @@
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
-            {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
-            {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
-            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true},
         ],
-        fetchDataURL: studentUrl + "spec-list"
+        fetchDataURL: classUrl + "student"
     });
 
-    StudentLG_student = isc.TrLG.create({
-        dataSource: StudentDS_student,
+    OtherStudentsDS_student = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: classUrl + "otherStudent"
+    });
+
+    ClassStudentsLG_student = isc.TrLG.create({
+        dataSource: ClassStudentsDS_student,
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -105,12 +114,7 @@
             {name: "companyName"},
             {name: "personnelNo"},
             {name: "personnelNo2"},
-            {name: "employmentStatus"},
-            {name: "complexTitle"},
-            {name: "workPlaceTitle"},
-            {name: "workTurnTitle"},
         ],
-        autoFetchData: true,
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
         contextMenu: StudentMenu_student,
         dataChanged: function () {
@@ -124,9 +128,30 @@
         },
     });
 
+    // ------------------------------------------- DynamicForm & Window -------------------------------------------
+
+    ClassStudentWin_student = isc.Window.create({
+        width: 800,
+        items: [
+            isc.TrHLayoutButtons.create({
+            members: [
+                isc.TrSaveBtn.create({
+                    click: function () {
+                        saveCompetence_competence();
+                    }
+                }),
+                isc.TrCancelBtn.create({
+                    click: function () {
+                        CompetenceWin_competence.close();
+                    }
+                }),
+            ],
+        }),]
+    });
+
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [StudentLG_student],
+        members: [ClassStudentsLG_student],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
@@ -136,18 +161,27 @@
 
     function addStudent_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        if (record == null || record.id == null) {
-            createDialog("info", "")
+        console.log(classRecord);
+
+        if (classRecord == null || classRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
-            ListGrid_All_Students_JspClass.invalidateCache();
-            ListGrid_Current_Students_JspClass.invalidateCache();
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.invalidateCache();
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("course.titleFa", record.course.titleFa);
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("group", record.group);
-            DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("id", record.id);
-            ListGrid_All_Students_JspClass.fetchData({"classID": record.id});
-            ListGrid_Current_Students_JspClass.fetchData({"classID": record.id});
-            Window_AddStudents_JspClass.show();
+            return;
         }
+        ClassStudentWin_student.setTitle("<spring:message code="add.student.to.class"/> \'" + classRecord.titleClass + "\'");
+        ClassStudentWin_student.show();
+
+        // } else {
+        //     ListGrid_All_Students_JspClass.invalidateCache();
+        //     ListGrid_Current_Students_JspClass.invalidateCache();
+        //     DynamicForm_ClassStudentHeaderGridHeader_JspClass.invalidateCache();
+        //     DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("course.titleFa", record.course.titleFa);
+        //     DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("group", record.group);
+        //     DynamicForm_ClassStudentHeaderGridHeader_JspClass.setValue("id", record.id);
+        //     ListGrid_All_Students_JspClass.fetchData({"classID": record.id});
+        //     ListGrid_Current_Students_JspClass.fetchData({"classID": record.id});
+        //     Window_AddStudents_JspClass.show();
+        // }
+    }
+
+    function removeStudent_student() {
     }
