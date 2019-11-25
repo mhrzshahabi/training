@@ -244,6 +244,7 @@
     isc.defineClass("TrSaveBtn", Button);
     isc.TrSaveBtn.addProperties({
         title: "<spring:message code="save"/>",
+        icon: "[SKIN]/actions/save.png",
     });
 
     isc.defineClass("TrSaveNextBtn", Button);
@@ -254,6 +255,7 @@
     isc.defineClass("TrCancelBtn", Button);
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
+        icon: "[SKIN]/actions/cancel.png",
     });
 
     function createDialog(type, message, title) {
@@ -438,12 +440,12 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
-                {
-                    title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needAssessment/"/>");
-                    }
-                },
+                <%--{--%>
+                    <%--title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/needAssessment/"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>", icon: "<spring:url value="research.png"/>",
                     click: function () {
