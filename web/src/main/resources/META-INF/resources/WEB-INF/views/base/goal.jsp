@@ -188,8 +188,9 @@
     });
 
     var IButton_Goal_Save = isc.TrSaveBtn.create({
-        top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        top: 260,
+        // title: "ذخیره",
+        // icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
