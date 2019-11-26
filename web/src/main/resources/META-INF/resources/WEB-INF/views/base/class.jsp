@@ -39,12 +39,14 @@
             // {name: "teacher.personality.lastNameFa"},
             // {name: "course.code"},
             {name: "course.titleFa"},
+            {name: "course.id"},
             {name: "teacherId"},
             {name: "teacher"},
             {name: "reason"},
             {name: "classStatus"},
             {name: "topology"},
-            {name: "trainingPlaceIds"}
+            {name: "trainingPlaceIds"},
+            {name: "instituteId"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -56,7 +58,7 @@
             {name: "titleFa", title: "نام دوره"},
             {name: "theoryDuration"},
         ],
-        fetchDataURL: courseUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: courseUrl + "spec-list"
 
     });
 
@@ -107,7 +109,8 @@
             {name: "restAddress", title: "آدرس"},
             {name: "phone", title: "تلفن"}
         ],
-        fetchDataURL: instituteUrl + "spec-list"
+        fetchDataURL: instituteUrl + "spec-list",
+        allowAdvancedCriteria:true,
     });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
@@ -260,6 +263,7 @@
                 // width:"250",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Course_JspClass,
+                autoFetchData:false,
                 // addUnknownValues:false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code"],
@@ -452,7 +456,7 @@
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "manager.firstNameFa", "manager.LastNameFa"],
+                filterFields: ["titleFa","mobile"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
@@ -541,8 +545,8 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
         // numCols: 14,
-        numCols: 16,
-        colWidths: ["6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%", "6%"],
+        numCols: 6,
+        colWidths: ["6%", "6%", "6%", "6%", "6%", "6%"],
         // colWidths:["5%","5%","5%","5%","5%","5%","5%","7%","7%","7%","7%","7%","7%","7%"],
         padding: 10,
         // align: "center",
@@ -568,7 +572,7 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                colSpan: 3,
+                colSpan: 2,
                 // endRow:true,
                 pickListFields: [
                     {
@@ -631,7 +635,7 @@
                     }
                 }],
                 textAlign: "center",
-                colSpan: 3,
+                colSpan: 2,
                 click: function (form) {
                     if (!(form.getValue("termId"))) {
                         dialogTeacher = isc.MyOkDialog.create({
@@ -711,7 +715,7 @@
                     }
                 }],
                 textAlign: "center",
-                colSpan: 3,
+                colSpan: 2,
                 click: function (form) {
                     if (!(form.getValue("termId"))) {
                         dialogTeacher = isc.MyOkDialog.create({
@@ -767,7 +771,7 @@
             {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true},
             {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
@@ -876,7 +880,7 @@
         width: "90%",
         minWidth: 1024,
         autoSize: false,
-        height: "80%",
+        height: "86%",
         keepInParentRect: true,
         // placement:"fillPanel",
         align: "center",
@@ -1237,8 +1241,8 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
             {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
@@ -1270,9 +1274,10 @@
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
+        }
+        else {
             var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='global.warning'/>");
+                "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -1292,18 +1297,22 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
-            // DynamicForm_Class_JspClass.getField("teacherId").fetchData();
-            DynamicForm_Class_JspClass.getField("instituteId").fetchData();
+            // RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
+            // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
+            // DynamicForm_Class_JspClass.getField("instituteId").fetchData();
+            // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
+            // RestDataSource_Institute_JspClass.mockDataCriteria  = {id:record.id};
+            // DynamicForm_Class_JspClass.getField("course.id").fetchData();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
-            DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
+            // DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
             VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
+            Window_Class_JspClass.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="class"/>");
             Window_Class_JspClass.show();
             // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-
         }
     }
 
@@ -1325,13 +1334,16 @@
         url = classUrl;
         VM_JspClass.clearErrors();
         VM_JspClass.clearValues();
+        Window_Class_JspClass.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="class"/>");
         Window_Class_JspClass.show();
     }
 
     function ListGrid_class_print(type) {
+            alert("1")
         var advancedCriteria = ListGrid_Class_JspClass.getCriteria();
+            alert("2")
         var criteriaForm = isc.DynamicForm.create({
-            method: "POST",
+            method: "GET",
             action: "<spring:url value="/tclass/printWithCriteria/"/>" + type,
             target: "_Blank",
             canSubmit: true,

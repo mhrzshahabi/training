@@ -7,6 +7,7 @@ import org.springframework.security.oauth2.client.OAuth2AuthorizedClientService;
 import org.springframework.stereotype.Controller;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -25,7 +26,7 @@ public class ClassFormController {
         return "base/class";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
+    @GetMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,@PathVariable String type) {
 		String token = (String) request.getSession().getAttribute("AccessToken");
 

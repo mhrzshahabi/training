@@ -107,14 +107,16 @@ public class InstituteRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_institute')")
-    public ResponseEntity<InstituteDTO.InstituteSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                             @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<InstituteDTO.InstituteSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                              @RequestParam(value = "_constructor", required = false) String constructor,
                                                              @RequestParam(value = "operator", required = false) String operator,
                                                              @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "id", required = false) Long id,
                                                              @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
 
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -123,13 +125,19 @@ public class InstituteRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-
-
             request.setCriteria(criteriaRq);
         }
-
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if(id != null){
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow=0;
+            endRow=1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -138,19 +146,16 @@ public class InstituteRestController {
         InstituteDTO.InstituteSpecRs specRs = null;
         try {
             response = instituteService.search(request);
-
             specResponse = new InstituteDTO.SpecRs();
             specRs = new InstituteDTO.InstituteSpecRs();
             specResponse.setData(response.getList())
                     .setStartRow(startRow)
                     .setEndRow(startRow + response.getTotalCount().intValue())
                     .setTotalRows(response.getTotalCount().intValue());
-
             specRs.setResponse(specResponse);
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 

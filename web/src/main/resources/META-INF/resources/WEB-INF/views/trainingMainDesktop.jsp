@@ -76,7 +76,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -122,10 +122,14 @@
         alternateRecordStyles: true,
         showFilterEditor: true,
         autoFitWidthApproach: "both",
+        // canHover:true,
+        showClippedValuesOnHover:true,
+        hoverMoveWithMouse: true,
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 40,
+            width: 80,
+            align: "center"
         },
         sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
         sortFieldDescendingText: "<spring:message code="sort.descending"/>",
@@ -134,7 +138,7 @@
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
-        loadingDataMessag: "<spring:message code="loading"/>",
+        loadingDataMessag: "<spring:message code="loading"/>"
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -809,6 +813,8 @@
         trCriteriaForm.show();
         trCriteriaForm.submitForm();
     }
+
+    createTab("کلاس", "<spring:url value="/tclass/show-form"/>");
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

@@ -67,7 +67,7 @@
                 width: "*"
             }),
             isc.Label.create({
-                ID: "totalsLabel_student"
+                ID: "StudentsCount_student"
             }),
         ]
     });
@@ -78,13 +78,24 @@
                 width: "*"
             }),
             isc.Label.create({
-                ID: "otherTotalsLabel_student"
+                ID: "OtherStudentsCount_student"
+            }),
+        ]
+    });
+
+    SelectedStudentsTS_student = isc.ToolStrip.create({
+        members: [
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.Label.create({
+                ID: "SelectedStudentsCount_student"
             }),
         ]
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    ClassStudentsDS_student = isc.TrDS.create({
+    StudentsDS_student = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -97,8 +108,8 @@
         fetchDataURL: classUrl + "student"
     });
 
-    ClassStudentsLG_student = isc.TrLG.create({
-        dataSource: ClassStudentsDS_student,
+    StudentsLG_student = isc.TrLG.create({
+        dataSource: StudentsDS_student,
         fields: [
             {name: "firstName"},
             {name: "lastName"},
@@ -113,11 +124,39 @@
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsLabel_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                StudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                totalsLabel_student.setContents("&nbsp;");
+                StudentsCount_student.setContents("&nbsp;");
             }
         },
+    });
+
+    SelectedStudentsLG_student = isc.TrLG.create({
+        ID: "SelectedStudentsLG_student",
+        fields: [
+            {name: "id", hidden: true},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true,},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+        ],
+        gridComponents: [SelectedStudentsTS_student, "filterEditor", "header", "body"],
+        dataArrived: function (startRow, endRow) {
+            console.log('dataArrived');
+        },
+        dataChanged: function () {
+            console.log('dataChanged');
+            this.Super("dataChanged", arguments);
+            totalRows = this.data.getLength();
+            if (totalRows >= 0 && this.data.lengthIsKnown()) {
+                SelectedStudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+            } else {
+                SelectedStudentsCount_student.setContents("&nbsp;");
+            }
+        },
+        selectionAppearance: "checkbox",
     });
 
     OtherStudentsDS_student = isc.TrDS.create({
@@ -127,15 +166,16 @@
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true, primaryKey: true,},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
         ],
-        fetchDataURL: personnelUrl + "iscList"
+        fetchDataURL: personnelUrl + "iscList",
     });
 
     OtherStudentsLG_student = isc.TrLG.create({
         dataSource: OtherStudentsDS_student,
         fields: [
+            {name: "id", hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -148,27 +188,82 @@
             this.Super("dataChanged", arguments);
             totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                otherTotalsLabel_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                OtherStudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                otherTotalsLabel_student.setContents("&nbsp;");
+                OtherStudentsCount_student.setContents("&nbsp;");
             }
         },
+        selectionAppearance: "checkbox",
+        selectionUpdated: function () {
+            SelectedStudentsLG_student.setData(this.getSelection().concat(SelectedStudentsLG_student.data).reduce(function(index, obj) {
+                if (!index[obj.id]) {
+                    index[obj.id] = obj;
+                } else {
+                    for (prop in obj) {
+                        index[obj.id][prop] = obj[prop];
+                    }
+                }
+                return index;
+            }, []).filter(function(res, obj) {
+                return obj;
+            }));
+        }
     });
+
+    function jsonConcat(list1, list2) {
+        var hash = Object.create(null);
+        a1.concat(a2).forEach(function(obj) {
+            hash[obj.id] = Object.assign(hash[obj.id] || {}, obj);
+        });
+        var a3 = Object.keys(hash).map(function(key) {
+            return hash[key];
+        });
+    }
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
     ClassStudentWin_student = isc.Window.create({
-        width: 600,
+        width: 1024,
         height: 600,
         minWidth: 1024,
+        minHeight: 600,
         items: [
-            isc.TrHLayout.create({members: [OtherStudentsLG_student],})
+            isc.TrHLayout.create({
+                members: [
+                    isc.SectionStack.create({
+                        sections: [
+                            {
+                                title: "<spring:message code="all.persons"/>",
+                                expanded: true,
+                                canCollapse: false,
+                                align: "center",
+                                items: [
+                                    OtherStudentsLG_student
+                                ]
+                            }
+                        ]
+                    }),
+                    isc.SectionStack.create({
+                        sections: [
+                            {
+                                title: "<spring:message code="selected.persons"/>",
+                                expanded: true,
+                                canCollapse: false,
+                                align: "center",
+                                items: [
+                                    SelectedStudentsLG_student
+                                ]
+                            }
+                        ]
+                    }),
+                ],
+            })
         ]
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [ClassStudentsLG_student],
+        members: [StudentsLG_student],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
@@ -193,6 +288,6 @@
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-            ClassStudentsLG_student.fetchData({"classID": classRecord.id});
+            StudentsLG_student.fetchData({"classID": classRecord.id});
         }
     }

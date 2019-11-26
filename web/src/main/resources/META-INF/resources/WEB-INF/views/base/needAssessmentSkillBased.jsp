@@ -297,10 +297,23 @@
         members: [VLayout_All_Skills_NASB_JPA, VLayout_Buttons_NASB_JPA, VLayout_For_This_Object_NASB_JPA]
     });
 
+    Menu_ListGrid_NASB_JPA = isc.Menu.create({
+        data: [
+            {
+                title: "<spring:message code="refresh"/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
+                    ListGrid_Top_refresh_NASB();
+                }
+            }
+        ]
+    });
+
     ListGrid_All_Jobs_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_Jobs_NASB_JPA,
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
         selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
@@ -311,6 +324,7 @@
         autoFetchData: true,
         dataSource: restData_All_Posts_NASB_JPA,
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
         selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
@@ -320,8 +334,9 @@
     ListGrid_All_JobGroups_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_JobGroups_NASB_JPA,
-        selectionType: "single",
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
+        selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
         }
@@ -330,8 +345,9 @@
     ListGrid_All_PostGroups_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_PostGroups_NASB_JPA,
-        selectionType: "single",
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
+        selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
         }
@@ -392,10 +408,15 @@
                 break;
         }
         let record = selectedListGrid.getSelectedRecord();
-        if (record != null && record.id != null) {
-            selectedListGrid.selectRecord(record);
-        }
+        let gridState = null;
+        if (record != null && record.id != null)
+            gridState = "[{id:" + record.id + "}]";
         selectedListGrid.invalidateCache();
+        setTimeout(function () {
+            if (gridState != null) {
+                selectedListGrid.setSelectedState(gridState);
+            }
+        }, 1500);
         Set_For_This_Object_Data();
     }
 
@@ -432,7 +453,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let Dialog_remove_NASB = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='global.warning'/>");
+                "<spring:message code='verify.delete'/>");
             Dialog_remove_NASB.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -463,13 +484,13 @@
                 for (let i = 0; i < respText.length; i++) {
                     let gridState = "[{id:" + respText[i] + "}]";
                     ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
-                    skillTitles.add(ListGrid_For_This_Object_Skills_NASB.getSelectedRecord().skill.titleFa + "&nbsp;");
+                    skillTitles.add(ListGrid_For_This_Object_Skills_NASB.getSelectedRecord().skill.titleFa + "<br/>");
                 }
                 let gridState = [];
                 for (let i = 0; i < respText.length; i++)
                     gridState.add({"id": respText[i]});
                 ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
-                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>" + "&nbsp;" + skillTitles);
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>" + "<br/><br/>" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
@@ -519,13 +540,13 @@
                 for (let i = 0; i < respText.length; i++) {
                     let gridState = "[{id:" + respText[i] + "}]";
                     ListGrid_All_Skills_NASB.setSelectedState(gridState);
-                    skillTitles.add(ListGrid_All_Skills_NASB.getSelectedRecord().titleFa + "&nbsp;");
+                    skillTitles.add(ListGrid_All_Skills_NASB.getSelectedRecord().titleFa + "<br/>");
                 }
                 let gridState = [];
                 for (let i = 0; i < respText.length; i++)
                     gridState.add({"id": respText[i]});
                 ListGrid_All_Skills_NASB.setSelectedState(gridState);
-                createDialog("info", "<spring:message code='msg.record.duplicate'/>" + "&nbsp;" + skillTitles);
+                createDialog("info", "<spring:message code='msg.record.duplicate'/>" + "<br/><br/>" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }

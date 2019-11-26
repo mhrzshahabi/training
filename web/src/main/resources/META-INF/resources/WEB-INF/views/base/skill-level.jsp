@@ -11,7 +11,7 @@
 
 
     var skillLevelMethod = "get";
-    var skillLevelHomeUrl= rootUrl + "/skill-level";
+    var skillLevelHomeUrl= rootUrl + "skill-level";
     var skillLevelActionUrl = skillLevelHomeUrl;
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
@@ -40,7 +40,7 @@
 
         fetchDataURL: skillLevelHomeUrl + "/spec-list"
     });
-    var ListGrid_skill_level = isc.ListGrid.create({
+    var ListGrid_skill_level = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_skill_level,
