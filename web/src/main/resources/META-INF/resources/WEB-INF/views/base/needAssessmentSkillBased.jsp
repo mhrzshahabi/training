@@ -432,7 +432,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             let Dialog_remove_NASB = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-                "<spring:message code='global.warning'/>");
+                "<spring:message code='verify.delete'/>");
             Dialog_remove_NASB.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -463,13 +463,13 @@
                 for (let i = 0; i < respText.length; i++) {
                     let gridState = "[{id:" + respText[i] + "}]";
                     ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
-                    skillTitles.add(ListGrid_For_This_Object_Skills_NASB.getSelectedRecord().skill.titleFa + "&nbsp;");
+                    skillTitles.add(ListGrid_For_This_Object_Skills_NASB.getSelectedRecord().skill.titleFa + "<br/>");
                 }
                 let gridState = [];
                 for (let i = 0; i < respText.length; i++)
                     gridState.add({"id": respText[i]});
                 ListGrid_For_This_Object_Skills_NASB.setSelectedState(gridState);
-                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>" + "&nbsp;" + skillTitles);
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>" + "<br/><br/>" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
@@ -519,13 +519,13 @@
                 for (let i = 0; i < respText.length; i++) {
                     let gridState = "[{id:" + respText[i] + "}]";
                     ListGrid_All_Skills_NASB.setSelectedState(gridState);
-                    skillTitles.add(ListGrid_All_Skills_NASB.getSelectedRecord().titleFa + "&nbsp;");
+                    skillTitles.add(ListGrid_All_Skills_NASB.getSelectedRecord().titleFa + "<br/>");
                 }
                 let gridState = [];
                 for (let i = 0; i < respText.length; i++)
                     gridState.add({"id": respText[i]});
                 ListGrid_All_Skills_NASB.setSelectedState(gridState);
-                createDialog("info", "<spring:message code='msg.record.duplicate'/>" + "&nbsp;" + skillTitles);
+                createDialog("info", "<spring:message code='msg.record.duplicate'/>" + "<br/><br/>" + skillTitles);
             } else {
                 createDialog("info", "<spring:message code="msg.operation.error"/>");
             }
