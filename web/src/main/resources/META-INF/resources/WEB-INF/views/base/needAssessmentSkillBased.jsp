@@ -297,10 +297,23 @@
         members: [VLayout_All_Skills_NASB_JPA, VLayout_Buttons_NASB_JPA, VLayout_For_This_Object_NASB_JPA]
     });
 
+    Menu_ListGrid_NASB_JPA = isc.Menu.create({
+        data: [
+            {
+                title: "<spring:message code="refresh"/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
+                    ListGrid_Top_refresh_NASB();
+                }
+            }
+        ]
+    });
+
     ListGrid_All_Jobs_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_Jobs_NASB_JPA,
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
         selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
@@ -311,6 +324,7 @@
         autoFetchData: true,
         dataSource: restData_All_Posts_NASB_JPA,
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
         selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
@@ -320,8 +334,9 @@
     ListGrid_All_JobGroups_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_JobGroups_NASB_JPA,
-        selectionType: "single",
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
+        selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
         }
@@ -330,8 +345,9 @@
     ListGrid_All_PostGroups_NASB = isc.TrLG.create({
         autoFetchData: true,
         dataSource: restData_All_PostGroups_NASB_JPA,
-        selectionType: "single",
         sortField: 1,
+        contextMenu: Menu_ListGrid_NASB_JPA,
+        selectionType: "single",
         selectionUpdated: function () {
             Set_For_This_Object_Data();
         }
@@ -392,10 +408,15 @@
                 break;
         }
         let record = selectedListGrid.getSelectedRecord();
-        if (record != null && record.id != null) {
-            selectedListGrid.selectRecord(record);
-        }
+        let gridState = null;
+        if (record != null && record.id != null)
+            gridState = "[{id:" + record.id + "}]";
         selectedListGrid.invalidateCache();
+        setTimeout(function () {
+            if (gridState != null) {
+                selectedListGrid.setSelectedState(gridState);
+            }
+        }, 1500);
         Set_For_This_Object_Data();
     }
 
