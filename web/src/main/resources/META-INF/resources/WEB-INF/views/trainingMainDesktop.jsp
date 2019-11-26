@@ -122,10 +122,14 @@
         alternateRecordStyles: true,
         showFilterEditor: true,
         autoFitWidthApproach: "both",
+        // canHover:true,
+        showClippedValuesOnHover:true,
+        hoverMoveWithMouse: true,
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 40,
+            align: "center"
         },
         sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
         sortFieldDescendingText: "<spring:message code="sort.descending"/>",

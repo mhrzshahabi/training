@@ -892,7 +892,7 @@
             var Dialog_Delete = isc.Dialog.create({
                 message: getFormulaMessage("آیا از حذف گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
-                title: "تائید حذف",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
                     title: "خیر"
                 })],

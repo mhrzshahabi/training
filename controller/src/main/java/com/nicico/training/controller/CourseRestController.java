@@ -161,12 +161,9 @@ public class CourseRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
         SearchDTO.SearchRs<CourseDTO.Info> response = courseService.search(request);
-
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(response.getList())
                 .setStartRow(startRow)
