@@ -23,7 +23,7 @@
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
-                        // ListGrid_session.invalidateCache();
+                        ListGrid_session.invalidateCache();
                     }
                 },
                 {
@@ -749,7 +749,7 @@
             var advancedCriteria_session = ListGrid_session.getCriteria();
             var criteriaForm_course = isc.DynamicForm.create({
                 method: "POST",
-                action: "<spring:url value="/class-session/printWithCriteria/"/>" + type,
+                action: "<spring:url value="/class-session/printWithCriteria/"/>" + type+ "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
                 target: "_Blank",
                 canSubmit: true,
                 fields:
@@ -766,7 +766,6 @@
 
 
         function loadPage_session() {
-            console.log('loadPage_session');
 
             classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
