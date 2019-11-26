@@ -122,10 +122,11 @@
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
-             initialSort: [
-                 { property: "sessionDate", direction: "ascending" },
-                 { property: "sessionStartHour", direction: "ascending" }
-             ],
+            selectionType: "single",
+            initialSort: [
+                {property: "sessionDate", direction: "ascending"},
+                {property: "sessionStartHour", direction: "ascending"}
+            ],
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -375,7 +376,21 @@
                         type: "SpacerItem"
                     },
                     {
+                        name: "sessionState",
+                        title: "<spring:message code="session.state"/>",
+                        type: "selectItem",
+                        textAlign: "center",
+                        required: true,
+                        valueMap: {
+                            "1": "شروع نشده",
+                            "2": "در حال اجرا",
+                            "3": "پایان"
+                        },
+                        defaultValue: "1"
+                    },
+                    {
                         name: "instituteId",
+                        colSpan: 5,
                         editorType: "TrComboAutoRefresh",
                         title: "<spring:message code="presenter"/>",
                         autoFetchData: false,
@@ -395,38 +410,8 @@
                         }
                     },
                     {
-                        name: "trainingPlaceId",
-                        editorType: "TrComboAutoRefresh",
-                        title: "<spring:message code="present.location"/>",
-                        align: "center",
-                        optionDataSource: RestDataSource_TrainingPlace_JspSession,
-                        displayField: "titleFa",
-                        valueField: "id",
-                        filterFields: ["titleFa", "capacity"],
-                        required: true,
-                        textAlign: "center",
-                        pickListFields: [
-                            {name: "titleFa"},
-                            {name: "capacity"}
-                        ],
-                        click: function (form, item) {
-                            if (form.getValue("instituteId")) {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
-                                item.fetchData();
-                            } else {
-                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
-                                item.fetchData();
-                                isc.MyOkDialog.create({
-                                    message: "<spring:message code="chose.presenter"/>",
-                                });
-                            }
-                        }
-                    },
-                    {
-                        type: "SpacerItem"
-                    },
-                    {
                         name: "teacherId",
+                        colSpan: 5,
                         title: "<spring:message code='trainer'/>",
                         textAlign: "center",
                         type: "ComboBoxItem",
@@ -483,17 +468,32 @@
                         }
                     },
                     {
-                        name: "sessionState",
-                        title: "<spring:message code="session.state"/>",
-                        type: "selectItem",
-                        textAlign: "center",
+                        name: "trainingPlaceId",
+                        editorType: "TrComboAutoRefresh",
+                        title: "<spring:message code="present.location"/>",
+                        align: "center",
+                        optionDataSource: RestDataSource_TrainingPlace_JspSession,
+                        displayField: "titleFa",
+                        valueField: "id",
+                        filterFields: ["titleFa", "capacity"],
                         required: true,
-                        valueMap: {
-                            "1": "شروع نشده",
-                            "2": "در حال اجرا",
-                            "3": "پایان"
-                        },
-                        defaultValue: "1"
+                        textAlign: "center",
+                        pickListFields: [
+                            {name: "titleFa"},
+                            {name: "capacity"}
+                        ],
+                        click: function (form, item) {
+                            if (form.getValue("instituteId")) {
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                                item.fetchData();
+                            } else {
+                                RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
+                                item.fetchData();
+                                isc.MyOkDialog.create({
+                                    message: "<spring:message code="chose.presenter"/>",
+                                });
+                            }
+                        }
                     },
                     {
                         type: "SpacerItem"
@@ -513,6 +513,7 @@
                     isc.Button.create
                     ({
                         title: "<spring:message code="save"/> ",
+                        icon: "[SKIN]/actions/save.png",
                         click: function () {
                             if (session_method === "POST") {
                                 save_Session();
@@ -524,6 +525,7 @@
                     isc.Button.create
                     ({
                         title: "<spring:message code="cancel"/>",
+                        icon: "[SKIN]/actions/cancel.png",
                         click: function () {
                             Window_Session.close();
                         }
@@ -585,7 +587,7 @@
             } else {
                 session_method = "POST";
                 DynamicForm_Session.clearValues();
-                Window_Session.setTitle("<spring:message code="create"/>");
+                Window_Session.setTitle("<spring:message code="session"/>");
                 Window_Session.show();
             }
         }
@@ -618,7 +620,7 @@
                 isc.Dialog.create({
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
+                    title: "<spring:message code="message"/>",
                     buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -639,7 +641,7 @@
                 session_method = "PUT";
                 DynamicForm_Session.clearValues();
                 DynamicForm_Session.editRecord(record);
-                Window_Session.setTitle("<spring:message code="edit"/>");
+                Window_Session.setTitle("<spring:message code="session"/>");
                 Window_Session.show();
             }
         }
@@ -670,7 +672,7 @@
                 isc.Dialog.create({
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
+                    title: "<spring:message code="message"/>",
                     buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -679,6 +681,7 @@
             } else {
                 isc.MyYesNoDialog.create({
                     message: "<spring:message code="global.grid.record.remove.ask"/>",
+                    title: "<spring:message code="verify.delete"/>",
                     buttonClick: function (button, index) {
                         this.close();
                         if (index === 0) {
@@ -746,22 +749,40 @@
 
         //*****print*****
         function print_SessionListGrid(type) {
-            var advancedCriteria_session = ListGrid_session.getCriteria();
-            var criteriaForm_course = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/class-session/printWithCriteria/"/>" + type+ "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"},
-                        {name: "myToken", type: "hidden"}
-                    ]
-            });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_session));
-            criteriaForm_course.setValue("myToken", "<%=accessToken1%>");
-            criteriaForm_course.show();
-            criteriaForm_course.submitForm();
+
+            var record = ListGrid_session.getTotalRows();
+            if (record === 0) {
+                isc.Dialog.create({
+                    message: "<spring:message code="msg.no.records.for.print"/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            } else {
+
+                var advancedCriteria_session = ListGrid_session.getCriteria();
+                var criteriaForm_session = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "<spring:url value="/class-session/printWithCriteria/"/>" + type + "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"},
+                            {name: "myToken", type: "hidden"}
+                        ]
+                });
+                criteriaForm_session.setValue("CriteriaStr", JSON.stringify(advancedCriteria_session));
+                criteriaForm_session.setValue("myToken", "<%=accessToken1%>");
+                criteriaForm_session.show();
+                criteriaForm_session.submitForm();
+
+            }
+
+
         }
 
 
