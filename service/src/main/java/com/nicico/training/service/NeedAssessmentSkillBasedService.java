@@ -165,7 +165,10 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
 
     private void addCriteria(SearchDTO.CriteriaRq criteriaRq, String objectType, Long objectId) {
         Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
-        criteriaRq.getCriteria().add(makeNewCriteria(objectType, objectId));
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        list.add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
+        list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
+        criteriaRq.getCriteria().add(makeNewCriteria(null, null, EOperator.and, list));
         switch (objectType) {
             case "Post":
                 Optional<Post> optionalPost = postDAO.findById(objectId);
@@ -186,26 +189,13 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
         }
     }
 
-    private SearchDTO.CriteriaRq makeNewCriteria(String objectType, Long objectId) {
-        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-
-        SearchDTO.CriteriaRq idRq = new SearchDTO.CriteriaRq();
-        idRq.setOperator(EOperator.equals);
-        idRq.setFieldName("objectId");
-        idRq.setValue(objectId);
-        list.add(idRq);
-
-        SearchDTO.CriteriaRq typeRq = new SearchDTO.CriteriaRq();
-        typeRq.setOperator(EOperator.equals);
-        typeRq.setFieldName("objectType");
-        typeRq.setValue(objectType);
-        list.add(typeRq);
-
-        SearchDTO.CriteriaRq rq = new SearchDTO.CriteriaRq();
-        rq.setOperator(EOperator.and);
-        rq.setCriteria(list);
-
-        return rq;
+    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
     }
 
 }

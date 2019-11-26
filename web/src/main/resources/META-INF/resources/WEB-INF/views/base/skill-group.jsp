@@ -8,10 +8,6 @@
 %>
 
 // <script>
-
-
-
-
     var RestDataSource_Skill_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -22,10 +18,6 @@
         ],
         fetchDataURL: skillGroupUrl + "spec-list"
     });
-
-
-
-
     var Menu_ListGrid_Skill_Group_Jsp = isc.Menu.create({
         width: 150,
         data: [{
@@ -892,7 +884,7 @@
             var Dialog_Delete = isc.Dialog.create({
                 message: getFormulaMessage("آیا از حذف گروه مهارت:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه مهارت:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
-                title: "تائید حذف",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
                     title: "خیر"
                 })],

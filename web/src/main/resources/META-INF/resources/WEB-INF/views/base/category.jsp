@@ -10,8 +10,8 @@
     %>
 
 
-    var category_CategoryHomeUrl = rootUrl + "/category";
-    var category_SubCategoryHomeUrl = rootUrl + "/sub-category";
+    var category_CategoryHomeUrl = rootUrl + "category";
+    var category_SubCategoryHomeUrl = rootUrl + "sub-category";
     var category_SubCategoryDummyUrl = category_CategoryHomeUrl + "/sub-categories/dummy";
     var category_SubCategoryUrl = category_SubCategoryHomeUrl;
     var method = "GET";
@@ -587,7 +587,7 @@
         },]
     });
 
-    var ListGrid_Sub_Category = isc.ListGrid.create({
+    var ListGrid_Sub_Category = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Sub_Category,
@@ -756,7 +756,7 @@
         },]
     });
 
-    var ListGrid_Category = isc.ListGrid.create({
+    var ListGrid_Category = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Category,
@@ -772,10 +772,9 @@
             {name: "description", title: "توضیحات", align: "center"}
         ],
         selectionType: "single",
-        selectionChanged: function (record, state) {
+        selectionUpdated: function (record, state) {
             RestDataSource_Sub_Category.fetchDataURL = category_CategoryHomeUrl + "/" + record.id + "/sub-categories";
             selectedCategoryId = record.id;
-            <%--RestDataSource_Sub_Category.fetchData();--%>
             ListGrid_Sub_Category.invalidateCache();
         },
         dataArrived: function (startRow, endRow) {
@@ -793,16 +792,6 @@
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        // showFilterEditor: true,
-        // filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        // filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
 
     var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButton.create({

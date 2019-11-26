@@ -4,7 +4,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
+// <script>
 
     var committee_method = "POST";
     var committeeId;
@@ -115,7 +115,7 @@
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
         doubleClick: function () {
-         show_CommitteEditForm();
+            show_CommitteEditForm();
         },
 
         selectionChanged: function (record, state) {
@@ -278,7 +278,7 @@
                     DynamicForm_Committee.getItem("subCategoryId").clearValue();
                     DynamicForm_Committee.getItem("subCategoryId").setValue();
                     DsSubCategory_committee.fetchDataURL = categoryUrl + value + "/sub-categories?_startRow=0&_endRow=55";
-               //    DsSubCategory_committee.fetchDataURL = categoryUrl + value;
+                    //    DsSubCategory_committee.fetchDataURL = categoryUrl + value;
                     DynamicForm_Committee.getItem("subCategoryId").optionDataSource = DsSubCategory_committee;
                     DynamicForm_Committee.getItem("subCategoryId").fetchData();
                 },
@@ -320,11 +320,11 @@
                     title: "<spring:message code="save"/>",
                     icon: "pieces/16/save.png",
                     click: function () {
-                     if (committee_method == "PUT") {
-                       edit_Committee();
-                    } else {
-                        save_Committee();
-                    }
+                        if (committee_method == "PUT") {
+                            edit_Committee();
+                        } else {
+                            save_Committee();
+                        }
 
 
                     }
@@ -377,9 +377,9 @@
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
-          print_CommitteeListGrid("pdf");
-       //  "<spring:url value="/committee/printCommitteeWithMember/pdf" var="printUrl"/>"
-           //     window.open('${printUrl}');
+            print_CommitteeListGrid("pdf");
+            //  "<spring:url value="/committee/printCommitteeWithMember/pdf" var="printUrl"/>"
+            //     window.open('${printUrl}');
 
         }
 
@@ -680,31 +680,31 @@
         }
 
     };
-            function edit_Committee() {
-             var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
-             var cateEdit = DynamicForm_Committee.getValue("categoryId");
-             var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
-             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
 
-            };
+    function edit_Committee() {
+        var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
+        var cateEdit = DynamicForm_Committee.getValue("categoryId");
+        var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
+        isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" + committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
 
-             function  findConflictWhenEdit(resp)
-            {
-              if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+    };
+
+    function findConflictWhenEdit(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data.length > 0) {
                 var committeeDataEdit = DynamicForm_Committee.getValues();
-                 var committeeSaveUrlEdit = committeeUrl;
-                 var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-                 committeeSaveUrlEdit += committeeEditRecord1.id;
-              isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
+                var committeeSaveUrlEdit = committeeUrl;
+                var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
+                committeeSaveUrlEdit += committeeEditRecord1.id;
+                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
 
             } else {
 
-             var cate2 = DynamicForm_Committee.getValue("categoryId");
-             var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
-             var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
-              var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
-             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'"+ cate3+"','"+ sc+ "')"));
+                var cate2 = DynamicForm_Committee.getValue("categoryId");
+                var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
+                var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
+                var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
+                isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'" + cate3 + "','" + sc + "')"));
 
             }
         } else {
@@ -717,16 +717,14 @@
                 OK.close();
             }, 3000);
         }
-            };
+    };
 
 
-
-
- function show_ConflictCommittee(resp,cat,subcat) {
+    function show_ConflictCommittee(resp, cat, subcat) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data.length > 0) {
                 var OK = isc.Dialog.create({
-                    message: "گروه "+  cat+  " و زیر گروه " + subcat+  " وارد شده با کمیته تخصصی " + getFormulaMessage(resp.data, 2, "red", "I") + " تداخل دارد",
+                    message: "گروه " + cat + " و زیر گروه " + subcat + " وارد شده با کمیته تخصصی " + getFormulaMessage(resp.data, 2, "red", "I") + " تداخل دارد",
                     icon: "[SKIN]say.png",
                     title: "هشدار"
                 });
@@ -741,7 +739,7 @@
                 //     var committeeRecord = ListGrid_Committee.getSelectedRecord();
                 //     committeeSaveUrl += committeeRecord.id;
                 // }
-             isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({
@@ -755,7 +753,7 @@
         }
     }
 
- function show_CommitteeActionResult(resp) {
+    function show_CommitteeActionResult(resp) {
         var respCode = resp.httpResponseCode;
 
         if (respCode == 200 || respCode == 201) {
@@ -794,7 +792,7 @@
     };
 
     function print_CommitteeListGrid(type) {
-         var advancedCriteria = ListGrid_Committee.getCriteria();
+        var advancedCriteria = ListGrid_Committee.getCriteria();
         var criteriaForm = isc.DynamicForm.create({
             method: "GET",
             action: "<spring:url value="/committee/printCommitteeWithMember/"/>" + type,
@@ -803,13 +801,13 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
-                    {name:"token",type:"hidden"}
+                    {name: "token", type: "hidden"}
                 ]
 
         })
-         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-         criteriaForm.setValue("token","<%= accessToken %>")
-         criteriaForm.show();
-         criteriaForm.submitForm();
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
     }
 
