@@ -190,8 +190,7 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
         selectionUpdated: function (record) {
-            refreshClassTabs(tabSetClass.getSelectedTab());
-            loadSelectedTab_class(tabSetClass.getSelectedTab());
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
 
         doubleClick: function () {
@@ -1242,76 +1241,14 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {
-                id: "classStudentsTab",
-                title: "<spring:message code="student.plural"/>",
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/student"}
-                )
-            },
-            {
-                title: "<spring:message code="sessions"/>",//جلسات
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/sessions-tab"}
-                )
-            },
-            {
-                name: "checkList",
-                title: "<spring:message code="checkList"/>",//چک لیست
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/checkList-tab"}
-                )
-            },
-            {
-                title: "<spring:message code="attachments"/>",//ضمائم
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/attachments-tab"}
-                )
-            }
-
-            <%--{--%>
-            <%--    title: "<spring:message code="alarms"/>",//هشدارها--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/alarms-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    // id: "TabPane_Post",--%>
-            <%--    title: "<spring:message code="licenses"/>",//مجوزها--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/licenses-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="attendance"/>",//حضور و غیاب--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/attendance-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="teachers"/>",//مدرسان--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/teachers-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    // id: "TabPane_Competence",--%>
-            <%--    title: "<spring:message code="exam"/>",//آزمون--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/exam-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="assessment"/>",//ارزیابی--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/assessment-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-
+            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
+            {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
+            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            loadSelectedTab_class(ID);
-            refreshClassTabs(tab);
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_class(tab);
         }
     });
 
@@ -1389,7 +1326,7 @@
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
-        refreshClassTabs(tabSetClass.getSelectedTab());
+        refreshSelectedTab_class(tabSetClass.getSelectedTab());
     }
 
     function ListGrid_Class_add() {
@@ -1508,7 +1445,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-            refreshClassTabs(tabSetClass.getSelectedTab());
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
@@ -1558,69 +1495,30 @@
         }
     }
 
-    function refreshClassTabs(tab) {
-        switch (tab.title) {
-            case "جلسات": {
-                if (typeof fireClassSession !== "undefined") {
-                    fireClassSession();
-                }
-                break;
-            }
-            case "هشدارها": {
-                // fireCheckList();
-                break;
-            }
-            case "مجوزها": {
-                // fireCheckList();
-                break;
-            }
-            case "حضور و غیاب": {
-                // fireCheckList();
-                break;
-            }
-            case "مدرسان": {
-                // fireCheckList();
-                break;
-            }
-            case "آزمون": {
-                // fireCheckList();
-                break;
-            }
-            case "ارزیابی": {
-                // fireCheckList();
-                break;
-            }
-            case "چک لیست": {
-                if (typeof fireCheckList != "undefined")
-                    fireCheckList();
-                // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
-                //    setTimeout(function () {
-                //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                //    },100)
-                // }
-                // else{
-                //     setTimeout(function () {
-                //        fireCheckList(-1);
-                //    },100)
-                // }
-                break;
-            }
-            case "ضمائم": {
-                // fireCheckList();
-                break;
-            }
-        }
-    }
-
-    function loadSelectedTab_class(tab) {
+    function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-            console.log(tab.id);
-            switch (tab.id) {
+            switch (tab.ID) {
                 case "classStudentsTab": {
-                    ListGrid_Current_Students_JspClass.fetchData({"classID": classRecord.id});
+                    if (typeof loadPage_student !== "undefined")
+                        loadPage_student();
+                    break;
+                }
+                case "classSessionsTab": {
+                    if (typeof loadPage_session !== "undefined")
+                        loadPage_session();
+                    break;
+                }
+                case "classCheckListTab": {
+                    if (typeof loadPage_checkList !== "undefined")
+                        loadPage_checkList();
+                    break;
+                }
+                case "classAttachmentsTab": {
+                    if (typeof loadPage_session !== "undefined")
+                        loadPage_session();
+                    break;
                 }
             }
         }
     }
-

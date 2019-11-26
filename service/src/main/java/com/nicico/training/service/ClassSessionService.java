@@ -85,14 +85,26 @@ public class ClassSessionService implements IClassSession {
             default:
                 return "";
         }
-
     }
 
     //*********************************
 
-    public String[] daysName() {
+    private String[] daysName() {
         //********short week days*********
         return new DateFormatSymbols().getShortWeekdays();
+    }
+
+    //*********************************
+
+    private Date ConvertToGregorianDate(String jalaliDate) {
+        //********convert jalali date to gregorian Date*********
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            return formatter.parse(DateUtil.convertKhToMi1(jalaliDate));
+        } catch (ParseException e) {
+            throw new TrainingException(TrainingException.ErrorType.Unknown);
+        }
     }
 
     //*********************************
@@ -101,46 +113,50 @@ public class ClassSessionService implements IClassSession {
     @Override
     public ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request) {
 
-        //********generated sessions list*********
-        ClassSessionDTO.GeneratedSessions session;
-
-        //********date utils*********
-        Calendar calendar = Calendar.getInstance();
-        Date gregorianSessionDate = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-
-        try {
-            gregorianSessionDate = formatter.parse(DateUtil.convertKhToMi1(request.getSessionDate()));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
-
-        calendar.setTime(gregorianSessionDate);
-
-        session = new ClassSessionDTO.GeneratedSessions(
+        if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                 request.getClassId(),
-                daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
-                getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                 request.getSessionDate(),
                 MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
-                request.getSessionTypeId(),
-                request.getSessionType(),
-                request.getInstituteId(),
-                request.getTrainingPlaceId(),
-                request.getTeacherId(),
-                request.getSessionState(),
-                request.getSessionStateFa(),
-                request.getDescription()
-        );
+                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)
+        )) {
+
+            //********generated sessions list*********
+            ClassSessionDTO.GeneratedSessions session;
+
+            //********date utils*********
+            Calendar calendar = Calendar.getInstance();
+            Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
+            calendar.setTime(gregorianSessionDate);
 
 
-        ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+            session = new ClassSessionDTO.GeneratedSessions(
+                    request.getClassId(),
+                    daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                    getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
+                    request.getSessionDate(),
+                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                    request.getSessionTypeId(),
+                    request.getSessionType(),
+                    request.getInstituteId(),
+                    request.getTrainingPlaceId(),
+                    request.getTeacherId(),
+                    request.getSessionState(),
+                    request.getSessionStateFa(),
+                    request.getDescription()
+            );
 
-        try {
-            return modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+
+            ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+
+            try {
+                return modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            }
+
+        } else {
+
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
 
@@ -152,37 +168,39 @@ public class ClassSessionService implements IClassSession {
     @Override
     public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request) {
 
-        //********date utils*********
-        Calendar calendar = Calendar.getInstance();
-        Date gregorianSessionDate = null;
-        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
+        if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
+                request.getClassId(),
+                request.getSessionDate(),
+                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                id
+        )) {
 
-        try {
-            gregorianSessionDate = formatter.parse(DateUtil.convertKhToMi1(request.getSessionDate()));
+            //********date utils*********
+            Calendar calendar = Calendar.getInstance();
+            Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
+            calendar.setTime(gregorianSessionDate);
 
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+            request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
+            request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
+            request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
+            request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
 
-        calendar.setTime(gregorianSessionDate);
+            Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
+            ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+            ClassSession classSession = new ClassSession();
+            modelMapper.map(currentClassSession, classSession);
+            modelMapper.map(request, classSession);
 
-        request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
-        request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
-        request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
-        request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+            try {
+                return modelMapper.map(classSessionDAO.saveAndFlush(classSession), ClassSessionDTO.Info.class);
+            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+                throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            }
+        } else {
 
-        Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
-        ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        ClassSession classSession = new ClassSession();
-        modelMapper.map(currentClassSession, classSession);
-        modelMapper.map(request, classSession);
-
-        try {
-            return modelMapper.map(classSessionDAO.saveAndFlush(classSession), ClassSessionDTO.Info.class);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
         }
-
     }
 
     //*********************************
@@ -260,28 +278,22 @@ public class ClassSessionService implements IClassSession {
         Calendar calendar = Calendar.getInstance();
 
         SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd");
-        Date gregorianStartDate = null, gregorianEndDate = null;
+        Date gregorianStartDate = ConvertToGregorianDate(classStartDate);
+        Date gregorianEndDate = ConvertToGregorianDate(classEndDate);
 
-        try {
-            gregorianStartDate = formatter.parse(DateUtil.convertKhToMi1(classStartDate));
-            gregorianEndDate = formatter.parse(DateUtil.convertKhToMi1(classEndDate));
-
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
 
         //********validate sending data from t_class*********
         if (gregorianStartDate != null && gregorianEndDate != null && gregorianStartDate.compareTo(gregorianEndDate) > 0) {
             //start-date bigger than end-date
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
 
         } else if (daysCode.size() == 0) {
             //days code is null
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
 
         } else if (MainHoursRange().size() == 0) {
             //hours rage is null
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
 
         } else if (classId == null ||
                 sessionTypeId == null ||
@@ -291,7 +303,7 @@ public class ClassSessionService implements IClassSession {
                 sessionState == null) {
 
             //require data is null
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+            throw new TrainingException(TrainingException.ErrorType.NotFound);
         }
 
         //********generated sessions list*********

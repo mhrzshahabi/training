@@ -19,7 +19,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/skins/EnterpriseBlue/load_skin.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
@@ -73,10 +73,10 @@
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
         titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
-        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
+        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -139,6 +139,7 @@
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
         loadingDataMessag: "<spring:message code="loading"/>",
+        canHover: true,
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -813,6 +814,8 @@
         trCriteriaForm.show();
         trCriteriaForm.submitForm();
     }
+
+    // createTab("کلاس", "<spring:url value="/tclass/show-form"/>");
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

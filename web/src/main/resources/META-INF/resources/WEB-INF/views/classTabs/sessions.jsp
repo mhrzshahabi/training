@@ -3,7 +3,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
 // <script>
@@ -23,7 +23,7 @@
                     title: "<spring:message code="refresh"/>",
                     icon: "<spring:url value="refresh.png"/>",
                     click: function () {
-                        // ListGrid_session.invalidateCache();
+                        ListGrid_session.invalidateCache();
                     }
                 },
                 {
@@ -80,6 +80,12 @@
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
         var RestDataSource_session = isc.TrDS.create({
+            transformRequest: function (dsRequest) {
+                dsRequest.httpHeaders = {
+                    "Authorization": "Bearer <%= accessToken1 %>"
+                };
+                return this.Super("transformRequest", arguments);
+            },
             fields:
                 [
                     {name: "id", primaryKey: true},
@@ -100,8 +106,8 @@
                     {name: "sessionStateFa"},
                     {name: "description"}
                 ]
-            // fetchDataURL: sessionServiceUrl + "load-sessions/428"
-            // fetchDataURL: sessionServiceUrl + "spec-list"
+            //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
+            //// fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -116,7 +122,10 @@
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
-            sortField: 3,
+             initialSort: [
+                 { property: "sessionDate", direction: "ascending" },
+                 { property: "sessionStartHour", direction: "ascending" }
+             ],
             fields: [
                 {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
@@ -128,22 +137,22 @@
                 },
                 {
                     name: "dayName",
-                    title: "روز هفته",
+                    title: "<spring:message code="week.day"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionDate",
-                    title: "تاریخ",
+                    title: "<spring:message code="date"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionStartHour",
-                    title: "ساعت شروع",
+                    title: "<spring:message code="start.time"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "sessionEndHour",
-                    title: "ساعت پایان",
+                    title: "<spring:message code="end.time"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
@@ -155,7 +164,7 @@
                 },
                 {
                     name: "sessionType",
-                    title: "نوع جلسه",
+                    title: "<spring:message code="session.type"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
@@ -167,7 +176,7 @@
                 },
                 {
                     name: "institute.titleFa",
-                    title: "برگزار کننده",
+                    title: "<spring:message code="presenter"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
@@ -179,7 +188,7 @@
                 }
                 , {
                     name: "trainingPlace.titleFa",
-                    title: "محل برگزاری",
+                    title: "<spring:message code="present.location"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
@@ -191,7 +200,7 @@
                 },
                 {
                     name: "teacher",
-                    title: "مدرس",
+                    title: "<spring:message code="trainer"/>",
                     align: "center",
                     filterOperator: "contains"
                 },
@@ -204,33 +213,30 @@
                 },
                 {
                     name: "sessionStateFa",
-                    title: "وضعیت جلسه",
+                    title: "<spring:message code="session.state"/>",
                     align: "center",
                     filterOperator: "contains"
                 }, {
                     name: "description",
-                    title: "توضیحات",
+                    title: "<spring:message code="description"/>",
                     align: "center",
                     filterOperator: "contains"
                 }
             ],
             doubleClick: function () {
                 show_SessionEditForm();
-            },
-            showMember: function () {
-                alert("done");
             }
         });
 
         var RestDataSource_Institute_JspSession = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "titleFa", title: "نام موسسه"},
-                {name: "manager.firstNameFa", title: "نام مدیر"},
-                {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-                {name: "mobile", title: "موبایل"},
-                {name: "restAddress", title: "آدرس"},
-                {name: "phone", title: "تلفن"}
+                {name: "titleFa", title: "<spring:message code="institution.name"/>"},
+                {name: "manager.firstNameFa", title: "<spring:message code="manager.name"/>"},
+                {name: "manager.lastNameFa", title: "<spring:message code="manager.family"/>"},
+                {name: "mobile", title: "<spring:message code="mobile"/>"},
+                {name: "restAddress", title: "<spring:message code="address"/>"},
+                {name: "phone", title: "<spring:message code="telephone"/>"}
             ],
             fetchDataURL: instituteUrl + "spec-list"
         });
@@ -238,8 +244,8 @@
         var RestDataSource_TrainingPlace_JspSession = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "titleFa", title: "نام مکان"},
-                {name: "capacity", title: "ظرفیت"}
+                {name: "titleFa", title: "<spring:message code="location.name"/>"},
+                {name: "capacity", title: "<spring:message code="capacity"/>"}
             ],
             fetchDataURL: instituteUrl + "0/training-places"
         });
@@ -251,7 +257,7 @@
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/refresh.png",
+            icon: "<spring:url value="refresh.png"/>",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_session.invalidateCache();
@@ -259,7 +265,7 @@
         });
 
         var ToolStripButton_Add = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/add.png",
+            icon: "<spring:url value="create.png"/>",
             title: "<spring:message code="create"/>",
             click: function () {
                 create_Session();
@@ -267,7 +273,7 @@
         });
 
         var ToolStripButton_Edit = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/edit.png",
+            icon: "<spring:url value="edit.png"/>",
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_SessionEditForm();
@@ -275,7 +281,7 @@
         });
 
         var ToolStripButton_Remove = isc.ToolStripButton.create({
-            icon: "[SKIN]/actions/remove.png",
+            icon: "<spring:url value="remove.png"/>",
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_Session();
@@ -283,7 +289,7 @@
         });
 
         var ToolStripButton_Print = isc.ToolStripButton.create({
-            icon: "[SKIN]/RichTextEditor/print.png",
+            icon: "<spring:url value="print.png"/>",
             title: "<spring:message code="print"/>",
             click: function () {
                 print_SessionListGrid("pdf");
@@ -306,7 +312,7 @@
             colWidths: ["10%", "30%", "10%", "10%", "30%"],
             padding: 10,
             isGroup: true,
-            groupTitle: "اطلاعات جلسه",
+            groupTitle: "<spring:message code="session.information"/>",
             groupBorderCSS: "1px solid lightBlue",
             fields:
                 [
@@ -343,7 +349,7 @@
                     },
                     {
                         name: "sessionTime",
-                        title: "ساعت جلسه :",
+                        title: "<spring:message code="session.time"/>",
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
@@ -355,7 +361,7 @@
                     },
                     {
                         name: "sessionTypeId",
-                        title: "نوع جلسه:",
+                        title: "<spring:message code="session.type"/>",
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
@@ -371,7 +377,7 @@
                     {
                         name: "instituteId",
                         editorType: "TrComboAutoRefresh",
-                        title: "برگزار کننده",
+                        title: "<spring:message code="presenter"/>",
                         autoFetchData: false,
                         optionDataSource: RestDataSource_Institute_JspSession,
                         displayField: "titleFa",
@@ -391,7 +397,7 @@
                     {
                         name: "trainingPlaceId",
                         editorType: "TrComboAutoRefresh",
-                        title: "محل برگزاری:",
+                        title: "<spring:message code="present.location"/>",
                         align: "center",
                         optionDataSource: RestDataSource_TrainingPlace_JspSession,
                         displayField: "titleFa",
@@ -411,7 +417,7 @@
                                 RestDataSource_TrainingPlace_JspSession.fetchDataURL = instituteUrl + "0/training-places";
                                 item.fetchData();
                                 isc.MyOkDialog.create({
-                                    message: "ابتدا برگزار کننده را انتخاب کنید",
+                                    message: "<spring:message code="chose.presenter"/>",
                                 });
                             }
                         }
@@ -421,7 +427,7 @@
                     },
                     {
                         name: "teacherId",
-                        title: "<spring:message code='trainer'/>:",
+                        title: "<spring:message code='trainer'/>",
                         textAlign: "center",
                         type: "ComboBoxItem",
                         multiple: false,
@@ -432,9 +438,21 @@
                         useClientFiltering: true,
                         optionDataSource: RestDataSource_Teacher_JspClass,
                         pickListFields: [
-                            {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
-                            {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
-                            {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
+                            {
+                                name: "personality.lastNameFa",
+                                title: "<spring:message code="lastName"/>",
+                                titleAlign: "center"
+                            },
+                            {
+                                name: "personality.firstNameFa",
+                                title: "<spring:message code="firstName"/>",
+                                titleAlign: "center"
+                            },
+                            {
+                                name: "personality.nationalCode",
+                                title: "<spring:message code="national.code"/>",
+                                titleAlign: "center"
+                            }
                         ],
                         filterFields: [
                             "personality.lastNameFa",
@@ -454,7 +472,7 @@
                                 RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/0";
                                 item.fetchData();
                                 let dialogTeacher = isc.MyOkDialog.create({
-                                    message: "ابتدا کلاس را انتخاب کنید",
+                                    message: "<spring:message code="msg.record.select.class.ask"/>",
                                 });
                                 dialogTeacher.addProperties({
                                     buttonClick: function () {
@@ -466,7 +484,7 @@
                     },
                     {
                         name: "sessionState",
-                        title: "وضعیت جلسه:",
+                        title: "<spring:message code="session.state"/>",
                         type: "selectItem",
                         textAlign: "center",
                         required: true,
@@ -482,7 +500,7 @@
                     },
                     {
                         name: "description",
-                        title: "توضیحات",
+                        title: "<spring:message code="description"/>",
                         textAlign: "center"
                     }
                 ]
@@ -556,7 +574,7 @@
         function create_Session() {
             if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
                 isc.Dialog.create({
-                    message: "ابتدا کلاس موردنظر را انتخاب نمایید.",
+                    message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
                     buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
@@ -678,7 +696,7 @@
         function show_SessionActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
-                fireClassSession();
+                loadPage_session();
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
@@ -693,6 +711,7 @@
                     ListGrid_session.setSelectedState(gridState);
 
                     ListGrid_session.scrollToRow(ListGrid_session.getRecordIndex(ListGrid_session.getSelectedRecord()), 0);
+
                 }, 1000);
 
                 Window_Session.close();
@@ -727,10 +746,10 @@
 
         //*****print*****
         function print_SessionListGrid(type) {
-            var advancedCriteria_course = ListGrid_session.getCriteria();
+            var advancedCriteria_session = ListGrid_session.getCriteria();
             var criteriaForm_course = isc.DynamicForm.create({
                 method: "POST",
-                action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
+                action: "<spring:url value="/class-session/printWithCriteria/"/>" + type+ "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
                 target: "_Blank",
                 canSubmit: true,
                 fields:
@@ -739,25 +758,22 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
-            criteriaForm_course.setValue("myToken", "<%=accessToken%>");
+            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_session));
+            criteriaForm_course.setValue("myToken", "<%=accessToken1%>");
             criteriaForm_course.show();
             criteriaForm_course.submitForm();
         }
 
 
-        function fireClassSession() {
-
-            if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
+        function loadPage_session() {
+            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            if (!(classRecord == undefined || classRecord == null)) {
                 RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
-                ListGrid_session.fetchData();
                 ListGrid_session.invalidateCache();
-            } else {
-                ListGrid_session.setData([]);
+                ListGrid_session.fetchData();
             }
         }
 
-        fireClassSession();
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 
