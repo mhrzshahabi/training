@@ -141,11 +141,12 @@ public class CourseRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<CourseDTO.CourseSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                       @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
+                                                       @RequestParam(value = "id", required = false) Long id,
                                                        @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -160,6 +161,15 @@ public class CourseRestController {
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if(id != null){
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow=0;
+            endRow=1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

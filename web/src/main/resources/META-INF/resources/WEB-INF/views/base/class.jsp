@@ -260,7 +260,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "courseId", editorType: "TrComboAutoRefresh", title: "دوره:",
+                name: "course.id", editorType: "TrComboAutoRefresh", title: "دوره:",
                 // width:"250",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Course_JspClass,
@@ -1361,8 +1361,8 @@
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
             // RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
-            DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.id};
-            DynamicForm_Class_JspClass.getField("instituteId").fetchData();
+            // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
+            // DynamicForm_Class_JspClass.getField("instituteId").fetchData();
             // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
             // RestDataSource_Institute_JspClass.mockDataCriteria  = {id:record.id};
             // DynamicForm_Class_JspClass.getField("course.id").fetchData();
