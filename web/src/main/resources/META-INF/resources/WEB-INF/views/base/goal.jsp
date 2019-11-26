@@ -455,15 +455,14 @@
         dataSource: RestDataSource_CourseGoal,
         // dataSource: goalCourseDS,
         contextMenu: Menu_ListGrid_Goal,
-        autoFitWidthApproach:"both",
+        // autoFitWidthApproach:"both",
         doubleClick: function () {
             ListGrid_Goal_Edit();
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "نام فارسی هدف", align: "center",autoFitWidth: true},
-            {name: "titleEn", title: "نام لاتین هدف ", align: "center"
-            },
+            {name: "titleEn", title: "نام لاتین هدف ", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         selectionType: "multiple",
