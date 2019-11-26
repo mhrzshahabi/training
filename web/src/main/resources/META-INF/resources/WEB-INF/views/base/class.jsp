@@ -187,8 +187,7 @@
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
         selectionUpdated: function (record) {
-            refreshClassTabs(tabSetClass.getSelectedTab());
-            loadSelectedTab_class(tabSetClass.getSelectedTab());
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
 
         doubleClick: function () {
@@ -1239,7 +1238,7 @@
         tabBarPosition: "top",
         tabs: [
             {
-                id: "classStudentsTab",
+                ID: "classStudentsTab",
                 title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/student"}
@@ -1306,8 +1305,7 @@
 
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            loadSelectedTab_class(ID);
-            refreshClassTabs(tab);
+            refreshSelectedTab_class(tab);
         }
     });
 
@@ -1380,7 +1378,7 @@
         setTimeout(function () {
             ListGrid_Class_JspClass.setSelectedState(gridState);
         }, 3000);
-        refreshClassTabs(tabSetClass.getSelectedTab());
+        refreshSelectedTab_class(tabSetClass.getSelectedTab());
     }
 
     function ListGrid_Class_add() {
@@ -1496,7 +1494,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-            refreshClassTabs(tabSetClass.getSelectedTab());
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
@@ -1546,69 +1544,38 @@
         }
     }
 
-    function refreshClassTabs(tab) {
-        switch (tab.title) {
-            case "جلسات": {
-                if (typeof fireClassSession !== "undefined") {
-                    fireClassSession();
-                }
-                break;
-            }
-            case "هشدارها": {
-                // fireCheckList();
-                break;
-            }
-            case "مجوزها": {
-                // fireCheckList();
-                break;
-            }
-            case "حضور و غیاب": {
-                // fireCheckList();
-                break;
-            }
-            case "مدرسان": {
-                // fireCheckList();
-                break;
-            }
-            case "آزمون": {
-                // fireCheckList();
-                break;
-            }
-            case "ارزیابی": {
-                // fireCheckList();
-                break;
-            }
-            case "چک لیست": {
-                if (typeof fireCheckList != "undefined")
-                    fireCheckList();
-                // if(ListGrid_Class_JspClass.getSelectedRecord() !== null){
-                //    setTimeout(function () {
-                //        fireCheckList(ListGrid_Class_JspClass.getSelectedRecord());
-                //    },100)
-                // }
-                // else{
-                //     setTimeout(function () {
-                //        fireCheckList(-1);
-                //    },100)
-                // }
-                break;
-            }
-            case "ضمائم": {
-                // fireCheckList();
-                break;
-            }
-        }
-    }
-
-    function loadSelectedTab_class(tab) {
+    function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-            console.log(tab.id);
-            switch (tab.id) {
+            switch (tab.ID) {
                 case "classStudentsTab": {
-                    ListGrid_Current_Students_JspClass.fetchData({"classID": classRecord.id});
+                    loadPage_student();
+                    break;
+                }
+                case "classStudentsTab": {
+                    loadPage_student();
+                    break;
+                }
+                case "classStudentsTab": {
+                    loadPage_student();
+                    break;
+                }
+                case "classStudentsTab": {
+                    loadPage_student();
+                    break;
                 }
             }
         }
+        // switch (tab.title) {
+        //     case "جلسات": {
+        //         if (typeof fireClassSession !== "undefined") {
+        //             fireClassSession();
+        //         }
+        //     }
+        //     case "چک لیست": {
+        //         if (typeof fireCheckList != "undefined")
+        //             fireCheckList();
+        //
+        //     }
+        // }
     }
-
