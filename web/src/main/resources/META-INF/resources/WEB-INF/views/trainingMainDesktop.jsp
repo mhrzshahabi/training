@@ -73,7 +73,7 @@
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
         titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
-        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
+        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,

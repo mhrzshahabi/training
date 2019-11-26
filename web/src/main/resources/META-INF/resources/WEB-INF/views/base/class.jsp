@@ -1237,78 +1237,14 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {
-                ID: "classSessionsTab",
-                title: "<spring:message code="sessions"/>",
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/sessions-tab"}
-                )
-            },
-            {
-                ID: "classStudentsTab",
-                title: "<spring:message code="student.plural"/>",
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/student"}
-                )
-            },
-            {
-                ID: "classCheckListTab",
-                name: "checkList",
-                title: "<spring:message code="checkList"/>",//چک لیست
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/checkList-tab"}
-                )
-            },
-            {
-                ID: "classAttachmentsTab",
-                title: "<spring:message code="attachments"/>",//ضمائم
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/attachments-tab"}
-                )
-            }
-
-            <%--{--%>
-            <%--    title: "<spring:message code="alarms"/>",//هشدارها--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/alarms-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    // id: "TabPane_Post",--%>
-            <%--    title: "<spring:message code="licenses"/>",//مجوزها--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/licenses-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="attendance"/>",//حضور و غیاب--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/attendance-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="teachers"/>",//مدرسان--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/teachers-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    // id: "TabPane_Competence",--%>
-            <%--    title: "<spring:message code="exam"/>",//آزمون--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/exam-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-            <%--{--%>
-            <%--    title: "<spring:message code="assessment"/>",//ارزیابی--%>
-            <%--    pane: isc.ViewLoader.create(--%>
-            <%--        {viewURL: "tclass/assessment-tab"}--%>
-            <%--    )--%>
-            <%--},--%>
-
+            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
+            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
+            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            refreshSelectedTab_class(tab);
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_class(tab);
         }
     });
 
@@ -1548,11 +1484,8 @@
     }
 
     function refreshSelectedTab_class(tab) {
-        console.log('refresh function');
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-            console.log('class record is not null');
-            console.log(tab);
             switch (tab.ID) {
                 case "classStudentsTab": {
                     if (typeof loadPage_student !== "undefined")
