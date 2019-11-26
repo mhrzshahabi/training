@@ -76,7 +76,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -135,6 +135,7 @@
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
         loadingDataMessag: "<spring:message code="loading"/>",
+        canHover: true,
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
