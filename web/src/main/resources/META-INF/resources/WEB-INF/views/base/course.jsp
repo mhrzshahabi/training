@@ -1760,7 +1760,8 @@
             isc.DynamicForm.create({
                 colWidths: ["8%", "18%", "1%"],
                 ID: "teacherForm",
-                numCols: 3,
+                titleOrientation:"top",
+                numCols: 2,
                 // padding: 50,
                 padding:"10px",
                 isGroup: true,
@@ -1775,8 +1776,8 @@
                 fields: [
                     {
                         name: "minTeacherDegree",
-                        colSpan: 1,
-                        title: "<spring:message code="course_minTeacherDegree"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherDegree"/>"+":",
                         // autoFetchData: true,
                         required: true,
                         // height: "30",
@@ -1790,8 +1791,8 @@
                     },
                     {
                         name: "minTeacherExpYears",
-                        // colSpan: 1,
-                        title: "<spring:message code="course_minTeacherExpYears"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherExpYears"/>"+":",
                         prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
@@ -1807,8 +1808,8 @@
                     },
                     {
                         name: "minTeacherEvalScore",
-                        // colSpan: 1,
-                        title: "<spring:message code="course_minTeacherEvalScore"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherEvalScore"/>"+":",
                         prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
                         shouldSaveValue: true,
                         textAlign: "center",

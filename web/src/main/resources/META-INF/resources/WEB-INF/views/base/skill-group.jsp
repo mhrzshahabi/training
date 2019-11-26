@@ -8,10 +8,6 @@
 %>
 
 // <script>
-
-
-
-
     var RestDataSource_Skill_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -22,10 +18,6 @@
         ],
         fetchDataURL: skillGroupUrl + "spec-list"
     });
-
-
-
-
     var Menu_ListGrid_Skill_Group_Jsp = isc.Menu.create({
         width: 150,
         data: [{
