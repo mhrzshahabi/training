@@ -158,7 +158,9 @@
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
 
     ClassStudentWin_student = isc.Window.create({
-        width: 800,
+        width: 600,
+        height: 600,
+        minWidth: 1024,
         items: [
             isc.TrHLayout.create({members: [OtherStudentsLG_student],})
         ]
