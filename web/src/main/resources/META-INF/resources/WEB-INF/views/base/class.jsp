@@ -1237,8 +1237,8 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
             {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
