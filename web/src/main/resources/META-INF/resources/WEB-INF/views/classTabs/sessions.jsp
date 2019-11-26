@@ -696,7 +696,7 @@
         function show_SessionActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
-                fireClassSession();
+                loadPage_session();
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
@@ -765,18 +765,17 @@
         }
 
 
-        function fireClassSession() {
+        function loadPage_session() {
+            console.log('loadPage_session');
 
-            if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
+            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            if (!(classRecord == undefined || classRecord == null)) {
                 RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
-                ListGrid_session.fetchData();
                 ListGrid_session.invalidateCache();
-            } else {
-                ListGrid_session.setData([]);
+                ListGrid_session.fetchData();
             }
         }
 
-        fireClassSession();
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
 

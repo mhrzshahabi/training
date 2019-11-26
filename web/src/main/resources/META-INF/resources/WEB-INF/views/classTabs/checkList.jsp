@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-<%--<script>--%>
+// <script>
     var CheckList_method = "POST";
     var CheckListItem_method = "POST";
 
@@ -220,9 +220,9 @@
         contextMenu: Menu_ListGrid_CheckListItem,
         dataSource: RestDataSource_CheckListItem,
         fields: [
-            {name: "titleFa",  title: "<spring:message code="item"/>", width: "80%"},
+            {name: "titleFa", title: "<spring:message code="item"/>", width: "80%"},
             {name: "group", title: "<spring:message code="group"/>", width: "20%"},
-       ],
+        ],
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.isDeleted) {
                 return "color:red;font-size: 12px;";
@@ -656,16 +656,16 @@
     function is_Delete() {
         var record = ListGrid_CheckListItem.getSelectedRecord();
         if (record == null || record.id == null) {
-        createDialog("info", "<spring:message code='msg.not.selected.record'/>");
-        }else {
-               var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.deactivate.ask"/>",
-               "<spring:message code="verify.deactivate"/>");
-                       Dialog_Class_remove.addProperties({
-                   buttonClick: function (button, index) {
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        } else {
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.deactivate.ask"/>",
+                "<spring:message code="verify.deactivate"/>");
+            Dialog_Class_remove.addProperties({
+                buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                          var CheckListItem_Save_Url = checklistItemUrl;
-                          isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
+                        var CheckListItem_Save_Url = checklistItemUrl;
+                        isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -801,16 +801,16 @@
     function show_CheckListDeleteForm() {
         var record = ListGrid_CheckList.getSelectedRecord();
         if (record == null || record.id == null) {
-              createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-         var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-               "<spring:message code="verify.delete"/>");
-                       Dialog_Class_remove.addProperties({
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                          var CheckList_Save_Url = checklistUrl;
-                          isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
+                        var CheckList_Save_Url = checklistUrl;
+                        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -879,8 +879,8 @@
                 }, 2000);
             } else {
                 var OK = isc.Dialog.create({
-                   message: "<spring:message code="msg.Item.cannot.delete"/>",
-                   icon: "[SKIN]say.png",
+                    message: "<spring:message code="msg.Item.cannot.delete"/>",
+                    icon: "[SKIN]say.png",
                     title: "<spring:message code="warning"/>"
                 });
                 setTimeout(function () {
@@ -903,7 +903,7 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_CheckListItem.fetchData();
             ListGrid_CheckListItem.invalidateCache();
-             ListGrid_Class_Item.invalidateCache();
+            ListGrid_Class_Item.invalidateCache();
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
@@ -1040,12 +1040,11 @@
     //     }
     // };
 
-       function fireCheckList() {
-
-        if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
-           var record =ListGrid_Class_JspClass.getSelectedRecord();
-            RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
-            ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
+    function loadPage_checkList() {
+        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        if (!(classRecord == undefined || classRecord == null)) {
+            RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
+            ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + classRecord.code});
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
         } else {
@@ -1053,7 +1052,3 @@
             ListGrid_ClassCheckList.setData([]);
         }
     }
-
-    fireCheckList();
-
-

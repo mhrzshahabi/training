@@ -1238,6 +1238,13 @@
         tabBarPosition: "top",
         tabs: [
             {
+                ID: "classSessionsTab",
+                title: "<spring:message code="sessions"/>",
+                pane: isc.ViewLoader.create(
+                    {viewURL: "tclass/sessions-tab"}
+                )
+            },
+            {
                 ID: "classStudentsTab",
                 title: "<spring:message code="student.plural"/>",
                 pane: isc.ViewLoader.create(
@@ -1245,12 +1252,7 @@
                 )
             },
             {
-                title: "<spring:message code="sessions"/>",//جلسات
-                pane: isc.ViewLoader.create(
-                    {viewURL: "tclass/sessions-tab"}
-                )
-            },
-            {
+                ID: "classCheckListTab",
                 name: "checkList",
                 title: "<spring:message code="checkList"/>",//چک لیست
                 pane: isc.ViewLoader.create(
@@ -1258,6 +1260,7 @@
                 )
             },
             {
+                ID: "classAttachmentsTab",
                 title: "<spring:message code="attachments"/>",//ضمائم
                 pane: isc.ViewLoader.create(
                     {viewURL: "tclass/attachments-tab"}
@@ -1545,37 +1548,32 @@
     }
 
     function refreshSelectedTab_class(tab) {
+        console.log('refresh function');
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
+            console.log('class record is not null');
+            console.log(tab);
             switch (tab.ID) {
                 case "classStudentsTab": {
-                    loadPage_student();
+                    if (typeof loadPage_student !== "undefined")
+                        loadPage_student();
                     break;
                 }
-                case "classStudentsTab": {
-                    loadPage_student();
+                case "classSessionsTab": {
+                    if (typeof loadPage_session !== "undefined")
+                        loadPage_session();
                     break;
                 }
-                case "classStudentsTab": {
-                    loadPage_student();
+                case "classCheckListTab": {
+                    if (typeof loadPage_checkList !== "undefined")
+                        loadPage_checkList();
                     break;
                 }
-                case "classStudentsTab": {
-                    loadPage_student();
+                case "classAttachmentsTab": {
+                    if (typeof loadPage_session !== "undefined")
+                        loadPage_session();
                     break;
                 }
             }
         }
-        // switch (tab.title) {
-        //     case "جلسات": {
-        //         if (typeof fireClassSession !== "undefined") {
-        //             fireClassSession();
-        //         }
-        //     }
-        //     case "چک لیست": {
-        //         if (typeof fireCheckList != "undefined")
-        //             fireCheckList();
-        //
-        //     }
-        // }
     }
