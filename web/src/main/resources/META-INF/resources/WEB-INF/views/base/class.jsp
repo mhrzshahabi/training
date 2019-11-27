@@ -216,10 +216,10 @@
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
-            {name: "reason", title: "درخواست آموزشی", align: "center"},
-            {name: "teacher", title: "مدرس اصلی", align: "center", filterOperator: "contains"},
+            {name: "reason", title: "<spring:message code='training.request'/>", align: "center"},
+            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "contains"},
             {
-                name: "classStatus", title: "وضعیت کلاس", align: "center",
+                name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
                 valueMap: {
                     "1": "برنامه ریزی",
                     "2": "در حال اجرا",
@@ -227,7 +227,7 @@
                 },
             },
             {
-                name: "topology", title: "چیدمان", align: "center", valueMap: {
+                name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
                     "1": "U شکل",
                     "2": "عادی",
                     "3": "مدور",
@@ -259,7 +259,7 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "course.id", editorType: "TrComboAutoRefresh", title: "دوره:",
+                name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
                 // width:"250",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Course_JspClass,
@@ -285,7 +285,7 @@
             },
             {
                 name: "minCapacity",
-                title: "ظرفیت:",
+                title: "<spring:message code='capacity'/>:",
                 textAlign: "center",
                 hint: "حداقل نفر",
                 showHintInField: true,
@@ -302,7 +302,7 @@
             },
             {
                 name: "code",
-                title: "کد کلاس:",
+                title: "<spring:message code='class.code'/>:",
                 colSpan: 2,
                 textAlign: "center",
                 type: "staticText", textBoxStyle: "textItemLite"
@@ -310,7 +310,7 @@
             {
                 name: "titleClass",
                 textAlign: "center",
-                title: "عنوان کلاس:",
+                title: "<spring:message code='class.title'/>:",
                 wrapTitle: true,
                 // type:"staticText",
                 // textBoxStyle:"textItemLite"
@@ -320,7 +320,7 @@
                 // titleOrientation:"top",
                 colSpan: 1,
                 rowSpan: 3,
-                title: "روش آموزش:",
+                title: "<spring:message code='teaching.type'/>:",
                 type: "radioGroup",
                 // vertical:false,
                 fillHorizontalSpace: true,
@@ -338,7 +338,7 @@
                 colSpan: 1,
                 rowSpan: 3,
                 // rowSpan:2,
-                title: "چیدمان:",
+                title: "<spring:message code='place.shape'/>:",
                 type: "radioGroup",
                 // vertical:false,
                 fillHorizontalSpace: true,
@@ -353,8 +353,8 @@
             },
             {
                 name: "hDuration",
-                title: "مدت:",
-                hint: "ساعت",
+                title: "<spring:message code='duration'/>:",
+                hint: "<spring:message code='hour'/>",
                 textAlign: "center",
                 showHintInField: true
             },
@@ -383,9 +383,9 @@
                 useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [
-                    {name: "personality.lastNameFa", title: "نام خانوادگی", titleAlign: "center"},
-                    {name: "personality.firstNameFa", title: "نام", titleAlign: "center"},
-                    {name: "personality.nationalCode", title: "کد ملی", titleAlign: "center"}
+                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center"},
+                    {name: "personality.firstNameFa", title: "<spring:message code='firstName'/>", titleAlign: "center"},
+                    {name: "personality.nationalCode", title: "<spring:message code='national.code'/>", titleAlign: "center"}
                 ],
                 filterFields: [
                     "personality.lastNameFa",
@@ -420,7 +420,7 @@
             {
                 name: "supervisor",
                 colSpan: 2,
-                title: "مسئول اجرا:",
+                title: "<spring:message code="supervisor"/>:",
                 type: "selectItem",
                 textAlign: "center",
                 valueMap: {
@@ -436,7 +436,7 @@
                 colSpan: 1,
                 textAlign: "center",
                 wrapTitle: true,
-                title: "درخواست آموزشی:",
+                title: "<spring:message code="training.request"/>:",
                 type: "selectItem",
                 valueMap: [
                     "نیازسنجی",
@@ -446,7 +446,7 @@
                 textBoxStyle: "textItemLite"
             },
             {
-                name: "instituteId", editorType: "TrComboAutoRefresh", title: "برگزار کننده:",
+                name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
                 // width:"250",
                 colSpan: 2,
                 autoFetchData: false,
@@ -472,7 +472,7 @@
             },
             {
                 name: "group",
-                title: "گروه:",
+                title: "<spring:message code="group"/>:",
                 required: true,
                 colSpan: 1,
                 textAlign: "center",
@@ -482,7 +482,7 @@
                 name: "classStatus",
                 colSpan: 3,
                 rowSpan: 1,
-                title: "وضعیت کلاس:",
+                title: "<spring:message code="class.status"/>:",
                 wrapTitle: true,
                 type: "radioGroup",
                 vertical: false,
@@ -496,7 +496,7 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "select", title: "محل برگزاری:",
+                name: "trainingPlaceIds", editorType: "select", title: "<spring:message code="training.place"/>:",
                 required: true,
                 multiple: true,
                 colSpan: 2,
