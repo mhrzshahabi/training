@@ -497,6 +497,7 @@
             },
             {
                 name: "trainingPlaceIds", editorType: "select", title: "محل برگزاری:",
+                required: true,
                 multiple: true,
                 colSpan: 2,
                 // width:"250",
@@ -531,8 +532,6 @@
                     // return {category:category};
                 }
             },
-
-
         ],
     });
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
