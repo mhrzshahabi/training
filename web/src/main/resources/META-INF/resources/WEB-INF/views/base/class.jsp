@@ -198,7 +198,7 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "iContains",autoFitWidth: true},
             {
                 name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
@@ -215,7 +215,7 @@
                 filterOperator: "iContains"
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
-            {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals"},
+            {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals",autoFitWidth: true},
             {name: "reason", title: "<spring:message code='training.request'/>", align: "center"},
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "contains"},
             {
@@ -253,7 +253,7 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
         numCols: 9,
-        colWidths: ["5%", "24%", "5%", "12%", "6%", "6%", "5%", "12%", "12%"],
+        colWidths: ["5%", "24%", "5%", "12%", "5%", "7%", "5%", "12%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -556,7 +556,7 @@
         fields: [
             {
                 name: "termId",
-                titleColSpan: 1,
+                // titleColSpan: 1,
                 title: "<spring:message code='term'/>",
                 textAlign: "center",
                 required: true,
@@ -882,7 +882,7 @@
         width: "90%",
         minWidth: 1024,
         autoSize: false,
-        height: "86%",
+        height: "87%",
         keepInParentRect: true,
         // placement:"fillPanel",
         align: "center",
@@ -1221,8 +1221,7 @@
             ToolStripButton_Edit_JspClass,
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
-            ToolStripButton_copy_of_class,
-            ToolStripButton_Add_Student_JspClass
+            ToolStripButton_copy_of_class
         ]
     });
 
