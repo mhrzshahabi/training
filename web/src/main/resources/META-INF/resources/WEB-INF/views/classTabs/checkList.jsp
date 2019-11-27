@@ -255,7 +255,7 @@
         contextMenu: Menu_ListGrid_CheckList,
         fields: [
 
-            {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code="checkList"/>", align: "center"},
         ],
         click: function () {
             var record = ListGrid_CheckList.getSelectedRecord();
@@ -457,7 +457,7 @@
     });
 
     //================================= تکمیل چک لیست===============================================تکمیل چک لیست=========================================تکمیل چک لیست======================================تکمیل چک لیست=====================
-    var ListGrid_Class_Item = isc.ListGrid.create({
+    var ListGrid_Class_Item = isc.TrLG.create({
         showRowNumbers: false,
         alternateRecordStyles: true,
         showFilterEditor: false,
@@ -490,7 +490,7 @@
             },
             {
                 name: "enableStatus",
-                title: "<spring:message code="active/deactivate"/>",
+                title: "<spring:message code="status"/>",
                 canEdit: true,
                 type: "boolean",
                 align: "center"
@@ -537,10 +537,12 @@
 
     var ListGrid_ClassCheckList = isc.TrLG.create({
         selectionType: "none",
-        showFilterEditor: false,
+        showFilterEditor: true,
         dataSource: RestDataSource_ClassCheckList,
         styleName: "myparent",
-// showRowNumbers:false,
+        filterOperator: "iContains",
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
