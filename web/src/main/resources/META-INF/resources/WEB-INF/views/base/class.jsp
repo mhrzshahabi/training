@@ -840,18 +840,20 @@
 
                         //**********generate class sessions**********
                         if (!VM_JspClass.hasErrors()) {
-                            ClassID = JSON.parse(resp.data).id;
-                            isc.RPCManager.sendRequest({
-                                actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
-                                httpMethod: "POST",
-                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                useSimpleHttp: true,
-                                contentType: "application/json; charset=utf-8",
-                                showPrompt: false,
-                                data: JSON.stringify(data),
-                                serverOutputAsString: false,
-                                callback: "GenerateClassSessionsCallback()"
-                            });
+                            if (autoValid) {
+                                ClassID = JSON.parse(resp.data).id;
+                                isc.RPCManager.sendRequest({
+                                    actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
+                                    httpMethod: "POST",
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    showPrompt: false,
+                                    data: JSON.stringify(data),
+                                    serverOutputAsString: false,
+                                    callback: "GenerateClassSessionsCallback()"
+                                });
+                            }
                         }
                         //**********generate class sessions**********
 
