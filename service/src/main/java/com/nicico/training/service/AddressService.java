@@ -41,6 +41,8 @@ public class AddressService implements IAddressService {
     @Transactional
     @Override
     public AddressDTO.Info createOrUpdate(AddressDTO.Create request) {
+        if(request.getPostalCode() == null)
+            return create(request);
         List<Address> byPostalCode = addressDAO.findByPostalCode(request.getPostalCode());
         if (byPostalCode == null || byPostalCode.size() == 0)
             return create(request);

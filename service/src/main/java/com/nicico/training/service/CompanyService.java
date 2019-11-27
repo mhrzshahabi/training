@@ -4,14 +4,18 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AccountInfoDTO;
+import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.ICompanyService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,6 +31,8 @@ public class CompanyService implements ICompanyService {
     private final ContactInfoDAO contactInfoDAO;
     private final AddressDAO addressDAO;
     private final ModelMapper mapper;
+    private final AccountInfoService accountInfoService;
+    private final AddressService addressService;
 
 
     @Transactional(readOnly = true)
@@ -48,67 +54,47 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info create(CompanyDTO.Create request) {
-        // Company company = mapper.map(request, Company.class);
-        // final CompanyDTO.Create create = mapper.map(request, CompanyDTO.Create.class);
-        //  final Company company = mapper.map(create, Company.class);
-        // Company savedCompany = companyDAO.saveAndFlush(company);
-        //  savedCompany.getId();
-        //   Set<Long> AccountInfoIdSet = request.getAccountInfoIdSet();
-        //        Set<AccountInfo> accountInfoSet = new HashSet<>();
-        //        for (Long accountInfoId : AccountInfoIdSet) {
-        //            Optional<AccountInfo> optionalAccountInfo = accountInfoDAO.findById(accountInfoId);
-        //            AccountInfo accountInfo = optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-        //            accountInfo.setCompanyId(savedCompany.getId());
-        //            accountInfoSet.add(accountInfo);
-        //        }
-        //   company.setAccountInfoSet(accountInfoSet);
-
-        final AccountInfo accountInfo = mapper.map(request.getAccountInfo(), AccountInfo.class);
-
-        final PersonalInfo personalInfo = mapper.map(request.getManager(), PersonalInfo.class);
-
-        final ContactInfo contactInfo = mapper.map(request.getManager().getContactInfo(), ContactInfo.class);
-
-        final Address address = mapper.map(request.getAddress(), Address.class);
 
         final Company company = mapper.map(request, Company.class);
 
+        if (company.getAccountInfo() != null) {
+            final AccountInfoDTO.Create accountInfo = mapper.map(company.getAccountInfo(), AccountInfoDTO.Create.class);
+            final AccountInfoDTO.Info savedAccountInfo = accountInfoService.create(accountInfo);
+            company.setAccountInfo(mapper.map(savedAccountInfo, AccountInfo.class));
+            company.setAccountInfoId(savedAccountInfo.getId());
+        }
 
-        final ContactInfo savedcontactInfo = contactInfoDAO.saveAndFlush(contactInfo);
-        personalInfo.setContactInfo(savedcontactInfo);
-        personalInfo.setContactInfoId(savedcontactInfo.getId());
+        if (company.getAddress() != null) {
+            final Address address = mapper.map(company.getAddress(), Address.class);
+            final Address savedAddressInfo = addressDAO.saveAndFlush(address);
+            company.setAddress(savedAddressInfo);
+            company.setAddressId(savedAddressInfo.getId());
 
+//            final AddressDTO.Create address = mapper.map(company.getAddress(), AddressDTO.Create.class);
+//            final AddressDTO.Info savedAddress = addressService.createOrUpdate(address);
+//            company.setAddress(mapper.map(savedAddress, Address.class));
+//            company.setAddressId(savedAddress.getId());
+        }
 
-        final PersonalInfo savedpersonalInfo = personalInfoDAO.saveAndFlush(personalInfo);
-        company.setManager(savedpersonalInfo);
-        company.setManagerId(savedpersonalInfo.getId());
-
-        final AccountInfo savedaccountInfo = accountInfoDAO.saveAndFlush(accountInfo);
-        company.setAccountInfo(savedaccountInfo);
-        company.setAccountInfoId(savedaccountInfo.getId());
-
-        final Address savedAddressInfo = addressDAO.saveAndFlush(address);
-        company.setAddress(savedAddressInfo);
-        company.setAddressId(savedAddressInfo.getId());
-
-
-        return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
+        try {
+            return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
 
     }
 
-       @Transactional(readOnly = true)
-       @Override
-   public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
+    @Transactional(readOnly = true)
+    @Override
+    public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
         List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
         PersonalInfo personalInfo = null;
-        if(personalInfoList != null && personalInfoList.size() != 0) {
+        if (personalInfoList != null && personalInfoList.size() != 0) {
             personalInfo = personalInfoList.get(0);
             return mapper.map(personalInfo, PersonalInfoDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
-
 
 
     @Transactional
