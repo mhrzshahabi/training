@@ -281,9 +281,7 @@
         title: "شغل",
         width: 500,
         items: [DF_Job_job, isc.MyHLayoutButtons.create({
-            members: [isc.MyButton.create({
-                title: "ذخیره",
-                icon: "pieces/16/save.png",
+            members: [isc.TrSaveBtn.create({
                 click: function () {
                     save_Job();
                 }
@@ -353,9 +351,7 @@
                 }),
                 LG_Competence_job,
                 isc.MyHLayoutButtons.create({
-                    members: [isc.MyButton.create({
-                        title: "ذخیره",
-                        icon: "pieces/16/save.png",
+                    members: [isc.TrSaveBtn.create({
                         click: function () {
                             save_JobCompetence();
                         }

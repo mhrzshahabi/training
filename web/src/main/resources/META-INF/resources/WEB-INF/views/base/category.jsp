@@ -108,9 +108,9 @@
         ]
     });
 
-    var IButton_Category_Save = isc.IButton.create({
-        top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+    var IButton_Category_Save = isc.TrSaveBtn.create({
+        top: 260,
+        // icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_Category.validate();
             if (DynamicForm_Category.hasErrors()) {
@@ -166,11 +166,6 @@
         membersMargin: 10,
         members: [IButton_Category_Save, isc.TrCancelBtn.create({
             ID: "IButton_Category_Exit",
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
             click: function () {
                 Window_Category.close();
             }
@@ -297,9 +292,10 @@
         ]
     });
 
-    var IButton_Sub_Category_Save = isc.IButton.create({
-        top: 260, title: "ذخیره",
-        icon: "pieces/16/save.png",
+    var IButton_Sub_Category_Save = isc.TrSaveBtn.create({
+        top: 260,
+        // title: "ذخیره",
+        // icon: "pieces/16/save.png",
         click: function () {
             if (method == "POST") {
                 DynamicForm_Sub_Category.getItem("code").setValue(DynamicForm_Sub_Category.getItem("categoryCode").getValue() + DynamicForm_Sub_Category.getItem("codeNumber").getValue());
@@ -373,11 +369,6 @@
         membersMargin: 10,
         members: [IButton_Sub_Category_Save, isc.TrCancelBtn.create({
             ID: "IButton_Sub_Category_Exit",
-            // title: "لغو",
-            // prompt: "",
-            // width: 100,
-            <%--icon: "<spring:url value="remove.png"/>",--%>
-            // orientation: "vertical",
             click: function () {
                 Window_Sub_Category.close();
             }

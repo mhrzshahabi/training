@@ -347,8 +347,7 @@
         ]
     });
 
-    var IButton_Skill_Skill_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png",
+    var IButton_Skill_Skill_Save = isc.TrSaveBtn.create({
         click: function () {
             if (skill_Method == "POST") {
                 var sub_cat_code;
@@ -410,12 +409,7 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Skill_Skill_Save, isc.IButton.create({
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
+        members: [IButton_Skill_Skill_Save, isc.TrCancelBtn.create({
             click: function () {
                 Window_Skill_Skill.close();
             }

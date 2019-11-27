@@ -238,10 +238,7 @@
         title: "دوره",
         width: 500,
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-            members: [isc.Button.create({
-                title: "ذخیره",
-               // icon: "pieces/16/save.png",
-
+            members: [isc.TrSaveBtn.create({
                 click: function () {
 
 
@@ -254,9 +251,7 @@
                     }
                 }
 
-            }), isc.Button.create({
-                title: "لغو",
-             //   icon: "<spring:url value="remove.png"/>",
+            }), isc.TrCancelBtn.create({
                 click: function () {
                     Window_term.close();
                 }

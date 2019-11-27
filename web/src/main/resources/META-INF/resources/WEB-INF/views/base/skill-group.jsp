@@ -982,15 +982,14 @@
         ]
     });
 
-    var IButton_Skill_Group_Exit_Jsp = isc.IButton.create({
-        top: 260, title: "لغو", icon: "<spring:url value="remove.png"/>", align: "center",
+    var IButton_Skill_Group_Exit_Jsp = isc.TrCancelBtn.create({
         click: function () {
             Window_Skill_Group_Jsp.close();
         }
     });
 
-    var IButton_Skill_Group_Save_Jsp = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png", align: "center", click: function () {
+    var IButton_Skill_Group_Save_Jsp = isc.TrSaveBtn.create({
+        align: "center", click: function () {
 
             DynamicForm_Skill_Group_Jsp.validate();
             if (DynamicForm_Skill_Group_Jsp.hasErrors()) {
