@@ -532,8 +532,6 @@
                     // return {category:category};
                 }
             },
-
-
         ],
     });
     var DynamicForm1_Class_JspClass = isc.DynamicForm.create({
