@@ -24,7 +24,6 @@
 
     var RestDataSource_Institute_Institute = isc.TrDS.create({
         fields: [
-
             {name: "id", primaryKey: true},
             {name: "titleFa"},
             {name: "titleEn"},

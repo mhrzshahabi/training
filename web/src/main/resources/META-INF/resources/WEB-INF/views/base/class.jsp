@@ -597,7 +597,7 @@
             {
                 name: "autoValid",
                 type: "checkbox",
-                title: "<spring:message code='auto.session.made'>",
+                title: "<spring:message code='auto.session.made'/>",
                 endRow: true,
                 // titleOrientation:"top",
                 labelAsTitle: true,
