@@ -839,18 +839,21 @@
                         Window_Class_JspClass.close();
 
                         //**********generate class sessions**********
-                        if (autoValid) {
-                            ClassID = JSON.parse(resp.data).id;
-                            isc.RPCManager.sendRequest({
-                                actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
-                                httpMethod: "POST",
-                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                useSimpleHttp: true,
-                                contentType: "application/json; charset=utf-8",
-                                showPrompt: false,
-                                data: JSON.stringify(data),
-                                serverOutputAsString: false
-                            });
+                        if (!VM_JspClass.hasErrors()) {
+                            if (autoValid) {
+                                ClassID = JSON.parse(resp.data).id;
+                                isc.RPCManager.sendRequest({
+                                    actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
+                                    httpMethod: "POST",
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    showPrompt: false,
+                                    data: JSON.stringify(data),
+                                    serverOutputAsString: false,
+                                    callback: "GenerateClassSessionsCallback()"
+                                });
+                            }
                         }
                         //**********generate class sessions**********
 
@@ -1338,9 +1341,7 @@
     }
 
     function ListGrid_class_print(type) {
-            alert("1")
         var advancedCriteria = ListGrid_Class_JspClass.getCriteria();
-            alert("2")
         var criteriaForm = isc.DynamicForm.create({
             method: "GET",
             action: "<spring:url value="/tclass/printWithCriteria/"/>" + type,
@@ -1493,6 +1494,11 @@
             Window_AddStudents_JspClass.show();
         }
     }
+
+    function GenerateClassSessionsCallback() {
+         refreshSelectedTab_class(tabSetClass.getSelectedTab());
+    }
+
 
     function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
