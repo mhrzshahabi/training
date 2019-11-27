@@ -597,7 +597,7 @@
             {
                 name: "autoValid",
                 type: "checkbox",
-                title: "تولید اتوماتیک جلسات",
+                title: "<spring:message code='auto.session.made'>",
                 endRow: true,
                 // titleOrientation:"top",
                 labelAsTitle: true,
@@ -1199,7 +1199,7 @@
 
     var ToolStripButton_copy_of_class = isc.ToolStripButton.create({
         // icon: "icon/classroom.png",
-        title: "کپی از کلاس",
+        title: "<spring:message code='copy.of.class'/>",
         click: function () {
             ListGrid_class_edit();
             setTimeout(function () {
