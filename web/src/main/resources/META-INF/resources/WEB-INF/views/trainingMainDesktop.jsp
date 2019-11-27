@@ -76,7 +76,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
-        autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -814,7 +814,7 @@
         trCriteriaForm.submitForm();
     }
 
-    // createTab("کلاس", "<spring:url value="/tclass/show-form"/>");
+    createTab("کلاس", "<spring:url value="/tclass/show-form"/>");
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

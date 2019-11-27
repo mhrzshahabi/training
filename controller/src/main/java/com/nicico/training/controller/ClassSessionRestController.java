@@ -160,6 +160,7 @@ public class ClassSessionRestController {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
+
         List<ClassSessionDTO.Info> infos = classSessionService.loadSessions(Long.parseLong(classId));
 
 
