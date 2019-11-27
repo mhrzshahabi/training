@@ -1,10 +1,8 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
+
+
 // <script>
     var CheckList_method = "POST";
     var CheckListItem_method = "POST";
@@ -89,7 +87,7 @@
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     ListGrid_CheckListItem.invalidateCache();
-                    ListGrid_CheckListItem_DetailViewer.setData([]);
+                    // ListGrid_CheckListItem_DetailViewer.setData([]);
                 }
             }, {
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
@@ -115,7 +113,15 @@
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
+            let gridState = null;
+            if (ListGrid_CheckList.getSelectedRecord() !== null) {
+                gridState = "[{id:" + ListGrid_CheckList.getSelectedRecord().id + "}]";
+                ListGrid_CheckList.invalidateCache();
+                setTimeout(function () {
+                    ListGrid_CheckList.setSelectedState(gridState);
+                }, 1000)
+            } else
+                ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
             totalRecords_Item.setContents("<spring:message code="number.of.Items"/>" + ":&nbsp;<b>" + "" + "</b>");
         }
     });
@@ -146,7 +152,7 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
-            ListGrid_CheckListItem_DetailViewer.setData([]);
+            // ListGrid_CheckListItem_DetailViewer.setData([]);
         }
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButton.create({
@@ -230,7 +236,7 @@
         },
 
         recordClick: function (ListGrid, ListGridRecord, number, ListGridField, number, any, any) {
-            return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
+            // return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
         },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -243,6 +249,9 @@
                 totalRecords_Item.setContents("&nbsp;");
             }
         },
+        recordDoubleClick: function () {
+            show_CheckListItemEditForm();
+        }
     });
 
     var ListGrid_CheckList = isc.TrLG.create({
@@ -251,43 +260,47 @@
         allowFilterExpressions: true,
         filterOnKeypress: false,
         showFilterEditor: true,
+        autoFetchData: true,
         dataSource: RestDataSource_CheckList,
         contextMenu: Menu_ListGrid_CheckList,
         fields: [
 
             {name: "titleFa", title: "<spring:message code="checkList"/>", align: "center"},
         ],
-        click: function () {
+        recordDoubleClick: function () {
+            show_CheckListEditForm();
+        },
+        recordClick: function () {
+
+        },
+        selectionUpdated: function () {
+            // ListGrid_CheckListItem_DetailViewer.setData([])
             var record = ListGrid_CheckList.getSelectedRecord();
             RestDataSource_CheckListItem.fetchDataURL = checklistUrl + record.id + "/getCheckListItem";
             ListGrid_CheckListItem.fetchData();
             ListGrid_CheckListItem.invalidateCache();
         },
-        selectionUpdated: function () {
-            ListGrid_CheckListItem_DetailViewer.setData([])
-        },
-        autoFetchData: true,
 
     });
 
 
-    var ListGrid_CheckListItem_DetailViewer = isc.DetailViewer.create({
-        autoFetchData: true,
-        ID: "ListGrid_CheckListItem_DetailViewer",
-        width: "100%",
-        fields: [
-            {name: "titleFa", title: "<spring:message code="title"/>"},
-            {
-                name: "group", title: "<spring:message code="group"/>",
-                formatCellValue: function (value, record, rowNum, colNum, grid) {
-                    if (typeof value === "undefined")
-                        return "ندارد"; else return value;
-                },
-                length: "250"
-            },
-        ],
-        emptyMessage: " "
-    })
+    <%--var ListGrid_CheckListItem_DetailViewer = isc.DetailViewer.create({--%>
+    <%--    autoFetchData: true,--%>
+    <%--    ID: "ListGrid_CheckListItem_DetailViewer",--%>
+    <%--    width: "100%",--%>
+    <%--    fields: [--%>
+    <%--        {name: "titleFa", title: "<spring:message code="title"/>"},--%>
+    <%--        {--%>
+    <%--            name: "group", title: "<spring:message code="group"/>",--%>
+    <%--            formatCellValue: function (value, record, rowNum, colNum, grid) {--%>
+    <%--                if (typeof value === "undefined")--%>
+    <%--                    return "ندارد"; else return value;--%>
+    <%--            },--%>
+    <%--            length: "250"--%>
+    <%--        },--%>
+    <%--    ],--%>
+    <%--    emptyMessage: " "--%>
+    <%--})--%>
 
 
     //============================================================================
@@ -365,7 +378,7 @@
         width: "100%",
         height: "100%",
 
-        members: [HLayout_Action_CheckListItem, ListGrid_CheckListItem, ListGrid_CheckListItem_DetailViewer],
+        members: [HLayout_Action_CheckListItem, ListGrid_CheckListItem]//, ListGrid_CheckListItem_DetailViewer],
     });
 
 
@@ -993,6 +1006,7 @@
 
     function show_CheckListItemActionResult(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            let gridState = "[{id:" + JSON.parse(resp.httpResponseText).id + "}]";
             ListGrid_CheckListItem.invalidateCache();
             ListGrid_Class_Item.invalidateCache();
 
@@ -1002,6 +1016,7 @@
                 title: "<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
+                ListGrid_CheckListItem.setSelectedState(gridState);
                 OK.close();
             }, 3000);
             Window_CheckListItem_Add.close();
@@ -1011,9 +1026,9 @@
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="global.form.command.done"/>"
             });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
+            // setTimeout(function () {
+            //     OK.close();
+            // }, 3000);
         }
 
     };
@@ -1046,7 +1061,7 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
-            ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + classRecord.code});
+            <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
         } else {
