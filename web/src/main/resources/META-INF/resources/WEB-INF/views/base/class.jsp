@@ -497,6 +497,7 @@
             },
             {
                 name: "trainingPlaceIds", editorType: "select", title: "محل برگزاری:",
+                required: true,
                 multiple: true,
                 colSpan: 2,
                 // width:"250",
@@ -840,7 +841,7 @@
                         Window_Class_JspClass.close();
 
                         //**********generate class sessions**********
-                        if (autoValid) {
+                        if (!VM_JspClass.hasErrors()) {
                             ClassID = JSON.parse(resp.data).id;
                             isc.RPCManager.sendRequest({
                                 actionURL: sessionServiceUrl + "generateSessions" + "/" + ClassID,
@@ -850,7 +851,8 @@
                                 contentType: "application/json; charset=utf-8",
                                 showPrompt: false,
                                 data: JSON.stringify(data),
-                                serverOutputAsString: false
+                                serverOutputAsString: false,
+                                callback: "GenerateClassSessionsCallback()"
                             });
                         }
                         //**********generate class sessions**********
@@ -1339,9 +1341,7 @@
     }
 
     function ListGrid_class_print(type) {
-            alert("1")
         var advancedCriteria = ListGrid_Class_JspClass.getCriteria();
-            alert("2")
         var criteriaForm = isc.DynamicForm.create({
             method: "GET",
             action: "<spring:url value="/tclass/printWithCriteria/"/>" + type,
@@ -1494,6 +1494,11 @@
             Window_AddStudents_JspClass.show();
         }
     }
+
+    function GenerateClassSessionsCallback() {
+         refreshSelectedTab_class(tabSetClass.getSelectedTab());
+    }
+
 
     function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
