@@ -73,25 +73,25 @@ public class PersonnelRegistered extends Auditable {
     private String postAssignmentDate;
 
     @Column(name = "complex_title")
-    private String complexTitle;
+    private String complex;
 
     @Column(name = "operational_unit_title")
-    private String operationalUnitTitle;
+    private String operationalUnit;
 
     @Column(name = "employment_type_title")
-    private String employmentTypeTitle;
+    private String employmentType;
 
     @Column(name = "marital_status_title")
-    private String maritalStatusTitle;
+    private String maritalStatus;
 
     @Column(name = "work_place_title")
-    private String workPlaceTitle;
+    private String workPlace;
 
     @Column(name = "work_turn_title")
-    private String workTurnTitle;
+    private String workTurn;
 
     @Column(name = "education_level_title")
-    private String educationLevelTitle;
+    private String educationLevel;
 
     @Column(name = "job_no")
     private String jobNo;
@@ -112,7 +112,7 @@ public class PersonnelRegistered extends Auditable {
     private String contractNo;
 
     @Column(name = "education_field_title")
-    private String educationMajorTitle;
+    private String educationMajor;
 
     @Column(name = "gender_title")
     private String gender;

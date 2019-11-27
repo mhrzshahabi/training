@@ -41,6 +41,17 @@ public class PersonnelRegisteredDTO {
     @ApiModelProperty(required = true)
     private String companyName;
 
+    private String birthDate;
+    private String birthPlace;
+    private String postTitle;
+    private String maritalStatus;
+    private String educationLevel;
+    private String educationMajor;
+    private String gender;
+    private String militaryStatus;
+    private String postGradeTitle;
+    private String workTurn;
+
 
     @Getter
     @Setter
