@@ -7,11 +7,13 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -60,18 +62,20 @@ public class TclassDTO {
     private List<Long> trainingPlaceIds;
 
 
-//    @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
-        @Getter
+        private Date createdDate;
+        private String createdBy;
+        private Date lastModifiedDate;
+        private String lastModifiedBy;
         private Long id;
-        @Getter
         private CourseDTO.CourseInfoTuple course;
-        @Getter
         private TermDTO term;
 //        private List<Student> studentSet;
+        @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
         public String getTeacher(){
             if (teacher!=null)

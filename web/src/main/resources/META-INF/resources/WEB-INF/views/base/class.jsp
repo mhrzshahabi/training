@@ -33,6 +33,9 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
+            {name: "lastModifiedDate",hidden:true},
+            {name: "createdBy",hidden:true},
+            {name: "createdDate",hidden:true},
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
@@ -174,8 +177,8 @@
         ID: "classListGrid",
         width: "100%",
         height: "100%",
-        sortField: 1,
-        sortDirection: "descending",
+        dataSource: RestDataSource_Class_JspClass,
+        contextMenu: Menu_ListGrid_Class_JspClass,
         dataPageSize: 50,
         autoFetchData: true,
         allowAdvancedCriteria: true,
@@ -184,11 +187,13 @@
         // showRecordComponents: true,
         // showRecordComponentsByCell: true,
         selectionType: "single",
-        filterUsingText: "<spring:message code='filterUsingText'/>",
-        groupByText: "<spring:message code='groupByText'/>",
-        freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        dataSource: RestDataSource_Class_JspClass,
-        contextMenu: Menu_ListGrid_Class_JspClass,
+        <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
+        <%--groupByText: "<spring:message code='groupByText'/>",--%>
+        <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
+        initialSort: [
+            // {property: "createdBy", direction: "ascending"},
+            {property: "lastModifiedDate", direction: "ascending",primarySort:true}
+        ],
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
@@ -204,9 +209,9 @@
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
-                sortNormalizer: function (record) {
-                    return record.course.titleFa;
-                }
+                // sortNormalizer: function (record) {
+                //     return record.course.titleFa;
+                // }
             },
             {
                 name: "startDate",
@@ -233,7 +238,10 @@
                     "3": "مدور",
                     "4": "سالن"
                 }
-            }
+            },
+            {name: "lastModifiedDate",hidden:true},
+            {name: "createdBy",hidden:true},
+            {name: "createdDate",hidden:true},
         ]
     });
 
@@ -835,6 +843,7 @@
                         simpleDialog("انجام فرمان", "عملیات با موفقیت انجام شد.", 3000, "say");
                         setTimeout(function () {
                             ListGrid_Class_JspClass.setSelectedState(gridState);
+                            ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
                         }, 3000);
                         Window_Class_JspClass.close();
 

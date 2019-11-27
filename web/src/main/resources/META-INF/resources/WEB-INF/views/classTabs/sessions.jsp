@@ -141,17 +141,20 @@
                     title: "<spring:message code="week.day"/>",
                     align: "center",
                     filterOperator: "contains"
-                }, {
+                },
+                {
                     name: "sessionDate",
                     title: "<spring:message code="date"/>",
                     align: "center",
                     filterOperator: "contains"
-                }, {
+                },
+                {
                     name: "sessionStartHour",
                     title: "<spring:message code="start.time"/>",
                     align: "center",
                     filterOperator: "contains"
-                }, {
+                },
+                {
                     name: "sessionEndHour",
                     title: "<spring:message code="end.time"/>",
                     align: "center",
