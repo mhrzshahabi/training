@@ -814,7 +814,7 @@
         trCriteriaForm.submitForm();
     }
 
-    createTab("کلاس", "<spring:url value="/tclass/show-form"/>");
+    <%--createTab("کلاس", "<spring:url value="/tclass/show-form"/>");--%>
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
