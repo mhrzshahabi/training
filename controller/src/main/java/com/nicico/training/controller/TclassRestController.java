@@ -8,13 +8,17 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Personnel;
+import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -35,8 +39,38 @@ import java.util.Map;
 public class TclassRestController {
 
     private final ITclassService tclassService;
+    private final StudentService studentService;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
+
+    @Loggable
+    @PostMapping(value = "/addStudents/{classId}")
+    public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
+        PersonnelDTO.Ids personsIds= modelMapper.map(request, PersonnelDTO.Ids.class);
+        tclassService.addStudents(classId, personsIds.getIds());
+        return new ResponseEntity(HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/student")
+//    @PreAuthorize("hasAuthority('r_tclass')")
+    public ResponseEntity<StudentDTO.StudentSpecRs> getStudents(@RequestParam("classID") String classID) {
+        Long classId = Long.parseLong(classID);
+
+        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
+
+        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+        specResponse.setData(studentList)
+                .setStartRow(0)
+                .setEndRow(studentList.size())
+                .setTotalRows(studentList.size());
+
+        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -133,25 +167,7 @@ public class TclassRestController {
         return new ResponseEntity<>(tclassService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/student")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> getStudents(@RequestParam("classID") String classID) {
-        Long classId = Long.parseLong(classID);
 
-        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
-
-        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-        specResponse.setData(studentList)
-                .setStartRow(0)
-                .setEndRow(studentList.size())
-                .setTotalRows(studentList.size());
-
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
 
     @Loggable
     @GetMapping(value = "/otherStudent")
@@ -189,13 +205,25 @@ public class TclassRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = "/addStudents/{classId}")
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addStudents(@Validated @RequestBody StudentDTO.Delete request, @PathVariable Long classId) {
-        tclassService.addStudents(request, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+
+
+//
+//        @RequestBody Object req) {
+//            JobCompetenceDTO.CreateForCompetence create = (new ModelMapper()).map(req, JobCompetenceDTO.CreateForCompetence.class);
+//            jobCompetenceService.createForCompetence(create);
+//            return new ResponseEntity<>(HttpStatus.CREATED);
+//
+//
+//       modelMapper.map(request, StudentDTO.Delete.class);
+//        tclassService.addStudents(request, classId);
+
+//    @Loggable
+//    @PostMapping(value = "/addStudents/{classId}")
+////    @PreAuthorize("hasAuthority('d_tclass')")
+//    public ResponseEntity addStudents(@Validated @RequestBody StudentDTO.Delete request, @PathVariable Long classId) {
+//        tclassService.addStudents(request, classId);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})

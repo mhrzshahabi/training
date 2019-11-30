@@ -32,7 +32,7 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 
 	@PostMapping("/printWithCriteria/{type}")
 	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		//String token = (String) request.getSession().getAttribute("AccessToken");
+
 		String token=(String) request.getParameter("token");
 		final RestTemplate restTemplate = new RestTemplate();
 		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
@@ -49,7 +49,7 @@ private final OAuth2AuthorizedClientService authorizedClientService;
 		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
 		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+ 			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("excel"))
 			return restTemplate.exchange(restApiUrl + "/api/term/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
 		else if(type.equals("html"))
