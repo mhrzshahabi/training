@@ -4,7 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -50,22 +54,22 @@ public class CommitteeFormController {
 //            return null;
 //	}
 
-	 @RequestMapping("/printCommitteeWithMember/{type}")
+  @RequestMapping("/printCommitteeWithMember/{type}")
     public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
+    String token=(String) request.getParameter("token");
+		final RestTemplate restTemplate = new RestTemplate();
+		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+	   final HttpHeaders headers = new HttpHeaders();
+		headers.add("Authorization", "Bearer " + token);
 
-        String token = (String) request.getSession().getAttribute("accessToken");
-     //   	String token=(String) request.getParameter("token");
-        RestTemplate restTemplate = new RestTemplate();
-        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        final HttpHeaders headers = new HttpHeaders();
-        headers.add("Authorization", "Bearer " + token);
+		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
-
-        HttpEntity<String> entity = new HttpEntity<String>(headers);
+		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
       if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/PDF",HttpMethod.GET, entity, byte[].class);
