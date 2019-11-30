@@ -899,15 +899,15 @@
         show: function () {
             this.Super("show", arguments);
             for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
-                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "10px";
+                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
             }
             ;
             for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
-                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "10px";
+                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
             }
             ;
             for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
-                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "10px";
+                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
             }
             ;
         },
