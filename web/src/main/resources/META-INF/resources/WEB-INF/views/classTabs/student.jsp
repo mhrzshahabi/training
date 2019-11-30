@@ -85,6 +85,13 @@
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: classUrl + "student"
     });
@@ -98,6 +105,12 @@
             {name: "companyName"},
             {name: "personnelNo"},
             {name: "personnelNo2"},
+            {name: "postTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
         contextMenu: StudentMenu_student,
@@ -123,6 +136,13 @@
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+
         ],
         gridComponents: ["filterEditor", "header", "body"],
         canRemoveRecords: true,
@@ -137,6 +157,12 @@
             {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains",},
+            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: personnelUrl + "iscList",
     });
@@ -151,6 +177,12 @@
             {name: "companyName"},
             {name: "personnelNo"},
             {name: "personnelNo2"},
+            {name: "postTitle"},
+            {name: "ccpArea"},
+            {name: "ccpAssistant"},
+            {name: "ccpAffairs"},
+            {name: "ccpSection"},
+            {name: "ccpUnit"},
         ],
         gridComponents: [PersonnelsTS_student, "filterEditor", "header", "body"],
         dataChanged: function () {
@@ -250,6 +282,7 @@
         SelectedPersonnelsLG_student.setData([]);
         ClassStudentWin_student.show();
     }
+
     function class_add_students_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
@@ -282,19 +315,13 @@
     }
 
     function class_remove_student_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-                "<spring:message code="msg.command.done"/>");
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        } else {
-            var OK = createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>",
-                "<spring:message code="error"/>");
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
-        }
+        var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            "<spring:message code="msg.command.done"/>");
+        setTimeout(function () {
+            OK.close();
+        }, 3000);
+        StudentsLG_student.invalidateCache();
+        StudentsLG_student.fetchData({"classID": classId});
     }
 
     function loadPage_student() {

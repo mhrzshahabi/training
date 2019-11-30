@@ -28,6 +28,13 @@ public class PersonnelDTO implements Serializable {
         private String companyName;
         private String personnelNo;
         private String personnelNo2;
+        private String postTitle;
+        private String ccpArea;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+        private String ccpUnit;
+        private String ccpTitle;
     }
 
     @Getter
