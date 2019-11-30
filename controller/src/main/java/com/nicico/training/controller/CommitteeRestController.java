@@ -134,7 +134,7 @@ public class CommitteeRestController {
     }
 
 
- @Loggable
+    @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,

@@ -3,17 +3,20 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.CommitteeDTO;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.service.CompanyService;
 import com.nicico.training.service.PersonalInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -21,8 +24,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 
 @Slf4j
@@ -134,6 +142,34 @@ public class CompanyRestController {
     @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
     public ResponseEntity<PersonalInfoDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
         return new ResponseEntity<>(companyService.getOneByNationalCode(nationalCode), HttpStatus.OK);
+    }
+
+
+        @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+
+        final SearchDTO.CriteriaRq criteriaRq;
+        final SearchDTO.SearchRq searchRq;
+        if (criteriaStr.equalsIgnoreCase("{}")) {
+            searchRq = new SearchDTO.SearchRq();
+        } else {
+            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        }
+
+        final SearchDTO.SearchRs<CompanyDTO.Info> searchRs = companyService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/CompanyByCriteria.jasper", params, jsonDataSource, response);
     }
 
 
