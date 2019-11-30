@@ -58,6 +58,7 @@ public class TclassDTO {
     private Boolean first;
     private Boolean second;
     private Boolean third;
+    private Boolean fourth;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
 
@@ -67,9 +68,16 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
+//        private Date createdDate;
+//        private String createdBy;
+//        @Getter(AccessLevel.NONE)
+//        private Date lastModifiedDate;
+//        public String getLastModifiedDate(){
+//            if(lastModifiedDate == null){
+//                return createdDate.toString();
+//            }
+//            return lastModifiedDate.toString();
+//        }
         private String lastModifiedBy;
         private Long id;
         private CourseDTO.CourseInfoTuple course;

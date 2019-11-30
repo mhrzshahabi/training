@@ -162,14 +162,14 @@
             });
         }
     });
-    var skill_levelSaveOrExitHlayout = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
+    var skill_levelSaveOrExitHlayout = isc.TrHLayoutButtons.create({
+        // layoutMargin: 5,
+        // showEdges: false,
+        // edgeImage: "",
+        // width: "100%",
+        // alignLayout: "center",
+        // padding: 10,
+        // membersMargin: 10,
         members: [IButton_skill_level_Save, isc.TrCancelBtn.create({
             ID: "courseEditExitIButton",
             click: function () {

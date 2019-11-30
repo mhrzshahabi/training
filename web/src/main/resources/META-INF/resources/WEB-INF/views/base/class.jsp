@@ -239,9 +239,12 @@
                     "4": "سالن"
                 }
             },
-            // {name: "lastModifiedDate",hidden:true},
-            // {name: "createdBy",hidden:true},
-            // {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",
+                // type:"time"
+                // ,hidden:true
+            // },
+            {name: "createdBy",hidden:true},
+            {name: "createdDate",hidden:true},
         ]
     });
 
@@ -605,6 +608,7 @@
             {
                 name: "autoValid",
                 type: "checkbox",
+                defaultValue:true,
                 title: "<spring:message code='auto.session.made'/>",
                 endRow: true,
                 // titleOrientation:"top",
@@ -767,19 +771,20 @@
                 value: "ساعت جلسات:",
                 // rowSpan:3
             },
-            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true},
-            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true},
-            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true},
+            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",
                 value: "روزهای هفته:",
             },
-            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true},
-            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true, defaultValue:true},
+            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
         ],
