@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.*;
 import org.springframework.http.converter.ByteArrayHttpMessageConverter;
 import org.springframework.stereotype.Controller;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.client.RestTemplate;
 
@@ -20,6 +23,7 @@ public class CommitteeFormController {
     public String showForm() {
         return "base/committee";
     }
+
 
 
 //	@PostMapping("/printCommitteeWithMember/{type}")
@@ -50,25 +54,29 @@ public class CommitteeFormController {
 //            return null;
 //	}
 
-    @GetMapping("/printCommitteeWithMember/{type}")
+	 @RequestMapping("/printCommitteeWithMember/{type}")
     public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
+
         String token = (String) request.getSession().getAttribute("accessToken");
+     //   	String token=(String) request.getParameter("token");
         RestTemplate restTemplate = new RestTemplate();
         restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
         final HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", "Bearer " + token);
+
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/PDF", HttpMethod.GET, entity, byte[].class);
+      if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/PDF",HttpMethod.GET, entity, byte[].class);
         else if (type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/EXCEL", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/EXCEL",HttpMethod.GET, entity, byte[].class);
         else if (type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/HTML", HttpMethod.GET, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/HTML",HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
