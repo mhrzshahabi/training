@@ -119,7 +119,6 @@
 
         fields:
             [
-                {name: "id", primaryKey: true, hidden: true},
                 {
                     name: "skill.code",
                     title: "<spring:message code="code"/>",
@@ -155,10 +154,6 @@
                     sortNormalizer: function (record) {
                         return record.eneedAssessmentPriority.titleFa;
                     }
-                },
-                {
-                    name: "objectTypeFa",
-                    hidden: true,
                 }
             ],
         removeRecordClick: function (rowNum) {
