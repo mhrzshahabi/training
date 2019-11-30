@@ -26,6 +26,47 @@ public class StudentDTO {
     @ApiModelProperty(required = true)
     private String personnelNo;
     private String personnelNo2;
+    private String fatherName;
+    private String birthCertificateNo;
+    private String birthDate;
+    private Integer age;
+    private String birthPlace;
+    private String employmentDate;
+    private String postTitle;
+    private String postCode;
+    private String postAssignmentDate;
+    private String complexTitle;
+    private String operationalUnitTitle;
+    private String employmentTypeTitle;
+    private String maritalStatusTitle;
+    private String workPlaceTitle;
+    private String workTurnTitle;
+    private String educationLevelTitle;
+    private String jobNo;
+    private String jobTitle;
+    private Integer employmentStatusId;
+    private String employmentStatus;
+    private String contractNo;
+    private String educationMajorTitle;
+    private String gender;
+    private String militaryStatus;
+    private String educationLicenseType;
+    private String departmentTitle;
+    private String departmentCode;
+    private String contractDescription;
+    private String workYears;
+    private String workMonths;
+    private String workDays;
+    private String insuranceCode;
+    private String postGradeTitle;
+    private String postGradeCode;
+    private String ccpCode;
+    private String ccpArea;
+    private String ccpAssistant;
+    private String ccpAffairs;
+    private String ccpSection;
+    private String ccpUnit;
+    private String ccpTitle;
 
     @Getter
     @Setter
@@ -33,54 +74,6 @@ public class StudentDTO {
     @ApiModel("Student - Info")
     public static class Info extends StudentDTO {
         private Long id;
-    }
-
-    @Getter
-    @Setter
-    @Accessors
-    @ApiModel("Student - All Info")
-    public static class AllInfo extends Info {
-        private String fatherName;
-        private String birthCertificateNo;
-        private String birthDate;
-        private Integer age;
-        private String birthPlace;
-        private String employmentDate;
-        private String postTitle;
-        private String postCode;
-        private String postAssignmentDate;
-        private String complexTitle;
-        private String operationalUnitTitle;
-        private String employmentTypeTitle;
-        private String maritalStatusTitle;
-        private String workPlaceTitle;
-        private String workTurnTitle;
-        private String educationLevelTitle;
-        private String jobNo;
-        private String jobTitle;
-        private Integer employmentStatusId;
-        private String employmentStatus;
-        private String contractNo;
-        private String educationMajorTitle;
-        private String gender;
-        private String militaryStatus;
-        private String educationLicenseType;
-        private String departmentTitle;
-        private String departmentCode;
-        private String contractDescription;
-        private String workYears;
-        private String workMonths;
-        private String workDays;
-        private String insuranceCode;
-        private String postGradeTitle;
-        private String postGradeCode;
-        private String ccpCode;
-        private String ccpArea;
-        private String ccpAssistant;
-        private String ccpAffairs;
-        private String ccpSection;
-        private String ccpUnit;
-        private String ccpTitle;
     }
 
     @Getter
@@ -106,6 +99,16 @@ public class StudentDTO {
     @Accessors(chain = true)
     @ApiModel("Student - Delete")
     public static class Delete {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Student - Ids")
+    public static class Ids {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;

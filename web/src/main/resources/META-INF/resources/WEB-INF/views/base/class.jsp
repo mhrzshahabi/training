@@ -33,9 +33,9 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
-            {name: "lastModifiedDate",hidden:true},
-            {name: "createdBy",hidden:true},
-            {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",hidden:true},
+            // {name: "createdBy",hidden:true},
+            // {name: "createdDate",hidden:true,type:d},
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
@@ -192,7 +192,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         initialSort: [
             // {property: "createdBy", direction: "ascending"},
-            {property: "lastModifiedDate", direction: "ascending",primarySort:true}
+            {property: "code", direction: "descending",primarySort:true}
         ],
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
@@ -239,9 +239,9 @@
                     "4": "سالن"
                 }
             },
-            {name: "lastModifiedDate",hidden:true},
-            {name: "createdBy",hidden:true},
-            {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",hidden:true},
+            // {name: "createdBy",hidden:true},
+            // {name: "createdDate",hidden:true},
         ]
     });
 
@@ -899,15 +899,15 @@
         show: function () {
             this.Super("show", arguments);
             for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
-                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "10px";
+                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
             }
             ;
             for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
-                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "10px";
+                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
             }
             ;
             for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
-                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "10px";
+                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
             }
             ;
         },
@@ -1055,7 +1055,6 @@
                     membersMargin: 10,
                     align: "center"
                 });
-
                 var removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -1251,10 +1250,10 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
             {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
-            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
+            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            // {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())

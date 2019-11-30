@@ -59,6 +59,13 @@ public class StudentRestController {
         return new ResponseEntity<>(studentService.create(request), HttpStatus.CREATED);
     }
 
+//    @Loggable
+//    @PostMapping
+////    @PreAuthorize("hasAuthority('c_student')")
+//    public ResponseEntity<StudentDTO.Info> create(@Validated @RequestBody StudentDTO.Create request) {
+//        return new ResponseEntity<>(studentService.create(request), HttpStatus.CREATED);
+//    }
+
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_student')")
