@@ -478,6 +478,7 @@
         showFilterEditor: false,
         autoFetchData: true,
         editEvent: "click",
+        sortField:0,
         editByCell: true,
         modalEditing: true,
         height: 500,
