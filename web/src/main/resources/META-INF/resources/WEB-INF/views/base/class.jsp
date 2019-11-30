@@ -33,9 +33,9 @@
         fields: [
             {name: "id", primaryKey: true},
             {name: "group"},
-            {name: "lastModifiedDate",hidden:true},
-            {name: "createdBy",hidden:true},
-            {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",hidden:true},
+            // {name: "createdBy",hidden:true},
+            // {name: "createdDate",hidden:true,type:d},
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
@@ -192,7 +192,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         initialSort: [
             // {property: "createdBy", direction: "ascending"},
-            {property: "lastModifiedDate", direction: "ascending",primarySort:true}
+            {property: "code", direction: "descending",primarySort:true}
         ],
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
@@ -239,9 +239,9 @@
                     "4": "سالن"
                 }
             },
-            {name: "lastModifiedDate",hidden:true},
-            {name: "createdBy",hidden:true},
-            {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",hidden:true},
+            // {name: "createdBy",hidden:true},
+            // {name: "createdDate",hidden:true},
         ]
     });
 
