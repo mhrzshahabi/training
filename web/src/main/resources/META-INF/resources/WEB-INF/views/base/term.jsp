@@ -21,19 +21,21 @@
     Menu_ListGrid_term = isc.Menu.create({
         data: [
             {
-                 title: "<spring:message code="refresh"/>", icon: "<spring:url value="refresh.png"/>", click: function () {
+                title: "<spring:message code="refresh"/>",
+                icon: "<spring:url value="refresh.png"/>",
+                click: function () {
                     ListGrid_Term.invalidateCache();
                 }
             }, {
-                     <sec:authorize access="hasAuthority('PERMISSION')">
-                     </sec:authorize>
+                <sec:authorize access="hasAuthority('PERMISSION')">
+                </sec:authorize>
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
                     show_TermNewForm();
                     <sec:authorize access="hasAuthority('PERMISSION')">
                     </sec:authorize>
                 }
             }, {
-               title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code="edit"/>", icon: "<spring:url value="edit.png"/>", click: function () {
                     show_TermEditForm();
                 }
             }, {
@@ -45,11 +47,15 @@
                     print_TermListGrid("pdf");
                 }
             }, {
-                title: "<spring:message code="print.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>",
+                icon: "<spring:url value="excel.png"/>",
+                click: function () {
                     print_TermListGrid("excel")
                 }
             }, {
-                title: "<spring:message code="print.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
+                title: "<spring:message code="print.html"/>",
+                icon: "<spring:url value="html.png"/>",
+                click: function () {
                     print_TermListGrid("html");
                 }
             }]
@@ -83,11 +89,21 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code",title:"<spring:message code="code"/>", align: "center", filterOperator: "contains"},
-            {name: "titleFa",title:"<spring:message code="title"/>", align: "center", filterOperator: "contains"},
-            {name: "startDate",title:"<spring:message code="start.date"/>", align: "center", filterOperator: "contains"},
-            {name: "endDate",title:"<spring:message code="end.date"/>", align: "center", filterOperator: "contains"},
-            {name: "description",title:"<spring:message code="description"/>", align: "center", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "contains"},
+            {
+                name: "startDate",
+                title: "<spring:message code="start.date"/>",
+                align: "center",
+                filterOperator: "contains"
+            },
+            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "contains"},
+            {
+                name: "description",
+                title: "<spring:message code="description"/>",
+                align: "center",
+                filterOperator: "contains"
+            },
         ],
         doubleClick: function () {
             DynamicForm_Term.clearValues();
@@ -107,21 +123,21 @@
         fields: [{name: "id", hidden: true},
             {
                 name: "code",
-                title:"<spring:message code="code"/>",
+                title: "<spring:message code="code"/>",
                 disabled: true,
                 canEdit: false,
-                hint:"<spring:message code="msg.generated.automatically.code"/>", showHintInField: true,
+                hint: "<spring:message code="msg.generated.automatically.code"/>", showHintInField: true,
                 width: "*",
                 height: 35
             }
             , {
                 name: "titleFa",
-                title:"<spring:message code="title"/>",
+                title: "<spring:message code="title"/>",
                 required: true,
                 type: 'text',
                 readonly: true,
                 height: 35,
-            //    requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
+// requiredMessage: "در نام فارسی می توانید از عدد و حروف انگلیسی هم استفاده کنید",
 // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]", length: "250",
                 width: "*",// hint: "Persian/فارسی", showHintInField: true,
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
@@ -130,7 +146,7 @@
             {
                 name: "startDate",
                 height: 35,
-               title:"<spring:message code="start.date"/>",
+                title: "<spring:message code="start.date"/>",
                 ID: "startDate_jspTerm",
                 type: 'text',
                 required: true,
@@ -142,7 +158,7 @@
                 },
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
-                        click: function () {
+                    click: function () {
                         closeCalendarWindow();
                         displayDatePicker('startDate_jspTerm', this, 'ymd', '/');
                     }
@@ -155,7 +171,7 @@
                             getTermCodeRequest(startdate.substr(0, 4));
                     } else
 
-                        simpleDialog("<spring:message code="message"/>","<spring:message code="msg.Start.date.not.entered"/>", 3000, "say");
+                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.start.date.not.entered"/>", 3000, "say");
                 },
                 blur: function () {
                     var dateCheck = false;
@@ -169,7 +185,7 @@
                     var endDate = DynamicForm_Term.getValue("endDate");
                     var startDate = DynamicForm_Term.getValue("startDate");
                     if (endDate != undefined && startDate > endDate) {
-                        // DynamicForm_Term.clearFieldErrors("endDate", true);
+// DynamicForm_Term.clearFieldErrors("endDate", true);
                         DynamicForm_Term.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
                         DynamicForm_Term.getItem("endDate").setValue();
                         endDateCheckTerm = false;
@@ -179,7 +195,7 @@
             {
                 name: "endDate",
                 height: 35,
-               title:"<spring:message code="end.date"/>",
+                title: "<spring:message code="end.date"/>",
                 ID: "endDate_jspTerm",
                 type: 'text',
                 enabled: false,
@@ -226,7 +242,7 @@
             },
             {
                 name: "description",
-                title:"<spring:message code="description"/>",
+                title: "<spring:message code="description"/>",
                 type: "textArea",
                 colSpan: 3,
                 height: "50",
@@ -242,13 +258,9 @@
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
             members: [isc.TrSaveBtn.create({
                 click: function () {
-
-
                     if (term_method == "PUT") {
                         edit_Term();
                     } else {
-
-
                         save_Term();
                     }
                 }
@@ -280,7 +292,7 @@
         }
     });
     var ToolStripButton_Add = isc.ToolStripButton.create({
-         icon: "[SKIN]/actions/add.png",
+        icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
             term_method = "POST";
@@ -289,7 +301,7 @@
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButton.create({
-         icon: "[SKIN]/actions/remove.png",
+        icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
         click: function () {
             show_TermRemoveForm()
@@ -297,7 +309,7 @@
     });
 
     var ToolStripButton_Print = isc.ToolStripButton.create({
-       icon: "[SKIN]/RichTextEditor/print.png",
+        icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
             <%--"<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"--%>
@@ -450,7 +462,8 @@
                     DynamicForm_Term.setValue("code", termYear + "-" + (parseInt(termCode) + 1));
 
                 } else {
-                 simpleDialog( "<spring:message code="warning"/>","<spring:message code="msg.error.connecting.to.server"/>", 3000, "error");
+                    simpleDialog("<spring:message code="warning"/>", "<spring:message
+        code="msg.error.connecting.to.server"/>", 3000, "error");
                 }
 
             },
@@ -467,7 +480,7 @@
         var termCode1 = DynamicForm_Term.getValue("code");
 
         if (startDate1.substr(0, 4) != termCode1.substr(0, 4)) {
-            simpleDialog("<spring:message code="warning"/>", "کد با تاریخ شروع همخوانی ندارد.", 3000, "say");
+            simpleDialog("<spring:message code="warning"/>", "<spring:message code="msg.cod.not.match"/>", 3000, "say");
             return;
         }
         if (!DynamicForm_Term.validate()) {
@@ -483,9 +496,9 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data.length > 0) {
                 var OK = isc.Dialog.create({
-                    message: getFormulaMessage(resp.data, 3, "red", "I") + " با ترم وارد شده تداخل دارد",
-                    icon: "[SKIN]say.png",
-                    title: "انجام فرمان"
+                    message: getFormulaMessage(resp.data, 2, "red", "I") + "<spring:message code="msg.conflict.term"/>",
+                     icon: "[SKIN]say.png",
+                    title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -506,11 +519,11 @@
     function show_TermRemoveForm() {
         var record = ListGrid_Term.getSelectedRecord();
         if (record == null || record.id == null) {
-        createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-              var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code="verify.delete"/>");
-                Dialog_Class_remove.addProperties({
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
@@ -527,10 +540,10 @@
         if (respCode == 200 || respCode == 201) {
             ListGrid_Term.invalidateCache();
             var OK = isc.Dialog.create({
-                    message: "<spring:message code="global.form.request.successful"/>",
-                    icon: "[SKIN]say.png",
-                    title: "<spring:message code="global.form.command.done"/>"
-                });
+                message: "<spring:message code="global.form.request.successful"/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="global.form.command.done"/>"
+            });
 
             setTimeout(function () {
                 OK.close();
@@ -540,7 +553,7 @@
             Window_term.close();
 
         } else {
-       var OK = isc.Dialog.create({
+            var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="warning"/>"
@@ -563,13 +576,13 @@
             fields:
                 [
                     {name: "CriteriaStr", type: "hidden"},
-                    {name:"token",type:"hidden"}
+                    {name: "token", type: "hidden"}
                 ]
 
         })
-         criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
-         criteriaForm.setValue("token","<%= accessToken %>")
-         criteriaForm.show();
-         criteriaForm.submitForm();
+        criteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));
+        criteriaForm.setValue("token", "<%= accessToken %>")
+        criteriaForm.show();
+        criteriaForm.submitForm();
     };
 
