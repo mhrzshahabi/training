@@ -12,6 +12,9 @@ import java.util.List;
 
 public interface ITclassService {
 
+    @Transactional
+    void addStudents(Long classId, List<String> personsIds);
+
     TclassDTO.Info get(Long id);
 
     List<TclassDTO.Info> list();

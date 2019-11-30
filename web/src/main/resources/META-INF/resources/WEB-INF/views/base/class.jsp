@@ -1055,7 +1055,6 @@
                     membersMargin: 10,
                     align: "center"
                 });
-
                 var removeIcon = isc.ImgButton.create({
                     showDown: false,
                     showRollOver: false,
@@ -1251,10 +1250,10 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
             {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
-            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
+            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
+            // {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
