@@ -10,7 +10,7 @@
     %>
 
     var equipmentMethod = "get";
-    var equipmentHomeUrl = rootUrl + "/equipment";
+    var equipmentHomeUrl = rootUrl + "equipment";
     var equipmentActionUrl = equipmentHomeUrl;
     var Menu_ListGrid_Equipment = isc.Menu.create({
         width: 150,
@@ -138,8 +138,8 @@
         ]
     });
 
-    var IButton_Equipment_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
+    var IButton_Equipment_Save = isc.TrSaveBtn.create({
+        click: function () {
 
             DynamicForm_Equipment.validate();
             if (DynamicForm_Equipment.hasErrors()) {
@@ -189,13 +189,8 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Equipment_Save, isc.IButton.create({
+        members: [IButton_Equipment_Save, isc.TrCancelBtn.create({
             ID: "courseEditExitIButton",
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
             click: function () {
                 Window_Equipment.close();
             }

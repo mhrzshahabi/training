@@ -1,11 +1,9 @@
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-<%--<script>--%>
+
+
+// <script>
     var CheckList_method = "POST";
     var CheckListItem_method = "POST";
 
@@ -89,7 +87,7 @@
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
                     ListGrid_CheckListItem.invalidateCache();
-                    ListGrid_CheckListItem_DetailViewer.setData([]);
+                    // ListGrid_CheckListItem_DetailViewer.setData([]);
                 }
             }, {
                 title: "<spring:message code="create"/>", icon: "<spring:url value="create.png"/>", click: function () {
@@ -115,7 +113,15 @@
         icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
-            ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
+            let gridState = null;
+            if (ListGrid_CheckList.getSelectedRecord() !== null) {
+                gridState = "[{id:" + ListGrid_CheckList.getSelectedRecord().id + "}]";
+                ListGrid_CheckList.invalidateCache();
+                setTimeout(function () {
+                    ListGrid_CheckList.setSelectedState(gridState);
+                }, 1000)
+            } else
+                ListGrid_CheckList.invalidateCache(ListGrid_CheckListItem.setData([]));
             totalRecords_Item.setContents("<spring:message code="number.of.Items"/>" + ":&nbsp;<b>" + "" + "</b>");
         }
     });
@@ -146,7 +152,7 @@
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_CheckListItem.invalidateCache();
-            ListGrid_CheckListItem_DetailViewer.setData([]);
+            // ListGrid_CheckListItem_DetailViewer.setData([]);
         }
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButton.create({
@@ -221,9 +227,9 @@
         contextMenu: Menu_ListGrid_CheckListItem,
         dataSource: RestDataSource_CheckListItem,
         fields: [
-            {name: "titleFa",  title: "<spring:message code="item"/>", width: "80%"},
+            {name: "titleFa", title: "<spring:message code="item"/>", width: "80%"},
             {name: "group", title: "<spring:message code="group"/>", width: "20%"},
-       ],
+        ],
         getCellCSSText: function (record, rowNum, colNum) {
             if (record.isDeleted) {
                 return "color:red;font-size: 12px;";
@@ -231,7 +237,7 @@
         },
 
         recordClick: function (ListGrid, ListGridRecord, number, ListGridField, number, any, any) {
-            return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
+            // return ListGrid_CheckListItem_DetailViewer.setData(ListGridRecord);
         },
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -244,6 +250,9 @@
                 totalRecords_Item.setContents("&nbsp;");
             }
         },
+        recordDoubleClick: function () {
+            show_CheckListItemEditForm();
+        }
     });
 
     var ListGrid_CheckList = isc.TrLG.create({
@@ -253,43 +262,47 @@
         allowFilterExpressions: true,
         filterOnKeypress: false,
         showFilterEditor: true,
+        autoFetchData: true,
         dataSource: RestDataSource_CheckList,
         contextMenu: Menu_ListGrid_CheckList,
         fields: [
 
-            {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
+            {name: "titleFa", title: "<spring:message code="checkList"/>", align: "center"},
         ],
-        click: function () {
+        recordDoubleClick: function () {
+            show_CheckListEditForm();
+        },
+        recordClick: function () {
+
+        },
+        selectionUpdated: function () {
+            // ListGrid_CheckListItem_DetailViewer.setData([])
             var record = ListGrid_CheckList.getSelectedRecord();
             RestDataSource_CheckListItem.fetchDataURL = checklistUrl + record.id + "/getCheckListItem";
             ListGrid_CheckListItem.fetchData();
             ListGrid_CheckListItem.invalidateCache();
         },
-        selectionUpdated: function () {
-            ListGrid_CheckListItem_DetailViewer.setData([])
-        },
-        autoFetchData: true,
 
     });
 
 
-    var ListGrid_CheckListItem_DetailViewer = isc.DetailViewer.create({
-        autoFetchData: true,
-        ID: "ListGrid_CheckListItem_DetailViewer",
-        width: "100%",
-        fields: [
-            {name: "titleFa", title: "<spring:message code="title"/>"},
-            {
-                name: "group", title: "<spring:message code="group"/>",
-                formatCellValue: function (value, record, rowNum, colNum, grid) {
-                    if (typeof value === "undefined")
-                        return "ندارد"; else return value;
-                },
-                length: "250"
-            },
-        ],
-        emptyMessage: " "
-    })
+    <%--var ListGrid_CheckListItem_DetailViewer = isc.DetailViewer.create({--%>
+    <%--    autoFetchData: true,--%>
+    <%--    ID: "ListGrid_CheckListItem_DetailViewer",--%>
+    <%--    width: "100%",--%>
+    <%--    fields: [--%>
+    <%--        {name: "titleFa", title: "<spring:message code="title"/>"},--%>
+    <%--        {--%>
+    <%--            name: "group", title: "<spring:message code="group"/>",--%>
+    <%--            formatCellValue: function (value, record, rowNum, colNum, grid) {--%>
+    <%--                if (typeof value === "undefined")--%>
+    <%--                    return "ندارد"; else return value;--%>
+    <%--            },--%>
+    <%--            length: "250"--%>
+    <%--        },--%>
+    <%--    ],--%>
+    <%--    emptyMessage: " "--%>
+    <%--})--%>
 
 
     //============================================================================
@@ -367,7 +380,7 @@
         width: "100%",
         height: "100%",
 
-        members: [HLayout_Action_CheckListItem, ListGrid_CheckListItem, ListGrid_CheckListItem_DetailViewer],
+        members: [HLayout_Action_CheckListItem, ListGrid_CheckListItem]//, ListGrid_CheckListItem_DetailViewer],
     });
 
 
@@ -459,7 +472,7 @@
     });
 
     //================================= تکمیل چک لیست===============================================تکمیل چک لیست=========================================تکمیل چک لیست======================================تکمیل چک لیست=====================
-    var ListGrid_Class_Item = isc.ListGrid.create({
+    var ListGrid_Class_Item = isc.TrLG.create({
         showRowNumbers: false,
         alternateRecordStyles: true,
         showFilterEditor: false,
@@ -492,7 +505,7 @@
             },
             {
                 name: "enableStatus",
-                title: "<spring:message code="active/deactivate"/>",
+                title: "<spring:message code="status"/>",
                 canEdit: true,
                 type: "boolean",
                 align: "center"
@@ -539,10 +552,12 @@
 
     var ListGrid_ClassCheckList = isc.TrLG.create({
         selectionType: "none",
-        showFilterEditor: false,
+        showFilterEditor: true,
         dataSource: RestDataSource_ClassCheckList,
         styleName: "myparent",
-// showRowNumbers:false,
+        filterOperator: "iContains",
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa", title: "<spring:message code="form"/>", align: "center"},
@@ -658,16 +673,16 @@
     function is_Delete() {
         var record = ListGrid_CheckListItem.getSelectedRecord();
         if (record == null || record.id == null) {
-        createDialog("info", "<spring:message code='msg.not.selected.record'/>");
-        }else {
-               var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.deactivate.ask"/>",
-               "<spring:message code="verify.deactivate"/>");
-                       Dialog_Class_remove.addProperties({
-                   buttonClick: function (button, index) {
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        } else {
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.deactivate.ask"/>",
+                "<spring:message code="verify.deactivate"/>");
+            Dialog_Class_remove.addProperties({
+                buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                          var CheckListItem_Save_Url = checklistItemUrl;
-                          isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
+                        var CheckListItem_Save_Url = checklistItemUrl;
+                        isc.RPCManager.sendRequest(TrDSRequest(CheckListItem_Save_Url + "is_Delete/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -803,16 +818,16 @@
     function show_CheckListDeleteForm() {
         var record = ListGrid_CheckList.getSelectedRecord();
         if (record == null || record.id == null) {
-              createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-         var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
-               "<spring:message code="verify.delete"/>");
-                       Dialog_Class_remove.addProperties({
+            var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                          var CheckList_Save_Url = checklistUrl;
-                          isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
+                        var CheckList_Save_Url = checklistUrl;
+                        isc.RPCManager.sendRequest(TrDSRequest(CheckList_Save_Url + "delete/" + record.id, "DELETE", null, "callback:show_CheckListActionResult_Delete(rpcResponse)"));
                     }
                 }
             });
@@ -881,8 +896,8 @@
                 }, 2000);
             } else {
                 var OK = isc.Dialog.create({
-                   message: "<spring:message code="msg.Item.cannot.delete"/>",
-                   icon: "[SKIN]say.png",
+                    message: "<spring:message code="msg.Item.cannot.delete"/>",
+                    icon: "[SKIN]say.png",
                     title: "<spring:message code="warning"/>"
                 });
                 setTimeout(function () {
@@ -905,7 +920,7 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             ListGrid_CheckListItem.fetchData();
             ListGrid_CheckListItem.invalidateCache();
-             ListGrid_Class_Item.invalidateCache();
+            ListGrid_Class_Item.invalidateCache();
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.successful"/>",
                 icon: "[SKIN]say.png",
@@ -993,6 +1008,7 @@
 
     function show_CheckListItemActionResult(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            let gridState = "[{id:" + JSON.parse(resp.httpResponseText).id + "}]";
             ListGrid_CheckListItem.invalidateCache();
             ListGrid_Class_Item.invalidateCache();
 
@@ -1002,6 +1018,7 @@
                 title: "<spring:message code="global.form.command.done"/>"
             });
             setTimeout(function () {
+                ListGrid_CheckListItem.setSelectedState(gridState);
                 OK.close();
             }, 3000);
             Window_CheckListItem_Add.close();
@@ -1011,9 +1028,9 @@
                 icon: "[SKIN]say.png",
                 title: "<spring:message code="global.form.command.done"/>"
             });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
+            // setTimeout(function () {
+            //     OK.close();
+            // }, 3000);
         }
 
     };
@@ -1042,12 +1059,11 @@
     //     }
     // };
 
-       function fireCheckList() {
-
-        if (ListGrid_Class_JspClass.getSelectedRecord() !== null) {
-           var record =ListGrid_Class_JspClass.getSelectedRecord();
-            RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + record.id;
-            ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + 'فرم های دوره' + "&nbsp;<b>" + record.course.titleFa + "&nbsp;<b>" + 'با کد کلاس' + "&nbsp;<b>" + record.code});
+    function loadPage_checkList() {
+        classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        if (!(classRecord == undefined || classRecord == null)) {
+            RestDataSource_ClassCheckList.fetchDataURL = checklistUrl + "getchecklist" + "/" + classRecord.id;
+            <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
             ListGrid_ClassCheckList.fetchData();
             ListGrid_ClassCheckList.invalidateCache();
         } else {
@@ -1055,7 +1071,3 @@
             ListGrid_ClassCheckList.setData([]);
         }
     }
-
-    fireCheckList();
-
-

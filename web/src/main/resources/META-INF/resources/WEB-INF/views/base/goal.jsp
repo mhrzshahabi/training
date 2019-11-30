@@ -156,7 +156,7 @@
                     } else {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + value;
                     }
-                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                    // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
                 },
             },
@@ -176,7 +176,7 @@
                     } else {
                         sumSyllabus = (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + (ListGrid_Syllabus_Goal.getSelectedRecord().theoreticalDuration) + value;
                     }
-                    Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
+                    // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + sumSyllabus + " ساعت می باشد.");
                     // Window_Syllabus.setStatus('<p   style="background-color:Tomato;margin: 0;padding: 0 10px;">Tomato</p  >');
                 },
             }],
@@ -188,8 +188,9 @@
     });
 
     var IButton_Goal_Save = isc.TrSaveBtn.create({
-        top: 260, title: "ذخیره",
-        icon: "[SKIN]/actions/save.png",
+        top: 260,
+        // title: "ذخیره",
+        // icon: "[SKIN]/actions/save.png",
         click: function () {
             DynamicForm_Goal.validate();
             if (DynamicForm_Goal.hasErrors()) {
@@ -447,19 +448,20 @@
             }]
     });
 
-    var ListGrid_Goal = isc.ListGrid.create({
+    var ListGrid_Goal = isc.TrLG.create({
         width: "*",
         height: "100%",
         // border: "2px solid gray",
         dataSource: RestDataSource_CourseGoal,
         // dataSource: goalCourseDS,
         contextMenu: Menu_ListGrid_Goal,
+        // autoFitWidthApproach:"both",
         doubleClick: function () {
             ListGrid_Goal_Edit();
         },
         fields: [
             {name: "id", title: "شماره", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی هدف", align: "center"},
+            {name: "titleFa", title: "نام فارسی هدف", align: "center",autoFitWidth: true},
             {name: "titleEn", title: "نام لاتین هدف ", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -475,25 +477,15 @@
         showFilterEditor: true,
         allowAdvancedCriteria: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
     });
-    var ListGrid_Syllabus_Goal = isc.ListGrid.create({
+    var ListGrid_Syllabus_Goal = isc.TrLG.create({
         width: "*",
         height: "100%",
-        // border: "2px solid gray",
+        // canHover:true,
+        // autoFitWidthApproach:"both",
         dataSource: RestDataSource_Syllabus,
-        // groupByField:"goal.titleFa", groupStartOpen:"all",
         showGridSummary: true,
-        // showGroupSummary:true,
         contextMenu: Menu_ListGrid_Syllabus_Goal,
-
         doubleClick: function () {
             ListGrid_Syllabus_Goal_Edit();
         },
@@ -507,8 +499,11 @@
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "کد سرفصل", align: "center", hidden: true},
-            {name: "titleFa", title: "نام فارسی سرفصل", align: "center"},
-            {name: "titleEn", title: "نام لاتین سرفصل", align: "center"},
+            {name: "titleFa", title: "نام فارسی سرفصل", align: "center",
+                autoFitWidth: true,
+            },
+            {name: "titleEn", title: "نام لاتین سرفصل", align: "center",
+            },
             {name: "edomainType.titleFa", title: "حیطه", align: "center"},
             {
                 name: "practicalDuration",
@@ -525,22 +520,18 @@
                 format : "#.## ساعت"
             },
             {name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "goal.titleFa", hidden: true}
+            {name: "goal.titleFa", hidden: true,
+                autoFitWidth: true,
+            }
         ],
         sortField: "goalId",
         sortDirection: "descending",
-        dataPageSize: 50,
+        // dataPageSize: 50,
         autoFetchData: false,
         showFilterEditor: true,
+        allowFilterExpressions: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        allowAdvancedCriteria: true,
     });
     var ListGrid_GoalAll = isc.ListGrid.create({
         width: "100%",
@@ -881,7 +872,7 @@
         var record = ListGrid_Goal.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.no.records.selected'/> !",
+                message: "هدفی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
@@ -889,7 +880,8 @@
                     this.close();
                 }
             });
-        } else {
+        }
+        else {
             var names = "";
             isc.RPCManager.sendRequest({
                 actionURL: goalUrl + "course/" + record.id,
@@ -914,7 +906,7 @@
                         var Dialog_Delete = isc.Dialog.create({
                             message: "با حذف هدف " + getFormulaMessage(record.titleFa, 2, "red", "b"),
                             icon: "[SKIN]ask.png",
-                            title: "اخطار",
+                            title: "<spring:message code="verify.delete"/>",
                             buttons: [isc.Button.create({title: "موافقم"}), isc.Button.create({
                                 title: "مخالفم"
                             })],
@@ -957,10 +949,9 @@
 
     function ListGrid_Goal_Edit() {
         var record = ListGrid_Goal.getSelectedRecord();
-        // selectedRecord = ListGrid_Goal.getRowNum(record);
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است.",
+                message: "هدفی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
                 buttons: [isc.Button.create({title: "تائید"})],
@@ -973,7 +964,7 @@
             urlGoal = goalUrl + record.id;
             DynamicForm_Goal.clearValues();
             DynamicForm_Goal.editRecord(record);
-            Window_Goal.setTitle("ویرایش هدف");
+            Window_Goal.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="goal"/>");
             Window_Goal.show();
         }
     };
@@ -1008,7 +999,7 @@
             methodGoal = "POST";
             urlGoal = goalUrl + "create/" + ListGrid_Course.getSelectedRecord().id;
             DynamicForm_Goal.clearValues();
-            Window_Goal.setTitle("ایجاد هدف");
+            Window_Goal.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="goal"/>");
             Window_Goal.show();
         }
     };
@@ -1017,7 +1008,7 @@
         var record = ListGrid_Syllabus_Goal.getSelectedRecord();
         if (record == null) {
             isc.Dialog.create({
-                message: "<spring:message code='msg.no.records.selected'/> !",
+                message: "سرفصلی انتخاب نشده است.",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code='message'/>",
                 buttons: [isc.Button.create({title: "<spring:message code='ok'/>"})],
@@ -1025,11 +1016,12 @@
                     this.close();
                 }
             });
-        } else {
+        }
+        else {
             var Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.ask'/>",
                 icon: "[SKIN]ask.png",
-                title: "هشدار",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
                     title: "<spring:message
         code='global.no'/>"
@@ -1091,8 +1083,8 @@
             urlSyllabus = syllabusUrl;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.getItem("goalId").setValue(gRecord.id);
-            Window_Syllabus.setTitle("ایجاد سرفصل");
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
+            Window_Syllabus.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="syllabus"/>");
+            // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration + 2) + " ساعت می باشد.");
             Window_Syllabus.show();
         }
     };
@@ -1114,19 +1106,19 @@
             urlSyllabus = syllabusUrl + sRecord.id;
             DynamicForm_Syllabus.clearValues();
             DynamicForm_Syllabus.editRecord(sRecord);
-            Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
-            Window_Syllabus.setTitle("ویرایش سرفصل");
+            // Window_Syllabus.setStatus("طول دوره " + (ListGrid_Course.getSelectedRecord().theoryDuration) + " ساعت" + " و جمع مدت زمان سرفصل ها " + (ListGrid_Syllabus_Goal.getGridSummaryData().get(0).practicalDuration) + " ساعت می باشد.");
+            Window_Syllabus.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="syllabus"/>");
             Window_Syllabus.show();
         }
     };
 
     function ListGrid_Syllabus_Goal_refresh() {
-        var record = ListGrid_Syllabus_Goal.getSelectedRecord();
-        if (record == null || record.id == null) {
-        } else {
-            ListGrid_Syllabus_Goal.selectRecord(record);
-        }
-        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id
+        // var record = ListGrid_Syllabus_Goal.getSelectedRecord();
+        // if (record == null || record.id == null) {
+        // } else {
+        //     ListGrid_Syllabus_Goal.selectRecord(record);
+        // }
+        RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + ListGrid_Course.getSelectedRecord().id;
         ListGrid_Syllabus_Goal.invalidateCache();
         ListGrid_Syllabus_Goal.fetchData();
         evalDomain();

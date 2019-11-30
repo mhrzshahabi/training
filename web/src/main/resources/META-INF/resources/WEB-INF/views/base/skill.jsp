@@ -11,11 +11,11 @@
 
     var skill_Level_Symbol = "";
     var skill_Method = "GET";
-    var skill_SkillHomeUrl = rootUrl + "/skill";
-    var skill_CategoryHomeUrl = rootUrl + "/category";
-    var skill_ActionUrl = rootUrl + "/skill";
-    var skill_CategoryUrl = rootUrl + "/category/spec-list";
-    var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
+    var skill_SkillHomeUrl = rootUrl + "skill";
+    var skill_CategoryHomeUrl = rootUrl + "category";
+    var skill_ActionUrl = rootUrl + "skill";
+    var skill_CategoryUrl = rootUrl + "category/spec-list";
+    var skill_SkillLevelUrl = rootUrl + "skill-level/spec-list";
     var skill_selectedSkillId = -1;
 
     // Start Block Of Combo And List Data Sources ----------------------------------------------------------
@@ -347,8 +347,7 @@
         ]
     });
 
-    var IButton_Skill_Skill_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png",
+    var IButton_Skill_Skill_Save = isc.TrSaveBtn.create({
         click: function () {
             if (skill_Method == "POST") {
                 var sub_cat_code;
@@ -410,12 +409,7 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Skill_Skill_Save, isc.IButton.create({
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
+        members: [IButton_Skill_Skill_Save, isc.TrCancelBtn.create({
             click: function () {
                 Window_Skill_Skill.close();
             }
@@ -443,7 +437,7 @@
 
     //معرفی DataSourse ها و ایجاد امکان نمایش
 
-    var ListGrid_Skill_Attached_SkillGroups = isc.ListGrid.create({
+    var ListGrid_Skill_Attached_SkillGroups = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Skill_Attached_SkillGroups,
@@ -473,7 +467,7 @@
         freezeFieldText: "ثابت نگه داشتن"
     });
 
-    var ListGrid_Skill_Attached_Courses = isc.ListGrid.create({
+    var ListGrid_Skill_Attached_Courses = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Skill_Attached_Courses,
@@ -746,7 +740,7 @@
         }]
     });
 
-    var ListGrid_Skill_Skill = isc.ListGrid.create({
+    var ListGrid_Skill_Skill = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Skill_Skill,
@@ -1057,7 +1051,7 @@
         ]
     });
 
-    var ListGrid_Skill_UnAttached_SkillGroup = isc.ListGrid.create({
+    var ListGrid_Skill_UnAttached_SkillGroup = isc.TrLG.create({
         width: "100%",
         height: "100%",
         canReorderRecords: true,
@@ -1108,7 +1102,7 @@
         dataPageSize: 50,
     });
 
-    var ListGrid_Skill_Selected_SkillGroup = isc.ListGrid.create({
+    var ListGrid_Skill_Selected_SkillGroup = isc.TrLG.create({
         width: "100%",
         height: "100%",
         selectionType: "multiple",
@@ -1499,7 +1493,7 @@
         ]
     });
 
-    var ListGrid_Skill_UnAttached_Course = isc.ListGrid.create({
+    var ListGrid_Skill_UnAttached_Course = isc.TrLG.create({
         width: "100%",
         height: "100%",
         canReorderRecords: true,
@@ -1550,7 +1544,7 @@
         dataPageSize: 50,
     });
 
-    var ListGrid_Skill_Selected_Course = isc.ListGrid.create({
+    var ListGrid_Skill_Selected_Course = isc.TrLG.create({
         width: "100%",
         height: "100%",
         selectionType: "multiple",

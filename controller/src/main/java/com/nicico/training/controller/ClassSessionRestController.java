@@ -34,6 +34,8 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/sessionService")
 public class ClassSessionRestController {
+
+
     private final ClassSessionService classSessionService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
@@ -144,10 +146,11 @@ public class ClassSessionRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}"})
+    @PostMapping(value = {"/printWithCriteria/{type}/{classId}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                  @PathVariable String classId) throws Exception {
 
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
@@ -158,16 +161,19 @@ public class ClassSessionRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
+        List<ClassSessionDTO.Info> infos = classSessionService.loadSessions(Long.parseLong(classId));
+
+
+//////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(infos) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/operationalUnit_Report.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/SessionsList.jasper", params, jsonDataSource, response);
     }
 
     //*********************************

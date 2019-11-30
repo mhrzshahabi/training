@@ -54,22 +54,22 @@ public class CommitteeFormController {
 //            return null;
 //	}
 
-  @RequestMapping("/printCommitteeWithMember/{type}")
+	 @RequestMapping("/printCommitteeWithMember/{type}")
     public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
-    String token=(String) request.getParameter("token");
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-	   final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        String token = (String) request.getSession().getAttribute("accessToken");
+     //   	String token=(String) request.getParameter("token");
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
       if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/committee/printCommitteeWithMember/PDF",HttpMethod.GET, entity, byte[].class);

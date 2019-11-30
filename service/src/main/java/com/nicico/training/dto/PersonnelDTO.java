@@ -22,13 +22,8 @@ public class PersonnelDTO implements Serializable {
         private String firstName;
         private String lastName;
         private String nationalCode;
+        private String companyName;
         private String personnelNo;
         private String personnelNo2;
-        private String companyName;
-        private String employmentStatus;
-        private String complexTitle;
-        private String workPlaceTitle;
-        private String workTurnTitle;
     }
-
 }

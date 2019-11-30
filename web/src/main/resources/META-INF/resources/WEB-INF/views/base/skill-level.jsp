@@ -11,7 +11,7 @@
 
 
     var skillLevelMethod = "get";
-    var skillLevelHomeUrl= rootUrl + "/skill-level";
+    var skillLevelHomeUrl= rootUrl + "skill-level";
     var skillLevelActionUrl = skillLevelHomeUrl;
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
@@ -40,7 +40,7 @@
 
         fetchDataURL: skillLevelHomeUrl + "/spec-list"
     });
-    var ListGrid_skill_level = isc.ListGrid.create({
+    var ListGrid_skill_level = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_skill_level,
@@ -119,8 +119,8 @@
     });
 
 
-    var IButton_skill_level_Save = isc.IButton.create({
-        top: 260, title: "ذخیره", icon: "pieces/16/save.png", click: function () {
+    var IButton_skill_level_Save = isc.TrSaveBtn.create({
+        click: function () {
 
             DynamicForm_skill_level.validate();
             if (DynamicForm_skill_level.hasErrors()) {
@@ -170,13 +170,8 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_skill_level_Save, isc.IButton.create({
+        members: [IButton_skill_level_Save, isc.TrCancelBtn.create({
             ID: "courseEditExitIButton",
-            title: "لغو",
-            prompt: "",
-            width: 100,
-            icon: "<spring:url value="remove.png"/>",
-            orientation: "vertical",
             click: function () {
                 Window_skill_level.close();
             }

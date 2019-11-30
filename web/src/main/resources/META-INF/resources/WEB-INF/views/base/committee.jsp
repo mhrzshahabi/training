@@ -4,7 +4,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-
+//<script>
 
     var committee_method = "POST";
     var committeeId;
