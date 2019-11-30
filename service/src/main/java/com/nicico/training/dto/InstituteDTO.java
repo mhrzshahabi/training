@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.dto.enums.EInstituteTypeDTO;
 import com.nicico.training.dto.enums.ELicenseTypeDTO;
+import com.nicico.training.model.TrainingPlace;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -149,8 +150,8 @@ public class InstituteDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<InstituteDTO.Info> data;
+    public static class SpecRs <T> {
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -162,8 +163,15 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class InstituteTitle {
-
         private String titleFa;
+    }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class InstituteWithTrainingPlace {
+        private String titleFa;
+        private List<TrainingPlaceDTO.TrainingPlaceTitle> trainingPlaceSet;
     }
 }

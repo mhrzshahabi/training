@@ -117,11 +117,14 @@
     });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa", title: "نام مکان"},
-            {name: "capacity", title: "ظرفیت"}
+            // {name: "id", primaryKey: true},
+            {name: "titleFa", title: "نام موسسه"},
+            {name: "trainingPlaceSet.titleFa", title: "نام مکان"},
+            {name: "trainingPlaceSet.id", primaryKey:true}
+            // {name: "capacity", title: "ظرفیت"}
         ],
-        fetchDataURL: instituteUrl + "0/training-places"
+        // fetchDataURL: instituteUrl + "0/training-places"
+        fetchDataURL: instituteUrl + "training-places"
     });
 
 
@@ -477,9 +480,9 @@
                     {name: "manager.lastNameFa"}
                 ],
                 // startRow:true,
-                changed: function (form, item) {
-                    form.clearValue("trainingPlaceIds")
-                }
+                // changed: function (form, item) {
+                //     form.clearValue("trainingPlaceIds")
+                // }
             },
             {
                 name: "group",
@@ -507,41 +510,44 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "select", title: "<spring:message code="training.place"/>:",
+                name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
-                multiple: true,
+                // multiple: true,
                 colSpan: 2,
                 // width:"250",
-                align: "center",
+                // align: "center",
+                dataSetType: "tree",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
-                displayField: "titleFa",
-                valueField: "id",
+                // displayField: "titleFa",
+                valueField: "trainingPlaceSet.id",
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                filterFields: ["titleFa", "capacity"],
+                // filterFields: ["titleFa", "trainingPlaceSet.titleFa"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
-                textAlign: "center",
+                // textAlign: "center",
+                pickListProperties: { autoFitFieldWidths: true },
                 pickListFields: [
                     {name: "titleFa"},
-                    {name: "capacity"}
+                    {name: "trainingPlaceSet.titleFa"}
                 ],
-                click: function (form, item) {
-                    if (form.getValue("instituteId")) {
-                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
-                        item.fetchData();
-                    } else {
-                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
-                        item.fetchData();
-                        isc.MyOkDialog.create({
-                            message: "ابتدا برگزار کننده را انتخاب کنید",
-                        });
-                    }
-                    // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                    // return {category:category};
-                }
+                autoOpenTree: "all"
+                // click: function (form, item) {
+                //     if (form.getValue("instituteId")) {
+                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                //         item.fetchData();
+                //     } else {
+                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
+                //         item.fetchData();
+                //         isc.MyOkDialog.create({
+                //             message: "ابتدا برگزار کننده را انتخاب کنید",
+                //         });
+                //     }
+                //     // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                //     // return {category:category};
+                // }
             },
         ],
     });

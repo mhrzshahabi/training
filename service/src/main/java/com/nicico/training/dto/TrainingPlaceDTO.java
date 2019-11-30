@@ -125,7 +125,7 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TrainingPlaceTitle {
-
+        private Long id;
         private String titleFa;
 
     }
