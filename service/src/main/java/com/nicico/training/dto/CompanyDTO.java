@@ -22,9 +22,7 @@ public class CompanyDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String titleFa;
-    @ApiModelProperty(required = true)
     private String email;
-    @ApiModelProperty(required = true)
     private String workDomain;
 
     @Getter
@@ -36,10 +34,6 @@ public class CompanyDTO implements Serializable {
         private PersonalInfoDTO.PersonalInfoInfoTuple manager;
         private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
         private AddressDTO.AddressInfoTuple address;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;

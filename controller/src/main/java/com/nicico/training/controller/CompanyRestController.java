@@ -7,6 +7,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.service.CompanyService;
@@ -24,25 +25,24 @@ import java.io.IOException;
 import java.util.List;
 
 
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/company")
 public class CompanyRestController {
-  private final CompanyService companyService;
-   private final ObjectMapper objectMapper;
-   private final PersonalInfoService personalInfoService;
-   private final DateUtil dateUtil;
-   private final ReportUtil reportUtil;
-   
+    private final CompanyService companyService;
+    private final ObjectMapper objectMapper;
+    private final PersonalInfoService personalInfoService;
+    private final DateUtil dateUtil;
+    private final ReportUtil reportUtil;
+
     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<CompanyDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(companyService.get(id), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CompanyDTO.Info>> list() {
         return new ResponseEntity<>(companyService.list(), HttpStatus.OK);
@@ -50,10 +50,15 @@ public class CompanyRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<CompanyDTO.Info> create(@RequestBody CompanyDTO.Create req) {
+    public ResponseEntity create(@RequestBody CompanyDTO.Create req) {
 
-               CompanyDTO.Create create = (new ModelMapper()).map(req, CompanyDTO.Create.class);
-        return new ResponseEntity<>(companyService.create(create), HttpStatus.CREATED);
+        CompanyDTO.Create create = (new ModelMapper()).map(req, CompanyDTO.Create.class);
+
+        try {
+            return new ResponseEntity<>(companyService.create(create), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -70,7 +75,7 @@ public class CompanyRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CompanyDTO.Delete request) {
         companyService.delete(request);
@@ -78,14 +83,14 @@ public class CompanyRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<CompanyDTO.CompanySpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam("_endRow") Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -95,7 +100,7 @@ public class CompanyRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -130,7 +135,6 @@ public class CompanyRestController {
     public ResponseEntity<PersonalInfoDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
         return new ResponseEntity<>(companyService.getOneByNationalCode(nationalCode), HttpStatus.OK);
     }
-
 
 
 }
