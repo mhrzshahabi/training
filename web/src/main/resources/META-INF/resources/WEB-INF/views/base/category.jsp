@@ -24,6 +24,7 @@
         setMethod: method,
         align: "center",
         canSubmit: true,
+        padding: 10,
         showInlineErrors: true,
         numCols: "2",
         showErrorText: true,
@@ -156,14 +157,14 @@
         }
     });
 
-    var Hlayout_Category_SaveOrExit = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
+    var Hlayout_Category_SaveOrExit = isc.TrHLayoutButtons.create({
+        // layoutMargin: 5,
+        // showEdges: false,
+        // edgeImage: "",
+        // width: "100%",
+        // alignLayout: "center",
+        // padding: 10,
+        // membersMargin: 10,
         members: [IButton_Category_Save, isc.TrCancelBtn.create({
             ID: "IButton_Category_Exit",
             click: function () {
@@ -197,14 +198,14 @@
         width: "500",
         height: "170",
         setMethod: method,
-        align: "center",
-        canSubmit: true,
+        // canSubmit: true,
+        padding:20,
         showInlineErrors: true,
         numCols: "2",
         showErrorText: true,
         showErrorStyle: true,
         errorOrientation: "right",
-        colWidths: ["80", "*"],
+        // colWidths: ["80", "*"],
         titleAlign: "right",
         requiredMessage: "فیلد اجباری است.",
         <%--margin: "10",--%>
@@ -219,7 +220,7 @@
             },
             {
                 name: "categoryCode",
-                title: "کد گروه مرتبط",
+                title: "کد گروه مرتبط:",
                 required: true,
                 type: 'staticText',
                 readonly: true,
@@ -228,7 +229,7 @@
             },
             {
                 name: "codeNumber",
-                title: "کد",
+                title: "کد:",
                 type: 'text',
 
                 keyPressFilter: "[A-Z|1-9]",
@@ -247,7 +248,7 @@
             },
             {
                 name: "code",
-                title: "کد",
+                title: "کد:",
                 type: 'staticText',
                 readonly: true,
                 width: "150",
@@ -255,7 +256,7 @@
             },
             {
                 name: "titleFa",
-                title: "نام فارسی",
+                title: "نام فارسی:",
                 required: true,
                 type: 'text',
                 height: 30,
@@ -274,7 +275,7 @@
             },
             {
                 name: "titleEn",
-                title: "نام لاتین ",
+                title: "نام لاتین:",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
                 length: "200",
@@ -359,14 +360,14 @@
 
     });
 
-    var Hlayout_Sub_Category_SaveOrExit = isc.HLayout.create({
-        layoutMargin: 5,
-        showEdges: false,
-        edgeImage: "",
-        width: "100%",
-        alignLayout: "center",
-        padding: 10,
-        membersMargin: 10,
+    var Hlayout_Sub_Category_SaveOrExit = isc.TrHLayoutButtons.create({
+        // layoutMargin: 5,
+        // showEdges: false,
+        // edgeImage: "",
+        // width: "100%",
+        // alignLayout: "center",
+        // padding: 10,
+        // membersMargin: 10,
         members: [IButton_Sub_Category_Save, isc.TrCancelBtn.create({
             ID: "IButton_Sub_Category_Exit",
             click: function () {
@@ -377,7 +378,7 @@
 
     var Window_Sub_Category = isc.Window.create({
         title: "دسته بندی گرایش های مربوط به گروه",
-        width: "600",
+        width: "500",
         autoSize: true,
         autoCenter: true,
         isModal: true,
