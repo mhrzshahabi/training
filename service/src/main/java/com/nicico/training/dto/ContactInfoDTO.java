@@ -31,8 +31,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfo")
     public static class Info extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.AddressInfoTuple homeAddress;
-        private AddressDTO.AddressInfoTuple workAddress;
+        private AddressDTO.Info homeAddress;
+        private AddressDTO.Info workAddress;
     }
 
     @Getter
@@ -40,8 +40,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfoInfoTuple")
     static class ContactInfoInfoTuple extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.AddressInfoTuple homeAddress;
-        private AddressDTO.AddressInfoTuple workAddress;
+        private AddressDTO.Info homeAddress;
+        private AddressDTO.Info workAddress;
 
     }
 

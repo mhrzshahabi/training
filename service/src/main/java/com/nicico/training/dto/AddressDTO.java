@@ -33,17 +33,17 @@ public class AddressDTO {
     @ApiModel("AddressInfo")
     public static class Info extends AddressDTO {
         private Long id;
-        private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state;
+        private CityDTO.Info city;
+        private StateDTO.Info state;
     }
 
-    @Getter
-    @Setter
-    @ApiModel("AddressInfoTuple")
-    static class AddressInfoTuple extends AddressDTO {
-        private CityDTO.CityInfoTuple city;
-        private StateDTO.StateInfoTuple state;
-    }
+//    @Getter
+//    @Setter
+//    @ApiModel("AddressInfoTuple")
+//    static class AddressInfoTuple extends AddressDTO {
+//        private CityDTO.CityInfoTuple city;
+//        private StateDTO.StateInfoTuple state;
+//    }
 
     @Getter
     @Setter

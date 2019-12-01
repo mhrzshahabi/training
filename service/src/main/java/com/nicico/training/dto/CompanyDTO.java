@@ -33,7 +33,7 @@ public class CompanyDTO implements Serializable {
         private Long id;
         private PersonalInfoDTO.PersonalInfoInfoTuple manager;
         private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-        private AddressDTO.AddressInfoTuple address;
+        private AddressDTO.Info address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;

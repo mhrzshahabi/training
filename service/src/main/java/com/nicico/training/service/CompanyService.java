@@ -56,6 +56,24 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info create(CompanyDTO.Create request) {
+
+        if (request.getAccountInfo() != null) {
+            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
+            request.setAccountInfoId(accountInfoDTO.getId());
+            request.setAccountInfo(null);
+        }
+        if (request.getAddress() != null) {
+            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
+            request.setAddressId(addressDTO.getId());
+            request.setAddress(null);
+        }
+        if (request.getManager() != null) {
+            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+            request.setManagerId(personalInfoDTO.getId());
+            request.setManager(null);
+        }
+
+
         final Company company = modelMapper.map(request, Company.class);
         try {
             return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
@@ -69,12 +87,36 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
+
+        if (request.getAccountInfo() != null) {
+            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
+            request.setAccountInfoId(accountInfoDTO.getId());
+            request.setAccountInfo(null);
+        }
+        if (request.getAddress() != null) {
+            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
+            request.setAddressId(addressDTO.getId());
+            request.setAddress(null);
+        }
+        if (request.getManager() != null) {
+            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+            request.setManagerId(personalInfoDTO.getId());
+            request.setManager(null);
+        }
+
         Optional<Company> optionalCompany = companyDAO.findById(id);
         Company currentCompany = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompanyNotFound));
         Company company = new Company();
         modelMapper.map(currentCompany, company);
         modelMapper.map(request, company);
-//        company.getAddress().setId(request.getAddressId());
+
+        if (request.getAddress() == null)
+            company.setAddress(null);
+        if (request.getAccountInfo() == null)
+            company.setAccountInfo(null);
+        if (request.getManager() == null)
+            company.setManager(null);
+
         try {
             return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

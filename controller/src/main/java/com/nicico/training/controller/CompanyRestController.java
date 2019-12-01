@@ -3,34 +3,29 @@ package com.nicico.training.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
-import com.nicico.copper.common.domain.ConstantVARs;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CommitteeDTO;
+import com.nicico.training.dto.AccountInfoDTO;
+import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.service.AccountInfoService;
+import com.nicico.training.service.AddressService;
 import com.nicico.training.service.CompanyService;
 import com.nicico.training.service.PersonalInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 
 @Slf4j
@@ -41,8 +36,8 @@ public class CompanyRestController {
     private final CompanyService companyService;
     private final ObjectMapper objectMapper;
     private final PersonalInfoService personalInfoService;
-    private final DateUtil dateUtil;
-    private final ReportUtil reportUtil;
+    private final AddressService addressService;
+    private final AccountInfoService accountInfoService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -58,12 +53,26 @@ public class CompanyRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity create(@RequestBody CompanyDTO.Create req) {
+    public ResponseEntity create(@RequestBody CompanyDTO.Create request) {
 
-        CompanyDTO.Create create = (new ModelMapper()).map(req, CompanyDTO.Create.class);
+//        if (request.getAccountInfo() != null) {
+//            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
+//            request.setAccountInfoId(accountInfoDTO.getId());
+//            request.setAccountInfo(null);
+//        }
+//        if (request.getAddress() != null) {
+//            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
+//            request.setAddressId(addressDTO.getId());
+//            request.setAddress(null);
+//        }
+//        if (request.getManager() != null) {
+//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+//            request.setManagerId(personalInfoDTO.getId());
+//            request.setManager(null);
+//        }
 
         try {
-            return new ResponseEntity<>(companyService.create(create), HttpStatus.CREATED);
+            return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -71,24 +80,47 @@ public class CompanyRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CompanyDTO.Info> update(@PathVariable Long id, @RequestBody CompanyDTO.Update request) {
-        CompanyDTO.Update update = (new ModelMapper()).map(request, CompanyDTO.Update.class);
-        return new ResponseEntity<>(companyService.update(id, update), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @RequestBody CompanyDTO.Update request) {
+
+//        if (request.getAccountInfo() != null) {
+//            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
+//            request.setAccountInfoId(accountInfoDTO.getId());
+//            request.setAccountInfo(null);
+//        }
+//        if (request.getAddress() != null) {
+//            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
+//            request.setAddressId(addressDTO.getId());
+//            request.setAddress(null);
+//        }
+//        if (request.getManager() != null) {
+//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+//            request.setManagerId(personalInfoDTO.getId());
+//            request.setManager(null);
+//        }
+
+        try {
+            return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> delete(@PathVariable Long id) {
+        final CompanyDTO.Info company = companyService.get(id);
         companyService.delete(id);
+        if (company.getAccountInfoId() != null)
+            accountInfoService.delete(company.getAccountInfoId());
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @Loggable
-    @DeleteMapping(value = "/list")
-    public ResponseEntity<Void> delete(@Validated @RequestBody CompanyDTO.Delete request) {
-        companyService.delete(request);
-        return new ResponseEntity<>(HttpStatus.OK);
-    }
+//    @Loggable
+//    @DeleteMapping(value = "/list")
+//    public ResponseEntity<Void> delete(@Validated @RequestBody CompanyDTO.Delete request) {
+//        companyService.delete(request);
+//        return new ResponseEntity<>(HttpStatus.OK);
+//    }
 
 
     @Loggable
@@ -137,40 +169,5 @@ public class CompanyRestController {
     public ResponseEntity<SearchDTO.SearchRs<CompanyDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(companyService.search(request), HttpStatus.OK);
     }
-
-    @Loggable
-    @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
-    public ResponseEntity<PersonalInfoDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
-        return new ResponseEntity<>(companyService.getOneByNationalCode(nationalCode), HttpStatus.OK);
-    }
-
-
-        @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}"})
-    public void printWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
-
-        final SearchDTO.CriteriaRq criteriaRq;
-        final SearchDTO.SearchRq searchRq;
-        if (criteriaStr.equalsIgnoreCase("{}")) {
-            searchRq = new SearchDTO.SearchRq();
-        } else {
-            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-        }
-
-        final SearchDTO.SearchRs<CompanyDTO.Info> searchRs = companyService.search(searchRq);
-
-        final Map<String, Object> params = new HashMap<>();
-        params.put("todayDate", dateUtil.todayDate());
-
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
-
-        params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/CompanyByCriteria.jasper", params, jsonDataSource, response);
-    }
-
 
 }

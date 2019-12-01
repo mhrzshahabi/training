@@ -319,6 +319,8 @@
                 textAlign: "center",
                 destroyed: true,
                 // required: true,
+                changeOnKeypress: true,
+                filterOnKeypress: true,
                 displayField: "name",
                 valueField: "id",
                 filterFields: ["name"],
@@ -544,12 +546,10 @@
     }
 
     function show_CompanyNewForm() {
+        co.clearValues();
+        co.clearErrors(true);
         company_method = "POST";
         Window_Company.setTitle("<spring:message code="company.create"/>");
-        DynamicForm_Company.clearValues();
-        DynamicForm_AccountInfo_Company.clearValues();
-        DynamicForm_Address_Company.clearValues();
-        DynamicForm_ManagerInfo_Company.clearValues();
         Window_Company.show();
     }
 
