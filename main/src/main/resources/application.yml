@@ -1,4 +1,4 @@
-ispring:
+spring:
   application:
     name: Training
   profiles:
