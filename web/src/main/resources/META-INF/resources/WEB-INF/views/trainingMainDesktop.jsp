@@ -76,7 +76,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -123,13 +123,12 @@
         showFilterEditor: true,
         autoFitWidthApproach: "both",
         // canHover:true,
-        showClippedValuesOnHover: true,
+        showClippedValuesOnHover:true,
         hoverMoveWithMouse: true,
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            autoFitWidth: true,
-            // width: 80,
+            width: 80,
             align: "center"
         },
         sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
@@ -446,10 +445,10 @@
                     }
                 },
                 <%--{--%>
-                <%--title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",--%>
-                <%--click: function () {--%>
-                <%--createTab(this.title, "<spring:url value="web/needAssessment/"/>");--%>
-                <%--}--%>
+                    <%--title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/needAssessment/"/>");--%>
+                    <%--}--%>
                 <%--},--%>
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>", icon: "<spring:url value="research.png"/>",
@@ -596,7 +595,19 @@
                     }
                 },
                 {
-                    title: "<spring:message code="group.plural"/>", icon: "<spring:url value="group.png"/>",
+                    title: "گروه دسترسی", icon: "<spring:url value="permissionGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+                {
+                    title: "نقش ها", icon: "<spring:url value="role.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+                {
+                    title: "تخصیص نقش", icon: "<spring:url value="assign.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
