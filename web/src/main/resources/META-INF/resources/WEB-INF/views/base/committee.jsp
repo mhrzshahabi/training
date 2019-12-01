@@ -684,26 +684,28 @@
              var committeeEditRecord = ListGrid_Committee.getSelectedRecord();
              var cateEdit = DynamicForm_Committee.getValue("categoryId");
              var subCateEdit = DynamicForm_Committee.getValue("subCategoryId");
-             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id, "GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
+             isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictWhenEdit/" + cateEdit + "/" + subCateEdit + "/" +committeeEditRecord.id,"GET", null, "callback: findConflictWhenEdit(rpcResponse)"));
 
             };
 
              function  findConflictWhenEdit(resp)
             {
               if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-            if (resp.data.length > 0) {
-                var committeeDataEdit = DynamicForm_Committee.getValues();
+            if (resp.data.length > 0) {                            //اگر در زمان ویرایش با خودش ویرایش شود
+                  var committeeDataEdit = DynamicForm_Committee.getValues();
                  var committeeSaveUrlEdit = committeeUrl;
                  var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
                  committeeSaveUrlEdit += committeeEditRecord1.id;
-              isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit, committee_method, JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
+              isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEdit,"PUT", JSON.stringify(committeeDataEdit), "callback: show_CommitteeActionResult(rpcResponse)"));
 
             } else {
+            //اگر با کمیته دیگری تداخل داشته باشد
 
              var cate2 = DynamicForm_Committee.getValue("categoryId");
              var subCate2 = DynamicForm_Committee.getValue("subCategoryId");
              var sc = DynamicForm_Committee.getItem("subCategoryId").getSelectedRecord().titleFa
               var cate3 = DynamicForm_Committee.getItem("categoryId").getSelectedRecord().titleFa
+
              isc.RPCManager.sendRequest(TrDSRequest(committeeUrl + "findConflictCommittee/" + cate2 + "/" + subCate2, "GET", null, "callback: show_ConflictCommittee(rpcResponse,'"+ cate3+"','"+ sc+ "')"));
 
             }
@@ -735,13 +737,11 @@
                 }, 3000);
             } else {
 
-                var committeeDataEditCreate = DynamicForm_Committee.getValues();
-                var committeeSaveUrlEditCreate = committeeUrl;
-                // if (committee_method.localeCompare("PUT") == 0) {
-                //     var committeeRecord = ListGrid_Committee.getSelectedRecord();
-                //     committeeSaveUrl += committeeRecord.id;
-                // }
-             isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+               var committeeDataEditCreate = DynamicForm_Committee.getValues();
+               var committeeSaveUrlEditCreate = committeeUrl;
+               var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
+               committeeSaveUrlEditCreate += committeeEditRecord1.id;
+               isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "PUT", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({
