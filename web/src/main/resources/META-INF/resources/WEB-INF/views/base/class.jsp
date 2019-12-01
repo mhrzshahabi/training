@@ -118,6 +118,7 @@
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            // {name:"parentId", type:"Long", foreignKey:"instituteId"},
             {name: "instituteId"},
             {name: "instituteTitleFa", title:"نام موسسه"},
             {name: "titleFa", title: "نام مکان"},
@@ -479,9 +480,9 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                // changed: function (form, item) {
-                //     form.clearValue("trainingPlaceIds")
-                // }
+                changed: function (form, item) {
+                    form.clearValue("trainingPlaceIds")
+                }
             },
             {
                 name: "group",
@@ -509,10 +510,10 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "ComboBoxItem", title: "<spring:message code="training.place"/>:",
+                name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
                 autoFetchData:false,
-                // multiple: true,
+                multiple: true,
                 colSpan: 2,
                 // width:"250",
                 // align: "center",
@@ -524,28 +525,29 @@
                 // autoFetchData:false,
                 // autoFetchData:false,
                 filterFields: ["titleFa","capacity"],
+                textMatchStyle:"substring",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
                 pickListFields: [
-                    {name:"instituteTitleFa"},
+                    // {name:"instituteTitleFa"},
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
-                // click: function (form, item) {
-                //     if (form.getValue("instituteId")) {
-                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
-                //         item.fetchData();
-                //     } else {
-                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
-                //         item.fetchData();
-                //         isc.MyOkDialog.create({
-                //             message: "ابتدا برگزار کننده را انتخاب کنید",
-                //         });
-                //     }
-                //     // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
-                //     // return {category:category};
-                // }
+                click: function (form, item) {
+                    if (form.getValue("instituteId")) {
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                        item.fetchData();
+                    } else {
+                        RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
+                        item.fetchData();
+                        isc.MyOkDialog.create({
+                            message: "ابتدا برگزار کننده را انتخاب کنید",
+                        });
+                    }
+                    // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
+                    // return {category:category};
+                }
             },
         ],
     });
@@ -778,7 +780,7 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            // {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",
@@ -1321,7 +1323,7 @@
             // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
             // RestDataSource_Institute_JspClass.mockDataCriteria  = {id:record.id};
             // DynamicForm_Class_JspClass.getField("course.id").fetchData();
-            // RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
             // DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
