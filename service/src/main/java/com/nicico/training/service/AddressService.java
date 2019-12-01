@@ -56,7 +56,7 @@ public class AddressService implements IAddressService {
     @Override
     public AddressDTO.Info create(AddressDTO.Create request) {
         final Address address = modelMapper.map(request, Address.class);
-        return save(address);
+        return modelMapper.map(addressDAO.saveAndFlush(address), AddressDTO.Info.class);
     }
 
     @Transactional
@@ -67,7 +67,7 @@ public class AddressService implements IAddressService {
         Address updating = new Address();
         modelMapper.map(address, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        return modelMapper.map(addressDAO.saveAndFlush(updating), AddressDTO.Info.class);
     }
 
     @Transactional
@@ -103,10 +103,4 @@ public class AddressService implements IAddressService {
             return null;
     }
 
-    // ------------------------------
-
-    private AddressDTO.Info save(Address address) {
-        final Address saved = addressDAO.saveAndFlush(address);
-        return modelMapper.map(saved, AddressDTO.Info.class);
-    }
 }

@@ -17,6 +17,7 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -30,9 +31,10 @@ public class CompanyService implements ICompanyService {
     private final PersonalInfoDAO personalInfoDAO;
     private final ContactInfoDAO contactInfoDAO;
     private final AddressDAO addressDAO;
-    private final ModelMapper mapper;
+    private final ModelMapper modelMapper;
     private final AccountInfoService accountInfoService;
     private final AddressService addressService;
+    private final PersonalInfoService personalInfoService;
 
 
     @Transactional(readOnly = true)
@@ -40,60 +42,27 @@ public class CompanyService implements ICompanyService {
     public CompanyDTO.Info get(Long id) {
         final Optional<Company> optionalCompany = companyDAO.findById(id);
         final Company company = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        return mapper.map(company, CompanyDTO.Info.class);
+        return modelMapper.map(company, CompanyDTO.Info.class);
     }
 
     @Transactional
     @Override
     public List<CompanyDTO.Info> list() {
         List<Company> companyList = companyDAO.findAll();
-        return mapper.map(companyList, new TypeToken<List<CompanyDTO.Info>>() {
+        return modelMapper.map(companyList, new TypeToken<List<CompanyDTO.Info>>() {
         }.getType());
     }
 
     @Transactional
     @Override
     public CompanyDTO.Info create(CompanyDTO.Create request) {
-
-        final Company company = mapper.map(request, Company.class);
-
-        if (company.getAccountInfo() != null) {
-            final AccountInfoDTO.Create accountInfo = mapper.map(company.getAccountInfo(), AccountInfoDTO.Create.class);
-            final AccountInfoDTO.Info savedAccountInfo = accountInfoService.create(accountInfo);
-            company.setAccountInfo(mapper.map(savedAccountInfo, AccountInfo.class));
-            company.setAccountInfoId(savedAccountInfo.getId());
-        }
-
-        if (company.getAddress() != null) {
-            final Address address = mapper.map(company.getAddress(), Address.class);
-            final Address savedAddressInfo = addressDAO.saveAndFlush(address);
-            company.setAddress(savedAddressInfo);
-            company.setAddressId(savedAddressInfo.getId());
-
-//            final AddressDTO.Create address = mapper.map(company.getAddress(), AddressDTO.Create.class);
-//            final AddressDTO.Info savedAddress = addressService.createOrUpdate(address);
-//            company.setAddress(mapper.map(savedAddress, Address.class));
-//            company.setAddressId(savedAddress.getId());
-        }
-
+        final Company company = modelMapper.map(request, Company.class);
         try {
-            return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
+            return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
 
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public PersonalInfoDTO.Info getOneByNationalCode(String nationalCode) {
-        List<PersonalInfo> personalInfoList = personalInfoDAO.findByNationalCode(nationalCode);
-        PersonalInfo personalInfo = null;
-        if (personalInfoList != null && personalInfoList.size() != 0) {
-            personalInfo = personalInfoList.get(0);
-            return mapper.map(personalInfo, PersonalInfoDTO.Info.class);
-        } else
-            return null;
     }
 
 
@@ -102,32 +71,15 @@ public class CompanyService implements ICompanyService {
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
         Optional<Company> optionalCompany = companyDAO.findById(id);
         Company currentCompany = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompanyNotFound));
-
-        PersonalInfo currentPersonalInfo = mapper.map(request.getManager(), PersonalInfo.class);
-        currentPersonalInfo.getContactInfoId();//contactInfoId
-
-
-        //---------------------UPDATE AccountInfo---------------------------------------------------------------------------------------------------
-        Optional<AccountInfo> optionalAccountInfo = accountInfoDAO.findById(currentCompany.getAccountInfoId());
-        AccountInfo accountInfo = optionalAccountInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.AccountInfoNotFound));
-        AccountInfo accountInfo1 = new AccountInfo();
-        mapper.map(accountInfo, accountInfo1);
-        mapper.map(request.getAccountInfo(), accountInfo1);
-        accountInfoDAO.saveAndFlush(accountInfo1);
-
-        //------------------ --UPDATE MANAGER----- -------------------------------------------------------------------------------------------------
-        Optional<PersonalInfo> optionalManager = personalInfoDAO.findById(currentCompany.getManagerId());
-        PersonalInfo manager = optionalManager.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
-        PersonalInfo manager1 = new PersonalInfo();
-        mapper.map(manager, manager1);
-        mapper.map(request.getManager(), manager1);
-        personalInfoDAO.saveAndFlush(manager1);
-
         Company company = new Company();
-        mapper.map(currentCompany, company);
-
-        mapper.map(request, company);
-        return mapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
+        modelMapper.map(currentCompany, company);
+        modelMapper.map(request, company);
+//        company.getAddress().setId(request.getAddressId());
+        try {
+            return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -146,7 +98,7 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public SearchDTO.SearchRs<CompanyDTO.Info> search(SearchDTO.SearchRq request) {
-        return SearchUtil.search(companyDAO, request, company -> mapper.map(company, CompanyDTO.Info.class));
+        return SearchUtil.search(companyDAO, request, company -> modelMapper.map(company, CompanyDTO.Info.class));
     }
 
 

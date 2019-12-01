@@ -40,6 +40,17 @@ public class AccountInfoService implements IAccountInfoService {
 
     @Transactional
     @Override
+    public AccountInfoDTO.Info createOrUpdate(AccountInfoDTO.Create request) {
+        if (request.getId() == null)
+            return create(request);
+        else {
+            AccountInfoDTO.Update updating = modelMapper.map(request, AccountInfoDTO.Update.class);
+            return update(updating.getId(), updating);
+        }
+    }
+
+    @Transactional
+    @Override
     public AccountInfoDTO.Info create(AccountInfoDTO.Create request) {
         final AccountInfo accountInfo = modelMapper.map(request, AccountInfo.class);
         return modelMapper.map(accountInfoDAO.save(accountInfo), AccountInfoDTO.Info.class);

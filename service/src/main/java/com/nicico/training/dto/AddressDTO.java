@@ -50,6 +50,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressCreateRq")
     public static class Create extends AddressDTO {
+        private Long id;
     }
 
     @Getter
@@ -57,6 +58,7 @@ public class AddressDTO {
     @Accessors(chain = true)
     @ApiModel("AddressUpdateRq")
     public static class Update extends AddressDTO {
+        private Long id;
     }
 
     @Getter

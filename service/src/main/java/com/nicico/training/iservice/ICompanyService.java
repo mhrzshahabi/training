@@ -13,8 +13,6 @@ public interface ICompanyService {
 
     CompanyDTO.Info create(CompanyDTO.Create request);
 
-    PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
-
     CompanyDTO.Info update(Long id, CompanyDTO.Update request);
 
     void delete(Long id);
