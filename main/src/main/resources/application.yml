@@ -1,4 +1,4 @@
-spring:
+ispring:
   application:
     name: Training
   profiles:
@@ -8,7 +8,7 @@ spring:
       connection-test-query: SELECT 1 FROM DUAL
   jpa:
     hibernate:
-      ddl-auto: none
+      ddl-auto: validate
     properties:
       hibernate:
         dialect: org.hibernate.dialect.Oracle12cDialect
