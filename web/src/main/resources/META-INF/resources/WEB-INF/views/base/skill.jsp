@@ -107,20 +107,20 @@
     var RestDataSource_Skill_Need_Assessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "contains"},
-            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "contains"},
+            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "iContains"},
+            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "iContains"},
             {
                 name: "edomainType.titleFa",
                 title: "<spring:message code="domain"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "eneedAssessmentPriority.titleFa",
                 title: "<spring:message code="priority"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "contains"},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: skill_SkillHomeUrl + "/0/need-assessment"
     });
@@ -146,13 +146,13 @@
         width: "100%",
         height: "100%",
         align: "center",
-        showInlineErrors: true,
+      //  showInlineErrors: true,
         numCols: "4",
-        showErrorText: true,
-        showErrorStyle: true,
+      //  showErrorText: true,
+      //  showErrorStyle: true,
         errorOrientation: "right",
         titleAlign: "left",
-        requiredMessage: "فیلد اجباری است.",
+
         fields: [
             {name: "id", hidden: true},
             {
@@ -374,20 +374,20 @@
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                         var OK = isc.Dialog.create({
-                            message: "عملیات با موفقیت انجام شد.",
+                            message: "<spring:message code="msg.operation.successful"/>",
                             icon: "[SKIN]say.png",
-                            title: "انجام فرمان"
-                        });
+                            title: "<spring:message code="global.form.command.done"/>"
+                  });
                         setTimeout(function () {
                             OK.close();
                         }, 3000);
                         ListGrid_Skill_Skill_refresh();
                         Window_Skill_Skill.close();
                     } else {
-                        var ERROR = isc.Dialog.create({
-                            message: ("اجرای عملیات با مشکل مواجه شده است!"),
-                            icon: "[SKIN]stop.png",
-                            title: "توجه"
+                        var OK = isc.Dialog.create({
+                            message: "<spring:message code="msg.operation.error"/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code="global.form.command.done"/>"
                         });
                         setTimeout(function () {
                             ERROR.close();
@@ -417,7 +417,7 @@
     });
 
     var Window_Skill_Skill = isc.Window.create({
-        title: "مهارت",
+        title: "<spring:message code="skill"/>",
         width: "830",
         autoSize: true,
         autoCenter: true,
@@ -446,9 +446,9 @@
 // ListGrid_Skill_Skill_Edit();
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"}
+        //  {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa",title: "<spring:message code="title"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -457,14 +457,14 @@
         autoFetchData: true,
         showFilterEditor: false,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        // sortFieldAscendingText: "مرتب سازی صعودی ",
+        // sortFieldDescendingText: "مرتب سازی نزولی",
+        // configureSortText: "تنظیم مرتب سازی",
+        // autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        // autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        // filterUsingText: "فیلتر کردن",
+        // groupByText: "گروه بندی",
+        // freezeFieldText: "ثابت نگه داشتن"
     });
 
     var ListGrid_Skill_Attached_Courses = isc.TrLG.create({
@@ -476,15 +476,15 @@
 // ListGrid_Skill_Skill_Edit();
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین ", align: "center"},
-            {name: "category.titleFa", title: "رسته", align: "center"},
-            {name: "subcategory.titleFa", title: "زیر رسته", align: "center"},
-            {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
-            {name: "erunType.titleFa", title: "نوع اجرا", align: "center"},
-            {name: "elevelType.titleFa", title: "سطح دوره", align: "center"},
-            {name: "etheoType.titleFa", title: "نوع دوره", align: "center"}
+         //   {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
+            {name: "category.titleFa", title: "<spring:message code="group"/>", align: "center"},
+            {name: "subcategory.titleFa",title: "<spring:message code="course_subcategory"/>", align: "center"},
+            {name: "etechnicalType.titleFa",title: "<spring:message code="course_etechnicalType"/>", align: "center"},
+            {name: "erunType.titleFa",title: "<spring:message code="course_eruntype"/>", align: "center"},
+            {name: "elevelType.titleFa",title: "<spring:message code="cousre_elevelType"/>", align: "center"},
+            {name: "etheoType.titleFa", title: "<spring:message code="course_etheoType"/>", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -493,14 +493,14 @@
         autoFetchData: true,
         showFilterEditor: false,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        // sortFieldAscendingText: "مرتب سازی صعودی ",
+        // sortFieldDescendingText: "مرتب سازی نزولی",
+        // configureSortText: "تنظیم مرتب سازی",
+        // autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        // autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        // filterUsingText: "فیلتر کردن",
+        // groupByText: "گروه بندی",
+        // freezeFieldText: "ثابت نگه داشتن"
     });
 
 
@@ -526,15 +526,15 @@
         click: function () {
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
-                isc.Dialog.create({
-                    message: "لطفا یک مهارت را انتخاب کنید.",
-                    icon: "[SKIN]ask.png",
-                    title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
+               isc.Dialog.create({
+                message: "<spring:message code="msg.not.selected.record"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="message"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
             } else {
                 Skill_Add_SkillGroup();
             }
@@ -548,14 +548,14 @@
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "لطفا یک مهارت را انتخاب کنید",
-                    icon: "[SKIN]ask.png",
-                    title: "توجه",
-                    buttons: [isc.Button.create({title: "تائید"})],
-                    buttonClick: function (button, index) {
-                        this.close();
-                    }
-                });
+                message: "<spring:message code="msg.not.selected.record"/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code="message"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
+                    this.close();
+                }
+            });
             } else {
                 Skill_Add_Course();
             }
@@ -587,23 +587,11 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         //console.log(record);
         if (record == null) {
-            isc.Dialog.create({
-                message: "مهارتی برای حذف انتخاب نشده است!",
-                icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-            var Dialog_Delete = isc.Dialog.create({
-                message: "آيا مي خواهيد اين مهارت حذف گردد؟",
-                icon: "[SKIN]ask.png",
-                title: "هشدار",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
-                    title: "خير"
-                })],
+         var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code="verify.delete"/>");
+            Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
 
@@ -625,20 +613,20 @@
                                 wait.close();
                                 if (resp.data == "true") {
                                     ListGrid_Skill_Skill.invalidateCache();
-                                    var OK = isc.Dialog.create({
-                                        message: "مهارت با موفقيت حذف گرديد",
+                                     var OK = isc.Dialog.create({
+                                        message: "<spring:message code="global.form.request.successful"/>",
                                         icon: "[SKIN]say.png",
-                                        title: "انجام شد"
-                                    });
+                                        title: "<spring:message code="global.form.command.done"/>"
+                                        });
                                     setTimeout(function () {
                                         OK.close();
                                     }, 3000);
                                 } else {
-                                    var ERROR = isc.Dialog.create({
-                                        message: "ركورد مورد نظر قابل حذف نيست",
-                                        icon: "[SKIN]stop.png",
-                                        title: "خطا"
-                                    });
+                                    var OK = isc.Dialog.create({
+                                            message: "<spring:message code="msg.Item.cannot.delete"/>",
+                                            icon: "[SKIN]say.png",
+                                            title: "<spring:message code="warning"/>"
+                                        });
                                     setTimeout(function () {
                                         ERROR.close();
                                     }, 3000);
@@ -655,11 +643,11 @@
     function ListGrid_Skill_Skill_Edit() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
-            isc.Dialog.create({
-                message: "مهارتی برای ویرایش انتخاب نشده است.",
+               isc.Dialog.create({
+                message: "<spring:message code="msg.not.selected.record"/>",
                 icon: "[SKIN]ask.png",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تائید"})],
+                title: "<spring:message code="message"/>",
+                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -677,7 +665,7 @@
             DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(true);
             DynamicForm_Skill_Skill.getItem("code").visible = true;
-            Window_Skill_Skill.setTitle(" ویرایش مهارت " + getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
+            Window_Skill_Skill.setTitle("<spring:message code="edit.skill"/>" +"&nbsp;"+ getFormulaMessage(ListGrid_Skill_Skill.getSelectedRecord().code, 3, "red", "I"));
             Window_Skill_Skill.show();
 
         }
@@ -690,7 +678,7 @@
         DynamicForm_Skill_Skill.getItem("subCategoryId").setDisabled(true);
         DynamicForm_Skill_Skill.getItem("skillLevelId").setDisabled(false);
         DynamicForm_Skill_Skill.getItem("code").visible = false;
-        Window_Skill_Skill.setTitle("ایجاد مهارت جدید");
+        Window_Skill_Skill.setTitle("<spring:message code="create.skill"/>");
         Window_Skill_Skill.show();
     };
     function ListGrid_Skill_Skill_refresh() {
@@ -705,35 +693,37 @@
     var Menu_ListGrid_Skill_Skill = isc.Menu.create({
         width: 150,
         data: [{
-            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+             title: "<spring:message code="refresh"/>",icon: "<spring:url value="refresh.png"/>", click: function () {
                 ListGrid_Skill_Skill_refresh();
             }
         }, {
-            title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+           title: "<spring:message code="create"/>",icon: "<spring:url value="create.png"/>", click: function () {
                 ListGrid_Skill_Skill_Add();
             }
         }, {
-            title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+
+        title: "<spring:message code="edit"/>",icon: "<spring:url value="edit.png"/>", click: function () {
 
                 ListGrid_Skill_Skill_Edit();
 
             }
         }, {
-            title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+
+           title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Skill_Skill_Remove();
             }
         }, {isSeparator: true}, {
-            title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+               title: "<spring:message code='print.pdf'/>", icon: "<spring:url value="pdf.png"/>", click: function () {
                 "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+            title: "<spring:message code='print.excel'/>", icon: "<spring:url value="excel.png"/>", click: function () {
                 "<spring:url value="/skill/print-all/excel" var="printUrl"/>"
                 window.open('${printUrl}');
             }
         }, {
-            title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+             title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
                 "<spring:url value="/skill/print-all/html" var="printUrl"/>"
                 window.open('${printUrl}');
             }
@@ -748,19 +738,19 @@
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
-
+      //  canHover:true,
         doubleClick: function () {
             ListGrid_Skill_Skill_Edit();
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "کد", align: "center", filterOperator: "iContains"},
-            {name: "titleFa", title: "نام فارسی", align: "center", filterOperator: "iContains"},
-            {name: "titleEn", title: "نام لاتین ", align: "center", filterOperator: "iContains"},
-            {name: "category.titleFa", title: "گروه", align: "center", filterOperator: "iContains"},
-            {name: "subCategory.titleFa", title: "زیر گروه", align: "center", filterOperator: "iContains"},
-            {name: "skillLevel.titleFa", title: "سطح مهارت", align: "center", filterOperator: "iContains"},
-            {name: "description", title: "توضیحات", align: "center", hidden: true, filterOperator: "iContains"}
+          //  {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            {name: "code",title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa",title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleEn",title: "<spring:message code="course_en_name"/>", align: "center", filterOperator: "iContains"},
+            {name: "category.titleFa", title: "<spring:message code="group"/>", align: "center", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="course_subcategory"/>", align: "center", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", align: "center", filterOperator: "iContains"},
+            {name: "description",title: "<spring:message code="description"/>",align: "center", hidden: true, filterOperator: "iContains"}
         ],
         selectionType: "single",
         selectionChanged: function (record, state) {
@@ -787,14 +777,14 @@
         dataPageSize: 50,
         autoFetchData: true,
         showFilterEditor: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
+        // sortFieldAscendingText: "مرتب سازی صعودی ",
+        // sortFieldDescendingText: "مرتب سازی نزولی",
+        // configureSortText: "تنظیم مرتب سازی",
+        // autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        // autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        // filterUsingText: "فیلتر کردن",
+        // groupByText: "گروه بندی",
+        // freezeFieldText: "ثابت نگه داشتن",
         dataArrived: function (startRow, endRow) {
             record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null) {
@@ -820,36 +810,36 @@
 
 
     var ToolStripButton_Skill_Skill_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "بازخوانی اطلاعات",
+         icon: "<spring:url value="refresh.png"/>",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Skill_Skill_refresh();
         }
     });
     var ToolStripButton_Skill_Skill_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "ویرایش",
+       icon: "[SKIN]/actions/edit.png",
+        title: "<spring:message code="edit"/>",
         click: function () {
             ListGrid_Skill_Skill_Edit();
         }
     });
     var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/add.png",
-        title: "ایجاد",
+        title: "<spring:message code="create"/>",
         click: function () {
             ListGrid_Skill_Skill_Add();
         }
     });
     var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/remove.png",
-        title: "حذف",
+        title: "<spring:message code="remove"/>",
         click: function () {
             ListGrid_Skill_Skill_Remove();
         }
     });
     var ToolStripButton_Skill_Skill_Print = isc.ToolStripButton.create({
         icon: "[SKIN]/RichTextEditor/print.png",
-        title: "چاپ",
+        title: "<spring:message code='print'/>",
         click: function () {
             "<spring:url value="/skill/print-all/pdf" var="printUrl"/>"
             <%--console.log('${printUrl}')   ;--%>
@@ -892,7 +882,7 @@
                             ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                             ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                            isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -928,7 +918,7 @@
                             ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                             ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                             isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -958,7 +948,7 @@
                             ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                             ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                             isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -993,7 +983,7 @@
                             ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                             ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                             isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -1069,8 +1059,8 @@
         },
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"}
+            {name: "titleFa",title:"<spring:message code='title'/>", align: "center"},
+            {name: "titleEn", title:"<spring:message code='course_en_name'/>", align: "center"}
         ],
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillGroupRecord = record;
@@ -1089,7 +1079,7 @@
                         ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                         ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                     } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+                          isc.say("<spring:message code='msg.operation.error'/>");
                     }
                 }
             });
@@ -1123,10 +1113,10 @@
         },
         canEdit: false,
         fields: [
-            {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+          //  {name: "id", hidden: true},
+            {name: "titleFa",title:"<spring:message code='title'/>", align: "center"},
+            {name: "titleEn", title:"<spring:message code='course_en_name'/>", align: "center"},
+            {name: "OnDelete", title:"<spring:message code="remove"/>", align: "center"}
 
         ],
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
@@ -1147,7 +1137,7 @@
                         ListGrid_Skill_UnAttached_SkillGroup.invalidateCache();
                         ListGrid_Skill_Selected_SkillGroup.invalidateCache();
                     } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+                          isc.say("<spring:message code='msg.operation.error'/>");
                     }
                 }
             });
@@ -1161,7 +1151,7 @@
         width: "45%",
         sections: [
             {
-                title: "گروه مهارتهای انتخاب نشده",
+                title:"<spring:message code='skill.group.Not.selected'/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -1334,7 +1324,7 @@
                             ListGrid_Skill_Selected_Course.invalidateCache();
                             ListGrid_Skill_UnAttached_Course.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                             isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -1370,7 +1360,7 @@
                             ListGrid_Skill_Selected_Course.invalidateCache();
                             ListGrid_Skill_UnAttached_Course.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                             isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -1400,7 +1390,7 @@
                             ListGrid_Skill_Selected_Course.invalidateCache();
                             ListGrid_Skill_UnAttached_Course.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                              isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -1435,7 +1425,7 @@
                             ListGrid_Skill_Selected_Course.invalidateCache();
                             ListGrid_Skill_UnAttached_Course.invalidateCache();
                         } else {
-                            isc.say("اجرای این دستور با مشکل مواجه شده است");
+                            isc.say("<spring:message code='msg.operation.error'/>");
                         }
                     }
                 });
@@ -1531,7 +1521,8 @@
                         ListGrid_Skill_Selected_Course.invalidateCache();
                         ListGrid_Skill_UnAttached_Course.invalidateCache();
                     } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+
+                        isc.say("<spring:message code='msg.operation.error'/>");
                     }
                 }
             });
@@ -1589,7 +1580,7 @@
                         ListGrid_Skill_UnAttached_Course.invalidateCache();
                         ListGrid_Skill_Selected_Course.invalidateCache();
                     } else {
-                        isc.say("اجرای این دستور با مشکل مواجه شده است");
+                          isc.say("<spring:message code='msg.operation.error'/>");
                     }
                 }
             });
@@ -1845,18 +1836,18 @@
         tabs: [
             {
                 id: "TabPane_Skill_SkillGroup",
-                title: "لیست گروه های مهارت",
-                pane: HLayout_Tab_Skill_SkillGroups
+                title:  "<spring:message code='list.skill.group'/>",
+                 pane: HLayout_Tab_Skill_SkillGroups
 
             },
             {
                 id: "TabPane_Skill_Course",
-                title: "لیست دوره ها",
+                title:  "<spring:message code='list.course'/>",
                 pane: HLayout_Tab_Skill_Courses
             },
             {
                 id: "TabPane_Skill_Course",
-                title: "لیست نیازسنجی مرتبط",
+                 title:"<spring:message code='list.need.Assesment'/>",
                 pane: HLayout_Tab_Skill_Need_Assessment
             }
 
