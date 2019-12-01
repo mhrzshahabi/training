@@ -24,7 +24,6 @@ import java.util.Set;
 
 public class TrainingPlaceDTO {
 
-
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
@@ -34,7 +33,7 @@ public class TrainingPlaceDTO {
 
     @NotEmpty
     @ApiModelProperty(required = true)
-    private Integer capacity;
+    private String capacity;
 
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -53,9 +52,8 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceInfo")
     public static class Info extends TrainingPlaceDTO {
-
         private Long id;
-//        private InstituteDTO.Info institute;
+        private InstituteDTO.InstituteTitle institute;
         private EPlaceType ePlaceType;
         private EArrangementType eArrangementType;
 
@@ -110,8 +108,8 @@ public class TrainingPlaceDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs {
-        private List<TrainingPlaceDTO.Info> data;
+    public static class SpecRs<T>{
+        private List<T> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
@@ -125,9 +123,20 @@ public class TrainingPlaceDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class TrainingPlaceTitle {
-
+        private Long id;
         private String titleFa;
 
+    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class TrainingPlaceWithInstitute {
+        private Long id;
+        private Long instituteId;
+        private String capacity;
+        private String titleFa;
+        private String instituteTitleFa;
     }
 
     //----------------------
