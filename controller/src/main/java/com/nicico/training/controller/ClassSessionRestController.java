@@ -78,7 +78,7 @@ public class ClassSessionRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request) {
         ClassSessionDTO.Update update = (new ModelMapper()).map(request, ClassSessionDTO.Update.class);
         return new ResponseEntity<>(classSessionService.update(id, update), HttpStatus.OK);
     }

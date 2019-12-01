@@ -118,10 +118,14 @@
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            // {name:"parentId", type:"Long", foreignKey:"instituteId"},
+            {name: "instituteId"},
+            {name: "instituteTitleFa", title:"نام موسسه"},
             {name: "titleFa", title: "نام مکان"},
             {name: "capacity", title: "ظرفیت"}
         ],
-        fetchDataURL: instituteUrl + "0/training-places"
+        // fetchDataURL: instituteUrl + "0/training-places"
+        fetchDataURL: trainingPlaceUrl + "with-institute"
     });
 
 
@@ -476,7 +480,6 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                // startRow:true,
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
                 }
@@ -507,12 +510,13 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "select", title: "<spring:message code="training.place"/>:",
+                name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
+                autoFetchData:false,
                 multiple: true,
                 colSpan: 2,
                 // width:"250",
-                align: "center",
+                // align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
                 displayField: "titleFa",
@@ -520,11 +524,13 @@
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                filterFields: ["titleFa", "capacity"],
+                filterFields: ["titleFa","capacity"],
+                textMatchStyle:"substring",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
                 pickListFields: [
+                    // {name:"instituteTitleFa"},
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
@@ -774,7 +780,7 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            // {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",

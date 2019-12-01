@@ -14,6 +14,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -130,14 +132,14 @@ public class InstituteRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        if(id != null){
+        if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
                     .setFieldName("id")
                     .setValue(id);
             request.setCriteria(criteriaRq);
-            startRow=0;
-            endRow=1;
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -523,7 +525,7 @@ public class InstituteRestController {
 //    @PreAuthorize("hasAnyAuthority('r_teacher')")
     public ResponseEntity<TrainingPlaceDTO.TrainingPlaceSpecRs> getTrainingPlaces(@PathVariable Long instituteId) {
         List<TrainingPlaceDTO.Info> trainingPlaces = new ArrayList<>();
-        if(instituteId != 0) {
+        if (instituteId != 0) {
             trainingPlaces = instituteService.getTrainingPlaces(instituteId);
         }
 
@@ -573,6 +575,63 @@ public class InstituteRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/InstituteList.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/training-places")
+//    @PreAuthorize("hasAuthority('r_institute')")
+    public ResponseEntity<InstituteDTO.InstituteSpecRs> listOfInstituteWithTrainingPlace(
+            @RequestParam(value = "_startRow", required = false) Integer startRow,
+            @RequestParam(value = "_endRow", required = false) Integer endRow,
+            @RequestParam(value = "_constructor", required = false) String constructor,
+            @RequestParam(value = "operator", required = false) String operator,
+            @RequestParam(value = "criteria", required = false) String criteria,
+            @RequestParam(value = "id", required = false) Long id,
+            @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<InstituteDTO.Info> response;
+//        InstituteDTO.SpecRs specResponse;
+        InstituteDTO.InstituteSpecRs specRs = null;
+        try {
+            response = instituteService.search(request);
+            InstituteDTO.SpecRs<InstituteDTO.InstituteWithTrainingPlace> specResponse = new InstituteDTO.SpecRs<>();
+            specRs = new InstituteDTO.InstituteSpecRs();
+            List<InstituteDTO.Info> list = response.getList();
+
+            specResponse.setData(new ModelMapper().map(list, new TypeToken<List<InstituteDTO.InstituteWithTrainingPlace>>() {
+            }.getType()))
+                    .setStartRow(startRow)
+                    .setEndRow(startRow + response.getTotalCount().intValue())
+                    .setTotalRows(response.getTotalCount().intValue());
+            specRs.setResponse(specResponse);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 
