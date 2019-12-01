@@ -100,14 +100,15 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                         @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> list(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                          @RequestParam(value = "operator", required = false) String operator,
                                                          @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "id", required = false) Long id,
                                                          @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
         SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
 
@@ -126,14 +127,15 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/fullName-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam("_startRow") Integer startRow,
-                                                                         @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                                          @RequestParam(value = "operator", required = false) String operator,
                                                                          @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "id", required = false) Long id,
                                                                          @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
         SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
 
@@ -161,7 +163,7 @@ public class TeacherRestController {
                                                                                @RequestParam(value = "criteria", required = false) String criteria,
                                                                                @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
-        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, sortBy);
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, null, sortBy);
 
         SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> response = teacherService.fullNameSearch(request);
 
@@ -231,11 +233,12 @@ public class TeacherRestController {
         reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
     }
 
-    private SearchDTO.SearchRq setSearchCriteria(@RequestParam("_startRow") Integer startRow,
-                                                 @RequestParam("_endRow") Integer endRow,
+    private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                 @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                  @RequestParam(value = "_constructor", required = false) String constructor,
                                                  @RequestParam(value = "operator", required = false) String operator,
                                                  @RequestParam(value = "criteria", required = false) String criteria,
+                                                 @RequestParam(value = "id", required = false) Long id,
                                                  @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -253,6 +256,15 @@ public class TeacherRestController {
 
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
+        }
+        if(id != null){
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow=0;
+            endRow=1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

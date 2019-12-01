@@ -26,7 +26,7 @@
             {name: "personality.lastNameFa"},
             {name: "personality.nationalCode"}
         ],
-        fetchDataURL: courseUrl + "get_teachers/0"
+        fetchDataURL: teacherUrl + "fullName-list"
     });
 
     var RestDataSource_Class_JspClass = isc.TrDS.create({
@@ -1316,7 +1316,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
+            // RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
             // RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
             // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
             // DynamicForm_Class_JspClass.getField("instituteId").fetchData();
