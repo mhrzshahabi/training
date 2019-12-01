@@ -164,6 +164,7 @@ public class InstituteDTO {
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class InstituteTitle {
         private String titleFa;
+        private Long id;
     }
 
     @Getter
@@ -171,6 +172,7 @@ public class InstituteDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class InstituteWithTrainingPlace {
+        private Long id;
         private String titleFa;
         private List<TrainingPlaceDTO.TrainingPlaceTitle> trainingPlaceSet;
     }

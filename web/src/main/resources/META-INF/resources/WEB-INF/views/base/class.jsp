@@ -117,14 +117,14 @@
     });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
-            // {name: "id", primaryKey: true},
-            {name: "titleFa", title: "نام موسسه"},
-            {name: "trainingPlaceSet.titleFa", title: "نام مکان"},
-            {name: "trainingPlaceSet.id", primaryKey:true}
-            // {name: "capacity", title: "ظرفیت"}
+            {name: "id", primaryKey: true},
+            {name: "instituteId"},
+            {name: "instituteTitleFa", title:"نام موسسه"},
+            {name: "titleFa", title: "نام مکان"},
+            {name: "capacity", title: "ظرفیت"}
         ],
         // fetchDataURL: instituteUrl + "0/training-places"
-        fetchDataURL: instituteUrl + "training-places"
+        fetchDataURL: trainingPlaceUrl + "with-institute"
     });
 
 
@@ -479,7 +479,6 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                // startRow:true,
                 // changed: function (form, item) {
                 //     form.clearValue("trainingPlaceIds")
                 // }
@@ -510,30 +509,29 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
+                name: "trainingPlaceIds", editorType: "ComboBoxItem", title: "<spring:message code="training.place"/>:",
                 required: true,
+                autoFetchData:false,
                 // multiple: true,
                 colSpan: 2,
                 // width:"250",
                 // align: "center",
-                dataSetType: "tree",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
-                // displayField: "titleFa",
-                valueField: "trainingPlaceSet.id",
+                displayField: "titleFa",
+                valueField: "id",
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                // filterFields: ["titleFa", "trainingPlaceSet.titleFa"],
+                filterFields: ["titleFa","capacity"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
-                // textAlign: "center",
-                pickListProperties: { autoFitFieldWidths: true },
+                textAlign: "center",
                 pickListFields: [
+                    {name:"instituteTitleFa"},
                     {name: "titleFa"},
-                    {name: "trainingPlaceSet.titleFa"}
+                    {name: "capacity"}
                 ],
-                autoOpenTree: "all"
                 // click: function (form, item) {
                 //     if (form.getValue("instituteId")) {
                 //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
@@ -1323,7 +1321,7 @@
             // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
             // RestDataSource_Institute_JspClass.mockDataCriteria  = {id:record.id};
             // DynamicForm_Class_JspClass.getField("course.id").fetchData();
-            RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
+            // RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
             // DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
             classMethod = "PUT";
             url = classUrl + record.id;
