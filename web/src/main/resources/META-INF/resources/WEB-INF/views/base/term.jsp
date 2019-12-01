@@ -154,7 +154,8 @@
                         if (term_method == "POST")
                             getTermCodeRequest(startdate.substr(0, 4));
                     } else
-                        simpleDialog("پیام", "تاریخ شروع وارد نشده است.", 3000, "say");
+
+                        simpleDialog("<spring:message code="message"/>","<spring:message code="msg.Start.date.not.entered"/>", 3000, "say");
                 },
                 blur: function () {
                     var dateCheck = false;
@@ -449,7 +450,7 @@
                     DynamicForm_Term.setValue("code", termYear + "-" + (parseInt(termCode) + 1));
 
                 } else {
-                    simpleDialog("خطا", "پاسخی از سرور دریافت نشد.", 3000, "error");
+                 simpleDialog( "<spring:message code="warning"/>","<spring:message code="msg.error.connecting.to.server"/>", 3000, "error");
                 }
 
             },
@@ -466,7 +467,7 @@
         var termCode1 = DynamicForm_Term.getValue("code");
 
         if (startDate1.substr(0, 4) != termCode1.substr(0, 4)) {
-            simpleDialog("پیام", "کد با تاریخ شروع همخوانی ندارد.", 3000, "say");
+            simpleDialog("<spring:message code="warning"/>", "کد با تاریخ شروع همخوانی ندارد.", 3000, "say");
             return;
         }
         if (!DynamicForm_Term.validate()) {
