@@ -56,7 +56,6 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoInfo")
     public static class Info extends PersonalInfoDTO {
         private Long id;
-        //        private String fullNameFa;
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;
@@ -72,7 +71,6 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoInfoTuple")
     static class PersonalInfoInfoTuple extends PersonalInfoDTO {
 
-        //        private String fullNameFa;
         private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
         private EMarriedDTO.EMarriedInfoTuple eMarried;
         private EGenderDTO.EGenderInfoTuple eGender;
@@ -150,7 +148,6 @@ public class PersonalInfoDTO {
 
         @NotEmpty
         @ApiModelProperty(required = true)
-//        private String fullNameFa;
         private String lastNameFa;
 
         @NotEmpty

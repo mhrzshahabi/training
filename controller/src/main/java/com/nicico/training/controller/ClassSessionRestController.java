@@ -38,6 +38,7 @@ public class ClassSessionRestController {
 
     private final ClassSessionService classSessionService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
@@ -70,7 +71,7 @@ public class ClassSessionRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req) {
-        ClassSessionDTO.ManualSession create = (new ModelMapper()).map(req, ClassSessionDTO.ManualSession.class);
+        ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
         return new ResponseEntity<>(classSessionService.create(create), HttpStatus.CREATED);
     }
 
@@ -78,8 +79,8 @@ public class ClassSessionRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        ClassSessionDTO.Update update = (new ModelMapper()).map(request, ClassSessionDTO.Update.class);
+    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request) {
+        ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
         return new ResponseEntity<>(classSessionService.update(id, update), HttpStatus.OK);
     }
 
