@@ -299,57 +299,57 @@
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 hidden: true
             },
             {
                 name: "category.titleFa", title: "<spring:message
-        code="course_category"/>", align: "center", filterOperator: "contains"
+        code="course_category"/>", align: "center", filterOperator: "iContains"
             },
             {
                 name: "subCategory.titleFa", title: "<spring:message
-        code="course_subcategory"/>", align: "center", filterOperator: "contains"
+        code="course_subcategory"/>", align: "center", filterOperator: "iContains"
             },
             {
                 name: "erunType.titleFa",
                 title: "<spring:message code="course_eruntype"/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 allowFilterOperators: false,
                 canFilter: false
 
             },
             {
                 name: "elevelType.titleFa", title: "<spring:message
-        code="cousre_elevelType"/>", align: "center", filterOperator: "contains",
+        code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "etheoType.titleFa", title: "<spring:message
-        code="course_etheoType"/>", align: "center", filterOperator: "contains",
+        code="course_etheoType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "theoryDuration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "contains",
+                code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
 
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
-                 code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
+                 code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "minTeacherDegree", title: "<spring:message
-        code="course_minTeacherDegree"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             {
                 name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             {
                 name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             // {
             //     name: "knowledge",

@@ -444,18 +444,7 @@
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
-                <%--{--%>
-                    <%--title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",--%>
-                    <%--click: function () {--%>
-                        <%--createTab(this.title, "<spring:url value="web/needAssessment/"/>");--%>
-                    <%--}--%>
-                <%--},--%>
-                {
-                    title: "<spring:message code="need.assessment.skill.based"/>", icon: "<spring:url value="research.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
-                    }
-                },
+
                 {
                     title: "<spring:message code="skill"/>", icon: "<spring:url value="skill.png"/>",
                     click: function () {
@@ -466,6 +455,12 @@
                     title: "<spring:message code="skill.group"/>", icon: "<spring:url value="skillGroup.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="need.assessment.skill.based"/>", icon: "<spring:url value="research.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needAssessmentSkillBased/"/>");
                     }
                 },
             ]

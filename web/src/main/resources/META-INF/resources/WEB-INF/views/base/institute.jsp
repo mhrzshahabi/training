@@ -561,43 +561,43 @@
                 name: "titleFa",
                 title: "<spring:message code='global.titleFa'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "titleEn",
                 title: "<spring:message code='global.titleEn'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "manager.firstNameFa",
                 title: "<spring:message code='manager.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "manager.lastNameFa",
                 title: "<spring:message code='manager.family'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "parentInstitute.titleFa",
                 title: "<spring:message code='institute.parent'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "einstituteType.titleFa",
                 title: "<spring:message code='institute.type'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "elicenseType.titleFa",
                 title: "<spring:message code='diploma.type'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             }
         ],
         sortDirection: "descending",
@@ -621,31 +621,31 @@
                 name: "firstNameFa",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "lastNameFa",
                 title: "<spring:message code='lastName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "fatherName",
                 title: "<spring:message code='father.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "birthDate",
                 title: "<spring:message code='birth.date'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             }
 
         ],

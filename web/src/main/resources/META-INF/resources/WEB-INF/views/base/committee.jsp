@@ -15,13 +15,13 @@
     var RestDataSource_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
+            {name: "titleFa", title: "عنوان ", filterOperator: "iContains"},
             {name: "subCategoryId", hidden: true},
             {name: "categoryId", hidden: true},
-            {name: "category.titleFa", title: "گروه", filterOperator: "contains"},
-            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "contains"},
-            {name: "tasks", title: "وظایف", filterOperator: "contains"},
-            {name: "description", title: "توضیحات", filterOperator: "contains"},
+            {name: "category.titleFa", title: "گروه", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "iContains"},
+            {name: "tasks", title: "وظایف", filterOperator: "iContains"},
+            {name: "description", title: "توضیحات", filterOperator: "iContains"},
         ],
         fetchDataURL: committeeUrl + "spec-list",
     });

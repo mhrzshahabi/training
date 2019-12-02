@@ -12,8 +12,8 @@
     var RestDataSource_Job_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام گروه شغل", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین گروه شغل ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -31,10 +31,10 @@
     var RestDataSource_All_Jobs = isc.TrDS.create({
         fields: [
             {name: "id",primaryKey:true},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"},
             {name: "version"}
         ]
         , fetchDataURL: jobUrl + "iscList"
@@ -599,8 +599,8 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام شغل", align: "center", filterOperator: "contains"},
-            {name: "code", title: "کد شغل ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام شغل", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد شغل ", align: "center", filterOperator: "iContains"},
             // {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],

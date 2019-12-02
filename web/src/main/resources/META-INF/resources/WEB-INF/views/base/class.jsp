@@ -223,10 +223,10 @@
                 align: "center",
                 filterOperator: "iContains"
             },
-            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "contains"},
+            {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals",autoFitWidth: true},
             {name: "reason", title: "<spring:message code='training.request'/>", align: "center"},
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "contains"},
+            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
                 valueMap: {

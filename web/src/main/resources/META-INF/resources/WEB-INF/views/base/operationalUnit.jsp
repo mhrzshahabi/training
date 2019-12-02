@@ -114,13 +114,13 @@
                     name: "unitCode",
                     title: "<spring:message code="unitCode"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "operationalUnit",
                     title: "<spring:message code="unitName"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }
             ],
             doubleClick: function () {

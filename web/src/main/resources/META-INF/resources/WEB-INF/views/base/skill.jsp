@@ -23,9 +23,9 @@
     var RestDataSource_Skill_Skill_Level = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "version"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "version", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_SkillLevelUrl
     });
@@ -33,10 +33,10 @@
     var RestDataSource_Skill_Category = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"}
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_CategoryUrl
     });
@@ -44,10 +44,10 @@
     var RestDataSource_Skill_SubCategory = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false,},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"},
         ]
     });
 
@@ -60,13 +60,13 @@
     var RestDataSource_Skill_Skill = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "category.titleFa"},
-            {name: "subCategory.titleFa"},
-            {name: "skillLevel.titleFa"},
-            {name: "description"},
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "category.titleFa", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", filterOperator: "iContains"},
+            {name: "skillLevel.titleFa", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"},
         ],
         fetchDataURL: skill_SkillHomeUrl + "/spec-list"
     });
@@ -74,8 +74,8 @@
     var RestDataSource_Skill_Attached_SkillGroups = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
@@ -83,8 +83,8 @@
     var RestDataSource_Skill_UnAttached_SkillGroups = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_SkillHomeUrl + "/skill-group-dummy"
     });
@@ -92,14 +92,14 @@
     var RestDataSource_Skill_Attached_Courses = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "category.titleFa"},
-            {name: "subcategory.titleFa"},
-            {name: "etechnicalType.titleFa"},
-            {name: "erunType.titleFa"},
-            {name: "elevelType.titleFa"},
-            {name: "etheoType.titleFa"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "category.titleFa", filterOperator: "iContains"},
+            {name: "subcategory.titleFa", filterOperator: "iContains"},
+            {name: "etechnicalType.titleFa", filterOperator: "iContains"},
+            {name: "erunType.titleFa", filterOperator: "iContains"},
+            {name: "elevelType.titleFa", filterOperator: "iContains"},
+            {name: "etheoType.titleFa", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });
@@ -128,14 +128,14 @@
     var RestDataSource_Skill_UnAttached_Courses = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "category.titleFa"},
-            {name: "subcategory.titleFa"},
-            {name: "etechnicalType.titleFa"},
-            {name: "erunType.titleFa"},
-            {name: "elevelType.titleFa"},
-            {name: "etheoType.titleFa"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "category.titleFa", filterOperator: "iContains"},
+            {name: "subcategory.titleFa", filterOperator: "iContains"},
+            {name: "etechnicalType.titleFa", filterOperator: "iContains"},
+            {name: "erunType.titleFa", filterOperator: "iContains"},
+            {name: "elevelType.titleFa", filterOperator: "iContains"},
+            {name: "etheoType.titleFa", filterOperator: "iContains"}
         ],
         fetchDataURL: skill_SkillHomeUrl + "/course-dummy"
     });

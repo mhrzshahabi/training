@@ -85,20 +85,20 @@
     NeedAssessmentDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "contains"},
-            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "contains"},
+            {name: "post.titleFa", title: "<spring:message code="post"/>", filterOperator: "iContains"},
+            {name: "competence.titleFa", title: "<spring:message code="competence"/>", filterOperator: "iContains"},
             {
                 name: "edomainType.titleFa",
                 title: "<spring:message code="domain"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "eneedAssessmentPriority.titleFa",
                 title: "<spring:message code="priority"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
-            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "contains"},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "contains"},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: needAssessmentUrl + "iscList"
     });
@@ -134,10 +134,10 @@
     PostDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "contains"},
-            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "contains"},
-            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains"},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: postUrl + "iscList"
     });
@@ -145,16 +145,16 @@
     CompetenceDS_needAssessment = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="competence.title"/>", filterOperator: "iContains"},
             {
                 name: "etechnicalType.titleFa",
                 title: "<spring:message code="technical.type"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "ecompetenceInputType.titleFa",
                 title: "<spring:message code="input"/>",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
         ],
         fetchDataURL: competenceUrl + "iscList"

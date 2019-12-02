@@ -86,27 +86,27 @@
                 name: "fullNameFa",
                 title: "<spring:message code='student.persian.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "fullNameEn",
                 title: "<spring:message code='student.english.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "personalID",
                 title: "<spring:message code='personal.ID'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "department",
                 title: "<spring:message code='department'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
-            {name: "license", title: "<spring:message code='degree'/>", align: "center", filterOperator: "contains"},
+            {name: "license", title: "<spring:message code='degree'/>", align: "center", filterOperator: "iContains"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
         sortField: 1,
