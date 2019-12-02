@@ -264,14 +264,14 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "address.restAddr",
-                title: "<spring:message code='address'/>",
-            },
-            {
                 name: "address.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10",
+            },
+            {
+                name: "address.restAddr",
+                title: "<spring:message code='address'/>",
             },
             {
                 name: "address.phone",
@@ -306,11 +306,8 @@
                 valueField: "id",
                 filterFields: ["name"],
                 changed: function (form, item, value) {
-                    if(value === null || value === undefined){
-
-                    }
-                    else {
-                        DynamicForm_Address_Company.getItem("address.cityId").setValue([]);
+                    DynamicForm_Address_Company.clearValue("address.cityId");
+                    if(value !== null && value !== undefined){
                         RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
                         DynamicForm_Address_Company.getItem("address.cityId").fetchData();
                     }
