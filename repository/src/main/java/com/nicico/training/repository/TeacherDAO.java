@@ -19,11 +19,11 @@ public interface TeacherDAO extends JpaRepository<Teacher, Long>, JpaSpecificati
     Optional<Teacher> findByTeacherCode(@Param("teacherCode") String teacherCode);
 
     @Transactional
-    @Query(value = "select tt.* from training.TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from training.TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
+    @Query(value = "select tt.* from TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
     List<Teacher> getUnAttachedTeachersByInstituteId(Long instituteID, Pageable pageable);
 
     @Transactional
-    @Query(value = "select count(*) from training.TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from training.TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
+    @Query(value = "select count(*) from TBL_TEACHER tt  where Not EXISTS(select F_TEACHER from TBL_INSTITUTE_TEACHER tit where  tit.F_TEACHER=tt.ID and tit.F_INSTITUTE = ?)", nativeQuery = true)
     Integer getUnAttachedTeachersCountByInstituteId(Long instituteID);
 
 //    List<Teacher> findByCategoriesAndPersonality_EducationLevelId(Set<Category> categories, Long educationLevelId);
