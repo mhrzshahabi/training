@@ -33,9 +33,9 @@ public class Department extends Auditable {
     @Column(name = "c_unit")
     private String unit;
 
-    @Column(name = "c_cost_center_code", nullable = false)
+    @Column(name = "c_cost_center_code")
     private String costCenterCode;
 
-    @Column(name = "c_cost_center_title_fa", nullable = false)
+    @Column(name = "c_cost_center_title_fa")
     private String costCenterTitleFa;
 }
