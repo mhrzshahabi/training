@@ -260,7 +260,7 @@
 
     var DynamicForm_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
-        // validateOnChange: true,
+        validateOnExit: true,
         height: "100%",
         wrapItemTitles: true,
         isGroup: true,
