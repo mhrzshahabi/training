@@ -18,7 +18,7 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_category", schema = "TRAINING")
+@Table(name = "tbl_category")
 
 public class Category extends Auditable {
 

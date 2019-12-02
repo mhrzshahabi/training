@@ -48,11 +48,11 @@
     let DS_Job_job = isc.MyRestDataSource.create({
         fields: [
             {name: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "عنوان شغل", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "عنوان انگليسي", align: "center", filterOperator: "contains"},
-            {name: "code", title: "کد شغل", align: "center", filterOperator: "contains"},
-            {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "contains"},
-            {name: "description", title: "توضيحات", align: "center", filterOperator: "contains"}],
+            {name: "titleFa", title: "عنوان شغل", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "عنوان انگليسي", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد شغل", align: "center", filterOperator: "iContains"},
+            {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "iContains"},
+            {name: "description", title: "توضيحات", align: "center", filterOperator: "iContains"}],
         fetchDataURL: jobUrl + "spec-list"
     });
 

@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
@@ -12,8 +13,10 @@ import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -21,7 +24,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
-import java.util.function.Supplier;
 
 @Service
 @RequiredArgsConstructor
@@ -57,14 +59,20 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public TeacherDTO.Info create(TeacherDTO.Create request) {
-        Teacher teacher = modelMapper.map(request, Teacher.class);
-        List<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(teacher.getTeacherCode());
-        if (byTeacherCode != null && byTeacherCode.size() > 0)
-            return null;
-        teacher.setPersonalityId(personalInfoService.createOrUpdate(request.getPersonality()).getId());
-        teacher.setPersonality(null);
 
-        return modelMapper.map(teacherDAO.save(teacher), TeacherDTO.Info.class);
+        Optional<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(request.getTeacherCode());
+        if (byTeacherCode.isPresent())
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        request.setPersonalityId(personalInfoService.createOrUpdate(request.getPersonality()).getId());
+        request.setPersonality(null);
+
+        final Teacher teacher = modelMapper.map(request, Teacher.class);
+        try {
+            return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
 
@@ -72,24 +80,38 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
 
-        Supplier<TrainingException> trainingExceptionSupplier = () -> new TrainingException(TrainingException.ErrorType.NotFound);
-
         Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
-        Teacher teacher = optionalTeacher.orElseThrow(trainingExceptionSupplier);
+        Teacher teacher = optionalTeacher.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        if (request.getPersonality() != null) {
+            request.getPersonality().setId(teacher.getPersonalityId());
+            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.update(request.getPersonality().getId(), request.getPersonality());
+            request.setPersonalityId(personalInfoDTO.getId());
+            request.setPersonality(null);
+        }
 
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
 
-        personalInfoService.update(teacher.getPersonality().getId(), request.getPersonality());
+        if (request.getPersonality() == null)
+            updating.setPersonality(null);
 
-        return modelMapper.map(teacherDAO.save(updating), TeacherDTO.Info.class);
+        try {
+            return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        teacherDAO.deleteById(id);
+        try {
+            teacherDAO.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional
@@ -110,6 +132,7 @@ public class TeacherService implements ITeacherService {
     public SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request) {
         return SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.TeacherFullNameTuple.class));
     }
+
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request) {

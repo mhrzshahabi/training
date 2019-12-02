@@ -14,9 +14,9 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PostDAO extends JpaRepository<Post, Long>, JpaSpecificationExecutor<Post> {
 
-//    @Query(value = "select p.* from training.tbl_post p where p.f_job_id = ?1", countQuery = "SELECT count(*) from training.tbl_post p where p.f_job_id = ?1", nativeQuery = true)
+//    @Query(value = "select p.* from tbl_post p where p.f_job_id = ?1", countQuery = "SELECT count(*) from tbl_post p where p.f_job_id = ?1", nativeQuery = true)
 //    Page<Post> findAllByJobId(Long jobId, Pageable pageable);
 
-    @Query(value = "select p.* from training.tbl_post p where p.f_job_id = ?1", nativeQuery = true)
+    @Query(value = "select p.* from tbl_post p where p.f_job_id = ?1", nativeQuery = true)
     Page<Post> findAllByJobId(Long jobId, Pageable pageable);
 }

@@ -221,7 +221,7 @@
         alternateRecordStyles: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-       canHover:true,
+      // canHover:true,
         filterOnKeypress: false,
         showFilterEditor: true,
         contextMenu: Menu_ListGrid_CheckListItem,
@@ -258,7 +258,7 @@
     var ListGrid_CheckList = isc.TrLG.create({
         filterOperator: "iContains",
         allowAdvancedCriteria: true,
-        canHover:true,
+       // canHover:true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
         showFilterEditor: true,

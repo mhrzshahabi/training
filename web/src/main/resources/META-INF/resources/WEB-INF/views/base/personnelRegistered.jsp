@@ -9,6 +9,7 @@
     var educationLevelUrlPerReg = educationUrl + "level/";
     var educationMajorUrlPerReg = educationUrl + "major/";
     var codeMeliCheckPerReg = true;
+    var persianRegDateCheck = true;
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -18,22 +19,58 @@
     var RestDataSource_company_PerReg = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "contains"},
-            {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "contains"},
-            {name: "email", title: "<spring:message code="email"/>", filterOperator: "contains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
+            {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
         ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: companyUrl + "spec-list"
     });
 
     var RestDataSource_Education_Level_PerReg = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "code"}
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "code", filterOperator: "iContains"}
         ],
         // fetchDataURL: educationLevelUrlPerReg + "level/spec-list"
 
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: educationLevelUrlPerReg + "spec-list?_startRow=0&_endRow=55",
         autoFetchData: true
     });
@@ -41,11 +78,29 @@
     var RestDataSource_Education_Major_PerReg = isc.TrDS.create({
         fields: [
             {name: "id"},
-            {name: "titleEn"},
-            {name: "titleFa"}
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"}
         ],
         // fetchDataURL: educationMajorUrlPerReg + "major/spec-list"
 
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: educationMajorUrlPerReg + "spec-list?_startRow=0&_endRow=100",
         autoFetchData: true
     });
@@ -56,6 +111,24 @@
             {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
         ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: postGradeUrl + "iscList"
     });
 
@@ -82,21 +155,93 @@
         code="post.grade.title"/>", filterOperator: "iContains"
             },
         ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: postUrl + "iscList"
     });
 
     var RestDataSource_Egender_PerReg = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id"}, {name: "titleFa", filterOperator: "iContains"}],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: enumUrl + "eGender/spec-list"
     });
 
     var RestDataSource_Emarried_PerReg = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id"}, {name: "titleFa", filterOperator: "iContains"}],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: enumUrl + "eMarried/spec-list"
     });
 
     var RestDataSource_Emilitary_PerReg = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id"}, {name: "titleFa", filterOperator: "iContains"}],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
         fetchDataURL: enumUrl + "eMilitary/spec-list"
     });
 
@@ -327,7 +472,7 @@
                 changed: function () {
                     var dateCheck;
                     dateCheck = checkBirthDate(DynamicForm_PersonnelReg_BaseInfo.getValue("birthDate"));
-                    persianDateCheck = dateCheck;
+                    persianRegDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("birthDate", "<spring:message
                                                                             code='msg.correct.date'/>", true);
@@ -646,7 +791,7 @@
         top: 260,
         title: "<spring:message code='cancel'/>",
         align: "center",
-        icon: "<spring:url value="remove.png"/>",
+        icon: "[SKIN]/actions/cancel.png",
         click: function () {
             Window_PersonnelReg_JspPersonnelReg.close();
         }
@@ -656,11 +801,16 @@
         top: 260,
         title: "<spring:message code='save'/>",
         align: "center",
-        icon: "<spring:url value="pieces/16/save.png"/>",
+        icon: "[SKIN]/actions/save.png",
         click: function () {
             if (codeMeliCheckPerReg === false) {
                 DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
+                return;
+            }
+            if (persianRegDateCheck === false) {
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("birthDate", "<spring:message
+                                                                            code='msg.correct.date'/>", true);
                 return;
             }
             DynamicForm_PersonnelReg_BaseInfo.validate();
@@ -787,82 +937,80 @@
             ListGrid_personnelReg_edit();
         },
 
+        selectionType: "single",
 
-        canAddFormulaFields: false,
-        autoFetchData: true,
-        showFilterEditor: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {
                 name: "personnelNo",
                 title: "<spring:message code='personal.ID'/>",
-                align: "center",
-                filterOperator: "equals"
+                align: "center"
+                , filterOperator: "iContains"
             },
             {
                 name: "firstName",
                 title: "<spring:message code='firstName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "lastName",
                 title: "<spring:message code='lastName'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "birthCertificateNo",
                 title: "<spring:message code='birth.certificate'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 align: "center",
-                filterOperator: "equals"
+                filterOperator: "iContains"
             },
             {
                 name: "companyName",
                 title: "<spring:message code='company.name'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "educationMajor",
                 title: "<spring:message code='personnelReg.educationMajorTitle'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
             {
                 name: "educationLevel",
                 title: "<spring:message code='personnelReg.educationLevelTitle'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             }
 
-        ]
+        ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
 
-        <%--sortField: 1,--%>
-        <%--sortDirection: "descending",--%>
-        <%--dataPageSize: 50,--%>
-        <%--autoFetchData: true,--%>
-        <%--showFilterEditor: true,--%>
-        <%--allowAdvancedCriteria: true,--%>
-        <%--allowFilterExpressions: true,--%>
-        <%--filterOnKeypress: false,--%>
-        <%--sortFieldAscendingText: "<spring:message code='sort.ascending'/>",--%>
-        <%--sortFieldDescendingText: "<spring:message code='sort.descending'/>",--%>
-        <%--configureSortText: "<spring:message code='configureSortText'/>",--%>
-        <%--// autoFitAllText: "<spring:message code='autoFitAllText'/>",--%>
-        <%--// autoFitFieldText: "<spring:message code='autoFitFieldText'/>",--%>
-        <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
-        <%--groupByText: "<spring:message code='groupByText'/>",--%>
-        <%--// freezeFieldText: "<spring:message code='freezeFieldText'/>"--%>
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
     var HLayout_Actions_PersonnelReg_JspPersonnelReg = isc.HLayout.create({
@@ -981,16 +1129,21 @@
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             var responseID = JSON.parse(resp.data).id;
             var gridState = "[{id:" + responseID + "}]";
-            var OK = isc.Dialog.create({
-                message: "<spring:message code='msg.operation.successful'/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code='msg.command.done'/>"
-            });
-            setTimeout(function () {
-                OK.close();
-                ListGrid_personnelReg_refresh();
-                ListGrid_PersonnelReg_JspPersonnelReg.setSelectedState(gridState);
-            }, 1000);
+            <%--var OK = isc.Dialog.create({--%>
+            <%--    message: "<spring:message code='msg.operation.successful'/>",--%>
+            <%--    icon: "[SKIN]say.png",--%>
+            <%--    title: "<spring:message code='msg.command.done'/>"--%>
+            <%--});--%>
+            // setTimeout(function () {
+            //     OK.close();
+            //     ListGrid_personnelReg_refresh();
+            //     ListGrid_PersonnelReg_JspPersonnelReg.setSelectedState(gridState);
+            // }, 1000);
+
+            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+
+            ListGrid_personnelReg_refresh();
+            ListGrid_PersonnelReg_JspPersonnelReg.setSelectedState(gridState);
             Window_PersonnelReg_JspPersonnelReg.close();
         } else {
             var ERROR = isc.Dialog.create({
@@ -1009,14 +1162,17 @@
         personnelRegWait.close();
         if (resp.httpResponseCode == 200) {
             ListGrid_PersonnelReg_JspPersonnelReg.invalidateCache();
-            var OK = isc.Dialog.create({
-                message: "<spring:message code='msg.record.remove.successful'/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code='msg.command.done'/>"
-            });
-            setTimeout(function () {
-                OK.close();
-            }, 3000);
+            <%--var OK = isc.Dialog.create({--%>
+            <%--    message: "<spring:message code='msg.record.remove.successful'/>",--%>
+            <%--    icon: "[SKIN]say.png",--%>
+            <%--    title: "<spring:message code='msg.command.done'/>"--%>
+            <%--});--%>
+            <%--setTimeout(function () {--%>
+            <%--    OK.close();--%>
+            <%--}, 3000);--%>
+            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+            ListGrid_personnelReg_refresh();
+
         } else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.student.remove.error'/>",

@@ -31,8 +31,8 @@ public class CompanyDTO implements Serializable {
     @ApiModel("CompanyInfo")
     public static class Info extends CompanyDTO {
         private Long id;
-        private PersonalInfoDTO.PersonalInfoInfoTuple manager;
-        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
+        private PersonalInfoDTO.Info manager;
+        private AccountInfoDTO.Info accountInfo;
         private AddressDTO.Info address;
         private Long managerId;
         private Long contactInfoId;

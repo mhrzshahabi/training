@@ -144,12 +144,12 @@ var dummy;
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "contains"},
+            {name: "teacherCode", title: "<spring:message code='code'/>", align: "center", filterOperator: "iContains"},
             {
                 name: "personality.fullName",
                 title: "<spring:message code='firstName.lastName'/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 formatCellValue: function (value, record) {
                     return record.personality.firstNameFa + " " + record.personality.lastNameFa;
                 }
@@ -159,7 +159,7 @@ var dummy;
                 name: "personality.educationLevel.titleFa",
                 title: "<spring:message code='education.level'/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
 
 

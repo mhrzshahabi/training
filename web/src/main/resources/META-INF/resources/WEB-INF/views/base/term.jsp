@@ -89,20 +89,20 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "contains"},
-            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "contains"},
+            {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "startDate",
                 title: "<spring:message code="start.date"/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
-            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "contains"},
+            {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "iContains"},
             {
                 name: "description",
                 title: "<spring:message code="description"/>",
                 align: "center",
-                filterOperator: "contains"
+                filterOperator: "iContains"
             },
         ],
         doubleClick: function () {
@@ -553,15 +553,17 @@
             Window_term.close();
 
         } else {
-            var OK = isc.Dialog.create({
-                message: "<spring:message code="msg.operation.error"/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code="warning"/>"
-            });
+                if (respCode == 400) {
+                    var OK = isc.Dialog.create({
+                    message: "<spring:message code="msg.delete.childRecord"/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code="error"/>"
+                    });
 
-            setTimeout(function () {
-                OK.close();
-            }, 2000);
+                    setTimeout(function () {
+                    OK.close();
+                    }, 2000);
+                }
         }
     };
 

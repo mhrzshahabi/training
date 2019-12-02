@@ -133,98 +133,98 @@
                     name: "dayCode",
                     title: "dayCode",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 },
                 {
                     name: "dayName",
                     title: "<spring:message code="week.day"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "sessionDate",
                     title: "<spring:message code="date"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "sessionStartHour",
                     title: "<spring:message code="start.time"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "sessionEndHour",
                     title: "<spring:message code="end.time"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }, {
                     name: "sessionTypeId",
                     title: "sessionTypeId",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 },
                 {
                     name: "sessionType",
                     title: "<spring:message code="session.type"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }, {
                     name: "instituteId",
                     title: "instituteId",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 },
                 {
                     name: "institute.titleFa",
                     title: "<spring:message code="presenter"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }, {
                     name: "trainingPlaceId",
                     title: "trainingPlaceId",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 }
                 , {
                     name: "trainingPlace.titleFa",
                     title: "<spring:message code="present.location"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }, {
                     name: "teacherId",
                     title: "teacherId",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 },
                 {
                     name: "teacher",
                     title: "<spring:message code="trainer"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 },
                 {
                     name: "sessionState",
                     title: "sessionState",
                     align: "center",
-                    filterOperator: "contains",
+                    filterOperator: "iContains",
                     hidden: true
                 },
                 {
                     name: "sessionStateFa",
                     title: "<spring:message code="session.state"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }, {
                     name: "description",
                     title: "<spring:message code="description"/>",
                     align: "center",
-                    filterOperator: "contains"
+                    filterOperator: "iContains"
                 }
             ],
             doubleClick: function () {

@@ -192,7 +192,27 @@
         margin: 20,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "manager.id", hidden: true},
+            {
+                name: "manager.nationalCode",
+                // required: "true",
+                title: "<spring:message code='national.code'/>",
+                keyPressFilter: "[0-9]",
+                textAlign: "left",
+                length: "10",
+                changed: function (form, item, value) {
+                    let codeCheck = checkNationalCode(value);
+                    nationalCodeCheck = codeCheck;
+                    if (codeCheck === false)
+                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.nationalCode", "<spring:message
+                                                                        code='msg.national.code.validation'/>", true);
+                    if (codeCheck === true) {
+                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.nationalCode", true);
+                        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
+                            "callback: personalInfo_findOne_result_company(rpcResponse)"));
+                    }
+                }
+            },
             {
                 name: "manager.firstNameFa",
                 // required: "true",
@@ -207,21 +227,6 @@
             },
 
             {
-                name: "manager.nationalCode",
-                // required: "true",
-                title: "<spring:message code='national.code'/>",
-                keyPressFilter: "[0-9]",
-                textAlign: "left",
-                length: "10",
-                changed: function () {
-                    let check_National_Company = checkCodeMeli_Company(DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode"));
-                    if (check_National_Company === true) {
-                        let nationalCodeCompany = DynamicForm_ManagerInfo_Company.getValue("manager.nationalCode");
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("personality.nationalCode", true);
-                        isc.RPCManager.sendRequest(TrDSRequest(companyUrl + "getOneByNationalCode/" + nationalCodeCompany, "GET", null, "callback: personalInfo_findOne_result_company(rpcResponse)"));
-                    }
-                }
-            }, {
                 name: "manager.contactInfo.mobile",
                 title: "<spring:message code='mobile'/>",
                 textAlign: "left",
@@ -230,7 +235,7 @@
                 showHintInField: true,
                 keyPressFilter: "[0-9]",
                 validateOnExit: true,
-                validators: [TrValidators.MobileValidate]
+                // validators: [TrValidators.MobileValidate]
 
             },
             {
@@ -259,14 +264,14 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "address.restAddr",
-                title: "<spring:message code='address'/>",
-            },
-            {
                 name: "address.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10",
+            },
+            {
+                name: "address.restAddr",
+                title: "<spring:message code='address'/>",
             },
             {
                 name: "address.phone",
@@ -301,11 +306,8 @@
                 valueField: "id",
                 filterFields: ["name"],
                 changed: function (form, item, value) {
-                    if(value === null || value === undefined){
-
-                    }
-                    else {
-                        DynamicForm_Address_Company.getItem("address.cityId").setValue([]);
+                    DynamicForm_Address_Company.clearValue("address.cityId");
+                    if(value !== null && value !== undefined){
                         RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
                         DynamicForm_Address_Company.getItem("address.cityId").fetchData();
                     }
@@ -605,28 +607,10 @@
         }
     }
 
-    function checkCodeMeli_Company(code) {
-        if (code === "undefined" || code === null || code === "")
-            return false;
-        let L = code.length;
-
-        if (L < 8 || parseFloat(code, 10) === 0)
-            return false;
-        code = ('0000' + code).substr(L + 4 - 10);
-        if (parseFloat(code.substr(3, 6), 10) === 0)
-            return false;
-        let c = parseFloat(code.substr(9, 1), 10);
-        let s = 0;
-        for (let i = 0; i < 9; i++) {
-            s += parseFloat(code.substr(i, 1), 10) * (10 - i);
-        }
-        s = s % 11;
-        return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
-    }
-
     function personalInfo_findOne_result_company(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
             let personal = JSON.parse(resp.data);
+            DynamicForm_ManagerInfo_Company.setValue("manager.id", personal.id);
             DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.firstNameFa);
             DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.lastNameFa);
             if (personal.contactInfo !== null && personal.contactInfo !== undefined) {

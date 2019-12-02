@@ -1,0 +1,40 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-101">
+        <createTable tableName="tbl_session">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_sessionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_session_type_id" type="NUMBER(10, 0)"/>
+            <column name="f_class_id" type="NUMBER(19, 0)"/>
+            <column name="c_day_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_day_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_institute_id" type="NUMBER(19, 0)"/>
+            <column name="c_session_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_end_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_start_hour" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_state" type="NUMBER(10, 0)"/>
+            <column name="c_session_state_fa" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_session_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
+            <column name="f_training_place_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>

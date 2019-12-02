@@ -26,6 +26,7 @@ public class TeacherDTO {
     private Boolean enableStatus;
     private String economicalCode;
     private String economicalRecordNumber;
+    private Long personalityId;
 
     @Getter
     @Setter
@@ -34,19 +35,18 @@ public class TeacherDTO {
     public static class Info extends TeacherDTO {
 
         private Long id;
-        private Long personalityId;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
-        private PersonalInfoDTO.PersonalInfoInfoTuple personality;
+        private PersonalInfoDTO.Info personality;
     }
 
-    @Getter
-    @Setter
-    @ApiModel("TeacherInfoTuple")
-    static class TeacherInfoTuple {
-        private Long id;
-        private PersonalInfoDTO.Create personality;
-        private Set<CategoryDTO.CategoryInfoTuple> categories;
-    }
+//    @Getter
+//    @Setter
+//    @ApiModel("TeacherInfoTuple")
+//    static class TeacherInfoTuple {
+//        private Long id;
+//        private PersonalInfoDTO.Create personality;
+//        private Set<CategoryDTO.CategoryInfoTuple> categories;
+//    }
 
     @Getter
     @Setter
@@ -101,18 +101,10 @@ public class TeacherDTO {
     public static class TeacherFullNameTuple {
         private Long id;
         private PersonalInfoDTO personality;
-        public String getFullNameFa() {
-            return String.format("%s %s",personality.getFirstNameFa(),personality.getLastNameFa());
-        }
-    }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("TeacherFullNameSpecRs")
-    public static class TeacherFullNameSpecRs {
-        private FullNameSpecRs response;
+        public String getFullNameFa() {
+            return String.format("%s %s", personality.getFirstNameFa(), personality.getLastNameFa());
+        }
     }
 
     @Getter
@@ -125,5 +117,14 @@ public class TeacherDTO {
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("TeacherFullNameSpecRs")
+    public static class TeacherFullNameSpecRs {
+        private FullNameSpecRs response;
     }
 }

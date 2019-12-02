@@ -12,8 +12,8 @@
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام گروه پست", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین گروه پست ", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -89,7 +89,7 @@
 
                     isc.Dialog.create({
 
-                        message: "<spring:message code="msg.postGroup.notFound"/>",
+                        message: "<spring:message code="msg.no.records.selected"/>",
                         icon: "[SKIN]ask.png",
                         title: "پیام",
                         buttons: [isc.Button.create({title: "تائید"})],
@@ -133,7 +133,7 @@
 
                         isc.Dialog.create({
 
-                            message: "<spring:message code="msg.postGroup.notFound"/>",
+                            message: "<spring:message code="msg.no.records.selected"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
                             buttons: [isc.Button.create({title: "تائید"})],
@@ -284,8 +284,8 @@
     var RestDataSource_Post_Group_Posts_Jsp = isc.TrDS.create({
         fields: [
             {name: "id",primaryKey:true},
-            {name: "titleFa"},
-            {name: "code"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "code", filterOperator: "iContains"},
             // {name: "description"},
             // {name: "version"}
         ]
@@ -293,22 +293,22 @@
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
             {name: "id",primaryKey:true},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"},
+            {name: "version", filterOperator: "iContains"}
         ]
         , fetchDataURL: postUrl + "iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey:true},
-            {name: "code"},
-            {name: "titleFa"},
-            {name: "titleEn"},
-            {name: "description"},
-            {name: "version"}
+            {name: "code", filterOperator: "iContains"},
+            {name: "titleFa", filterOperator: "iContains"},
+            {name: "titleEn", filterOperator: "iContains"},
+            {name: "description", filterOperator: "iContains"},
+            {name: "version", filterOperator: "iContains"}
         ]
     });
     var DynamicForm_thisPostGroupHeader_Jsp = isc.DynamicForm.create({
@@ -651,8 +651,8 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام پست", align: "center", filterOperator: "contains"},
-            {name: "code", title: "کد پست ", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام پست", align: "center", filterOperator: "iContains"},
+            {name: "code", title: "کد پست ", align: "center", filterOperator: "iContains"},
             // {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
@@ -1076,7 +1076,7 @@
 
                 isc.Dialog.create({
 
-                    message: "<spring:message code="msg.postGroup.notFound"/>",
+                    message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
                     buttons: [isc.Button.create({title: "تائید"})],

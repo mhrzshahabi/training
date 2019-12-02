@@ -1,0 +1,20 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-114">
+        <createTable tableName="tbl_teacher_category">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="f_category" type="NUMBER(19, 0)">
+                <constraints primaryKey="true"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575281578259-152">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+
+</databaseChangeLog>
