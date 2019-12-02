@@ -56,7 +56,7 @@ public class AccountInfoService implements IAccountInfoService {
     public AccountInfoDTO.Info create(AccountInfoDTO.Create request) {
         final AccountInfo accountInfo = modelMapper.map(request, AccountInfo.class);
         try {
-            return modelMapper.map(accountInfoDAO.save(accountInfo), AccountInfoDTO.Info.class);
+            return modelMapper.map(accountInfoDAO.saveAndFlush(accountInfo), AccountInfoDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -71,7 +71,7 @@ public class AccountInfoService implements IAccountInfoService {
         modelMapper.map(accountInfo, updating);
         modelMapper.map(request, updating);
         try {
-            return modelMapper.map(accountInfoDAO.save(updating), AccountInfoDTO.Info.class);
+            return modelMapper.map(accountInfoDAO.saveAndFlush(updating), AccountInfoDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }

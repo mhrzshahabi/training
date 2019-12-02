@@ -75,12 +75,12 @@ public class PersonalInfoService implements IPersonalInfoService {
     public PersonalInfoDTO.Info create(PersonalInfoDTO.Create request) {
 
         if (request.getAccountInfo() != null) {
-            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
+            AccountInfoDTO.Info accountInfoDTO = accountInfoService.create(request.getAccountInfo());
             request.setAccountInfoId(accountInfoDTO.getId());
             request.setAccountInfo(null);
         }
         if (request.getContactInfo() != null) {
-            ContactInfoDTO.Info contactInfoDTO = contactInfoService.createOrUpdate(request.getContactInfo());
+            ContactInfoDTO.Info contactInfoDTO = contactInfoService.create(request.getContactInfo());
             request.setContactInfoId(contactInfoDTO.getId());
             request.setContactInfo(null);
         }
@@ -89,7 +89,7 @@ public class PersonalInfoService implements IPersonalInfoService {
         setEnums(personalInfo, personalInfo.getMarriedId(), personalInfo.getMilitaryId(), personalInfo.getGenderId());
 
         try {
-            return modelMapper.map(personalInfoDAO.save(personalInfo), PersonalInfoDTO.Info.class);
+            return modelMapper.map(personalInfoDAO.saveAndFlush(personalInfo), PersonalInfoDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -100,19 +100,29 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Override
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
 
+        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
+        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
         if (request.getAccountInfo() != null) {
+            request.getAccountInfo().setId(personalInfo.getAccountInfoId());
             AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
             request.setAccountInfoId(accountInfoDTO.getId());
             request.setAccountInfo(null);
+        } else if (personalInfo.getAccountInfo() != null) {
+            request.setAccountInfoId(personalInfo.getAccountInfoId());
+            request.setAccountInfo(modelMapper.map(personalInfo.getAccountInfo(), AccountInfoDTO.Create.class));
         }
         if (request.getContactInfo() != null) {
+            request.getContactInfo().setId(personalInfo.getContactInfoId());
             ContactInfoDTO.Info contactInfoDTO = contactInfoService.createOrUpdate(request.getContactInfo());
             request.setContactInfoId(contactInfoDTO.getId());
             request.setContactInfo(null);
+        } else if (personalInfo.getContactInfo() != null) {
+            request.setContactInfoId(personalInfo.getContactInfoId());
+            request.setContactInfo(modelMapper.map(personalInfo.getContactInfo(), ContactInfoDTO.Create.class));
         }
 
-        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
-        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
@@ -124,7 +134,7 @@ public class PersonalInfoService implements IPersonalInfoService {
             pUpdating.setContactInfo(null);
 
         try {
-            return modelMapper.map(personalInfoDAO.save(pUpdating), PersonalInfoDTO.Info.class);
+            return modelMapper.map(personalInfoDAO.saveAndFlush(pUpdating), PersonalInfoDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -133,8 +143,12 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional
     @Override
     public void delete(Long id) {
+        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
+        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         try {
             personalInfoDAO.deleteById(id);
+            accountInfoService.delete(personalInfo.getAccountInfoId());
+            contactInfoService.delete(personalInfo.getContactInfoId());
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }

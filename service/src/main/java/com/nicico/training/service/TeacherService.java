@@ -69,7 +69,7 @@ public class TeacherService implements ITeacherService {
 
         final Teacher teacher = modelMapper.map(request, Teacher.class);
         try {
-            return modelMapper.map(teacherDAO.save(teacher), TeacherDTO.Info.class);
+            return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -80,14 +80,15 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
 
+        Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
+        Teacher teacher = optionalTeacher.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
         if (request.getPersonality() != null) {
+            request.getPersonality().setId(teacher.getPersonalityId());
             PersonalInfoDTO.Info personalInfoDTO = personalInfoService.update(request.getPersonality().getId(), request.getPersonality());
             request.setPersonalityId(personalInfoDTO.getId());
             request.setPersonality(null);
         }
-
-        Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
-        Teacher teacher = optionalTeacher.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
@@ -97,7 +98,7 @@ public class TeacherService implements ITeacherService {
             updating.setPersonality(null);
 
         try {
-            return modelMapper.map(teacherDAO.save(updating), TeacherDTO.Info.class);
+            return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
