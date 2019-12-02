@@ -2,10 +2,12 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -38,23 +40,36 @@ public class ContactInfoRestController {
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_address')")
-    public ResponseEntity<ContactInfoDTO.Info> create(@Validated @RequestBody ContactInfoDTO.Create request) {
-        return new ResponseEntity<>(contactInfoService.create(request), HttpStatus.CREATED);
+    public ResponseEntity create(@Validated @RequestBody ContactInfoDTO.Create request) {
+        try {
+            return new ResponseEntity<>(contactInfoService.create(request), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_address')")
-    public ResponseEntity<ContactInfoDTO.Info> update(@PathVariable Long id, @Validated @RequestBody ContactInfoDTO.Update request) {
-        return new ResponseEntity<>(contactInfoService.update(id, request), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody ContactInfoDTO.Update request) {
+        try {
+            return new ResponseEntity<>(contactInfoService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_address')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        contactInfoService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            contactInfoService.delete(id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -62,16 +77,16 @@ public class ContactInfoRestController {
 //    @PreAuthorize("hasAuthority('d_address')")
     public ResponseEntity<Void> delete(@Validated @RequestBody ContactInfoDTO.Delete request) {
         contactInfoService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_address')")
     public ResponseEntity<ContactInfoDTO.ContactInfoSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                         @RequestParam("_endRow") Integer endRow,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria) {
+                                                                 @RequestParam("_endRow") Integer endRow,
+                                                                 @RequestParam(value = "operator", required = false) String operator,
+                                                                 @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
