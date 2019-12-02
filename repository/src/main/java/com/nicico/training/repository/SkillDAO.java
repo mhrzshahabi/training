@@ -9,7 +9,7 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface SkillDAO extends JpaRepository<Skill, Long>, JpaSpecificationExecutor<Skill> {
-    @Query(value = "select nvl(max(s.c_code),'0') maxCode from training.tbl_skill s  where s.c_code like :skillCodeStart%", nativeQuery = true)
+    @Query(value = "select nvl(max(s.c_code),'0') maxCode from tbl_skill s  where s.c_code like :skillCodeStart%", nativeQuery = true)
     String findMaxSkillCode(@Param("skillCodeStart") String skillCodeStart);
 
     @Query(value = "SELECT * FROM tbl_skill ts where Not Exists(select * from TBL_COMPETENCE_SKILL tcs where ts.id=tcs.F_SKILL_ID) and " +
