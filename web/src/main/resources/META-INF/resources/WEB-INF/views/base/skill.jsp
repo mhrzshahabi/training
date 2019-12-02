@@ -158,7 +158,7 @@
             {
                 name: "code",
                 colSpan: 2,
-                title: "کد مهارت",
+                title: "<spring:message code="skill.code"/>",
                 length: 10,
                 type: 'staticText',
                 required: false,
@@ -167,9 +167,9 @@
             },
             {
                 name: "titleFa",
-                title: "عنوان فارسی",
+                title: "<spring:message code='title'/>",
                 required: true,
-                hint: " عنوان فارسی",
+              //  hint: " عنوان فارسی",
                 showHintInField: true,
                 type: 'text',
                 default: "125",
@@ -186,10 +186,10 @@
             },
             {
                 name: "titleEn",
-                title: "عنوان لاتین ",
+                title: "<spring:message code='title.en'/>",
                 type: 'text',
                 keyPressFilter: "[a-z|A-Z|0-9| ]",
-                hint: " عنوان لاتین",
+              //  hint:  "<spring:message code='title.en'/>",
                 showHintInField: true,
                 length: "255",
                 width: "300",
@@ -205,8 +205,8 @@
             },
             {
                 name: "skillLevelId",
-                title: "سطح مهارت",
-                hint: "سطح مهارت",
+                title:"<spring:message code="skill.level"/>",
+             //   hint: "<spring:message code="skill.level"/>",
                 showHintInField: true,
                 width: "300",
                 required: true,
@@ -232,7 +232,7 @@
                 pickListFields: [
                     {
                         name: "titleFa",
-                        title: " عنوان",
+                        title:"<spring:message code="title"/>",
                         width: "30%",
                         filterOperator: "iContains"
                     }
@@ -254,8 +254,8 @@
             },
             {
                 name: "categoryId",
-                title: "گروه مهارت",
-                hint: "گروه مهارت",
+                title:"<spring:message code="skill.group"/>",
+              //  hint:"<spring:message code="skill.group"/>",
                 showHintInField: true,
                 width: "300",
                 required: true,
@@ -297,8 +297,8 @@
             },
             {
                 name: "subCategoryId",
-                title: " زیر گروه مهارت",
-                hint: "زیرگروه مهارت",
+                title:"<spring:message code="skill.subcategory"/>",
+             //   hint:"<spring:message code="skill.subcategory"/>",
                 showHintInField: true,
                 width: "300",
                 required: true,
@@ -311,7 +311,8 @@
                 useClientFiltering: true,
                 cachePickListResults: true,
                 changeOnKeypress: false,
-                filterOnKeypress: true, optionDataSource: RestDataSource_Skill_SubCategory,
+                filterOnKeypress: true,
+                 optionDataSource: RestDataSource_Skill_SubCategory,
                 autoFetchData: false,
                 filterFields: ["titleFa"],
                 sortField: ["id"],
@@ -328,8 +329,8 @@
                     },
                     {
                         name: "titleFa",
-                        title: " عنوان زیرگروه",
-                        width: "60%",
+                      title:"<spring:message code="subcategory"/>",
+                      width: "60%",
                         filterOperator: "iContains"
                     }
                 ],
@@ -337,9 +338,9 @@
             {
                 name: "description",
                 colSpan: 4,
-                hint: " توضیحات",
+               // hint:"<spring:message code="description"/>",
                 showHintInField: true,
-                title: "توضيحات",
+                title:"<spring:message code="description"/>",
                 length: "500",
                 width: "700",
                 type: 'areaText'
@@ -448,7 +449,7 @@
         fields: [
         //  {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa",title: "<spring:message code="title"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"}
+            {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center"}
         ],
         selectionType: "multiple",
         sortField: 1,
@@ -478,9 +479,9 @@
         fields: [
          //   {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "titleFa", title: "<spring:message code="title"/>", align: "center"},
-            {name: "titleEn", title: "<spring:message code="course_en_name"/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code="title.en"/>", align: "center"},
             {name: "category.titleFa", title: "<spring:message code="group"/>", align: "center"},
-            {name: "subcategory.titleFa",title: "<spring:message code="course_subcategory"/>", align: "center"},
+            {name: "subcategory.titleFa",title: "<spring:message code="subcategory"/>", align: "center"},
             {name: "etechnicalType.titleFa",title: "<spring:message code="course_etechnicalType"/>", align: "center"},
             {name: "erunType.titleFa",title: "<spring:message code="course_eruntype"/>", align: "center"},
             {name: "elevelType.titleFa",title: "<spring:message code="cousre_elevelType"/>", align: "center"},
@@ -513,7 +514,7 @@
             {name: "competence.titleFa",},
             {name: "edomainType.titleFa",},
             {name: "eneedAssessmentPriority.titleFa",},
-            {name: "skill.titleFa", hidden: true},
+          //  {name: "skill.titleFa", hidden: true},
             {name: "description",},
         ],
         autoFetchData: false,
@@ -526,15 +527,7 @@
         click: function () {
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
-               isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+                createDialog("info", "<spring:message code='msg.not.selected.record'/>");
             } else {
                 Skill_Add_SkillGroup();
             }
@@ -547,15 +540,7 @@
         click: function () {
             var record = ListGrid_Skill_Skill.getSelectedRecord();
             if (record == null || record.id == null) {
-                isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+                 createDialog("info", "<spring:message code='msg.not.selected.record'/>");
             } else {
                 Skill_Add_Course();
             }
@@ -586,10 +571,10 @@
     function ListGrid_Skill_Skill_Remove() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         //console.log(record);
-        if (record == null) {
-             createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+        if (record == null || record.id == null) {
+           createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
-         var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+         var Dialog_Class_remove = createDialog("ask", "<spring:message code="msg.record.remove.ask"/>",
                 "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
@@ -643,15 +628,7 @@
     function ListGrid_Skill_Skill_Edit() {
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
-               isc.Dialog.create({
-                message: "<spring:message code="msg.not.selected.record"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="message"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+                createDialog("info", "<spring:message code='msg.not.selected.record'/>");
         } else {
             //console.log('record:' + JSON.stringify(record));
             var id = record.categoryId;
@@ -746,11 +723,11 @@
           //  {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code",title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
             {name: "titleFa",title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
-            {name: "titleEn",title: "<spring:message code="course_en_name"/>", align: "center", filterOperator: "iContains"},
+            {name: "titleEn",title: "<spring:message code="title.en"/>", align: "center", filterOperator: "iContains"},
             {name: "category.titleFa", title: "<spring:message code="group"/>", align: "center", filterOperator: "iContains"},
-            {name: "subCategory.titleFa", title: "<spring:message code="course_subcategory"/>", align: "center", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", align: "center", filterOperator: "iContains"},
             {name: "skillLevel.titleFa", title: "<spring:message code="skill.level"/>", align: "center", filterOperator: "iContains"},
-            {name: "description",title: "<spring:message code="description"/>",align: "center", hidden: true, filterOperator: "iContains"}
+           // {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"}
         ],
         selectionType: "single",
         selectionChanged: function (record, state) {
@@ -1020,20 +997,20 @@
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد مهارت",
+               title:"<spring:message code="skill.code"/>",
                 type: 'staticText',
                 width: "100"
             },
             {
                 name: "titleFa",
-                title: "عنوان فارسی",
+                title: "<spring:message code="title"/>",
                 type: 'staticText',
                 length: "200",
                 width: "150"
             },
             {
                 name: "titleEn",
-                title: "عنوان لاتین ",
+                title: "<spring:message code="title.en"/>",
                 type: 'staticText',
                 length: "200",
                 width: "150"
@@ -1060,7 +1037,7 @@
         fields: [
             {name: "id", hidden: true},
             {name: "titleFa",title:"<spring:message code='title'/>", align: "center"},
-            {name: "titleEn", title:"<spring:message code='course_en_name'/>", align: "center"}
+            {name: "titleEn", title:"<spring:message code='title.en'/>", align: "center"}
         ],
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var skillGroupRecord = record;
@@ -1115,7 +1092,7 @@
         fields: [
           //  {name: "id", hidden: true},
             {name: "titleFa",title:"<spring:message code='title'/>", align: "center"},
-            {name: "titleEn", title:"<spring:message code='course_en_name'/>", align: "center"},
+            {name: "titleEn", title:"<spring:message code='title.en'/>", align: "center"},
             {name: "OnDelete", title:"<spring:message code="remove"/>", align: "center"}
 
         ],
@@ -1167,7 +1144,7 @@
         width: "45%",
         sections: [
             {
-                title: "گروه مهارتهای انتخاب شده",
+               title:"<spring:message code='skill.group.selected'/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -1238,7 +1215,7 @@
     });
 
     var Window_Skill_AddSkillGroup = isc.Window.create({
-        title: "مرتبط کردن/حذف ارتباط گروه مهارت با مهارت",
+        title:"<spring:message code='relate/delete.relation.skill.skillGroup'/>",
         width: "80%",
         height: "80%",
         autoSize: false,
@@ -1262,11 +1239,11 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "لطفا یک مهارت را انتخاب کنید.",
-                icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تایید"})],
-                buttonClick: function () {
+                message:"<spring:message code='msg.select.skill'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="warning"/>",
+                  buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
                     this.close();
                 }
             });
@@ -1462,20 +1439,20 @@
             {name: "id", hidden: true},
             {
                 name: "code",
-                title: "کد مهارت",
+                title: "<spring:message code="skill.code"/>",
                 type: 'staticText',
                 width: "100"
             },
             {
                 name: "titleFa",
-                title: "عنوان فارسی",
+                title: "<spring:message code="title"/>",
                 type: 'staticText',
                 length: "200",
                 width: "150"
             },
             {
                 name: "titleEn",
-                title: "عنوان لاتین ",
+                title:"<spring:message code="title.en"/>",
                 type: 'staticText',
                 length: "200",
                 width: "150"
@@ -1501,8 +1478,8 @@
         },
         fields: [
             {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"}
+            {name: "titleFa", title: "<spring:message code='title'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='title.en'/>", align: "center"}
         ],
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
             var courseRecord = record;
@@ -1556,10 +1533,10 @@
         },
         canEdit: false,
         fields: [
-            {name: "id", hidden: true},
-            {name: "titleFa", title: "نام فارسی", align: "center"},
-            {name: "titleEn", title: "نام لاتین", align: "center"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+          //  {name: "id", hidden: true},
+             {name: "titleFa", title: "<spring:message code='title'/>", align: "center"},
+            {name: "titleEn", title: "<spring:message code='title.en'/>", align: "center"},
+            {name: "OnDelete", title:"<spring:message code="remove"/>", align: "center"}
 
         ],
         recordDoubleClick: function (viewer, record, recordNum, field, fieldNum, value, rawValue) {
@@ -1594,7 +1571,8 @@
         width: "45%",
         sections: [
             {
-                title: "دوره های انتخاب نشده",
+              title:"<spring:message code="skill.course.not.selected"/>",
+
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -1610,7 +1588,7 @@
         width: "45%",
         sections: [
             {
-                title: "دوره های انتخاب شده",
+                title:"<spring:message code="skill.course.selected"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -1681,7 +1659,7 @@
     });
 
     var Window_Skill_AddCourse = isc.Window.create({
-        title: "مرتبط کردن/حذف ارتباط دوره با مهارت",
+        title:"<spring:message code="relate/delete.relation.skill.skillGroup"/>",
         width: "80%",
         height: "80%",
         autoSize: false,
@@ -1705,11 +1683,11 @@
         var record = ListGrid_Skill_Skill.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "لطفا یک مهارت را انتخاب کنید.",
-                icon: "<spring:url value='[SKIN]ask.png'/>",
-                title: "توجه",
-                buttons: [isc.Button.create({title: "تایید"})],
-                buttonClick: function () {
+                message:"<spring:message code='msg.select.skill'/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="warning"/>",
+                  buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttonClick: function (button, index) {
                     this.close();
                 }
             });
