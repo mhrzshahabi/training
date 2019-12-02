@@ -13,6 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -72,23 +73,36 @@ public class PersonalInfoRestController {
     @Loggable
     @PostMapping(value = "/create")
 //    @PreAuthorize("hasAuthority('c_personalInfo')")
-    public ResponseEntity<PersonalInfoDTO.Info> create(@Validated @RequestBody PersonalInfoDTO.Create request) {
-        return new ResponseEntity<>(personalInfoService.create(request), HttpStatus.CREATED);
+    public ResponseEntity create(@Validated @RequestBody PersonalInfoDTO.Create request) {
+        try {
+            return new ResponseEntity<>(personalInfoService.create(request), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_personalInfo')")
-    public ResponseEntity<PersonalInfoDTO.Info> update(@PathVariable Long id, @Validated @RequestBody PersonalInfoDTO.Update request) {
-        return new ResponseEntity<>(personalInfoService.update(id, request), HttpStatus.OK);
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody PersonalInfoDTO.Update request) {
+        try {
+            return new ResponseEntity<>(personalInfoService.update(id, request), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "delete/{id}")
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        personalInfoService.delete(id);
-        return new ResponseEntity(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            personalInfoService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -96,16 +110,16 @@ public class PersonalInfoRestController {
 //    @PreAuthorize("hasAuthority('d_personalInfo')")
     public ResponseEntity<Void> delete(@Validated @RequestBody PersonalInfoDTO.Delete request) {
         personalInfoService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonalInfoDTO.PersonalInfoSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                         @RequestParam("_endRow") Integer endRow,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria) {
+                                                                   @RequestParam("_endRow") Integer endRow,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -157,10 +171,10 @@ public class PersonalInfoRestController {
         final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         String fileName = personalInfo.getPhoto();
         try {
-            if(fileName==null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
-                return new ResponseEntity<Boolean>(false, HttpStatus.OK);
+            if (fileName == null || fileName.equalsIgnoreCase("") || fileName.equalsIgnoreCase("null"))
+                return new ResponseEntity<>(false, HttpStatus.OK);
             else
-                return new ResponseEntity<Boolean>(true, HttpStatus.OK);
+                return new ResponseEntity<>(true, HttpStatus.OK);
         } catch (Exception e) {
             e.printStackTrace();
             return null;
@@ -253,7 +267,6 @@ public class PersonalInfoRestController {
         }
         return new ResponseEntity<>(changedFileName, HttpStatus.OK);
     }
-
 
 
 }

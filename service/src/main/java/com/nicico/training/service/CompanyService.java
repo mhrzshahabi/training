@@ -17,7 +17,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -27,10 +26,6 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class CompanyService implements ICompanyService {
     private final CompanyDAO companyDAO;
-    private final AccountInfoDAO accountInfoDAO;
-    private final PersonalInfoDAO personalInfoDAO;
-    private final ContactInfoDAO contactInfoDAO;
-    private final AddressDAO addressDAO;
     private final ModelMapper modelMapper;
     private final AccountInfoService accountInfoService;
     private final AddressService addressService;
@@ -127,7 +122,11 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public void delete(Long id) {
-        companyDAO.deleteById(id);
+        try {
+            companyDAO.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional

@@ -8,8 +8,10 @@ import com.nicico.training.iservice.IAccountInfoService;
 import com.nicico.training.model.AccountInfo;
 import com.nicico.training.repository.AccountInfoDAO;
 import lombok.RequiredArgsConstructor;
+import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -53,7 +55,11 @@ public class AccountInfoService implements IAccountInfoService {
     @Override
     public AccountInfoDTO.Info create(AccountInfoDTO.Create request) {
         final AccountInfo accountInfo = modelMapper.map(request, AccountInfo.class);
-        return modelMapper.map(accountInfoDAO.save(accountInfo), AccountInfoDTO.Info.class);
+        try {
+            return modelMapper.map(accountInfoDAO.save(accountInfo), AccountInfoDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
@@ -64,15 +70,21 @@ public class AccountInfoService implements IAccountInfoService {
         AccountInfo updating = new AccountInfo();
         modelMapper.map(accountInfo, updating);
         modelMapper.map(request, updating);
-        return modelMapper.map(accountInfoDAO.save(updating), AccountInfoDTO.Info.class);
+        try {
+            return modelMapper.map(accountInfoDAO.save(updating), AccountInfoDTO.Info.class);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        final Optional<AccountInfo> one = accountInfoDAO.findById(id);
-        final AccountInfo accountInfo = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        accountInfoDAO.delete(accountInfo);
+        try {
+            accountInfoDAO.deleteById(id);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional

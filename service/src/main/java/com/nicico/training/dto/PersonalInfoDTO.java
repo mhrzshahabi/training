@@ -62,30 +62,31 @@ public class PersonalInfoDTO {
         private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
         private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
-        private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
-        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
+        private ContactInfoDTO.Info contactInfo;
+        private AccountInfoDTO.Info accountInfo;
     }
 
-    @Getter
-    @Setter
-    @ApiModel("PersonalInfoInfoTuple")
-    static class PersonalInfoInfoTuple extends PersonalInfoDTO {
-
-        private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
-        private EMarriedDTO.EMarriedInfoTuple eMarried;
-        private EGenderDTO.EGenderInfoTuple eGender;
-        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
-        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
-        private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
-        private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
-        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-    }
+//    @Getter
+//    @Setter
+//    @ApiModel("PersonalInfoInfoTuple")
+//    static class PersonalInfoInfoTuple extends PersonalInfoDTO {
+//
+//        private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
+//        private EMarriedDTO.EMarriedInfoTuple eMarried;
+//        private EGenderDTO.EGenderInfoTuple eGender;
+//        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
+//        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
+//        private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
+//        private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
+//        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
+//    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("PersonalInfoCreateRq")
     public static class Create extends PersonalInfoDTO {
+        private Long id;
         private ContactInfoDTO.Create contactInfo;
         private AccountInfoDTO.Create accountInfo;
     }
@@ -95,8 +96,9 @@ public class PersonalInfoDTO {
     @Accessors(chain = true)
     @ApiModel("PersonalInfoUpdateRq")
     public static class Update extends PersonalInfoDTO {
-        private ContactInfoDTO.Update contactInfo;
-        private AccountInfoDTO.Update accountInfo;
+        private Long id;
+        private ContactInfoDTO.Create contactInfo;
+        private AccountInfoDTO.Create accountInfo;
     }
 
     @Getter
@@ -139,20 +141,20 @@ public class PersonalInfoDTO {
         private Integer totalRows;
     }
 
-    @Getter
-    @Setter
-    @ApiModel("PersonalInfoFullNameTuple")
-    static class PersonalInfoFullNameTuple {
-
-        private Long id;
-
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private String lastNameFa;
-
-        @NotEmpty
-        @ApiModelProperty(required = true)
-        private String nationalCode;
-
-    }
+//    @Getter
+//    @Setter
+//    @ApiModel("PersonalInfoFullNameTuple")
+//    static class PersonalInfoFullNameTuple {
+//
+//        private Long id;
+//
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private String lastNameFa;
+//
+//        @NotEmpty
+//        @ApiModelProperty(required = true)
+//        private String nationalCode;
+//
+//    }
 }

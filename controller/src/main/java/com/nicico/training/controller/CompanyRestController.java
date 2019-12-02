@@ -5,21 +5,14 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AccountInfoDTO;
-import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.CompanyDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.service.AccountInfoService;
-import com.nicico.training.service.AddressService;
 import com.nicico.training.service.CompanyService;
-import com.nicico.training.service.PersonalInfoService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
-import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +28,6 @@ import java.util.List;
 public class CompanyRestController {
     private final CompanyService companyService;
     private final ObjectMapper objectMapper;
-    private final PersonalInfoService personalInfoService;
-    private final AddressService addressService;
     private final AccountInfoService accountInfoService;
 
     @Loggable
@@ -107,12 +98,17 @@ public class CompanyRestController {
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         final CompanyDTO.Info company = companyService.get(id);
-        companyService.delete(id);
-        if (company.getAccountInfoId() != null)
-            accountInfoService.delete(company.getAccountInfoId());
-        return new ResponseEntity<>(HttpStatus.OK);
+        try {
+            companyService.delete(id);
+            if (company.getAccountInfoId() != null)
+                accountInfoService.delete(company.getAccountInfoId());
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 //    @Loggable

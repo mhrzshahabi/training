@@ -553,15 +553,17 @@
             Window_term.close();
 
         } else {
-            var OK = isc.Dialog.create({
-                message: "<spring:message code="msg.operation.error"/>",
-                icon: "[SKIN]say.png",
-                title: "<spring:message code="warning"/>"
-            });
+                if (respCode == 400) {
+                    var OK = isc.Dialog.create({
+                    message: "<spring:message code="msg.delete.childRecord"/>",
+                    icon: "[SKIN]say.png",
+                    title: "<spring:message code="error"/>"
+                    });
 
-            setTimeout(function () {
-                OK.close();
-            }, 2000);
+                    setTimeout(function () {
+                    OK.close();
+                    }, 2000);
+                }
         }
     };
 

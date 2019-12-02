@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ITeacherService;
@@ -16,6 +17,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,31 +63,39 @@ public class TeacherRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_teacher')")
-    public ResponseEntity<TeacherDTO.Info> create(@RequestBody Object request) {
-        TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
-        return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
+    public ResponseEntity create(@RequestBody TeacherDTO.Create request) {
+        try {
+            return new ResponseEntity<>(teacherService.create(request), HttpStatus.CREATED);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_teacher')")
-    public ResponseEntity<TeacherDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
         ((LinkedHashMap) request).remove("attachPic");
         ((LinkedHashMap) request).remove("categoryList");
         ((LinkedHashMap) request).remove("categories");
         TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
-        return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+        try {
+            return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_teacher')")
-    public ResponseEntity<Boolean> delete(@PathVariable Long id) {
+    public ResponseEntity delete(@PathVariable Long id) {
         try {
             teacherService.delete(id);
-            return new ResponseEntity(true, HttpStatus.OK);
-        } catch (Exception ex) {
-            return new ResponseEntity(false, HttpStatus.NO_CONTENT);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -93,8 +103,13 @@ public class TeacherRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity delete(@Validated @RequestBody TeacherDTO.Delete request) {
-        teacherService.delete(request);
-        return new ResponseEntity(HttpStatus.OK);
+        try {
+            teacherService.delete(request);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -127,8 +142,8 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/fullName-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                                          @RequestParam(value = "operator", required = false) String operator,
                                                                          @RequestParam(value = "criteria", required = false) String criteria,
@@ -204,7 +219,7 @@ public class TeacherRestController {
 //    @PreAuthorize("hasAuthority('d_tclass')")
     public ResponseEntity<List<Long>> getCategories(@PathVariable Long teacherId) {
         List<Long> categorySet = teacherService.getCategories(teacherId);
-        return new ResponseEntity(categorySet, HttpStatus.OK);
+        return new ResponseEntity<>(categorySet, HttpStatus.OK);
     }
 
     @Loggable
@@ -257,14 +272,14 @@ public class TeacherRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        if(id != null){
+        if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
                     .setFieldName("id")
                     .setValue(id);
             request.setCriteria(criteriaRq);
-            startRow=0;
-            endRow=1;
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

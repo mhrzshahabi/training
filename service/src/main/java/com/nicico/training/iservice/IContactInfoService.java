@@ -19,4 +19,6 @@ public interface IContactInfoService {
     void delete(ContactInfoDTO.Delete request);
 
     SearchDTO.SearchRs<ContactInfoDTO.Info> search(SearchDTO.SearchRq request);
+
+    ContactInfoDTO.Info createOrUpdate(ContactInfoDTO.Create request);
 }
