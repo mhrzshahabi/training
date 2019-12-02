@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1575267935938-71">
+    <changeSet author="ghazanfari_f (generated)" id="1575287722509-154">
         <createTable tableName="tbl_department">
             <column name="id" type="VARCHAR2(255 CHAR)">
                 <constraints primaryKey="true" primaryKeyName="tbl_departmentPK"/>
@@ -23,12 +23,8 @@
             <column name="c_affairs" type="VARCHAR2(255 CHAR)"/>
             <column name="c_area" type="VARCHAR2(255 CHAR)"/>
             <column name="c_assistance" type="VARCHAR2(255 CHAR)"/>
-            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)">
-                <constraints nullable="false"/>
-            </column>
+            <column name="c_cost_center_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_cost_center_title_fa" type="VARCHAR2(255 CHAR)"/>
             <column name="c_section" type="VARCHAR2(255 CHAR)"/>
             <column name="c_unit" type="VARCHAR2(255 CHAR)"/>
         </createTable>
