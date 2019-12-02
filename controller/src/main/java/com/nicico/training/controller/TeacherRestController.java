@@ -127,8 +127,8 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/fullName-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+    public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> fullNameList(@RequestParam(value = "_startRow", required = false, defaultValue = "0") Integer startRow,
+                                                                         @RequestParam(value = "_endRow", required = false, defaultValue = "50") Integer endRow,
                                                                          @RequestParam(value = "_constructor", required = false) String constructor,
                                                                          @RequestParam(value = "operator", required = false) String operator,
                                                                          @RequestParam(value = "criteria", required = false) String criteria,
