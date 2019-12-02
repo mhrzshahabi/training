@@ -42,6 +42,7 @@ public class TermRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ModelMapper modelMapper;
 
 
     @Loggable
@@ -59,14 +60,14 @@ public class TermRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<TermDTO.Info> create(@RequestBody TermDTO.Create req) {
-        TermDTO.Create create = (new ModelMapper()).map(req, TermDTO.Create.class);
+        TermDTO.Create create =modelMapper.map(req, TermDTO.Create.class);
         return new ResponseEntity<>(termService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        TermDTO.Update update = (new ModelMapper()).map(request, TermDTO.Update.class);
+        TermDTO.Update update = modelMapper.map(request, TermDTO.Update.class);
         return new ResponseEntity<>(termService.update(id, update), HttpStatus.OK);
     }
 

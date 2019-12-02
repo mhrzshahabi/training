@@ -31,7 +31,6 @@ public class InstituteService implements IInstituteService {
     private final AccountInfoDAO accountInfoDAO;
     private final AddressDAO addressDAO;
     private final PersonalInfoDAO personalInfoDAO;
-
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final EnumsConverter.ELicenseTypeConverter eLicenseTypeConverter = new EnumsConverter.ELicenseTypeConverter();
     private final EnumsConverter.EInstituteTypeConverter eInstituteTypeConverter = new EnumsConverter.EInstituteTypeConverter();

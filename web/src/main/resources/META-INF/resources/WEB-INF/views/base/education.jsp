@@ -621,8 +621,9 @@
             {
                 name: "code",
                 title: "کد",
+                required: true,
                 // type: '',
-                length: "100",
+                length: "5",
                 keyPressFilter: "[0-9]"
             },
         ]

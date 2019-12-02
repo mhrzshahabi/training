@@ -31,19 +31,19 @@ public class Company extends Auditable {
     private String workDomain;
 
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
     private AccountInfo accountInfo;
     @Column(name = "f_account_info_id")
     private Long accountInfoId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_personal_info_id", nullable = false, insertable = false, updatable = false)
     private PersonalInfo manager;
     @Column(name = "f_personal_info_id")
     private Long managerId;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_address_id", nullable = false, insertable = false, updatable = false)
     private Address address;
     @Column(name = "f_address_id")

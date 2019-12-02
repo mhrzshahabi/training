@@ -37,6 +37,7 @@ public class OperationalUnitRestController {
 
     private final OperationalUnitService operationalUnitService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
@@ -61,7 +62,7 @@ public class OperationalUnitRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<OperationalUnitDTO.Info> create(@RequestBody OperationalUnitDTO.Create req) {
-        OperationalUnitDTO.Create create = (new ModelMapper()).map(req, OperationalUnitDTO.Create.class);
+        OperationalUnitDTO.Create create = modelMapper.map(req, OperationalUnitDTO.Create.class);
         return new ResponseEntity<>(operationalUnitService.create(create), HttpStatus.CREATED);
     }
 
@@ -70,7 +71,7 @@ public class OperationalUnitRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<OperationalUnitDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        OperationalUnitDTO.Update update = (new ModelMapper()).map(request, OperationalUnitDTO.Update.class);
+        OperationalUnitDTO.Update update = modelMapper.map(request, OperationalUnitDTO.Update.class);
         return new ResponseEntity<>(operationalUnitService.update(id, update), HttpStatus.OK);
     }
 

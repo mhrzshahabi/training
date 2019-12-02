@@ -29,19 +29,17 @@ public class StateDTO {
     @Accessors(chain = true)
     @ApiModel("StateInfo")
     public static class Info extends StateDTO {
+        @NotEmpty
+        @ApiModelProperty(required = true)
         private Long id;
-        private Date createdDate;
-        private String createdBy;
-        private Date lastModifiedDate;
-        private String lastModifiedBy;
     }
 
-    @Getter
-	@Setter
-	@ApiModel("StatenfoTuple")
-	public static class StateInfoTuple {
-	    private String name;
-	}
+//    @Getter
+//	@Setter
+//	@ApiModel("StatenfoTuple")
+//	public static class StateInfoTuple {
+//	    private String name;
+//	}
     // ------------------------------
 
     @Getter

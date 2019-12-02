@@ -26,7 +26,7 @@
             {name: "personality.lastNameFa"},
             {name: "personality.nationalCode"}
         ],
-        fetchDataURL: courseUrl + "get_teachers/0"
+        fetchDataURL: teacherUrl + "fullName-list"
     });
 
     var RestDataSource_Class_JspClass = isc.TrDS.create({
@@ -118,10 +118,14 @@
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            // {name:"parentId", type:"Long", foreignKey:"instituteId"},
+            {name: "instituteId"},
+            {name: "instituteTitleFa", title:"نام موسسه"},
             {name: "titleFa", title: "نام مکان"},
             {name: "capacity", title: "ظرفیت"}
         ],
-        fetchDataURL: instituteUrl + "0/training-places"
+        // fetchDataURL: instituteUrl + "0/training-places"
+        fetchDataURL: trainingPlaceUrl + "with-institute"
     });
 
 
@@ -239,9 +243,12 @@
                     "4": "سالن"
                 }
             },
-            // {name: "lastModifiedDate",hidden:true},
-            // {name: "createdBy",hidden:true},
-            // {name: "createdDate",hidden:true},
+            // {name: "lastModifiedDate",
+                // type:"time"
+                // ,hidden:true
+            // },
+            {name: "createdBy",hidden:true},
+            {name: "createdDate",hidden:true},
         ]
     });
 
@@ -473,7 +480,6 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                // startRow:true,
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
                 }
@@ -504,12 +510,13 @@
                 },
             },
             {
-                name: "trainingPlaceIds", editorType: "select", title: "<spring:message code="training.place"/>:",
+                name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
+                autoFetchData:false,
                 multiple: true,
                 colSpan: 2,
                 // width:"250",
-                align: "center",
+                // align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
                 // addUnknownValues:false,
                 displayField: "titleFa",
@@ -517,11 +524,13 @@
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                filterFields: ["titleFa", "capacity"],
+                filterFields: ["titleFa","capacity"],
+                textMatchStyle:"substring",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
                 pickListFields: [
+                    // {name:"instituteTitleFa"},
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
@@ -605,6 +614,7 @@
             {
                 name: "autoValid",
                 type: "checkbox",
+                defaultValue:true,
                 title: "<spring:message code='auto.session.made'/>",
                 endRow: true,
                 // titleOrientation:"top",
@@ -767,19 +777,20 @@
                 value: "ساعت جلسات:",
                 // rowSpan:3
             },
-            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true},
-            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true},
-            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true},
+            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            // {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",
                 value: "روزهای هفته:",
             },
-            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true},
-            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true},
-            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true},
+            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true, defaultValue:true},
+            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
         ],
@@ -1305,7 +1316,7 @@
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            RestDataSource_Teacher_JspClass.fetchDataURL = courseUrl + "get_teachers/" + record.course.id;
+            RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
             // RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
             // DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
             // DynamicForm_Class_JspClass.getField("instituteId").fetchData();

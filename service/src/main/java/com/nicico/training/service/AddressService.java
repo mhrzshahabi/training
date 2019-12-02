@@ -41,33 +41,44 @@ public class AddressService implements IAddressService {
     @Transactional
     @Override
     public AddressDTO.Info createOrUpdate(AddressDTO.Create request) {
-        if(request.getPostalCode() == null)
-            return create(request);
-        List<Address> byPostalCode = addressDAO.findByPostalCode(request.getPostalCode());
-        if (byPostalCode == null || byPostalCode.size() == 0)
+
+        if (request.getPostalCode() != null) {
+            Optional<Address> byPostalCode = addressDAO.findByPostalCode(request.getPostalCode());
+            if (byPostalCode.isPresent() && !byPostalCode.get().getId().equals(request.getId())) {
+                request.setId(byPostalCode.get().getId());
+                AddressDTO.Update updating = modelMapper.map(request, AddressDTO.Update.class);
+                return update(request.getId(), updating);
+            }
+        }
+
+        if (request.getId() == null)
             return create(request);
         else {
             AddressDTO.Update updating = modelMapper.map(request, AddressDTO.Update.class);
-            return update(byPostalCode.get(0).getId(), updating);
+            return update(request.getId(), updating);
         }
     }
 
     @Transactional
     @Override
     public AddressDTO.Info create(AddressDTO.Create request) {
+        if (request.getPostalCode() != null && request.getPostalCode().length() != 10)
+            throw new TrainingException(TrainingException.ErrorType.WrongPostalCode);
         final Address address = modelMapper.map(request, Address.class);
-        return save(address);
+        return modelMapper.map(addressDAO.saveAndFlush(address), AddressDTO.Info.class);
     }
 
     @Transactional
     @Override
     public AddressDTO.Info update(Long id, AddressDTO.Update request) {
+        if (request.getPostalCode() != null && request.getPostalCode().length() != 10)
+            throw new TrainingException(TrainingException.ErrorType.WrongPostalCode);
         final Optional<Address> cById = addressDAO.findById(id);
         final Address address = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         Address updating = new Address();
         modelMapper.map(address, updating);
         modelMapper.map(request, updating);
-        return save(updating);
+        return modelMapper.map(addressDAO.saveAndFlush(updating), AddressDTO.Info.class);
     }
 
     @Transactional
@@ -94,19 +105,11 @@ public class AddressService implements IAddressService {
     @Transactional(readOnly = true)
     @Override
     public AddressDTO.Info getOneByPostalCode(String postalCode) {
-        List<Address> addresses = addressDAO.findByPostalCode(postalCode);
-        Address address;
-        if (addresses != null && addresses.size() != 0) {
-            address = addresses.get(0);
+        Optional<Address> address = addressDAO.findByPostalCode(postalCode);
+        if (address.isPresent()) {
             return modelMapper.map(address, AddressDTO.Info.class);
         } else
             return null;
     }
 
-    // ------------------------------
-
-    private AddressDTO.Info save(Address address) {
-        final Address saved = addressDAO.saveAndFlush(address);
-        return modelMapper.map(saved, AddressDTO.Info.class);
-    }
 }

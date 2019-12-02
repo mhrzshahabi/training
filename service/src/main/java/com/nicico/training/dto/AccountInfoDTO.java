@@ -47,6 +47,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @ApiModel("AccountInfoCreateRq")
     public static class Create extends AccountInfoDTO {
+        private Long id;
     }
 
     @Getter
@@ -54,6 +55,7 @@ public class AccountInfoDTO {
     @Accessors(chain = true)
     @ApiModel("AccountInfoUpdateRq")
     public static class Update extends AccountInfoDTO {
+        private Long id;
     }
 
     @Getter
