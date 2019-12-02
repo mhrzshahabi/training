@@ -10,6 +10,8 @@
 <head>
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
+    <link rel="stylesheet" href='<spring:url value="/static/css/commonStyle.css"/>'/>
+
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Foundation.js></SCRIPT>
@@ -19,8 +21,10 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
+<%--
     <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
-
+--%>
+    <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
     <link rel="stylesheet" href="<spring:url value='/static/css/training.css' />"/>
@@ -29,6 +33,8 @@
     <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
     <script src="<spring:url value='/static/script/js/all.js'/>"></script>
     <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/static/script/js/changeSkin.js'/>"></script>
+
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
@@ -72,8 +78,8 @@
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
-        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:140%;'>&#9913; </span>",
-        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>", selectOnFocus: true,
+        titleSuffix: "<span style='color:#ff0842;font-size:21px; padding-right: 2px;'> *</span>", requiredTitlePrefix: "",
+        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
         autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
@@ -248,7 +254,7 @@
     isc.defineClass("TrSaveBtn", Button);
     isc.TrSaveBtn.addProperties({
         title: "<spring:message code="save"/>",
-        icon: "[SKIN]/actions/save.png",
+        //icon: "[SKIN]/actions/save.png",
     });
 
     isc.defineClass("TrSaveNextBtn", Button);
@@ -259,7 +265,7 @@
     isc.defineClass("TrCancelBtn", Button);
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
-        icon: "[SKIN]/actions/cancel.png",
+        //icon: "[SKIN]/actions/cancel.png",
     });
 
     function createDialog(type, message, title) {
@@ -271,7 +277,7 @@
 
         if (type === 'info') {
             dialog.setButtons([
-                isc.Button.create({
+                isc.IButtonSave.create({
                     title: "<spring:message code="ok"/>",
                     click: function () {
                         dialog.close();
@@ -280,13 +286,13 @@
             ]);
         } else if (type === 'ask') {
             dialog.setButtons([
-                isc.Button.create({title: "<spring:message code="yes"/>",}),
-                isc.Button.create({title: "<spring:message code="no"/>",})
+                isc.IButtonSave.create({title: "<spring:message code="yes"/>",}),
+                isc.IButtonCancel.create({title: "<spring:message code="no"/>",})
             ]);
         } else if (type === 'confirm') {
             dialog.setButtons([
-                isc.Button.create({title: "<spring:message code="ok"/>",}),
-                isc.Button.create({title: "<spring:message code="cancel"/>",})
+                isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
+                isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
         } else if (type === 'wait') {
             dialog.message = message ? message : "<spring:message code='in.operation'/>";
@@ -302,38 +308,97 @@
     });
 
     // -------------------------------------------  Page UI                          -----------------------------------------------
-    nicicoIcon = isc.Img.create({
-        src: "<spring:url value="nicico.png"/>",
-        width: 24,
-        height: 24,
-        imageType: "stretch",
-        padding: 4,
+    var headerLogo = isc.HTMLFlow.create({
+        width: "50",
+        height: "100%",
+        styleName: "header-logo",
+        contents: "<img width='50' height='50' src='static/img/logo03.png'/>"
     });
 
-    systemLabel = isc.Label.create({
-        contents: "<spring:message code="training.system.version"/>",
-        styleName: "customHeader",
-        padding: 4,
+    <%--nicicoIcon = isc.Img.create({--%>
+        <%--src: "<spring:url value="nicico.png"/>",--%>
+        <%--width: 24,--%>
+        <%--height: 24,--%>
+        <%--imageType: "stretch",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
+
+    var headerFlow = isc.HTMLFlow.create({
+
+        width: "10%",
+        height: "100%",
+        styleName: "mainHeaderStyleOnline header-logo-title",
+        contents: "<span><spring:message code="training.system.version"/></span>"
     });
 
-    userLabel = isc.Label.create({
+
+    <%--systemLabel = isc.Label.create({--%>
+        <%--contents: "<spring:message code="training.system.version"/>",--%>
+        <%--styleName: "customHeader",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
+
+
+
+    var label_Username = isc.Label.create({
+
+        width: "10%",
+        dynamicContents: true,
+        styleName: "header-label-username",
         contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,
-        styleName: "customHeader",
-        padding: 4,
     });
 
-    logoutButton = isc.Button.create({
-        title: "<spring:message code="logout"/>",
+    var userNameHLayout = isc.HLayout.create({
+        width: "10%",
+        align: "center",
+        members: [label_Username]
+    });
+
+
+
+    <%--userLabel = isc.Label.create({--%>
+        <%--contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,--%>
+        <%--styleName: "customHeader",--%>
+        <%--padding: 4,--%>
+    <%--});--%>
+
+     logoutButton = isc.IButton.create({
+
         width: "100",
-        icon: "logout.png",
+        baseStyle: "header-logout",
+        title: "<spring:message code="logout"/>",
+        icon: "logOut.png",
         click: function () {
             logout();
         }
     });
 
+    var logoutVLayout = isc.VLayout.create({
+
+        width: "5%",
+        align: "center",
+        defaultLayoutAlign: "left",
+        members: [logoutButton]
+    });
+
+
+
+
+
+    <%--logoutButton = isc.Button.create({--%>
+    <%--title: "<spring:message code="logout"/>",--%>
+    <%--width: "100",--%>
+    <%--icon: "logout.png",--%>
+    <%--click: function () {--%>
+    <%--logout();--%>
+    <%--}--%>
+    <%--});--%>
+
     languageForm = isc.DynamicForm.create({
         width: 120,
-        height: "100%",
+        //height: "100%",
+        height: 30,
+        styleName: "header-change-lng",
         fields: [{
             name: "languageName",
             showTitle: false,
@@ -370,32 +435,50 @@
         }]
     });
 
+
+    var languageVLayout = isc.VLayout.create({
+
+        width: "5%",
+        align: "center",
+        defaultLayoutAlign: "left",
+        members: [languageForm]
+    });
+
     languageForm.setValue("languageName", "<c:out value='${pageContext.response.locale}'/>");
 
+
+
     basicTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="information.png"/>", 16, 16) + "&nbsp; <spring:message code="basic.information"/>",
+        title: /*Canvas.imgHTML("<spring:url value="information.png"/>", 16, 16)+*/  "&nbsp; <spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="skill.categorize"/>", icon: "<spring:url value="categorize.png"/>",
+                    title: "<spring:message code="skill.categorize"/>",
+                    <%--icon: "<spring:url value="categorize.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="skill.level"/>", icon: "<spring:url value="level.png"/>",
+                    title: "<spring:message code="skill.level"/>",
+                    <%--icon: "<spring:url value="level.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-level/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="education.degree"/>", icon: "<spring:url value="education.png"/>",
+                    title: "<spring:message code="education.degree"/>",
+                    <%--icon: "<spring:url value="education.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/education/level/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="equipment.plural"/>", icon: "<spring:url value="equipment.png"/>",
+                    title: "<spring:message code="equipment.plural"/>",
+                    <%--icon: "<spring:url value="equipment.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
                     }
@@ -405,54 +488,68 @@
     });
 
     needAssessmentTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="need.png"/>", 16, 16) + "&nbsp; <spring:message code="need.assessment"/>",
+        title: /*Canvas.imgHTML("<spring:url value="need.png"/>", 16, 16) + */"&nbsp; <spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="job"/>", icon: "<spring:url value="job.png"/>",
+                    title: "<spring:message code="job"/>",
+                    <%--icon: "<spring:url value="job.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="job.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    title: "<spring:message code="job.group"/>",
+                    <%--icon: "<spring:url value="jobGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="job-group/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="post.grade"/>", icon: "<spring:url value="postGrade.png"/>",
+                    title: "<spring:message code="post.grade"/>",
+                    <%--icon: "<spring:url value="postGrade.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="post.grade.group"/>", icon: "<spring:url value="postGrade.png"/>",
+                    title: "<spring:message code="post.grade.group"/>",
+                    <%--icon: "<spring:url value="postGrade.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/postGradeGroup/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="post"/>", icon: "<spring:url value="post.png"/>",
+                    title: "<spring:message code="post"/>",
+                    <%--icon: "<spring:url value="post.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="post.group"/>", icon: "<spring:url value="jobGroup.png"/>",
+                    title: "<spring:message code="post.group"/>",
+                    <%--icon: "<spring:url value="jobGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
 
                 {
-                    title: "<spring:message code="skill"/>", icon: "<spring:url value="skill.png"/>",
+                    title: "<spring:message code="skill"/>",
+                    <%--icon: "<spring:url value="skill.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="skill.group"/>", icon: "<spring:url value="skillGroup.png"/>",
+                    title: "<spring:message code="skill.group"/>",
+                    <%--icon: "<spring:url value="skillGroup.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
@@ -468,31 +565,36 @@
     });
 
     designingTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="plan.png"/>", 16, 16) + "&nbsp; <spring:message code="designing.and.planning"/>",
+        title: /*Canvas.imgHTML("<spring:url value="plan.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="course"/>", icon: "<spring:url value="course.png"/>",
+                    title: "<spring:message code="course"/>",
+                    <%--icon: "<spring:url value="course.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/course/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="term"/>", icon: "<spring:url value="term.png"/>",
+                    title: "<spring:message code="term"/>",
+                    <%--icon: "<spring:url value="term.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/term/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="specialized.committee"/>",
-                    icon: "<spring:url value="committee.png"/>",
+                    <%--icon: "<spring:url value="committee.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/committee/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="company"/>",
-                    icon: "<spring:url value="company.png"/>",
+                    <%--icon: "<spring:url value="company.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/company/show-form"/>");
                     }
@@ -502,29 +604,36 @@
     });
 
     runTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="seo-training (1).png"/>", 16, 16) + "&nbsp; <spring:message code="run"/>",
+        title:/* Canvas.imgHTML("<spring:url value="seo-training (1).png"/>", 16, 16) +*/ "&nbsp; <spring:message code="run"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="class"/>", icon: "<spring:url value="class.png"/>",
+                    title: "<spring:message code="class"/>",
+                    <%--icon: "<spring:url value="class.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/tclass/show-form"/>");
                     },
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="student"/>", icon: "<spring:url value="student.png"/>",
+                    title: "<spring:message code="student"/>",
+                    <%--icon: "<spring:url value="student.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/personnelRegistered/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="teacher"/>", icon: "<spring:url value="teacher.png"/>",
+                    title: "<spring:message code="teacher"/>",
+                    <%--icon: "<spring:url value="teacher.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/teacher/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="institute"/>", icon: "<spring:url value="institute.png"/>",
+                    title: "<spring:message code="institute"/>",
+                    <%--icon: "<spring:url value="institute.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/institute/show-form"/>");
                     }
@@ -534,41 +643,47 @@
     });
 
     evaluationTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="test.png"/>", 16, 16) + "&nbsp; <spring:message code="evaluation"/>",
+        title: /*Canvas.imgHTML("<spring:url value="test.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="evaluation"/>",
         menu: isc.Menu.create({
             data: []
         }),
     });
 
     cartableTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) + "&nbsp; <spring:message code="cartable"/>",
+        title: /*Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) + */"&nbsp; <spring:message code="cartable"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="personal"/>", icon: "<spring:url value="personal.png"/>",
+                    title: "<spring:message code="personal"/>",
+                    //icon: "<spring:url value="personal.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/workflow/userCartable/showForm"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="group"/>", icon: "<spring:url value="group.png"/>",
+                    title: "<spring:message code="group"/>",
+                    <%--icon: "<spring:url value="group.png"/>",--%>
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/workflow/groupCartable/showForm"/>");
                     }
                 },
+                {isSeparator: true},
                 {
-                    title: "<spring:message code="workflow"/>", icon: "<spring:url value="workflow.png"/>",
+                    title: "<spring:message code="workflow"/>",
+                    <%--icon: "<spring:url value="workflow.png"/>",--%>
                     submenu: [
                         {
                             title: "<spring:message code="process.definition"/>",
-                            icon: "<spring:url value="processDefinition.png"/>",
+                           // icon: "<spring:url value="processDefinition.png"/>",
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>");
                             }
                         },
+                        {isSeparator: true},
                         {
                             title: "<spring:message code="all.processes"/>",
-                            icon: "<spring:url value="processList.png"/>",
+                            <%--icon: "<spring:url value="processList.png"/>",--%>
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processInstance/showForm"/>")
                             }
@@ -580,30 +695,44 @@
     });
 
     securityTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) + "&nbsp; <spring:message code="security"/>",
+        title:/* Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="security"/>",
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "گروه دسترسی", icon: "<spring:url value="permissionGroup.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
-                    }
-                },
-                {
-                    title: "نقش ها", icon: "<spring:url value="role.png"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
-                    }
-                },
-                {
-                    title: "تخصیص نقش", icon: "<spring:url value="assign.png"/>",
+                    title: "<spring:message code="user.plural"/>",
+                    //icon: "<spring:url value="personal.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
                 },
+                {isSeparator: true},
+                {
+                    title: "گروه دسترسی",
+                    //icon: "<spring:url value="permissionGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "نقش ها",
+                    //icon: "<spring:url value="role.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/app-roles/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "تخصیص نقش",
+                    //icon: "<spring:url value="assign.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="operational.unit"/>",
-                    icon: "<spring:url value="operationalUnit.png"/>",
+                    //icon: "<spring:url value="operationalUnit.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
                     }
@@ -613,14 +742,20 @@
     });
 
     reportTSMB = isc.ToolStripMenuButton.create({
-        title: Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) + "&nbsp; <spring:message code="report"/>",
+        title: /*Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="report"/>",
         menu: isc.Menu.create({
             data: []
         }),
     });
 
     trainingToolStrip = isc.ToolStrip.create({
-        membersMargin: 5,
+        align: "center",
+        membersMargin: 20,
+        layoutMargin: 5,
+        showShadow: true,
+        shadowDepth: 3,
+        shadowColor: "#153560",
+
         members: [
             basicTSMB,
             needAssessmentTSMB,
@@ -633,9 +768,9 @@
         ]
     });
 
-    closeAllButton = isc.Button.create({
+     closeAllButton = isc.IButtonClose.create({
         width: 100,
-        icon: "<spring:url value="closeAllTabs.png"/>",
+       <%--icon: "<spring:url value="closeAllTabs.png"/>",--%>
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
@@ -657,18 +792,51 @@
         tabBarControls: [closeAllButton]
     });
 
+    var headerExitHLayout = isc.HLayout.create({
+
+        width: "60%",
+        height:"100%",
+        align: "center",
+        styleName: "header-exit",
+        members: [ isc.LayoutSpacer.create({width: "80%"}),userNameHLayout, languageVLayout, logoutVLayout]
+    });
+
+
+    var headerLayout = isc.HLayout.create({
+
+        width: "100%",
+        height: "52",
+        styleName: "header",
+        members: [headerLogo, headerFlow,headerExitHLayout],
+    });
+
+    var MainDesktopMenuH = isc.HLayout.create({
+        width: "100%",
+        height: "4%",
+        styleName: "main-menu",
+        align: "center",
+        members: [
+            trainingToolStrip
+        ]
+    })
+
+
+
     isc.TrVLayout.create({
         autoDraw: true,
         styleName: "relativePosition",
+       // styleName: "header",
         members: [
-            isc.HLayout.create({
+            headerLayout,
+/*            isc.HLayout.create({
                 height: "1%",
                 minWidth: 1024,
                 backgroundColor: "#003168",
                 defaultLayoutAlign: "center",
                 members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
-            }),
-            isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
+            }),*/
+           // isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
+            MainDesktopMenuH,
             trainingTabSet,
         ]
     });
@@ -766,7 +934,7 @@
     isc.MyOkDialog.addProperties({
         title: "<spring:message code='message'/>",
         isModal: true,
-        buttons: [isc.Button.create({title: "تائید"})],
+        buttons: [isc.IButtonSave.create({title: "تائید"})],
         icon: "[SKIN]say.png",
         buttonClick: function (button, index) {
             this.close();
@@ -779,8 +947,8 @@
         icon: "[SKIN]say.png",
         title: "<spring:message code='message'/>",
         buttons: [
-            isc.Button.create({title: "بله",}),
-            isc.Button.create({title: "خير",})],
+            isc.IButtonSave.create({title: "بله",}),
+            isc.IButtonCancel.create({title: "خير",})],
         buttonClick: function (button, index) {
             this.close();
         }

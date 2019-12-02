@@ -865,7 +865,7 @@
         ],
     });
 
-    var IButton_Class_Exit_JspClass = isc.TrCancelBtn.create({
+    var IButton_Class_Exit_JspClass = isc.IButtonCancel.create({
         <%--icon: "<spring:url value="remove.png"/>",--%>
         align: "center",
         click: function () {
@@ -873,7 +873,7 @@
         }
     });
 
-    var IButton_Class_Save_JspClass = isc.TrSaveBtn.create({
+    var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
             // if (startDateCheck === false || endDateCheck === false)
@@ -1244,32 +1244,32 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Refresh_JspClass = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_JspClass = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_Class_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspClass = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_JspClass = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_class_edit();
         }
     });
 
-    var ToolStripButton_Add_JspClass = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_JspClass = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Class_add();
         }
     });
 
-    var ToolStripButton_Remove_JspClass = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_JspClass = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_class_remove();
         }
     });
 
-    var ToolStripButton_Print_JspClass = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_JspClass = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             ListGrid_class_print("pdf");
@@ -1303,13 +1303,22 @@
 
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
-            ToolStripButton_Refresh_JspClass,
             ToolStripButton_Add_JspClass,
             ToolStripButton_Edit_JspClass,
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
-            ToolStripButton_copy_of_class
+            ToolStripButton_copy_of_class,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_JspClass,
+                ]
+            })
+
         ]
     });
 

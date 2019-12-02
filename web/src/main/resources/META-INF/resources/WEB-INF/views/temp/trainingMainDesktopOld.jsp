@@ -902,7 +902,7 @@
                         icon: "[SKIN]ask.png",
                         title: "تائید",
                         isModal: true,
-                        buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
                         buttonClick: function (button, index) {
                             this.hide();
                             if (index == 0) {

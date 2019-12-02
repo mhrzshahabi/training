@@ -92,7 +92,7 @@
                         message: "<spring:message code="msg.no.records.selected"/>",
                         icon: "[SKIN]ask.png",
                         title: "پیام",
-                        buttons: [isc.Button.create({title: "تائید"})],
+                        buttons: [isc.IButtonSave.create({title: "تائید"})],
                         buttonClick: function (button, index) {
                             this.close();
                         }
@@ -104,7 +104,7 @@
                         message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                         icon: "[SKIN]ask.png",
                         title: "تائید حذف",
-                        buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                             title: "خیر"
                         })],
                         buttonClick: function (button, index) {
@@ -136,7 +136,7 @@
                             message: "<spring:message code="msg.no.records.selected"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
-                            buttons: [isc.Button.create({title: "تائید"})],
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
                             buttonClick: function (button, index) {
                                 this.close();
                             }
@@ -210,7 +210,7 @@
                             message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                                 title: "خیر"
                             })],
                             buttonClick: function (button, index) {
@@ -246,7 +246,7 @@
                             message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                             icon: "[SKIN]ask.png",
                             title: "تائید حذف",
-                            buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                                 title: "خیر"
                             })],
                             buttonClick: function (button, index) {
@@ -731,7 +731,7 @@
                 message: getFormulaMessage("آیا از حذف گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
                 icon: "[SKIN]ask.png",
                 title: "تائید حذف",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
                     title: "خیر"
                 })],
                 buttonClick: function (button, index) {
@@ -847,13 +847,18 @@
     });
 
 
-    var IButton_Post_Group_Exit_Jsp = isc.TrCancelBtn.create({
+    var IButton_Post_Group_Exit_Jsp = isc.IButtonCancel.create({
+        top: 260, title: "لغو",
+        //icon: "<spring:url value="remove.png"/>",
+        align: "center",
         click: function () {
             Window_Post_Group_Jsp.close();
         }
     });
 
-    var IButton_Post_Group_Save_Jsp = isc.TrSaveBtn.create({
+    var IButton_Post_Group_Save_Jsp = isc.IButtonSave.create({
+        top: 260, title: "ذخیره",
+        //icon: "pieces/16/save.png",
         align: "center", click: function () {
 
             DynamicForm_Post_Group_Jsp.validate();
@@ -1004,37 +1009,37 @@
 
 
 
-    var ToolStripButton_Refresh_Post_Group_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh_Post_Group_Jsp = isc.ToolStripButtonRefresh.create({
+       // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Post_Group_refresh();
         }
     });
-    var ToolStripButton_Edit_Post_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit_Post_Group_Jsp = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
 
             ListGrid_Post_Group_edit();
         }
     });
-    var ToolStripButton_Add_Post_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add_Post_Group_Jsp = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "ایجاد",
         click: function () {
 
             ListGrid_Post_Group_add();
         }
     });
-    var ToolStripButton_Remove_Post_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove_Post_Group_Jsp = isc.ToolStripButtonRemove.create({
+       // icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
                 ListGrid_Post_Group_remove();
         }
     });
-    var ToolStripButton_Print_Post_Group_Jsp = isc.TrPrintBtn.create({
+    var ToolStripButton_Print_Post_Group_Jsp = isc.ToolStripButtonPrint.create({
         menu: isc.Menu.create({
             data: [
                 {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
@@ -1079,7 +1084,7 @@
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -1106,12 +1111,23 @@
     });
     var ToolStrip_Actions_Post_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_Post_Group_Jsp,
+        membersMargin: 5,
+        members: [
             ToolStripButton_Add_Post_Group_Jsp,
             ToolStripButton_Edit_Post_Group_Jsp,
             ToolStripButton_Remove_Post_Group_Jsp,
             ToolStripButton_Print_Post_Group_Jsp,
-            ToolStripButton_Add_Post_Group_AddPost_Jsp]
+            ToolStripButton_Add_Post_Group_AddPost_Jsp,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_Post_Group_Jsp,
+                ]
+            }),
+
+        ]
     });
 
 
