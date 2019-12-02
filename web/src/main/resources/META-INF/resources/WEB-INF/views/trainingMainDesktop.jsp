@@ -738,11 +738,10 @@
     const sessionServiceUrl = rootUrl + "sessionService/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
-        xhttp;
-        xhttp = new XMLHttpRequest();
-        xhttp.willHandleError = true;
-        xhttp.onreadystatechange = function () {
-            if (this.readyState == 4) {
+        let xhttpRequest = new XMLHttpRequest();
+        xhttpRequest.willHandleError = true;
+        xhttpRequest.onreadystatechange = function () {
+            if (this.readyState === 4) {
                 cFunction(this);
             } else {
                 // isc.say("خطا در اتصال به سرور");
@@ -750,9 +749,9 @@
             }
         };
 
-        xhttp.open(method, url, true);
-        xhttp.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
-        xhttp.send(formData1);
+        xhttpRequest.open(method, url, true);
+        xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
+        xhttpRequest.send(formData1);
     }
 
     isc.defineClass("MyHLayoutButtons", HLayout);
@@ -771,7 +770,6 @@
         useClientFiltering: false,
         cachePickListResults: true,
         changeOnKeypress: false,
-        useClientFiltering: true,
         width: "*"
     });
 

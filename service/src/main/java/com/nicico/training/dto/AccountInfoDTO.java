@@ -34,12 +34,12 @@ public class AccountInfoDTO {
     }
 
 
-    @Getter
-    @Setter
-    @ApiModel("AccountInfoInfoTuple")
-    static class AccountInfoInfoTuple extends AccountInfoDTO {
-        private Long id;
-    }
+//    @Getter
+//    @Setter
+//    @ApiModel("AccountInfoInfoTuple")
+//    static class AccountInfoInfoTuple extends AccountInfoDTO {
+//        private Long id;
+//    }
 
 
     @Getter

@@ -106,10 +106,7 @@ public class AddressService implements IAddressService {
     @Override
     public AddressDTO.Info getOneByPostalCode(String postalCode) {
         Optional<Address> address = addressDAO.findByPostalCode(postalCode);
-        if (address.isPresent()) {
-            return modelMapper.map(address, AddressDTO.Info.class);
-        } else
-            return null;
+        return address.map(value -> modelMapper.map(value, AddressDTO.Info.class)).orElse(null);
     }
 
 }
