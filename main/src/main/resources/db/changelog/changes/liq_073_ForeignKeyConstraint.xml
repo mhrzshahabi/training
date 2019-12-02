@@ -1,0 +1,262 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-139">
+        <addForeignKeyConstraint baseColumnNames="f_manager" baseTableName="tbl_institute" constraintName="FK1945urjuqcwe6lokooysn13nd" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-140">
+        <addForeignKeyConstraint baseColumnNames="f_goal_id" baseTableName="tbl_course_goal" constraintName="FK1fv4j3f1368flv0fe2q0ilqcx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_goal" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-141">
+        <addForeignKeyConstraint baseColumnNames="f_contact_info" baseTableName="tbl_personal_info" constraintName="FK1k3ddjbdi7u7d4n2sri8sqecg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_contact_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-142">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_class" constraintName="FK25i5bh05mgy0ka0a6ygc8lh16" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-143">
+        <addForeignKeyConstraint baseColumnNames="f_bank" baseTableName="tbl_bank_branch" constraintName="FK28u1yxqhn3rufr46lt7f6io8a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_bank" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-144">
+        <addForeignKeyConstraint baseColumnNames="f_personal_info_id" baseTableName="tbl_company" constraintName="FK29woiuisa3kl7iglctkrftowb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-145">
+        <addForeignKeyConstraint baseColumnNames="f_term" baseTableName="tbl_class" constraintName="FK2kudtmt3prra8h7mweggqfr69" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_term" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-146">
+        <addForeignKeyConstraint baseColumnNames="f_institute_id" baseTableName="tbl_session" constraintName="FK2phqr7w8ap2p2dxin51m35qpg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-147">
+        <addForeignKeyConstraint baseColumnNames="f_sub_category" baseTableName="tbl_skill" constraintName="FK2tgy9vvd3wc7ilbmidqkxu48x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-149">
+        <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_education_orientation" constraintName="FK3fqk3qrq0hugp2tfn7hj8mtn1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-150">
+        <addForeignKeyConstraint baseColumnNames="f_edu_major" baseTableName="tbl_personal_info" constraintName="FK3hkfb3agcvbmcttk5mdxyjpwo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-151">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_teacher" constraintName="FK3ib5rq8krn1kn5qbfg92r5s4y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-152">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_course_goal" constraintName="FK49yjb7t4oqw4fv5mntplb7ppm" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-153">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_post_postgroup" constraintName="FK4vag6xqdhio23g9lylh5yi47l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-154">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment" constraintName="FK76pahjakrkwesqehd2msdmikh" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-155">
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_city" constraintName="FK796uthe94t6y9cd71cq0yiy74" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_state" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-156">
+        <addForeignKeyConstraint baseColumnNames="f_class" baseTableName="tbl_class_student" constraintName="FK7frusfamq259ofi2qkp3f4ln7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-157">
+        <addForeignKeyConstraint baseColumnNames="f_work_address" baseTableName="tbl_contact_info" constraintName="FK7hpk92bs7p1peunblhmvscsqk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-158">
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_institute" constraintName="FK7w4u3r8e1xiv8gpg3i1g6736i" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-159">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_committee" constraintName="FK84vfnjy7bng1pn3b0vnpe08sk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-160">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_class" constraintName="FK85kc4j7097gpad0a2a4lveis8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-161">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_pre_course" constraintName="FK8g4qmw41v5ronyvua8vh6ardf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-162">
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_group_id" baseTableName="tbl_post_grade_post_grade_group" constraintName="FK8hp8xtmvrg3uqcya0t4w4akfe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_grade_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-163">
+        <addForeignKeyConstraint baseColumnNames="f_home_address" baseTableName="tbl_contact_info" constraintName="FK8iu907lh4cia8b3oxdr94juxy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-164">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_session" constraintName="FK99rk91lilyy6vpdhbbnevflgi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-165">
+        <addForeignKeyConstraint baseColumnNames="f_personality" baseTableName="tbl_teacher" constraintName="FK9hmdaa5ljvgmnq3wsnsi4myu8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-166">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_category" constraintName="FK9i5416d4h83ib79admhqqo62n" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-167">
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_post" constraintName="FK9w3blxhobhatxni9wji630ket" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_job" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-168">
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_equal_course" constraintName="FKa63ufh7q878cnglibxasnrg8a" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-169">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment_skill_based" constraintName="FKayi7ad3mm6g5l1u43koyy766c" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-170">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_need_assessment" constraintName="FKbefrjw4gc5j8b47ljio9byj8w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_competence_new" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-171">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_training_place" constraintName="FKbfpfjmlupxm3ttgvvh40n6vha" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-172">
+        <addForeignKeyConstraint baseColumnNames="f_skill_group_id" baseTableName="tbl_competence_skill_group" constraintName="FKbo4reuew9xfmenaau57dy10oy" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-173">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_need_assessment_skill_post" constraintName="FKbqm78osp274thfojk9it78hxe" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-174">
+        <addForeignKeyConstraint baseColumnNames="f_personal_info_id" baseTableName="tbl_committee_personal_info" constraintName="FKcb8w4jkvkyfqn9jh0ghw1he6u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_personal_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-175">
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_id" baseTableName="tbl_post" constraintName="FKcdk3gqvhamly9n79039k44om2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_grade" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-176">
+        <addForeignKeyConstraint baseColumnNames="f_check_list_id" baseTableName="tbl_check_list_item" constraintName="FKcdnlyt9xvl39mr5knpy6b69p3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_check_list" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-177">
+        <addForeignKeyConstraint baseColumnNames="f_skill_level" baseTableName="tbl_skill" constraintName="FKd2e04ftpfpvvlwfo90osfvtat" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill_level" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-178">
+        <addForeignKeyConstraint baseColumnNames="f_edu_orientation" baseTableName="tbl_personal_info" constraintName="FKdfodmlpvpk8ej6hek5kmkxnby" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_orientation" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-179">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_need_assessment_skill_post" constraintName="FKdr3xvm2nofkkl0tcp6yx1e3th" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-180">
+        <addForeignKeyConstraint baseColumnNames="f_post_id" baseTableName="tbl_need_assessment" constraintName="FKe5j8fy4gln39viprda644lnp9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-181">
+        <addForeignKeyConstraint baseColumnNames="c_bank_branch" baseTableName="tbl_institute_account" constraintName="FKegm5jtvmegnb26h2npcekcfcg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_bank_branch" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-182">
+        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_post" constraintName="FKeobktfgws8v7m9caex5gsvonb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-184">
+        <addForeignKeyConstraint baseColumnNames="f_postgroup_id" baseTableName="tbl_post_postgroup" constraintName="FKfc5t94j8crayqmdea8d6pqe4p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-185">
+        <addForeignKeyConstraint baseColumnNames="f_jobgroup_id" baseTableName="tbl_job_jobgroup" constraintName="FKfd963tvolca4rvwxlb7mheio2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_job_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-186">
+        <addForeignKeyConstraint baseColumnNames="f_pre_course_id" baseTableName="tbl_pre_course" constraintName="FKfo4nam3wfrj5urt3gd0kevslr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-188">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_class_training_place" constraintName="FKgg4uisol7u4dc95ns9i0274l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-189">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_institute_teacher" constraintName="FKgmqk8uu4bfjf7yrswb4sp0f5f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-190">
+        <addForeignKeyConstraint baseColumnNames="f_skillgroup_id" baseTableName="tbl_skill_skillgroup" constraintName="FKh9adhaxe5ap8m3hn4rn3bc8u7" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-191">
+        <addForeignKeyConstraint baseColumnNames="f_job_id" baseTableName="tbl_job_jobgroup" constraintName="FKhf2r0ojopod4hjys4mnlgwows" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_job" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-192">
+        <addForeignKeyConstraint baseColumnNames="f_education_level" baseTableName="tbl_education_orientation" constraintName="FKhwdtgrdd4rr5diipoe8jiek6m" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-193">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_session" constraintName="FKi2v68fcqk54bfnn1evpn6oaai" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-194">
+        <addForeignKeyConstraint baseColumnNames="f_institute_parent" baseTableName="tbl_institute" constraintName="FKikdjo7o4nq3pbb5ovvsntiqxc" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-195">
+        <addForeignKeyConstraint baseColumnNames="f_course_id" baseTableName="tbl_skill_course" constraintName="FKinyh244r4fyiejiantef0dvva" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-196">
+        <addForeignKeyConstraint baseColumnNames="f_committee_id" baseTableName="tbl_committee_personal_info" constraintName="FKjemxsxm0rfw084llbqjbgold2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_committee" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-197">
+        <addForeignKeyConstraint baseColumnNames="f_student" baseTableName="tbl_class_student" constraintName="FKjepicvmo2vnewwdprsms6bhr1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_student" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-198">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_skillgroup" constraintName="FKjk6fq86fr0rsnxghkain906ef" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-199">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_class_training_place" constraintName="FKjpekgvye4m4lfbp4jt22sdw7f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-200">
+        <addForeignKeyConstraint baseColumnNames="f_skill_id" baseTableName="tbl_skill_course" constraintName="FKk5fy44bd4a6gd5dtbbretckwo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-201">
+        <addForeignKeyConstraint baseColumnNames="c_institute" baseTableName="tbl_institute_account" constraintName="FKkeawag78is6h0kdurltdn9j6y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-202">
+        <addForeignKeyConstraint baseColumnNames="f_equal_course_id" baseTableName="tbl_equal_and_course" constraintName="FKkwqxqkpp78dcrvd4b8d52972l" deferrable="false" initiallyDeferred="false" referencedColumnNames="equal_course_id" referencedTableName="tbl_equal_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-203">
+        <addForeignKeyConstraint baseColumnNames="f_address" baseTableName="tbl_bank_branch" constraintName="FKkx6yceqnqeinlkhqa41n7risk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-204">
+        <addForeignKeyConstraint baseColumnNames="f_post_grade_id" baseTableName="tbl_post_grade_post_grade_group" constraintName="FKl3giw01gb40uncjvs3qstbap6" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_grade" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-205">
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_institute" constraintName="FKl9bbwsj8g9qrspie4dlk03h2r" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_state" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-206">
+        <addForeignKeyConstraint baseColumnNames="c_bank" baseTableName="tbl_institute_account" constraintName="FKlc6ya1kr3oya4xorfh56enw6g" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_bank" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-207">
+        <addForeignKeyConstraint baseColumnNames="f_skill_group_id" baseTableName="tbl_need_assessment" constraintName="FKli6xxmpklhhtflh4wx2oqs7c5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill_group" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-208">
+        <addForeignKeyConstraint baseColumnNames="f_city" baseTableName="tbl_address" constraintName="FKlvp5ne1dsubyserk9k23i3b7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_city" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-209">
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_class" constraintName="FKm6x5pso1g2egu20vd6l4m3481" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-210">
+        <addForeignKeyConstraint baseColumnNames="f_equipment_id" baseTableName="tbl_training_place_equipment" constraintName="FKmbba8v8pnamwqt9top362cmtf" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equipment" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-211">
+        <addForeignKeyConstraint baseColumnNames="f_account_info" baseTableName="tbl_personal_info" constraintName="FKnrjrxduoqdi26i66eec4ajixs" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_account_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-212">
+        <addForeignKeyConstraint baseColumnNames="f_institute" baseTableName="tbl_institute_equipment" constraintName="FKoaqmf4w8uc0yjoh0wjqlbih7k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-213">
+        <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_session" constraintName="FKobi5ni30lnpwqkk46091xo63x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-214">
+        <addForeignKeyConstraint baseColumnNames="f_goal" baseTableName="tbl_syllabus" constraintName="FKoc0lv4at1b523lhu427t4c014" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_goal" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-216">
+        <addForeignKeyConstraint baseColumnNames="f_training_place_id" baseTableName="tbl_training_place_equipment" constraintName="FKpctp2tgr49p90yxmx08t42i2v" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_training_place" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-217">
+        <addForeignKeyConstraint baseColumnNames="f_address_id" baseTableName="tbl_company" constraintName="FKpurh1o4x7syfmr0agf8e8kkjl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_address" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-218">
+        <addForeignKeyConstraint baseColumnNames="f_edu_level" baseTableName="tbl_personal_info" constraintName="FKq0suxhijiq10ki9fl3dihgfhx" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-219">
+        <addForeignKeyConstraint baseColumnNames="f_equipment" baseTableName="tbl_institute_equipment" constraintName="FKq6vb3koxel1lhclcyjw01y9p1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_equipment" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-220">
+        <addForeignKeyConstraint baseColumnNames="f_state" baseTableName="tbl_address" constraintName="FKqyw43rpimiamci6hgjgb09c46" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_state" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-222">
+        <addForeignKeyConstraint baseColumnNames="f_account_info_id" baseTableName="tbl_company" constraintName="FKs2g951lpy1hdheauj5wof3b76" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_account_info" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-223">
+        <addForeignKeyConstraint baseColumnNames="subcategory_id" baseTableName="tbl_course" constraintName="FKs48kdjo8ol5303e1vqm195m84" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-224">
+        <addForeignKeyConstraint baseColumnNames="f_competence_id" baseTableName="tbl_competence_skill_group" constraintName="FKtbtb7rmoqn6g8ue0pyjtv2gd5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_competence_new" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-225">
+        <addForeignKeyConstraint baseColumnNames="f_check_list_item_id" baseTableName="tbl_Class_Check_List" constraintName="fk_ClassCheckList2checkListItem" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_check_list_item" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-226">
+        <addForeignKeyConstraint baseColumnNames="f_tclass_id" baseTableName="tbl_Class_Check_List" constraintName="fk_ClassCheckList2tclass" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575267935938-227">
+        <dropForeignKeyConstraint baseTableName="ACT_RU_DEADLETTER_JOB" constraintName="ACT_FK_DJOB_EXCEPTION"/>
+    </changeSet>
+
+</databaseChangeLog>
