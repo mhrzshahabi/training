@@ -38,4 +38,8 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="ghazanfari_f (generated)" id="1575287722509-156">
+        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_post" constraintName="FKeobktfgws8v7m9caex5gsvonb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
+    </changeSet>
+
 </databaseChangeLog>

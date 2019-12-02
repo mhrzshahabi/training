@@ -128,10 +128,6 @@
     <changeSet author="ghazanfari_f (generated)" id="1575267935938-181">
         <addForeignKeyConstraint baseColumnNames="c_bank_branch" baseTableName="tbl_institute_account" constraintName="FKegm5jtvmegnb26h2npcekcfcg" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_bank_branch" validate="true"/>
     </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1575267935938-182">
-        <addForeignKeyConstraint baseColumnNames="f_department_id" baseTableName="tbl_post" constraintName="FKeobktfgws8v7m9caex5gsvonb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
-    </changeSet>
-
     <changeSet author="ghazanfari_f (generated)" id="1575267935938-184">
         <addForeignKeyConstraint baseColumnNames="f_postgroup_id" baseTableName="tbl_post_postgroup" constraintName="FKfc5t94j8crayqmdea8d6pqe4p" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_post_group" validate="true"/>
     </changeSet>
