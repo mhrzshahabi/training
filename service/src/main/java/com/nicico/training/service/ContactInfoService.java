@@ -81,19 +81,28 @@ public class ContactInfoService implements IContactInfoService {
     @Override
     public ContactInfoDTO.Info update(Long id, ContactInfoDTO.Update request) {
 
+        final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
+        ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
         if (request.getHomeAddress() != null) {
+            request.getHomeAddress().setId(contactInfo.getHomeAddressId());
             AddressDTO.Info homeAddressDTO = addressService.createOrUpdate(request.getHomeAddress());
             request.setHomeAddressId(homeAddressDTO.getId());
             request.setHomeAddress(null);
+        } else if (contactInfo.getHomeAddress() != null) {
+            request.setHomeAddressId(contactInfo.getHomeAddressId());
+            request.setHomeAddress(modelMapper.map(contactInfo.getHomeAddress(), AddressDTO.Create.class));
         }
         if (request.getWorkAddress() != null) {
+            request.getWorkAddress().setId(contactInfo.getWorkAddressId());
             AddressDTO.Info workAddressDTO = addressService.createOrUpdate(request.getWorkAddress());
             request.setWorkAddressId(workAddressDTO.getId());
             request.setWorkAddress(null);
+        } else if (contactInfo.getWorkAddress() != null) {
+            request.setWorkAddressId(contactInfo.getWorkAddressId());
+            request.setWorkAddress(modelMapper.map(contactInfo.getWorkAddress(), AddressDTO.Create.class));
         }
 
-        final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
-        ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         ContactInfo cUpdating = new ContactInfo();
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);

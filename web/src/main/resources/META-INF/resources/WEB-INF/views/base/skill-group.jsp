@@ -235,14 +235,10 @@
             }
         },
             {isSeparator: true}, {
-                title: "لیست مهارت ها", icon: "<spring:url value="skill.png"/>", click: function () {
+                title: "<spring:message code="skill.plural.list"/>", icon: "<spring:url value="skill.png"/>", click: function () {
                     var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
-
-
                     if (record == null || record.id == null) {
-
                         isc.Dialog.create({
-
                             message: "<spring:message code="msg.skillGroup.notFound"/>",
                             icon: "[SKIN]ask.png",
                             title: "پیام",
@@ -252,15 +248,11 @@
                             }
                         });
                     } else {
-
-                        // alert(record.id);
                         RestDataSource_All_Skills.fetchDataURL = skillGroupUrl + record.id + "/unAttachSkills";
                         RestDataSource_All_Skills.invalidateCache();
                         RestDataSource_All_Skills.fetchData();
                         ListGrid_AllSkills.invalidateCache();
                         ListGrid_AllSkills.fetchData();
-
-
                         RestDataSource_ForThisSkillGroup_GetSkills.fetchDataURL = skillGroupUrl + record.id + "/getSkills"
                         RestDataSource_ForThisSkillGroup_GetSkills.invalidateCache();
                         RestDataSource_ForThisSkillGroup_GetSkills.fetchData();
@@ -532,7 +524,7 @@
 
     });
 
-    var ListGrid_ForThisSkillGroup_GetSkills = isc.ListGrid.create({
+    var ListGrid_ForThisSkillGroup_GetSkills = isc.TrLG.create({
         //title:"تمام مهارت ها",
         width: "100%",
         height: "100%",
@@ -544,10 +536,10 @@
 
         dataSource: RestDataSource_ForThisSkillGroup_GetSkills,
         fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد مهارت", align: "center", width: "20%"},
-            {name: "titleFa", title: "نام مهارت", align: "center", width: "70%"},
-            {name: "OnDelete", title: "حذف", align: "center"}
+          //  {name: "id", title: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="skill.code"/>", align: "center", width: "20%"},
+            {name: "titleFa", title: "<spring:message code="title"/>", align: "center", width: "70%"},
+            {name: "OnDelete", title: "<spring:message code="remove"/>", align: "center"}
         ],
 
         //--------------------------------------------
@@ -665,14 +657,14 @@
         autoFetchData: false,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی ",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        // sortFieldAscendingText: "مرتب سازی صعودی ",
+        // sortFieldDescendingText: "مرتب سازی نزولی",
+        // configureSortText: "تنظیم مرتب سازی",
+        // autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
+        // autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
+        // filterUsingText: "فیلتر کردن",
+        // groupByText: "گروه بندی",
+        // freezeFieldText: "ثابت نگه داشتن"
 
 
     });
@@ -682,7 +674,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست مهارت ها",
+                title: "<spring:message code="skill.plural.list"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -698,7 +690,8 @@
         width: "50%",
         sections: [
             {
-                title: "لیست مهارت های این گروه مهارت",
+               // title: "لیست مهارت های این گروه مهارت",
+               title:"<spring:message code="list.skill.skillGroup"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -742,7 +735,7 @@
     });
 
     var Window_Add_Skill_to_SkillGroup = isc.Window.create({
-        title: "لیست مهارت ها",
+        title: "<spring:message code="skill.plural.list"/>",
         width: "900",
         height: "400",
         autoSize: true,
@@ -1455,7 +1448,7 @@
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
         icon: "<spring:url value="skill.png"/>",
-        title: "لیست مهارت ها",
+       title: "<spring:message code="skill.plural.list"/>",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
             //  alert(Window_Add_Skill_to_SkillGroup.DynamicForm[0].fields[0]);
@@ -1468,23 +1461,18 @@
 
                     message: "<spring:message code="msg.skillGroup.notFound"/>",
                     icon: "[SKIN]ask.png",
-                    title: "پیام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.Button.create({title: "<spring:message code="verify"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
                 });
-
             } else {
-
-
                 RestDataSource_All_Skills.fetchDataURL = skillGroupUrl + record.id + "/unAttachSkills";
                 RestDataSource_All_Skills.invalidateCache();
                 RestDataSource_All_Skills.fetchData();
                 ListGrid_AllSkills.invalidateCache();
                 ListGrid_AllSkills.fetchData();
-
-
                 RestDataSource_ForThisSkillGroup_GetSkills.fetchDataURL = skillGroupUrl + record.id + "/getSkills"
                 RestDataSource_ForThisSkillGroup_GetSkills.invalidateCache();
                 RestDataSource_ForThisSkillGroup_GetSkills.fetchData();
@@ -1525,13 +1513,13 @@
         tabs: [
             {
                 id: "TabPane_Skill_Group_Skill",
-                title: "لیست مهارت ها",
+               title: "<spring:message code="skill.plural.list"/>",
                 pane: ListGrid_Skill_Group_Skills
 
             }
             ,{
                 id: "TabPane_Skill_Group_Competence",
-                title: "لیست شایستگی ها",
+                title: "<spring:message code="competence.plural.list"/>",
                 visable:false,
                 pane: ListGrid_Skill_Group_Competence
             }

@@ -926,6 +926,9 @@
                     DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
                     // console.log(item.getSelectedRecord().code)
                 },
+                click: function (form, item) {
+                    item.fetchData();
+                }
             },
             {
                 name: "subCategory.id",
@@ -1788,6 +1791,9 @@
                         optionDataSource: RestDataSourceEducationCourseJsp,
                         filterFields: ["titleFa"],
                         sortField: ["id"],
+                        click: function (form, item) {
+                            item.fetchData();
+                        }
                     },
                     {
                         name: "minTeacherExpYears",
