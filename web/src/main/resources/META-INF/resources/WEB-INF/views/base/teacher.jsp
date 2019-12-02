@@ -11,7 +11,7 @@
     var gridState;
     var attachName;
     var attachNameTemp;
-    var codeMeliCheck = true;
+    var nationalCodeCheck = true;
     var cellPhoneCheck = true;
     var mailCheck = true;
     var persianDateCheck = true;
@@ -276,8 +276,8 @@
                 showHintInField: true,
                 changed: function () {
                     var codeCheck;
-                    codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
-                    codeMeliCheck = codeCheck;
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
@@ -1101,7 +1101,7 @@
     var IButton_Teacher_Save_JspTeacher = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (codeMeliCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
                 return;
             }
             vm.validate();
@@ -1573,26 +1573,6 @@
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
-    }
-
-
-    function checkCodeMeli(code) {
-        if (code === "undefined" || code === null || code === "")
-            return false;
-        var L = code.length;
-
-        if (L < 8 || parseFloat(code, 10) === 0)
-            return false;
-        code = ('0000' + code).substr(L + 4 - 10);
-        if (parseFloat(code.substr(3, 6), 10) === 0)
-            return false;
-        var c = parseFloat(code.substr(9, 1), 10);
-        var s = 0;
-        for (var i = 0; i < 9; i++) {
-            s += parseFloat(code.substr(i, 1), 10) * (10 - i);
-        }
-        s = s % 11;
-        return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
     }
 
     function checkEmail(email) {

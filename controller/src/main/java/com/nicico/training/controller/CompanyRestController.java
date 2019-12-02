@@ -46,22 +46,6 @@ public class CompanyRestController {
     @PostMapping
     public ResponseEntity create(@RequestBody CompanyDTO.Create request) {
 
-//        if (request.getAccountInfo() != null) {
-//            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
-//            request.setAccountInfoId(accountInfoDTO.getId());
-//            request.setAccountInfo(null);
-//        }
-//        if (request.getAddress() != null) {
-//            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
-//            request.setAddressId(addressDTO.getId());
-//            request.setAddress(null);
-//        }
-//        if (request.getManager() != null) {
-//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-//            request.setManagerId(personalInfoDTO.getId());
-//            request.setManager(null);
-//        }
-
         try {
             return new ResponseEntity<>(companyService.create(request), HttpStatus.CREATED);
         } catch (TrainingException ex) {
@@ -72,22 +56,6 @@ public class CompanyRestController {
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody CompanyDTO.Update request) {
-
-//        if (request.getAccountInfo() != null) {
-//            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
-//            request.setAccountInfoId(accountInfoDTO.getId());
-//            request.setAccountInfo(null);
-//        }
-//        if (request.getAddress() != null) {
-//            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
-//            request.setAddressId(addressDTO.getId());
-//            request.setAddress(null);
-//        }
-//        if (request.getManager() != null) {
-//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-//            request.setManagerId(personalInfoDTO.getId());
-//            request.setManager(null);
-//        }
 
         try {
             return new ResponseEntity<>(companyService.update(id, request), HttpStatus.OK);
