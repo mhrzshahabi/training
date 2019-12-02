@@ -5,14 +5,15 @@ package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Student;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
+import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -57,22 +58,32 @@ public class TclassDTO {
     private Boolean first;
     private Boolean second;
     private Boolean third;
+    private Boolean fourth;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
 
 
-//    @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
-        @Getter
+//        private Date createdDate;
+//        private String createdBy;
+//        @Getter(AccessLevel.NONE)
+//        private Date lastModifiedDate;
+//        public String getLastModifiedDate(){
+//            if(lastModifiedDate == null){
+//                return createdDate.toString();
+//            }
+//            return lastModifiedDate.toString();
+//        }
+        private String lastModifiedBy;
         private Long id;
-        @Getter
         private CourseDTO.CourseInfoTuple course;
-        @Getter
         private TermDTO term;
 //        private List<Student> studentSet;
+        @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
         public String getTeacher(){
             if (teacher!=null)

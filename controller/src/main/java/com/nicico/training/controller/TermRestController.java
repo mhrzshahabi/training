@@ -5,10 +5,13 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +21,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -38,6 +42,7 @@ public class TermRestController {
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
+    private final ModelMapper modelMapper;
 
 
     @Loggable
@@ -55,14 +60,14 @@ public class TermRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<TermDTO.Info> create(@RequestBody TermDTO.Create req) {
-        TermDTO.Create create = (new ModelMapper()).map(req, TermDTO.Create.class);
+        TermDTO.Create create =modelMapper.map(req, TermDTO.Create.class);
         return new ResponseEntity<>(termService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<TermDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        TermDTO.Update update = (new ModelMapper()).map(request, TermDTO.Update.class);
+        TermDTO.Update update = modelMapper.map(request, TermDTO.Update.class);
         return new ResponseEntity<>(termService.update(id, update), HttpStatus.OK);
     }
 
@@ -81,8 +86,15 @@ public class TermRestController {
     }
 
 
-    @Loggable
-    @GetMapping(value = "/spec-list")
+ @GetMapping(value = "/spec-list")
+    public ResponseEntity<TotalResponse<TermDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        return new ResponseEntity<>(termService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+//
+//    @Loggable
+//    @GetMapping(value = "/spec-list")
     public ResponseEntity<TermDTO.TermSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                    @RequestParam("_endRow") Integer endRow,
                                                    @RequestParam(value = "_constructor", required = false) String constructor,

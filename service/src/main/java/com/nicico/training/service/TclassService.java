@@ -6,16 +6,15 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Personnel;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.model.TrainingPlace;
-import com.nicico.training.repository.StudentDAO;
-import com.nicico.training.repository.TclassDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.repository.TrainingPlaceDAO;
+import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -33,6 +32,39 @@ public class TclassService implements ITclassService {
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
     private final TrainingPlaceDAO trainingPlaceDAO;
+    private final StudentService studentService;
+
+    private final PersonnelDAO personnelDAO;
+
+    @Transactional
+    @Override
+    public void addStudents(Long classId, List<String> personsIds) {
+        Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
+        optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+        for(String personnelId : personsIds) {
+            Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personnelId);
+            optionalPersonnel.ifPresent(personnel -> {
+                StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
+                StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
+                addStudent(info.getId(), classId);
+            });
+        }
+//        List<Student> gAllById = studentDAO.findAllById(request.getIds());
+////        for (Student student : gAllById) {
+////            tclass.getStudentSet().add(student);
+////        }
+//        Tclass tclass = tclassDAO.getOne(classId);
+//        Student student = studentDAO.getOne(studentId);
+//        tclass.getStudentSet().add(student);
+    }
+
+    @Transactional
+    @Override
+    public void removeStudent(Long studentId, Long classId) {
+        Tclass tclass = tclassDAO.getOne(classId);
+        Student student = studentDAO.getOne(studentId);
+        tclass.getStudentSet().remove(student);
+    }
 
     @Transactional(readOnly = true)
     @Override
@@ -136,13 +168,7 @@ public class TclassService implements ITclassService {
         return studentInfoSet;
     }
 
-    @Transactional
-    @Override
-    public void removeStudent(Long studentId, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        Student student = studentDAO.getOne(studentId);
-        tclass.getStudentSet().remove(student);
-    }
+
 
     @Transactional
     @Override
@@ -151,6 +177,8 @@ public class TclassService implements ITclassService {
         Student student = studentDAO.getOne(studentId);
         tclass.getStudentSet().add(student);
     }
+
+
 
     @Transactional
     @Override

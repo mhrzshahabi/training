@@ -642,8 +642,9 @@
             {
                 name: "code",
                 title: "کد",
+                required: true,
                 // type: '',
-                length: "100",
+                length: "5",
                 keyPressFilter: "[0-9]"
             },
         ]
@@ -792,7 +793,7 @@
     function ListGrid_Education_Remove(Url, msg) {
         var record = EducationListGrid.getSelectedRecord();
         if (record == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Education_remove = createDialog("ask", msg, "<spring:message code='global.warning'/>");
             Dialog_Education_remove.addProperties({
@@ -812,7 +813,7 @@
     function ListGrid_Education_Edit(EducationListGrid, Url, title, EducationDynamicForm, EducationWindows) {
         var record = EducationListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodEducation = "PUT";
             saveActionUrl = Url + record.id;

@@ -10,7 +10,7 @@
     %>
 
     var equipmentMethod = "get";
-    var equipmentHomeUrl = rootUrl + "/equipment";
+    var equipmentHomeUrl = rootUrl + "equipment";
     var equipmentActionUrl = equipmentHomeUrl;
     var Menu_ListGrid_Equipment = isc.Menu.create({
         width: 150,

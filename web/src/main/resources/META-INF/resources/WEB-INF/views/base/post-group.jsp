@@ -438,7 +438,7 @@
                     showDown: false,
                     showRollOver: false,
                     layoutAlign: "center",
-                    src: "pieces/16/icon_delete.png",
+                    src: "[SKIN]/actions/remove.png",
                     prompt: "remove",
                     height: 16,
                     width: 16,

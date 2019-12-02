@@ -34,8 +34,11 @@ import java.util.Map;
 @RequiredArgsConstructor
 @RequestMapping("/api/sessionService")
 public class ClassSessionRestController {
+
+
     private final ClassSessionService classSessionService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
@@ -44,7 +47,7 @@ public class ClassSessionRestController {
     @Loggable
     @PostMapping(value = "/generateSessions/{classId}")
     public void generateSessions(@PathVariable Long classId, @Validated @RequestBody TclassDTO.Create autoSessionsRequirement) {
-        classSessionService.generateSessions(classId,autoSessionsRequirement);
+        classSessionService.generateSessions(classId, autoSessionsRequirement);
     }
 
     //*********************************
@@ -67,8 +70,8 @@ public class ClassSessionRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.Create req) {
-        ClassSessionDTO.Create create = (new ModelMapper()).map(req, ClassSessionDTO.Create.class);
+    public ResponseEntity<ClassSessionDTO.Info> create(@RequestBody ClassSessionDTO.ManualSession req) {
+        ClassSessionDTO.ManualSession create = modelMapper.map(req, ClassSessionDTO.ManualSession.class);
         return new ResponseEntity<>(classSessionService.create(create), HttpStatus.CREATED);
     }
 
@@ -76,8 +79,8 @@ public class ClassSessionRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-        ClassSessionDTO.Update update = (new ModelMapper()).map(request, ClassSessionDTO.Update.class);
+    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request) {
+        ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
         return new ResponseEntity<>(classSessionService.update(id, update), HttpStatus.OK);
     }
 
@@ -144,10 +147,11 @@ public class ClassSessionRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}"})
+    @PostMapping(value = {"/printWithCriteria/{type}/{classId}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr,
+                                  @PathVariable String classId) throws Exception {
 
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
@@ -158,16 +162,38 @@ public class ClassSessionRestController {
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
+        List<ClassSessionDTO.Info> infos = classSessionService.loadSessions(Long.parseLong(classId));
+
+
+//////        final SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.search(searchRq);
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", dateUtil.todayDate());
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(infos) + "}";
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, type);
-        reportUtil.export("/reports/operationalUnit_Report.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/SessionsList.jasper", params, jsonDataSource, response);
+    }
+
+    //*********************************
+
+    @Loggable
+    @GetMapping(value = "/load-sessions/{classId}")
+    public ResponseEntity<ClassSessionDTO.ClassSessionsSpecRs> getClassSessions(@PathVariable Long classId) {
+
+        List<ClassSessionDTO.Info> list = classSessionService.loadSessions((classId));
+
+        final ClassSessionDTO.SpecRs specResponse = new ClassSessionDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final ClassSessionDTO.ClassSessionsSpecRs specRs = new ClassSessionDTO.ClassSessionsSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
     //*********************************

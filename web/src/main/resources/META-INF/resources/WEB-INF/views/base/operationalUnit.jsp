@@ -310,7 +310,7 @@
 
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "<spring:message code="msg.not.selected.record"/>",
+                    message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
                     buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
@@ -344,7 +344,7 @@
             var record = ListGrid_operational.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "<spring:message code="msg.not.selected.record"/>",
+                    message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
                     buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
@@ -410,7 +410,7 @@
 
         //*****print*****
         function print_OperationalUnitListGrid(type) {
-            var advancedCriteria_course = ListGrid_operational.getCriteria();
+            var advancedCriteria_unit = ListGrid_operational.getCriteria();
             var criteriaForm_course = isc.DynamicForm.create({
                 method: "POST",
                 action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
@@ -422,7 +422,7 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_course));
+            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
             criteriaForm_course.setValue("myToken", "<%=accessToken%>");
             criteriaForm_course.show();
             criteriaForm_course.submitForm();

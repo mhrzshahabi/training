@@ -46,4 +46,21 @@
         <addForeignKeyConstraint baseColumnNames="f_class_id" baseTableName="tbl_session" constraintName="FKobi5ni30lnpwqkk46091xo63x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
 
+
+    <changeSet author="rastegari_h (generated)" id="1574528347662-160">
+        <addColumn tableName="tbl_session">
+            <column name="c_session_state_fa" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1574528347662-161">
+        <addColumn tableName="tbl_session">
+            <column name="c_session_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1574534119716-160">
+        <addColumn tableName="tbl_session">
+            <column name="c_day_name" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

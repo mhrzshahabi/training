@@ -134,14 +134,15 @@ public class Tclass extends Auditable {
     private Boolean second;
     @Column(name = "b_third")
     private Boolean third;
+    @Column(name = "b_fourth")
+    private Boolean fourth;
 
     @Column(name = "c_topology")
-    private String topology;//چیدمان
+    private String topology;
 
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_class_student",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
-
 }

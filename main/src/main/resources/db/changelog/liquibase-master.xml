@@ -55,7 +55,7 @@
     <include file="changes/liq-047.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-048.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-049.xml" relativeToChangelogFile="true"/>
-<!--    <include file="changes/liq-050.xml" relativeToChangelogFile="true"/>-->
+    <!--    <include file="changes/liq-050.xml" relativeToChangelogFile="true"/>-->
     <include file="changes/liq-051.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-052.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-053.xml" relativeToChangelogFile="true"/>
@@ -70,7 +70,11 @@
     <include file="changes/liq-062.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-063.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq-064.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_065_Personnel.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_066_ClassStudent.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-065-personnel.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-066-PersonnelRegistered.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-067-student.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-068-class_student.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-069.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq-070-TrainingPlace.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

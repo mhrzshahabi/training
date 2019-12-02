@@ -31,8 +31,8 @@ public class TrainingPlace extends Auditable {
     @Column(name = "c_title_en")
     private String titleEn;
 
-    @Column(name = "n_capacity")
-    private Integer capacity;
+    @Column(name = "c_capacity")
+    private String capacity;
 
     @Column(name = "e_place_type", insertable = false, updatable = false)
     private EPlaceType ePlaceType;

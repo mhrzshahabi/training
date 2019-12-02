@@ -23,8 +23,10 @@ public class ClassSessionFormController {
         return "base/classSession";
     }
 
-    @PostMapping("/printWithCriteria/{type}")
-    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+    @PostMapping("/printWithCriteria/{type}/{classId}")
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request,
+                                               @PathVariable String type,
+                                               @PathVariable String classId) {
 
         String token = request.getParameter("myToken");
 
@@ -41,14 +43,14 @@ public class ClassSessionFormController {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/classSession/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/EXCEL/" + classId, HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/sessionService/printWithCriteria/HTML/" + classId, HttpMethod.POST, entity, byte[].class);
         else
             return null;
     }

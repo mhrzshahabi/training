@@ -3,25 +3,28 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.model.ClassSession;
 
 import java.util.List;
 
 public interface IClassSession {
 
-  ClassSessionDTO.Info get(Long id);
+    ClassSessionDTO.Info get(Long id);
 
-   List<ClassSessionDTO.Info> list();
+    List<ClassSessionDTO.Info> list();
 
-   ClassSessionDTO.Info create(ClassSessionDTO.Create request);
+    ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request);
 
-   ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request);
+    ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request);
 
-   void delete(Long id);
+    void delete(Long id);
 
-   void delete(ClassSessionDTO.Delete request);
+    void delete(ClassSessionDTO.Delete request);
 
-   SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
 
-   List<ClassSessionDTO.GeneratedSessions> generateSessions (Long classId, TclassDTO.Create autoSessionsRequirement);
+    void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement);
+
+    List<ClassSessionDTO.Info> loadSessions(Long classId);
 
 }

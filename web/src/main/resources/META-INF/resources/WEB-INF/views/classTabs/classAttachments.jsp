@@ -213,7 +213,7 @@
     function ListGrid_ClassAttachments_Edit() {
         var record = ListGrid_JspClassAttachment.getSelectedRecord();
         if (record == null || record.id == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodClassAttachment = "PUT";
             saveActionUrlClassAttachment = attachmentUrl + record.id;
@@ -268,7 +268,7 @@
     function ListGrid_ClassAttachments_Remove() {
         var record = ListGrid_JspClassAttachment.getSelectedRecord();
         if (record == null) {
-            createDialog("info", "<spring:message code='msg.not.selected.record'/>");
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='global.warning'/>");

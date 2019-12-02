@@ -2,10 +2,26 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1574248267255-159">
-        <createTable tableName="tbl_personnel">
-            <column name="personnel_no" type="VARCHAR2(255 CHAR)">
-                <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
+    <changeSet author="lotfi (generated)" id="1574582459489-160">
+        <createSequence sequenceName="seq_personnel_registered_id"/>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1574582182977-161">
+        <createTable tableName="tbl_personnel_registered">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personnel_registeredPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
             </column>
             <column name="active" type="NUMBER(10, 0)"/>
             <column name="age" type="NUMBER(10, 0)"/>
@@ -36,7 +52,6 @@
             <column name="father_name" type="VARCHAR2(255 CHAR)"/>
             <column name="first_name" type="VARCHAR2(255 CHAR)"/>
             <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
-            <column name="id" type="NUMBER(19, 0)"/>
             <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
             <column name="job_no" type="VARCHAR2(255 CHAR)"/>
             <column name="job_title" type="VARCHAR2(255 CHAR)"/>
@@ -45,6 +60,7 @@
             <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
             <column name="national_code" type="VARCHAR2(255 CHAR)"/>
             <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)"/>
             <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
             <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
             <column name="post_code" type="VARCHAR2(255 CHAR)"/>

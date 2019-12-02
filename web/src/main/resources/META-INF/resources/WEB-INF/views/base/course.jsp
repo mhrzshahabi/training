@@ -205,12 +205,13 @@
         canAddFormulaFields: true,
         contextMenu: Menu_ListGrid_course,
         allowAdvancedCriteria: true,
-        hoverWidth: "30%",
-        hoverHeight: "30%",
+        // hoverWidth: "30%",
+        // hoverHeight: "30%",
         hoverMoveWithMouse: true,
-        canHover: false,
-        showHover: false,
-        showHoverComponents: false,
+        // canHover: false,
+        // showHover: false,
+        // showHoverComponents: false,
+        // autoFitWidthApproach:"both",
         <%--getCellHoverComponent: function (record, rowNum, colNum) {--%>
         <%--equalPreCourse.length = 0;--%>
         <%--isc.RPCManager.sendRequest({--%>
@@ -284,15 +285,15 @@
             {
                 name: "code", title: "<spring:message code="corse_code"/>",
                 align: "center",
-                // autoFitWidth: true,
-                filterOperator: "contains"
+                autoFitWidth: true,
+                filterOperator: "iContains"
             },
             {
                 name: "titleFa",
                 title: "<spring:message code="course_fa_name"/>",
                 align: "center",
                 autoFitWidth: true,
-                filterOperator: "contains",
+                filterOperator: "iContains",
             },
             {
                 name: "titleEn",
@@ -1774,10 +1775,12 @@
             isc.DynamicForm.create({
                 colWidths: ["8%", "18%", "1%"],
                 ID: "teacherForm",
-                numCols: 3,
+                titleOrientation:"top",
+                numCols: 2,
                 // padding: 50,
                 padding:"10px",
                 isGroup: true,
+                wrapItemTitles:true,
                 groupTitle: "شرایط مدرس دوره",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid lightBlue",
@@ -1789,8 +1792,8 @@
                 fields: [
                     {
                         name: "minTeacherDegree",
-                        colSpan: 1,
-                        title: "<spring:message code="course_minTeacherDegree"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherDegree"/>"+":",
                         // autoFetchData: true,
                         required: true,
                         // height: "30",
@@ -1804,8 +1807,8 @@
                     },
                     {
                         name: "minTeacherExpYears",
-                        // colSpan: 1,
-                        title: "<spring:message code="course_minTeacherExpYears"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherExpYears"/>"+":",
                         prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
@@ -1821,8 +1824,8 @@
                     },
                     {
                         name: "minTeacherEvalScore",
-                        // colSpan: 1,
-                        title: "<spring:message code="course_minTeacherEvalScore"/>",
+                        colSpan: 2,
+                        title: "<spring:message code="course_minTeacherEvalScore"/>"+":",
                         prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
                         shouldSaveValue: true,
                         textAlign: "center",
@@ -2013,7 +2016,7 @@
         vm_JspCourse.clearValues();
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
-        Window_course.setTitle("<spring:message code="create"/>");
+        Window_course.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
         lblCourse.hide();
@@ -2040,22 +2043,14 @@
     function ListGrid_Course_remove() {
         var record = ListGrid_Course.getSelectedRecord();
         if (record == null) {
-            isc.Dialog.create({
-                message: "<spring:message code="msg.no.records.selected"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             var Dialog_Delete = isc.Dialog.create({
                 message: "<spring:message
         code="course_delete"/>" + " " + getFormulaMessage(record.titleFa, 3, "red", "I") + " " + "<spring:message
         code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code="no"/>"
                 })],
@@ -2116,15 +2111,7 @@
         var sRecord = ListGrid_Course.getSelectedRecord();
 
         if (sRecord == null || sRecord.id == null) {
-            isc.Dialog.create({
-                message: "<spring:message code="msg.no.records.selected"/>",
-                icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
-                buttonClick: function (button, index) {
-                    this.close();
-                }
-            });
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             IButton_course_Save.disable();
             vm_JspCourse.clearValues();
@@ -2173,7 +2160,7 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
-            Window_course.setTitle("<spring:message code="edit"/>");
+            Window_course.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
             setTimeout(function () {

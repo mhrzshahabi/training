@@ -19,4 +19,6 @@ public interface IAccountInfoService {
     void delete(AccountInfoDTO.Delete request);
 
     SearchDTO.SearchRs<AccountInfoDTO.Info> search(SearchDTO.SearchRq request);
+
+    AccountInfoDTO.Info createOrUpdate(AccountInfoDTO.Create request);
 }

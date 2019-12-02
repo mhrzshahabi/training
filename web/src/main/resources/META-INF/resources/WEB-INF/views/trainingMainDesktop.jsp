@@ -57,6 +57,8 @@
     const attachmentUrl = rootUrl + "attachment/";
     const trainingPlaceUrl = rootUrl + "training-place/";
     const personnelUrl = rootUrl + "personnel/"
+    const personnelRegUrl = rootUrl + "personnelRegistered/";
+
 
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
@@ -80,7 +82,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
-        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -93,7 +95,7 @@
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
 
-    let TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
+    TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             contentType: "application/json; charset=utf-8",
@@ -126,10 +128,14 @@
         alternateRecordStyles: true,
         showFilterEditor: true,
         autoFitWidthApproach: "both",
+        // canHover:true,
+        showClippedValuesOnHover:true,
+        hoverMoveWithMouse: true,
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 40,
+            width: 80,
+            align: "center"
         },
         sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
         sortFieldDescendingText: "<spring:message code="sort.descending"/>",
@@ -138,7 +144,7 @@
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
-        loadingDataMessag: "<spring:message code="loading"/>",
+        loadingDataMessag: "<spring:message code="loading"/>"
     });
 
     isc.defineClass("TrRefreshBtn", ToolStripButton);
@@ -147,16 +153,21 @@
         title: "<spring:message code="refresh"/>",
     });
 
-    isc.defineClass("TrEditBtn", ToolStripButton);
-    isc.TrEditBtn.addProperties({
-        icon: "<spring:url value="edit.png"/>",
-        title: "<spring:message code="edit"/>",
-    });
-
     isc.defineClass("TrCreateBtn", ToolStripButton);
     isc.TrCreateBtn.addProperties({
         icon: "<spring:url value="create.png"/>",
         title: "<spring:message code="create"/>",
+    });
+
+    isc.defineClass("TrAddBtn", TrCreateBtn);
+    isc.TrAddBtn.addProperties({
+        title: "<spring:message code="add"/>",
+    });
+
+    isc.defineClass("TrEditBtn", ToolStripButton);
+    isc.TrEditBtn.addProperties({
+        icon: "<spring:url value="edit.png"/>",
+        title: "<spring:message code="edit"/>",
     });
 
     isc.defineClass("TrRemoveBtn", ToolStripButton);
@@ -215,7 +226,7 @@
             type: "custom",
             condition: function (item, validator, value) {
                 if (value !== undefined) {
-                    var trimmed = trTrim(value);
+                    trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
                     // item.setValue(trimmed); #TODO
                 }
@@ -225,7 +236,7 @@
     };
 
     function trTrim(value) {
-        let trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
+        trimmed = (value.toString() || "").replace(/^(\s|\u00A0)+|(\s|\u00A0)+$/g, "");
         return trimmed.replace(/\s\s+/g, ' ');
     }
 
@@ -243,6 +254,7 @@
     isc.defineClass("TrSaveBtn", Button);
     isc.TrSaveBtn.addProperties({
         title: "<spring:message code="save"/>",
+        //icon: "[SKIN]/actions/save.png",
     });
 
     isc.defineClass("TrSaveNextBtn", Button);
@@ -253,6 +265,7 @@
     isc.defineClass("TrCancelBtn", Button);
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
+        //icon: "[SKIN]/actions/cancel.png",
     });
 
     function createDialog(type, message, title) {
@@ -349,7 +362,7 @@
         <%--padding: 4,--%>
     <%--});--%>
 
-    var logoutButton = isc.IButton.create({
+     logoutButton = isc.IButton.create({
 
         width: "100",
         baseStyle: "header-logout",
@@ -373,16 +386,15 @@
 
 
     <%--logoutButton = isc.Button.create({--%>
-        <%--title: "<spring:message code="logout"/>",--%>
-        <%--width: "100",--%>
-        <%--icon: "logout.png",--%>
-        <%--click: function () {--%>
-            <%--logout();--%>
-        <%--}--%>
+    <%--title: "<spring:message code="logout"/>",--%>
+    <%--width: "100",--%>
+    <%--icon: "logout.png",--%>
+    <%--click: function () {--%>
+    <%--logout();--%>
+    <%--}--%>
     <%--});--%>
 
-
-    var languageForm = isc.DynamicForm.create({
+    languageForm = isc.DynamicForm.create({
         width: 120,
         //height: "100%",
         height: 30,
@@ -403,8 +415,8 @@
                 "en": "<spring:url value="flags/united-kingdom"/>",
             },
             changed: function () {
-                var newUrl = window.location.href;
-                var newLang = languageForm.getValue("languageName");
+                newUrl = window.location.href;
+                newLang = languageForm.getValue("languageName");
                 if (newUrl.indexOf("lang") > 0) {
                     newUrl = newUrl.replace(new RegExp("lang=[a-zA-Z_]+"), "lang=" + newLang);
                 } else {
@@ -527,14 +539,12 @@
                     }
                 },
                 {isSeparator: true},
-                {
-                    title: "<spring:message code="need.assessment"/>",
-                    <%--icon: "<spring:url value="research.png"/>",--%>
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/needAssessment/"/>");
-                    }
-                },
-                {isSeparator: true},
+                <%--{--%>
+                    <%--title: "<spring:message code="need.assessment"/>", icon: "<spring:url value="research.png"/>",--%>
+                    <%--click: function () {--%>
+                        <%--createTab(this.title, "<spring:url value="web/needAssessment/"/>");--%>
+                    <%--}--%>
+                <%--},--%>
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>",
                     <%--icon: "<spring:url value="research.png"/>",--%>
@@ -617,7 +627,7 @@
                     title: "<spring:message code="student"/>",
                     <%--icon: "<spring:url value="student.png"/>",--%>
                     click: function () {
-                        createTab(this.title, "<spring:url value="/student/show-form"/>");
+                        createTab(this.title, "<spring:url value="/personnelRegistered/show-form"/>");
                     }
                 },
                 {isSeparator: true},
@@ -705,8 +715,24 @@
                 },
                 {isSeparator: true},
                 {
-                    title: "<spring:message code="group.plural"/>",
-                    //icon: "<spring:url value="group.png"/>",
+                    title: "گروه دسترسی",
+                    //icon: "<spring:url value="permissionGroup.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "نقش ها",
+                    //icon: "<spring:url value="role.png"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "تخصیص نقش",
+                    //icon: "<spring:url value="assign.png"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
@@ -750,7 +776,7 @@
         ]
     });
 
-    var closeAllButton = isc.IButtonClose.create({
+     closeAllButton = isc.IButtonClose.create({
         width: 100,
        <%--icon: "<spring:url value="closeAllTabs.png"/>",--%>
         title: "<spring:message code="close.all"/>",
@@ -830,7 +856,7 @@
     }
 
     function createTab(title, url, autoRefresh) {
-        let tab = trainingTabSet.getTabObject(title);
+        tab = trainingTabSet.getTabObject(title);
         if (tab !== undefined) {
             if ((autoRefresh !== undefined) && (autoRefresh == true)) {
                 trainingTabSet.setTabPane(tab, isc.ViewLoader.create({viewURL: url}));
@@ -877,7 +903,7 @@
     const sessionServiceUrl = rootUrl + "sessionService/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
-        var xhttp;
+        xhttp;
         xhttp = new XMLHttpRequest();
         xhttp.willHandleError = true;
         xhttp.onreadystatechange = function () {
@@ -948,7 +974,7 @@
     });
 
     function trPrintWithCriteria(url, advancedCriteria) {
-        let trCriteriaForm = isc.DynamicForm.create({
+        trCriteriaForm = isc.DynamicForm.create({
             method: "POST",
             action: url,
             target: "_Blank",

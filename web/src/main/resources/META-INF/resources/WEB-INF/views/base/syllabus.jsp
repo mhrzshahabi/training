@@ -125,7 +125,7 @@
 		//console.log(record);
 		if (record == null) {
 			isc.Dialog.create({
-				message: "<spring:message code='global.grid.record.not.selected'/> !",
+				message: "<spring:message code='msg.no.records.selected'/> !",
 				icon: "[SKIN]ask.png",
 				title: "<spring:message code='global.message'/>",
 				buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
