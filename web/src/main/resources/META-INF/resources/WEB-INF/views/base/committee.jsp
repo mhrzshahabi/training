@@ -70,7 +70,7 @@
         ],
     });
 
-    Menu_ListGrid_committee = isc.Menu.create({
+    var Menu_ListGrid_committee = isc.Menu.create({
         data: [
             {
                 title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
@@ -752,12 +752,11 @@
                     OK.close();
                 }, 3000);
             } else {
-
                var committeeDataEditCreate = DynamicForm_Committee.getValues();
                var committeeSaveUrlEditCreate = committeeUrl;
-               var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
-               committeeSaveUrlEditCreate += committeeEditRecord1.id;
-               isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "PUT", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
+               // var committeeEditRecord1 = ListGrid_Committee.getSelectedRecord();
+               // committeeSaveUrlEditCreate += committeeEditRecord1.id;
+               isc.RPCManager.sendRequest(TrDSRequest(committeeSaveUrlEditCreate, "POST", JSON.stringify(committeeDataEditCreate), "callback: show_CommitteeActionResult(rpcResponse)"));
             }
         } else {
             var OK = isc.Dialog.create({

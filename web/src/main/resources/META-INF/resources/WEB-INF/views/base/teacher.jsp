@@ -1565,7 +1565,7 @@
                 Window_Teacher_JspTeacher.close();
             }
         } else {
-            createDialog("info", "<spring:message code='error'/>");
+            <%--createDialog("info", "<spring:message code='error'/>");--%>
         }
     }
 
