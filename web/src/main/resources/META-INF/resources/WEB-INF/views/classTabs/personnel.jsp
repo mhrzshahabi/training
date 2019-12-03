@@ -18,13 +18,10 @@
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     PersonnelTS_personnel = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
         members: [
-            isc.TrRefreshBtn.create({
-                click: function () {
-                    refreshPersonnelLG_personnel();
-                }
-            }),
-            isc.TrPrintBtn.create({
+            isc.ToolStripButtonPrint.create({
                 menu: isc.Menu.create({
                     data: [
                         {
@@ -48,9 +45,21 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.Label.create({
-                ID: "totalsLabel_personnel"
-            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.Label.create({
+                        ID: "totalsLabel_personnel"
+                    }),
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            refreshPersonnelLG_personnel();
+                        }
+                    })
+                ]
+            })
         ]
     });
 
@@ -63,16 +72,17 @@
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true, width: "*"},
             {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
-            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true},
+            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true,  autoFitWidth: true},
         ],
         fetchDataURL: personnelUrl + "iscList"
     });
 
     PersonnelLG_personnel = isc.TrLG.create({
+        width: "100%",
         dataSource: PersonnelDS_personnel,
         fields: [
             {name: "firstName"},
@@ -105,7 +115,8 @@
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
+    isc.TrHLayout.create({
+        width: "100%", height: "100%",
         members: [PersonnelLG_personnel],
     });
 

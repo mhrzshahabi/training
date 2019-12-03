@@ -275,8 +275,8 @@ abaspour 9803
                 message: "آیا اطمینان دارید؟",
                 icon: "[SKIN]ask.png",
                 buttons: [
-                    isc.Button.create({title: "بله"}),
-                    isc.Button.create({title: "خیر"})
+                    isc.IButtonSave.create({title: "بله"}),
+                    isc.IButtonCancel.create({title: "خیر"})
                 ],
                 buttonClick: function (button, index) {
                     if (index == 0 && v == true) {

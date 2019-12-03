@@ -18,18 +18,28 @@
 
     // ------------------------------------------- ToolStrip -------------------------------------------
     PostGradeTS_postGrade = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
         members: [
-            isc.TrRefreshBtn.create({
-                click: function () {
-                    refreshPostGradeLG_postGrade();
-                }
+            isc.Label.create({
+            ID: "totalsLabel_postGrade"
             }),
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.Label.create({
-                ID: "totalsLabel_postGrade"
-            }),
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+                isc.ToolStripButtonRefresh.create({
+                    click: function () {
+                    refreshPostGradeLG_postGrade();
+                    }
+                })
+          ]
+        })
+
         ]
     });
 

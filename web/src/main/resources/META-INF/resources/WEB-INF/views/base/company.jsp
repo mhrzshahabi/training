@@ -371,7 +371,8 @@
 
     HLayout_Buttons_Company = isc.TrHLayoutButtons.create({
         members: [
-            isc.TrSaveBtn.create({
+            isc.IButtonSave.create({
+                title: "<spring:message code="save"/>",
                 click: function () {
                     if (company_method === "PUT") {
                         Edit_Company();
@@ -379,7 +380,8 @@
                         Save_Company();
                     }
                 }
-            }), isc.TrCancelBtn.create({
+            }), isc.IButtonCancel.create({
+                title: "<spring:message code="cancel"/>",
                 click: function () {
                     Window_Company.close();
                 }
@@ -427,23 +429,29 @@
     //ToolStripButton
     //**********************************************************************************
 
-    ToolStripButton_Refresh = isc.TrRefreshBtn.create({
+    ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+        title: "<spring:message code="refresh"/>",
         click: function () {
             Refresh_Company();
         }
     });
-    ToolStripButton_Add = isc.TrCreateBtn.create({
+    ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        title: "<spring:message code="create"/>",
         click: function () {
             show_CompanyNewForm();
         }
     });
-    ToolStripButton_Edit = isc.TrEditBtn.create({
+    ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
+        title: "<spring:message code="edit"/>",
         click: function () {
 
             show_Company_EditForm();
         }
     });
-    ToolStripButton_Remove = isc.TrRemoveBtn.create({
+    ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
+        title: "<spring:message code="remove"/>",
         click: function () {
             show_CompanyRemoveForm();
         }
@@ -456,14 +464,21 @@
 
     ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members:
-            [
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            //ToolStripButton_Print,
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
                 ToolStripButton_Refresh,
-                ToolStripButton_Add,
-                ToolStripButton_Edit,
-                ToolStripButton_Remove,
-                // ToolStripButton_Print
             ]
+            })
+]
     });
 
     //***********************************************************************************

@@ -128,7 +128,7 @@
 				message: "<spring:message code='msg.no.records.selected'/> !",
 				icon: "[SKIN]ask.png",
 				title: "<spring:message code='global.message'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+				buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
 				buttonClick: function (button, index) {
 					this.close();
 				}
@@ -138,7 +138,7 @@
 				message: "<spring:message code='global.grid.record.remove.ask'/>",
 				icon: "[SKIN]ask.png",
 				title: "<spring:message code='global.grid.record.remove.ask.title'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({title: "<spring:message code='global.no'/>"})],
+				buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({title: "<spring:message code='global.no'/>"})],
 				buttonClick: function (button, index) {
 					this.close();
 
@@ -204,7 +204,7 @@
 				message: "رکوردی انتخاب نشده است.",
 				icon: "[SKIN]ask.png",
 				title: "پیغام",
-				buttons: [isc.Button.create({title: "تائید"})],
+				buttons: [isc.IButtonSave.create({title: "تائید"})],
 				buttonClick: function (button, index) {
 					this.close();
 				}

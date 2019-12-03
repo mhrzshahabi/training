@@ -256,7 +256,8 @@
         title: "دوره",
         width: 500,
         items: [DynamicForm_Term, isc.MyHLayoutButtons.create({
-            members: [isc.TrSaveBtn.create({
+            members: [isc.IButtonSave.create({
+                title: "ذخیره",
                 click: function () {
                     if (term_method == "PUT") {
                         edit_Term();
@@ -265,7 +266,8 @@
                     }
                 }
 
-            }), isc.TrCancelBtn.create({
+            }), isc.IButtonCancel.create({
+                title: "لغو",
                 click: function () {
                     Window_term.close();
                 }
@@ -276,23 +278,23 @@
     //**********************************************************************************
     //ToolStripButton
     //**********************************************************************************
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+       // icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Term.invalidateCache();
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/>",
         click: function () {
 
             show_TermEditForm();
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
             term_method = "POST";
@@ -300,16 +302,16 @@
 
         }
     });
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
         click: function () {
             show_TermRemoveForm()
         }
     });
 
-    var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
             <%--"<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"--%>
@@ -323,7 +325,20 @@
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            ToolStripButton_Print,
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+                ToolStripButton_Refresh,
+            ]
+            })
+        ]
     });
     //***********************************************************************************
     //HLayout
@@ -368,7 +383,7 @@
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
