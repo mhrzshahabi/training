@@ -611,7 +611,7 @@
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         margin: 50,
@@ -761,7 +761,7 @@
                 name: "workTurn",
                 title: "<spring:message code='work.turn'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "30",
                 showHintInField: true
             },
