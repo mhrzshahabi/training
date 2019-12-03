@@ -43,8 +43,8 @@
 <script type="application/javascript">
 
     // -------------------------------------------  URLs & Filters  -----------------------------------------------
-    const userFullName = '<%= SecurityUtil.getFullName()%>';
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
+    const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api/";
     const workflowUrl = rootUrl + "workflow/";
     const jobUrl = rootUrl + "job/";
