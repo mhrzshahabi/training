@@ -473,6 +473,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
+                required:true,
                 optionDataSource: RestDataSource_Education_Level_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
@@ -553,6 +554,7 @@
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
+                required:true,
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
@@ -668,7 +670,6 @@
             }
         }
     });
-
 
     var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
         align: "center",
