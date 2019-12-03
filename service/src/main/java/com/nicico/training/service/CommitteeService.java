@@ -24,15 +24,14 @@ import java.util.Set;
 @Service
 @RequiredArgsConstructor
 public class CommitteeService implements ICommitteeService {
-   private final CommitteeDAO committeeDAO;
-   private final PersonalInfoDAO personalInfoDAO;
-//   private final PersonalInfoService;
-   private final ModelMapper mapper;
+    private final CommitteeDAO committeeDAO;
+    private final PersonalInfoDAO personalInfoDAO;
+    //   private final PersonalInfoService;
+    private final ModelMapper mapper;
 
 
-
- @Transactional(readOnly = true)
-   @Override
+    @Transactional(readOnly = true)
+    @Override
     public CommitteeDTO.Info get(Long id) {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(id);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
@@ -47,7 +46,7 @@ public class CommitteeService implements ICommitteeService {
         }.getType());
     }
 
-   @Transactional
+    @Transactional
     @Override
     public CommitteeDTO.Info create(CommitteeDTO.Create request) {
         Committee committee = mapper.map(request, Committee.class);
@@ -59,34 +58,31 @@ public class CommitteeService implements ICommitteeService {
     public CommitteeDTO.Info update(Long id, CommitteeDTO.Update request) {
         Optional<Committee> optionalCommittee = committeeDAO.findById(id);
         Committee currentCommittee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-         Committee committee = new Committee();
-         mapper.map(currentCommittee, committee);
-         mapper.map(request, committee);
+        Committee committee = new Committee();
+        mapper.map(currentCommittee, committee);
+        mapper.map(request, committee);
         return mapper.map(committeeDAO.saveAndFlush(committee), CommitteeDTO.Info.class);
     }
 
 
     @Transactional
     @Override
-    public void delete(Long id)
- {
+    public void delete(Long id) {
         committeeDAO.deleteById(id);
     }
 
     @Transactional
     @Override
-        public void delete(CommitteeDTO.Delete request) {
-         final List<Committee> jobList = committeeDAO.findAllById(request.getIds());
+    public void delete(CommitteeDTO.Delete request) {
+        final List<Committee> jobList = committeeDAO.findAllById(request.getIds());
         committeeDAO.deleteAll(jobList);
     }
 
     @Transactional
     @Override
     public SearchDTO.SearchRs<CommitteeDTO.Info> search(SearchDTO.SearchRq request) {
-       return SearchUtil.search(committeeDAO, request, committee -> mapper.map(committee, CommitteeDTO.Info.class));
+        return SearchUtil.search(committeeDAO, request, committee -> mapper.map(committee, CommitteeDTO.Info.class));
     }
-
-
 
 
 //    add members functions
@@ -95,10 +91,10 @@ public class CommitteeService implements ICommitteeService {
     @Transactional
     @Override
     public void addMembers(Long committeeId, Set<Long> personInfoIds) {
-          final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
+        final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        Set<PersonalInfo> personalInfoSet =committee.getCommitteeMmembers();
+        Set<PersonalInfo> personalInfoSet = committee.getCommitteeMmembers();
 
         for (Long personId : personInfoIds) {
 
@@ -114,14 +110,13 @@ public class CommitteeService implements ICommitteeService {
     @Override
     public void removeMember(Long committeeId, Long personInfiId) {
 
-          final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
+        final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-       final Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(personInfiId);
+        final Optional<PersonalInfo> optionalPersonalInfo = personalInfoDAO.findById(personInfiId);
         final PersonalInfo personalInfo = optionalPersonalInfo.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PersonalInfoNotFound));
 
         committee.getCommitteeMmembers().remove(personalInfo);
-
 
 
     }
@@ -129,8 +124,8 @@ public class CommitteeService implements ICommitteeService {
     @Transactional
     @Override
     public void removeMembers(Long committeeId, Set<Long> personIds) {
-         for (long id : personIds) {
-            removeMember(committeeId,id);
+        for (long id : personIds) {
+            removeMember(committeeId, id);
         }
     }
 
@@ -151,7 +146,7 @@ public class CommitteeService implements ICommitteeService {
         final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
 
-        return mapper.map( committee.getCommitteeMmembers(), new TypeToken<List<PersonalInfoDTO.Info>>() {
+        return mapper.map(committee.getCommitteeMmembers(), new TypeToken<List<PersonalInfoDTO.Info>>() {
         }.getType());
     }
 
@@ -159,61 +154,57 @@ public class CommitteeService implements ICommitteeService {
 
     @Override
     @Transactional
-    public Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId)
- {
-       final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
+    public Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId) {
+        final Optional<Committee> optionalCommittee = committeeDAO.findById(committeeId);
         final Committee committee = optionalCommittee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
-        Set<PersonalInfo> acctivePersonalInfoSet=committee.getCommitteeMmembers();
-        List<PersonalInfo> personalInfoList=personalInfoDAO.findAll();
-        Set<PersonalInfo> unAttach=new HashSet<>();
+        Set<PersonalInfo> acctivePersonalInfoSet = committee.getCommitteeMmembers();
+        List<PersonalInfo> personalInfoList = personalInfoDAO.findAll();
+        Set<PersonalInfo> unAttach = new HashSet<>();
         for (PersonalInfo personalInfo : personalInfoList) {
-         if(!acctivePersonalInfoSet.contains(personalInfo))
-            unAttach.add(personalInfo);
-     }
+            if (!acctivePersonalInfoSet.contains(personalInfo))
+                unAttach.add(personalInfo);
+        }
 
-      Set<PersonalInfoDTO.Info> personInfoSet = new HashSet<>();
+        Set<PersonalInfoDTO.Info> personInfoSet = new HashSet<>();
         Optional.ofNullable(unAttach)
                 .ifPresent(person ->
                         person.forEach(personal ->
-                                personInfoSet.add(mapper.map(personal,PersonalInfoDTO.Info.class))
+                                personInfoSet.add(mapper.map(personal, PersonalInfoDTO.Info.class))
                         ));
 
         return personInfoSet;
-     //  return mapper.map( unAttach, new TypeToken<List<PersonalInfoDTO.Info>>() {
-     //   }.getType());
+        //  return mapper.map( unAttach, new TypeToken<List<PersonalInfoDTO.Info>>() {
+        //   }.getType());
 
- }
-
-     @Override
-    @Transactional
-    public boolean checkForDelete(Long CommitteeId)
-  {
-  Optional<Committee> committee=committeeDAO.findById(CommitteeId);
-  final Committee committee1=committee.orElseThrow(()->new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
-  Set<PersonalInfo> personalInfoSet=committee1.getCommitteeMmembers();
-  return ((personalInfoSet != null && personalInfoSet.size()>0 ?false:true));
-  }
-
-    @Override
-    @Transactional
-    public String findConflictCommittee(Long category,Long subcategory)
-    {
-    List<String> list=committeeDAO.findConflictCommittee(category,subcategory);
-    if(list.size()>0)
-    return (list.get(0));
-    else
-    return (null);
     }
 
     @Override
     @Transactional
-    public String findConflictWhenEdit(Long category,Long subcategory,Long id)
-    {
-     List<String> list=committeeDAO.findConflictWhenEdit(category,subcategory,id);
-    if(list.size()>0)
-    return (list.get(0));
-    else
-    return (null);
+    public boolean checkForDelete(Long CommitteeId) {
+        Optional<Committee> committee = committeeDAO.findById(CommitteeId);
+        final Committee committee1 = committee.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CommitteeNotFound));
+        Set<PersonalInfo> personalInfoSet = committee1.getCommitteeMmembers();
+        return ((personalInfoSet != null && personalInfoSet.size() > 0 ? false : true));
+    }
+
+    @Override
+//    @Transactional
+    public String findConflictCommittee(Long category, Long subcategory) {
+        List<String> list = committeeDAO.findConflictCommittee(category, subcategory);
+        if (list.size() > 0)
+            return list.get(0);
+        else
+            return "";
+    }
+
+    @Override
+    @Transactional
+    public String findConflictWhenEdit(Long category, Long subcategory, Long id) {
+        List<String> list = committeeDAO.findConflictWhenEdit(category, subcategory, id);
+        if (list.size() > 0)
+            return (list.get(0));
+        else
+            return null;
     }
 
 }
