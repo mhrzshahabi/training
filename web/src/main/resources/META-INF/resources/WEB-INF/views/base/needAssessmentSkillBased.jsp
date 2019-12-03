@@ -349,7 +349,7 @@
     });
 
     Tabset_Object_NASB_JPA = isc.TabSet.create({
-        height: "190px",
+        height: "200px",
         tabBarPosition: "right",
         tabBarThickness: 100,
         tabs: [
@@ -404,16 +404,16 @@
                 selectedListGrid = ListGrid_All_PostGroups_NASB;
                 break;
         }
-        let record = selectedListGrid.getSelectedRecord();
-        let gridState = null;
-        if (record != null && record.id != null)
-            gridState = "[{id:" + record.id + "}]";
+        // let record = selectedListGrid.getSelectedRecord();
+        // let gridState = null;
+        // if (record != null && record.id != null)
+        //     gridState = "[{id:" + record.id + "}]";
         selectedListGrid.invalidateCache();
-        setTimeout(function () {
-            if (gridState != null) {
-                selectedListGrid.setSelectedState(gridState);
-            }
-        }, 1500);
+        // setTimeout(function () {
+        //     if (gridState != null) {
+        //         selectedListGrid.setSelectedState(gridState);
+        //     }
+        // }, 1500);
         Set_For_This_Object_Data();
     }
 

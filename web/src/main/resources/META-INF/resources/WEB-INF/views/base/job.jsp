@@ -167,7 +167,7 @@
     }
 
     function test(resp) {
-        alert('hi');
+        // alert('hi');
     }
 
     <%--function trPrintWithCriteria(url, advancedCriteria) {--%>

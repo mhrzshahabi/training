@@ -394,7 +394,7 @@
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         margin: 50,
@@ -415,7 +415,7 @@
                 title: "<spring:message code='firstName'/>",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "30",
                 showHintInField: true
             },
@@ -424,7 +424,7 @@
                 title: "<spring:message code='lastName'/>",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "50",
                 showHintInField: true
             },
@@ -459,7 +459,7 @@
                 name: "birthDate",
                 title: "<spring:message code='birth.date'/>",
                 ID: "birthDate_jspPersonnelReg",
-                hint: "YYYY/MM/DD",
+                // hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -484,7 +484,7 @@
                 name: "birthPlace",
                 title: "<spring:message code='birth.location'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "50",
                 showHintInField: true
             },
@@ -611,7 +611,7 @@
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         margin: 50,
@@ -761,7 +761,7 @@
                 name: "workTurn",
                 title: "<spring:message code='work.turn'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "30",
                 showHintInField: true
             },
