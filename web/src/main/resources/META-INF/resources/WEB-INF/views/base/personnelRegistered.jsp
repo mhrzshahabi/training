@@ -394,7 +394,7 @@
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         margin: 50,
@@ -415,7 +415,7 @@
                 title: "<spring:message code='firstName'/>",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "30",
                 showHintInField: true
             },
@@ -424,7 +424,7 @@
                 title: "<spring:message code='lastName'/>",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "50",
                 showHintInField: true
             },
@@ -459,7 +459,7 @@
                 name: "birthDate",
                 title: "<spring:message code='birth.date'/>",
                 ID: "birthDate_jspPersonnelReg",
-                hint: "YYYY/MM/DD",
+                // hint: "YYYY/MM/DD",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -484,7 +484,7 @@
                 name: "birthPlace",
                 title: "<spring:message code='birth.location'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "50",
                 showHintInField: true
             },
@@ -611,7 +611,7 @@
         showErrorText: false,
         showErrorStyle: false,
         errorOrientation: "right",
-        titleAlign: "right",
+        titleAlign: "left",
         requiredMessage: "<spring:message code='msg.field.is.required'/>",
         numCols: 4,
         margin: 50,
@@ -761,7 +761,7 @@
                 name: "workTurn",
                 title: "<spring:message code='work.turn'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                hint: "Persian/فارسی",
+                // hint: "Persian/فارسی",
                 length: "30",
                 showHintInField: true
             },
@@ -873,33 +873,33 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Refresh_JspPersonnelReg = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code='refresh'/>",
+    var ToolStripButton_Refresh_JspPersonnelReg = isc.ToolStripButtonRefresh.create({
+        <%--icon: "<spring:url value="refresh.png"/>",--%>
+        <%--title: "<spring:message code='refresh'/>",--%>
         click: function () {
             ListGrid_personnelReg_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspPersonnelReg = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code='edit'/>",
+    var ToolStripButton_Edit_JspPersonnelReg = isc.ToolStripButtonEdit.create({
+        // icon: "[SKIN]/actions/edit.png",
+        // title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_personnelReg_edit();
         }
     });
 
-    var ToolStripButton_Add_JspPersonnelReg = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code='create'/>",
+    var ToolStripButton_Add_JspPersonnelReg = isc.ToolStripButtonAdd.create({
+        // icon: "[SKIN]/actions/add.png",
+        // title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_personnelReg_add();
         }
     });
 
-    var ToolStripButton_Remove_JspPersonnelReg = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code='remove'/>",
+    var ToolStripButton_Remove_JspPersonnelReg = isc.ToolStripButtonRemove.create({
+        // icon: "[SKIN]/actions/remove.png",
+        // title: "<spring:message code='remove'/>",
         click: function () {
             ListGrid_personnelReg_remove();
         }
@@ -916,11 +916,19 @@
     var ToolStrip_Actions_JspPersonnelReg = isc.ToolStrip.create({
         width: "100%",
         members: [
-            ToolStripButton_Refresh_JspPersonnelReg,
+
             ToolStripButton_Add_JspPersonnelReg,
             ToolStripButton_Edit_JspPersonnelReg,
             ToolStripButton_Remove_JspPersonnelReg,
             // ToolStripButton_Print_JspPersonnelReg
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_JspPersonnelReg,
+                ]
+            })
         ]
     });
 

@@ -320,7 +320,9 @@ public class CommitteeRestController {
     @GetMapping(value = {"/findConflictCommittee/{category}/{subcategory}"})
       public  ResponseEntity<String> findConflictCommittee(@PathVariable Long category,@PathVariable Long subcategory)
      {
-     return  new ResponseEntity<>(committeeService.findConflictCommittee(category,subcategory),HttpStatus.OK);
+         String s = committeeService.findConflictCommittee(category, subcategory);
+//         String d = "d";
+         return  new ResponseEntity<>(s,HttpStatus.OK);
      }
 
        @Loggable

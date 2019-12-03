@@ -483,7 +483,7 @@
                     "2" : "درخواست واحد" ,
                     "3" : "نیاز موردی",
                 },
-                textBoxStyle: "textItemLite"
+                // textBoxStyle: "textItemLite"
             },
             {
                 name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
@@ -722,6 +722,7 @@
                 },
                 changed: function (form, item, value) {
                     var termStart = form.getItem("termId").getSelectedRecord().startDate;
+                    var termEnd = form.getItem("termId").getSelectedRecord().endDate;
                     var dateCheck;
                     var endDate = form.getValue("endDate");
                     dateCheck = checkDate(value);
@@ -732,6 +733,8 @@
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع ترم باشد", true);
                     } else if (endDate < value) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
+                    } else if (termEnd < value){
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان ترم باشد", true)
                     } else {
                         form.clearFieldErrors("startDate", true);
                     }
@@ -767,15 +770,14 @@
                 icons: [{
                     src: "<spring:url value="calendar.png"/>",
                     click: function (form) {
-                        if (!(form.getValue("termId"))) {
+                        if (!(form.getValue("startDate"))) {
                             dialogTeacher = isc.MyOkDialog.create({
-                                message: "ابتدا ترم را انتخاب کنید",
+                                message: "ابتدا تاریخ شروع را انتخاب کنید",
                             });
                             dialogTeacher.addProperties({
                                 buttonClick: function () {
                                     this.close();
-                                    form.getItem("termId").selectValue();
-                                    // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
+                                    form.getItem("startDate").selectValue();
                                 }
                             });
                         } else {
@@ -806,41 +808,33 @@
                 //     },
                 // }],
                 click: function (form) {
-                    if (!(form.getValue("termId"))) {
+                    if (!(form.getValue("startDate"))) {
                         dialogTeacher = isc.MyOkDialog.create({
-                            message: "ابتدا ترم را انتخاب کنید",
+                            message: "ابتدا تاریخ شروع را انتخاب کنید",
                         });
                         dialogTeacher.addProperties({
                             buttonClick: function () {
                                 this.close();
-                                form.getItem("termId").selectValue();
-                                // DynamicForm_course_MainTab.getItem("titleFa").selectValue();
+                                form.getItem("startDate").selectValue();
                             }
                         });
                     }
                 },
                 changed: function (form, item, value) {
-                    var termStart = form.getItem("termId").getSelectedRecord().startDate;
-                    var dateCheck;
+                    let termStart = form.getItem("termId").getSelectedRecord().startDate;
+                    let dateCheck;
                     dateCheck = checkDate(value);
-                    var startDate = form.getValue("startDate");
+                    let startDate = form.getValue("startDate");
                     if (dateCheck === false) {
                         form.clearFieldErrors("endDate", true);
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheck = false;
                     } else if (value < termStart) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
-                    } else if (dateCheck === true) {
-                        if (startDate === undefined)
-                            form.clearFieldErrors("endDate", true);
-                        else if (startDate !== undefined && startDate > value) {
-                            form.clearFieldErrors("endDate", true);
-                            form.addFieldErrors("endDate", "<spring:message code='msg.date.order'/>", true);
-                            endDateCheck = false;
-                        } else {
-                            form.clearFieldErrors("endDate", true);
-                            endDateCheck = true;
-                        }
+                    } else if (value < startDate) {
+                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                    } else {
+                        form.clearFieldErrors("endDate", true);
                     }
                 }
             },
@@ -982,21 +976,21 @@
         // placement:"fillPanel",
         align: "center",
         border: "1px solid gray",
-        show: function () {
-            this.Super("show", arguments);
-            for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
-                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
-            }
-            ;
-            for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
-                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
-            }
-            ;
-            for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
-                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
-            }
-            ;
-        },
+        // show: function () {
+        //     this.Super("show", arguments);
+        //     for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
+        //         document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
+        //     }
+        //     ;
+        //     for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
+        //         document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
+        //     }
+        //     ;
+        //     for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
+        //         document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
+        //     }
+        //     ;
+        // },
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
@@ -1628,4 +1622,15 @@
                 }
             }
         }
+    }
+
+    function chechValidDate(termStart, termEnd, classStart, classEnd) {
+            if(termStart != null && termEnd != null && classStart != null && classEnd != null){
+                if(!checkDate(classStart) && !checkDate(classEnd)){
+                    return false;
+                }
+                if(classStart < termStart && classStart > termEnd){
+                    return false;
+                }
+            }
     }
