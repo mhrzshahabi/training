@@ -928,7 +928,7 @@
                         Window_Class_JspClass.close();
 
                         //**********generate class sessions**********
-                        if (!VM_JspClass.hasErrors()) {
+                        if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
                             if (autoValid) {
                                 ClassID = JSON.parse(resp.data).id;
                                 isc.RPCManager.sendRequest({
