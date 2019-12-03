@@ -299,57 +299,57 @@
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 hidden: true
             },
             {
                 name: "category.titleFa", title: "<spring:message
-        code="course_category"/>", align: "center", filterOperator: "contains"
+        code="course_category"/>", align: "center", filterOperator: "iContains"
             },
             {
                 name: "subCategory.titleFa", title: "<spring:message
-        code="course_subcategory"/>", align: "center", filterOperator: "contains"
+        code="course_subcategory"/>", align: "center", filterOperator: "iContains"
             },
             {
                 name: "erunType.titleFa",
                 title: "<spring:message code="course_eruntype"/>",
                 align: "center",
-                filterOperator: "contains",
+                filterOperator: "iContains",
                 allowFilterOperators: false,
                 canFilter: false
 
             },
             {
                 name: "elevelType.titleFa", title: "<spring:message
-        code="cousre_elevelType"/>", align: "center", filterOperator: "contains",
+        code="cousre_elevelType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "etheoType.titleFa", title: "<spring:message
-        code="course_etheoType"/>", align: "center", filterOperator: "contains",
+        code="course_etheoType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "theoryDuration", title: "<spring:message
-                code="course_theoryDuration"/>", align: "center", filterOperator: "contains",
+                code="course_theoryDuration"/>", align: "center", filterOperator: "iContains",
 
             },
             {
                 name: "etechnicalType.titleFa", title: "<spring:message
-                 code="course_etechnicalType"/>", align: "center", filterOperator: "contains",
+                 code="course_etechnicalType"/>", align: "center", filterOperator: "iContains",
                 canFilter: false
             },
             {
                 name: "minTeacherDegree", title: "<spring:message
-        code="course_minTeacherDegree"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherDegree"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             {
                 name: "minTeacherExpYears", title: "<spring:message
-        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherExpYears"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             {
                 name: "minTeacherEvalScore", title: "<spring:message
-        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "contains", hidden: true
+        code="course_minTeacherEvalScore"/>", align: "center", filterOperator: "iContains", hidden: true
             },
             // {
             //     name: "knowledge",
@@ -469,8 +469,8 @@
         showResizeBar: false,
 
     });
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/> ",
 
         click: function () {
@@ -478,15 +478,15 @@
 
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
 
         click: function () {
@@ -500,15 +500,15 @@
     <%--openTabGoal();--%>
     <%--}--%>
     <%--});--%>
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
         }
     });
-    var ToolStripButton_Print = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             print_CourseListGrid("pdf");
@@ -516,7 +516,22 @@
     });
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            ToolStripButton_Print,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh
+                ]
+            }),
+
+        ]
     });
 
     isc.ClassFactory.defineClass("ListGridItem", "CanvasItem");
@@ -926,6 +941,9 @@
                     DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
                     // console.log(item.getSelectedRecord().code)
                 },
+                click: function (form, item) {
+                    item.fetchData();
+                }
             },
             {
                 name: "subCategory.id",
@@ -1094,10 +1112,10 @@
         valuesManager: "vm_JspCourse"
     });
 
-    var IButton_course_Save = isc.TrSaveBtn.create({
+    var IButton_course_Save = isc.IButtonSave.create({
         ID: "courseSaveBtn",
-        <%--title: "<spring:message code="save"/>",--%>
-        <%--icon: "[SKIN]/actions/save.png",--%>
+        title: "<spring:message code="save"/>",
+        //icon: "[SKIN]/actions/save.png",
         click: function () {
 
             vm_JspCourse.validate();
@@ -1270,12 +1288,12 @@
         membersMargin: 15,
         autoDraw: false,
         // defaultLayoutAlign: "center",
-        members: [IButton_course_Save, isc.TrCancelBtn.create({
+        members: [IButton_course_Save, isc.IButtonCancel.create({
             ID: "EditExitIButton",
             <%--title: "<spring:message code="cancel"/>",--%>
-            // title: "خروج",
-            // prompt: "",
-            <%--icon: "<spring:url value="remove.png"/>",--%>
+            title: "خروج",
+            prompt: "",
+            //icon: "<spring:url value="remove.png"/>",
             // orientation: "vertical",
             click: function () {
                 Window_course.closeClick();
@@ -1772,6 +1790,7 @@
                 width: "96%",
                 height: "74%",
                 borderRadius:"6px",
+                textAlign: "right",
                 // margin:20,
                 fields: [
                     {
@@ -1782,12 +1801,15 @@
                         required: true,
                         // height: "30",
                         width: "*",
-                        textAlign: "center",
+                        textAlign: "right",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
                         filterFields: ["titleFa"],
                         sortField: ["id"],
+                        click: function (form, item) {
+                            item.fetchData();
+                        }
                     },
                     {
                         name: "minTeacherExpYears",
@@ -2035,7 +2057,7 @@
         code="course_delete1"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="verify.delete"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="yes"/>"}), isc.Button.create({
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({
                     title: "<spring:message code="no"/>"
                 })],
                 buttonClick: function (button, index) {

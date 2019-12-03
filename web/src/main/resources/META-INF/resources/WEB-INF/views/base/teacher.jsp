@@ -11,7 +11,7 @@
     var gridState;
     var attachName;
     var attachNameTemp;
-    var codeMeliCheck = true;
+    var nationalCodeCheck = true;
     var cellPhoneCheck = true;
     var mailCheck = true;
     var persianDateCheck = true;
@@ -252,14 +252,14 @@
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
-        align: "center",
+        align: "right",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "left",
+        titleAlign: "right",
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -276,8 +276,8 @@
                 showHintInField: true,
                 changed: function () {
                     var codeCheck;
-                    codeCheck = checkCodeMeli(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
-                    codeMeliCheck = codeCheck;
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    nationalCodeCheck = codeCheck;
                     if (codeCheck === false)
                         DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
@@ -708,14 +708,14 @@
 
     var DynamicForm_JobInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
-        align: "center",
+        align: "right",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "left",
+        titleAlign: "right",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -864,14 +864,14 @@
 
     var DynamicForm_AccountInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
-        align: "center",
+        align: "right",
         canSubmit: true,
         titleWidth: 80,
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "left",
+        titleAlign: "right",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -937,13 +937,13 @@
 
     var DynamicForm_AddressInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
-        align: "center",
+        align: "right",
         canSubmit: true,
         titleWidth: 120,
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
-        titleAlign: "left",
+        titleAlign: "right",
         numCols: 6,
         margin: 10,
         newPadding: 5,
@@ -1098,10 +1098,10 @@
         }
     });
 
-    var IButton_Teacher_Save_JspTeacher = isc.TrSaveBtn.create({
+    var IButton_Teacher_Save_JspTeacher = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            if (codeMeliCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
                 return;
             }
             vm.validate();
@@ -1121,9 +1121,9 @@
         }
     });
 
-    var IButton_Teacher_Exit_JspTeacher = isc.TrCancelBtn.create({
-        <%--icon: "<spring:url value="remove.png"/>",--%>
-        // prompt: "",
+    var IButton_Teacher_Exit_JspTeacher = isc.IButtonCancel.create({
+        //icon: "<spring:url value="remove.png"/>",
+        //prompt: "",
         width: 100,
         orientation: "vertical",
         click: function () {
@@ -1233,32 +1233,32 @@
     /*ToolStrips and Layout*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    var ToolStripButton_Refresh_JspTeacher = isc.TrRefreshBtn.create({
+    var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButtonRefresh.create({
         click: function () {
             ListGrid_teacher_refresh();
         }
     });
 
-    var ToolStripButton_Edit_JspTeacher = isc.TrEditBtn.create({
+    var ToolStripButton_Edit_JspTeacher = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_teacher_edit();
         }
     });
 
-    var ToolStripButton_Add_JspTeacher = isc.TrCreateBtn.create({
+    var ToolStripButton_Add_JspTeacher = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_teacher_add();
         }
     });
 
-    var ToolStripButton_Remove_JspTeacher = isc.TrRemoveBtn.create({
+    var ToolStripButton_Remove_JspTeacher = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_teacher_remove();
         }
     });
 
-    var ToolStripButton_Print_JspTeacher = isc.ToolStripButton.create({
-        icon: "[SKIN]/RichTextEditor/print.png",
+    var ToolStripButton_Print_JspTeacher = isc.ToolStripButtonPrint.create({
+        //icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
@@ -1268,12 +1268,21 @@
 
     var ToolStrip_Actions_JspTeacher = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
-            ToolStripButton_Refresh_JspTeacher,
             ToolStripButton_Add_JspTeacher,
             ToolStripButton_Edit_JspTeacher,
             ToolStripButton_Remove_JspTeacher,
-            ToolStripButton_Print_JspTeacher
+            ToolStripButton_Print_JspTeacher,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_JspTeacher
+                ]
+            })
+
         ]
     });
 
@@ -1573,26 +1582,6 @@
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
-    }
-
-
-    function checkCodeMeli(code) {
-        if (code === "undefined" || code === null || code === "")
-            return false;
-        var L = code.length;
-
-        if (L < 8 || parseFloat(code, 10) === 0)
-            return false;
-        code = ('0000' + code).substr(L + 4 - 10);
-        if (parseFloat(code.substr(3, 6), 10) === 0)
-            return false;
-        var c = parseFloat(code.substr(9, 1), 10);
-        var s = 0;
-        for (var i = 0; i < 9; i++) {
-            s += parseFloat(code.substr(i, 1), 10) * (10 - i);
-        }
-        s = s % 11;
-        return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
     }
 
     function checkEmail(email) {

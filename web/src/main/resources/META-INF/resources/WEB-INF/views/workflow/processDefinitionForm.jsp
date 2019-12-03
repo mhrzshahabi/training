@@ -102,7 +102,7 @@
                 message: "رکوردی انتخاب نشده است !",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function () {
                     this.hide();
                 }
@@ -113,7 +113,7 @@
                 message: "آیا فرایند انتخاب شده برای شروع آماده شود؟",
                 icon: "[SKIN]ask.png",
                 title: "تائید",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
                 buttonClick: function (button, index) {
                     this.hide();
                     if (index == 0) {
@@ -137,7 +137,7 @@
                 message: "رکوردی انتخاب نشده است !",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.hide();
                 }
@@ -147,7 +147,7 @@
                 message: "آیا رکورد انتخاب شده حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "حذف تائید",
-                buttons: [isc.Button.create({title: "بله"}), isc.Button.create({title: "خیر"})],
+                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
                 buttonClick: function (button, index) {
                     this.hide();
                     if (index == 0) {
@@ -186,7 +186,7 @@
                 message: "رکوردی انتخاب نشده است !",
                 icon: "[SKIN]ask.png",
                 title: "پیغام",
-                buttons: [isc.Button.create({title: "تائید"})],
+                buttons: [isc.IButtonSave.create({title: "تائید"})],
                 buttonClick: function (button, index) {
                     this.hide();
                 }

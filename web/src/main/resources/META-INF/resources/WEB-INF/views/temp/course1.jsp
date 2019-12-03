@@ -149,7 +149,7 @@
 				message: "<spring:message code='msg.no.records.selected'/> !",
 				icon: "[SKIN]ask.png",
 				title: "<spring:message code='global.message'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.ok'/>"})],
+				buttons: [isc.IButtonSave.create({title: "<spring:message code='global.ok'/>"})],
 				buttonClick: function (button, index) {
 					this.close();
 				}
@@ -159,7 +159,7 @@
 				message: "<spring:message code='global.grid.record.remove.ask'/>",
 				icon: "[SKIN]ask.png",
 				title: "<spring:message code='global.grid.record.remove.ask.title'/>",
-				buttons: [isc.Button.create({title: "<spring:message code='global.yes'/>"}), isc.Button.create({
+				buttons: [isc.IButtonSave.create({title: "<spring:message code='global.yes'/>"}), isc.IButtonCancel.create({
 					title: "<spring:message
 		code='global.no'/>"
 				})],

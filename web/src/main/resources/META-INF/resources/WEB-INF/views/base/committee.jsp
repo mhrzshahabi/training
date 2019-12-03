@@ -15,13 +15,13 @@
     var RestDataSource_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "عنوان ", filterOperator: "contains"},
+            {name: "titleFa", title: "عنوان ", filterOperator: "iContains"},
             {name: "subCategoryId", hidden: true},
             {name: "categoryId", hidden: true},
-            {name: "category.titleFa", title: "گروه", filterOperator: "contains"},
-            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "contains"},
-            {name: "tasks", title: "وظایف", filterOperator: "contains"},
-            {name: "description", title: "توضیحات", filterOperator: "contains"},
+            {name: "category.titleFa", title: "گروه", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "iContains"},
+            {name: "tasks", title: "وظایف", filterOperator: "iContains"},
+            {name: "description", title: "توضیحات", filterOperator: "iContains"},
         ],
         fetchDataURL: committeeUrl + "spec-list",
     });
@@ -316,9 +316,9 @@
         items: [
             DynamicForm_Committee,
             isc.MyHLayoutButtons.create({
-                members: [isc.Button.create({
+                members: [isc.IButtonSave.create({
                     title: "<spring:message code="save"/>",
-                    icon: "pieces/16/save.png",
+                   // icon: "pieces/16/save.png",
                     click: function () {
                      if (committee_method == "PUT") {
                        edit_Committee();
@@ -328,9 +328,9 @@
 
 
                     }
-                }), isc.Button.create({
+                }), isc.IButtonCancel.create({
                     title: "<spring:message code="cancel"/>",
-                    icon: "<spring:url value="remove.png"/>",
+                    //icon: "<spring:url value="remove.png"/>",
                     click: function () {
                         Window_Committee.close();
                     }
@@ -342,22 +342,22 @@
     //**********************************************************************************
     //ToolStripButton
     //**********************************************************************************
-    var ToolStripButton_Refresh = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
+    var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+        //icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Committee.invalidateCache();
         }
     });
-    var ToolStripButton_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
+    var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
+        //icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/>",
         click: function () {
             show_CommitteEditForm();
         }
     });
-    var ToolStripButton_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
+    var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
+        //icon: "[SKIN]/actions/add.png",
         title: "<spring:message code="create"/>",
         click: function () {
             committee_method = "POST";
@@ -366,14 +366,14 @@
 
         }
     });
-    var ToolStripButton_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
+    var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
+        //icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
         click: function () {
             show_CommitteeRemoveForm();
         }
     });
-    var ToolStripButton_Print = isc.ToolStripButton.create({
+    var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
         icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
@@ -506,7 +506,7 @@
                     message: "کمیته ای انتخاب نشده است",
                     icon: "[SKIN]ask.png",
                     title: "پیام",
-                    buttons: [isc.Button.create({title: "تائید"})],
+                    buttons: [isc.IButtonSave.create({title: "تائید"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -534,7 +534,23 @@
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print, ToolStripButton_Member]
+        membersMargin: 5,
+        members: [
+            ToolStripButton_Add,
+            ToolStripButton_Edit,
+            ToolStripButton_Remove,
+            ToolStripButton_Print,
+            ToolStripButton_Member,
+            isc.ToolStrip.create({
+            width: "100%",
+            align: "left",
+            border: '0px',
+            members: [
+                ToolStripButton_Refresh
+            ]
+            }),
+
+            ]
     });
 
     //***********************************************************************************
@@ -632,7 +648,7 @@
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }
@@ -660,7 +676,7 @@
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
                 title: "<spring:message code="course_Warning"/>",
-                buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
                 }

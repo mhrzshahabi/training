@@ -75,9 +75,9 @@ var taskMethod="POST";
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "titleFa", title: "نام ", align: "center", filterOperator: "contains"},
-            {name: "titleEn", title: "نام لاتین", align: "center", filterOperator: "contains"},
-            {name: "taskDescription", title: "شرح توضیحات", align: "center", filterOperator: "contains"},
+            {name: "titleFa", title: "نام ", align: "center", filterOperator: "iContains"},
+            {name: "titleEn", title: "نام لاتین", align: "center", filterOperator: "iContains"},
+            {name: "taskDescription", title: "شرح توضیحات", align: "center", filterOperator: "iContains"},
 
         ],
         doubleClick: function () {

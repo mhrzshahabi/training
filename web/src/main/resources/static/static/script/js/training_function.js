@@ -15,7 +15,7 @@ function simpleDialog(title,message,timeout,dialogType){
         message:message,
         icon: "[SKIN]"+dialogType+".png",
         title:title,
-        buttons: [isc.Button.create({title: "تائید"})],
+        buttons: [isc.IButtonSave.create({title: "تائید"})],
         buttonClick: function (button, index) {
             di.close();
         }
@@ -39,7 +39,7 @@ function yesNoDialog(title,message,timeout,dialogType,retIndex){
         message:message,
         icon: "[SKIN]"+dialogType+".png",
         title:title,
-        buttons: [isc.Button.create({title: "بله"}),isc.Button.create({title: "خیر"})],
+        buttons: [isc.IButtonSave.create({title: "بله"}),isc.IButtonCancel.create({title: "خیر"})],
         buttonClick: function (button, index) {
             retIndex = index;
             ynd.close();

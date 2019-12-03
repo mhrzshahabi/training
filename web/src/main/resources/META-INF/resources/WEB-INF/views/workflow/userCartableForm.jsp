@@ -80,7 +80,7 @@
 				message: "رکوردی انتخاب نشده است !",
 				icon: "[SKIN]ask.png",
 				title: "پیغام",
-				buttons: [isc.Button.create({title: "تائید"})],
+				buttons: [isc.IButtonSave.create({title: "تائید"})],
 				buttonClick: function () {
 					this.hide();
 				}
@@ -103,7 +103,7 @@
 				message: "رکوردی انتخاب نشده است !",
 				icon: "[SKIN]ask.png",
 				title: "پیغام",
-				buttons: [isc.Button.create({title: "تائید"})],
+				buttons: [isc.IButtonSave.create({title: "تائید"})],
 				buttonClick: function () {
 					this.hide();
 				}
