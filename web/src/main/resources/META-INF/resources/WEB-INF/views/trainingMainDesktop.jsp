@@ -78,7 +78,7 @@
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
-        titleSuffix: "<span style='color:#ff0842;font-size:21px; padding-right: 2px;'> *</span>", requiredTitlePrefix: "",
+        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:21px; padding-right: 2px;'>* </span>",
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
