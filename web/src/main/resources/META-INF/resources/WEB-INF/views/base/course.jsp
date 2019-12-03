@@ -1187,7 +1187,7 @@
                                         "targetTitleFa": "دوره"
                                     }]
 
-                                    startProcess(varParams);
+                                     startProcess(varParams);
 // ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
@@ -1801,7 +1801,7 @@
                         required: true,
                         // height: "30",
                         width: "*",
-                        textAlign: "right",
+                        textAlign: "center",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
