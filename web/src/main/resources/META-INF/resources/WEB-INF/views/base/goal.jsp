@@ -492,7 +492,7 @@
             if (ListGrid_Goal.getSelectedRecord() != null && record.goalId == selectedRecord) {
                 return "color: brown;font-size: 14px;";
             } else {
-                return "color:white;font-size: 10px;";
+                return "color:gray;font-size: 10px;";
             }
         },
         fields: [

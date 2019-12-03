@@ -1694,7 +1694,7 @@
                             title: "",
                             width: "*",
                             type: "button",
-                            icon: "[SKIN]/actions/configure.png",
+                            // icon: "[SKIN]/actions/configure.png",
                             click: function () {
                                 if (courseAllGrid.getSelectedRecord() == null) {
                                     isc.say("دوره ای انتخاب نشده است");
