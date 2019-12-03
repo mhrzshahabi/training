@@ -225,7 +225,7 @@
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
             {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals",autoFitWidth: true},
-            {name: "reason", title: "<spring:message code='training.request'/>", align: "center"},
+            <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
             {name: "reason", title: "<spring:message code='training.request'/>", align: "center",
                 valueMap: {
@@ -633,6 +633,9 @@
                         filterOperator: "iContains"
                     }
                 ],
+                click: function(form,item){
+                    item.fetchData();
+                },
                 changed: function () {
                     evalGroup();
                 }
@@ -897,6 +900,9 @@
                 return;
             }
             VM_JspClass.validate();
+            if (VM_JspClass.hasErrors()) {
+                return;
+            }
             var data = VM_JspClass.getValues();
             data.courseId = data.course.id;
             delete data.course;
