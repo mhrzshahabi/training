@@ -34,7 +34,7 @@ import java.util.*;
 @Slf4j
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/committee/")
+@RequestMapping("/api/committee")
 public class CommitteeRestController {
   private final CommitteeService committeeService;
    private final ObjectMapper objectMapper;

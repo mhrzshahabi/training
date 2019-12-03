@@ -483,7 +483,7 @@
                     "2" : "درخواست واحد" ,
                     "3" : "نیاز موردی",
                 },
-                textBoxStyle: "textItemLite"
+                // textBoxStyle: "textItemLite"
             },
             {
                 name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
@@ -976,21 +976,21 @@
         // placement:"fillPanel",
         align: "center",
         border: "1px solid gray",
-        show: function () {
-            this.Super("show", arguments);
-            for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
-                document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
-            }
-            ;
-            for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
-                document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
-            }
-            ;
-            for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
-                document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
-            }
-            ;
-        },
+        // show: function () {
+        //     this.Super("show", arguments);
+        //     for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
+        //         document.getElementsByClassName("textItemLiteRTL")[i].style.borderRadius = "5px";
+        //     }
+        //     ;
+        //     for (j = 0; j < document.getElementsByClassName("selectItemLiteControlRTL").length; j++) {
+        //         document.getElementsByClassName("selectItemLiteControlRTL")[j].style.borderRadius = "5px";
+        //     }
+        //     ;
+        //     for (c = 0; c < document.getElementsByClassName("formCellDisabledRTL").length; c++) {
+        //         document.getElementsByClassName("formCellDisabledRTL")[c].style.borderRadius = "5px";
+        //     }
+        //     ;
+        // },
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
