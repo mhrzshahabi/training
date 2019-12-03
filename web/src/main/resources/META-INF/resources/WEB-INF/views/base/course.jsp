@@ -1187,7 +1187,7 @@
                                         "targetTitleFa": "دوره"
                                     }]
 
-                                    startProcess(varParams);
+                                     startProcess(varParams);
 // ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
