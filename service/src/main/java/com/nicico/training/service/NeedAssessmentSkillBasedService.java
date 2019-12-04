@@ -120,9 +120,7 @@ public class NeedAssessmentSkillBasedService implements INeedAssessmentSkillBase
 
         if (objectId != null && objectType != null) {
 
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.or);
-            criteriaRq.setCriteria(new ArrayList<>());
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.or, new ArrayList<>());
             addCriteria(criteriaRq, objectType, objectId);
 
             List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();

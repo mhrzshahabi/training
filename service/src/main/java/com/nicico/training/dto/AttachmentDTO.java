@@ -18,11 +18,11 @@ import java.util.List;
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class AttachmentDTO {
 
-    private String entityName;
-    private Long objectId;
     private String fileName;
-    private String fileType;
+    private Long fileTypeId;
     private String description;
+    private Long objectId;
+    private String objectType;
 
     @Getter
     @Setter

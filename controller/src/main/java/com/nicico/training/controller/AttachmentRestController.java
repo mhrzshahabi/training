@@ -19,11 +19,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.OutputStream;
-import java.util.List;
+import java.io.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,12 +39,22 @@ public class AttachmentRestController {
         return new ResponseEntity<>(attachmentService.get(id), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/list/{entityName}:{objectId}")
-//    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<List<AttachmentDTO.Info>> list(@PathVariable String entityName,
-                                                         @PathVariable Long objectId) {
-        return new ResponseEntity<>(attachmentService.list(entityName, objectId), HttpStatus.OK);
+//    @Loggable
+//    @GetMapping(value = "/list/{entityName}:{objectId}")
+////    @PreAuthorize("hasAuthority('r_address')")
+//    public ResponseEntity<List<AttachmentDTO.Info>> list(@PathVariable String entityName,
+//                                                         @PathVariable Long objectId) {
+//        return new ResponseEntity<>(attachmentService.list(entityName, objectId), HttpStatus.OK);
+//    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<AttachmentDTO.Info>> iscList(HttpServletRequest iscRq,
+                                                           String objectType,
+                                                           Long objectId) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<AttachmentDTO.Info> searchRs = attachmentService.search(searchRq, objectType, objectId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
@@ -96,62 +102,62 @@ public class AttachmentRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/spec-list/{entityName}:{objectId}")
-//    @PreAuthorize("hasAuthority('r_address')")
-    public ResponseEntity<AttachmentDTO.AttachmentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                               @RequestParam("_endRow") Integer endRow,
-                                                               @PathVariable String entityName,
-                                                               @PathVariable Long objectId) {
-        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-        request.setStartIndex(startRow)
-                .setCount(endRow - startRow);
-
-
-        List<AttachmentDTO.Info> response = attachmentService.list(entityName, objectId);
-
-        final AttachmentDTO.SpecRs specResponse = new AttachmentDTO.SpecRs();
-        specResponse.setData(response)
-                .setStartRow(startRow)
-                .setEndRow(startRow + response.size())
-                .setTotalRows(response.size());
-
-        final AttachmentDTO.AttachmentSpecRs specRs = new AttachmentDTO.AttachmentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/spec-list")
+////    @PreAuthorize("hasAuthority('r_address')")
+//    public ResponseEntity<AttachmentDTO.AttachmentSpecRs> list(@RequestParam("_startRow") Integer startRow,
+//                                                               @RequestParam("_endRow") Integer endRow,
+//                                                               String objectType,
+//                                                               Long objectId) {
+//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+//        request.setStartIndex(startRow)
+//                .setCount(endRow - startRow);
+//
+//
+//        List<AttachmentDTO.Info> response = attachmentService.list(objectType, objectId);
+//
+//        final AttachmentDTO.SpecRs specResponse = new AttachmentDTO.SpecRs();
+//        specResponse.setData(response)
+//                .setStartRow(startRow)
+//                .setEndRow(startRow + response.size())
+//                .setTotalRows(response.size());
+//
+//        final AttachmentDTO.AttachmentSpecRs specRs = new AttachmentDTO.AttachmentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @Transactional
     @PostMapping(value = "/upload")
     public ResponseEntity upload(@RequestParam("file") MultipartFile file,
-                                 @RequestParam("entityName") String entityName,
+                                 @RequestParam("entityName") String objectType,
                                  @RequestParam("objectId") Long objectId,
                                  @RequestParam("fileName") String fileName,
-                                 @RequestParam("fileType") String fileType,
+                                 @RequestParam("fileTypeId") Long fileTypeId,
                                  @RequestParam("description") String description) {
         if (file.isEmpty())
             return new ResponseEntity<>("wrong size", HttpStatus.NOT_ACCEPTABLE);
         AttachmentDTO.Create request = new AttachmentDTO.Create();
-        request.setEntityName(entityName);
+        request.setObjectType(objectType);
         request.setObjectId(objectId);
         request.setFileName(fileName);
-        request.setFileType(fileType);
+        request.setFileTypeId(fileTypeId);
         if (description != null && !description.equals("undefined") && !description.equals("null"))
             request.setDescription(description);
         try {
             AttachmentDTO.Info attachment = attachmentService.create(request);
-            String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
+            String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
             File destinationFile = new File(fileFullPath);
-            file.getOriginalFilename().replace(file.getOriginalFilename(), attachment.getId() + "." + attachment.getFileType());
+            file.getOriginalFilename().replace(file.getOriginalFilename(), attachment.getId().toString());
             file.transferTo(destinationFile);
-            return new ResponseEntity<>(fileName + "." + fileType, HttpStatus.OK);
+            return new ResponseEntity<>(fileName, HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         } catch (Exception ex) {
             ex.printStackTrace();
-            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+            return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -159,20 +165,18 @@ public class AttachmentRestController {
     @Transactional
     public void getAttach(HttpServletRequest request, HttpServletResponse response, @PathVariable Long Id) {
         AttachmentDTO.Info attachment = attachmentService.get(Id);
-        String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
+        String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
         try {
             File file = new File(fileFullPath);
             FileInputStream inputStream = new FileInputStream(file);
-
             ServletContext context = request.getServletContext();
             String mimeType = context.getMimeType(fileFullPath);
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
             response.setContentType(mimeType);
-
             String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"", attachment.getFileName() + "." + attachment.getFileType());
+            String headerValue = String.format("attachment; filename=\"%s\"", attachment.getFileName());
             response.setHeader(headerKey, headerValue);
             response.setContentLength((int) file.length());
             OutputStream outputStream = response.getOutputStream();
@@ -198,7 +202,7 @@ public class AttachmentRestController {
     @PostMapping(value = "/search")
 //    @PreAuthorize("hasAuthority('r_address')")
     public ResponseEntity<SearchDTO.SearchRs<AttachmentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-        return new ResponseEntity<>(attachmentService.search(request), HttpStatus.OK);
+        return new ResponseEntity<>(attachmentService.search(request, null, null), HttpStatus.OK);
     }
 
 }

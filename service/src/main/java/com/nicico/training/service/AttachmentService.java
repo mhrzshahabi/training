@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
@@ -10,13 +11,13 @@ import com.nicico.training.repository.AttachmentDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -38,19 +39,19 @@ public class AttachmentService implements IAttachmentService {
         return modelMapper.map(attachment, AttachmentDTO.Info.class);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<AttachmentDTO.Info> list(String entityName, Long objectId) {
-        final List<Attachment> gAll;
-//        if (objectId != null)
-//            gAll = attachmentDAO.findByEntityNameAndObjectId(entityName, objectId);
-//        else if (entityName != null)
-//            gAll = attachmentDAO.findByEntityName(entityName);
-//        else
-//            gAll = attachmentDAO.findAll();
-//        return modelMapper.map(gAll, new TypeToken<List<AttachmentDTO.Info>>() {}.getType());
-        return null;
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<AttachmentDTO.Info> list(String entityName, Long objectId) {
+//        final List<Attachment> gAll;
+////        if (objectId != null)
+////            gAll = attachmentDAO.findByEntityNameAndObjectId(entityName, objectId);
+////        else if (entityName != null)
+////            gAll = attachmentDAO.findByEntityName(entityName);
+////        else
+////            gAll = attachmentDAO.findAll();
+////        return modelMapper.map(gAll, new TypeToken<List<AttachmentDTO.Info>>() {}.getType());
+//        return null;
+//    }
 
     @Transactional
     @Override
@@ -83,13 +84,13 @@ public class AttachmentService implements IAttachmentService {
     public void delete(Long id) {
         final Optional<Attachment> one = attachmentDAO.findById(id);
         final Attachment attachment = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-//        String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
+        String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
         try {
             attachmentDAO.delete(attachment);
-//            File file = new File(fileFullPath);
-//            new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted").mkdirs();
-//            File movedFile = new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted" + File.separator + attachment.getId() + "." + attachment.getFileType());
-//            file.renameTo(movedFile);
+            File file = new File(fileFullPath);
+            new File(uploadDir + File.separator + attachment.getObjectType() + File.separator + "deleted").mkdirs();
+            File movedFile = new File(uploadDir + File.separator + attachment.getObjectType() + File.separator + "deleted" + File.separator + attachment.getId());
+            file.renameTo(movedFile);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
@@ -98,15 +99,45 @@ public class AttachmentService implements IAttachmentService {
     @Transactional
     @Override
     public void delete(AttachmentDTO.Delete request) {
-        for(Long id : request.getIds()){
+        for (Long id : request.getIds()) {
             delete(id);
         }
     }
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request) {
+    public SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId) {
+
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        if (objectType != null)
+            list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
+        if (objectId != null)
+            list.add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
+
+        if (objectId != null || objectType != null) {
+
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    request.getCriteria().setCriteria(list);
+            } else
+                request.setCriteria(criteriaRq);
+        }
+
         return SearchUtil.search(attachmentDAO, request, attachment -> modelMapper.map(attachment, AttachmentDTO.Info.class));
+    }
+
+
+    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
     }
 
     // ------------------------------
