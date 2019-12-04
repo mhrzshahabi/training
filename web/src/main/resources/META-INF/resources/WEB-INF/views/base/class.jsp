@@ -115,20 +115,6 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria:true,
     });
-
-    // var RestDataSource_Organizer_JspClass = isc.TrDS.create({
-    //     fields: [
-    //         {name: "id", primaryKey: true},
-    //         {name: "titleFa", title: "نام موسسه"},
-    //         {name: "manager.firstNameFa", title: "نام مدیر"},
-    //         {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-    //         {name: "mobile", title: "موبایل"},
-    //         {name: "restAddress", title: "آدرس"},
-    //         {name: "phone", title: "تلفن"}
-    //     ],
-    //     fetchDataURL: instituteUrl + "spec-list",
-    //     allowAdvancedCriteria:true,
-    // });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -227,6 +213,7 @@
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
+                autoFitWidth: true,
                 // sortNormalizer: function (record) {
                 //     return record.course.titleFa;
                 // }
@@ -248,7 +235,6 @@
                     "3" : "نیاز موردی",
                 },
             },
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "contains"},
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
                 valueMap: {
@@ -528,8 +514,6 @@
                     }
                 }
             },
-
-
             {
                 name: "classStatus",
                 colSpan: 1,
@@ -710,6 +694,7 @@
                 ID: "startDate_jspClass",
                 required: true,
                 hint: "--/--/----",
+                mask: "####/##/##",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -812,7 +797,7 @@
             {
                 name: "endDate",
                 titleColSpan: 1,
-
+                mask: "####/##/##",
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
