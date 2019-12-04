@@ -298,6 +298,7 @@
             {
                 name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
                 textAlign: "center",
+                pickListWidth:500,
                 optionDataSource: RestDataSource_Course_JspClass,
                 autoFetchData:false,
                 displayField: "titleFa", valueField: "id",
@@ -569,6 +570,8 @@
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
+                showHintInField: true,
+                hint:"موسسه",
                 pickListWidth:500,
                 pickListFields: [
                     {name: "titleFa"},
@@ -582,6 +585,8 @@
             {
                 name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
+                showHintInField: true,
+                hint:"مکان",
                 autoFetchData:false,
                 multiple: true,
                 pickListWidth:250,
@@ -704,7 +709,7 @@
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_jspClass",
                 required: true,
-                hint: "YYYY/MM/DD",
+                hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -811,7 +816,7 @@
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
-                hint: "YYYY/MM/DD",
+                hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -893,8 +898,8 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true},
-            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true, disabled:true},
+            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true, disabled:true},
 
             {
                 type: "BlurbItem",
