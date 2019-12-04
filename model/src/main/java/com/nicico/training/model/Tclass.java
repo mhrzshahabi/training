@@ -76,6 +76,13 @@ public class Tclass extends Auditable {
     @Column(name = "f_institute")
     private Long instituteId;
 
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
+    @JoinColumn(name = "f_institute_organizer", insertable = false, updatable = false)
+    private Institute organizer;
+
+    @Column(name = "f_institute_organizer")
+    private Long organizerId;
+
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_class_training_place",
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
@@ -128,12 +135,16 @@ public class Tclass extends Auditable {
 
     @Column(name = "b_friday")
     private Boolean friday;
+
     @Column(name = "b_first")
     private Boolean first;
+
     @Column(name = "b_second")
     private Boolean second;
+
     @Column(name = "b_third")
     private Boolean third;
+
     @Column(name = "b_fourth")
     private Boolean fourth;
 
