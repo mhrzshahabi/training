@@ -118,6 +118,13 @@
 		}
 	}
 
+	var TSB_Refresh_userCartableForm = isc.ToolStripButtonRefresh.create({
+		title: "بازخوانی",
+		click: function () {
+			ListGrid_UserTaskList.invalidateCache();
+		}
+	});
+
 	var ToolStripButton_showUserTaskForm = isc.ToolStripButton.create({
 		icon: "[SKIN]/actions/column_preferences.png",
 		title: " نمایش فرم کار",
@@ -138,7 +145,7 @@
 	var ToolStrip_UserTask_Actions = isc.ToolStrip.create({
 		width: "100%",
 		members: [
-			ToolStripButton_showUserTaskForm, ToolStripButton_showUserTaskHistoryForm
+			TSB_Refresh_userCartableForm, ToolStripButton_showUserTaskForm, ToolStripButton_showUserTaskHistoryForm
 		]
 	});
 

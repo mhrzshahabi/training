@@ -279,6 +279,7 @@ abaspour 9803
                     isc.IButtonCancel.create({title: "خیر"})
                 ],
                 buttonClick: function (button, index) {
+                    console.log(index);
                     if (index == 0 && v == true) {
                         taskStartConfirmForm.setValue("REJECT", "N");
                         taskStartConfirmForm.setValue("REJECTVAL", " ");
@@ -304,16 +305,19 @@ abaspour 9803
                             params: {"taskId": "${id}", "usr": "${username}"},
                             serverOutputAsString: false,
                             callback: function (RpcResponse_o) {
+                                console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
                                     //------------------------------------------------------------------
-                                     trainingTabSet.removeTab(targetTitleFa);
-                                    createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
+                                    //  trainingTabSet.removeTab(targetTitleFa);
+                                    <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
                                     //-----------------------------------------------------------------------
-                                    isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
+
+                                    // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
+                                    isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
                                     taskConfirmationWindow.hide();
                                     ListGrid_UserTaskList.invalidateCache();
-                                    userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");
-                                    <c:set var="cartableCount" value="${cartableCount -1}"/>
+                                    <%--userCartableButton.setTitle("شخصی (" + ${cartableCount -1} +"   )");--%>
+                                    <%--<c:set var="cartableCount" value="${cartableCount -1}"/>--%>
                                 } else {
                                     <%--isc.say(RpcResponse_o.data);--%>
                                 }
@@ -336,8 +340,8 @@ abaspour 9803
         width: "150",
         click: function () {
             taskConfirmationWindow.hide();
-            trainingTabSet.removeTab(targetTitleFa);
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
+            <%--trainingTabSet.removeTab(targetTitleFa);--%>
+            <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
 }
         }
     );
@@ -425,7 +429,7 @@ abaspour 9803
                                                     isc.say("تعریف " + targetTitleFa + " عودت داده شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
-                                                    userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");
+                                                    <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>
                                                 }
                                             }
                                         });
