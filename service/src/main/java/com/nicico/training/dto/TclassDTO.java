@@ -32,6 +32,7 @@ public class TclassDTO {
     private String code;
     private Long teacherId;
     private Long instituteId;
+    private Long organizerId;
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
@@ -59,6 +60,7 @@ public class TclassDTO {
     private Boolean second;
     private Boolean third;
     private Boolean fourth;
+    private Boolean fifth;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
 

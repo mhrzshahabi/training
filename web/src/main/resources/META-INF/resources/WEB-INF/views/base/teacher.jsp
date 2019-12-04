@@ -36,7 +36,6 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eGender/spec-list"
@@ -1575,7 +1574,6 @@
             createDialog("info", "<spring:message code='error'/>");
         }
     }
-
 
     function teacher_getCategories_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {

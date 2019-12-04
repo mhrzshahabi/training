@@ -60,5 +60,19 @@
             <column name="b_wednesday" type="NUMBER(1, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1575456108760-155">
+        <addColumn tableName="tbl_class">
+            <column name="f_institute_organizer" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1575456108760-157">
+        <addForeignKeyConstraint baseColumnNames="f_institute_organizer" baseTableName="tbl_class" constraintName="FKtqen9rjf7y3qdvv899v4w3x4t" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+
+    <changeSet author="jafari-h (generated)" id="1575457594072-156">
+        <addColumn tableName="tbl_class">
+            <column name="b_fifth" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

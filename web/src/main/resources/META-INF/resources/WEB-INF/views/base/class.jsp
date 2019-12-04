@@ -115,6 +115,20 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria:true,
     });
+
+    // var RestDataSource_Organizer_JspClass = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id", primaryKey: true},
+    //         {name: "titleFa", title: "نام موسسه"},
+    //         {name: "manager.firstNameFa", title: "نام مدیر"},
+    //         {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
+    //         {name: "mobile", title: "موبایل"},
+    //         {name: "restAddress", title: "آدرس"},
+    //         {name: "phone", title: "تلفن"}
+    //     ],
+    //     fetchDataURL: instituteUrl + "spec-list",
+    //     allowAdvancedCriteria:true,
+    // });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -275,8 +289,8 @@
         groupTitle: "اطلاعات پایه کلاس",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
-        numCols: 9,
-        colWidths: ["5%", "24%", "5%", "12%", "5%", "7%", "5%", "12%", "12%"],
+        numCols: 10,
+        colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%","7%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -323,7 +337,7 @@
             {
                 name: "code",
                 title: "<spring:message code='class.code'/>:",
-                colSpan: 2,
+                colSpan: 3,
                 textAlign: "center",
                 type: "staticText", textBoxStyle: "textItemLite"
             },
@@ -371,6 +385,7 @@
             },
             {
                 name: "hduration",
+                colSpan:2,
                 // formatOnBlur:true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
@@ -459,7 +474,7 @@
             },
             {
                 name: "supervisor",
-                colSpan: 2,
+                colSpan: 3,
                 title: "<spring:message code="supervisor"/>:",
                 type: "selectItem",
                 textAlign: "center",
@@ -486,9 +501,10 @@
                 // textBoxStyle: "textItemLite"
             },
             {
-                name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
+                name: "organizerId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
                 // width:"250",
-                colSpan: 2,
+                colSpan: 3,
+                pickListWidth:500,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -505,21 +521,17 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                changed: function (form, item) {
-                    form.clearValue("trainingPlaceIds")
+                changed: function (form, item, value) {
+                    if(form.getValue("instituteId")==null){
+                        form.setValue("instituteId",value);
+                    }
                 }
             },
-            {
-                name: "group",
-                title: "<spring:message code="group"/>:",
-                required: true,
-                colSpan: 1,
-                textAlign: "center",
-                type: "staticText", textBoxStyle: "textItemLite"
-            },
+
+
             {
                 name: "classStatus",
-                colSpan: 3,
+                colSpan: 1,
                 rowSpan: 1,
                 title: "<spring:message code="class.status"/>:",
                 wrapTitle: true,
@@ -535,11 +547,46 @@
                 },
             },
             {
+                name: "group",
+                title: "<spring:message code="group"/>:",
+                required: true,
+                colSpan: 1,
+                textAlign: "center",
+                type: "staticText", textBoxStyle: "textItemLite"
+            },
+            {
+                name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="training.place"/>:",
+                // width:"250",
+                colSpan: 4,
+                autoFetchData: false,
+                optionDataSource: RestDataSource_Institute_JspClass,
+                // addUnknownValues:false,
+                displayField: "titleFa", valueField: "id",
+                // pickListPlacement: "fillScreen",
+                // pickListWidth:300,
+                textAlign: "center",
+                filterFields: ["titleFa","mobile"],
+                // pickListPlacement: "fillScreen",
+                // pickListWidth:300,
+                required: true,
+                pickListWidth:500,
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "manager.firstNameFa"},
+                    {name: "manager.lastNameFa"}
+                ],
+                changed: function (form, item) {
+                    form.clearValue("trainingPlaceIds")
+                }
+            },
+            {
                 name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
                 autoFetchData:false,
                 multiple: true,
-                colSpan: 2,
+                pickListWidth:250,
+                colSpan: 1,
+                showTitle:false,
                 // width:"250",
                 // align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
@@ -846,7 +893,8 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            // {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true},
+            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",

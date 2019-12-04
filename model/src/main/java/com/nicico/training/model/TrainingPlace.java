@@ -62,6 +62,4 @@ public class TrainingPlace extends Auditable {
 
     @Column(name = "c_description", length = 500)
     private String description;
-
-
 }
