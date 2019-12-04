@@ -148,6 +148,9 @@ public class Tclass extends Auditable {
     @Column(name = "b_fourth")
     private Boolean fourth;
 
+    @Column(name = "b_fifth")
+    private Boolean fifth;
+
     @Column(name = "c_topology")
     private String topology;
 

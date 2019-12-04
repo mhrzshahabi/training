@@ -60,6 +60,7 @@ public class TclassDTO {
     private Boolean second;
     private Boolean third;
     private Boolean fourth;
+    private Boolean fifth;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
 

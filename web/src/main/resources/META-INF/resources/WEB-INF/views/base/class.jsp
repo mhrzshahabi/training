@@ -504,6 +504,7 @@
                 name: "organizerId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
                 // width:"250",
                 colSpan: 3,
+                pickListWidth:500,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -520,9 +521,11 @@
                     {name: "manager.firstNameFa"},
                     {name: "manager.lastNameFa"}
                 ],
-                // changed: function (form, item) {
-                //     form.clearValue("trainingPlaceIds")
-                // }
+                changed: function (form, item, value) {
+                    if(form.getValue("instituteId")==null){
+                        form.setValue("instituteId",value);
+                    }
+                }
             },
 
 
@@ -890,7 +893,8 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            // {name: "fourth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true},
+            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
 
             {
                 type: "BlurbItem",
