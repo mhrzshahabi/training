@@ -42,14 +42,14 @@ public class AttachmentService implements IAttachmentService {
     @Override
     public List<AttachmentDTO.Info> list(String entityName, Long objectId) {
         final List<Attachment> gAll;
-        if (objectId != null)
-            gAll = attachmentDAO.findByEntityNameAndObjectId(entityName, objectId);
-        else if (entityName != null)
-            gAll = attachmentDAO.findByEntityName(entityName);
-        else
-            gAll = attachmentDAO.findAll();
-        return modelMapper.map(gAll, new TypeToken<List<AttachmentDTO.Info>>() {
-        }.getType());
+//        if (objectId != null)
+//            gAll = attachmentDAO.findByEntityNameAndObjectId(entityName, objectId);
+//        else if (entityName != null)
+//            gAll = attachmentDAO.findByEntityName(entityName);
+//        else
+//            gAll = attachmentDAO.findAll();
+//        return modelMapper.map(gAll, new TypeToken<List<AttachmentDTO.Info>>() {}.getType());
+        return null;
     }
 
     @Transactional
@@ -83,13 +83,13 @@ public class AttachmentService implements IAttachmentService {
     public void delete(Long id) {
         final Optional<Attachment> one = attachmentDAO.findById(id);
         final Attachment attachment = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
+//        String fileFullPath = uploadDir + File.separator + attachment.getEntityName() + File.separator + attachment.getId() + "." + attachment.getFileType();
         try {
             attachmentDAO.delete(attachment);
-            File file = new File(fileFullPath);
-            new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted").mkdirs();
-            File movedFile = new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted" + File.separator + attachment.getId() + "." + attachment.getFileType());
-            file.renameTo(movedFile);
+//            File file = new File(fileFullPath);
+//            new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted").mkdirs();
+//            File movedFile = new File(uploadDir + File.separator + attachment.getEntityName() + File.separator + "deleted" + File.separator + attachment.getId() + "." + attachment.getFileType());
+//            file.renameTo(movedFile);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
