@@ -11,6 +11,7 @@ import java.util.List;
 public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaSpecificationExecutor<ClassSession> {
 
     List<ClassSession> findByClassId(Long classId);
+    List<ClassSession> findByClassIdAndSessionDate(Long classId, String sessionDate);
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour);
 

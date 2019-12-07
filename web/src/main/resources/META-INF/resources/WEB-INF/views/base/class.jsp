@@ -393,6 +393,7 @@
             {
                 name: "dduration",
                 showTitle: false,
+                disabled:true,
                 hint: "روز",
                 textAlign: "center",
                 showHintInField: true,
@@ -694,7 +695,6 @@
                 ID: "startDate_jspClass",
                 required: true,
                 hint: "--/--/----",
-                mask: "####/##/##",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -797,7 +797,6 @@
             {
                 name: "endDate",
                 titleColSpan: 1,
-                mask: "####/##/##",
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
@@ -867,9 +866,9 @@
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheck = false;
                     } else if (value < termStart) {
-                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
                     } else if (value < startDate) {
-                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
@@ -1448,6 +1447,8 @@
             VM_JspClass.editRecord(record);
             Window_Class_JspClass.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="class"/>");
             Window_Class_JspClass.show();
+            DynamicForm1_Class_JspClass.setValue("autoValid",false);
+
             // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
     }
