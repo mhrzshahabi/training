@@ -39,33 +39,15 @@ public class AttachmentRestController {
         return new ResponseEntity<>(attachmentService.get(id), HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/list/{entityName}:{objectId}")
-////    @PreAuthorize("hasAuthority('r_address')")
-//    public ResponseEntity<List<AttachmentDTO.Info>> list(@PathVariable String entityName,
-//                                                         @PathVariable Long objectId) {
-//        return new ResponseEntity<>(attachmentService.list(entityName, objectId), HttpStatus.OK);
-//    }
-
-    @GetMapping(value = "/iscList")
+    @GetMapping(value = "/iscList/{objectType},{objectId}")
     public ResponseEntity<ISC<AttachmentDTO.Info>> iscList(HttpServletRequest iscRq,
-                                                           String objectType,
-                                                           Long objectId) throws IOException {
+                                                           @PathVariable(required = false) String objectType,
+                                                           @PathVariable(required = false) Long objectId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        objectType = "".equals(objectType) ? null : objectType;
         SearchDTO.SearchRs<AttachmentDTO.Info> searchRs = attachmentService.search(searchRq, objectType, objectId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/create")
-//    @PreAuthorize("hasAuthority('c_address')")
-    public ResponseEntity create(@Validated @RequestBody AttachmentDTO.Create request) {
-        try {
-            return new ResponseEntity<>(attachmentService.create(request), HttpStatus.CREATED);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
-        }
     }
 
     @Loggable
@@ -75,7 +57,7 @@ public class AttachmentRestController {
         try {
             return new ResponseEntity<>(attachmentService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -88,9 +70,7 @@ public class AttachmentRestController {
             return new ResponseEntity(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                    null,
-                    HttpStatus.NOT_ACCEPTABLE);
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -102,37 +82,11 @@ public class AttachmentRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/spec-list")
-////    @PreAuthorize("hasAuthority('r_address')")
-//    public ResponseEntity<AttachmentDTO.AttachmentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-//                                                               @RequestParam("_endRow") Integer endRow,
-//                                                               String objectType,
-//                                                               Long objectId) {
-//        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-//        request.setStartIndex(startRow)
-//                .setCount(endRow - startRow);
-//
-//
-//        List<AttachmentDTO.Info> response = attachmentService.list(objectType, objectId);
-//
-//        final AttachmentDTO.SpecRs specResponse = new AttachmentDTO.SpecRs();
-//        specResponse.setData(response)
-//                .setStartRow(startRow)
-//                .setEndRow(startRow + response.size())
-//                .setTotalRows(response.size());
-//
-//        final AttachmentDTO.AttachmentSpecRs specRs = new AttachmentDTO.AttachmentSpecRs();
-//        specRs.setResponse(specResponse);
-//
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
-
     @Loggable
     @Transactional
     @PostMapping(value = "/upload")
     public ResponseEntity upload(@RequestParam("file") MultipartFile file,
-                                 @RequestParam("entityName") String objectType,
+                                 @RequestParam("objectType") String objectType,
                                  @RequestParam("objectId") Long objectId,
                                  @RequestParam("fileName") String fileName,
                                  @RequestParam("fileTypeId") Long fileTypeId,

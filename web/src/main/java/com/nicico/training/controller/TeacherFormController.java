@@ -23,6 +23,11 @@ public class TeacherFormController {
         return "base/teacher";
     }
 
+    @RequestMapping("/attachments-tab")
+    public String attachmentsTab() {
+        return "base/attachments";
+    }
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");

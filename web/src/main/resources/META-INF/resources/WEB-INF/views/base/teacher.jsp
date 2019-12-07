@@ -1208,6 +1208,11 @@
             {
                 title: "<spring:message code='work.place'/>", canClose: false,
                 pane: DynamicForm_JobInfo_JspTeacher
+            },
+            {
+                ID: "attachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             }
         ]
     });
@@ -1416,6 +1421,10 @@
         showCategories();
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
+
+        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").show();
+        if (typeof loadPage_attachment !== "undefined")
+            loadPage_attachment("Teacher", record.id);
     }
 
     function ListGrid_teacher_add() {
@@ -1442,6 +1451,8 @@
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
+
+        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").hide();
     }
 
     function ListGrid_teacher_remove() {

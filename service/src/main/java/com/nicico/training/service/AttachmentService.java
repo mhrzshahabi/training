@@ -39,20 +39,6 @@ public class AttachmentService implements IAttachmentService {
         return modelMapper.map(attachment, AttachmentDTO.Info.class);
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<AttachmentDTO.Info> list(String entityName, Long objectId) {
-//        final List<Attachment> gAll;
-////        if (objectId != null)
-////            gAll = attachmentDAO.findByEntityNameAndObjectId(entityName, objectId);
-////        else if (entityName != null)
-////            gAll = attachmentDAO.findByEntityName(entityName);
-////        else
-////            gAll = attachmentDAO.findAll();
-////        return modelMapper.map(gAll, new TypeToken<List<AttachmentDTO.Info>>() {}.getType());
-//        return null;
-//    }
-
     @Transactional
     @Override
     public AttachmentDTO.Info create(AttachmentDTO.Create request) {
@@ -107,17 +93,13 @@ public class AttachmentService implements IAttachmentService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId) {
-
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (objectType != null)
             list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));
         if (objectId != null)
             list.add(makeNewCriteria("objectId", objectId, EOperator.equals, null));
-
         if (objectId != null || objectType != null) {
-
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
-
             if (request.getCriteria() != null) {
                 if (request.getCriteria().getCriteria() != null)
                     request.getCriteria().getCriteria().add(criteriaRq);
@@ -126,7 +108,6 @@ public class AttachmentService implements IAttachmentService {
             } else
                 request.setCriteria(criteriaRq);
         }
-
         return SearchUtil.search(attachmentDAO, request, attachment -> modelMapper.map(attachment, AttachmentDTO.Info.class));
     }
 
