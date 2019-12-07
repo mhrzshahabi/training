@@ -1211,7 +1211,7 @@
             },
             {
                 ID: "attachmentsTab",
-                title: "<spring:message code="attachments"/>",
+                title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             }
         ]
@@ -1424,7 +1424,7 @@
 
         TabSet_Bottom_JspTeacher.getTab("attachmentsTab").show();
         if (typeof loadPage_attachment !== "undefined")
-            loadPage_attachment("Teacher", record.id);
+            loadPage_attachment("Teacher", record.id, "<spring:message code="document"/>");
     }
 
     function ListGrid_teacher_add() {

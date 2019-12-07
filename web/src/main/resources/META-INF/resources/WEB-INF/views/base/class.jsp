@@ -1656,7 +1656,7 @@
                 }
                 case "classAttachmentsTab": {
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id);
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>");
                     break;
                 }
             }

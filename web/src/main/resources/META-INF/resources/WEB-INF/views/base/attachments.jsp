@@ -9,8 +9,8 @@
 
 // <script>
 
-    let objectType = null;
-    let objectId = null;
+    let objectTypeAttachment = null;
+    let objectIdAttachment = null;
     let methodAttachment = "GET";
     let saveActionUrlAttachment;
     let attachmentWait;
@@ -75,8 +75,8 @@
                 let file = fileBrowserId.files[0];
 
                 formData1.append("file", file);
-                formData1.append("objectType", objectType);
-                formData1.append("objectId", objectId);
+                formData1.append("objectType", objectTypeAttachment);
+                formData1.append("objectId", objectIdAttachment);
                 formData1.append("fileName", DynamicForm_JspAttachments.getValue("fileName"));
                 formData1.append("fileTypeId", DynamicForm_JspAttachments.getValue("fileTypeId"));
                 formData1.append("description", DynamicForm_JspAttachments.getValue("description"));
@@ -110,7 +110,6 @@
     Window_JspAttachments = isc.Window.create({
         align: "center",
         border: "1px solid gray",
-        title: "<spring:message code='attachment'/>",
         closeClick: function () {
             this.Super("closeClick", arguments);
         },
@@ -225,17 +224,17 @@
 
     ///////////////////////////////////////////////////////functions///////////////////////////////////////
 
-    function loadPage_attachment(inputObjectType, inputObjectId) {
-        objectType = inputObjectType;
-        objectId = inputObjectId;
-
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
+        objectTypeAttachment = inputObjectType;
+        objectIdAttachment = inputObjectId;
         RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "iscList/";
-        if (objectType != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectType;
+        if (objectTypeAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
         RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
-        if (objectId != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectId;
+        if (objectIdAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
 
+        Window_JspAttachments.title = inputTitleAttachment;
         ListGrid_JspAttachment.fetchData();
         ListGrid_Attachments_refresh();
     }
