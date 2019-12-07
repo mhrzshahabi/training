@@ -27,6 +27,9 @@ public interface IClassSession {
     @Transactional
     List<ClassSessionDTO.Info> getSessionsForDate(Long classId, String date);
 
+    @Transactional
+    List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId);
+
     void generateSessions(Long classId, TclassDTO.Create autoSessionsRequirement);
 
     List<ClassSessionDTO.Info> loadSessions(Long classId);
