@@ -15,7 +15,7 @@ public interface IAttendanceService {
 	AttendanceDTO.Info create(AttendanceDTO.Create request);
 
 	@Transactional
-	AttendanceDTO.Info autoCreate(Long classId, String date);
+    List<AttendanceDTO.Info> autoCreate(Long classId, String date);
 
 	AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 

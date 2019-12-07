@@ -68,12 +68,21 @@ public class AttendanceRestController {
 		return new ResponseEntity<>(attendanceService.create(create), HttpStatus.CREATED);
 	}
 
-//	@Loggable
-//	@PostMapping
-////	@PreAuthorize("hasAuthority('c_attendance')")
-//	public ResponseEntity<AttendanceDTO.Info> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-//		return new ResponseEntity<>(attendanceService.autoCreate(classId, date), HttpStatus.CREATED);
-//	}
+	@Loggable
+	@PostMapping
+//	@PreAuthorize("hasAuthority('c_attendance')")
+	public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
+		List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
+		final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+		specResponse.setData(list)
+				.setStartRow(0)
+				.setEndRow(list.size())
+				.setTotalRows(list.size());
+
+		final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+		specRs.setResponse(specResponse);
+		return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+	}
 
 	@Loggable
 	@PutMapping(value = "/{id}")
