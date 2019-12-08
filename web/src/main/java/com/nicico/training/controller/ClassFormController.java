@@ -104,4 +104,7 @@ public class ClassFormController {
 	public String showStudentsForm() {
 		return "classTabs/student";
 	}
+
+	@RequestMapping("/scores-tab")
+	public String scoresTab(){return "classTabs/scores";}
 }
