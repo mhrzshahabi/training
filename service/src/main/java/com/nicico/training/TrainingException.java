@@ -62,6 +62,7 @@ public class TrainingException extends NICICOException {
         OperationalUnitDuplicateRecord(406),
         PersonnelRegisteredNotFound(404),
         WrongPostalCode(404),
+        ScoresNotFound(404),
         AttendanceNotFound(404);
 
         private final Integer httpStatusCode;
