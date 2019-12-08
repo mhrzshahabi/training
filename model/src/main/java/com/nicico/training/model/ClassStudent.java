@@ -14,7 +14,7 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_class_student_final")
-public class classStudent extends Auditable {
+public class ClassStudent extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "scores_seq")
     @SequenceGenerator(name = "scores_seq", sequenceName = "seq_scores_id", allocationSize = 1)
