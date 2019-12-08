@@ -6,7 +6,6 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
@@ -72,6 +71,14 @@ public class TclassService implements ITclassService {
         final Optional<Tclass> gById = tclassDAO.findById(id);
         final Tclass tclass = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
         return modelMapper.map(tclass, TclassDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Tclass getEntity(Long id) {
+        final Optional<Tclass> gById = tclassDAO.findById(id);
+        final Tclass tclass = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+        return tclass;
     }
 
     @Transactional(readOnly = true)

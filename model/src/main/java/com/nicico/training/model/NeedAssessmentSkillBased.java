@@ -58,6 +58,6 @@ public class NeedAssessmentSkillBased<E> extends Auditable {
     private Long objectId;
 
     @Column(name = "c_object_type")
-    String objectType;
+    private String objectType;
 
 }

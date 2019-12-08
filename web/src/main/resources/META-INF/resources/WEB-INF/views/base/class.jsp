@@ -115,20 +115,6 @@
         fetchDataURL: instituteUrl + "spec-list",
         allowAdvancedCriteria:true,
     });
-
-    // var RestDataSource_Organizer_JspClass = isc.TrDS.create({
-    //     fields: [
-    //         {name: "id", primaryKey: true},
-    //         {name: "titleFa", title: "نام موسسه"},
-    //         {name: "manager.firstNameFa", title: "نام مدیر"},
-    //         {name: "manager.lastNameFa", title: "نام خانوادگی مدیر"},
-    //         {name: "mobile", title: "موبایل"},
-    //         {name: "restAddress", title: "آدرس"},
-    //         {name: "phone", title: "تلفن"}
-    //     ],
-    //     fetchDataURL: instituteUrl + "spec-list",
-    //     allowAdvancedCriteria:true,
-    // });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -227,6 +213,7 @@
                 title: "<spring:message code='course.title'/>",
                 align: "center",
                 filterOperator: "iContains",
+                autoFitWidth: true,
                 // sortNormalizer: function (record) {
                 //     return record.course.titleFa;
                 // }
@@ -248,7 +235,6 @@
                     "3" : "نیاز موردی",
                 },
             },
-            {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "contains"},
             {
                 name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
                 valueMap: {
@@ -298,6 +284,7 @@
             {
                 name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
                 textAlign: "center",
+                pickListWidth:500,
                 optionDataSource: RestDataSource_Course_JspClass,
                 autoFetchData:false,
                 displayField: "titleFa", valueField: "id",
@@ -406,6 +393,7 @@
             {
                 name: "dduration",
                 showTitle: false,
+                disabled:true,
                 hint: "روز",
                 textAlign: "center",
                 showHintInField: true,
@@ -527,8 +515,6 @@
                     }
                 }
             },
-
-
             {
                 name: "classStatus",
                 colSpan: 1,
@@ -569,6 +555,8 @@
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
+                showHintInField: true,
+                hint:"موسسه",
                 pickListWidth:500,
                 pickListFields: [
                     {name: "titleFa"},
@@ -582,6 +570,8 @@
             {
                 name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
+                showHintInField: true,
+                hint:"مکان",
                 autoFetchData:false,
                 multiple: true,
                 pickListWidth:250,
@@ -704,7 +694,7 @@
                 title: "<spring:message code='start.date'/>",
                 ID: "startDate_jspClass",
                 required: true,
-                hint: "YYYY/MM/DD",
+                hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -807,11 +797,10 @@
             {
                 name: "endDate",
                 titleColSpan: 1,
-
                 title: "<spring:message code='end.date'/>",
                 ID: "endDate_jspClass",
                 type: 'text', required: true,
-                hint: "YYYY/MM/DD",
+                hint: "--/--/----",
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -877,9 +866,9 @@
                         form.addFieldErrors("endDate", "<spring:message code='msg.correct.date'/>", true);
                         endDateCheck = false;
                     } else if (value < termStart) {
-                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع ترم باشد", true);
                     } else if (value < startDate) {
-                        form.addFieldErrors("startDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
+                        form.addFieldErrors("endDate", "تاریخ انتخاب شده باید مساوی یا بعد از تاریخ شروع باشد", true);
                     } else {
                         form.clearFieldErrors("endDate", true);
                     }
@@ -893,8 +882,8 @@
             {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
-            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true},
-            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true},
+            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true, disabled:true},
+            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true, disabled:true},
 
             {
                 type: "BlurbItem",
@@ -1390,7 +1379,8 @@
             {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
             {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
             {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
-            // {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
+            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})}
+            {ID: "classScoresTab", name: "scores", title: "<spring:message code="register.scores"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})},
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
@@ -1458,6 +1448,8 @@
             VM_JspClass.editRecord(record);
             Window_Class_JspClass.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="class"/>");
             Window_Class_JspClass.show();
+            DynamicForm1_Class_JspClass.setValue("autoValid",false);
+
             // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
     }
@@ -1664,8 +1656,13 @@
                     break;
                 }
                 case "classAttachmentsTab": {
-                    if (typeof loadPage_session !== "undefined")
-                        loadPage_session();
+                    if (typeof loadPage_attachment !== "undefined")
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>");
+                    break;
+                }
+                case "classScoresTab":{
+                    if (typeof loadPage_Scores !== "undefined")
+                       loadPage_Scores();
                     break;
                 }
             }

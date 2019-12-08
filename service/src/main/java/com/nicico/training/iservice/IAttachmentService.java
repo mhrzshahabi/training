@@ -8,7 +8,7 @@ import java.util.List;
 public interface IAttachmentService {
     AttachmentDTO.Info get(Long id);
 
-    List<AttachmentDTO.Info> list(String entityName, Long objectId);
+//    List<AttachmentDTO.Info> list(String entityName, Long objectId);
 
     AttachmentDTO.Info create(AttachmentDTO.Create request);
 
@@ -18,5 +18,5 @@ public interface IAttachmentService {
 
     void delete(AttachmentDTO.Delete request);
 
-    SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId);
 }
