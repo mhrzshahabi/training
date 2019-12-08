@@ -6,6 +6,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
@@ -32,6 +33,7 @@ public class TclassService implements ITclassService {
     private final TeacherDAO teacherDAO;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final StudentService studentService;
+    private final AttachmentService attachmentService;
 
     private final PersonnelDAO personnelDAO;
 
@@ -40,7 +42,7 @@ public class TclassService implements ITclassService {
     public void addStudents(Long classId, List<String> personsIds) {
         Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
         optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-        for(String personnelId : personsIds) {
+        for (String personnelId : personsIds) {
             Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personnelId);
             optionalPersonnel.ifPresent(personnel -> {
                 StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
@@ -121,6 +123,10 @@ public class TclassService implements ITclassService {
     @Override
     public void delete(Long id) {
         tclassDAO.deleteById(id);
+        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Tclass", id).getList();
+        for (AttachmentDTO.Info attachment : attachmentInfoList) {
+            attachmentService.delete(attachment.getId());
+        }
     }
 
     @Transactional(readOnly = true)
@@ -176,7 +182,6 @@ public class TclassService implements ITclassService {
     }
 
 
-
     @Transactional
     @Override
     public void addStudent(Long studentId, Long classId) {
@@ -186,12 +191,13 @@ public class TclassService implements ITclassService {
     }
 
 
-
     @Transactional
     @Override
     public void delete(TclassDTO.Delete request) {
         final List<Tclass> gAllById = tclassDAO.findAllById(request.getIds());
-        tclassDAO.deleteAll(gAllById);
+        for (Tclass tclass : gAllById) {
+            delete(tclass.getId());
+        }
     }
 
     @Transactional
@@ -211,11 +217,11 @@ public class TclassService implements ITclassService {
         List<Tclass> classes = tclassDAO.findByCourseIdAndTermId(courseId, termId);
         Long max = 0L;
         for (Tclass aClass : classes) {
-            if(aClass.getGroup()>max){
-                max= aClass.getGroup();
+            if (aClass.getGroup() > max) {
+                max = aClass.getGroup();
             }
         }
-        return max+1;
+        return max + 1;
     }
 
 

@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
@@ -33,7 +34,7 @@ public class TeacherService implements ITeacherService {
     private final TeacherDAO teacherDAO;
     private final CategoryDAO categoryDAO;
     private final PersonalInfoService personalInfoService;
-
+    private final AttachmentService attachmentService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -107,10 +108,14 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public void delete(Long id) {
+        List<AttachmentDTO.Info> attachmentInfoList = attachmentService.search(null, "Teacher", id).getList();
         try {
             teacherDAO.deleteById(id);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
+        for (AttachmentDTO.Info attachment : attachmentInfoList) {
+            attachmentService.delete(attachment.getId());
         }
     }
 
@@ -118,7 +123,9 @@ public class TeacherService implements ITeacherService {
     @Override
     public void delete(TeacherDTO.Delete request) {
         final List<Teacher> tAllById = teacherDAO.findAllById(request.getIds());
-        teacherDAO.deleteAll(tAllById);
+        for (Teacher teacher : tAllById) {
+            delete(teacher.getId());
+        }
     }
 
     @Transactional(readOnly = true)

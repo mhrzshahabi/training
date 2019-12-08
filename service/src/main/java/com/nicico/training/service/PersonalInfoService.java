@@ -66,6 +66,7 @@ public class PersonalInfoService implements IPersonalInfoService {
             return create(request);
         else {
             PersonalInfoDTO.Update updating = modelMapper.map(request, PersonalInfoDTO.Update.class);
+            updating.setId(byNationalCode.get().getId());
             return update(byNationalCode.get().getId(), updating);
         }
     }
