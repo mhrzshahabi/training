@@ -16,6 +16,7 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -53,11 +54,21 @@ public class AttendanceService implements IAttendanceService {
 	}
 	@Transactional
 	@Override
-	public AttendanceDTO.Info autoCreate(Long classId, String date) {
+	public List<AttendanceDTO.Info> autoCreate(Long classId, String date) {
 		List<ClassSessionDTO.Info> sessions = classSessionService.getSessionsForDate(classId, date);
 		Tclass tclass = tclassService.getEntity(classId);
 		List<Student> students = tclass.getStudentSet();
-		return null;
+		List<Attendance> attendanceList = new ArrayList<>();
+		for (ClassSessionDTO.Info session : sessions) {
+			for (Student student : students) {
+				Attendance attendance = new Attendance();
+				attendance.setSessionId(session.getId());
+				attendance.setStudentId(student.getId());
+				attendanceList.add(attendanceDAO.saveAndFlush(attendance));
+			}
+		}
+		return modelMapper.map(attendanceList, new TypeToken<List<AttendanceDTO.Info>>() {
+		}.getType());
 	}
 
 	@Transactional

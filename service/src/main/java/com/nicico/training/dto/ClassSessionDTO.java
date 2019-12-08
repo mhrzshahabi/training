@@ -135,6 +135,16 @@ public class ClassSessionDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
+    //*********************************
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassSessionsDateForOneClass")
+    public static class ClassSessionsDateForOneClass {
+        private String dayName;
+        private String sessionDate;
+    }
 
     //*********************************
 
