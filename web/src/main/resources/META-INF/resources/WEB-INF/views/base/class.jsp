@@ -113,14 +113,14 @@
             {name: "phone", title: "تلفن"}
         ],
         fetchDataURL: instituteUrl + "spec-list",
-        allowAdvancedCriteria:true,
+        allowAdvancedCriteria: true,
     });
     var RestDataSource_TrainingPlace_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             // {name:"parentId", type:"Long", foreignKey:"instituteId"},
             {name: "instituteId"},
-            {name: "instituteTitleFa", title:"نام موسسه"},
+            {name: "instituteTitleFa", title: "نام موسسه"},
             {name: "titleFa", title: "نام مکان"},
             {name: "capacity", title: "ظرفیت"}
         ],
@@ -196,7 +196,7 @@
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
         initialSort: [
             // {property: "createdBy", direction: "ascending"},
-            {property: "code", direction: "descending",primarySort:true}
+            {property: "code", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
@@ -207,7 +207,13 @@
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
-            {name: "code", title: "<spring:message code='class.code'/>", align: "center", filterOperator: "iContains",autoFitWidth: true},
+            {
+                name: "code",
+                title: "<spring:message code='class.code'/>",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {
                 name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
@@ -225,7 +231,13 @@
                 filterOperator: "iContains"
             },
             {name: "endDate", title: "<spring:message code='end.date'/>", align: "center", filterOperator: "iContains"},
-            {name: "group", title: "<spring:message code='group'/>", align: "center", filterOperator: "equals",autoFitWidth: true},
+            {
+                name: "group",
+                title: "<spring:message code='group'/>",
+                align: "center",
+                filterOperator: "equals",
+                autoFitWidth: true
+            },
             <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
             {name: "reason", title: "<spring:message code='training.request'/>", align: "center",
@@ -252,11 +264,11 @@
                 }
             },
             // {name: "lastModifiedDate",
-                // type:"time"
-                // ,hidden:true
+            // type:"time"
+            // ,hidden:true
             // },
-            {name: "createdBy",hidden:true},
-            {name: "createdDate",hidden:true},
+            {name: "createdBy", hidden: true},
+            {name: "createdDate", hidden: true},
         ]
     });
 
@@ -268,7 +280,7 @@
 
     var DynamicForm_Class_JspClass = isc.DynamicForm.create({
         // width: "700",
-        validateOnExit:true,
+        validateOnExit: true,
         height: "100%",
         wrapItemTitles: true,
         isGroup: true,
@@ -284,9 +296,9 @@
             {
                 name: "course.id", editorType: "TrComboAutoRefresh", title: "<spring:message code='course'/>:",
                 textAlign: "center",
-                pickListWidth:500,
+                pickListWidth: 500,
                 optionDataSource: RestDataSource_Course_JspClass,
-                autoFetchData:false,
+                autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code"],
                 required: true,
@@ -295,12 +307,12 @@
                     {name: "titleFa"}
                 ],
                 changed: function (form, item, value) {
-                    form.setValue("titleClass",item.getSelectedRecord().titleFa);
+                    form.setValue("titleClass", item.getSelectedRecord().titleFa);
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
                     form.getItem("teacherId").fetchData();
-                    form.setValue("hduration",item.getSelectedRecord().theoryDuration)
+                    form.setValue("hduration", item.getSelectedRecord().theoryDuration)
 
                 }
             },
@@ -372,15 +384,15 @@
             },
             {
                 name: "hduration",
-                colSpan:2,
+                colSpan: 2,
                 // formatOnBlur:true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
-                required:true,
+                required: true,
                 showHintInField: true,
-                keyPressFilter:"[0-9.]",
-                mapValueToDisplay  : function (value) {
+                keyPressFilter: "[0-9.]",
+                mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
                         if (value) {
                             return value;
@@ -393,12 +405,12 @@
             {
                 name: "dduration",
                 showTitle: false,
-                disabled:true,
+                disabled: true,
                 hint: "روز",
                 textAlign: "center",
                 showHintInField: true,
-                keyPressFilter:"[0-9.]",
-                mapValueToDisplay  : function (value) {
+                keyPressFilter: "[0-9.]",
+                mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
                         if (value) {
                             return value;
@@ -510,8 +522,8 @@
                     {name: "manager.lastNameFa"}
                 ],
                 changed: function (form, item, value) {
-                    if(form.getValue("instituteId")==null){
-                        form.setValue("instituteId",value);
+                    if (form.getValue("instituteId") == null) {
+                        form.setValue("instituteId", value);
                     }
                 }
             },
@@ -556,8 +568,8 @@
                 // pickListWidth:300,
                 required: true,
                 showHintInField: true,
-                hint:"موسسه",
-                pickListWidth:500,
+                hint: "موسسه",
+                pickListWidth: 500,
                 pickListFields: [
                     {name: "titleFa"},
                     {name: "manager.firstNameFa"},
@@ -571,12 +583,12 @@
                 name: "trainingPlaceIds", editorType: "SelectItem", title: "<spring:message code="training.place"/>:",
                 required: true,
                 showHintInField: true,
-                hint:"مکان",
-                autoFetchData:false,
+                hint: "مکان",
+                autoFetchData: false,
                 multiple: true,
-                pickListWidth:250,
+                pickListWidth: 250,
                 colSpan: 1,
-                showTitle:false,
+                showTitle: false,
                 // width:"250",
                 // align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
@@ -586,8 +598,8 @@
                 // cachePickListResults:false,
                 // autoFetchData:false,
                 // autoFetchData:false,
-                filterFields: ["titleFa","capacity"],
-                textMatchStyle:"substring",
+                filterFields: ["titleFa", "capacity"],
+                textMatchStyle: "substring",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
@@ -670,7 +682,7 @@
                         filterOperator: "iContains"
                     }
                 ],
-                click: function(form,item){
+                click: function (form, item) {
                     item.fetchData();
                 },
                 changed: function () {
@@ -680,7 +692,7 @@
             {
                 name: "autoValid",
                 type: "checkbox",
-                defaultValue:true,
+                defaultValue: true,
                 title: "<spring:message code='auto.session.made'/>",
                 endRow: true,
                 // titleOrientation:"top",
@@ -770,7 +782,7 @@
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید بعد از تاریخ شروع ترم باشد", true);
                     } else if (endDate < value) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان باشد", true);
-                    } else if (termEnd < value){
+                    } else if (termEnd < value) {
                         form.addFieldErrors("startDate", "تاریخ انتخاب شده باید قبل یا مساوی تاریخ پایان ترم باشد", true)
                     } else {
                         form.clearFieldErrors("startDate", true);
@@ -1376,12 +1388,38 @@
         ID: "tabSetClass",
         tabBarPosition: "top",
         tabs: [
-            {ID: "classSessionsTab", title: "<spring:message code="sessions"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})},
-            {ID: "classCheckListTab", name: "checkList", title: "<spring:message code="checkList"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})},
-            {ID: "classStudentsTab", title: "<spring:message code="student.plural"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})},
-            {ID: "classAttachmentsTab", title: "<spring:message code="attachments"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})},
-            {ID: "classAttendanceTab", title: "<spring:message code="attendance"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})},
-            {ID: "classScoresTab", name: "scores", title: "<spring:message code="register.scores"/>", pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})},
+            {
+                ID: "classSessionsTab",
+                title: "<spring:message code="sessions"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/sessions-tab"})
+            },
+            {
+                ID: "classCheckListTab",
+                name: "checkList",
+                title: "<spring:message code="checkList"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/checkList-tab"})
+            },
+            {
+                ID: "classStudentsTab",
+                title: "<spring:message code="student.plural"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/student"})
+            },
+            {
+                ID: "classAttachmentsTab",
+                title: "<spring:message code="attachments"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attachments-tab"})
+            },
+            {
+                ID: "classAttendanceTab",
+                title: "<spring:message code="attendance"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/attendance-tab"})
+            },
+            {
+                ID: "classScoresTab",
+                name: "scores",
+                title: "<spring:message code="register.scores"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
+            },
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
@@ -1449,7 +1487,7 @@
             VM_JspClass.editRecord(record);
             Window_Class_JspClass.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="class"/>");
             Window_Class_JspClass.show();
-            DynamicForm1_Class_JspClass.setValue("autoValid",false);
+            DynamicForm1_Class_JspClass.setValue("autoValid", false);
 
             // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
@@ -1473,7 +1511,7 @@
         url = classUrl;
         VM_JspClass.clearErrors();
         VM_JspClass.clearValues();
-        Window_Class_JspClass.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="class"/>");
+        Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
         Window_Class_JspClass.show();
     }
 
@@ -1633,7 +1671,7 @@
     }
 
     function GenerateClassSessionsCallback() {
-         refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        refreshSelectedTab_class(tabSetClass.getSelectedTab());
     }
 
 
@@ -1661,9 +1699,9 @@
                         loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>");
                     break;
                 }
-                case "classScoresTab":{
+                case "classScoresTab": {
                     if (typeof loadPage_Scores !== "undefined")
-                       loadPage_Scores();
+                        loadPage_Scores();
                     break;
                 }
             }
@@ -1671,12 +1709,12 @@
     }
 
     function chechValidDate(termStart, termEnd, classStart, classEnd) {
-            if(termStart != null && termEnd != null && classStart != null && classEnd != null){
-                if(!checkDate(classStart) && !checkDate(classEnd)){
-                    return false;
-                }
-                if(classStart < termStart && classStart > termEnd){
-                    return false;
-                }
+        if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
+            if (!checkDate(classStart) && !checkDate(classEnd)) {
+                return false;
             }
+            if (classStart < termStart && classStart > termEnd) {
+                return false;
+            }
+        }
     }

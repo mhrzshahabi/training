@@ -1,0 +1,9 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="jafari-h (generated)" id="1575456108760-157">
+        <addForeignKeyConstraint baseColumnNames="f_institute_organizer" baseTableName="tbl_class" constraintName="FKtqen9rjf7y3qdvv899v4w3x4t" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="tbl_institute" validate="true"/>
+    </changeSet>
+</databaseChangeLog>

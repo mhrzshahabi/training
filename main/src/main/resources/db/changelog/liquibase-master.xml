@@ -81,6 +81,6 @@
     <include file="changes/liq_073_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_074_Unknown.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_075_Attendance.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_076_Scores.xml" relativeToChangelogFile="true"/>
-
+    <include file="changes/liq_076_Class_Institute.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_077_ClassStudent.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>

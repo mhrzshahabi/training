@@ -13,8 +13,8 @@ import javax.validation.constraints.NotNull;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_scores")
-public class Scores  extends Auditable {
+@Table(name = "tbl_class_student_final")
+public class ClassStudent extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "scores_seq")
     @SequenceGenerator(name = "scores_seq", sequenceName = "seq_scores_id", allocationSize = 1)
@@ -24,12 +24,11 @@ public class Scores  extends Auditable {
     @Column(name = "scores_state")
     private String scoresState;
 
-    @Column(name = "reasons_failure")
-    private String reasonsfailure;
+    @Column(name = "failure_reason")
+    private String  failurereason;
 
     @Column(name = "score")
-    private double score;
-
+    private Float score;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_student_id", foreignKey = @ForeignKey(name = "fk_student_to_scores"), insertable = false, updatable = false)
@@ -38,7 +37,6 @@ public class Scores  extends Auditable {
     @NotNull
     @Column(name = "f_student_id")
     private Long studentId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_tclass_id", foreignKey = @ForeignKey(name = "fk_tclass_to_student"), insertable = false, updatable = false)

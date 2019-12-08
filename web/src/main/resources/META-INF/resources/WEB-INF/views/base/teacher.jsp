@@ -472,7 +472,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                required:true,
+                required: true,
                 optionDataSource: RestDataSource_Education_Level_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
@@ -553,7 +553,7 @@
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                required:true,
+                required: true,
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
@@ -1098,30 +1098,22 @@
         }
     });
 
-    var IButton_Teacher_Save_JspTeacher = isc.IButtonSave.create({
+    IButton_Teacher_Save_And_Close_JspTeacher = isc.IButtonSave.create({
         top: 260,
+        title: "<spring:message code="save.and.close"/>",
         click: function () {
-            if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
-                return;
-            }
-            vm.validate();
-            if (vm.hasErrors()) {
-                return;
-            }
-            var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
-            DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
-            var data = vm.getValues();
-            var teacherSaveUrl = teacherUrl;
-            if (teacherMethod.localeCompare("PUT") === 0) {
-                var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
-                teacherSaveUrl += teacherRecord.id;
-            }
-            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
-                "callback: teacher_action_result(rpcResponse)"));
+            Teacher_Save_Button_Click_JspTeacher(false);
         }
     });
 
-    var IButton_Teacher_Exit_JspTeacher = isc.IButtonCancel.create({
+    IButton_Teacher_Save_JspTeacher = isc.IButtonSave.create({
+        top: 260,
+        click: function () {
+            Teacher_Save_Button_Click_JspTeacher(true);
+        }
+    });
+
+    IButton_Teacher_Exit_JspTeacher = isc.IButtonCancel.create({
         //icon: "<spring:url value="remove.png"/>",
         //prompt: "",
         width: 100,
@@ -1140,7 +1132,11 @@
         width: "100%",
         alignLayout: "center",
         padding: 10,
-        members: [IButton_Teacher_Save_JspTeacher, IButton_Teacher_Exit_JspTeacher]
+        members: [
+            IButton_Teacher_Save_And_Close_JspTeacher,
+            IButton_Teacher_Save_JspTeacher,
+            IButton_Teacher_Exit_JspTeacher
+        ]
     });
 
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
@@ -1320,6 +1316,30 @@
         teacherCategoriesID.add(value.id);
     }
 
+    function Teacher_Save_Button_Click_JspTeacher(isSaveButton) {
+        if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            return;
+        }
+        vm.validate();
+        if (vm.hasErrors()) {
+            return;
+        }
+        let nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
+        DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+        let data = vm.getValues();
+        let teacherSaveUrl = teacherUrl;
+        if (teacherMethod.localeCompare("PUT") === 0) {
+            var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            teacherSaveUrl += teacherRecord.id;
+        }
+        if (teacherMethod.localeCompare("POST") === 0 && isSaveButton)
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                "callback: teacher_save_action_result(rpcResponse)"));
+        else
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                "callback: teacher_action_result(rpcResponse)"));
+    }
+
     function ListGrid_teacher_edit() {
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -1422,7 +1442,8 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").show();
+        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+
         if (typeof loadPage_attachment !== "undefined")
             loadPage_attachment("Teacher", record.id, "<spring:message code="document"/>");
     }
@@ -1452,7 +1473,7 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").hide();
+        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").disable();
     }
 
     function ListGrid_teacher_remove() {
@@ -1544,6 +1565,38 @@
             createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
         } else {
             createDialog("info", "<spring:message code='msg.record.remove.failed'/>");
+        }
+    }
+
+    function teacher_save_action_result(resp) {
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            if (resp.data === "") {
+                createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
+            } else {
+                responseID = JSON.parse(resp.data).id;
+                vm.setValue("id", responseID);
+                gridState = "[{id:" + responseID + "}]";
+                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
+                setTimeout(function () {
+                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+                }, 2000);
+                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined)
+                    addAttach(JSON.parse(resp.data).personalityId);
+                setTimeout(function () {
+                    if (categoryList !== undefined)
+                        addCategories(responseID, categoryList);
+                    ListGrid_Teacher_JspTeacher.invalidateCache();
+                    ListGrid_Teacher_JspTeacher.fetchData();
+                }, 300);
+                ListGrid_Teacher_JspTeacher.invalidateCache();
+                ListGrid_Teacher_JspTeacher.fetchData();
+                if (typeof loadPage_attachment !== "undefined")
+                    loadPage_attachment("Teacher", responseID, "<spring:message code="document"/>");
+                TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+                teacherMethod = "PUT";
+            }
+        } else {
+            createDialog("info", "<spring:message code='error'/>");
         }
     }
 

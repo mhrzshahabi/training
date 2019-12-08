@@ -2,13 +2,10 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="heydaripoor (generated)" id="1575740717612-156">
-        <createSequence sequenceName="seq_scores_id"/>
-    </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1575740717612-157">
-        <createTable tableName="tbl_scores">
+    <changeSet author="ghazanfari_f (generated)" id="1575803835921-159">
+        <createTable tableName="tbl_class_student_final">
             <column name="id" type="NUMBER(19, 0)">
-                <constraints primaryKey="true" primaryKeyName="tbl_scoresPK"/>
+                <constraints primaryKey="true" primaryKeyName="tbl_class_student_finalPK"/>
             </column>
             <column name="c_created_by" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
@@ -23,19 +20,11 @@
             <column name="n_version" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
-            <column name="reasons_failure" type="VARCHAR2(255 CHAR)"/>
-            <column name="score" type="FLOAT(24)"/>
+            <column name="failure_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="score" type="FLOAT"/>
             <column name="scores_state" type="VARCHAR2(255 CHAR)"/>
             <column name="f_student_id" type="NUMBER(19, 0)"/>
             <column name="f_tclass_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-     <changeSet author="heydaripoor (generated)" id="1575740717612-159">
-        <addForeignKeyConstraint baseColumnNames="f_student_id" baseTableName="tbl_scores" constraintName="fk_student_to_scores" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_student" validate="true"/>
-    </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1575740717612-160">
-        <addForeignKeyConstraint baseColumnNames="f_tclass_id" baseTableName="tbl_scores" constraintName="fk_tclass_to_student" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
-    </changeSet>
-
 </databaseChangeLog>
