@@ -75,8 +75,8 @@ spring:
   profiles: Production
   datasource:
     url: jdbc:oracle:thin:@//oragnrt01.icico.net.ir:1521/pdb_dev01
-    username: training
-    password: training
+    username: n_training
+    password: n_training
   redis:
     host: apps.icico.net.ir
     password: nicico
