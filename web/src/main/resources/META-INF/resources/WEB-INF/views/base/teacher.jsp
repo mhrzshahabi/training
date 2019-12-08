@@ -472,7 +472,7 @@
                 changeOnKeypress: true,
                 displayField: "titleFa",
                 valueField: "id",
-                required:true,
+                required: true,
                 optionDataSource: RestDataSource_Education_Level_JspTeacher,
                 autoFetchData: true,
                 addUnknownValues: false,
@@ -553,7 +553,7 @@
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                required:true,
+                required: true,
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
@@ -1316,7 +1316,7 @@
         teacherCategoriesID.add(value.id);
     }
 
-    function Teacher_Save_Button_Click_JspTeacher(isSaveButton){
+    function Teacher_Save_Button_Click_JspTeacher(isSaveButton) {
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
             return;
         }
@@ -1332,7 +1332,7 @@
             var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
             teacherSaveUrl += teacherRecord.id;
         }
-        if(teacherMethod.localeCompare("POST") === 0 && isSaveButton)
+        if (teacherMethod.localeCompare("POST") === 0 && isSaveButton)
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_save_action_result(rpcResponse)"));
         else
@@ -1568,7 +1568,7 @@
         }
     }
 
-    function teacher_save_action_result(resp){
+    function teacher_save_action_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
