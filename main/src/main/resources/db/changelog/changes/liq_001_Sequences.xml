@@ -143,5 +143,7 @@
     <changeSet author="ghazanfari_f (generated)" id="1575267935938-47">
         <createSequence sequenceName="seq_training_place_id"/>
     </changeSet>
-
+    <changeSet author="ghazanfari_f (generated)" id="1575805143762-158">
+        <createSequence sequenceName="seq_scores_id"/>
+    </changeSet>
 </databaseChangeLog>
