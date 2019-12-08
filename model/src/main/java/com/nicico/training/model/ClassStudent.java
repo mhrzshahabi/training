@@ -28,8 +28,7 @@ public class ClassStudent extends Auditable {
     private String  failurereason;
 
     @Column(name = "score")
-    private double score;
-
+    private Float score;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_student_id", foreignKey = @ForeignKey(name = "fk_student_to_scores"), insertable = false, updatable = false)
@@ -38,7 +37,6 @@ public class ClassStudent extends Auditable {
     @NotNull
     @Column(name = "f_student_id")
     private Long studentId;
-
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_tclass_id", foreignKey = @ForeignKey(name = "fk_tclass_to_student"), insertable = false, updatable = false)

@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1575809794136-96">
+        <createTable tableName="tbl_personnel">
+            <column name="personnel_no" type="VARCHAR2(255 CHAR)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personnelPK"/>
+            </column>
+            <column name="active" type="NUMBER(10, 0)"/>
+            <column name="age" type="NUMBER(10, 0)"/>
+            <column name="birth_certificate_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="birth_place" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_affairs" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_area" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_assistant" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_section" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="ccp_unit" type="VARCHAR2(255 CHAR)"/>
+            <column name="company_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="complex_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="contract_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="deleted" type="NUMBER(10, 0)"/>
+            <column name="department_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="department_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_level_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_license_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="education_field_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="employment_status_id" type="NUMBER(10, 0)"/>
+            <column name="employment_type_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="first_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="gender_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="id" type="NUMBER(19, 0)"/>
+            <column name="insurance_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="last_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="marital_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="military_status_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="national_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="operational_unit_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="emp_no" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_assignment_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_code" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_grade_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="post_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_days" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_months" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_place_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_turn_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="work_years" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
