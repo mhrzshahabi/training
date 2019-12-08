@@ -144,7 +144,7 @@
             }
         }, {
             title: "<spring:message code='download'/>", click: function () {
-                Show_Attachment_Attachments(ListGrid_JspAttachment.getSelectedRecord().id);
+                Show_Attachment_Attachments(ListGrid_JspAttachment.getSelectedRecord());
             }
         }
         ]
@@ -162,7 +162,7 @@
         autoFetchData: false,
         showRollOver: true,
         recordDoubleClick: function (viewer, record) {
-            Show_Attachment_Attachments(record.id);
+            Show_Attachment_Attachments(record);
         }
     });
 
@@ -334,10 +334,10 @@
         }
     }
 
-    function Show_Attachment_Attachments(id) {
+    function Show_Attachment_Attachments(record) {
         let downloadForm = isc.DynamicForm.create({
             method: "GET",
-            action: "attachment/download/" + id,
+            action: "attachment/download/" + record.id,
             target: "_Blank",
             canSubmit: true,
             fields:
