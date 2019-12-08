@@ -1,0 +1,56 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="ghazanfari_f (generated)" id="1575809794136-95">
+        <createTable tableName="tbl_personal_info">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_personal_infoPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_account_info" type="NUMBER(19, 0)"/>
+            <column name="c_birth_certificate" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_certificate_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_date" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_birth_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_contact_info" type="NUMBER(19, 0)"/>
+            <column name="c_description" type="VARCHAR2(500 CHAR)"/>
+            <column name="f_edu_level" type="NUMBER(19, 0)"/>
+            <column name="f_edu_major" type="NUMBER(19, 0)"/>
+            <column name="f_edu_orientation" type="NUMBER(19, 0)"/>
+            <column name="c_father_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_first_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_first_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_gender" type="NUMBER(10, 0)"/>
+            <column name="c_job_location" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_job_title" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_name_en" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_last_name_fa" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_married" type="NUMBER(10, 0)"/>
+            <column name="e_military" type="NUMBER(10, 0)"/>
+            <column name="c_national_code" type="VARCHAR2(10 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_nationality" type="VARCHAR2(255 CHAR)"/>
+            <column name="p_photo" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_religion" type="VARCHAR2(255 CHAR)"/>
+        </createTable>
+    </changeSet>
+
+</databaseChangeLog>
