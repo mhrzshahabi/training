@@ -2,7 +2,7 @@
 <databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
-    <changeSet author="ghazanfari_f (generated)" id="1575801635077-160">
+    <changeSet author="ghazanfari_f (generated)" id="1575803835921-159">
         <createTable tableName="tbl_class_student_final">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_class_student_finalPK"/>
@@ -27,14 +27,4 @@
             <column name="f_tclass_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-
-    <changeSet author="ghazanfari_f (generated)" id="1575801635077-162">
-        <addForeignKeyConstraint baseColumnNames="f_student_id" baseTableName="tbl_class_student_final" constraintName="fk_student_to_scores" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="id" referencedTableName="tbl_student" validate="true"/>
-    </changeSet>
-    <changeSet author="ghazanfari_f (generated)" id="1575801635077-163">
-        <addForeignKeyConstraint baseColumnNames="f_tclass_id" baseTableName="tbl_class_student_final" constraintName="fk_tclass_to_student" deferrable="false" initiallyDeferred="false"
-                                 referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
-    </changeSet>
-
 </databaseChangeLog>
