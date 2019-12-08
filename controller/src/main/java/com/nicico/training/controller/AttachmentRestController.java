@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.iservice.IAttachmentService;
+import com.sun.deploy.net.URLEncoder;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,7 +17,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.servlet.ServletContext;
+import javax.activation.MimetypesFileTypeMap;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
@@ -123,14 +124,20 @@ public class AttachmentRestController {
         try {
             File file = new File(fileFullPath);
             FileInputStream inputStream = new FileInputStream(file);
-            ServletContext context = request.getServletContext();
-            String mimeType = context.getMimeType(fileFullPath);
+            String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
+            String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8").replace("+", "%20");
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
-            response.setContentType(mimeType);
             String headerKey = "Content-Disposition";
-            String headerValue = String.format("attachment; filename=\"%s\"", attachment.getFileName());
+            String headerValue;
+            if (fileName.contains(".pdf")) {
+                response.setContentType("application/pdf");
+                headerValue = String.format("filename=\"%s\"", fileName);
+            } else {
+                response.setContentType(mimeType);
+                headerValue = String.format("attachment; filename=\"%s\"", fileName);
+            }
             response.setHeader(headerKey, headerValue);
             response.setContentLength((int) file.length());
             OutputStream outputStream = response.getOutputStream();

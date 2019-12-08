@@ -93,6 +93,7 @@ public class AttachmentService implements IAttachmentService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<AttachmentDTO.Info> search(SearchDTO.SearchRq request, String objectType, Long objectId) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (objectType != null)
             list.add(makeNewCriteria("objectType", objectType, EOperator.equals, null));

@@ -249,7 +249,8 @@ public class ClassSessionService implements IClassSession {
     @Override
     @Transactional
     public List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId) {
-        return modelMapper.map(classSessionDAO.findDistinctSessionDateByClassId(classId), new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
+        List<Object[]> dateByClassId = classSessionDAO.findSessionDate(classId);
+        return modelMapper.map(dateByClassId, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
         }.getType());
     }
 

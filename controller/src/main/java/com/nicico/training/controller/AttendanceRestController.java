@@ -8,10 +8,12 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -39,6 +41,7 @@ import java.util.Map;
 public class AttendanceRestController {
 
 	private final IAttendanceService attendanceService;
+	private final ClassSessionService classSessionService;
 	private final ReportUtil reportUtil;
 	private final ObjectMapper objectMapper;
 	private final DateUtil dateUtil;
@@ -69,20 +72,35 @@ public class AttendanceRestController {
 	}
 
 	@Loggable
-	@PostMapping
+    @GetMapping
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-		List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
-		final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-		specResponse.setData(list)
-				.setStartRow(0)
-				.setEndRow(list.size())
-				.setTotalRows(list.size());
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
+        List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
+        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
 
-		final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-		specRs.setResponse(specResponse);
-		return new ResponseEntity<>(specRs, HttpStatus.CREATED);
-	}
+        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+    }
+	@Loggable
+    @GetMapping(value = "/session-date")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam("classId") Long classId) {
+        List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
+        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+
+        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+    }
 
 	@Loggable
 	@PutMapping(value = "/{id}")

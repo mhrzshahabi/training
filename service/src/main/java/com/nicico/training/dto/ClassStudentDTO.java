@@ -18,7 +18,7 @@ import java.util.List;
 @Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ScoresDTO implements Serializable {
+public class ClassStudentDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String scoresState;
@@ -39,8 +39,8 @@ public class ScoresDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ScoresInfo")
-    public static class Info extends ScoresDTO {
+    @ApiModel("ClassStudentInfo")
+    public static class Info extends ClassStudentDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -53,23 +53,23 @@ public class ScoresDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ScoresCreateRq")
-    public static class Create extends ScoresDTO {
+    @ApiModel("ClassStudentCreateRq")
+    public static class Create extends ClassStudentDTO {
 
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ScoresUpdateRq")
-    public static class Update extends ScoresDTO {
+    @ApiModel("ClassStudentUpdateRq")
+    public static class Update extends ClassStudentDTO {
 
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ScoresDeleteRq")
+    @ApiModel("ClassStudentDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
@@ -79,7 +79,7 @@ public class ScoresDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ScoresIdListRq")
+    @ApiModel("ClassStudentIdListRq")
     public static class ScoresIdList {
         @NotNull
         @ApiModelProperty(required = true)
@@ -90,9 +90,9 @@ public class ScoresDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("ScoresSpecRs")
-    public static class ScoresSpecRs {
-        private ScoresDTO.SpecRs response;
+    @ApiModel("ClassStudentSpecRs")
+    public static class ClassStudentSpecRs {
+        private SpecRs response;
     }
 
 
@@ -101,7 +101,7 @@ public class ScoresDTO implements Serializable {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<ScoresDTO.Info> data;
+        private List<ClassStudentDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
