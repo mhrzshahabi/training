@@ -72,7 +72,7 @@ public class AttendanceRestController {
 	}
 
 	@Loggable
-    @GetMapping
+    @GetMapping(value = "/auto-create")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
         List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
@@ -89,7 +89,10 @@ public class AttendanceRestController {
 	@Loggable
     @GetMapping(value = "/session-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam("classId") Long classId) {
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
+	    if(classId == null || classId == 0){
+	        return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(),HttpStatus.OK);
+        }
         List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(list)
@@ -99,7 +102,22 @@ public class AttendanceRestController {
 
         final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+	@Loggable
+    @GetMapping(value = "/session-in-date")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<List<ClassSessionDTO.Info>> getSessionsForDate(@RequestParam("classId") Long classId, @RequestParam("date") String date) {
+        List<ClassSessionDTO.Info> list = classSessionService.getSessionsForDate(classId, date);
+//        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+//        specResponse.setData(list)
+//                .setStartRow(0)
+//                .setEndRow(list.size())
+//                .setTotalRows(list.size());
+//
+//        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+//        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(list, HttpStatus.CREATED);
     }
 
 	@Loggable

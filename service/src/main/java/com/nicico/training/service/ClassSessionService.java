@@ -8,6 +8,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
+import com.nicico.training.model.IClassSessionDTO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
@@ -249,7 +250,7 @@ public class ClassSessionService implements IClassSession {
     @Override
     @Transactional
     public List<ClassSessionDTO.ClassSessionsDateForOneClass> getDateForOneClass(Long classId) {
-        List<Object[]> dateByClassId = classSessionDAO.findSessionDate(classId);
+        List<IClassSessionDTO> dateByClassId = classSessionDAO.findSessionDateDistinctByClassId(classId);
         return modelMapper.map(dateByClassId, new TypeToken<List<ClassSessionDTO.ClassSessionsDateForOneClass>>() {
         }.getType());
     }
