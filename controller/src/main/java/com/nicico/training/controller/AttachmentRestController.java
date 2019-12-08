@@ -125,7 +125,7 @@ public class AttachmentRestController {
             File file = new File(fileFullPath);
             FileInputStream inputStream = new FileInputStream(file);
             String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);
-            String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8");
+            String fileName = URLEncoder.encode(attachment.getFileName(), "UTF-8").replace("+", "%20");
             if (mimeType == null) {
                 mimeType = "application/octet-stream";
             }
