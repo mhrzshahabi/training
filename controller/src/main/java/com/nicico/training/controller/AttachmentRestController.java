@@ -131,7 +131,7 @@ public class AttachmentRestController {
             }
             String headerKey = "Content-Disposition";
             String headerValue;
-            if (fileName.contains("pdf")) {
+            if (fileName.contains(".pdf")) {
                 response.setContentType("application/pdf");
                 headerValue = String.format("filename=\"%s\"", fileName);
             } else {
