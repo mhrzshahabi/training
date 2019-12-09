@@ -148,5 +148,8 @@
     <changeSet author="ghazanfari_f (generated)" id="1575809794136-49">
         <createSequence sequenceName="seq_training_place_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-163">
+        <createSequence sequenceName="seq_employment_history_id"/>
+    </changeSet>
 
 </databaseChangeLog>

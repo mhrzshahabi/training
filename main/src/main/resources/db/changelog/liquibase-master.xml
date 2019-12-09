@@ -80,6 +80,9 @@
     <include file="changes/liq_TrainingPlace.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_TrainingPlace_Equipment.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_User.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_EmploymentHistory.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_EmploymentHistory_Category.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_EmploymentHistory_Subcategory.xml" relativeToChangelogFile="true"/>
 
     <include file="changes/liq_0_UniqueConstraint.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_0_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>
