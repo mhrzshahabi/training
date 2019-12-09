@@ -16,8 +16,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class CheckListDTO implements Serializable {
 
     @ApiModelProperty(required = true)

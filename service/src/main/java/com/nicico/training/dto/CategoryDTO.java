@@ -19,8 +19,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 
 public class CategoryDTO {
     @NotEmpty
