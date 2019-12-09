@@ -195,7 +195,7 @@ public class PersonnelRegistered extends Auditable {
     @Column(name = "email")
     private String email;
 
-    @Column(name = "accountNumber")
+    @Column(name = "account_number")
     private String accountNumber;
 
 }
