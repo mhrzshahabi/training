@@ -9,7 +9,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 
@@ -38,12 +37,11 @@
     });
 
     var workflowProcessDefinitionViewLoader = isc.ViewLoader.create({
-        <%--width: "100%",--%>
-        <%--height: "100%",--%>
+        width: "100%",
+        height: "100%",
         autoDraw: false,
-        <%--border: "10px solid black",--%>
+        // border: "1px solid blue",
         viewURL: "",
-        overflow: "scroll",
         loadingMessage: "فرم فرایندی برای نمایش وجود ندارد"
     });
 
@@ -55,14 +53,14 @@
         formData.append("file", fileToLoad);
         if (fileToLoad !== undefined) {
             TrnXmlHttpRequest(formData, workflowUrl + "uploadProcessDefinition", "POST", checkUploadResult);
-            } else {
+        } else {
             isc.say("فایلی برای آپلود انتخاب نشده است.");
         }
     }
 
     function checkUploadResult(resp) {
 
-       if (resp.status == 200)
+        if (resp.status == 200)
             isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
         else {
             isc.say("کد خطا : " + resp.status);
@@ -192,10 +190,10 @@
                 }
             });
         } else {
-            var deployId = record.id;
-            <spring:url value="/web/workflow/processDefinition/diagram/" var="diagram"/>
-            workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
-            workflowProcessDefinitionViewLoader.show();
+                var deployId = record.id;
+                <spring:url value="/web/workflow/processDefinition/diagram/" var="diagram"/>
+                workflowProcessDefinitionViewLoader.setViewURL("${diagram}" + deployId);
+                workflowProcessDefinitionViewLoader.show();
         }
 
     }
@@ -312,20 +310,10 @@
     var HLayout_ProcessDefinitionGrid = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        <%--border: "10px solid green",--%>
+        // border: "10px solid green",
 
         members: [
             ListGrid_ProcessDefinitionList
-        ]
-    });
-    var VLayout_workflowProcessDefinition = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "10px solid red",--%>
-        overflow: "auto",
-        members: [
-
-            workflowProcessDefinitionViewLoader
         ]
     });
 
@@ -336,6 +324,6 @@
         members: [
             HLayout_ProcessDefinitionActions,
             HLayout_ProcessDefinitionGrid,
-            VLayout_workflowProcessDefinition
+            workflowProcessDefinitionViewLoader
         ]
     });
