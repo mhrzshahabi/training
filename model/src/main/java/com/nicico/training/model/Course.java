@@ -139,9 +139,9 @@ public class Course extends Auditable {
         else return goalSet.isEmpty();
     }
 
-    @Column(name = "c_workflow_status", nullable = false, columnDefinition = "varchar2(255) default 'ثبت اولیه'")
+    @Column(name = "c_workflow_status")
     private String workflowStatus;
 
-    @Column(name = "c_workflow_status_code", nullable = false, columnDefinition = "int default 0")
+    @Column(name = "c_workflow_status_code")
     private Integer workflowStatusCode;
 }
