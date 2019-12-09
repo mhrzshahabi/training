@@ -71,4 +71,45 @@
             <column name="work_years" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
+
+    <changeSet author="lotfi (generated)" id="1575888681179-169">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="accountNumber" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-170">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="address" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-171">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="email" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-172">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="fax" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-173">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="mobile" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-174">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="nationality_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-175">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="phone" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1575888681179-176">
+        <addColumn tableName="tbl_personnel_registered">
+            <column name="religion_title" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
