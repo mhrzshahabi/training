@@ -579,7 +579,7 @@
             co.clearValues();
             co.clearErrors(true);
             company_method = "PUT";
-            console.log(record.address);
+            // console.log(record.address);
             if (record.address !== undefined && record.address.stateId !== undefined)
                 RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
             co.editRecord(record);
