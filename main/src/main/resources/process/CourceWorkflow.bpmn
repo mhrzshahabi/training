@@ -13,6 +13,8 @@
         <activiti:formProperty id="REJECT" name="REJECT" type="string" required="true"></activiti:formProperty>
         <activiti:formProperty id="target" name="target" type="string" required="true"></activiti:formProperty>
         <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatusCode" name="workflowStatusCode" type="string" expression="${C_WORKFLOW_STATUS_CODE}" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <userTask id="courseSupervisorCheck" name="بررسی سرپرست" activiti:assignee="${courseSupervisor}">
@@ -27,6 +29,7 @@
         <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
         <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
         <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <userTask id="courseCorrection" name="بررسی کاربر" activiti:assignee="${courseCreatorId}">
@@ -58,10 +61,10 @@
         <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
         <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
         <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت بررسی" type="string" expression="${C_WORKFLOW_STATUS}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
-    <sequenceFlow id="courseBossReject" name="Boss Reject" sourceRef="courseBossCheck" targetRef="courseSupervisorCheck">
+    <sequenceFlow id="courseBossReject" name="Boss Reject" sourceRef="courseBossCheck" targetRef="servicetaskAssignSupervisor">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="flowCorrection" name="Creator Confirm" sourceRef="courseCorrection" targetRef="servicetaskCorrection">
@@ -139,8 +142,8 @@
       <bpmndi:BPMNEdge bpmnElement="courseBossReject" id="BPMNEdge_courseBossReject">
         <omgdi:waypoint x="905.0" y="101.0"></omgdi:waypoint>
         <omgdi:waypoint x="905.0" y="35.0"></omgdi:waypoint>
-        <omgdi:waypoint x="465.0" y="35.0"></omgdi:waypoint>
-        <omgdi:waypoint x="465.0" y="105.0"></omgdi:waypoint>
+        <omgdi:waypoint x="235.0" y="35.0"></omgdi:waypoint>
+        <omgdi:waypoint x="235.0" y="103.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
           <omgdc:Bounds height="14.0" width="58.0" x="830.0" y="41.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
