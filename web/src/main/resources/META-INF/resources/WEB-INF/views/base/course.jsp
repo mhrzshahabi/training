@@ -1174,7 +1174,7 @@
 
 // <<---------------------------------------- Workflow - Call StartProcess ----------------------------------------
                                     var varParams = [{
-                                        "processKey": "courceWorkflow",
+                                        "processKey": "courseWorkflow",
                                         "cId": JSON.parse(resp.data).id,
                                         "mainObjective": JSON.parse(resp.data).mainObjective,
                                         "titleFa": JSON.parse(resp.data).titleFa,

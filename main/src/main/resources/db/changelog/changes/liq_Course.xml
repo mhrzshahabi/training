@@ -41,17 +41,16 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="rastegari_h (generated)" id="1575828425041-163">
+    <changeSet author="rastegari_h (generated)" id="1575868268430-163">
         <addColumn tableName="tbl_course">
-            <column defaultValue="ثبت اولیه" name="c_workflow_status" type="varchar2(255)">
+            <column defaultValue="ثبت اولیه" name="c_workflow_status" type="VARCHAR2(255 CHAR)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
     </changeSet>
-
-    <changeSet author="rastegari_h (generated)" id="1575828425041-164">
+    <changeSet author="rastegari_h (generated)" id="1575868268430-164">
         <addColumn tableName="tbl_course">
-            <column defaultValueNumeric="0" name="c_workflow_status_code" type="int">
+            <column defaultValueNumeric="0" name="c_workflow_status_code" type="NUMBER(10, 0)">
                 <constraints nullable="false"/>
             </column>
         </addColumn>
