@@ -64,7 +64,7 @@ public class EducationLevelRestController {
         try {
             return new ResponseEntity<>(educationLevelService.create(request), HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -80,7 +80,7 @@ public class EducationLevelRestController {
         try {
             return new ResponseEntity<>(educationLevelService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), null, HttpStatus.NOT_ACCEPTABLE);
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -99,7 +99,6 @@ public class EducationLevelRestController {
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                    null,
                     HttpStatus.NOT_ACCEPTABLE);
         }
     }

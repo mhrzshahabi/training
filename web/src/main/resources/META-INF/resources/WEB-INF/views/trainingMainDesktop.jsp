@@ -56,7 +56,7 @@
     const skillUrl = rootUrl + "skill/";
     const attachmentUrl = rootUrl + "attachment/";
     const trainingPlaceUrl = rootUrl + "training-place/";
-    const personnelUrl = rootUrl + "personnel/"
+    const personnelUrl = rootUrl + "personnel/";
     const personnelRegUrl = rootUrl + "personnelRegistered/";
     const attendanceUrl = rootUrl + "attendance/";
 

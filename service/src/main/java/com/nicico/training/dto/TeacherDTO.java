@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -36,6 +35,7 @@ public class TeacherDTO {
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private PersonalInfoDTO.Info personality;
+        private Set<EmploymentHistoryDTO.Info> employmentHistories;
     }
 
 //    @Getter

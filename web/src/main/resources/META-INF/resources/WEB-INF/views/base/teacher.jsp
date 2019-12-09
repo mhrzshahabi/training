@@ -31,7 +31,8 @@
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories"}
+            {name: "categories"},
+            {name: "employmentHistories"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -87,6 +88,123 @@
         fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*EmploymentHistory*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    Menu_ListGrid_JspEmploymentHistory = isc.Menu.create({
+        data: [{
+            title: "<spring:message code='refresh'/>", click: function () {
+                ListGrid_Attachments_refresh();
+            }
+        }, {
+            title: "<spring:message code='create'/>", click: function () {
+                ListGrid_Attachments_Add();
+            }
+        }, {
+            title: "<spring:message code='edit'/>", click: function () {
+                ListGrid_Attachments_Edit();
+            }
+        }, {
+            title: "<spring:message code='remove'/>", click: function () {
+                ListGrid_Attachments_Remove();
+            }
+        }
+        ]
+    });
+
+    ListGrid_EmploymentHistory_JspTeacher = isc.TrLG.create({
+        dataSource: RestDataSource_Teacher_JspTeacher,
+        contextMenu: Menu_ListGrid_JspEmploymentHistory,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: false,
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        fields: [
+            {name: "employmentHistories.id", hidden: true},
+            {
+                name: "employmentHistories.companyName",
+                title: "نام سازمان",
+                align: "center"
+            },
+            {
+                name: "employmentHistories.jobTitle",
+                title: "عنوان شغل",
+                align: "center"
+            },
+            {
+                name: "employmentHistories.persianStartDate",
+                title: "تاریخ شروع",
+                align: "center",
+                canFilter: false,
+                canSort: false
+            },
+            {
+                name: "employmentHistories.persianEndDate",
+                title: "تاریخ پایان",
+                align: "center",
+                canFilter: false,
+                canSort: false
+            }
+        ]
+
+    });
+
+    ToolStripButton_Refresh_JspEmploymentHistory = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            ListGrid_Attachments_refresh();
+        }
+    });
+
+    ToolStripButton_Edit_JspEmploymentHistory = isc.ToolStripButtonEdit.create({
+        click: function () {
+            ListGrid_Attachments_Edit();
+        }
+    });
+    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonAdd.create({
+        click: function () {
+            ListGrid_Attachments_Add();
+        }
+    });
+    ToolStripButton_Remove_JspEmploymentHistory = isc.ToolStripButtonRemove.create({
+        click: function () {
+            ListGrid_Attachments_Remove();
+        }
+    });
+
+    ToolStrip_Actions_JspEmploymentHistory = isc.ToolStrip.create({
+        width: "100%",
+        membersMargin: 5,
+        members:
+            [
+                ToolStripButton_Add_JspEmploymentHistory,
+                ToolStripButton_Edit_JspEmploymentHistory,
+                ToolStripButton_Remove_JspEmploymentHistory,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh_JspEmploymentHistory
+                    ]
+                })
+            ]
+    });
+
+    VLayout_Body_JspEmploymentHistory = isc.TrVLayout.create({
+        members: [
+            ToolStrip_Actions_JspEmploymentHistory,
+            ListGrid_EmploymentHistory_JspTeacher
+        ]
+    });
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1188,8 +1306,8 @@
     });
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
-        tabBarPosition: "right",
-        tabBarThickness: 100,
+        tabBarPosition: "top",
+        // tabBarThickness: 100,
         titleEditorTopOffset: 2,
         height: "35%",
         tabs: [
@@ -1204,6 +1322,10 @@
             {
                 title: "<spring:message code='work.place'/>", canClose: false,
                 pane: DynamicForm_JobInfo_JspTeacher
+            },
+            {
+                title: "سوابق کاری", canClose: false,
+                pane: VLayout_Body_JspEmploymentHistory
             },
             {
                 ID: "attachmentsTab",
