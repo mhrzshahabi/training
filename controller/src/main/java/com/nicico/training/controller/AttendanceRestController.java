@@ -72,20 +72,14 @@ public class AttendanceRestController {
 	}
 
 	@Loggable
-    @GetMapping(value = "/auto-create")
+	@GetMapping(value = "/auto-create")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-        List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
-        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-        specResponse.setData(list)
-                .setStartRow(0)
-                .setEndRow(list.size())
-                .setTotalRows(list.size());
+	public ResponseEntity<List<Map<String, String>>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
+		List<Map<String, String>> maps = attendanceService.autoCreate(classId, date);
+		return new ResponseEntity<>(maps, HttpStatus.OK);
+	}
 
-        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
-    }
+
 	@Loggable
     @GetMapping(value = "/session-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
@@ -104,6 +98,8 @@ public class AttendanceRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+
 	@Loggable
     @GetMapping(value = "/session-in-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")

@@ -68,7 +68,6 @@
                                fields1.add(field1);
                                alert("2");
                            }
-                           ListGrid_Attendance_AttendanceJSP.setFields(fields1);
                            isc.RPCManager.sendRequest({
                                actionURL: attendanceUrl + "auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
                                httpMethod: "GET",
@@ -77,10 +76,15 @@
                                contentType: "application/json; charset=utf-8",
                                showPrompt: false,
                                serverOutputAsString: false,
-                               callback: function (resp) {
-                                   DataSourse_SessionInOneDate.addData(JSON.parse(resp.data)[i]);
+                               callback: function (resp1) {
+                                   alert(JSON.parse(resp1.data).length);
+                                   for (let j = 0; j < JSON.parse(resp1.data).length; j++) {
+                                       // alert(JSON.parse(resp1.data)[j]);
+                                       DataSourse_SessionInOneDate.addData(JSON.parse(resp1.data)[j]);
+                                   }
                                }
-                           })
+                           });
+                           ListGrid_Attendance_AttendanceJSP.setFields(fields1);
                        }
                    });
                }

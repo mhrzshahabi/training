@@ -5,6 +5,7 @@ import com.nicico.training.dto.AttendanceDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAttendanceService {
 
@@ -15,9 +16,12 @@ public interface IAttendanceService {
 	AttendanceDTO.Info create(AttendanceDTO.Create request);
 
 	@Transactional
-    List<AttendanceDTO.Info> autoCreate(Long classId, String date);
+    List<Map<String, String>> autoCreate(Long classId, String date);
 
-	AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
+    @Transactional
+    void convertToModelAndSave(List<Map<String, String>> maps);
+
+    AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 
 	void delete(Long id);
 
