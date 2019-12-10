@@ -375,7 +375,7 @@
 
             {name: "version"}
         ],
-        fetchDataURL: personnelRegUrl + "spec-list"
+        fetchDataURL: personnelRegUrl + "/spec-list"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1227,7 +1227,7 @@
                 var personnelRegSaveUrl = personnelRegUrl;
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
                     var personnelRegRecord = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
-                    personnelRegSaveUrl += personnelRegRecord.id;
+                    personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
                 Window_PersonnelReg_JspPersonnelReg.close();
@@ -1476,7 +1476,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(TrDSRequest(personnelRegUrl + record.id, "DELETE", null, "callback: personnelReg_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelRegUrl + "/" + record.id, "DELETE", null, "callback: personnelReg_delete_result(rpcResponse)"));
                     }
                 }
             });

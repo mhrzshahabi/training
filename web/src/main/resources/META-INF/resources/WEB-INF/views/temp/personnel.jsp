@@ -108,7 +108,7 @@
             // {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
             // {name: "ccpTitle", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: personnelUrl + "iscList"
+        fetchDataURL: personnelUrl + "/iscList"
     });
 
     PersonnelLG_personnel = isc.TrLG.create({

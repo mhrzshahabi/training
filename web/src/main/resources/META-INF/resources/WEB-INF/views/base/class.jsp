@@ -125,7 +125,7 @@
             {name: "capacity", title: "ظرفیت"}
         ],
         // fetchDataURL: instituteUrl + "0/training-places"
-        fetchDataURL: trainingPlaceUrl + "with-institute"
+        fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
 
@@ -240,12 +240,11 @@
             },
             <%--{name: "reason", title: "<spring:message code='training.request'/>", align: "center"},--%>
             {name: "teacher", title: "<spring:message code='teacher'/>", align: "center", filterOperator: "iContains"},
-            {
-                name: "reason", title: "<spring:message code='training.request'/>", align: "center",
+            {name: "reason", title: "<spring:message code='training.request'/>", align: "center",
                 valueMap: {
-                    "1": "نیازسنجی",
-                    "2": "درخواست واحد",
-                    "3": "نیاز موردی",
+                    "1" : "نیازسنجی",
+                    "2" : "درخواست واحد" ,
+                    "3" : "نیاز موردی",
                 },
             },
             {
@@ -289,7 +288,7 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
         numCols: 10,
-        colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
+        colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%","7%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
         fields: [
@@ -440,16 +439,8 @@
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [
                     {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center"},
-                    {
-                        name: "personality.firstNameFa",
-                        title: "<spring:message code='firstName'/>",
-                        titleAlign: "center"
-                    },
-                    {
-                        name: "personality.nationalCode",
-                        title: "<spring:message code='national.code'/>",
-                        titleAlign: "center"
-                    }
+                    {name: "personality.firstNameFa", title: "<spring:message code='firstName'/>", titleAlign: "center"},
+                    {name: "personality.nationalCode", title: "<spring:message code='national.code'/>", titleAlign: "center"}
                 ],
                 filterFields: [
                     "personality.lastNameFa",
@@ -503,9 +494,9 @@
                 title: "<spring:message code="training.request"/>:",
                 type: "selectItem",
                 valueMap: {
-                    "1": "نیازسنجی",
-                    "2": "درخواست واحد",
-                    "3": "نیاز موردی",
+                    "1" : "نیازسنجی",
+                    "2" : "درخواست واحد" ,
+                    "3" : "نیاز موردی",
                 },
                 // textBoxStyle: "textItemLite"
             },
@@ -513,7 +504,7 @@
                 name: "organizerId", editorType: "TrComboAutoRefresh", title: "<spring:message code="executer"/>:",
                 // width:"250",
                 colSpan: 3,
-                pickListWidth: 500,
+                pickListWidth:500,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
@@ -521,7 +512,7 @@
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa","mobile"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
@@ -562,20 +553,17 @@
                 type: "staticText", textBoxStyle: "textItemLite"
             },
             {
-                name: "instituteId",
-                editorType: "TrComboAutoRefresh",
-                title: "<spring:message code="training.place"/>:",
+                name: "instituteId", editorType: "TrComboAutoRefresh", title: "<spring:message code="training.place"/>:",
                 // width:"250",
                 colSpan: 4,
                 autoFetchData: false,
                 optionDataSource: RestDataSource_Institute_JspClass,
                 // addUnknownValues:false,
-                displayField: "titleFa",
-                valueField: "id",
+                displayField: "titleFa", valueField: "id",
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa","mobile"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
                 required: true,
@@ -903,92 +891,21 @@
                 value: "ساعت جلسات:",
                 // rowSpan:3
             },
-            {
-                name: "first",
-                type: "checkbox",
-                title: "8-10",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "second",
-                type: "checkbox",
-                title: "10-12",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "third",
-                type: "checkbox",
-                title: "14-16",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "fourth",
-                type: "checkbox",
-                title: "12-14",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                disabled: true
-            },
-            {
-                name: "fifth",
-                type: "checkbox",
-                title: "16-18",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                disabled: true
-            },
+            {name: "first", type: "checkbox", title: "8-10", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "second", type: "checkbox", title: "10-12", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "third", type: "checkbox", title: "14-16", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "fourth", type: "checkbox", title: "12-14", titleOrientation: "top", labelAsTitle: true, disabled:true},
+            {name: "fifth", type: "checkbox", title: "16-18", titleOrientation: "top", labelAsTitle: true, disabled:true},
 
             {
                 type: "BlurbItem",
                 value: "روزهای هفته:",
             },
-            {
-                name: "saturday",
-                type: "checkbox",
-                title: "شنبه",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "sunday",
-                type: "checkbox",
-                title: "یکشنبه",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "monday",
-                type: "checkbox",
-                title: "دوشنبه",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
-            {
-                name: "tuesday",
-                type: "checkbox",
-                title: "سه&#8202شنبه",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                endRow: true,
-                defaultValue: true
-            },
-            {
-                name: "wednesday",
-                type: "checkbox",
-                title: "چهارشنبه",
-                titleOrientation: "top",
-                labelAsTitle: true,
-                defaultValue: true
-            },
+            {name: "saturday", type: "checkbox", title: "شنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "sunday", type: "checkbox", title: "یکشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "monday", type: "checkbox", title: "دوشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
+            {name: "tuesday", type: "checkbox", title: "سه&#8202شنبه", titleOrientation: "top", labelAsTitle: true, endRow:true, defaultValue:true},
+            {name: "wednesday", type: "checkbox", title: "چهارشنبه", titleOrientation: "top", labelAsTitle: true, defaultValue:true},
             {name: "thursday", type: "checkbox", title: "پنجشنبه", titleOrientation: "top", labelAsTitle: true},
             {name: "friday", type: "checkbox", title: "جمعه", titleOrientation: "top", labelAsTitle: true},
         ],
@@ -1532,7 +1449,8 @@
         var record = ListGrid_Class_JspClass.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else {
+        }
+        else {
             var Dialog_Class_remove = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
@@ -1567,7 +1485,7 @@
             VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
-            Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
+            Window_Class_JspClass.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="class"/>");
             Window_Class_JspClass.show();
             DynamicForm1_Class_JspClass.setValue("autoValid", false);
 
@@ -1800,5 +1718,3 @@
             }
         }
     }
-
-    //</script>

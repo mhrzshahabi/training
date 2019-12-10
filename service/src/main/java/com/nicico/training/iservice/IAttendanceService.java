@@ -5,23 +5,27 @@ import com.nicico.training.dto.AttendanceDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAttendanceService {
 
-    AttendanceDTO.Info get(Long id);
+	AttendanceDTO.Info get(Long id);
 
-    List<AttendanceDTO.Info> list();
+	List<AttendanceDTO.Info> list();
 
-    AttendanceDTO.Info create(AttendanceDTO.Create request);
+	AttendanceDTO.Info create(AttendanceDTO.Create request);
+
+	@Transactional
+    List<Map> autoCreate(Long classId, String date);
 
     @Transactional
-    List<AttendanceDTO.Info> autoCreate(Long classId, String date);
+    void convertToModelAndSave(List<Map<String, String>> maps, Long classId, String Date);
 
     AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 
-    void delete(Long id);
+	void delete(Long id);
 
-    void delete(AttendanceDTO.Delete request);
+	void delete(AttendanceDTO.Delete request);
 
-    SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
+	SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
 }

@@ -141,7 +141,7 @@
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
-        loadingDataMessag: "<spring:message code="loading"/>"
+        loadingDataMessage: "<spring:message code="loading"/>"
     });
 
 
@@ -910,6 +910,8 @@
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
     });
+
+    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
 
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
