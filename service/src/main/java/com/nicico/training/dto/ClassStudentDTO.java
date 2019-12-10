@@ -25,7 +25,7 @@ public class ClassStudentDTO implements Serializable {
     private String reasonsfailure;
 
     @ApiModelProperty(required = true)
-    private double score;
+    private Float score;
 
     @ApiModelProperty(required = true)
     private Long studentId;
@@ -105,6 +105,22 @@ public class ClassStudentDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+//    @Getter
+//    @Setter
+//    @Accessors(chain = true)
+//    @ApiModel("ClassStudentgetStudentRq")
+//    public static class getStudent {
+//    private long id;
+//    private String personnelNo;
+//    private String nationalCode;
+//    private String personnelNo2;
+//    private String firstName;
+//    private String lastName;
+//    private Float score;
+//    private String reasonsfailure;
+//    private String scoresState;
+//    }
 
 
 }
