@@ -10,8 +10,8 @@
 %>
 
 
-var category_CategoryHomeUrl = rootUrl + "category";
-var category_SubCategoryHomeUrl = rootUrl + "sub-category";
+var category_CategoryHomeUrl = rootUrl + "/category";
+var category_SubCategoryHomeUrl = rootUrl + "/sub-category";
 var category_SubCategoryDummyUrl = category_CategoryHomeUrl + "/sub-categories/dummy";
 var category_SubCategoryUrl = category_SubCategoryHomeUrl;
 var method = "GET";

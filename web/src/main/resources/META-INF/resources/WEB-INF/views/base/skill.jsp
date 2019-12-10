@@ -11,11 +11,11 @@
 
 var skill_Level_Symbol = "";
 var skill_Method = "GET";
-var skill_SkillHomeUrl = rootUrl + "skill";
-var skill_CategoryHomeUrl = rootUrl + "category";
-var skill_ActionUrl = rootUrl + "skill";
-var skill_CategoryUrl = rootUrl + "category/spec-list";
-var skill_SkillLevelUrl = rootUrl + "skill-level/spec-list";
+var skill_SkillHomeUrl = rootUrl + "/skill";
+var skill_CategoryHomeUrl = rootUrl + "/category";
+var skill_ActionUrl = rootUrl + "/skill";
+var skill_CategoryUrl = rootUrl + "/category/spec-list";
+var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
 var skill_selectedSkillId = -1;
 
 // Start Block Of Combo And List Data Sources ----------------------------------------------------------

@@ -11,7 +11,7 @@
 
 
 var skillLevelMethod = "get";
-var skillLevelHomeUrl= rootUrl + "skill-level";
+var skillLevelHomeUrl= rootUrl + "/skill-level";
 var skillLevelActionUrl = skillLevelHomeUrl;
 var Menu_ListGrid_skill_level = isc.Menu.create({
 width: 150,
