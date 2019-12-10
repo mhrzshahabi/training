@@ -295,7 +295,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
@@ -415,7 +415,7 @@ abaspour 9803
                                         rejectTaskForm.setValue("REJECT", "Y");
                                         var data = rejectTaskForm.getValues();
                                         isc.RPCManager.sendRequest({
-                                            actionURL: workflowUrl + "doUserTask",
+                                            actionURL: workflowUrl + "/doUserTask",
                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                             httpMethod: "POST",
                                             useSimpleHttp: true,

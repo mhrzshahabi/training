@@ -1664,7 +1664,7 @@
                 "targetTitleFa": "کلاس"
             }]
             if (classMethod.localeCompare("POST") === 0) {
-                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
             }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",

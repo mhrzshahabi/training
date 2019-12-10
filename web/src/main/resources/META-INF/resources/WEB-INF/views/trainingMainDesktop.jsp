@@ -41,20 +41,21 @@
     // -------------------------------------------  URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
-    const rootUrl = "${contextPath}/api/";
-    const workflowUrl = rootUrl + "workflow/";
-    const jobUrl = rootUrl + "job/";
-    const postGroupUrl = rootUrl + "post-group/";
-    const postGradeUrl = rootUrl + "postGrade/";
-    const postUrl = rootUrl + "post/";
-    const competenceUrl = rootUrl + "competence/";
-    const needAssessmentUrl = rootUrl + "needAssessment/";
-    const skillUrl = rootUrl + "skill/";
-    const attachmentUrl = rootUrl + "attachment/";
-    const trainingPlaceUrl = rootUrl + "training-place/";
-    const personnelUrl = rootUrl + "personnel/"
-    const personnelRegUrl = rootUrl + "personnelRegistered/";
-    const attendanceUrl = rootUrl + "attendance/";
+    const rootUrl = "${contextPath}/api";
+    const workflowUrl = rootUrl + "/workflow";
+    const jobUrl = rootUrl + "/job";
+    const postGroupUrl = rootUrl + "/post-group";
+    const postGradeUrl = rootUrl + "/postGrade";
+    const postUrl = rootUrl + "/post";
+    const competenceUrl = rootUrl + "/competence";
+    const needAssessmentUrl = rootUrl + "/needAssessment";
+    const skillUrl = rootUrl + "/skill";
+    const attachmentUrl = rootUrl + "/attachment";
+    const trainingPlaceUrl = rootUrl + "/training-place";
+    const personnelUrl = rootUrl + "/personnel"
+    const personnelRegUrl = rootUrl + "/personnelRegistered";
+    const attendanceUrl = rootUrl + "/attendance";
+    const parameterTypeUrl = rootUrl + "/"
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -321,6 +322,12 @@
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
+                {
+                    title: "<spring:message code="parameter.plural"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/parameter-type/"/>");
+                    }
+                },
                 {
                     title: "<spring:message code="skill.categorize"/>",
                     click: function () {

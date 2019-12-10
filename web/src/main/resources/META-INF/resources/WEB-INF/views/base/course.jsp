@@ -1266,7 +1266,7 @@
 
     // <<---------------------------------------- Workflow - StartProcess ----------------------------------------
     function startProcess(varParams) {
-        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
     }
 
     function startProcess_callback(resp) {

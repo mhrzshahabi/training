@@ -108,7 +108,7 @@ fields: [
 {name: "processDefinitionVersion", title: "نسخه"},
 {name: "id", title: "id", type: "text"}
 ],
-fetchDataURL: workflowUrl + "allProcessInstance/list"
+fetchDataURL: workflowUrl + "/allProcessInstance/list"
 });
 
 
