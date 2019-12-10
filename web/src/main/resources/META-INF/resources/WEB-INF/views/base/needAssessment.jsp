@@ -139,7 +139,7 @@ fields: [
 {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
 {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
 ],
-fetchDataURL: postUrl + "iscList"
+fetchDataURL: postUrl + "/iscList"
 });
 
 CompetenceDS_needAssessment = isc.TrDS.create({
@@ -157,7 +157,7 @@ title: "<spring:message code="input"/>",
 filterOperator: "iContains"
 },
 ],
-fetchDataURL: competenceUrl + "iscList"
+fetchDataURL: competenceUrl + "/iscList"
 });
 
 let SkillDS_needAssessment = isc.TrDS.create({

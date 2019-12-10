@@ -40,7 +40,7 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     restData_All_JobGroups_NASB_JPA = isc.TrDS.create({

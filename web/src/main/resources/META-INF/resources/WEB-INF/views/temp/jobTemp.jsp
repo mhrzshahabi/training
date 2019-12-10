@@ -634,7 +634,7 @@
 
             DF_JobCompetenceType_job.clearValues();
 
-            DS_Competence_job.fetchDataURL = competenceUrl + "job/not/" + record.id + "/spec-list";
+            DS_Competence_job.fetchDataURL = competenceUrl + "/job/not/" + record.id + "/spec-list";
             LG_Competence_job.invalidateCache();
             LG_Competence_job.fetchData();
             LG_Competence_job.show();
@@ -659,7 +659,7 @@
                 eJobCompetenceTypeId
             }
                 ;
-                isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
+                isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "/job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
             }
         } else {
             let competenceId = DF_CompetenceInfo_job.getValue('competence.id');
@@ -702,7 +702,7 @@
                     message: "آیا رکورد انتخاب شده حذف گردد؟",
                     buttonClick: function (button, index) {
                         this.close();
-                        actionUrl = jobCompetenceUrl + jobRecord.id + "/" + competenceRecord.competence.id;
+                        actionUrl = jobCompetenceUrl + "/" +jobRecord.id + "/" + competenceRecord.competence.id;
                         if (index == 0) {
                             isc.RPCManager.sendRequest(MyDsRequest(actionUrl, "DELETE", null, "callback: show_JobCompetenceActionResult(rpcResponse)"));
                         }
