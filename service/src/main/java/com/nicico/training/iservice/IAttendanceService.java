@@ -16,10 +16,10 @@ public interface IAttendanceService {
 	AttendanceDTO.Info create(AttendanceDTO.Create request);
 
 	@Transactional
-    List<Map<String, String>> autoCreate(Long classId, String date);
+    List<Map> autoCreate(Long classId, String date);
 
     @Transactional
-    void convertToModelAndSave(List<Map<String, String>> maps);
+    void convertToModelAndSave(List<Map<String, String>> maps, Long classId, String Date);
 
     AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 
