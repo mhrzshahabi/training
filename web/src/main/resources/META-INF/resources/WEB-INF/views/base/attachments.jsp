@@ -231,7 +231,7 @@
     function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
-        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "iscList/";
+        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
         if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
         RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
@@ -254,7 +254,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodAttachment = "PUT";
-            saveActionUrlAttachment = attachmentUrl + record.id;
+            saveActionUrlAttachment = attachmentUrl + "/" + record.id;
             DynamicForm_JspAttachments.clearValues();
             DynamicForm_JspAttachments.editRecord(record);
             DynamicForm_JspAttachments.getItem("file").hide();
@@ -264,7 +264,7 @@
 
     function ListGrid_Attachments_Add() {
         methodAttachment = "POST";
-        saveActionUrlAttachment = attachmentUrl + "upload";
+        saveActionUrlAttachment = attachmentUrl + "/upload";
         DynamicForm_JspAttachments.clearValues();
         DynamicForm_JspAttachments.getItem("file").show();
         Window_JspAttachments.show();
@@ -311,7 +311,7 @@
                     this.close();
                     if (index === 0) {
                         attachmentWait = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "delete/" + record.id, "DELETE", null,
+                        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/delete/" + record.id, "DELETE", null,
                             "callback: remove_result_Attachments(rpcResponse)"));
                     }
                 }
