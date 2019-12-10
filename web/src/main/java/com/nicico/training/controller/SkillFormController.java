@@ -48,23 +48,20 @@ public class SkillFormController {
 
         headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        if(type.equals("pdf"))
+        if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/skill/print-all/pdf", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("excel"))
+        else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/skill/print-all/excel", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("html"))
+        else if (type.equals("html"))
             return restTemplate.exchange(restApiUrl + "/api/skill/print-all/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
-
-
-
 
 
 }

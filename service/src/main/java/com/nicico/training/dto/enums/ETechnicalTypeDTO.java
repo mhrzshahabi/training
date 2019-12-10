@@ -4,7 +4,6 @@ package com.nicico.training.dto.enums;/* com.nicico.training.dto
 @Time:10:06 AM
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ETechnicalType;
 import io.swagger.annotations.ApiModel;
@@ -15,8 +14,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ETechnicalTypeDTO {
 
     @Getter

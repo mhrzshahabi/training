@@ -31,7 +31,7 @@ public class ClassCheckListService implements IClassCheckListService {
 
     private final ClassCheckListDAO classCheckListDAO;
     private final CheckListItemDAO checkListItemDAO;
-     private final ModelMapper mapper;
+    private final ModelMapper mapper;
 
     @Transactional(readOnly = true)
     @Override
@@ -88,10 +88,6 @@ public class ClassCheckListService implements IClassCheckListService {
     }
 
 
-
-
-
-
     @Transactional
     @Override
     public List<ClassCheckListDTO.Info> fillTable(Long classId, Long checkListId) {
@@ -100,33 +96,31 @@ public class ClassCheckListService implements IClassCheckListService {
 
         List<Long> checkListItemIdsByTclassId = classCheckListDAO.getCheckListItemIdsByTclassId(classId);   //لیست تمام چک لیست های مربوط به این کلاس گرفته شده
 
-        List<CheckListItem> checkListItemsListId=checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
+        List<CheckListItem> checkListItemsListId = checkListItemDAO.getCheckListItemsByCheckListId(checkListId);//لیست تمام چک لیست ایتم ها ی مربوط به چک لیست مورد نظر
 
 
+        for (CheckListItem x : checkListItemsListId) {
+            if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted() == null)) {
+                ClassCheckList classCheckList = new ClassCheckList();
+                classCheckList.setTclassId(classId);
+                classCheckList.setCheckListItemId(x.getId());
+                ClassCheckListArray.add(classCheckList);
+            }
 
-             for (CheckListItem x: checkListItemsListId)
-        {
-           if (!checkListItemIdsByTclassId.contains(x.getId()) && (x.getIsDeleted()==null))
-           {
-                 ClassCheckList classCheckList = new ClassCheckList();
-                 classCheckList.setTclassId(classId);
-                 classCheckList.setCheckListItemId(x.getId());
-                 ClassCheckListArray.add(classCheckList);
-           }
-
-         }
-         List<ClassCheckList> save = classCheckListDAO.saveAll(ClassCheckListArray);
-           return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {}.getType());
+        }
+        List<ClassCheckList> save = classCheckListDAO.saveAll(ClassCheckListArray);
+        return mapper.map(save, new TypeToken<List<ClassCheckListDTO.Info>>() {
+        }.getType());
 
 
     }
 
 
- @Transactional
+    @Transactional
     @Override
-    public TotalResponse<ClassCheckListDTO.Info> newSearch(MultiValueMap criteria){
-                final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        TotalResponse<ClassCheckListDTO.Info> search = SearchUtil.search(classCheckListDAO, nicicoCriteria, e ->  mapper.map(e, ClassCheckListDTO.Info.class));
+    public TotalResponse<ClassCheckListDTO.Info> newSearch(MultiValueMap criteria) {
+        final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
+        TotalResponse<ClassCheckListDTO.Info> search = SearchUtil.search(classCheckListDAO, nicicoCriteria, e -> mapper.map(e, ClassCheckListDTO.Info.class));
         return search;
 
     }
@@ -134,14 +128,13 @@ public class ClassCheckListService implements IClassCheckListService {
     @Transactional
     @Override
     public ClassCheckListDTO.Info updateDescription(Long id, ClassCheckListDTO.Update request) throws IOException {
-    Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(id);
+        Optional<ClassCheckList> optionalCheckListItem = classCheckListDAO.findById(id);
         ClassCheckList currentClassCheckList = optionalCheckListItem.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
         ClassCheckList classCheckList = new ClassCheckList();
         mapper.map(currentClassCheckList, classCheckList);
         mapper.map(request, classCheckList);
-        return mapper.map(classCheckListDAO.saveAndFlush(classCheckList),ClassCheckListDTO.Info.class);
+        return mapper.map(classCheckListDAO.saveAndFlush(classCheckList), ClassCheckListDTO.Info.class);
     }
-
 
 
     @Transactional

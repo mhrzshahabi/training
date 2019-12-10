@@ -32,7 +32,7 @@ import java.util.Map;
 @RestController
 @RequestMapping(value = "/api/student")
 public class StudentRestController {
-    
+
     private final IStudentService studentService;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
@@ -78,10 +78,9 @@ public class StudentRestController {
 //    @PreAuthorize("hasAuthority('d_student')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         try {
-        studentService.delete(id);
-        return new ResponseEntity(true, HttpStatus.OK);
-        }
-        catch (Exception ex) {
+            studentService.delete(id);
+            return new ResponseEntity(true, HttpStatus.OK);
+        } catch (Exception ex) {
             return new ResponseEntity(false, HttpStatus.NO_CONTENT);
         }
     }
@@ -90,19 +89,19 @@ public class StudentRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_student')")
     public ResponseEntity<Void> delete(@Validated @RequestBody StudentDTO.Delete request) {
-            studentService.delete(request);
-            return new ResponseEntity(HttpStatus.OK);
+        studentService.delete(request);
+        return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_student')")
     public ResponseEntity<StudentDTO.StudentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow,
-                                                     @RequestParam(value = "_constructor", required = false) String constructor,
-                                                     @RequestParam(value = "operator", required = false) String operator,
-                                                     @RequestParam(value = "criteria", required = false) String criteria,
-                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam("_endRow") Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -146,31 +145,30 @@ public class StudentRestController {
     }
 
 
-	@Loggable
-	@PostMapping(value = {"/printWithCriteria/{type}"})
-	public void printWithCriteria(HttpServletResponse response,
-								  @PathVariable String type,
-								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;
-        if(criteriaStr.equalsIgnoreCase("{}")) {
+        if (criteriaStr.equalsIgnoreCase("{}")) {
             searchRq = new SearchDTO.SearchRq();
-        }
-        else{
+        } else {
             criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
             searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
         }
 
-		final SearchDTO.SearchRs<StudentDTO.Info> searchRs = studentService.search(searchRq);
+        final SearchDTO.SearchRs<StudentDTO.Info> searchRs = studentService.search(searchRq);
 
-		final Map<String, Object> params = new HashMap<>();
-		params.put("todayDate", dateUtil.todayDate());
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
 
-		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/StudentByCriteria.jasper", params, jsonDataSource, response);
-	}
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/StudentByCriteria.jasper", params, jsonDataSource, response);
+    }
 
 }

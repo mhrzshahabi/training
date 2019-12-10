@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface TrainingPlaceDAO extends JpaRepository<TrainingPlace,Long>, JpaSpecificationExecutor<TrainingPlace> {
+public interface TrainingPlaceDAO extends JpaRepository<TrainingPlace, Long>, JpaSpecificationExecutor<TrainingPlace> {
 }

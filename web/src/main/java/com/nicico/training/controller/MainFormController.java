@@ -18,6 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class MainFormController {
 
+    @RequestMapping("/parameter-type")
+    public String showParameterTypeForm() {
+        return "basic/parameter";
+    }
+
     @RequestMapping("/job")
     public String showJobForm() {
         return "base/job";
@@ -53,6 +58,7 @@ public class MainFormController {
         return "base/postGradeGroup";
     }
 
+
     @RequestMapping("/needAssessmentSkillBased")
     public String showNeedAssessmentSkillBasedForm() {
         return "base/needAssessmentSkillBased";
@@ -75,13 +81,13 @@ public class MainFormController {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if(type.equals("pdf"))
+        if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/post/print_list/PDF", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("excel"))
+        else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/post/print_list/EXCEL", HttpMethod.POST, entity, byte[].class);
-        else if(type.equals("html"))
+        else if (type.equals("html"))
             return restTemplate.exchange(restApiUrl + "/api/post/print_list/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;

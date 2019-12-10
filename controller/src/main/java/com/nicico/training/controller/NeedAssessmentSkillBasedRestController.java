@@ -1,4 +1,3 @@
-
 package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;

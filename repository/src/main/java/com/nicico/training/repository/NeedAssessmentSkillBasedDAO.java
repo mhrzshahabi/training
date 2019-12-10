@@ -1,4 +1,3 @@
-
 package com.nicico.training.repository;
 
 import com.nicico.training.model.NeedAssessmentSkillBased;

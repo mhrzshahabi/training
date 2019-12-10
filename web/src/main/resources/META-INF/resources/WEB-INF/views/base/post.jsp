@@ -1,9 +1,9 @@
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
+<% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
 
-// <script>
+// script
 
     // ------------------------------------------- Menu -------------------------------------------
     PostMenu_post = isc.Menu.create({
@@ -25,7 +25,7 @@
             isc.ToolStripButtonPrint.create({
                 //icon:"[SKIN]/RichTextEditor/print.png",
                 title: "<spring:message code='print'/>",
-                click:function () {
+                click: function () {
                     print_PostListGrid("pdf");
                 }
             }),
@@ -64,7 +64,7 @@
             <%--{name: "department.section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},--%>
             <%--{name: "department.unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},--%>
         ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     PostLG_post = isc.TrLG.create({
@@ -133,6 +133,7 @@
     function refreshPostLG_post() {
         PostLG_post.filterByEditor();
     }
+
     function print_PostListGrid(type) {
         var advancedCriteria_post = PostLG_post.getCriteria();
         var print_form_post = isc.DynamicForm.create({
@@ -150,4 +151,5 @@
         print_form_post.show();
         print_form_post.submitForm();
     }
+
     // </script>

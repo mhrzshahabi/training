@@ -50,13 +50,13 @@ public class NeedAssessmentService implements INeedAssessmentService {
     @Override
     public NeedAssessmentDTO.Info create(NeedAssessmentDTO.Create request) {
         final Optional<Post> optionalPost = postDAO.findById(request.getPostId());
-        final Post post = optionalPost.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.PostNotFound));
+        final Post post = optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound));
 
         final Optional<Competence> optionalCompetence = competenceDAO.findById(request.getCompetenceId());
-        final Competence competence = optionalCompetence.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
 
         final Optional<Skill> optionalSkill = skillDAO.findById(request.getSkillId());
-        final Skill skill = optionalSkill.orElseThrow(()-> new TrainingException(TrainingException.ErrorType.SkillNotFound));
+        final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
 
         NeedAssessment needAssessment = modelMapper.map(request, NeedAssessment.class);
         needAssessment.setEDomainType(eDomainTypeConverter.convertToEntityAttribute(request.getEdomainTypeId()));

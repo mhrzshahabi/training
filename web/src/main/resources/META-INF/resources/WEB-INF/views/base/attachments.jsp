@@ -48,7 +48,11 @@
                 type: "file",
                 multiple: false,
                 hint: "<spring:message code="file.size.hint"/>",
-                required: true
+                required: true,
+                maxFileSize: 31457280,
+                <%--maxFileSizeExceededMessage: "<spring:message code="file.size.hint"/>",--%>
+                <%--maxFileSizeExceeded: "<spring:message code="file.size.hint"/>",--%>
+                // accept: ".png,.gif,.jpg, .jpeg",
             }
         ],
         itemChanged: function (item, newValue) {

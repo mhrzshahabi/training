@@ -62,41 +62,41 @@ public class BankRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_bank')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             bankService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_bank')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody BankDTO.Delete request) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             bankService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_bank')")
     public ResponseEntity<BankDTO.BankSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                             @RequestParam("_endRow") Integer endRow,
-                                                             @RequestParam(value = "_constructor", required = false) String constructor,
-                                                             @RequestParam(value = "operator", required = false) String operator,
-                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                   @RequestParam("_endRow") Integer endRow,
+                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;

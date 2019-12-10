@@ -31,12 +31,19 @@ public interface IJobGroupService {
     void delete(JobGroupDTO.Delete request);
 
     void addJob(Long jobGroupId, Long jobId);
+
     void addJobs(Long jobGroupId, Set<Long> jobIds);
+
     void removeJob(Long jobGroupId, Long jobId);
+
     void removeJobs(Long jobGroupId, Set<Long> jobIds);
+
     void removeFromCompetency(Long jobGroupId, Long competenceId);
+
     void removeFromAllCompetences(Long jobGroupId);
+
     Set<JobDTO.Info> unAttachJobs(Long jobGroupId);
+
     boolean canDelete(Long jobGroupId);
 
     SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request);

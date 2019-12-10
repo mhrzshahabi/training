@@ -1,7 +1,6 @@
 package com.nicico.training.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EArrangementType;
 import com.nicico.training.model.enums.EPlaceType;
@@ -19,8 +18,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 
 public class TrainingPlaceDTO {
 
@@ -58,17 +56,17 @@ public class TrainingPlaceDTO {
         private EArrangementType eArrangementType;
 
     }
+
     //-------------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TrainingPlaceCreateRq")
     public static class Create extends TrainingPlaceDTO {
+        Set<Long> equipmentIds;
         @NotEmpty
         @ApiModelProperty(required = true)
         private Long instituteId;
-
-        Set<Long> equipmentIds;
     }
 
     // ------------------------------
@@ -108,7 +106,7 @@ public class TrainingPlaceDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class SpecRs<T>{
+    public static class SpecRs<T> {
         private List<T> data;
         private Integer status;
         private Integer startRow;
@@ -127,6 +125,7 @@ public class TrainingPlaceDTO {
         private String titleFa;
 
     }
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -140,8 +139,6 @@ public class TrainingPlaceDTO {
     }
 
     //----------------------
-
-
 
 
 }

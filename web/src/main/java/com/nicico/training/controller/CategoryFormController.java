@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/category")
 public class CategoryFormController {
 
-	@RequestMapping("/show-form")
-	public String showSkillCategory() {
-		return "base/category";
-	}
+    @RequestMapping("/show-form")
+    public String showSkillCategory() {
+        return "base/category";
+    }
 }

@@ -1,4 +1,3 @@
-
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.core.type.TypeReference;

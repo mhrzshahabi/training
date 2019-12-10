@@ -3,180 +3,207 @@
   background-color: #fe9d2a;
 }
 
-.header{
+.header {
   display: block;
   height: 100%;
 }
-.header-logo{
+
+.header-logo {
   background-color: #fe9d2a;
 }
-.header-logo-title{
+
+.header-logo-title {
   background-color: #dcdeea;
   color: #374b71;
   height: 100%;
 }
-.header-exit{
+
+.header-exit {
   background: url("../../../static/img/top-back.svg");
 }
-.header-filter span{
-  color:#374b71;
+
+.header-filter span {
+  color: #374b71;
   font-weight: bold;
 }
-.formTitleRTL{
-  color:#374b71;
+
+.formTitleRTL {
+  color: #374b71;
 }
-.formTitleFocusedRTL{
+
+.formTitleFocusedRTL {
   font-size: 12.5px;
   font-weight: bold;
 }
-.header-change-lng span{
-  color:#374b71 ;
+
+.header-change-lng span {
+  color: #374b71;
 }
-.header-label-username{
-  color:#374b71 ;
+
+.header-label-username {
+  color: #374b71;
   font-size: 14px;
   font-weight: bold;
 }
-.toolStripButton{
+
+.toolStripButton {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
 }
-.toolStripButtonOver{
+
+.toolStripButtonOver {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
 }
-.toolStripButtonFocusedDown{
+
+.toolStripButtonFocusedDown {
   border-radius: 3px;
 }
 
-.toolStripButtonAdd{
+.toolStripButtonAdd {
 
   border-radius: 3px;
   background-color: #e8f0e6;
   border: solid 1px #05a74a;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #05a74a;
     font-weight: bold;
   }
 }
 
-.operation-toolstrip-edit{
+.operation-toolstrip-edit {
 
   border-radius: 3px;
   background-color: #f0ece6;
   border: solid 1px #f5a623;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #f5a623;
     font-weight: bold;
   }
 }
-.operation-toolstrip-remove{
+
+.operation-toolstrip-remove {
   border-radius: 3px;
   background-color: #f0e6ec;
   border: solid 1px #ff0000;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #ff0000;
     font-weight: bold;
   }
 }
-.operation-toolstrip-refresh{
+
+.operation-toolstrip-refresh {
   border-radius: 3px;
   background-color: #fe9d2a;
   border: solid 1px #fe9d2a;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: white;
     font-weight: bold;
   }
 }
 
-.cellDark, .cellOverDark, .cellSelectedDark, .cellSelectedOverDark
-{
+.cellDark, .cellOverDark, .cellSelectedDark, .cellSelectedOverDark {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
   font-weight: bold;
   position: relative;
-  &:after{
-      content : "";
-      position: absolute;
-      left    : 0;
-      z-index: 100;
-      top  : 5px;
-      width  : 1px;
-      height: 18px;
-      background: #d9d9d9;
-  }
-}
-.specialCol, .specialColOver, .specialColSelected, .specialColSelectedOver
-{
-  border-bottom: 3px solid #e6e6e6;
-  font-weight: bold;
-  position: relative;
-}
-.cell, .cellOver, .cellSelected, .cellSelectedOver
-{
-  border-bottom: 3px solid #e6e6e6;
-  padding: 5px !important;
-  font-weight: bold;
-  position: relative;
-  &:after{
-    content : "";
+
+  &:after {
+    content: "";
     position: absolute;
-    left    : 0;
+    left: 0;
     z-index: 100;
-    top  : 5px;
-    width  : 1px;
-    height: 18px;
-    background: #d9d9d9;
-  }
-}
-.cellDarkAltCol, .cellOverDarkAltCol, .cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol{
-  border-bottom: 3px solid #e6e6e6;
-  padding: 5px !important;
-  font-weight: bold;
-  position: relative;
-  &:after{
-    content : "";
-    position: absolute;
-    left    : 0;
-    z-index: 100;
-    top  : 5px;
-    width  : 1px;
-    height: 18px;
-    background: #d9d9d9;
-  }
-}
-.cellAltCol, .cellOverAltCol, .cellSelectedAltCol, .cellSelectedOverAltCol  {
-  border-bottom: 3px solid #e6e6e6;
-  padding: 5px !important;
-  font-weight: bold;
-  position: relative;
-  &:after{
-    content : "";
-    position: absolute;
-    left    : 0;
-    z-index: 100;
-    top  : 5px;
-    width  : 1px;
+    top: 5px;
+    width: 1px;
     height: 18px;
     background: #d9d9d9;
   }
 }
 
-.listTable tbody tr td:first-child{
+.specialCol, .specialColOver, .specialColSelected, .specialColSelectedOver {
+  border-bottom: 3px solid #e6e6e6;
+  font-weight: bold;
+  position: relative;
+}
+
+.cell, .cellOver, .cellSelected, .cellSelectedOver {
+  border-bottom: 3px solid #e6e6e6;
+  padding: 5px !important;
+  font-weight: bold;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    top: 5px;
+    width: 1px;
+    height: 18px;
+    background: #d9d9d9;
+  }
+}
+
+.cellDarkAltCol, .cellOverDarkAltCol, .cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol {
+  border-bottom: 3px solid #e6e6e6;
+  padding: 5px !important;
+  font-weight: bold;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    top: 5px;
+    width: 1px;
+    height: 18px;
+    background: #d9d9d9;
+  }
+}
+
+.cellAltCol, .cellOverAltCol, .cellSelectedAltCol, .cellSelectedOverAltCol {
+  border-bottom: 3px solid #e6e6e6;
+  padding: 5px !important;
+  font-weight: bold;
+  position: relative;
+
+  &:after {
+    content: "";
+    position: absolute;
+    left: 0;
+    z-index: 100;
+    top: 5px;
+    width: 1px;
+    height: 18px;
+    background: #d9d9d9;
+  }
+}
+
+.listTable tbody tr td:first-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 6px;
 }
-.listTable tbody tr td:last-child{
+
+.listTable tbody tr td:last-child {
   border-top-left-radius: 4px;
   border-bottom-left-radius: 6px;
 }
@@ -185,18 +212,23 @@
 .sectionHeaderclosed {
   box-shadow: rgba(0, 0, 0, 0.16) 0px -4px 6px 0px, rgba(0, 0, 0, 0.16) 0px -3px 2px 0px;
 }
+
 .tabButtonTopDown, .tabButtonTopSelectedFocused, .tabButtonTopSelectedFocusedOver, .tabButtonTopSelectedFocusedDown, .tabButtonTopSelectedOver, .tabButtonTopSelectedDown, .tabButtonTopSelected {
   font-weight: bold;
 }
+
 hr {
   border-top: 1px solid #e8e8e8 !important;
 }
-.headerButton, .headerButtonOver{
+
+.headerButton, .headerButtonOver {
   padding-right: 10px;
 }
+
 .main-menu div {
   background-color: #153560;
   border-color: #153560;
+
   .toolStripButton,
   .toolStripButtonFocused,
   .toolStripButtonFocusedOver,
@@ -227,7 +259,8 @@ hr {
     background: none !important;
 
   }
-  .toolStripButtonOver{
+
+  .toolStripButtonOver {
     color: #fe9d2a;
     border: none;
     box-shadow: none;
@@ -236,6 +269,7 @@ hr {
     background: none !important;
   }
 }
+
 .toolStripButton,
 .toolStripButtonOver,
 .toolStripButtonFocused,
@@ -266,15 +300,16 @@ hr {
 }
 
 .menuTable td {
-   font-weight: bold;
- }
+  font-weight: bold;
+}
 
 .toolStripButtonDisabled,
-.toolStripButtonSelectedDisabled{
+.toolStripButtonSelectedDisabled {
   background-color: #f3f3f3;
   border: solid 1px $primary_grey_dark;
   color: #3f3f3f;
 }
+
 $standard_border_width: 1px !default;
 $standard_black: #000000 !default;
 $standard_font_size: 12px !default;
@@ -318,15 +353,18 @@ $window_header_bgColor: #fe9d2a !default;
   border: solid 1px #05a74a;
   border-radius: 3px;
   border: solid 1px #05a74a;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  div{
+
+  div {
     color: #05a74a;
     font-weight: bold;
   }
 }
-.buttonSaveOver{
+
+.buttonSaveOver {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
 }
 
@@ -363,17 +401,21 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #f0e6ec;
   border: solid 1px #ff0000;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  div{
+
+  div {
     color: #ff0000;
     font-weight: bold;
   }
 }
-.buttonCancelOver{
+
+.buttonCancelOver {
   box-shadow: 0px 2px 2px 0px rgba(0, 0, 0, 0.16);
 }
+
 /* tool strip button */
 .toolStripButtonPrint,
 .toolStripButtonPrintOver,
@@ -406,10 +448,12 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #e6e6e6;
   border: solid 1px #3f3f3f;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #3f3f3f;
     font-weight: bold;
   }
@@ -447,10 +491,12 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #e8f0e6;
   border: solid 1px #05a74a;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #05a74a;
     font-weight: bold;
   }
@@ -489,10 +535,12 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #fe9d2a;
   border: solid 1px #fe9d2a;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: white;
     font-weight: bold;
   }
@@ -530,14 +578,17 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #f0ece6;
   border: solid 1px #f5a623;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #f5a623;
     font-weight: bold;
   }
 }
+
 /* tool strip button */
 .toolStripButtonExcel,
 .toolStripButtonExcelOver,
@@ -570,14 +621,17 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #15356012;
   border: solid 1px #153560;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #153560;
     font-weight: bold;
   }
 }
+
 /* tool strip button */
 .toolStripButtonRemove,
 .toolStripButtonRemoveOver,
@@ -610,27 +664,33 @@ $window_header_bgColor: #fe9d2a !default;
   border-radius: 3px;
   background-color: #f0e6ec;
   border: solid 1px #ff0000;
-  &:hover{
+
+  &:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
-  td{
+
+  td {
     color: #ff0000;
     font-weight: bold;
   }
 }
 
-.menuTable{
+.menuTable {
   background-color: white;
-  td{
+
+  td {
     font-weight: bold;
   }
-  .menuTitleField, .menuTitleFieldOver{
-      text-align: center;
+
+  .menuTitleField, .menuTitleFieldOver {
+    text-align: center;
   }
+
   tr {
     text-align: center;
+
     .menuIconField, .menuIconFieldOver, .menuIconFieldSelected, .menuIconFieldSelectedOver {
-      img{
+      img {
         display: none;
       }
     }
@@ -680,6 +740,7 @@ $window_header_bgColor: #fe9d2a !default;
 .toolStrip {
   border: none;
 }
+
 .headerButton,
 .headerButtonSelected,
 .headerButtonSelectedOver,
@@ -690,14 +751,17 @@ $window_header_bgColor: #fe9d2a !default;
 .headerButtonDisabled {
   text-align: center !important;
 }
+
 .listTable tbody tr td {
   text-align: center;
 }
-.listTable tbody tr  {
-  .groupNode{
+
+.listTable tbody tr {
+  .groupNode {
     text-align: right !important;
   }
 }
+
 .listTable tbody tr {
   .treeCell,
   .treeCellDark,
@@ -722,6 +786,7 @@ $window_header_bgColor: #fe9d2a !default;
     text-align: right !important;
   }
 }
+
 .buttonClose,
 .buttonCloseSelected,
 .buttonCloseSelectedOver,
@@ -732,14 +797,14 @@ $window_header_bgColor: #fe9d2a !default;
 .buttonCloseDisabled,
 .buttonCloseFocused,
 .buttonCloseFocusedDown,
-.buttonCloseFocusedOver{
+.buttonCloseFocusedOver {
   font-size: 12px;
   background-color: #fe9d2a;
   color: white;
   font-weight: bold;
 }
 
-.tabset-layout{
+.tabset-layout {
   padding-top: 3px !important;
   background-color: #fe9d2a;
 }
@@ -798,7 +863,7 @@ $window_header_bgColor: #fe9d2a !default;
 .textItemLiteHint,
 .textItemLiteHintRTL,
 .textItemLiteDisabledHint,
-.textItemLiteDisabledHintRTL{
+.textItemLiteDisabledHintRTL {
   border: 1px solid #ced4da;
   border-radius: .25rem;
   background-color: #fff;
@@ -817,7 +882,7 @@ $window_header_bgColor: #fe9d2a !default;
 .windowBackground,
 .dialogBackground {
   box-shadow: 5px 5px 15px 0 rgba(0, 0, 0, 0.05);
-  border: 1px solid rgba(0,0,0,.2) !important;
+  border: 1px solid rgba(0, 0, 0, .2) !important;
   border-radius: 6px;
   background-color: #fff;
   -webkit-background-clip: padding-box;
@@ -842,9 +907,11 @@ $window_header_bgColor: #fe9d2a !default;
   border: 2px solid #fe9d2a;
   background: #fe9d2a;
 }
+
 .toolStrip {
-  border: 1px solid #d9d9d9 ;
+  border: 1px solid #d9d9d9;
 }
+
 .toolStripButtonAddDisabled,
 .toolStripButtonAddSelectedDisabled,
 .toolStripButtonRefreshDisabled,
@@ -855,12 +922,12 @@ $window_header_bgColor: #fe9d2a !default;
 .toolStripButtonRemoveSelectedDisabled,
 .toolStripButtonPrintDisabled,
 .toolStripButtonPrintSelectedDisabled,
-.toolStripButtonRefreshDisabled ,
-.toolStripButtonRefreshSelectedDisabled
-{
+.toolStripButtonRefreshDisabled,
+.toolStripButtonRefreshSelectedDisabled {
   background-color: #f3f3f3;
   border: solid 1px $primary_grey_dark;
-  td{
+
+  td {
     color: #8e8e8e;
   }
 }

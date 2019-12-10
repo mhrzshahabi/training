@@ -1,6 +1,5 @@
 package com.nicico.training.dto.enums;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EPlaceType;
 import io.swagger.annotations.ApiModel;
@@ -11,8 +10,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class EPlaceTypeDTO {
     @Getter
     @Setter
@@ -34,7 +32,6 @@ public class EPlaceTypeDTO {
         private Integer endRow = EPlaceType.values().length;
         private Integer totalRows = EPlaceType.values().length;
     }
-
 
 
 }

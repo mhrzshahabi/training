@@ -26,10 +26,10 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/checklistItem")
 public class CheckListItemRestController {
-  private final CheckListItemService checkListItemService;
-   private final ObjectMapper objectMapper;
-   private final DateUtil dateUtil;
-   private final ReportUtil reportUtil;
+    private final CheckListItemService checkListItemService;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
+    private final ReportUtil reportUtil;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -37,7 +37,7 @@ public class CheckListItemRestController {
         return new ResponseEntity<>(checkListItemService.get(id), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CheckListItemDTO.Info>> list() {
         return new ResponseEntity<>(checkListItemService.list(), HttpStatus.OK);
@@ -52,16 +52,16 @@ public class CheckListItemRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<CheckListItemDTO.Info> update(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) {
+    public ResponseEntity<CheckListItemDTO.Info> update(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
         return new ResponseEntity<>(checkListItemService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping(value = "/edit/{id}")
-    public ResponseEntity<CheckListItemDTO.Info> updateDescription(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) throws IOException {
-          CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
-        return new ResponseEntity( checkListItemService.updateDescription(id,update),HttpStatus.OK);
+    public ResponseEntity<CheckListItemDTO.Info> updateDescription(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) throws IOException {
+        CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
+        return new ResponseEntity(checkListItemService.updateDescription(id, update), HttpStatus.OK);
     }
 
     @Loggable
@@ -71,7 +71,7 @@ public class CheckListItemRestController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CheckListItemDTO.Delete request) {
         checkListItemService.delete(request);
@@ -79,14 +79,14 @@ public class CheckListItemRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<CheckListItemDTO.CheckListItemSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                       @RequestParam("_endRow") Integer endRow,
-                                                       @RequestParam(value = "_constructor", required = false) String constructor,
-                                                       @RequestParam(value = "operator", required = false) String operator,
-                                                       @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                     @RequestParam("_endRow") Integer endRow,
+                                                                     @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                     @RequestParam(value = "operator", required = false) String operator,
+                                                                     @RequestParam(value = "criteria", required = false) String criteria,
+                                                                     @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -96,7 +96,7 @@ public class CheckListItemRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -128,12 +128,10 @@ public class CheckListItemRestController {
 
     @Loggable
     @PutMapping(value = "is_Delete/{id}")
-    public ResponseEntity<CheckListItemDTO.Info> is_Delete(@PathVariable Long id, @RequestBody  CheckListItemDTO.Update request) {
+    public ResponseEntity<CheckListItemDTO.Info> is_Delete(@PathVariable Long id, @RequestBody CheckListItemDTO.Update request) {
         CheckListItemDTO.Update update = (new ModelMapper()).map(request, CheckListItemDTO.Update.class);
         return new ResponseEntity<>(checkListItemService.is_Delete(id, update), HttpStatus.OK);
     }
-
-
 
 
 }

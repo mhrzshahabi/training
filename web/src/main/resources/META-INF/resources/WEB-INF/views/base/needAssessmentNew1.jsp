@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     var restData_Job = isc.TrDS.create(
         {
@@ -16,7 +16,7 @@
                 {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: jobUrl + "iscList"
+            fetchDataURL: jobUrl + "/iscList"
         }
     );
     var restData_Post = isc.TrDS.create(
@@ -52,73 +52,70 @@
 
     var productRevenue_facets = [
         {
-            id:"quarter",
-            title:"مهارت",
+            id: "quarter",
+            title: "مهارت",
         },
         {
-            id:"month",
-            title:"حیطه",
+            id: "month",
+            title: "حیطه",
         },
         {
-            id:"domain",
-            title:"مهارت",
+            id: "domain",
+            title: "مهارت",
         },
         {
-            id:"product",
-            title:"مولفه شایستگی",
+            id: "product",
+            title: "مولفه شایستگی",
         }
     ]
 
     var NeedAssessmentDF_First = isc.DynamicForm.create({
-        numCols:8,
+        numCols: 8,
         margin: 20,
-        border:"2px solid red",
-        fields:[
+        border: "2px solid red",
+        fields: [
             {
-              type:"SpacerItem",
-                colSpan:2
+                type: "SpacerItem",
+                colSpan: 2
             },
             {
-                name:"alignment", type:"radioGroup", showTitle:false,
-                valueMap:["شغل","گروه شغلی","پست","گروه پستی"], defaultValue:"center",
-                change: function(form, item, value, oldValue) {
-                    if(value == "شغل"){
+                name: "alignment", type: "radioGroup", showTitle: false,
+                valueMap: ["شغل", "گروه شغلی", "پست", "گروه پستی"], defaultValue: "center",
+                change: function (form, item, value, oldValue) {
+                    if (value == "شغل") {
                         form.getField("combo").setValue("");
-                        restData_Job.fetchDataURL = jobUrl + "iscList";
-                    }
-                    else if(value == "پست"){
+                        restData_Job.fetchDataURL = jobUrl + "/iscList";
+                    } else if (value == "پست") {
                         form.getField("combo").setValue("");
-                        restData_Post.fetchDataURL = postUrl + "iscList";
+                        restData_Post.fetchDataURL = postUrl + "/iscList";
                         item.pickListFields = [
-                            {name:"code"},
-                            {name:"titleFa"},
+                            {name: "code"},
+                            {name: "titleFa"},
                             {name: "job.titleFa"}
 
                         ]
-                    }
-                    else if(value == "گروه شغلی"){
+                    } else if (value == "گروه شغلی") {
 
-                    }
-                    else if(value == "گروه پستی"){
+                    } else if (value == "گروه پستی") {
 
                     }
                 },
-                align:"center",
+                align: "center",
                 // colSpan:1
             },
             {
-                name:"combo", type:"TrComboAutoRefresh", showTitle:false,
-                width:"250",
-                align:"center",
-                optionDataSource:restData_Job,
+                name: "combo", type: "TrComboAutoRefresh", showTitle: false,
+                width: "250",
+                align: "center",
+                optionDataSource: restData_Job,
                 // addUnknownValues:false,
-                displayField:"titleFa", valueField:"id",
-                filterFields:["titleFa", "code"],
+                displayField: "titleFa", valueField: "id",
+                filterFields: ["titleFa", "code"],
                 // pickListPlacement: "fillScreen",
                 // pickListWidth:300,
-                pickListFields:[
-                    {name:"code"},
-                    {name:"titleFa"}
+                pickListFields: [
+                    {name: "code"},
+                    {name: "titleFa"}
                 ]
 
             }
@@ -172,40 +169,40 @@
     //     }
     // });
     var NeedAssessmentDF2 = isc.DynamicForm.create({
-        numCols:5,
-        margin:10,
-        layoutAlign:"center",
+        numCols: 5,
+        margin: 10,
+        layoutAlign: "center",
         // border:"2px solid blue",
-        cellBorder:2,
-        colWidths:["20%","20%","20%","20%","20%"],
-        fields:[
-            {type:"SpacerItem",showTitle:false,colSpan:2,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:3,align:"center"},
-            {type:"SpacerItem",showTitle:false,colSpan:2,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"دانشی",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"مهارتی",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"نگرشی",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,rowSpan:3,defaultValue:"مولفه های شایستگی",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد ضروری",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد بهبود",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,defaultValue:"عملکرد توسعه",align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
-            {type:"staticText",showTitle:false,colSpan:1,align:"center"},
+        cellBorder: 2,
+        colWidths: ["20%", "20%", "20%", "20%", "20%"],
+        fields: [
+            {type: "SpacerItem", showTitle: false, colSpan: 2, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 3, align: "center"},
+            {type: "SpacerItem", showTitle: false, colSpan: 2, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "دانشی", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "مهارتی", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "نگرشی", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, rowSpan: 3, defaultValue: "مولفه های شایستگی", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "عملکرد ضروری", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "عملکرد بهبود", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, defaultValue: "عملکرد توسعه", align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
+            {type: "staticText", showTitle: false, colSpan: 1, align: "center"},
         ]
     });
 
     isc.VLayout.create({
         // autoDraw:true,
-        border:"2px solid red",
+        border: "2px solid red",
         width: "100%",
         height: "100%",
         // membersMargin:10,
-        members: [NeedAssessmentDF_First,NeedAssessmentDF2],
+        members: [NeedAssessmentDF_First, NeedAssessmentDF2],
     });

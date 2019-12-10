@@ -12,98 +12,98 @@
 
 <%--<script>--%>
 
-	processImage = isc.Img.create({
-		width: "100%",
-		height: "100%",
-		align: "center",
-		src: "data:image/jpeg;base64, ${diagramName}",
-		overflow: "visible",
-		imageType: "center"
+processImage = isc.Img.create({
+width: "100%",
+height: "100%",
+align: "center",
+src: "data:image/jpeg;base64, ${diagramName}",
+overflow: "visible",
+imageType: "center"
 
-	});
-	processImage1 = isc.Img.create({
-		width: "100%",
-		height: "100%",
-		align: "center",
-		src: "data:image/jpeg;base64, ${diagramName}",
-		overflow: "visible",
-		imageType: "center"
+});
+processImage1 = isc.Img.create({
+width: "100%",
+height: "100%",
+align: "center",
+src: "data:image/jpeg;base64, ${diagramName}",
+overflow: "visible",
+imageType: "center"
 
-	});
+});
 
-	var fillScreenWindowsVLayout = isc.VLayout.create({
-		layoutMargin: 5,
-		membersMargin: 10,
-		showEdges: false,
-		overflow: "scroll",
-		edgeImage: "",
-		width: "100%",
-		height: "100%",
-		alignLayout: "center",
-		members: [
+var fillScreenWindowsVLayout = isc.VLayout.create({
+layoutMargin: 5,
+membersMargin: 10,
+showEdges: false,
+overflow: "scroll",
+edgeImage: "",
+width: "100%",
+height: "100%",
+alignLayout: "center",
+members: [
 
-			processImage1
+processImage1
 
-		]
-	});
+]
+});
 
-	<%--isc.HLayout.create({--%>
-	<%--ID: "processConfirmHeaderHLayout",--%>
-	<%--width: "100%",--%>
-	<%--height: "100%",--%>
-	<%--alwaysShowVScrollbar: "true",--%>
-	<%--align: "center",--%>
-	<%--members: [--%>
+<%--isc.HLayout.create({--%>
+<%--ID: "processConfirmHeaderHLayout",--%>
+<%--width: "100%",--%>
+<%--height: "100%",--%>
+<%--alwaysShowVScrollbar: "true",--%>
+<%--align: "center",--%>
+<%--members: [--%>
 
-	<%--processImage--%>
+<%--processImage--%>
 
-	<%--]--%>
-	<%--});--%>
+<%--]--%>
+<%--});--%>
 
-	var processWindow = isc.Window.create({
-		placement: "fillScreen",
-		title: " گردش کار",
-		autoDraw: false,
-		canDragReposition: true,
-		canDragResize: true,
-		items: [
-			fillScreenWindowsVLayout
-		]
-	});
-
-
-	var diagramZoomButton = isc.ToolStripButton.create({
-		icon: "[SKIN]/actions/view_rtl.png",
-		prompt: "بزرگ نمایی تصویر",
-		title: "بزرگ نمایی تصویر",
-		click: function () {
-			processWindow.show();
-
-		}
-	});
-
-	var docControls = isc.ToolStrip.create({
-		width: "100%", height: 20,
-		members: [
-			diagramZoomButton
+var processWindow = isc.Window.create({
+placement: "fillScreen",
+title: " گردش کار",
+autoDraw: false,
+canDragReposition: true,
+canDragResize: true,
+items: [
+fillScreenWindowsVLayout
+]
+});
 
 
-		]
-	});
+var diagramZoomButton = isc.ToolStripButton.create({
+icon: "[SKIN]/actions/view_rtl.png",
+prompt: "بزرگ نمایی تصویر",
+title: "بزرگ نمایی تصویر",
+click: function () {
+processWindow.show();
 
-	isc.VLayout.create({
-		ID: "processConfirmVLayout",
-		layoutMargin: 5,
-		membersMargin: 10,
-		showEdges: false,
-		overflow: "scroll",
-		edgeImage: "",
-		width: "100%",
-		height: "100%",
-		alignLayout: "center",
-		members: [
-			docControls,
-			processImage
-		]
-	});
+}
+});
+
+var docControls = isc.ToolStrip.create({
+width: "100%", height: 20,
+members: [
+diagramZoomButton
+
+
+]
+});
+
+isc.VLayout.create({
+ID: "processConfirmVLayout",
+layoutMargin: 5,
+membersMargin: 10,
+showEdges: false,
+overflow: "scroll",
+edgeImage: "",
+width: "100%",
+height: "100%",
+alignLayout: "center",
+members: [
+docControls,
+processImage
+]
+});
 	

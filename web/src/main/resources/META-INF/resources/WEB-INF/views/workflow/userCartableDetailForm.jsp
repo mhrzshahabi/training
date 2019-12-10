@@ -9,7 +9,7 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+// script
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
@@ -28,11 +28,11 @@ abaspour 9803
         jsonPrefix: "",
         jsonSuffix: "",
 
-	});
+    });
 
     <c:forEach items="${formProperties}" var="taskFormVariable" varStatus="loopStatus">
     <c:if test="${taskFormVariable.objectType == 'SelectItem' && taskFormVariable.dsName != null}">
-   // var ${taskFormVariable.dsName} =
+    // var ${taskFormVariable.dsName} =
     isc.RestDataSource.create({
         fields: [
             <%--{name: "crDate", title: "تاریخ ایجاد",type:"text"},--%>
@@ -76,8 +76,8 @@ abaspour 9803
         width: "150",
         click: function () {
             var data = taskStartConfirmForm.getValues();
-            class_userCartableId=data.cId;
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);
+            class_userCartableId = data.cId;
+            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>", true);
             <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
         }
     });
@@ -295,7 +295,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
@@ -333,16 +333,16 @@ abaspour 9803
 
     isc.IButton.create
     ({
-        ID: "doCancelUserTaskButton",
-        icon: "[SKIN]actions/edit.png",
-        title: "بستن",
-        align: "center",
-        width: "150",
-        click: function () {
-            taskConfirmationWindow.hide();
-            <%--trainingTabSet.removeTab(targetTitleFa);--%>
-            <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
-}
+            ID: "doCancelUserTaskButton",
+            icon: "[SKIN]actions/edit.png",
+            title: "بستن",
+            align: "center",
+            width: "150",
+            click: function () {
+                taskConfirmationWindow.hide();
+                <%--trainingTabSet.removeTab(targetTitleFa);--%>
+                <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
+            }
         }
     );
 
@@ -415,7 +415,7 @@ abaspour 9803
                                         rejectTaskForm.setValue("REJECT", "Y");
                                         var data = rejectTaskForm.getValues();
                                         isc.RPCManager.sendRequest({
-                                            actionURL: workflowUrl + "doUserTask",
+                                            actionURL: workflowUrl + "/doUserTask",
                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                             httpMethod: "POST",
                                             useSimpleHttp: true,
@@ -466,7 +466,7 @@ abaspour 9803
             viewDocButton,
             doStartTaskButton,
             doRejectTaskButton,
-          doCancelUserTaskButton
+            doCancelUserTaskButton
         ]
     });
     isc.HTMLFlow.create({

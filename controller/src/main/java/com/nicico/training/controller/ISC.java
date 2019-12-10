@@ -28,18 +28,6 @@ public class ISC<T> {
         this.response = response;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    static class Response<T> {
-        private List<T> data;
-        private Integer status;
-        private Integer startRow;
-        private Integer endRow;
-        private Integer totalRows;
-    }
-
     public static SearchDTO.SearchRq convertToSearchRq(HttpServletRequest rq) throws IOException {
 
         SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq();
@@ -87,6 +75,18 @@ public class ISC<T> {
                 .setEndRow(startRow + page.getNumberOfElements())
                 .setTotalRows((int) page.getTotalElements());
         return new ISC(response);
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    static class Response<T> {
+        private List<T> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 
 }

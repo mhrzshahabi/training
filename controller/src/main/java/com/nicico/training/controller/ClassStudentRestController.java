@@ -18,6 +18,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
 import java.io.IOException;
 import java.util.List;
 
@@ -106,19 +107,14 @@ public class ClassStudentRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<ClassStudentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(classStudentService.search(request), HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/getStudent/{id}")
-//    public ResponseEntity getStudent(@PathVariable Long id) {
-//
-//              List<ClassStudentDTO.Info> student =classStudentService.fillTable(id);
-//              return null;
-//    }
 
      @Loggable
     @GetMapping(value = "/{getStudent}/{id}")

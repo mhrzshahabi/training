@@ -20,72 +20,72 @@ import java.util.Optional;
 @Service
 public class SkillLevelService implements ISkillLevelService {
 
-	private final ModelMapper modelMapper;
-	private final SkillLevelDAO skillLevelDAO;
+    private final ModelMapper modelMapper;
+    private final SkillLevelDAO skillLevelDAO;
 
-	@Transactional(readOnly = true)
-	@Override
-	public SkillLevelDTO.Info get(Long id) {
-		final Optional<SkillLevel> slById = skillLevelDAO.findById(id);
-		final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
+    @Transactional(readOnly = true)
+    @Override
+    public SkillLevelDTO.Info get(Long id) {
+        final Optional<SkillLevel> slById = skillLevelDAO.findById(id);
+        final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
 
-		return modelMapper.map(skillLevel, SkillLevelDTO.Info.class);
-	}
+        return modelMapper.map(skillLevel, SkillLevelDTO.Info.class);
+    }
 
-	@Transactional(readOnly = true)
-	@Override
-	public List<SkillLevelDTO.Info> list() {
-		final List<SkillLevel> slAll = skillLevelDAO.findAll();
+    @Transactional(readOnly = true)
+    @Override
+    public List<SkillLevelDTO.Info> list() {
+        final List<SkillLevel> slAll = skillLevelDAO.findAll();
 
-		return modelMapper.map(slAll, new TypeToken<List<SkillLevelDTO.Info>>() {
-		}.getType());
-	}
+        return modelMapper.map(slAll, new TypeToken<List<SkillLevelDTO.Info>>() {
+        }.getType());
+    }
 
-	@Transactional
-	@Override
-	public SkillLevelDTO.Info create(SkillLevelDTO.Create request) {
-		final SkillLevel skillLevel = modelMapper.map(request, SkillLevel.class);
+    @Transactional
+    @Override
+    public SkillLevelDTO.Info create(SkillLevelDTO.Create request) {
+        final SkillLevel skillLevel = modelMapper.map(request, SkillLevel.class);
 
-		return save(skillLevel);
-	}
+        return save(skillLevel);
+    }
 
-	@Transactional
-	@Override
-	public SkillLevelDTO.Info update(Long id, SkillLevelDTO.Update request) {
-		final Optional<SkillLevel> slById = skillLevelDAO.findById(id);
-		final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
+    @Transactional
+    @Override
+    public SkillLevelDTO.Info update(Long id, SkillLevelDTO.Update request) {
+        final Optional<SkillLevel> slById = skillLevelDAO.findById(id);
+        final SkillLevel skillLevel = slById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillLevelNotFound));
 
-		SkillLevel updating = new SkillLevel();
-		modelMapper.map(skillLevel, updating);
-		modelMapper.map(request, updating);
+        SkillLevel updating = new SkillLevel();
+        modelMapper.map(skillLevel, updating);
+        modelMapper.map(request, updating);
 
-		return save(updating);
-	}
+        return save(updating);
+    }
 
-	@Transactional
-	@Override
-	public void delete(Long id) {
-		skillLevelDAO.deleteById(id);
-	}
+    @Transactional
+    @Override
+    public void delete(Long id) {
+        skillLevelDAO.deleteById(id);
+    }
 
-	@Transactional
-	@Override
-	public void delete(SkillLevelDTO.Delete request) {
-		final List<SkillLevel> slAllById = skillLevelDAO.findAllById(request.getIds());
+    @Transactional
+    @Override
+    public void delete(SkillLevelDTO.Delete request) {
+        final List<SkillLevel> slAllById = skillLevelDAO.findAllById(request.getIds());
 
-		skillLevelDAO.deleteAll(slAllById);
-	}
+        skillLevelDAO.deleteAll(slAllById);
+    }
 
-	@Transactional(readOnly = true)
-	@Override
-	public SearchDTO.SearchRs<SkillLevelDTO.Info> search(SearchDTO.SearchRq request) {
-		return SearchUtil.search(skillLevelDAO, request, skillLevel -> modelMapper.map(skillLevel, SkillLevelDTO.Info.class));
-	}
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<SkillLevelDTO.Info> search(SearchDTO.SearchRq request) {
+        return SearchUtil.search(skillLevelDAO, request, skillLevel -> modelMapper.map(skillLevel, SkillLevelDTO.Info.class));
+    }
 
-	// ------------------------------
+    // ------------------------------
 
-	private SkillLevelDTO.Info save(SkillLevel skillLevel) {
-		final SkillLevel saved = skillLevelDAO.saveAndFlush(skillLevel);
-		return modelMapper.map(saved, SkillLevelDTO.Info.class);
-	}
+    private SkillLevelDTO.Info save(SkillLevel skillLevel) {
+        final SkillLevel saved = skillLevelDAO.saveAndFlush(skillLevel);
+        return modelMapper.map(saved, SkillLevelDTO.Info.class);
+    }
 }
