@@ -2,12 +2,11 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 //
-//<script>
+// <script>
 
+    var x;
     RestDataSource_ClassStudent = isc.TrDS.create({
-        fields: [
-
-        ],
+        fields: [],
     });
     var ListGrid_ClassStudent = isc.ListGrid.create({
         width: "100%",
@@ -23,59 +22,97 @@
         filterOperator: "iContains",
         filterOnKeypress: true,
         fields: [
-         {name: "id", hidden: true},
-            {name: "student.firstName",title: "<spring:message code="firstName"/>",filterOperator: "iContains" },
-            {name: "student.lastName", title: "<spring:message code="lastName"/>",filterOperator: "iContains"},
-            {name: "student.nationalCode", title: "<spring:message code="national.code"/>",filterOperator: "iContains"},
-            {name: "student.companyName", title: "<spring:message code="company"/>",filterOperator: "iContains",autoFitWidth: true},
-            {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>",filterOperator: "iContains"},
-            {name: "scoresState", title: "وضعیت قبولی",filterOperator: "iContains",canEdit:true,editorType:"SelectItem", valueMap: ["قبول با نمره","قبول بدون نمره","مردود"],
-             change: function (form, item, value) {
-                        ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
-              }},
-               {name: "failurereason", title: "دلایل مردودی",filterOperator: "iContains",canEdit:true,editorType:"SelectItem", valueMap: ["عدم کسب حد نصاب نمره","غیبت بیش از حد مجاز","غیبت در جلسه امتحان"],
+            {name: "id", hidden: true},
+            {name: "student.firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
+            {name: "student.lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+            {
+                name: "student.nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains"
+            },
+            {
+                name: "student.companyName",
+                title: "<spring:message code="company"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains"},
+            {
+                name: "scoresState",
+                title: "وضعیت قبولی",
+                filterOperator: "iContains",
+                canEdit: true,
+                editorType: "SelectItem",
+                valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 change: function (form, item, value) {
-                        ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
-              }},
 
-              {name: "score", title: "نمره",filterOperator: "iContains",canEdit:true,shouldSaveValue: false,
-             editorType: "Float",
+                    ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
 
-                editorExit:function(editCompletionEvent, record, newValue, rowNum, colNum, grid)
-                {
-                           if(newValue>=10)
-                            { ListGrid_Cell_scoresState_Update(record,"قبول با نمره")
-                             ListGrid_Cell_score_Update(record, newValue);}
-                          else {ListGrid_Cell_score_Update(record, newValue);}
+                }
+            },
+            {
+                name: "failurereason",
+                title: "دلایل مردودی",
+                filterOperator: "iContains",
+                canEdit: true,
+                editorType: "SelectItem",
+                valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
+                change: function (form, item, value) {
+                    ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
+                }
+            },
 
-                          if(0<=newValue && newValue<10 && newValue !=null)
-                            {
-                            ListGrid_Cell_scoresState_Update(record,"مردود")
-                            ListGrid_Cell_score_Update(record, newValue);
-                            createDialog("info","دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
-                            ListGrid_Cell_failurereason_Update(record,"عدم کسب حد نصاب نمره")
-                            }
+            {
+                name: "score", title: "نمره", filterOperator: "iContains", canEdit: true, shouldSaveValue: false,
+                editorType: "Float",
 
-                            if (newValue== null)
-                                {
-                                 ListGrid_Cell_score_Update(record, newValue);
-                                 ListGrid_Cell_failurereason_Update(record,null)
-                                 ListGrid_Cell_scoresState_Update(record,null)
-                                 ListGrid_ClassStudent.refreshFields();
-                                }
+                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+                    if (newValue >= 10) {
+                        ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
+                        ListGrid_Cell_failurereason_Update(record, "")
+                        ListGrid_Cell_score_Update(record, newValue);
+                    } else {
+                        ListGrid_Cell_score_Update(record, newValue);
+                    }
+
+                    if (0 <= newValue && newValue < 10 && newValue != null) {
+
+                        ListGrid_Cell_scoresState_Update(record, "مردود")
+                        ListGrid_Cell_score_Update(record, newValue);
+                        createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
+                        ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
+                    }
+
+                    if (newValue == null) {
+                        ListGrid_Cell_score_Update(record, newValue);
+                        ListGrid_Cell_failurereason_Update(record, null)
+                        ListGrid_Cell_scoresState_Update(record, null)
+                        ListGrid_ClassStudent.refreshFields();
+                    }
+
+                }
+
+            }
+
+        ],
+        canEditCell: function (rowNum, colNum) {
+            var record = this.getRecord(rowNum),
+                fieldName = this.getFieldName(colNum);
+            if (fieldName === "failurereason") {
+                return !(record.scoresState === "قبول با نمره" || record.scoresState === "قبول بدون نمره" || record.score >= 10);
+            }
+            if (fieldName === "score") {
+                return record.scoresState !== "قبول بدون نمره";
+            }
+
+            if (fieldName === "scoresState") {
+                return true;
+            }
+           return false;
+
+            },
 
 
-
-              //    change: function (form, item, value) {
-              //        alert(value)
-              //         if (value == null) {
-              //           item.setValue(0)}
-              //           else{
-              //
-              //           ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), value);}
-              // }
-              }}
-         ],
     });
 
 
