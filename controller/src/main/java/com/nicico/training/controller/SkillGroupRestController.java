@@ -109,7 +109,6 @@ public class SkillGroupRestController {
                     }));
 
 
-
             request.setCriteria(criteriaRq);
         }
 
@@ -119,7 +118,6 @@ public class SkillGroupRestController {
 
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
 
 
         //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -198,46 +196,42 @@ public class SkillGroupRestController {
     }*/
 
 
-
     @Loggable
     @PostMapping(value = "/addSkill/{skillId}/{skillGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addSkill(@PathVariable Long skillId,@PathVariable Long skillGroupId) {
-        skillGroupService.addSkill(skillId,skillGroupId);
+    public ResponseEntity<Void> addSkill(@PathVariable Long skillId, @PathVariable Long skillGroupId) {
+        skillGroupService.addSkill(skillId, skillGroupId);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
 
 
     @Loggable
     @PostMapping(value = "/addSkills/{skillGroupId}/{skillIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addSkills(@PathVariable Long skillGroupId,@PathVariable Set<Long> skillIds) {
+    public ResponseEntity<Void> addSkills(@PathVariable Long skillGroupId, @PathVariable Set<Long> skillIds) {
         skillGroupService.addSkills(skillGroupId, skillIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
 
-
     @Loggable
     @DeleteMapping(value = "/removeSkill/{skillGroupId}/{skillId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeSkill(@PathVariable Long skillGroupId,@PathVariable Long skillId) {
-        skillGroupService.removeSkill(skillGroupId,skillId);
+    public ResponseEntity<Void> removeSkill(@PathVariable Long skillGroupId, @PathVariable Long skillId) {
+        skillGroupService.removeSkill(skillGroupId, skillId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeCompetence/{skillGroupId}/{competenceId}")
-    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long skillGroupId,@PathVariable Long competenceId){
-        skillGroupService.removeFromCompetency(skillGroupId,competenceId);
+    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long skillGroupId, @PathVariable Long competenceId) {
+        skillGroupService.removeFromCompetency(skillGroupId, competenceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeAllCompetence/{skillGroupId}/")
-    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long skillGroupId){
+    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long skillGroupId) {
         skillGroupService.removeFromAllCompetences(skillGroupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -249,35 +243,32 @@ public class SkillGroupRestController {
     public ResponseEntity<SkillDTO.SkillSpecRs> unAttachSkills(@PathVariable Long skillGroupId) {
 
         Set<SkillDTO.Info> skills;
-        skills=skillGroupService.unAttachSkills(skillGroupId);
-        List<SkillDTO.Info> skillList=new ArrayList<>();
-        for (SkillDTO.Info skillDTOInfo:skills)
-        {
+        skills = skillGroupService.unAttachSkills(skillGroupId);
+        List<SkillDTO.Info> skillList = new ArrayList<>();
+        for (SkillDTO.Info skillDTOInfo : skills) {
             skillList.add(skillDTOInfo);
 
         }
-        final  SkillDTO.SpecRs specRs=new SkillDTO.SpecRs();
+        final SkillDTO.SpecRs specRs = new SkillDTO.SpecRs();
         specRs.setData(skillList)
                 .setStartRow(0)
                 .setEndRow(skills.size())
                 .setTotalRows(skills.size());
 
-        final SkillDTO.SkillSpecRs skillSpecRs=new SkillDTO.SkillSpecRs();
+        final SkillDTO.SkillSpecRs skillSpecRs = new SkillDTO.SkillSpecRs();
         skillSpecRs.setResponse(specRs);
-        return new ResponseEntity<>(skillSpecRs,HttpStatus.OK);
+        return new ResponseEntity<>(skillSpecRs, HttpStatus.OK);
 
-            }
-
+    }
 
 
     @Loggable
     @DeleteMapping(value = "/removeSkills/{skillGroupId}/{skillIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeSkills(@PathVariable Long skillGroupId,@PathVariable Set<Long> skillIds) {
-        skillGroupService.removeSkills(skillGroupId,skillIds);
+    public ResponseEntity<Void> removeSkills(@PathVariable Long skillGroupId, @PathVariable Set<Long> skillIds) {
+        skillGroupService.removeSkills(skillGroupId, skillIds);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 
     @Loggable
@@ -291,13 +282,13 @@ public class SkillGroupRestController {
         final SkillDTO.SpecRs specResponse = new SkillDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
-                .setEndRow( list.size())
+                .setEndRow(list.size())
                 .setTotalRows(list.size());
 
         final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
         specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
 
 
     }
@@ -321,10 +312,10 @@ public class SkillGroupRestController {
 
     @Loggable
     @GetMapping(value = {"/printSelected/{type}/{skillGroupIds}"})
-    public void printWithSelectedSkillGroup(HttpServletResponse response, @PathVariable String type,@PathVariable String skillGroupIds) throws SQLException, IOException, JRException {
+    public void printWithSelectedSkillGroup(HttpServletResponse response, @PathVariable String type, @PathVariable String skillGroupIds) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
-        params.put("skillGroupIds",skillGroupIds);
+        params.put("skillGroupIds", skillGroupIds);
         reportUtil.export("/reports/selectedSkillGroup.jasper", params, response);
     }
 

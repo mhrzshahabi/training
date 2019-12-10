@@ -1,5 +1,5 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
     <changeSet author="ghazanfari_f (generated)" id="1575809794136-1">
         <createSequence sequenceName="seq_Check_List_Item_id"/>
@@ -148,5 +148,13 @@
     <changeSet author="ghazanfari_f (generated)" id="1575809794136-49">
         <createSequence sequenceName="seq_training_place_id"/>
     </changeSet>
-
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-163">
+        <createSequence sequenceName="seq_employment_history_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575892208191-169">
+        <createSequence sequenceName="seq_parameter_type_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1575892208191-170">
+        <createSequence sequenceName="seq_parameter_value_id"/>
+    </changeSet>
 </databaseChangeLog>

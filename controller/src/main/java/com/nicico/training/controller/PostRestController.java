@@ -62,8 +62,8 @@ public class PostRestController {
     @Loggable
     @PostMapping(value = {"/print_list/{type}"})
     public void printList(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+                          @PathVariable String type,
+                          @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 
         final SearchDTO.CriteriaRq criteriaRq;
         final SearchDTO.SearchRq searchRq;

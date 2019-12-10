@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     var studentMethod = "POST";
     var studentWait;
@@ -275,7 +275,7 @@
     });
 
     var ToolStripButton_Edit_JspStudent = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_student_edit();
@@ -283,7 +283,7 @@
     });
 
     var ToolStripButton_Add_JspStudent = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_student_add();
@@ -291,7 +291,7 @@
     });
 
     var ToolStripButton_Remove_JspStudent = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code='remove'/>",
         click: function () {
             ListGrid_student_remove();
@@ -472,8 +472,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        }
-        else if (resp.data == false) {
+        } else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.student.remove.error'/>",
                 icon: "[SKIN]stop.png",
@@ -482,8 +481,7 @@
             setTimeout(function () {
                 ERROR.close();
             }, 3000);
-        }
-        else {
+        } else {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.failed'/>",
                 icon: "[SKIN]stop.png",

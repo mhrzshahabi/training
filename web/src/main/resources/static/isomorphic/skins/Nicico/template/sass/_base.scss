@@ -730,8 +730,8 @@ ul {
   background-color: $standard_bgColor;
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
 }
 
@@ -744,8 +744,8 @@ ul {
   //}
   color: $normal_font_color;
   font: {
-	family: $primary_font;
-	size: $normal_font_size;
+    family: $primary_font;
+    size: $normal_font_size;
   }
 }
 
@@ -784,12 +784,12 @@ ul {
   background-color: $standard_bgColor;
   color: $normal_font_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   padding: {
-	left: 5px;
-	right: 5px;
+    left: 5px;
+    right: 5px;
   }
 }
 
@@ -1081,8 +1081,8 @@ ul {
 .imgButtonSelectedDown,
 .imgButtonDisabled {
   font: {
-	family: $primary_font;
-	size: $button_font_size;
+    family: $primary_font;
+    size: $button_font_size;
   }
 }
 
@@ -1108,8 +1108,8 @@ ul {
 .stretchImgButtonPendingSelectedDisabled,
 .stretchImgButtonPendingDisabled {
   font: {
-	family: $primary_font;
-	size: $button_font_size;
+    family: $primary_font;
+    size: $button_font_size;
   }
 }
 
@@ -1152,8 +1152,8 @@ ul {
 .buttonTitleSelectedDisabled {
   color: hsl($button_primary_hue, 0%, 0%);
   font: {
-	family: $primary_font;
-	size: $button_font_size;
+    family: $primary_font;
+    size: $button_font_size;
   }
 }
 
@@ -1161,7 +1161,7 @@ ul {
 .buttonTitleSelectedDisabled {
   color: hsl($button_primary_hue, 0%, 67%);
   font: {
-	weight: normal;
+    weight: normal;
   }
 }
 
@@ -1240,11 +1240,11 @@ ul {
   .menuSelected img,
   .menuIconFieldOver img,
   .menuOver img {
-	filter: brightness(400%);
-	-webkit-filter: brightness(400%);
-	-moz-filter: brightness(400%);
-	-o-filter: brightness(400%);
-	-ms-filter: brightness(400%);
+    filter: brightness(400%);
+    -webkit-filter: brightness(400%);
+    -moz-filter: brightness(400%);
+    -o-filter: brightness(400%);
+    -ms-filter: brightness(400%);
   }
 }
 
@@ -1281,16 +1281,16 @@ ul {
 .treeMenuSelectedSelected,
 .treeMenuSelectedSelectedOver {
   border: {
-	bottom: $standard_border_width solid transparent;
-	top: $standard_border_width solid transparent;
+    bottom: $standard_border_width solid transparent;
+    top: $standard_border_width solid transparent;
   }
   font: {
-	family: $primary_font;
-	size: $menu_font_size;
+    family: $primary_font;
+    size: $menu_font_size;
   }
   padding: {
-	bottom: 2px;
-	top: 2px;
+    bottom: 2px;
+    top: 2px;
   }
 }
 
@@ -1344,8 +1344,8 @@ ul {
 .menuIconFieldSelectedOverDark,
 .menuIconFieldDisabled {
   padding: {
-	left: 17px;
-	right: 4px;
+    left: 17px;
+    right: 4px;
   }
 }
 
@@ -1428,7 +1428,7 @@ ul {
   border: $menuButton_focused_over_border;
   @include border-radius($menuButton_border_radius);
   @if $show_button_outer_glow {
-	@include box-shadow(0 0 5px $menuButton_focused_over_color);
+    @include box-shadow(0 0 5px $menuButton_focused_over_color);
   }
 }
 
@@ -1472,7 +1472,7 @@ ul {
 .menuButtonPendingOver {
   background-color: $menuButton_over_bgColor;
   @if $show_button_outer_glow {
-	@include box-shadow(0 0 5px 1px $menuButton_standard_color);
+    @include box-shadow(0 0 5px 1px $menuButton_standard_color);
   }
   border: $menuButton_border;
 }
@@ -1668,8 +1668,8 @@ ul {
   border: $standard_border_width solid $tabSet_container_border_color;
   color: $tabSet_container_color;
   font: {
-	family: $primary_font;
-	size: $tabSet_container_font_size;
+    family: $primary_font;
+    size: $tabSet_container_font_size;
   }
 }
 
@@ -1825,15 +1825,15 @@ ul {
 
 @each $tabStyle in tabButton, iconOnlyTabButton {
   @if $tabStyle == tabButton {
-	/*============================================================
-		TabSet CSS tabs
-			tabSet.simpleTabBaseStyle
-	============================================================*/
+    /*============================================================
+        TabSet CSS tabs
+            tabSet.simpleTabBaseStyle
+    ============================================================*/
   } @else {
-	/*============================================================
-		TabSet CSS tabs
-			tabSet.simpleTabIconOnlyBaseStyle
-	============================================================*/
+    /*============================================================
+        TabSet CSS tabs
+            tabSet.simpleTabIconOnlyBaseStyle
+    ============================================================*/
   }
   /* styles for simple css-styled tabs*/
   /* top */
@@ -1849,15 +1849,15 @@ ul {
   .#{$tabStyle}TopSelected,
   .#{$tabStyle}TopSelectedOver,
   .#{$tabStyle}TopSelectedDown {
-	color: $tabButton_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $tabButton_font;
-	border: $tabButton_border_width solid $tabButton_border_color;
-	border-bottom: none;
-	background: $tabButton_bgColor;
-	@include border-radius(4px 4px 0px 0px);
-	padding: 0px if($tabStyle == tabButton, 27px, 12px);
-	text-decoration: none;
+    color: $tabButton_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $tabButton_font;
+    border: $tabButton_border_width solid $tabButton_border_color;
+    border-bottom: none;
+    background: $tabButton_bgColor;
+    @include border-radius(4px 4px 0px 0px);
+    padding: 0px if($tabStyle == tabButton, 27px, 12px);
+    text-decoration: none;
   }
 
   .#{$tabStyle}TopDown,
@@ -1867,59 +1867,59 @@ ul {
   .#{$tabStyle}TopSelectedOver,
   .#{$tabStyle}TopSelectedDown,
   .#{$tabStyle}TopSelected {
-	color: $tabButton_selected_color !important;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_selected_border_color;
-	border-bottom: none;
-	background: $tabButton_selected_bgColor;
+    color: $tabButton_selected_color !important;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_selected_border_color;
+    border-bottom: none;
+    background: $tabButton_selected_bgColor;
   }
 
   .#{$tabStyle}TopFocused,
   .#{$tabStyle}TopFocusedOver,
   .#{$tabStyle}TopSelectedFocused,
   .#{$tabStyle}TopSelectedFocusedOver {
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-bottom: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-bottom: none;
   }
 
   .#{$tabStyle}TopOver {
-	border: $tabButton_border_width solid $tabButton_over_border_color;
-	border-bottom: none;
+    border: $tabButton_border_width solid $tabButton_over_border_color;
+    border-bottom: none;
   }
 
   .#{$tabStyle}TopSelectedOver {
-	border: $tabButton_border_width solid $tabButton_selected_over_border_color;
-	border-bottom: none;
+    border: $tabButton_border_width solid $tabButton_selected_over_border_color;
+    border-bottom: none;
   }
 
   .#{$tabStyle}TopFocusedOver,
   .#{$tabStyle}TopOver,
   .#{$tabStyle}TopSelectedFocusedOver,
   .#{$tabStyle}TopSelectedOver {
-	@include box-shadow($tabButton_over_shadow);
+    @include box-shadow($tabButton_over_shadow);
   }
 
   .#{$tabStyle}TopFocusedDown,
   .#{$tabStyle}TopSelectedFocusedDown,
   .#{$tabStyle}TopDown,
   .#{$tabStyle}TopSelectedDown {
-	outline: none;
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-bottom: none;
-	@include box-shadow($tabButton_top_down_shadow);
+    outline: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-bottom: none;
+    @include box-shadow($tabButton_top_down_shadow);
 
   }
 
   .#{$tabStyle}TopSelectedDisabled,
   .#{$tabStyle}TopDisabled {
-	color: $tabButton_disabled_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $standard_tab_font;
-	background: $tabButton_disabled_bgColor;
-	@include border-radius(4px 4px 0px 0px);
-	padding: 0px if($tabStyle == tabButton, 27px, 12px);
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_disabled_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $standard_tab_font;
+    background: $tabButton_disabled_bgColor;
+    @include border-radius(4px 4px 0px 0px);
+    padding: 0px if($tabStyle == tabButton, 27px, 12px);
+    text-decoration: none;
+    margin-right: 3px;
   }
 
   /* bottom */
@@ -1935,16 +1935,16 @@ ul {
   .#{$tabStyle}BottomSelected,
   .#{$tabStyle}BottomSelectedOver,
   .#{$tabStyle}BottomSelectedDown {
-	color: $tabButton_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_border_color;
-	border-top: none;
-	background: $tabButton_bgColor;
-	@include border-radius(0px 0px 5px 5px);
-	padding: 0px if($tabStyle == tabButton, 27px, 12px);
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_border_color;
+    border-top: none;
+    background: $tabButton_bgColor;
+    @include border-radius(0px 0px 5px 5px);
+    padding: 0px if($tabStyle == tabButton, 27px, 12px);
+    text-decoration: none;
+    margin-right: 3px;
   }
 
   .#{$tabStyle}BottomDown,
@@ -1954,58 +1954,58 @@ ul {
   .#{$tabStyle}BottomSelectedOver,
   .#{$tabStyle}BottomSelectedDown,
   .#{$tabStyle}BottomSelected {
-	color: $tabButton_selected_color !important;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_selected_border_color;
-	border-top: none;
-	background: $tabButton_selected_bgColor;
+    color: $tabButton_selected_color !important;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_selected_border_color;
+    border-top: none;
+    background: $tabButton_selected_bgColor;
   }
 
   .#{$tabStyle}BottomFocused,
   .#{$tabStyle}BottomFocusedOver,
   .#{$tabStyle}BottomSelectedFocused,
   .#{$tabStyle}BottomSelectedFocusedOver {
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-top: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-top: none;
   }
 
   .#{$tabStyle}BottomOver {
-	border: $tabButton_border_width solid $tabButton_over_border_color;
-	border-top: none;
+    border: $tabButton_border_width solid $tabButton_over_border_color;
+    border-top: none;
   }
 
   .#{$tabStyle}BottomSelectedOver {
-	border: $tabButton_border_width solid $tabButton_selected_over_border_color;
-	border-top: none;
+    border: $tabButton_border_width solid $tabButton_selected_over_border_color;
+    border-top: none;
   }
 
   .#{$tabStyle}BottomFocusedOver,
   .#{$tabStyle}BottomOver,
   .#{$tabStyle}BottomSelectedFocusedOver,
   .#{$tabStyle}BottomSelectedOver {
-	@include box-shadow($tabButton_over_shadow);
+    @include box-shadow($tabButton_over_shadow);
   }
 
   .#{$tabStyle}BottomFocusedDown,
   .#{$tabStyle}BottomSelectedFocusedDown,
   .#{$tabStyle}BottomDown,
   .#{$tabStyle}BottomSelectedDown {
-	outline: none;
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-top: none;
-	@include box-shadow($tabButton_bottom_down_shadow);
+    outline: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-top: none;
+    @include box-shadow($tabButton_bottom_down_shadow);
   }
 
   .#{$tabStyle}BottomSelectedDisabled,
   .#{$tabStyle}BottomDisabled {
-	color: $tabButton_disabled_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $standard_tab_font;
-	background: $tabButton_disabled_bgColor;
-	@include border-radius(0px 0px 5px 5px);
-	padding: 0px if($tabStyle == tabButton, 27px, 12px);
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_disabled_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $standard_tab_font;
+    background: $tabButton_disabled_bgColor;
+    @include border-radius(0px 0px 5px 5px);
+    padding: 0px if($tabStyle == tabButton, 27px, 12px);
+    text-decoration: none;
+    margin-right: 3px;
   }
 
 
@@ -2022,17 +2022,17 @@ ul {
   .#{$tabStyle}LeftSelected,
   .#{$tabStyle}LeftSelectedOver,
   .#{$tabStyle}LeftSelectedDown {
-	color: $tabButton_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_border_color;
-	border-right: none;
-	background: $tabButton_bgColor;
-	@include border-radius(5px 0px 0px 5px);
-	padding: if($tabStyle == tabButton, 10px, 12px) 0px;
-	padding: 12px 0px;
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_border_color;
+    border-right: none;
+    background: $tabButton_bgColor;
+    @include border-radius(5px 0px 0px 5px);
+    padding: if($tabStyle == tabButton, 10px, 12px) 0px;
+    padding: 12px 0px;
+    text-decoration: none;
+    margin-right: 3px;
   }
 
   .#{$tabStyle}LeftDown,
@@ -2042,58 +2042,58 @@ ul {
   .#{$tabStyle}LeftSelectedOver,
   .#{$tabStyle}LeftSelectedDown,
   .#{$tabStyle}LeftSelected {
-	color: $tabButton_selected_color !important;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_selected_border_color;
-	border-right: none;
-	background: $tabButton_selected_bgColor;
+    color: $tabButton_selected_color !important;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_selected_border_color;
+    border-right: none;
+    background: $tabButton_selected_bgColor;
   }
 
   .#{$tabStyle}LeftFocused,
   .#{$tabStyle}LeftFocusedOver,
   .#{$tabStyle}LeftSelectedFocused,
   .#{$tabStyle}LeftSelectedFocusedOver {
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-right: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-right: none;
   }
 
   .#{$tabStyle}LeftOver {
-	border: $tabButton_border_width solid $tabButton_over_border_color;
-	border-right: none;
+    border: $tabButton_border_width solid $tabButton_over_border_color;
+    border-right: none;
   }
 
   .#{$tabStyle}LeftSelectedOver {
-	border: $tabButton_border_width solid $tabButton_selected_over_border_color;
-	border-right: none;
+    border: $tabButton_border_width solid $tabButton_selected_over_border_color;
+    border-right: none;
   }
 
   .#{$tabStyle}LeftFocusedOver,
   .#{$tabStyle}LeftOver,
   .#{$tabStyle}LeftSelectedFocusedOver,
   .#{$tabStyle}LeftSelectedOver {
-	@include box-shadow($tabButton_over_shadow);
+    @include box-shadow($tabButton_over_shadow);
   }
 
   .#{$tabStyle}LeftFocusedDown,
   .#{$tabStyle}LeftSelectedFocusedDown,
   .#{$tabStyle}LeftDown,
   .#{$tabStyle}LeftSelectedDown {
-	outline: none;
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-right: none;
-	@include box-shadow($tabButton_bottom_down_shadow);
+    outline: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-right: none;
+    @include box-shadow($tabButton_bottom_down_shadow);
   }
 
   .#{$tabStyle}LeftSelectedDisabled,
   .#{$tabStyle}LeftDisabled {
-	color: $tabButton_disabled_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $standard_tab_font;
-	background: $tabButton_disabled_bgColor;
-	@include border-radius(5px 0px 0px 5px);
-	padding: if($tabStyle == tabButton, 10px, 12px) 0px;
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_disabled_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $standard_tab_font;
+    background: $tabButton_disabled_bgColor;
+    @include border-radius(5px 0px 0px 5px);
+    padding: if($tabStyle == tabButton, 10px, 12px) 0px;
+    text-decoration: none;
+    margin-right: 3px;
   }
 
   /* right */
@@ -2109,16 +2109,16 @@ ul {
   .#{$tabStyle}RightSelected,
   .#{$tabStyle}RightSelectedOver,
   .#{$tabStyle}RightSelectedDown {
-	color: $tabButton_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_border_color;
-	border-left: none;
-	background: $tabButton_bgColor;
-	@include border-radius(0px 5px 5px 0px);
-	padding: if($tabStyle == tabButton, 10px, 12px) 0px;
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_border_color;
+    border-left: none;
+    background: $tabButton_bgColor;
+    @include border-radius(0px 5px 5px 0px);
+    padding: if($tabStyle == tabButton, 10px, 12px) 0px;
+    text-decoration: none;
+    margin-right: 3px;
   }
 
   .#{$tabStyle}RightDown,
@@ -2128,58 +2128,58 @@ ul {
   .#{$tabStyle}RightSelectedOver,
   .#{$tabStyle}RightSelectedDown,
   .#{$tabStyle}RightSelected {
-	color: $tabButton_selected_color !important;
-	font-family: $tabButton_selected_font;
-	border: $tabButton_border_width solid $tabButton_selected_border_color;
-	border-left: none;
-	background: $tabButton_selected_bgColor;
+    color: $tabButton_selected_color !important;
+    font-family: $tabButton_selected_font;
+    border: $tabButton_border_width solid $tabButton_selected_border_color;
+    border-left: none;
+    background: $tabButton_selected_bgColor;
   }
 
   .#{$tabStyle}RightFocused,
   .#{$tabStyle}RightFocusedOver,
   .#{$tabStyle}RightSelectedFocused,
   .#{$tabStyle}RightSelectedFocusedOver {
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-left: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-left: none;
   }
 
   .#{$tabStyle}RightOver {
-	border: $tabButton_border_width solid $tabButton_over_border_color;
-	border-left: none;
+    border: $tabButton_border_width solid $tabButton_over_border_color;
+    border-left: none;
   }
 
   .#{$tabStyle}RightSelectedOver {
-	border: $tabButton_border_width solid $tabButton_selected_over_border_color;
-	border-left: none;
+    border: $tabButton_border_width solid $tabButton_selected_over_border_color;
+    border-left: none;
   }
 
   .#{$tabStyle}RightFocusedOver,
   .#{$tabStyle}RightOver,
   .#{$tabStyle}RightSelectedFocusedOver,
   .#{$tabStyle}RightSelectedOver {
-	@include box-shadow($tabButton_over_shadow);
+    @include box-shadow($tabButton_over_shadow);
   }
 
   .#{$tabStyle}RightFocusedDown,
   .#{$tabStyle}RightSelectedFocusedDown,
   .#{$tabStyle}RightDown,
   .#{$tabStyle}RightSelectedDown {
-	outline: none;
-	border: $tabButton_border_width solid $tabButton_focused_border_color;
-	border-left: none;
-	@include box-shadow($tabButton_bottom_down_shadow);
+    outline: none;
+    border: $tabButton_border_width solid $tabButton_focused_border_color;
+    border-left: none;
+    @include box-shadow($tabButton_bottom_down_shadow);
   }
 
   .#{$tabStyle}RightSelectedDisabled,
   .#{$tabStyle}RightDisabled {
-	color: $tabButton_disabled_color !important;
-	font-size: $tabButton_font_size;
-	font-family: $standard_tab_font;
-	background: $tabButton_disabled_bgColor;
-	@include border-radius(0px 5px 5px 0px);
-	padding: if($tabStyle == tabButton, 10px, 12px) 0px;
-	text-decoration: none;
-	margin-right: 3px;
+    color: $tabButton_disabled_color !important;
+    font-size: $tabButton_font_size;
+    font-family: $standard_tab_font;
+    background: $tabButton_disabled_bgColor;
+    @include border-radius(0px 5px 5px 0px);
+    padding: if($tabStyle == tabButton, 10px, 12px) 0px;
+    text-decoration: none;
+    margin-right: 3px;
   }
 
 }
@@ -2200,8 +2200,8 @@ ul {
 .sectionHeaderTitleclosed {
   color: $sectionHeader_color;
   font: {
-	family: $primary_font;
-	size: $sectionHeader_font_size;
+    family: $primary_font;
+    size: $sectionHeader_font_size;
   }
 }
 
@@ -2209,8 +2209,8 @@ ul {
 .sectionHeaderTitleDisabledclosed {
   color: $sectionHeader_disabled_text_color;
   font: {
-	family: $primary_font;
-	size: $sectionHeader_font_size;
+    family: $primary_font;
+    size: $sectionHeader_font_size;
   }
 }
 
@@ -2222,12 +2222,12 @@ ul {
   color: $sectionHeader_color;
   padding-left: $sectionHeader_padding_left;
   @if $sectionHeader_padding_right != false {
-	padding-right: $sectionHeader_padding_right;
+    padding-right: $sectionHeader_padding_right;
   }
   font: {
-	family: $sectionHeader_font;
-	weight: bold;
-	size: $sectionHeader_font_size;
+    family: $sectionHeader_font;
+    weight: bold;
+    size: $sectionHeader_font_size;
   }
 }
 
@@ -2431,8 +2431,8 @@ ul {
 .navItemHeader {
   color: $sectionHeader_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   background: url(./images/SectionHeader/header_opened_stretch.png) padding-box;
   background-attachment: scroll;
@@ -2444,33 +2444,33 @@ ul {
   // a header NavItem row would shift. Instead, use the first 6% of the background gradient
   // for a 'top' border, and the last 6% for a 'bottom' border.
   @if $sectionStack_glossy {
-	@include background(linear-gradient(top, (
-			adjust-color(hsl($sectionStack_primary_hue, 0%, 67%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 0%,
-			adjust-color(hsl($sectionStack_primary_hue - 1, 100%, 96%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 94%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 17%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 89%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 43%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 89%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 48%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 91%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 61%,
-			adjust-color(hsl($sectionStack_primary_hue + 1, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 74%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 87%,
-			adjust-color(hsl($sectionStack_primary_hue, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 94%,
-			adjust-color(hsl($sectionStack_primary_hue, 0%, 67%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 100%)) padding-box);
+    @include background(linear-gradient(top, (
+            adjust-color(hsl($sectionStack_primary_hue, 0%, 67%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 0%,
+            adjust-color(hsl($sectionStack_primary_hue - 1, 100%, 96%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 94%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 17%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 89%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 43%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 89%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 48%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 91%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 61%,
+            adjust-color(hsl($sectionStack_primary_hue + 1, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 74%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 87%,
+            adjust-color(hsl($sectionStack_primary_hue, 100%, 93%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 94%,
+            adjust-color(hsl($sectionStack_primary_hue, 0%, 67%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 100%)) padding-box);
   } @else {
-	@if $sectionHeader_horizontal_border_weight == "thin" {
-	  @include background(linear-gradient(top, (
-			  adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 65%), $lightness: $sectionHeader_border_lightness) 0%,
-			  adjust-color(hsl($sectionStack_primary_hue, 92%, 95%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
-			  adjust-color(hsl($sectionStack_primary_hue, 95%, 85%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 100%)) padding-box);
-	} @else {
-	  @include background(linear-gradient(top, (
-			  adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 0%,
-			  adjust-color(hsl($sectionStack_primary_hue - 17, 100%, 97%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
-			  adjust-color(hsl($sectionStack_primary_hue - 17, 100%, 97%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 9%,
-			  adjust-color(hsl($sectionStack_primary_hue, 92%, 95%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 9%,
-			  adjust-color(hsl($sectionStack_primary_hue, 95%, 85%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 96%,
-			  adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 96%,
-			  adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 100%)) padding-box);
-	}
+    @if $sectionHeader_horizontal_border_weight == "thin" {
+      @include background(linear-gradient(top, (
+              adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 65%), $lightness: $sectionHeader_border_lightness) 0%,
+              adjust-color(hsl($sectionStack_primary_hue, 92%, 95%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
+              adjust-color(hsl($sectionStack_primary_hue, 95%, 85%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 100%)) padding-box);
+    } @else {
+      @include background(linear-gradient(top, (
+              adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 0%,
+              adjust-color(hsl($sectionStack_primary_hue - 17, 100%, 97%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 6%,
+              adjust-color(hsl($sectionStack_primary_hue - 17, 100%, 97%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 9%,
+              adjust-color(hsl($sectionStack_primary_hue, 92%, 95%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 9%,
+              adjust-color(hsl($sectionStack_primary_hue, 95%, 85%), $saturation: $sectionStack_saturation, $lightness: $sectionStack_lightness) 96%,
+              adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 96%,
+              adjust-color(hsl($sectionStack_primary_hue + 1, 25%, 69%), $lightness: $sectionHeader_border_lightness) 100%)) padding-box);
+    }
   }
 }
 
@@ -2850,8 +2850,8 @@ ul {
   background-color: transparent;
   color: $form_value_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
 }
 
@@ -3015,9 +3015,9 @@ ul {
 .headerItemErrorRTL {
   color: $headerItem_color;
   font: {
-	family: $primary_font;
-	size: $standard_header_font_size;
-	weight: bold;
+    family: $primary_font;
+    size: $standard_header_font_size;
+    weight: bold;
   }
 }
 
@@ -3111,14 +3111,14 @@ ul {
   -webkit-appearance: none;
 
   @include input-placeholder {
-	// We use the same lightness as Bootstrap’s default placeholder color (HSL(0, 0%, 60%)).
-	// See: http://getbootstrap.com/components/#input-groups-basic
-	color: hsl(212, 53%, 60%);
-	// Firefox 19+ applies an opacity of 0.4. Revert this.
-	// https://developer.mozilla.org/en-US/docs/Web/CSS/::-moz-placeholder
-	// https://bugzilla.mozilla.org/show_bug.cgi?id=556145
-	opacity: 1;
-	text-overflow: ellipsis;
+    // We use the same lightness as Bootstrap’s default placeholder color (HSL(0, 0%, 60%)).
+    // See: http://getbootstrap.com/components/#input-groups-basic
+    color: hsl(212, 53%, 60%);
+    // Firefox 19+ applies an opacity of 0.4. Revert this.
+    // https://developer.mozilla.org/en-US/docs/Web/CSS/::-moz-placeholder
+    // https://bugzilla.mozilla.org/show_bug.cgi?id=556145
+    opacity: 1;
+    text-overflow: ellipsis;
   }
 }
 
@@ -3208,10 +3208,10 @@ ul {
 .pickerSearchBoxHint,
 .pickerSearchBoxHintRTL {
   border: {
-	bottom: $standard_border_width solid $standard_border_color;
-	left: $standard_border_width solid $standard_border_color;
-	right: $standard_border_width solid $standard_border_color;
-	top: $standard_border_width solid $default_border_color;
+    bottom: $standard_border_width solid $standard_border_color;
+    left: $standard_border_width solid $standard_border_color;
+    right: $standard_border_width solid $standard_border_color;
+    top: $standard_border_width solid $default_border_color;
   }
 }
 
@@ -3238,9 +3238,9 @@ ul {
   color: $default_disabled_text_color;
 
   @include input-placeholder {
-	color: $default_border_dark_color;
-	opacity: 1;
-	text-overflow: ellipsis;
+    color: $default_border_dark_color;
+    opacity: 1;
+    text-overflow: ellipsis;
   }
 }
 
@@ -3519,7 +3519,7 @@ option:checked {
   outline: none;
   text-decoration: none;
   font: {
-	family: $primary_font;
+    family: $primary_font;
   }
   @include border-radius(0px);
 }
@@ -3899,9 +3899,9 @@ option:checked {
   color: $pending_value_color;
 
   @include input-placeholder {
-	color: $pending_value_color;
-	opacity: 1;
-	text-overflow: ellipsis;
+    color: $pending_value_color;
+    opacity: 1;
+    text-overflow: ellipsis;
   }
 }
 
@@ -3956,9 +3956,9 @@ option:checked {
 .textAreaItemLiteDisabledHintRTL {
   color: $default_disabled_text_color;
   @include input-placeholder {
-	color: $default_border_dark_color;
-	opacity: 1;
-	text-overflow: ellipsis;
+    color: $default_border_dark_color;
+    opacity: 1;
+    text-overflow: ellipsis;
   }
 }
 
@@ -4132,8 +4132,8 @@ option:checked {
 .pickerSearchBoxPendingFocusedRTL {
   color: $standard_color;
   border: {
-	bottom: $standard_border_width solid hsl($secondary_hue - 6, 54%, 84%);
-	top: $standard_border_width solid hsl($secondary_hue + 2, 34%, 51%);
+    bottom: $standard_border_width solid hsl($secondary_hue - 6, 54%, 84%);
+    top: $standard_border_width solid hsl($secondary_hue + 2, 34%, 51%);
   }
   -moz-outline-offset: -1;
 }
@@ -4145,8 +4145,8 @@ option:checked {
 .pickerSearchBoxFocused,
 .pickerSearchBoxPendingFocused {
   border: {
-	left: $standard_border_width solid hsl($secondary_hue + 1, 63%, 83%);
-	right: $standard_border_width solid hsl($secondary_hue - 2, 36%, 78%);
+    left: $standard_border_width solid hsl($secondary_hue + 1, 63%, 83%);
+    right: $standard_border_width solid hsl($secondary_hue - 2, 36%, 78%);
   }
 }
 
@@ -4157,8 +4157,8 @@ option:checked {
 .pickerSearchBoxFocusedRTL,
 .pickerSearchBoxPendingFocusedRTL {
   border: {
-	right: $standard_border_width solid hsl($secondary_hue + 1, 63%, 83%);
-	left: $standard_border_width solid hsl($secondary_hue - 2, 36%, 78%);
+    right: $standard_border_width solid hsl($secondary_hue + 1, 63%, 83%);
+    left: $standard_border_width solid hsl($secondary_hue - 2, 36%, 78%);
   }
 }
 
@@ -4264,9 +4264,9 @@ option:checked {
   color: $pending_value_color;
 
   @include input-placeholder {
-	color: $pending_value_color;
-	opacity: 1;
-	text-overflow: ellipsis;
+    color: $pending_value_color;
+    opacity: 1;
+    text-overflow: ellipsis;
   }
 }
 
@@ -4344,8 +4344,8 @@ option:checked {
 .tallPickListCellDeselectedDark,
 .tallPickListCellDeselectedDarkRTL {
   border: {
-	bottom: $standard_border_width solid transparent;
-	top: $standard_border_width solid transparent;
+    bottom: $standard_border_width solid transparent;
+    top: $standard_border_width solid transparent;
   }
 }
 
@@ -4364,8 +4364,8 @@ option:checked {
 .tallPickListCellDeselectedSelectedDarkRTL {
   background-color: hsl($secondary_hue, 100%, 92%);
   border: {
-	bottom: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
-	top: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
+    bottom: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
+    top: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
   }
 }
 
@@ -4384,8 +4384,8 @@ option:checked {
 .tallPickListCellDeselectedOverDarkRTL {
   background-color: $pickList_cell_over_bgColor;
   border: {
-	bottom: $standard_border_width dotted $pickList_cell_over_border_color;
-	top: $standard_border_width dotted $pickList_cell_over_border_color;
+    bottom: $standard_border_width dotted $pickList_cell_over_border_color;
+    top: $standard_border_width dotted $pickList_cell_over_border_color;
   }
 }
 
@@ -4404,8 +4404,8 @@ option:checked {
 .tallPickListCellDeselectedSelectedOverDarkRTL {
   background-color: hsl($secondary_hue + 2, 68%, 89%);
   border: {
-	bottom: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
-	top: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
+    bottom: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
+    top: $standard_border_width dotted hsl($secondary_hue + 7, 63%, 77%);
   }
 }
 
@@ -4737,73 +4737,73 @@ option:checked {
   .radioUnsetFocused,
   .radioUnsetFocusedOver,
   .radioUnsetDown {
-	min-height: 25px;
-	display: inline-block;
-	outline: none;
-	background: url(./images/DynamicForm/radio-button.png) no-repeat;
+    min-height: 25px;
+    display: inline-block;
+    outline: none;
+    background: url(./images/DynamicForm/radio-button.png) no-repeat;
   }
 
   .radioTrueDisabled {
-	background-position: -6px -85px;
-	cursor: no-drop;
+    background-position: -6px -85px;
+    cursor: no-drop;
   }
 
   .radioTrue {
-	background-position: -6px -4px;
+    background-position: -6px -4px;
   }
 
   .radioTrueOver,
   .radioTrueFocusedOver {
-	background-position: -6px -31px;
+    background-position: -6px -31px;
   }
 
   .radioTrueFocused {
-	background-position: -6px -58px;
+    background-position: -6px -58px;
   }
 
   .radioFalseDisabled {
-	background-position: -35px -85px;
-	cursor: no-drop;
+    background-position: -35px -85px;
+    cursor: no-drop;
   }
 
   .radioFalse {
-	background-position: -35px -4px;
+    background-position: -35px -4px;
   }
 
   .radioFalseOver,
   .radioFalseFocusedOver {
-	background-position: -35px -31px;
+    background-position: -35px -31px;
   }
 
   .radioFalseFocused {
-	background-position: -35px -58px;
+    background-position: -35px -58px;
   }
 
   .radioUnsetDisabled {
-	background-position: -35px -85px;
-	cursor: no-drop;
+    background-position: -35px -85px;
+    cursor: no-drop;
   }
 
   .radioUnset {
-	background-position: -35px -4px;
+    background-position: -35px -4px;
   }
 
   .radioUnsetOver,
   .radioUnsetFocusedOver {
-	background-position: -35px -31px;
+    background-position: -35px -31px;
   }
 
   .radioUnsetFocused {
-	background-position: -35px -58px;
+    background-position: -35px -58px;
   }
 }
 
 /* FilterBuilder */
 .bracketBorders {
   border: {
-	bottom: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
-	left: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
-	top: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
+    bottom: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
+    left: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
+    top: $standard_border_width solid adjust-color(hsl($filterBuilder_bracketBorder_hue - 12, 57%, 46%), $saturation: $filterBuilder_bracketBorder_saturation, $lightness: $filterBuilder_bracketBorder_lightness);
   }
 }
 
@@ -4909,10 +4909,10 @@ option:checked {
 .nativeDatetimeItem,
 .nativeDatetimeItemHint {
   border: {
-	bottom: $standard_border_width solid $standard_border_color;
-	left: $standard_border_width solid $standard_border_color;
-	right: $standard_border_width solid $standard_border_color;
-	top: $standard_border_width solid $default_border_color;
+    bottom: $standard_border_width solid $standard_border_color;
+    left: $standard_border_width solid $standard_border_color;
+    right: $standard_border_width solid $standard_border_color;
+    top: $standard_border_width solid $default_border_color;
   }
 }
 
@@ -4942,10 +4942,10 @@ option:checked {
 .pickerSearchBoxHintRTL {
   @include border-radius(30px);
   padding: {
-	top: 4px;
-	right: 6px;
-	bottom: 4px;
-	left: 6px;
+    top: 4px;
+    right: 6px;
+    bottom: 4px;
+    left: 6px;
   }
   font-size: $normal_font_size;
 }
@@ -5030,8 +5030,8 @@ option:checked {
   color: $dateChooser_header_text_color;
   border: 2px solid $dateChooser_cell_bgColor;
   font: {
-	family: $dateChooser_font;
-	size: $standard_font_size;
+    family: $dateChooser_font;
+    size: $standard_font_size;
   }
 }
 
@@ -5048,8 +5048,8 @@ option:checked {
   background: $dateChooser_navButton_bgColor;
   color: $dateChooser_navButton_color;
   font: {
-	family: $dateChooser_font;
-	size: $standard_font_size;
+    family: $dateChooser_font;
+    size: $standard_font_size;
   }
 }
 
@@ -5064,8 +5064,8 @@ option:checked {
 .dateChooserNavButtonFocusedOver,
 .dateChooserNavButtonFocusedDown {
   border: {
-	bottom: 0px none;
-	top: 0px none;
+    bottom: 0px none;
+    top: 0px none;
   }
   padding: 0px;
 }
@@ -5214,8 +5214,8 @@ option:checked {
   border: $standard_border_width solid $dateChooser_bottom_button_border_color;
   @include border-radius($dateChooser_bottom_button_border_radius);
   font: {
-	family: $dateChooser_bottom_button_font;
-	size: $dateChooser_bottom_button_font_size;
+    family: $dateChooser_bottom_button_font;
+    size: $dateChooser_bottom_button_font_size;
   }
   letter-spacing: 0.5px;
 }
@@ -5231,7 +5231,7 @@ option:checked {
 .dateChooserBorderedBottomButtonSelectedOver,
 .dateChooserBorderedBottomButtonFocusedOver {
   @if $show_button_outer_glow {
-	@include box-shadow(0 0 0.2em 0.1em $dateChooser_bottom_button_over_shadow_color);
+    @include box-shadow(0 0 0.2em 0.1em $dateChooser_bottom_button_over_shadow_color);
   }
   background-color: $dateChooser_bottom_button_over_bgColor;
 }
@@ -5341,30 +5341,30 @@ option:checked {
   .dateChooserNavMonthForward,
   .dateChooserNavYearBack,
   .dateChooserNavYearForward {
-	width: 22px;
-	height: 22px;
-	@include border-radius(3px);
-	display: inline-block;
-	outline: none;
-	vertical-align: middle;
-	margin: 0 auto;
-	background: $dateChooser_nav_sprite_image no-repeat;
+    width: 22px;
+    height: 22px;
+    @include border-radius(3px);
+    display: inline-block;
+    outline: none;
+    vertical-align: middle;
+    margin: 0 auto;
+    background: $dateChooser_nav_sprite_image no-repeat;
   }
 
   .dateChooserNavMonthBack {
-	background-position: -330px -3px;
+    background-position: -330px -3px;
   }
 
   .dateChooserNavMonthForward {
-	background-position: -359px -3px;
+    background-position: -359px -3px;
   }
 
   .dateChooserNavYearBack {
-	background-position: -301px -3px;
+    background-position: -301px -3px;
   }
 
   .dateChooserNavYearForward {
-	background-position: -388px -3px;
+    background-position: -388px -3px;
   }
 }
 
@@ -5411,7 +5411,7 @@ option:checked {
 .colorChooserCell,
 .colorChooserCellOver {
   @if $colorPicker_cell_bgColor != false {
-	background-color: $colorPicker_cell_bgColor;
+    background-color: $colorPicker_cell_bgColor;
   }
   //color: $standard_color;
   border: $standard_border_width solid $colorPicker_cell_border_color;
@@ -5751,29 +5751,29 @@ option:checked {
 @each $style in SliderValue, SliderValueDisabled {
   $border_color: $slider_value_border_color;
   @if $style == SliderValueDisabled {
-	$border_color: $slider_value_disabled_border_color;
+    $border_color: $slider_value_disabled_border_color;
   }
 
   .v#{$style}:after {
-	border-left-color: $slider_value_arrow_hidden_border_color;
-	border-width: 4px;
-	margin-top: -4px;
+    border-left-color: $slider_value_arrow_hidden_border_color;
+    border-width: 4px;
+    margin-top: -4px;
   }
   .v#{$style}:before {
-	border-left-color: $border_color;
-	border-width: 5px;
-	margin-top: -5px;
+    border-left-color: $border_color;
+    border-width: 5px;
+    margin-top: -5px;
   }
 
   .h#{$style}:after {
-	border-top-color: $slider_value_arrow_hidden_border_color;
-	border-width: 4px;
-	margin-left: -4px;
+    border-top-color: $slider_value_arrow_hidden_border_color;
+    border-width: 4px;
+    margin-left: -4px;
   }
   .h#{$style}:before {
-	border-top-color: $border_color;
-	border-width: 5px;
-	margin-left: -5px;
+    border-top-color: $border_color;
+    border-width: 5px;
+    margin-left: -5px;
   }
 
 }
@@ -5841,8 +5841,8 @@ option:checked {
 ============================================================*/
 .detailBlock {
   border: {
-	left: $standard_border_width solid $detailViewer_border_color;
-	top: $standard_border_width solid $detailViewer_border_color;
+    left: $standard_border_width solid $detailViewer_border_color;
+    top: $standard_border_width solid $detailViewer_border_color;
   }
 }
 
@@ -5851,13 +5851,13 @@ option:checked {
 .detailHeader {
   background-color: $detailViewer_bgColor;
   border: {
-	bottom: $standard_border_width solid $detailViewer_border_color;
-	right: $standard_border_width solid $detailViewer_border_color;
+    bottom: $standard_border_width solid $detailViewer_border_color;
+    right: $standard_border_width solid $detailViewer_border_color;
   }
   color: $detailViewer_color;
   font: {
-	family: $detailViewer_font;
-	size: $detailViewer_font_size;
+    family: $detailViewer_font;
+    size: $detailViewer_font_size;
   }
   -webkit-text-size-adjust: 100%;
 }
@@ -5873,9 +5873,9 @@ option:checked {
   background-color: hsl($primary_hue - 3, 100%, 87%);
   color: $detailViewer_color;
   font: {
-	family: $detailViewer_font;
-	size: $standard_header_font_size;
-	weight: bold;
+    family: $detailViewer_font;
+    size: $standard_header_font_size;
+    weight: bold;
   }
 }
 
@@ -5896,17 +5896,17 @@ option:checked {
 
 .headerBar {
   background: {
-	color: hsl($primary_hue + 2, 0%, 100%);
-	image: url(./images/ListGrid/header.png);
-	repeat: repeat-x;
-	position: bottom left;
-	attachment: scroll;
+    color: hsl($primary_hue + 2, 0%, 100%);
+    image: url(./images/ListGrid/header.png);
+    repeat: repeat-x;
+    position: bottom left;
+    attachment: scroll;
   }
   @include background-image(linear-gradient(top, (
-		  $standard_bgColor 0%,
-		  hsl(0, 0%, 84%) 96%,
-		  hsl($primary_hue + 2, 15%, 75%) 96%,
-		  hsl($primary_hue + 2, 15%, 75%) 100%)));
+          $standard_bgColor 0%,
+          hsl(0, 0%, 84%) 96%,
+          hsl($primary_hue + 2, 15%, 75%) 96%,
+          hsl($primary_hue + 2, 15%, 75%) 100%)));
 }
 
 .gridBody {
@@ -5922,8 +5922,8 @@ option:checked {
 .emptyMessage {
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   padding: 11px;
 }
@@ -5932,8 +5932,8 @@ option:checked {
   border: $standard_border_width dotted $standard_gray;
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   padding: 1px;
 }
@@ -5958,8 +5958,8 @@ option:checked {
   background-color: $standard_bgColor;
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
 }
 
@@ -5988,8 +5988,8 @@ some LG header-titles to be vertically offset from other headers */
   padding-bottom: 0px;
   border-bottom: $listGrid_headerButton_border;
   @if $listGrid_show_cell_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
-	border-right: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-right: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6046,7 +6046,7 @@ some LG header-titles to be vertically offset from other headers */
   padding: 0px 0px 0px 3px;
   border-right: $standard_border_width solid $listGrid_headerSpan_border_color;
   @if $listGrid_show_header_bottom_border == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6182,8 +6182,8 @@ some LG header-titles to be vertically offset from other headers */
   padding-bottom: 3px;
   border-bottom: $listGrid_headerButton_border;
   @if $listGrid_show_cell_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
-	border-right: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-right: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6204,7 +6204,7 @@ some LG header-titles to be vertically offset from other headers */
   padding: 3px 0px 3px 0px;
   border-right: $standard_border_width solid $listGrid_headerSpan_border_color;
   @if $listGrid_show_header_bottom_border == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6312,12 +6312,12 @@ some LG header-titles to be vertically offset from other headers */
 .headerTitleSelectedDisabled {
   color: $listGrid_headerTitle_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   padding: {
-	left: 4px;
-	right: 4px;
+    left: 4px;
+    right: 4px;
   }
 }
 
@@ -6415,18 +6415,18 @@ some LG header-titles to be vertically offset from other headers */
 .specialColDisabled {
   background-color: $listGrid_cell_bgColor;
   font: {
-	size: $listGrid_cell_font_size;
-	family: $listGrid_cell_font;
+    size: $listGrid_cell_font_size;
+    family: $listGrid_cell_font;
   }
   color: $listGrid_cell_font_color;
   padding-left: 3px;
   border: none;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
   }
   @if $listGrid_show_cell_separators == true {
-	border-left: $standard_border_width solid transparent;
-	border-right: $standard_border_width solid $listGrid_border_color;
+    border-left: $standard_border_width solid transparent;
+    border-right: $standard_border_width solid $listGrid_border_color;
   }
   text-overflow: ellipsis;
 }
@@ -6465,7 +6465,7 @@ some LG header-titles to be vertically offset from other headers */
   background-color: $listGrid_cell_over_bgColor;
   color: $listGrid_cell_over_color;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6506,7 +6506,7 @@ some LG header-titles to be vertically offset from other headers */
   background-color: $listGrid_cell_selected_over_bgColor;
   color: $listGrid_cell_selected_text_color;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_cell_selected_over_border_color;
+    border-bottom: $standard_border_width solid $listGrid_cell_selected_over_border_color;
   }
 }
 
@@ -6515,7 +6515,7 @@ some LG header-titles to be vertically offset from other headers */
   background-color: $listGrid_cell_selected_over_bgColor;
   color: $listGrid_cell_selected_text_color;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_cell_selected_over_border_color;
+    border-bottom: $standard_border_width solid $listGrid_cell_selected_over_border_color;
   }
 }
 
@@ -6551,8 +6551,8 @@ some LG header-titles to be vertically offset from other headers */
 .tallCellAltDisabledDark {
   color: $listGrid_cell_font_color;
   font: {
-	family: $listGrid_cell_font;
-	size: $listGrid_cell_font_size;
+    family: $listGrid_cell_font;
+    size: $listGrid_cell_font_size;
   }
   text-overflow: ellipsis;
   padding-left: 3px;
@@ -6561,8 +6561,8 @@ some LG header-titles to be vertically offset from other headers */
 .tallCellAltDark {
   background-color: $listGrid_cell_altCol_dark_bgColor;
   border: {
-	bottom: $standard_border_width solid $listGrid_cell_altCol_dark_bgColor;
-	top: $standard_border_width solid $listGrid_cell_altCol_dark_bgColor;
+    bottom: $standard_border_width solid $listGrid_cell_altCol_dark_bgColor;
+    top: $standard_border_width solid $listGrid_cell_altCol_dark_bgColor;
   }
 }
 
@@ -6571,11 +6571,11 @@ some LG header-titles to be vertically offset from other headers */
   background-color: $listGrid_cell_over_bgColor;
   color: $listGrid_cell_disabled_color;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_cell_over_bgColor;
-	border-top: $standard_border_width solid $listGrid_cell_over_bgColor;
+    border-bottom: $standard_border_width solid $listGrid_cell_over_bgColor;
+    border-top: $standard_border_width solid $listGrid_cell_over_bgColor;
   } @else {
-	border-top: none;
-	border-bottom: none;
+    border-top: none;
+    border-bottom: none;
   }
   border: {
   }
@@ -6588,11 +6588,11 @@ some LG header-titles to be vertically offset from other headers */
   background-color: $listGrid_cell_selected_bgColor;
   color: $listGrid_cell_text_font_color;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_cell_selected_bgColor;
-	border-top: $standard_border_width solid $listGrid_cell_selected_bgColor;
+    border-bottom: $standard_border_width solid $listGrid_cell_selected_bgColor;
+    border-top: $standard_border_width solid $listGrid_cell_selected_bgColor;
   } @else {
-	border-top: none;
-	border-bottom: none;
+    border-top: none;
+    border-bottom: none;
   }
 }
 
@@ -6605,11 +6605,11 @@ some LG header-titles to be vertically offset from other headers */
 .tallCellAltDisabledDark {
   background-color: $listGrid_cell_disabled_bgColor;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_cell_disabled_bgColor;
-	border-top: $standard_border_width solid $listGrid_cell_disabled_bgColor;
+    border-bottom: $standard_border_width solid $listGrid_cell_disabled_bgColor;
+    border-top: $standard_border_width solid $listGrid_cell_disabled_bgColor;
   } @else {
-	border-top: none;
-	border-bottom: none;
+    border-top: none;
+    border-bottom: none;
   }
   cursor: not-allowed;
   color: $listGrid_cell_disabled_color;
@@ -6641,7 +6641,7 @@ some LG header-titles to be vertically offset from other headers */
   text-overflow: ellipsis;
   border: none;
   @if $listGrid_show_row_separators == true {
-	border-bottom: $standard_border_width solid $listGrid_border_color;
+    border-bottom: $standard_border_width solid $listGrid_border_color;
   }
 }
 
@@ -6694,20 +6694,20 @@ some LG header-titles to be vertically offset from other headers */
 @if $listGrid_show_rollOver_glow == true {
   /* ListGrid rollOverCanvas outer glow */
   .gridSelectionOver {
-	border: none;
-	@include box-shadow(0 0 5px 0 $listGrid_cell_selected_over_glow_color);
+    border: none;
+    @include box-shadow(0 0 5px 0 $listGrid_cell_selected_over_glow_color);
   }
 
   /* TreeGrid rollOverCanvas outer glow */
   .treeSelectionOver {
-	border: none;
-	@include box-shadow(0 0 5px 0 $treeGrid_cell_selected_over_glow_color);
+    border: none;
+    @include box-shadow(0 0 5px 0 $treeGrid_cell_selected_over_glow_color);
   }
 
   /* CubeGrid rollOverCanvas outer glow */
   .cubeSelectionOver {
-	border: none;
-	@include box-shadow(0 0 5px 0 $cubeGrid_cell_selected_over_glow_color);
+    border: none;
+    @include box-shadow(0 0 5px 0 $cubeGrid_cell_selected_over_glow_color);
   }
 }
 
@@ -6717,14 +6717,14 @@ some LG header-titles to be vertically offset from other headers */
 .gridSummaryCellDark,
 .gridSummaryCellDisabledDark {
   font: {
-	size: $listGrid_summaryCell_font_size;
-	family: $listGrid_cell_font;
+    size: $listGrid_summaryCell_font_size;
+    family: $listGrid_cell_font;
   }
   text-overflow: ellipsis;
   background-color: $listGrid_summaryCell_disabled_bgColor;
   border: {
-	bottom: $standard_border_width solid $listGrid_summaryCell_border_color;
-	top: $standard_border_width solid $listGrid_summaryCell_border_color;
+    bottom: $standard_border_width solid $listGrid_summaryCell_border_color;
+    top: $standard_border_width solid $listGrid_summaryCell_border_color;
   }
   font-weight: bold;
   color: $listGrid_summaryCell_dark_color;
@@ -6735,8 +6735,8 @@ some LG header-titles to be vertically offset from other headers */
 .gridSummaryCellDisabledDark {
   background-color: $listGrid_cell_disabled_bgColor;
   border: {
-	bottom: $standard_border_width solid $listGrid_cell_disabled_bgColor;
-	top: $standard_border_width solid $listGrid_cell_disabled_bgColor;
+    bottom: $standard_border_width solid $listGrid_cell_disabled_bgColor;
+    top: $standard_border_width solid $listGrid_cell_disabled_bgColor;
   }
   cursor: not-allowed;
   color: $listGrid_cell_disabled_color;
@@ -6750,14 +6750,14 @@ some LG header-titles to be vertically offset from other headers */
   border: none;
   border-bottom: $standard_border_width solid $listGrid_groupNode_border_color;
   @if $listGrid_show_cell_separators == true {
-	border-left: $standard_border_width solid transparent;
-	border-right: $standard_border_width solid $listGrid_border_color;
+    border-left: $standard_border_width solid transparent;
+    border-right: $standard_border_width solid $listGrid_border_color;
   }
   color: $listGrid_groupNode_text_color;
   font: {
-	family: $listGrid_cell_font;
-	weight: bold;
-	size: $listGrid_groupNode_font_size;
+    family: $listGrid_cell_font;
+    weight: bold;
+    size: $listGrid_groupNode_font_size;
   }
   padding-left: 3px;
   padding-top: 1px;
@@ -6791,8 +6791,8 @@ some LG header-titles to be vertically offset from other headers */
 .treeTallCellDisabledDark {
   color: $treeGrid_cell_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   text-overflow: ellipsis;
 }
@@ -7186,7 +7186,7 @@ some LG header-titles to be vertically offset from other headers */
 
 .simpleTileOver {
   background: {
-	color: $tileGrid_simpleTile_over_bgColor;
+    color: $tileGrid_simpleTile_over_bgColor;
   }
   border: $standard_border_width solid $tileGrid_simpleTile_over_border_color;
 }
@@ -7194,7 +7194,7 @@ some LG header-titles to be vertically offset from other headers */
 .simpleTileSelected,
 .simpleTileSelectedOver {
   background: {
-	color: $tileGrid_simpleTile_selected_bgColor;
+    color: $tileGrid_simpleTile_selected_bgColor;
   }
   border: $standard_border_width solid $tileGrid_simpleTile_selected_border_color;
 }
@@ -7339,7 +7339,7 @@ some LG header-titles to be vertically offset from other headers */
 .vScrollThumbGripOver,
 .vScrollThumbGripDown {
   @if ($show_scroll_thumb_grip == true) {
-	background-image: url(./images/Scrollbar/vscroll_sprite.png);
+    background-image: url(./images/Scrollbar/vscroll_sprite.png);
   }
 }
 
@@ -7479,7 +7479,7 @@ some LG header-titles to be vertically offset from other headers */
 .hScrollThumbGripOver,
 .hScrollThumbGripDown {
   @if ($show_scroll_thumb_grip == true) {
-	background-image: url(./images/Scrollbar/hscroll_sprite.png);
+    background-image: url(./images/Scrollbar/hscroll_sprite.png);
   }
 }
 
@@ -7621,8 +7621,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   border-right: $standard_border_width solid $cubeGrid_cell_border_color;
   border-bottom: $standard_border_width solid $cubeGrid_cell_border_color;
   font: {
-	family: $cubeGrid_font;
-	size: $cubeGrid_font_size;
+    family: $cubeGrid_font;
+    size: $cubeGrid_font_size;
   }
   color: $cubeGrid_cell_font_color;
   text-overflow: ellipsis;
@@ -7635,8 +7635,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   border-right: $standard_border_width solid $cubeGrid_cell_border_color;
   border-bottom: $standard_border_width solid $cubeGrid_cell_border_color;
   font: {
-	family: $cubeGrid_font;
-	size: $cubeGrid_font_size;
+    family: $cubeGrid_font;
+    size: $cubeGrid_font_size;
   }
   color: $cubeGrid_cell_font_color;
   text-overflow: ellipsis;
@@ -7649,8 +7649,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   border-right: $standard_border_width solid $cubeGrid_cell_border_color;
   border-bottom: $standard_border_width solid $cubeGrid_cell_border_color;
   font: {
-	family: $cubeGrid_font;
-	size: $cubeGrid_font_size;
+    family: $cubeGrid_font;
+    size: $cubeGrid_font_size;
   }
   color: $cubeGrid_cell_disabled_color;
   text-overflow: ellipsis;
@@ -7944,9 +7944,9 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .chartTitle {
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_header_font_size;
-	weight: bold;
+    family: $primary_font;
+    size: $standard_header_font_size;
+    weight: bold;
   }
   text-align: center
 }
@@ -7954,17 +7954,17 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .chartAxisTitle {
   color: $chart_axis_title_color;
   font: {
-	family: $primary_font;
-	size: $chart_font_size;
-	weight: bold;
+    family: $primary_font;
+    size: $chart_font_size;
+    weight: bold;
   }
 }
 
 .chartValueTitle {
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $chart_value_font_size;
+    family: $primary_font;
+    size: $chart_value_font_size;
   }
 }
 
@@ -7972,17 +7972,17 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   background-color: linen;
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $chart_font_size;
+    family: $primary_font;
+    size: $chart_font_size;
   }
 }
 
 .chartBody {
   background-color: $standard_border_color;
   border: {
-	left: $standard_border_width solid $standard_color;
-	right: $standard_border_width solid $standard_color;
-	top: $standard_border_width dashed $standard_blue;
+    left: $standard_border_width solid $standard_color;
+    right: $standard_border_width solid $standard_color;
+    top: $standard_border_width dashed $standard_blue;
   }
 }
 
@@ -8011,9 +8011,9 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .printHeader {
   border: $standard_border_width solid $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
-	weight: bold;
+    family: $primary_font;
+    size: $standard_font_size;
+    weight: bold;
   }
 }
 
@@ -8035,13 +8035,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   background-color: $calendar_bgColor;
   border: $standard_border_width solid transparent;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8065,13 +8065,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calendarOverDark {
   background-color: hsl($secondary_hue, 93%, 88%);
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8079,13 +8079,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calendarCellSelected {
   background-color: $default_border_dark_color;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8096,13 +8096,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
   background-color: $calendar_label_column_bgColor;
   border: $standard_border_width solid transparent;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8112,8 +8112,8 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calendarDisabledOverDark {
   background-color: $calendar_disabled_over_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
 }
 
@@ -8123,13 +8123,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayHeaderDark {
   background-color: $calendar_dark_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8141,13 +8141,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayHeaderSelectedOverDark {
   background-color: hsl($primary_hue - 6, 54%, 84%);
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_day_header_font_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8155,13 +8155,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayHeaderDisabledOver {
   background-color: $standard_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8169,13 +8169,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayBodyDark {
   background-color: $calendar_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8187,13 +8187,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayBodySelectedOverDark {
   background-color: hsl($primary_hue - 6, 54%, 84%);
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8201,13 +8201,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthDayBodyDisabledOver {
   background-color: $calendar_dark_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8216,13 +8216,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthOtherDayHeaderDark {
   background-color: $calendar_border_color;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_day_header_font_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8232,13 +8232,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthOtherDayHeaderOverDark {
   background-color: $calendar_month_otherDay_header_selected_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_day_header_font_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8248,13 +8248,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthOtherDayBodyDisabledOver {
   background-color: $standard_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8262,13 +8262,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthOtherDayBodyOverDark {
   background-color: hsl($primary_hue - 6, 54%, 84%);
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_text_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8283,13 +8283,13 @@ IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII
 .calMonthOtherDayBlankSelectedOverDark {
   background-color: $standard_bgColor;
   border: {
-	bottom: $standard_border_width solid $calendar_border_color;
-	right: $standard_border_width solid $calendar_border_color;
+    bottom: $standard_border_width solid $calendar_border_color;
+    right: $standard_border_width solid $calendar_border_color;
   }
   color: $calendar_other_day_color;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8320,8 +8320,8 @@ a.calMonthEventLink:active {
   background-color: $calendar_eventWindow_bgColor;
   border: $standard_border_width solid $calendar_eventWindow_border_color;
   font: {
-	family: $primary_font;
-	size: $calendar_eventWindow_font_size;
+    family: $primary_font;
+    size: $calendar_eventWindow_font_size;
   }
   padding: 1px;
   margin: 0px;
@@ -8339,8 +8339,8 @@ a.calMonthEventLink:active {
   color: $calendar_eventWindow_header_color;
   border: $standard_border_width solid $calendar_eventWindow_header_border_color;
   font: {
-	family: $primary_font;
-	size: $calendar_eventWindow_font_size;
+    family: $primary_font;
+    size: $calendar_eventWindow_font_size;
   }
   margin: 1px;
   padding: 2px 2px 0px 2px;
@@ -8361,8 +8361,8 @@ a.calMonthEventLink:active {
   color: $calendar_eventWindow_color;
   border: $standard_border_width solid $calendar_eventWindow_bgColor;
   font: {
-	family: $primary_font;
-	size: $calendar_eventWindow_font_size;
+    family: $primary_font;
+    size: $calendar_eventWindow_font_size;
   }
   margin-left: 1px;
   margin-right: 1px;
@@ -8370,8 +8370,8 @@ a.calMonthEventLink:active {
 
 .eventWindowResizer {
   border: {
-	bottom: $standard_border_width solid $calendar_bgColor;
-	top: $standard_border_width solid $calendar_bgColor;
+    bottom: $standard_border_width solid $calendar_bgColor;
+    top: $standard_border_width solid $calendar_bgColor;
   }
 }
 
@@ -8407,8 +8407,8 @@ a.calMonthEventLink:active {
   color: $calendar_indicatorCanvas_color;
   background-color: $calendar_indicatorCanvas_bgColor;
   font: {
-	family: $primary_font;
-	size: $calendar_font_size;
+    family: $primary_font;
+    size: $calendar_font_size;
   }
 }
 
@@ -8448,12 +8448,12 @@ a.calMonthEventLink:active {
 .propSheetValueFocused,
 .propSheetValueDisabled {
   border: {
-	bottom: $standard_border_width solid $default_border_color;
-	right: $standard_border_width solid $default_border_color;
+    bottom: $standard_border_width solid $default_border_color;
+    right: $standard_border_width solid $default_border_color;
   }
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   margin: 0px;
   padding: 0px;
@@ -8464,16 +8464,16 @@ a.calMonthEventLink:active {
 .propSheetTitleDisabled {
   background-color: $standard_border_color;
   border: {
-	bottom: $standard_border_width solid $default_border_color;
-	right: $standard_border_width solid $default_border_color;
+    bottom: $standard_border_width solid $default_border_color;
+    right: $standard_border_width solid $default_border_color;
   }
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   padding: {
-	left: 4px;
-	right: 4px;
+    left: 4px;
+    right: 4px;
   }
 }
 
@@ -8482,8 +8482,8 @@ a.calMonthEventLink:active {
   background-color: hsl($primary_hue + 9, 57%, 88%);
   color: hsl($primary_hue - 2, 53%, 27%);
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
 }
 
@@ -8492,15 +8492,15 @@ a.calMonthEventLink:active {
   background-color: $propsheet_bgColor;
   border: 0px;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
+    family: $primary_font;
+    size: $standard_font_size;
   }
   margin-top: 3px;
   padding: {
-	bottom: 0px;
-	top: 0px;
-	left: 4px;
-	right: 4px;
+    bottom: 0px;
+    top: 0px;
+    left: 4px;
+    right: 4px;
   }
 }
 
@@ -8510,9 +8510,9 @@ a.calMonthEventLink:active {
   border-bottom: $standard_border_width solid $default_border_color;
   color: $standard_color;
   font: {
-	family: $primary_font;
-	size: $standard_font_size;
-	weight: bold;
+    family: $primary_font;
+    size: $standard_font_size;
+    weight: bold;
   }
   padding: 4px;
 }
@@ -8521,8 +8521,8 @@ a.calMonthEventLink:active {
 .propSheetSelectControlFocused,
 .propSheetSelectControlDisabled {
   padding: {
-	left: 3px;
-	right: 3px;
+    left: 3px;
+    right: 3px;
   }
 }
 

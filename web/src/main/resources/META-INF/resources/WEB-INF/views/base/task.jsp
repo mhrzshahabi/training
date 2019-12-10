@@ -3,8 +3,8 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-// <script>
-var dummy;
+// script
+    var dummy;
     var teacherMethod = "POST";
     var teacherWait;
 
@@ -63,7 +63,7 @@ var dummy;
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-     var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
+    var RestDataSource_Education_Orientation_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id"},
             {name: "titleEn"},
@@ -303,8 +303,6 @@ var dummy;
             },
 
 
-
-
             {
                 name: "personality.nationality",
                 title: "<spring:message code='nationality'/>",
@@ -314,8 +312,6 @@ var dummy;
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "100"
             },
-
-
 
 
             {
@@ -387,7 +383,7 @@ var dummy;
                 title: "<spring:message code='education.orientation'/>",
                 textAlign: "center",
                 editorType: "ComboBoxItem",
-                hidden:true,
+                hidden: true,
                 width: "*",
                 changeOnKeypress: true,
                 displayField: "titleFa",
@@ -415,7 +411,7 @@ var dummy;
                 name: "categoryList",
                 type: "selectItem",
                 textAlign: "center",
-                hidden:true,
+                hidden: true,
                 width: "*",
                 title: "<spring:message code='education.categories'/>",
                 autoFetchData: true,
@@ -466,7 +462,7 @@ var dummy;
             },
 
 
-       ],
+        ],
         itemChanged: function (item, newValue) {
 
         }
@@ -515,7 +511,6 @@ var dummy;
             }
         }
     });
-
 
 
     var IButton_Teacher_Save_JspTeacher = isc.IButton.create({
@@ -615,7 +610,6 @@ var dummy;
         membersMargin: 10,
         members: [TabSet_BasicInfo_JspTeacher, TabSet_Photo_JspTeacher]
     });
-
 
 
     var Window_Teacher_JspTeacher = isc.Window.create({
@@ -749,7 +743,6 @@ var dummy;
             DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
 
             DynamicForm_BasicInfo_JspTeacher.getItem("personality.educationOrientationId").setOptionDataSource(null);
-
 
 
             teacherMethod = "PUT";
@@ -996,11 +989,6 @@ var dummy;
     };
 
 
-
-
-
-
-
     function checkCodeMeli(code) {
         if (code == "undefined" && code == null && code == "")
             return false;
@@ -1017,10 +1005,6 @@ var dummy;
         return (s < 2 && c == s) || (s >= 2 && c == (11 - s));
         return true;
     };
-
-
-
-
 
 
     function showAttach(pId) {

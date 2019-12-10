@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 
-// <script>
+// script
     var CheckList_method = "POST";
     var CheckListItem_method = "POST";
 
@@ -126,22 +126,22 @@
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
-       title: "<spring:message code="edit"/>",
+
+        title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListEditForm();
         }
     });
     var ToolStripButton_CheckList_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
-          title: "<spring:message code="create"/>",
+
+        title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListAddForm();
         }
     });
     var ToolStripButton_CheckList_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
-         title: "<spring:message code="remove"/>",
+
+        title: "<spring:message code="remove"/>",
         click: function () {
             show_CheckListDeleteForm();
         }
@@ -156,22 +156,22 @@
         }
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
-       title: "<spring:message code="edit"/>",
+
+        title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListItemEditForm();
         }
     });
     var ToolStripButton_CheckListItem_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
-          title: "<spring:message code="create"/>",
+
+        title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListItemAddForm();
         }
     });
     var ToolStripButton_CheckListItem_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
-        title:"<spring:message code="deactivate"/>",
+
+        title: "<spring:message code="deactivate"/>",
         click: function () {
             is_Delete();
         }
@@ -221,7 +221,7 @@
         alternateRecordStyles: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-      // canHover:true,
+        // canHover:true,
         filterOnKeypress: false,
         showFilterEditor: true,
         contextMenu: Menu_ListGrid_CheckListItem,
@@ -258,7 +258,7 @@
     var ListGrid_CheckList = isc.TrLG.create({
         filterOperator: "iContains",
         allowAdvancedCriteria: true,
-       // canHover:true,
+        // canHover:true,
         allowFilterExpressions: true,
         filterOnKeypress: false,
         showFilterEditor: true,
@@ -486,10 +486,10 @@
                 click: function () {
                     if (CheckListItem_method === "POST") {
                         save_CheckListItem()
-                          }else {
-                           edit_CheckListItem();
-                         }
+                    } else {
+                        edit_CheckListItem();
                     }
+                }
             }), isc.IButtonCancel.create({
                 title: "<spring:message code="cancel"/>",
                 click: function () {
@@ -506,7 +506,7 @@
         showFilterEditor: false,
         autoFetchData: true,
         editEvent: "click",
-        sortField:0,
+        sortField: 0,
         editByCell: true,
         modalEditing: true,
         height: 500,

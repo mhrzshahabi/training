@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface InstituteAccountDAO extends JpaRepository<InstituteAccount,Long>, JpaSpecificationExecutor<InstituteAccount> {
+public interface InstituteAccountDAO extends JpaRepository<InstituteAccount, Long>, JpaSpecificationExecutor<InstituteAccount> {
 }

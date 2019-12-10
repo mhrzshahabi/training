@@ -25,7 +25,7 @@ public class ClassStudent extends Auditable {
     private String scoresState;
 
     @Column(name = "failure_reason")
-    private String  failurereason;
+    private String failurereason;
 
     @Column(name = "score")
     private Float score;

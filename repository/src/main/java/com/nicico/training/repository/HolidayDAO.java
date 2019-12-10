@@ -10,7 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
-public interface HolidayDAO  extends JpaRepository<ClassSession, Long>, JpaSpecificationExecutor<ClassSession> {
+public interface HolidayDAO extends JpaRepository<ClassSession, Long>, JpaSpecificationExecutor<ClassSession> {
 
     @Modifying
     @Query(value = "SELECT C_HOLIDAY FROM TBL_HOLIDAY WHERE C_HOLIDAY >= :startDate AND C_HOLIDAY <= :endDate", nativeQuery = true)

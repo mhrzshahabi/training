@@ -37,11 +37,11 @@ public interface ITclassService {
 
     List<StudentDTO.Info> getOtherStudents(Long classID);
 
-    void removeStudent(Long studentId,Long classId);
+    void removeStudent(Long studentId, Long classId);
 
-    void addStudent(Long studentId,Long classId);
+    void addStudent(Long studentId, Long classId);
 
-    void addStudents(StudentDTO.Delete  request, Long classId);
+    void addStudents(StudentDTO.Delete request, Long classId);
 
     @Transactional
     Long getEndGroup(Long courseId, Long termId);

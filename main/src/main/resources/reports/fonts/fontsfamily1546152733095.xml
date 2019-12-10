@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <fontFamilies>
 
-   <fontFamily name="B Nazanin">
-       <normal><![CDATA[reports/fonts/bnazanin.ttf]]></normal>
-       <bold><![CDATA[reports/fonts/bnazaninb.ttf]]></bold>
-       <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
-       <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
-   </fontFamily>
+    <fontFamily name="B Nazanin">
+        <normal><![CDATA[reports/fonts/bnazanin.ttf]]></normal>
+        <bold><![CDATA[reports/fonts/bnazaninb.ttf]]></bold>
+        <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>
+        <pdfEmbedded><![CDATA[true]]></pdfEmbedded>
+    </fontFamily>
     <fontFamily name="B Titr">
         <normal><![CDATA[reports/fonts/BTitrBd.ttf]]></normal>
         <pdfEncoding><![CDATA[Identity-H]]></pdfEncoding>

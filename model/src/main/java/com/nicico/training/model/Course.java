@@ -127,6 +127,10 @@ public class Course extends Auditable {
 //
 //    @OneToMany(mappedBy="preCourse")
 //    private List<Course> preCourseList = new ArrayList<>();
+    @Column(name = "c_workflow_status")
+    private String workflowStatus;
+    @Column(name = "c_workflow_status_code")
+    private Integer workflowStatusCode;
 
     @PreRemove
     private void preRemove() {
@@ -135,7 +139,7 @@ public class Course extends Auditable {
 
     @Transient
     public Boolean getHasGoal() {
-        if(goalSet == null)return false;
+        if (goalSet == null) return false;
         else return goalSet.isEmpty();
     }
 }

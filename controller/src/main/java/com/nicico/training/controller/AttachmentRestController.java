@@ -122,6 +122,7 @@ public class AttachmentRestController {
         AttachmentDTO.Info attachment = attachmentService.get(Id);
         String fileFullPath = uploadDir + File.separator + attachment.getObjectType() + File.separator + attachment.getId();
         try {
+
             File file = new File(fileFullPath);
             FileInputStream inputStream = new FileInputStream(file);
             String mimeType = new MimetypesFileTypeMap().getContentType(fileFullPath);

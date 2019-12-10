@@ -1,51 +1,53 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test1" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fc97a963-c0b6-4c19-a348-7e2773e092a3">
-	<property name="template.engine" value="tabular_template"/>
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
-	<style name="Table">
-		<box>
-			<pen lineWidth="1.0" lineColor="#000000"/>
-			<topPen lineWidth="1.0" lineColor="#000000"/>
-			<leftPen lineWidth="1.0" lineColor="#000000"/>
-			<bottomPen lineWidth="1.0" lineColor="#000000"/>
-			<rightPen lineWidth="1.0" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#EFEFEF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
-		<box>
-			<pen lineWidth="0.5" lineColor="#000000"/>
-			<topPen lineWidth="0.5" lineColor="#000000"/>
-			<leftPen lineWidth="0.5" lineColor="#000000"/>
-			<bottomPen lineWidth="0.5" lineColor="#000000"/>
-			<rightPen lineWidth="0.5" lineColor="#000000"/>
-		</box>
-	</style>
-	<subDataset name="tableDataset" uuid="1d951996-4ba5-4955-b268-4c82c8ec79f1">
-		<property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
-		<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-		<parameter name="courseId" class="java.lang.Long"/>
-		<queryString language="SQL">
-			<![CDATA[select  "TBL_GOAL"."C_TITLE_FA" as GOAL,  "TBL_SYLLABUS"."C_TITLE_FA" as SYLLABUS,  "TBL_SYLLABUS"."N_PRACTICAL_DURATION" as RUNTIME, "TBL_SYLLABUS"."E_DOMAIN_TYPE" as DOMAIN from  "TBL_COURSE" 
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="test1" pageWidth="595" pageHeight="842"
+              whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fc97a963-c0b6-4c19-a348-7e2773e092a3">
+    <property name="template.engine" value="tabular_template"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+    <style name="Table">
+        <box>
+            <pen lineWidth="1.0" lineColor="#000000"/>
+            <topPen lineWidth="1.0" lineColor="#000000"/>
+            <leftPen lineWidth="1.0" lineColor="#000000"/>
+            <bottomPen lineWidth="1.0" lineColor="#000000"/>
+            <rightPen lineWidth="1.0" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_CH" mode="Opaque" backcolor="#EFEFEF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <style name="Table_TD" mode="Opaque" backcolor="#FFFFFF">
+        <box>
+            <pen lineWidth="0.5" lineColor="#000000"/>
+            <topPen lineWidth="0.5" lineColor="#000000"/>
+            <leftPen lineWidth="0.5" lineColor="#000000"/>
+            <bottomPen lineWidth="0.5" lineColor="#000000"/>
+            <rightPen lineWidth="0.5" lineColor="#000000"/>
+        </box>
+    </style>
+    <subDataset name="tableDataset" uuid="1d951996-4ba5-4955-b268-4c82c8ec79f1">
+        <property name="com.jaspersoft.studio.data.defaultdataadapter" value="New Data Adapter "/>
+        <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+        <parameter name="courseId" class="java.lang.Long"/>
+        <queryString language="SQL">
+            <![CDATA[select  "TBL_GOAL"."C_TITLE_FA" as GOAL,  "TBL_SYLLABUS"."C_TITLE_FA" as SYLLABUS,  "TBL_SYLLABUS"."N_PRACTICAL_DURATION" as RUNTIME, "TBL_SYLLABUS"."E_DOMAIN_TYPE" as DOMAIN from  "TBL_COURSE"
 join  "TBL_COURSE_GOAL" 
 on  "TBL_COURSE"."ID" =  "TBL_COURSE_GOAL"."F_COURSE_ID" 
 join  "TBL_GOAL" 
@@ -53,334 +55,335 @@ on  "TBL_COURSE_GOAL"."F_GOAL_ID" =  "TBL_GOAL"."ID"
 join   "TBL_SYLLABUS" 
 on  "TBL_GOAL"."ID" = "TBL_SYLLABUS"."F_GOAL" 
 where  "TBL_COURSE"."ID" = $P{courseId}]]>
-		</queryString>
-		<field name="GOAL" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="GOAL"/>
-		</field>
-		<field name="SYLLABUS" class="java.lang.String">
-			<property name="com.jaspersoft.studio.field.label" value="SYLLABUS"/>
-		</field>
-		<field name="RUNTIME" class="java.math.BigDecimal">
-			<property name="com.jaspersoft.studio.field.label" value="RUNTIME"/>
-		</field>
-		<field name="DOMAIN" class="java.math.BigDecimal">
-			<property name="com.jaspersoft.studio.field.label" value="DOMAIN"/>
-		</field>
-	</subDataset>
-	<parameter name="logo_nicico" class="java.lang.Object"/>
-	<parameter name="courseId" class="java.lang.Long"/>
-	<parameter name="domain" class="java.lang.String"/>
-	<parameter name="preCourse" class="java.lang.String"/>
-	<parameter name="equalCourse" class="java.lang.String"/>
-	<parameter name="eRun" class="java.lang.String"/>
-	<parameter name="theo" class="java.lang.String"/>
-	<queryString>
-		<![CDATA[select   "TBL_COURSE"."C_TITLE_FA" as COURSE, "TBL_COURSE"."C_NEED_TEXT" as NEEDTEXT,  "TBL_COURSE"."C_CODE" as CODE from  "TBL_COURSE" where  "TBL_COURSE"."ID" = $P{courseId}]]>
-	</queryString>
-	<field name="COURSE" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="COURSE"/>
-	</field>
-	<field name="NEEDTEXT" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="NEEDTEXT"/>
-	</field>
-	<field name="CODE" class="java.lang.String">
-		<property name="com.jaspersoft.studio.field.label" value="CODE"/>
-	</field>
-	<title>
-		<band height="60" splitType="Stretch">
-			<staticText>
-				<reportElement x="108" y="0" width="342" height="20" uuid="c3a14019-6fe7-41b2-8fc6-4ffb30eb5c87"/>
-				<box>
-					<pen lineWidth="0.0" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[شرکت ملی صنایع مس ایران]]></text>
-			</staticText>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="457" y="4" width="73" height="56" uuid="a570cbc1-87eb-4384-8674-537ad8b55a0f"/>
-				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
-			</image>
-			<staticText>
-				<reportElement x="108" y="22" width="342" height="18" uuid="2ea9c2f7-8d3a-4ff2-9a2d-301cf8da5032"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="12"/>
-				</textElement>
-				<text><![CDATA[امور آموزش و تجهیز نیروی انسانی]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="108" y="40" width="342" height="18" uuid="36857a1a-c911-41e1-b543-14924bcf5dc6"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="10"/>
-				</textElement>
-				<text><![CDATA[فرم طرح درس دوره آموزشی]]></text>
-			</staticText>
-		</band>
-	</title>
-	<detail>
-		<band height="276">
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="0" y="26" width="547" height="23" uuid="111e0a3f-5f40-42dc-b317-9edf88eb074f"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="B Nazanin" size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{NEEDTEXT}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="301" y="110" width="216" height="19" uuid="0d89adfa-1785-4195-942b-5beacb3f930f"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement x="356" y="7" width="199" height="19" uuid="e952c57e-642d-4691-863f-e8fb6f56e917"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[شرح مشکل/نیاز/درخواست:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="518" y="110" width="37" height="19" uuid="e96ce86f-e55d-48d8-982b-d1a0695e206e"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[کد دوره:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="518" y="51" width="37" height="19" uuid="03f8fea4-83cf-4aa5-9fed-4131e2d74e85"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-				</textElement>
-				<text><![CDATA[حیطه:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="485" y="131" width="70" height="19" uuid="1b8887ed-f035-43e3-879b-3e9be08058c0"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[دوره های پیشنیاز:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="487" y="172" width="68" height="19" uuid="b189b679-c4c5-46dc-a05f-4a1cc5c023a9"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[دوره های معادل:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="512" y="214" width="43" height="19" uuid="f2809e29-48c9-4713-a727-e199ac0bb5c8"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[نوع اجرا:]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="513" y="236" width="42" height="19" uuid="11b8f326-4536-40b4-96ca-e92a15ff95e1"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[نوع دوره:]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="170" y="52" width="347" height="18" uuid="f145b036-984e-4553-a2dd-089075cd6a50"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{domain}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="0" y="150" width="543" height="22" uuid="c43d2b91-3a7a-4093-b708-1bfc197dc7c9"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Shabnam" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{preCourse}]]></textFieldExpression>
-			</textField>
-			<textField isStretchWithOverflow="true" isBlankWhenNull="true">
-				<reportElement positionType="Float" x="0" y="191" width="542" height="19" uuid="d4fc7890-c4ff-4e95-869f-91463eda449d"/>
-				<textElement textAlignment="Right" verticalAlignment="Top">
-					<font fontName="Shabnam" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{equalCourse}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="430" y="214" width="82" height="19" uuid="05c18ebd-8569-4d70-8cbb-c073c357d9e1"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{eRun}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement positionType="Float" x="413" y="236" width="100" height="18" uuid="237e63ae-b91e-4a78-8b4c-19e51538ddb5"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="Shabnam" size="8"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$P{theo}]]></textFieldExpression>
-			</textField>
-			<staticText>
-				<reportElement positionType="Float" x="502" y="71" width="54" height="19" uuid="f7e79c9f-e208-4f35-b977-754d36611912"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[ عنوان دوره:]]></text>
-			</staticText>
-			<textField>
-				<reportElement positionType="Float" x="30" y="91" width="492" height="19" uuid="2a0ac7fc-75d6-4f5b-a9fa-d290a0161ffa"/>
-				<box>
-					<pen lineWidth="0.25"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam" size="9" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{COURSE}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<pageFooter>
-		<band splitType="Stretch"/>
-	</pageFooter>
-	<summary>
-		<band height="90" splitType="Stretch">
-			<property name="local_mesure_unitheight" value="pixel"/>
-			<componentElement>
-				<reportElement x="0" y="0" width="555" height="90" uuid="00b17579-8ed6-4cc0-90f1-b5a4559bbd78">
-					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
-					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
-					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
-				</reportElement>
-				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="tableDataset" uuid="deaba274-ce74-4fb8-a385-a1dd28d8306d">
-						<datasetParameter name="courseId">
-							<datasetParameterExpression><![CDATA[$P{courseId}]]></datasetParameterExpression>
-						</datasetParameter>
-						<connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
-					</datasetRun>
-					<jr:columnGroup width="555" uuid="bbf0b574-1ec8-4079-8e0e-3b7b4b8bf099">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
-						<jr:tableHeader style="Table_TH" height="30" rowSpan="1">
-							<staticText>
-								<reportElement x="0" y="0" width="555" height="30" uuid="d6257e04-5fa5-4518-93c8-e642c1983f6b"/>
-								<box>
-									<pen lineWidth="1.0" lineStyle="Double"/>
-									<topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-									<leftPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									<rightPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-								</box>
-								<textElement textAlignment="Center" verticalAlignment="Middle">
-									<font fontName="Shabnam" size="8" isBold="true"/>
-								</textElement>
-								<text><![CDATA[محتوا و رئوس مطالب دوره آموزشي]]></text>
-							</staticText>
-						</jr:tableHeader>
-						<jr:column width="60" uuid="8148e90b-b696-411b-9760-a7ca9fc43bb8">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-								<staticText>
-									<reportElement x="0" y="0" width="60" height="30" uuid="4d16dafc-0037-4195-8c2c-b313a2218c0f"/>
-									<box>
-										<pen lineWidth="1.0" lineStyle="Double"/>
-										<topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<leftPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7" isBold="true"/>
-									</textElement>
-									<text><![CDATA[زمان (ساعت)]]></text>
-								</staticText>
-							</jr:columnHeader>
-							<jr:detailCell style="Table_TD" height="30">
-								<textField>
-									<reportElement x="0" y="0" width="60" height="30" uuid="2549f53b-2727-49ac-bebe-b7f6a57fd1e9"/>
-									<box>
-										<leftPen lineWidth="1.0" lineStyle="Double"/>
-										<bottomPen lineWidth="1.0" lineStyle="Double"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{RUNTIME}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-						<jr:column width="230" uuid="c357cca6-cfa4-4afd-83cd-76326c825f6c">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-								<staticText>
-									<reportElement x="0" y="0" width="230" height="30" uuid="38e0311c-fa8f-4685-9859-261657077130"/>
-									<box leftPadding="2">
-										<pen lineWidth="1.0" lineStyle="Double"/>
-										<topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7" isBold="true"/>
-									</textElement>
-									<text><![CDATA[نام سرفصل]]></text>
-								</staticText>
-							</jr:columnHeader>
-							<jr:detailCell style="Table_TD" height="30">
-								<textField>
-									<reportElement x="0" y="0" width="230" height="30" uuid="64f2ed88-838a-470d-857d-d59652363259"/>
-									<box>
-										<bottomPen lineWidth="1.0" lineStyle="Double"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{SYLLABUS}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-						<jr:column width="265" uuid="46437743-44ad-4446-ad28-83f5707b2a63">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-							<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
-								<staticText>
-									<reportElement x="0" y="0" width="265" height="30" uuid="ef3f0728-dee3-4b5c-a944-fd5c21bad855"/>
-									<box leftPadding="2">
-										<pen lineWidth="1.0" lineStyle="Double"/>
-										<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-										<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7" isBold="true"/>
-									</textElement>
-									<text><![CDATA[نام هدف]]></text>
-								</staticText>
-							</jr:columnHeader>
-							<jr:detailCell style="Table_TD" height="30">
-								<textField>
-									<reportElement x="0" y="0" width="265" height="30" uuid="ebba8739-4d91-418b-9db2-b4abc925a9ec"/>
-									<box>
-										<pen lineWidth="1.0" lineStyle="Double"/>
-										<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-										<bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-										<rightPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
-									</box>
-									<textElement textAlignment="Center" verticalAlignment="Middle">
-										<font fontName="Shabnam" size="7"/>
-									</textElement>
-									<textFieldExpression><![CDATA[$F{GOAL}]]></textFieldExpression>
-								</textField>
-							</jr:detailCell>
-						</jr:column>
-					</jr:columnGroup>
-				</jr:table>
-			</componentElement>
-		</band>
-	</summary>
+        </queryString>
+        <field name="GOAL" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="GOAL"/>
+        </field>
+        <field name="SYLLABUS" class="java.lang.String">
+            <property name="com.jaspersoft.studio.field.label" value="SYLLABUS"/>
+        </field>
+        <field name="RUNTIME" class="java.math.BigDecimal">
+            <property name="com.jaspersoft.studio.field.label" value="RUNTIME"/>
+        </field>
+        <field name="DOMAIN" class="java.math.BigDecimal">
+            <property name="com.jaspersoft.studio.field.label" value="DOMAIN"/>
+        </field>
+    </subDataset>
+    <parameter name="logo_nicico" class="java.lang.Object"/>
+    <parameter name="courseId" class="java.lang.Long"/>
+    <parameter name="domain" class="java.lang.String"/>
+    <parameter name="preCourse" class="java.lang.String"/>
+    <parameter name="equalCourse" class="java.lang.String"/>
+    <parameter name="eRun" class="java.lang.String"/>
+    <parameter name="theo" class="java.lang.String"/>
+    <queryString>
+        <![CDATA[select   "TBL_COURSE"."C_TITLE_FA" as COURSE, "TBL_COURSE"."C_NEED_TEXT" as NEEDTEXT,  "TBL_COURSE"."C_CODE" as CODE from  "TBL_COURSE" where  "TBL_COURSE"."ID" = $P{courseId}]]>
+    </queryString>
+    <field name="COURSE" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="COURSE"/>
+    </field>
+    <field name="NEEDTEXT" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="NEEDTEXT"/>
+    </field>
+    <field name="CODE" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.label" value="CODE"/>
+    </field>
+    <title>
+        <band height="60" splitType="Stretch">
+            <staticText>
+                <reportElement x="108" y="0" width="342" height="20" uuid="c3a14019-6fe7-41b2-8fc6-4ffb30eb5c87"/>
+                <box>
+                    <pen lineWidth="0.0" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[شرکت ملی صنایع مس ایران]]></text>
+            </staticText>
+            <image hAlign="Center" vAlign="Middle">
+                <reportElement x="457" y="4" width="73" height="56" uuid="a570cbc1-87eb-4384-8674-537ad8b55a0f"/>
+                <imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+            </image>
+            <staticText>
+                <reportElement x="108" y="22" width="342" height="18" uuid="2ea9c2f7-8d3a-4ff2-9a2d-301cf8da5032"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="12"/>
+                </textElement>
+                <text><![CDATA[امور آموزش و تجهیز نیروی انسانی]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="108" y="40" width="342" height="18" uuid="36857a1a-c911-41e1-b543-14924bcf5dc6"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="10"/>
+                </textElement>
+                <text><![CDATA[فرم طرح درس دوره آموزشی]]></text>
+            </staticText>
+        </band>
+    </title>
+    <detail>
+        <band height="276">
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement positionType="Float" x="0" y="26" width="547" height="23" uuid="111e0a3f-5f40-42dc-b317-9edf88eb074f"/>
+                <textElement textAlignment="Right" verticalAlignment="Top">
+                    <font fontName="B Nazanin" size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{NEEDTEXT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement positionType="Float" x="301" y="110" width="216" height="19" uuid="0d89adfa-1785-4195-942b-5beacb3f930f"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Shabnam" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement x="356" y="7" width="199" height="19" uuid="e952c57e-642d-4691-863f-e8fb6f56e917"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[شرح مشکل/نیاز/درخواست:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="518" y="110" width="37" height="19" uuid="e96ce86f-e55d-48d8-982b-d1a0695e206e"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[کد دوره:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="518" y="51" width="37" height="19" uuid="03f8fea4-83cf-4aa5-9fed-4131e2d74e85"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                </textElement>
+                <text><![CDATA[حیطه:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="485" y="131" width="70" height="19" uuid="1b8887ed-f035-43e3-879b-3e9be08058c0"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[دوره های پیشنیاز:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="487" y="172" width="68" height="19" uuid="b189b679-c4c5-46dc-a05f-4a1cc5c023a9"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[دوره های معادل:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="512" y="214" width="43" height="19" uuid="f2809e29-48c9-4713-a727-e199ac0bb5c8"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[نوع اجرا:]]></text>
+            </staticText>
+            <staticText>
+                <reportElement positionType="Float" x="513" y="236" width="42" height="19" uuid="11b8f326-4536-40b4-96ca-e92a15ff95e1"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[نوع دوره:]]></text>
+            </staticText>
+            <textField>
+                <reportElement positionType="Float" x="170" y="52" width="347" height="18" uuid="f145b036-984e-4553-a2dd-089075cd6a50"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{domain}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement positionType="Float" x="0" y="150" width="543" height="22" uuid="c43d2b91-3a7a-4093-b708-1bfc197dc7c9"/>
+                <textElement textAlignment="Right" verticalAlignment="Top">
+                    <font fontName="Shabnam" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{preCourse}]]></textFieldExpression>
+            </textField>
+            <textField isStretchWithOverflow="true" isBlankWhenNull="true">
+                <reportElement positionType="Float" x="0" y="191" width="542" height="19" uuid="d4fc7890-c4ff-4e95-869f-91463eda449d"/>
+                <textElement textAlignment="Right" verticalAlignment="Top">
+                    <font fontName="Shabnam" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{equalCourse}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement positionType="Float" x="430" y="214" width="82" height="19" uuid="05c18ebd-8569-4d70-8cbb-c073c357d9e1"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Shabnam" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{eRun}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement positionType="Float" x="413" y="236" width="100" height="18" uuid="237e63ae-b91e-4a78-8b4c-19e51538ddb5"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="Shabnam" size="8"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$P{theo}]]></textFieldExpression>
+            </textField>
+            <staticText>
+                <reportElement positionType="Float" x="502" y="71" width="54" height="19" uuid="f7e79c9f-e208-4f35-b977-754d36611912"/>
+                <textElement textAlignment="Right" verticalAlignment="Middle">
+                    <font fontName="B Nazanin" size="11" isBold="true"/>
+                    <paragraph lineSpacing="Fixed"/>
+                </textElement>
+                <text><![CDATA[ عنوان دوره:]]></text>
+            </staticText>
+            <textField>
+                <reportElement positionType="Float" x="30" y="91" width="492" height="19" uuid="2a0ac7fc-75d6-4f5b-a9fa-d290a0161ffa"/>
+                <box>
+                    <pen lineWidth="0.25"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam" size="9" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{COURSE}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <pageFooter>
+        <band splitType="Stretch"/>
+    </pageFooter>
+    <summary>
+        <band height="90" splitType="Stretch">
+            <property name="local_mesure_unitheight" value="pixel"/>
+            <componentElement>
+                <reportElement x="0" y="0" width="555" height="90" uuid="00b17579-8ed6-4cc0-90f1-b5a4559bbd78">
+                    <property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+                    <property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+                    <property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+                </reportElement>
+                <jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components"
+                          xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+                    <datasetRun subDataset="tableDataset" uuid="deaba274-ce74-4fb8-a385-a1dd28d8306d">
+                        <datasetParameter name="courseId">
+                            <datasetParameterExpression><![CDATA[$P{courseId}]]></datasetParameterExpression>
+                        </datasetParameter>
+                        <connectionExpression><![CDATA[$P{REPORT_CONNECTION}]]></connectionExpression>
+                    </datasetRun>
+                    <jr:columnGroup width="555" uuid="bbf0b574-1ec8-4079-8e0e-3b7b4b8bf099">
+                        <property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [3]"/>
+                        <jr:tableHeader style="Table_TH" height="30" rowSpan="1">
+                            <staticText>
+                                <reportElement x="0" y="0" width="555" height="30" uuid="d6257e04-5fa5-4518-93c8-e642c1983f6b"/>
+                                <box>
+                                    <pen lineWidth="1.0" lineStyle="Double"/>
+                                    <topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                    <leftPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                    <bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                    <rightPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                </box>
+                                <textElement textAlignment="Center" verticalAlignment="Middle">
+                                    <font fontName="Shabnam" size="8" isBold="true"/>
+                                </textElement>
+                                <text><![CDATA[محتوا و رئوس مطالب دوره آموزشي]]></text>
+                            </staticText>
+                        </jr:tableHeader>
+                        <jr:column width="60" uuid="8148e90b-b696-411b-9760-a7ca9fc43bb8">
+                            <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+                            <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+                                <staticText>
+                                    <reportElement x="0" y="0" width="60" height="30" uuid="4d16dafc-0037-4195-8c2c-b313a2218c0f"/>
+                                    <box>
+                                        <pen lineWidth="1.0" lineStyle="Double"/>
+                                        <topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <leftPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7" isBold="true"/>
+                                    </textElement>
+                                    <text><![CDATA[زمان (ساعت)]]></text>
+                                </staticText>
+                            </jr:columnHeader>
+                            <jr:detailCell style="Table_TD" height="30">
+                                <textField>
+                                    <reportElement x="0" y="0" width="60" height="30" uuid="2549f53b-2727-49ac-bebe-b7f6a57fd1e9"/>
+                                    <box>
+                                        <leftPen lineWidth="1.0" lineStyle="Double"/>
+                                        <bottomPen lineWidth="1.0" lineStyle="Double"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7"/>
+                                    </textElement>
+                                    <textFieldExpression><![CDATA[$F{RUNTIME}]]></textFieldExpression>
+                                </textField>
+                            </jr:detailCell>
+                        </jr:column>
+                        <jr:column width="230" uuid="c357cca6-cfa4-4afd-83cd-76326c825f6c">
+                            <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+                            <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+                                <staticText>
+                                    <reportElement x="0" y="0" width="230" height="30" uuid="38e0311c-fa8f-4685-9859-261657077130"/>
+                                    <box leftPadding="2">
+                                        <pen lineWidth="1.0" lineStyle="Double"/>
+                                        <topPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7" isBold="true"/>
+                                    </textElement>
+                                    <text><![CDATA[نام سرفصل]]></text>
+                                </staticText>
+                            </jr:columnHeader>
+                            <jr:detailCell style="Table_TD" height="30">
+                                <textField>
+                                    <reportElement x="0" y="0" width="230" height="30" uuid="64f2ed88-838a-470d-857d-d59652363259"/>
+                                    <box>
+                                        <bottomPen lineWidth="1.0" lineStyle="Double"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7"/>
+                                    </textElement>
+                                    <textFieldExpression><![CDATA[$F{SYLLABUS}]]></textFieldExpression>
+                                </textField>
+                            </jr:detailCell>
+                        </jr:column>
+                        <jr:column width="265" uuid="46437743-44ad-4446-ad28-83f5707b2a63">
+                            <property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+                            <jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+                                <staticText>
+                                    <reportElement x="0" y="0" width="265" height="30" uuid="ef3f0728-dee3-4b5c-a944-fd5c21bad855"/>
+                                    <box leftPadding="2">
+                                        <pen lineWidth="1.0" lineStyle="Double"/>
+                                        <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7" isBold="true"/>
+                                    </textElement>
+                                    <text><![CDATA[نام هدف]]></text>
+                                </staticText>
+                            </jr:columnHeader>
+                            <jr:detailCell style="Table_TD" height="30">
+                                <textField>
+                                    <reportElement x="0" y="0" width="265" height="30" uuid="ebba8739-4d91-418b-9db2-b4abc925a9ec"/>
+                                    <box>
+                                        <pen lineWidth="1.0" lineStyle="Double"/>
+                                        <topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                                        <bottomPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                        <rightPen lineWidth="1.0" lineStyle="Double" lineColor="#000000"/>
+                                    </box>
+                                    <textElement textAlignment="Center" verticalAlignment="Middle">
+                                        <font fontName="Shabnam" size="7"/>
+                                    </textElement>
+                                    <textFieldExpression><![CDATA[$F{GOAL}]]></textFieldExpression>
+                                </textField>
+                            </jr:detailCell>
+                        </jr:column>
+                    </jr:columnGroup>
+                </jr:table>
+            </componentElement>
+        </band>
+    </summary>
 </jasperReport>

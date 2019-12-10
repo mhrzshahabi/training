@@ -2,7 +2,6 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompanyDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 
 import java.util.List;
 

@@ -18,111 +18,102 @@ import javax.servlet.http.HttpServletRequest;
 public class SkillGroupFormController {
 
 
-	private final OAuth2AuthorizedClientService authorizedClientService;
+    private final OAuth2AuthorizedClientService authorizedClientService;
 
-	@Value("${nicico.rest-api.url}")
+    @Value("${nicico.rest-api.url}")
 //	private String restApiUrl;
 
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "base/skill-group";
-	}
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "base/skill-group";
+    }
 
-	@RequestMapping("/print/{type}")
-	public ResponseEntity<?> print(final HttpServletRequest request,@PathVariable String type) {
-
-
-		String token = (String) request.getSession().getAttribute("AccessToken");
-
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+    @RequestMapping("/print/{type}")
+    public ResponseEntity<?> print(final HttpServletRequest request, @PathVariable String type) {
 
 
-		HttpEntity<String> entity = new HttpEntity<String>(headers);
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/pdf", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/excel", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/print/html", HttpMethod.GET, entity, byte[].class);
-		else
-			return null;
-	}
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-	@RequestMapping("/printSelected/{type}/{skillGroupIds}")
-	public ResponseEntity<?> printWithSelectedSkillGroup(final HttpServletRequest request,@PathVariable String type,@PathVariable String skillGroupIds) {
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
 
-		String token = (String) request.getSession().getAttribute("AccessToken");
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
-
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
-
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
-
-
-		HttpEntity<String> entity = new HttpEntity<String>(headers);
-
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/pdf/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/excel/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/html/"+skillGroupIds, HttpMethod.GET, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/print/pdf", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/print/excel", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/print/html", HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
+    }
 
 
+    @RequestMapping("/printSelected/{type}/{skillGroupIds}")
+    public ResponseEntity<?> printWithSelectedSkillGroup(final HttpServletRequest request, @PathVariable String type, @PathVariable String skillGroupIds) {
 
 
-	@RequestMapping("/printAll/{type}")
-	public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-		RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
 
-		HttpEntity<String> entity = new HttpEntity<String>(headers);
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/pdf", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/excel", HttpMethod.GET, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/html", HttpMethod.GET, entity, byte[].class);
-		else
-			return null;
-	}
-
-
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/pdf/" + skillGroupIds, HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/excel/" + skillGroupIds, HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printSelected/html/" + skillGroupIds, HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
+    }
 
 
+    @RequestMapping("/printAll/{type}")
+    public ResponseEntity<?> printAll(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
+
+        RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
 
+        HttpEntity<String> entity = new HttpEntity<String>(headers);
+
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/pdf", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/excel", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/skill-group/printAll/html", HttpMethod.GET, entity, byte[].class);
+        else
+            return null;
+    }
 
 
 //	@RequestMapping("/show-form")

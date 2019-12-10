@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-// <script>
+// script
 
     var method = "POST";
     var url;
@@ -42,7 +42,7 @@
             {name: "code"},
             {name: "titleFa"}
         ],
-        fetchDataURL: postGradeUrl + "iscList"
+        fetchDataURL: postGradeUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
@@ -308,7 +308,7 @@
 
 
     var IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
-      //  icon: "<spring:url value="remove.png"/>",
+        //  icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Post_Grade_Group_Jsp.close();
         }
@@ -445,7 +445,7 @@
     ///////////////////////////////////////////////functions/////////////////////////////////////////////////////
 
     function deletePostFromPostGroup(postId, postGroupId) {
-        isc.RPCManager.sendRequest(TrDSRequest(postGroupUrl + "removePost/" + postGroupId + "/" + postId,
+        isc.RPCManager.sendRequest(TrDSRequest(postGroupUrl + "/removePost/" + postGroupId + "/" + postId,
             "DELETE", null, "callback: delete_post_grade_result(rpcResponse)"));
     }
 
@@ -623,7 +623,7 @@
 
 <%--            &lt;%&ndash;} else {&ndash;%&gt;--%>
 <%--            &lt;%&ndash;isc.RPCManager.sendRequest({&ndash;%&gt;--%>
-<%--            &lt;%&ndash;actionURL: postGroupUrl + postGrouprecord.id + "/canDelete",&ndash;%&gt;--%>
+<%--            &lt;%&ndash;actionURL: postGroupUrl + "/" + postGrouprecord.id + "/canDelete",&ndash;%&gt;--%>
 <%--            &lt;%&ndash;httpMethod: "GET",&ndash;%&gt;--%>
 <%--            &lt;%&ndash;httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},&ndash;%&gt;--%>
 <%--            &lt;%&ndash;useSimpleHttp: true,&ndash;%&gt;--%>
@@ -824,14 +824,14 @@
 <%--                } else {--%>
 
 <%--                    // alert(record.id);--%>
-<%--                    // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + record.id + "/unAttachPosts";--%>
+<%--                    // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";--%>
 <%--                    // RestDataSource_All_Posts.invalidateCache();--%>
 <%--                    // RestDataSource_All_Posts.fetchData();--%>
 <%--                    ListGrid_AllPostGrades.fetchData();--%>
 <%--                    ListGrid_AllPostGrades.invalidateCache();--%>
 
 
-<%--                    RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + record.id + "/getPosts"--%>
+<%--                    RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts"--%>
 <%--                    // RestDataSource_ForThisPostGroup_GetPosts.invalidateCache();--%>
 <%--                    // RestDataSource_ForThisPostGroup_GetPosts.fetchData();--%>
 <%--                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>

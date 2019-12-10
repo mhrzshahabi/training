@@ -11,5 +11,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface SubCategoryDAO extends JpaRepository<SubCategory,Long> , JpaSpecificationExecutor<SubCategory> {
+public interface SubCategoryDAO extends JpaRepository<SubCategory, Long>, JpaSpecificationExecutor<SubCategory> {
 }

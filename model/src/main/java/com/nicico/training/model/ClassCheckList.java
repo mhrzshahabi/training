@@ -30,7 +30,7 @@ public class ClassCheckList extends Auditable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_check_list_item_id",foreignKey =@ForeignKey(name = "fk_ClassCheckList2checkListItem") ,insertable = false, updatable = false)
+    @JoinColumn(name = "f_check_list_item_id", foreignKey = @ForeignKey(name = "fk_ClassCheckList2checkListItem"), insertable = false, updatable = false)
     private CheckListItem checkListItem;
 
     @NotNull
@@ -39,10 +39,10 @@ public class ClassCheckList extends Auditable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_tclass_id",foreignKey = @ForeignKey(name = "fk_ClassCheckList2tclass"),insertable = false, updatable = false)
+    @JoinColumn(name = "f_tclass_id", foreignKey = @ForeignKey(name = "fk_ClassCheckList2tclass"), insertable = false, updatable = false)
     private Tclass tclass;
 
-     @NotNull
+    @NotNull
     @Column(name = "f_tclass_id")
     private Long tclassId;
 }

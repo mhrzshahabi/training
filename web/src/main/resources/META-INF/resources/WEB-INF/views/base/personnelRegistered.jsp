@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     var personnelRegMethod = "POST";
     var personnelRegWait;
@@ -10,11 +10,42 @@
     var educationMajorUrlPerReg = educationUrl + "major/";
     var codeMeliCheckPerReg = true;
     var persianRegDateCheck = true;
+    var persianRegEmpDateCheck = true;
+    var mailCheckPerReg = true;
+    var cellPhoneCheckPerReg = true;
+
 
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
     //--------------------------------------------------------------------------------------------------------------------//
+
+    var RestDataSource_JobDS_PerReg = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+        ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
+        fetchDataURL: jobUrl + "/iscList"
+    });
 
     var RestDataSource_company_PerReg = isc.TrDS.create({
         fields: [
@@ -129,7 +160,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: postGradeUrl + "iscList"
+        fetchDataURL: postGradeUrl + "/iscList"
     });
 
     var RestDataSource_Post_PerReg = isc.TrDS.create({
@@ -332,6 +363,16 @@
             },
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
             {name: "ccpTitle", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains"},
+
+            {name: "religion", title: "<spring:message code="religion"/>", filterOperator: "iContains"},
+            {name: "nationality", title: "<spring:message code="nationality"/>", filterOperator: "iContains"},
+            {name: "address", title: "<spring:message code="home.address"/>", filterOperator: "iContains"},
+            {name: "phone", title: "<spring:message code="telephone"/>", filterOperator: "iContains"},
+            {name: "fax", title: "<spring:message code="fax"/>", filterOperator: "iContains"},
+            {name: "mobile", title: "<spring:message code="cellPhone"/>", filterOperator: "iContains"},
+            {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+            {name: "accountNumber", title: "<spring:message code="account.number"/>", filterOperator: "iContains"},
+
             {name: "version"}
         ],
         fetchDataURL: personnelRegUrl + "spec-list"
@@ -382,7 +423,6 @@
 
     var PersonnelReg_vm = isc.ValuesManager.create({});
 
-
     var DynamicForm_PersonnelReg_BaseInfo = isc.DynamicForm.create({
         valuesManager: PersonnelReg_vm,
         width: "800",
@@ -411,24 +451,6 @@
                 showHintInField: true
             },
             {
-                name: "firstName",
-                title: "<spring:message code='firstName'/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                // hint: "Persian/فارسی",
-                length: "30",
-                showHintInField: true
-            },
-            {
-                name: "lastName",
-                title: "<spring:message code='lastName'/>",
-                required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                // hint: "Persian/فارسی",
-                length: "50",
-                showHintInField: true
-            },
-            {
                 name: "nationalCode",
                 title: "<spring:message code='national.code'/>",
                 required: true,
@@ -447,6 +469,24 @@
                         // fillPersonalInfoFields(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
                     }
                 }
+            },
+            {
+                name: "firstName",
+                title: "<spring:message code='firstName'/>",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                // hint: "Persian/فارسی",
+                length: "30",
+                showHintInField: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code='lastName'/>",
+                required: true,
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                // hint: "Persian/فارسی",
+                length: "50",
+                showHintInField: true
             },
             {
                 name: "birthCertificateNo",
@@ -514,6 +554,31 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
             {
+                name: "nationality",
+                title: "<spring:message code='nationality'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                showHintInField: true,
+                valueMap:
+                    {
+                        "ایرانی": "<spring:message code='nationality.iranian'/>",
+                        "غیر ایرانی": "<spring:message code='nationality.notIranian'/>"}
+            },
+            {
+                name: "religion",
+                title: "<spring:message code='religion'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                showHintInField: true
+                ,
+                valueMap:
+                    { "اسلام شیعه اثنی عشری": "<spring:message code='religion.shiite'/>",
+                        "اسلام شیعه": "<spring:message code='religion.shia'/>",
+                        "اسلام سنی": "<spring:message code='religion.sunni'/>",
+                        "زرتشتی": "<spring:message code='religion.zoroastrianism'/>"}
+            },
+
+            {
                 name: "maritalStatus",
                 title: "<spring:message code='marital.status'/>",
                 textAlign: "center",
@@ -563,38 +628,28 @@
                 pickListFields: [
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
-            {name: "version", title: "version", canEdit: false, hidden: true},
-            {name: "personnelNo2", title: "version", canEdit: false, hidden: true},
-            {name: "employmentStatus", title: "version", canEdit: false, hidden: true},
-            {name: "workPlaceTitle", title: "version", canEdit: false, hidden: true},
-            {name: "fatherName", title: "version", canEdit: false, hidden: true},
-            {name: "age", title: "version", canEdit: false, hidden: true},
-            {name: "active", title: "version", canEdit: false, hidden: true},
-            {name: "deleted", title: "version", canEdit: false, hidden: true},
-            {name: "employmentDate", title: "version", canEdit: false, hidden: true},
-            {name: "postCode", title: "version", canEdit: false, hidden: true},
+
+            {name: "personnelNo2", title: "<spring:message code='personnel.no.6.digits'/>", keyPressFilter: "[0-9]",
+                length: "6"},
+
+            {name: "fatherName", title: "<spring:message code='father.name'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "50" },
+
+            {name: "age", title: "<spring:message code='age'/>", keyPressFilter: "[0-9]",
+                length: "2"},
+            {name: "insuranceCode", title: "<spring:message code='insurance.code'/>",  keyPressFilter: "[0-9]",
+                length: "10"},
+
             {name: "postAssignmentDate", title: "version", canEdit: false, hidden: true},
-            {name: "operationalUnitTitle", title: "version", canEdit: false, hidden: true},
-            {name: "employmentTypeTitle", title: "version", canEdit: false, hidden: true},
-            {name: "jobNo", title: "version", canEdit: false, hidden: true},
-            {name: "jobTitle", title: "version", canEdit: false, hidden: true},
-            {name: "contractNo", title: "version", canEdit: false, hidden: true},
             {name: "educationLicenseTypeTitle", title: "version", canEdit: false, hidden: true},
             {name: "departmentTitle", title: "version", canEdit: false, hidden: true},
             {name: "departmentCode", title: "version", canEdit: false, hidden: true},
-            {name: "contractDescription", title: "version", canEdit: false, hidden: true},
-            {name: "workYears", title: "version", canEdit: false, hidden: true},
-            {name: "workMonths", title: "version", canEdit: false, hidden: true},
-            {name: "workDays", title: "version", canEdit: false, hidden: true},
-            {name: "insuranceCode", title: "version", canEdit: false, hidden: true},
             {name: "postGradeCode", title: "version", canEdit: false, hidden: true},
             {name: "ccpCode", title: "version", canEdit: false, hidden: true},
-            {name: "ccpArea", title: "version", canEdit: false, hidden: true},
-            {name: "ccpAssistant", title: "version", canEdit: false, hidden: true},
-            {name: "ccpAffairs", title: "version", canEdit: false, hidden: true},
-            {name: "ccpSection", title: "version", canEdit: false, hidden: true},
             {name: "ccpUnit", title: "version", canEdit: false, hidden: true},
-            {name: "ccpTitle", title: "version", canEdit: false, hidden: true}
+            {name: "ccpTitle", title: "version", canEdit: false, hidden: true},
+            {name: "version", title: "version", canEdit: false, hidden: true},
         ]
 
     });
@@ -644,6 +699,55 @@
                     }
                 ]
             },
+            {name: "employmentDate", title: "<spring:message code='employment.date'/>",
+                ID: "employmentDate_jspPersonnelReg",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('employmentDate_jspPersonnelReg', this, 'ymd', '/');
+                    }
+                }],
+                changed: function () {
+                    var dateCheck;
+                    dateCheck = checkBirthDate(DynamicForm_PersonnelReg_BaseInfo.getValue("employmentDate"));
+                    persianRegEmpDateCheck = dateCheck;
+                    if (dateCheck === false)
+                        DynamicForm_PersonnelReg_EmployEdu.addFieldErrors("employmentDate", "<spring:message
+                                                                            code='msg.correct.date'/>", true);
+                    else if (dateCheck === true)
+                        DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
+                }},
+            {name: "employmentStatus", title: "<spring:message code='employment.status'/>" , valueMap:
+                    {
+                        "اشتغال": "<spring:message code='employmentStatus.employment'/>",
+                        "بازنشسته": "<spring:message code='employmentStatus.retired'/>",
+                        "فوت": "<spring:message code='employmentStatus.death'/>",
+                        "اخراج": "<spring:message code='employmentStatus.layingOff'/>"}
+                        },
+            {
+                name: "employmentTypeTitle",
+                title: "<spring:message code='employment.type'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                showHintInField: true,
+                valueMap:
+                    {
+                        "دائم": "<spring:message code='employmentTypeTitle.permanent'/>",
+                        "قراردادی": "<spring:message code='employmentTypeTitle.contractual'/>",
+                        "موقت": "<spring:message code='employmentTypeTitle.temporary'/>",
+                        "حق الزحمه": "<spring:message code='employmentTypeTitle.wage'/>"}
+            },
+
+            {name: "contractNo", title: "<spring:message code='contract.no'/>", keyPressFilter: "[0-9]",
+                length: "10"},
+
+            {name: "contractDescription", title: "<spring:message code='contract.description'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "150"},
+
             {
                 name: "educationLevel",
                 title: "<spring:message code='education.level'/>",
@@ -670,6 +774,7 @@
                     }
                 ]
             },
+
             {
                 name: "educationMajor",
                 title: "<spring:message code='education.major'/>",
@@ -699,6 +804,99 @@
                     }
                 ]
             },
+
+            {name: "jobNo",  title: "<spring:message code='job.code'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "code",
+                valueField: "code",
+                optionDataSource: RestDataSource_JobDS_PerReg,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "code",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
+                ],},
+            {name: "jobTitle", title: "<spring:message code='job.title'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "titleFa",
+                optionDataSource: RestDataSource_JobDS_PerReg,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ],
+            },
+            {
+                name: "postCode", title: "<spring:message code='post.code'/>",
+                textAlign: "center",
+                editorType: "ComboBoxItem",
+                width: "*",
+                changeOnKeypress: true,
+                displayField: "code",
+                valueField: "code",
+                optionDataSource: RestDataSource_Post_PerReg,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    },
+                    {
+                        name: "code",
+                        width: "30%",
+                        filterOperator: "iContains"
+                    }
+                ],
+            },
+
             {
                 name: "postTitle",
                 title: "<spring:message code='post'/>",
@@ -726,8 +924,19 @@
                         width: "70%",
                         filterOperator: "iContains"
                     }
-                ]
-            },
+                ],
+                // changed: function () {
+                //
+                //     // DynamicForm_PersonnelReg_EmployEdu.setValue("postCode", RestDataSource_Post_PerReg.getValue("code"));
+                //     DynamicForm_PersonnelReg_EmployEdu.setValue("postCode", RestDataSource_Post_PerReg.getSelectedRecord().code);
+                // }
+
+                // click: function (form, item, icon) {
+                //
+                //     DynamicForm_PersonnelReg_EmployEdu.setValue("postCode", RestDataSource_Post_PerReg.getSelectedRecord().code);
+                // },
+
+                },
             {
                 name: "postGradeTitle",
                 title: "<spring:message code='post.grade'/>",
@@ -757,33 +966,205 @@
                     }
                 ]
             },
+            {name: "workPlaceTitle", title: "<spring:message code='work.place'/>" , valueMap:
+                    {
+                        "سرچشمه": "<spring:message code='workPlaceTitle.sarcheshmeh'/>",
+                        "شهربابک": "<spring:message code='workPlaceTitle.shahrbabak'/>",
+                        "سونگون": "<spring:message code='workPlaceTitle.songoon'/>",
+                        "تهرات": "<spring:message code='workPlaceTitle.tehran'/>"}
+                    },
             {
                 name: "workTurn",
                 title: "<spring:message code='work.turn'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                // hint: "Persian/فارسی",
                 length: "30",
+                showHintInField: true , valueMap:
+                    {
+                        "عادیکار": "<spring:message code='workTurn.normal'/>",
+                        "شیفت دو نوبتی منظم": "<spring:message code='workTurn.regularTwo'/>",
+                        "شیفت 24/48": "<spring:message code='workTurn.shift24_48'/>",
+                        "شبکار دائم": "<spring:message code='workTurn.nightmare'/>"}
+            },
+
+            {name: "workYears", title: "<spring:message code='work.years'/>",  keyPressFilter: "[0-9]",
+                length: "2"},
+
+            {name: "workMonths", title: "<spring:message code='work.months'/>",  keyPressFilter: "[0-9]",
+                length: "2"},
+
+            {name: "workDays", title: "<spring:message code='work.days'/>",  keyPressFilter: "[0-9]",
+                length: "2"},
+            {name: "active", title: "<spring:message code='active.status'/>",  valueMap:
+                    {"-1": "<spring:message code='active'/>", "0": "<spring:message code='deActive'/>"}
+            },
+            {name: "deleted", title: "<spring:message code='delete.status'/>",  valueMap:
+                    {"-1": "<spring:message code='deleted'/>", "0": "<spring:message code='notDeleted'/>"}
+            }
+        ]
+
+    });
+
+
+    var DynamicForm_PersonnelReg_OperationalUnit= isc.DynamicForm.create({
+        valuesManager: PersonnelReg_vm,
+        width: "800",
+        titleWidth: "120",
+        height: "190",
+        align: "center",
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 4,
+        margin: 50,
+        padding: 5,
+        fields: [
+
+            {
+                name: "operationalUnitTitle",
+                title: "<spring:message code='operational.unit'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "30",
+                showHintInField: true
+            },
+
+            {
+                name: "ccpArea",
+                title: "<spring:message code='area'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "70",
+                showHintInField: true
+            },
+            {
+                name: "ccpAssistant",
+                title: "<spring:message code='assistance'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "70",
+                showHintInField: true
+            },
+            {
+                name: "ccpAffairs",
+                title: "<spring:message code='affairs'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "70",
+                showHintInField: true
+            },
+            {
+                name: "ccpSection",
+                title: "<spring:message code='section'/>",
+                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
+                length: "70",
                 showHintInField: true
             },
         ]
 
     });
 
-    var personnelRegTabs = isc.TabSet.create({
-        // height: 350,
-        // width: 750,
+    var DynamicForm_PersonnelReg_ContactInfo= isc.DynamicForm.create({
+        valuesManager: PersonnelReg_vm,
+        width: "800",
+        titleWidth: "120",
+        height: "190",
+        align: "center",
+        canSubmit: true,
+        showInlineErrors: true,
+        showErrorText: false,
+        showErrorStyle: false,
+        errorOrientation: "right",
+        titleAlign: "left",
+        requiredMessage: "<spring:message code='msg.field.is.required'/>",
+        numCols: 4,
+        margin: 50,
+        padding: 5,
+        fields: [
+
+            {
+                name: "address",
+                title: "<spring:message code='home.address'/>",
+                type: "textArea",
+                length: "255"
+            },
+            {
+                name: "phone",
+                title: "<spring:message code='telephone'/>",
+                keyPressFilter: "[0-9]",
+                length: "11"
+            },
+            {
+                name: "fax",
+                title: "<spring:message code='telefax'/>"
+            },
+            {
+                name: "mobile",
+                title: "<spring:message code='cellPhone'/>",
+                keyPressFilter: "[0-9]",
+                length: "11",
+                hint: "*********09",
+                showHintInField: true,
+                errorMessage: "<spring:message code='msg.mobile.validation'/>"
+                , changed: function () {
+                    var mobileCheck;
+                    mobileCheck = checkMobile(DynamicForm_PersonnelReg_ContactInfo.getValue("mobile"));
+                    cellPhoneCheckPerReg = mobileCheck;
+                    if (mobileCheck === false)
+                        DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message
+                                                                           code='msg.mobile.validation'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
+                }
+            },
+            {
+                name: "email",
+                title: "<spring:message code='email'/>",
+                showHintInField: true,
+                length: "30"
+                , changed: function () {
+                    var emailCheck;
+                    emailCheck = checkEmailPerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("email"));
+                    mailCheckPerReg = emailCheck;
+                    if (emailCheck === false)
+                        DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("email",
+                            "<spring:message code='msg.email.validation'/>", true);
+                    if (emailCheck === true)
+                        DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("email", true);
+                }
+            },
+
+            {
+                name: "accountNumber",
+                title: "<spring:message code='account.number'/>",
+                keyPressFilter: "[0-9]",
+                length: "13"
+            },
+        ]
+
+    });
+
+        var personnelRegTabs = isc.TabSet.create({
         width: 820,
         titleWidth: 120,
-        height: 300,
+        height: 400,
         showTabScroller: false,
-        tabs: [{
+        tabs: [
+            {
             title: "<spring:message code='personnelReg.baseInfo'/>",
             pane: DynamicForm_PersonnelReg_BaseInfo
         },
             {
                 title: "<spring:message code='personnelReg.employEdu'/>",
                 pane: DynamicForm_PersonnelReg_EmployEdu
-            }
+            },
+            {
+                title: "<spring:message code='operational.unit'/>",
+                pane: DynamicForm_PersonnelReg_OperationalUnit
+            },
+            {
+                title: "<spring:message code='contact.information'/>",
+                pane: DynamicForm_PersonnelReg_ContactInfo
+            },
         ]
     });
 
@@ -813,15 +1194,35 @@
                                                                             code='msg.correct.date'/>", true);
                 return;
             }
+            if (persianRegEmpDateCheck === false) {
+                DynamicForm_PersonnelReg_EmployEdu.addFieldErrors("employmentDate", "<spring:message
+                                                                            code='msg.correct.date'/>", true);
+                return;
+            }
+            if (cellPhoneCheckPerReg === false) {
+                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message
+                                                                            code='msg.mobile.validation'/>", true);
+                return;
+            }
+            if (mailCheckPerReg === false) {
+                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("email", "<spring:message
+                                                                            code='msg.email.validation'/>", true);
+                return;
+            }
             DynamicForm_PersonnelReg_BaseInfo.validate();
             DynamicForm_PersonnelReg_EmployEdu.validate();
+            DynamicForm_PersonnelReg_ContactInfo.validate();
             if (DynamicForm_PersonnelReg_BaseInfo.hasErrors()) {
                 personnelRegTabs.selectTab(0);
                 return;
             } else if (DynamicForm_PersonnelReg_EmployEdu.hasErrors()) {
                 personnelRegTabs.selectTab(1);
                 return;
-            } else {
+            }else if (DynamicForm_PersonnelReg_ContactInfo.hasErrors()) {
+                personnelRegTabs.selectTab(3);
+                return;
+            }
+            else {
                 var data = PersonnelReg_vm.getValues();
                 var personnelRegSaveUrl = personnelRegUrl;
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
@@ -882,7 +1283,7 @@
     });
 
     var ToolStripButton_Edit_JspPersonnelReg = isc.ToolStripButtonEdit.create({
-        // icon: "[SKIN]/actions/edit.png",
+
         // title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_personnelReg_edit();
@@ -890,7 +1291,7 @@
     });
 
     var ToolStripButton_Add_JspPersonnelReg = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         // title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_personnelReg_add();
@@ -915,6 +1316,7 @@
 
     var ToolStrip_Actions_JspPersonnelReg = isc.ToolStrip.create({
         width: "100%",
+        membersMargin: 5,
         members: [
 
             ToolStripButton_Add_JspPersonnelReg,
@@ -1220,4 +1622,8 @@
         }
         s = s % 11;
         return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
+    };
+
+    function checkEmailPerReg(email) {
+        return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     };

@@ -12,9 +12,9 @@ import javax.transaction.Transactional;
 import java.util.List;
 
 @Repository
-public interface EducationMajorDAO extends JpaRepository<EducationMajor,Long>, JpaSpecificationExecutor<EducationMajor> {
+public interface EducationMajorDAO extends JpaRepository<EducationMajor, Long>, JpaSpecificationExecutor<EducationMajor> {
     @Modifying
-    @Query(value = "select * from TBL_EDUCATION_MAJOR where C_TITLE_FA = :titleFa",nativeQuery = true)
+    @Query(value = "select * from TBL_EDUCATION_MAJOR where C_TITLE_FA = :titleFa", nativeQuery = true)
     @Transactional
     List<EducationMajor> findByTitleFa(@Param("titleFa") String titleFa);
 }

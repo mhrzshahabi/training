@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//<script>
 
     var classMethod = "POST";
     var autoValid = false;
@@ -1582,7 +1582,7 @@
                 "targetTitleFa": "کلاس"
             }]
             if (classMethod.localeCompare("POST") === 0) {
-                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(VarParams), "callback:startProcess(rpcResponse)"));
             }
 
             var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",

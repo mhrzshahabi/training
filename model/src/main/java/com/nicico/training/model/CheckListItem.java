@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+
 @Getter
 @Setter
 @NoArgsConstructor
@@ -25,7 +26,7 @@ public class CheckListItem extends Auditable {
     @Column(name = "c_group")
     private String group;
 
-    @Column(name="b_is_deleted")
+    @Column(name = "b_is_deleted")
     private Boolean isDeleted;
 
     @ManyToOne(fetch = FetchType.LAZY)
