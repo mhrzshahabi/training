@@ -100,7 +100,7 @@ filterOperator: "iContains"
 {name: "skill.titleFa", title: "<spring:message code="skill"/>", filterOperator: "iContains"},
 {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
 ],
-fetchDataURL: needAssessmentUrl + "iscList"
+fetchDataURL: needAssessmentUrl + "/iscList"
 });
 
 NeedAssessmentLG_needAssessment = isc.TrLG.create({
@@ -288,7 +288,7 @@ let needAssessmentSaveUrl = needAssessmentUrl;
 let needAssessmentAction = '<spring:message code="created"/>';
 if (needAssessmentMethod_needAssessment.localeCompare("PUT") == 0) {
 let record = NeedAssessmentLG_needAssessment.getSelectedRecord();
-needAssessmentSaveUrl += record.id;
+needAssessmentSaveUrl +=  "/" + record.id;
 needAssessmentAction = '<spring:message code="edited"/>';
 }
 let data = NeedAssessmentDF_needAssessment.getValues();
@@ -307,7 +307,7 @@ buttonClick: function (button, index) {
 this.close();
 if (index == 0) {
 isc.RPCManager.sendRequest(
-TrDSRequest(needAssessmentUrl + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="need.assessment"/>', '<spring:message code="removed"/>')")
+TrDSRequest(needAssessmentUrl + "/" + record.id, "DELETE", null, "callback: studyRcpResponse(rpcResponse, '<spring:message code="need.assessment"/>', '<spring:message code="removed"/>')")
 );
 }
 }
