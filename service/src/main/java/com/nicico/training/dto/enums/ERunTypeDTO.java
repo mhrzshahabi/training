@@ -4,7 +4,6 @@ package com.nicico.training.dto.enums;/* com.nicico.training.dto
 @Time:7:53 AM
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ERunType;
 import io.swagger.annotations.ApiModel;
@@ -16,8 +15,7 @@ import lombok.experimental.Accessors;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ERunTypeDTO {
 
     @Getter

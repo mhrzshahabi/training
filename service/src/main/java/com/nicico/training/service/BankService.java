@@ -96,7 +96,8 @@ public class BankService implements IBankService {
         final Optional<Bank> optionalBank = bankDAO.findById(bankID);
         final Bank bank = optionalBank.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.BankNotFound));
 
-        return modelMapper.map(bank.getBankBranchSet(), new TypeToken<List<BankBranchDTO.Info>>() {}.getType());
+        return modelMapper.map(bank.getBankBranchSet(), new TypeToken<List<BankBranchDTO.Info>>() {
+        }.getType());
     }
 
 

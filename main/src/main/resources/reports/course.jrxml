@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Course" pageWidth="842" pageHeight="595" orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf34dd94-9e94-4bc2-bf55-2100c9e45ff3">
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
-	<parameter name="logo_nicico" class="java.lang.Object"/>
-	<queryString language="SQL">
-		<![CDATA[SELECT
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Course" pageWidth="842" pageHeight="595"
+              orientation="Landscape" columnWidth="802" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="bf34dd94-9e94-4bc2-bf55-2100c9e45ff3">
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="DataAdapter.xml"/>
+    <parameter name="logo_nicico" class="java.lang.Object"/>
+    <queryString language="SQL">
+        <![CDATA[SELECT
     training.tbl_course.c_code,
     training.tbl_course.c_title_fa,
     training.tbl_course.c_title_en,
@@ -21,335 +23,335 @@
     training.tbl_course left
     JOIN training.tbl_sub_category ON training.tbl_sub_category.id = training.tbl_course.subcategory_id
     LEFT JOIN training.tbl_category ON training.tbl_category.id = training.tbl_course.category_id]]>
-	</queryString>
-	<field name="C_CODE" class="java.lang.String"/>
-	<field name="C_TITLE_FA" class="java.lang.String"/>
-	<field name="C_TITLE_EN" class="java.lang.String"/>
-	<field name="C_TITLE_FA1" class="java.lang.String"/>
-	<field name="C_TITLE_FA2" class="java.lang.String"/>
-	<field name="E_RUN_TYPE" class="java.lang.String"/>
-	<field name="E_LEVEL_TYPE" class="java.lang.String"/>
-	<field name="E_TECHNICAL_TYPE" class="java.lang.String"/>
-	<field name="E_THEO_TYPE" class="java.lang.String"/>
-	<field name="N_THEORY_DURATION" class="java.math.BigDecimal"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="80" splitType="Stretch">
-			<rectangle radius="5">
-				<reportElement x="0" y="0" width="800" height="80" backcolor="#F0F0F0" uuid="8d545c6d-f0d2-4809-bc83-095935302396"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="290" y="20" width="186" height="40" uuid="9edd130b-f1d1-4be3-a875-62372a2416fb"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[لیست دوره ها]]></text>
-			</staticText>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="708" y="4" width="84" height="69" uuid="f5181843-9571-4af9-889a-65e30f9813d4"/>
-				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
-			</image>
-		</band>
-	</title>
-	<columnHeader>
-		<band height="32">
-			<staticText>
-				<reportElement x="423" y="1" width="90" height="30" uuid="032d2a1a-658b-4959-88a5-7bffabc66374"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[گروه]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="514" y="1" width="90" height="30" uuid="0d3ea722-0026-46d1-974b-41b91826b7fd"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[نام لاتین]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="604" y="1" width="90" height="30" uuid="4113b590-a538-4c0d-9661-30b1662decfb"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[نام]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="350" y="1" width="72" height="30" uuid="5db44e1b-d35e-4876-879e-4f4d12eb0d95"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[زیرگروه]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="269" y="1" width="80" height="30" uuid="335f6010-c18e-4bda-9ae0-b925f7cc5ea7"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[نوع اجرا]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="189" y="1" width="80" height="30" uuid="7b7b2df0-d540-45a0-ac16-f109599db292"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[سطح دوره]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="119" y="1" width="70" height="30" uuid="c765a98d-ecf4-4aaf-b1ed-f033ad3ae741"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[نوع دوره]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="51" y="1" width="67" height="31" uuid="61fff029-db9f-4603-ab30-fb2963163fbb"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="12" isBold="true"/>
-				</textElement>
-				<text><![CDATA[نوع تخصصی]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="1" y="1" width="50" height="31" uuid="ea209b21-ab43-4038-a957-9c32e65b8dff"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[مدت]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="695" y="1" width="105" height="30" uuid="bbc12301-ce66-4049-970a-b437ab1e8fb4"/>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="14" isBold="true"/>
-				</textElement>
-				<text><![CDATA[کد]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="34" splitType="Stretch">
-			<textField>
-				<reportElement x="695" y="0" width="105" height="34" uuid="0bce566e-7438-492c-b268-3d604aa19130">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dbc0e742-755b-42ef-a1b5-c42191fa1798"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{C_CODE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="604" y="0" width="91" height="34" uuid="824c659c-fcbd-49e4-bcfc-ef60b6c983c6">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2dd78534-b77f-4329-bdb1-8a497c384172"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="514" y="0" width="90" height="34" uuid="22c1f778-adcd-419d-9a37-4956f852549d">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="612da4de-68f5-4a46-9be8-daba9aff5c6c"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{C_TITLE_EN}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="424" y="0" width="90" height="34" uuid="ecea32cd-ecf4-4703-a3a2-29ba68696b08">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5481f459-362d-434c-83b5-36b71d56e32b"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{C_TITLE_FA1}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="350" y="0" width="74" height="34" uuid="2676f310-57a7-4ad1-ac2a-7e2e994d60fb">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="852a54ee-b19a-4704-be83-c52a897253a3"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{C_TITLE_FA2}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="270" y="0" width="80" height="34" uuid="f88db381-26ec-4435-8fad-5040e86e04b7">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="342b8f0c-6083-4c87-b16b-0be48e87424f"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{E_RUN_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="190" y="0" width="80" height="34" uuid="08adb6e6-5e70-487e-9421-980a79b38cb6">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69351288-cf8e-41bb-a910-ac8a9fefbacb"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{E_LEVEL_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="120" y="0" width="70" height="34" uuid="655b3f3b-b110-4b9d-952f-3ab4d172fed7">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="48089f3e-7165-4cbd-ae07-8c897dfac21b"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{E_THEO_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="50" y="0" width="70" height="34" uuid="6e6127a0-0323-4080-9f6a-328b1c4d230d">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="644fa720-82ec-4781-9eab-3eb4a6e48798"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{E_TECHNICAL_TYPE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="1" y="0" width="50" height="34" uuid="7c85439e-27ee-40cd-a52d-e6d89bf3afe3">
-					<property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5933b08a-11e6-4174-b857-af9ab8c221af"/>
-				</reportElement>
-				<box>
-					<topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
-					<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{N_THEORY_DURATION}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<pageFooter>
-		<band height="31">
-			<textField>
-				<reportElement x="0" y="0" width="100" height="30" uuid="3fce7a80-17c8-4d48-a6b6-c58dafd345d8"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD" size="10" isBold="true"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
-			</textField>
-		</band>
-	</pageFooter>
+    </queryString>
+    <field name="C_CODE" class="java.lang.String"/>
+    <field name="C_TITLE_FA" class="java.lang.String"/>
+    <field name="C_TITLE_EN" class="java.lang.String"/>
+    <field name="C_TITLE_FA1" class="java.lang.String"/>
+    <field name="C_TITLE_FA2" class="java.lang.String"/>
+    <field name="E_RUN_TYPE" class="java.lang.String"/>
+    <field name="E_LEVEL_TYPE" class="java.lang.String"/>
+    <field name="E_TECHNICAL_TYPE" class="java.lang.String"/>
+    <field name="E_THEO_TYPE" class="java.lang.String"/>
+    <field name="N_THEORY_DURATION" class="java.math.BigDecimal"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="80" splitType="Stretch">
+            <rectangle radius="5">
+                <reportElement x="0" y="0" width="800" height="80" backcolor="#F0F0F0" uuid="8d545c6d-f0d2-4809-bc83-095935302396"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="290" y="20" width="186" height="40" uuid="9edd130b-f1d1-4be3-a875-62372a2416fb"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[لیست دوره ها]]></text>
+            </staticText>
+            <image hAlign="Center" vAlign="Middle">
+                <reportElement x="708" y="4" width="84" height="69" uuid="f5181843-9571-4af9-889a-65e30f9813d4"/>
+                <imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+            </image>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="32">
+            <staticText>
+                <reportElement x="423" y="1" width="90" height="30" uuid="032d2a1a-658b-4959-88a5-7bffabc66374"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[گروه]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="514" y="1" width="90" height="30" uuid="0d3ea722-0026-46d1-974b-41b91826b7fd"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[نام لاتین]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="604" y="1" width="90" height="30" uuid="4113b590-a538-4c0d-9661-30b1662decfb"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[نام]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="350" y="1" width="72" height="30" uuid="5db44e1b-d35e-4876-879e-4f4d12eb0d95"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[زیرگروه]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="269" y="1" width="80" height="30" uuid="335f6010-c18e-4bda-9ae0-b925f7cc5ea7"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[نوع اجرا]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="189" y="1" width="80" height="30" uuid="7b7b2df0-d540-45a0-ac16-f109599db292"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[سطح دوره]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="119" y="1" width="70" height="30" uuid="c765a98d-ecf4-4aaf-b1ed-f033ad3ae741"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[نوع دوره]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="51" y="1" width="67" height="31" uuid="61fff029-db9f-4603-ab30-fb2963163fbb"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="12" isBold="true"/>
+                </textElement>
+                <text><![CDATA[نوع تخصصی]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="1" y="1" width="50" height="31" uuid="ea209b21-ab43-4038-a957-9c32e65b8dff"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[مدت]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="695" y="1" width="105" height="30" uuid="bbc12301-ce66-4049-970a-b437ab1e8fb4"/>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="14" isBold="true"/>
+                </textElement>
+                <text><![CDATA[کد]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="34" splitType="Stretch">
+            <textField>
+                <reportElement x="695" y="0" width="105" height="34" uuid="0bce566e-7438-492c-b268-3d604aa19130">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="dbc0e742-755b-42ef-a1b5-c42191fa1798"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="1.5" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{C_CODE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="604" y="0" width="91" height="34" uuid="824c659c-fcbd-49e4-bcfc-ef60b6c983c6">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="2dd78534-b77f-4329-bdb1-8a497c384172"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{C_TITLE_FA}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="514" y="0" width="90" height="34" uuid="22c1f778-adcd-419d-9a37-4956f852549d">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="612da4de-68f5-4a46-9be8-daba9aff5c6c"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{C_TITLE_EN}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="424" y="0" width="90" height="34" uuid="ecea32cd-ecf4-4703-a3a2-29ba68696b08">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5481f459-362d-434c-83b5-36b71d56e32b"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{C_TITLE_FA1}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="350" y="0" width="74" height="34" uuid="2676f310-57a7-4ad1-ac2a-7e2e994d60fb">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="852a54ee-b19a-4704-be83-c52a897253a3"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{C_TITLE_FA2}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="270" y="0" width="80" height="34" uuid="f88db381-26ec-4435-8fad-5040e86e04b7">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="342b8f0c-6083-4c87-b16b-0be48e87424f"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{E_RUN_TYPE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="190" y="0" width="80" height="34" uuid="08adb6e6-5e70-487e-9421-980a79b38cb6">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="69351288-cf8e-41bb-a910-ac8a9fefbacb"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{E_LEVEL_TYPE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="120" y="0" width="70" height="34" uuid="655b3f3b-b110-4b9d-952f-3ab4d172fed7">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="48089f3e-7165-4cbd-ae07-8c897dfac21b"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{E_THEO_TYPE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="50" y="0" width="70" height="34" uuid="6e6127a0-0323-4080-9f6a-328b1c4d230d">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="644fa720-82ec-4781-9eab-3eb4a6e48798"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{E_TECHNICAL_TYPE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="1" y="0" width="50" height="34" uuid="7c85439e-27ee-40cd-a52d-e6d89bf3afe3">
+                    <property name="com.jaspersoft.studio.spreadsheet.connectionID" value="5933b08a-11e6-4174-b857-af9ab8c221af"/>
+                </reportElement>
+                <box>
+                    <topPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <leftPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <bottomPen lineWidth="1.0" lineStyle="Solid" lineColor="#000000"/>
+                    <rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{N_THEORY_DURATION}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="31">
+            <textField>
+                <reportElement x="0" y="0" width="100" height="30" uuid="3fce7a80-17c8-4d48-a6b6-c58dafd345d8"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD" size="10" isBold="true"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
+            </textField>
+        </band>
+    </pageFooter>
 </jasperReport>

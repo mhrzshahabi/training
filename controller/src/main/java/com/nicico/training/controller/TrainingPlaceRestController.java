@@ -7,7 +7,6 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EquipmentDTO;
-import com.nicico.training.dto.InstituteDTO;
 import com.nicico.training.dto.TrainingPlaceDTO;
 import com.nicico.training.iservice.ITrainingPlaceService;
 import lombok.RequiredArgsConstructor;
@@ -290,14 +289,14 @@ public class TrainingPlaceRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        if(id != null){
+        if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
                     .setFieldName("id")
                     .setValue(id);
             request.setCriteria(criteriaRq);
-            startRow=0;
-            endRow=1;
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -305,7 +304,8 @@ public class TrainingPlaceRestController {
 
         final TrainingPlaceDTO.SpecRs<TrainingPlaceDTO.TrainingPlaceWithInstitute> specResponse = new TrainingPlaceDTO.SpecRs<>();
         final TrainingPlaceDTO.TrainingPlaceSpecRs specRs = new TrainingPlaceDTO.TrainingPlaceSpecRs();
-        specResponse.setData(new ModelMapper().map(response.getList(),new TypeToken<List<TrainingPlaceDTO.TrainingPlaceWithInstitute>>(){}.getType()))
+        specResponse.setData(new ModelMapper().map(response.getList(), new TypeToken<List<TrainingPlaceDTO.TrainingPlaceWithInstitute>>() {
+        }.getType()))
                 .setStartRow(startRow)
                 .setEndRow(startRow + response.getTotalCount().intValue())
                 .setTotalRows(response.getTotalCount().intValue());

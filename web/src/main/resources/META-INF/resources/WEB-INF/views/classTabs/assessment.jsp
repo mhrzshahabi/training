@@ -6,7 +6,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
 
     var HLayout_Body_All_Goal = isc.HLayout.create({
@@ -14,11 +14,11 @@
         height: "100%",
         <%--border: "2px solid blue",--%>
         members: [isc.DynamicForm.create({
-            fields:[
-                {title:"تست"}
+            fields: [
+                {title: "تست"}
             ]
         })]
     });
 
 
-//</script>
+    //</script>

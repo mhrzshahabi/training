@@ -4,7 +4,6 @@ package com.nicico.training.dto;/* com.nicico.training.dto
 @Time:2:39 PM
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,8 +19,6 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
 public class GoalDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
@@ -104,7 +101,7 @@ public class GoalDTO {
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    public static class Syllabuses extends GoalDTO{
+    public static class Syllabuses extends GoalDTO {
         private List<SyllabusDTO.SyllabusInfoTuple> syllabusSet;
     }
 

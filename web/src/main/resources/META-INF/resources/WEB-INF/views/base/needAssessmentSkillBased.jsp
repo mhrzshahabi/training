@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     let All_Priorities_ValueMap_NASB = [];
     let Wait_NASB;
@@ -30,7 +30,7 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     restData_All_Posts_NASB_JPA = isc.TrDS.create({
@@ -40,7 +40,7 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     restData_All_JobGroups_NASB_JPA = isc.TrDS.create({
@@ -58,7 +58,7 @@
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postGroupUrl + "spec-list"
+        fetchDataURL: postGroupUrl + "/spec-list"
     });
 
     restData_For_This_Object_Skills_NASB_JPA = isc.TrDS.create({

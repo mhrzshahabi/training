@@ -1,5 +1,5 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
-<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
 
     <changeSet author="ghazanfari_f (generated)" id="1575809794136-143">
@@ -373,6 +373,32 @@
     <changeSet author="ghazanfari_f (generated)" id="1575809794136-235">
         <addForeignKeyConstraint baseColumnNames="f_tclass_id" baseTableName="tbl_class_student_final" constraintName="fk_tclass_to_student" deferrable="false" initiallyDeferred="false"
                                  referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
+
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-167">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory" baseTableName="tbl_employment_history_subcategory" constraintName="FK3pt10uhu4lpb9lfl9alqq25bc" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-168">
+        <addForeignKeyConstraint baseColumnNames="f_employment_history" baseTableName="tbl_employment_history_subcategory" constraintName="FKixpeg3opc7grmp0dvim0odvlt" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_employment_history" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-169">
+        <addForeignKeyConstraint baseColumnNames="f_employment_history" baseTableName="tbl_employment_history_category" constraintName="FKmyd9brvpq6nxpk398rvogrm9f" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_employment_history" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-170">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_employment_history" constraintName="FKpkhsudkpiya3scb5np987ob6t" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1575873016636-171">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_employment_history_category" constraintName="FKq8we5de9koydtcnpwo373yt1g" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1575892208191-173">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_type_id" baseTableName="tbl_parameter_value" constraintName="FKh4caea5ygpmsvmkcmsc1dt0dx" deferrable="false" initiallyDeferred="false"
+                                 referencedColumnNames="id" referencedTableName="tbl_parameter_type" validate="true"/>
     </changeSet>
 
 </databaseChangeLog>

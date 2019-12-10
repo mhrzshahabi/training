@@ -17,11 +17,9 @@ import java.util.List;
 public class CheckListItemDTO implements Serializable {
 
     @ApiModelProperty(required = true)
-    private String titleFa;
-
-    @ApiModelProperty(required = true)
     protected String group;
-
+    @ApiModelProperty(required = true)
+    private String titleFa;
     @ApiModelProperty(required = true)
     private Long checkListId;
 
@@ -36,7 +34,7 @@ public class CheckListItemDTO implements Serializable {
         private Long id;
     }
 
-     @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CheckListItemCreateRq")
@@ -49,7 +47,7 @@ public class CheckListItemDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CheckListItemUpdateRq")
     public static class Update extends CheckListItemDTO {
-    private Long id;
+        private Long id;
     }
 
     @Getter

@@ -6,6 +6,6 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface OperationalUnitDAO extends JpaRepository<OperationalUnit, Long >, JpaSpecificationExecutor<OperationalUnit> {
+public interface OperationalUnitDAO extends JpaRepository<OperationalUnit, Long>, JpaSpecificationExecutor<OperationalUnit> {
 
 }

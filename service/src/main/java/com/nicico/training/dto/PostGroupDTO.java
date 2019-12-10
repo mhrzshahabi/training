@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,9 +15,8 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Accessors(chain=true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+@Accessors(chain = true)
+
 public class PostGroupDTO {
 
     @NotEmpty
@@ -34,7 +32,7 @@ public class PostGroupDTO {
 
     @Getter
     @Setter
-    @Accessors(chain=true)
+    @Accessors(chain = true)
     @ApiModel("PostGroupInfo")
     public static class Info extends PostGroupDTO {
         private Long id;
@@ -51,7 +49,7 @@ public class PostGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGroupCreateRq")
-    public static  class Create extends PostGroupDTO {
+    public static class Create extends PostGroupDTO {
         private Set<Long> postIds;
 //        private Set<Long> competenceIds;
     }
@@ -76,7 +74,7 @@ public class PostGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGroupIdListRq")
-    public static class PostGroupIdList{
+    public static class PostGroupIdList {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
@@ -90,7 +88,7 @@ public class PostGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("PostGroupDeleteRq")
-    public static class Delete{
+    public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
         private Set<Long> ids;
@@ -103,7 +101,7 @@ public class PostGroupDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("PostGroupSpecRs")
-    public static class PostGroupSpecRs{
+    public static class PostGroupSpecRs {
         private SpecRs response;
     }
 

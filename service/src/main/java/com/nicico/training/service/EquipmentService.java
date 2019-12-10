@@ -23,7 +23,7 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EquipmentService implements IEquipmentService  {
+public class EquipmentService implements IEquipmentService {
 
     private final ModelMapper modelMapper;
     private final EquipmentDAO equipmentDAO;

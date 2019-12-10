@@ -1,11 +1,12 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.nicico.training.model.Institute;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
@@ -16,8 +17,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ClassSessionDTO implements Serializable {
 
     @ApiModelProperty(required = true)
@@ -80,9 +80,10 @@ public class ClassSessionDTO implements Serializable {
         private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
 
         private TeacherDTO.TeacherFullNameTuple teacher;
-        public String getTeacher(){
-            if (teacher!=null)
-                return teacher.getPersonality().getFirstNameFa()+ " " +teacher.getPersonality().getLastNameFa();
+
+        public String getTeacher() {
+            if (teacher != null)
+                return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
         }

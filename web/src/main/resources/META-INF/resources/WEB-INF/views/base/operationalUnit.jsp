@@ -7,11 +7,11 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     // <<========== Global - Variables ==========
     {
-    var operational_method = "POST";
+        var operational_method = "POST";
     }
     // ============ Global - Variables ========>>
 
@@ -134,7 +134,7 @@
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-           // icon: "[SKIN]/actions/refresh.png",
+            // icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_operational.invalidateCache();
@@ -142,7 +142,7 @@
         });
 
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-            //icon: "[SKIN]/actions/add.png",
+
             title: "<spring:message code="create"/>",
             click: function () {
                 create_OperationalUnit();
@@ -150,7 +150,7 @@
         });
 
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-            //icon: "[SKIN]/actions/edit.png",
+
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_OperationalUnitEditForm();
@@ -158,7 +158,7 @@
         });
 
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-            //icon: "[SKIN]/actions/remove.png",
+
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_OperationalUnit();

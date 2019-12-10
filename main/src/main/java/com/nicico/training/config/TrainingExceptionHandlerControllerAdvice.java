@@ -10,10 +10,10 @@ import java.util.Map;
 @ControllerAdvice
 public class TrainingExceptionHandlerControllerAdvice extends AbstractExceptionHandlerControllerAdvice {
 
-	@Override
-	protected Map<String, ErrorResponseDTO.ErrorFieldDTO> getUniqueConstraintErrors() {
-		Map<String, ErrorResponseDTO.ErrorFieldDTO> errorCodeMap = new HashMap<>();
+    @Override
+    protected Map<String, ErrorResponseDTO.ErrorFieldDTO> getUniqueConstraintErrors() {
+        Map<String, ErrorResponseDTO.ErrorFieldDTO> errorCodeMap = new HashMap<>();
 
-		return errorCodeMap;
-	}
+        return errorCodeMap;
+    }
 }

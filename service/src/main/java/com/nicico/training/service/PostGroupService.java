@@ -103,7 +103,7 @@ public class PostGroupService implements IPostGroupService {
         modelMapper.map(postGroup, updating);
         modelMapper.map(request, updating);
 
-        return modelMapper.map(postGroupDAO.saveAndFlush(updating),PostGroupDTO.Info.class);
+        return modelMapper.map(postGroupDAO.saveAndFlush(updating), PostGroupDTO.Info.class);
     }
 
     @Transactional
@@ -170,7 +170,7 @@ public class PostGroupService implements IPostGroupService {
         Set<Post> posts = postGroup.getPostSet();
         ArrayList<PostDTO.Info> postList = new ArrayList<>();
         for (Post post : posts) {
-            postList.add(modelMapper.map(post,PostDTO.Info.class));
+            postList.add(modelMapper.map(post, PostDTO.Info.class));
         }
 //        PostDTO.Info info = new PostDTO.Info();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------

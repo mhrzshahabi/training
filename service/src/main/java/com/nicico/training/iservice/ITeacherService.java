@@ -9,26 +9,26 @@ import java.util.List;
 
 public interface ITeacherService {
 
-	TeacherDTO.Info get(Long id);
+    TeacherDTO.Info get(Long id);
 
-	List<TeacherDTO.Info> list();
+    List<TeacherDTO.Info> list();
 
-	TeacherDTO.Info create(TeacherDTO.Create request);
+    TeacherDTO.Info create(TeacherDTO.Create request);
 
-	TeacherDTO.Info update(Long id, TeacherDTO.Update request);
+    TeacherDTO.Info update(Long id, TeacherDTO.Update request);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	void delete(TeacherDTO.Delete request);
+    void delete(TeacherDTO.Delete request);
 
-	SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TeacherDTO.Info> search(SearchDTO.SearchRq request);
 
-	SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearch(SearchDTO.SearchRq request);
 
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
 
-    void addCategories(CategoryDTO.Delete  request, Long teacherId);
+    void addCategories(CategoryDTO.Delete request, Long teacherId);
 
-	List<Long> getCategories(Long teacherId);
+    List<Long> getCategories(Long teacherId);
 }

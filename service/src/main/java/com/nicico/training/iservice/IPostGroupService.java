@@ -22,12 +22,19 @@ public interface IPostGroupService {
     void delete(PostGroupDTO.Delete request);
 
     void addPost(Long postGroupId, Long postId);
+
     void addPosts(Long postGroupId, Set<Long> postIds);
+
     void removePost(Long postGroupId, Long postId);
+
     void removePosts(Long postGroupId, Set<Long> postIds);
+
     void removeFromCompetency(Long postGroupId, Long competenceId);
+
     void removeFromAllCompetences(Long postGroupId);
+
     Set<PostDTO.Info> unAttachPosts(Long postGroupId);
+
     boolean canDelete(Long postGroupId);
 
     SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request);

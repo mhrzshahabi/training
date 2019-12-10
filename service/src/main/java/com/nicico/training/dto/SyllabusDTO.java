@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EDomainType;
 import io.swagger.annotations.ApiModel;
@@ -17,23 +16,22 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class SyllabusDTO {
 
     @NotEmpty
     @ApiModelProperty(required = true)
     private String titleFa;
-	private String titleEn;
+    private String titleEn;
     @NotNull
     @ApiModelProperty(required = true)
-	private Float practicalDuration;
+    private Float practicalDuration;
     @NotNull
     @ApiModelProperty(required = true)
     private Float theoreticalDuration;
 
 
-	private String description;
+    private String description;
 
     @NotNull
     @ApiModelProperty

@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ELevelType;
 import com.nicico.training.model.enums.ERunType;
@@ -21,8 +20,7 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class CourseDTO implements Serializable {
 
     @ApiModelProperty(required = true)
@@ -73,7 +71,6 @@ public class CourseDTO implements Serializable {
 //    private List<Long> preCourse;
 
 
-
 //    @ApiModelProperty(required = true)
 //    private List<GoalDTO> goalSet;
 
@@ -90,7 +87,7 @@ public class CourseDTO implements Serializable {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-//        private Integer version;
+        //        private Integer version;
         private ERunType eRunType;
         private ELevelType eLevelType;
         private ETechnicalType eTechnicalType;

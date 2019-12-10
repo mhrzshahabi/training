@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+// script
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -238,10 +238,12 @@
                                         isc.TrSaveBtn.create({
                                             click: function () {
                                                 var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                                var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
+                                                var personnelsIds = SelectedPersonnelsLG_student.data.map(r = > r.personnelNo
+                                            )
+                                                ;
 
                                                 var data = {"classId": classId, "personnelsIds": personnelsIds};
-                                                if(personnelsIds.getLength() > 0 )
+                                                if (personnelsIds.getLength() > 0)
                                                     isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + classId, "POST", JSON.stringify({"ids": personnelsIds}), "callback: class_add_students_result(rpcResponse)"));
                                             }
                                         }), isc.TrCancelBtn.create({

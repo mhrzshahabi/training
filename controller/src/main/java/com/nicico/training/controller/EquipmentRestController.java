@@ -65,30 +65,30 @@ public class EquipmentRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_equipment')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             equipmentService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_equipment')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody EquipmentDTO.Delete request) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             equipmentService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable

@@ -9,7 +9,7 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+// script
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
@@ -298,7 +298,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
@@ -418,7 +418,7 @@ abaspour 9803
                                         rejectTaskForm.setValue("REJECT", "Y");
                                         var data = rejectTaskForm.getValues();
                                         isc.RPCManager.sendRequest({
-                                            actionURL: workflowUrl + "doUserTask",
+                                            actionURL: workflowUrl + "/doUserTask",
                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                             httpMethod: "POST",
                                             useSimpleHttp: true,
