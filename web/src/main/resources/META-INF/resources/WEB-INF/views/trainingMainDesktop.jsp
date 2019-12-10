@@ -141,7 +141,7 @@
         autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
         autoFitFieldText: "<spring:message code="auto.fit"/>",
         emptyMessage: "",
-        loadingDataMessag: "<spring:message code="loading"/>"
+        loadingDataMessage: "<spring:message code="loading"/>"
     });
 
 
