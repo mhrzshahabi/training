@@ -160,7 +160,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: postGradeUrl + "iscList"
+        fetchDataURL: postGradeUrl + "/iscList"
     });
 
     var RestDataSource_Post_PerReg = isc.TrDS.create({

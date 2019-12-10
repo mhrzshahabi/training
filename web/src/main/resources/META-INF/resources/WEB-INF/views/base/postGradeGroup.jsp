@@ -42,7 +42,7 @@
             {name: "code"},
             {name: "titleFa"}
         ],
-        fetchDataURL: postGradeUrl + "iscList"
+        fetchDataURL: postGradeUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
