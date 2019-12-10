@@ -754,6 +754,7 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
+    const classStudent = rootUrl + "/classStudent/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
