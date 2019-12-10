@@ -1,7 +1,6 @@
 package com.nicico.training.dto;
 
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -20,19 +19,19 @@ import java.util.List;
 
 public class ClassCheckListDTO implements Serializable {
 
-  @ApiModelProperty(required = true)
-   private Boolean enableStatus;
+    @ApiModelProperty(required = true)
+    private Boolean enableStatus;
 
     @ApiModelProperty(required = true)
-     private String description;
+    private String description;
 
     @ApiModelProperty(required = true)
-     private Long checkListItemId;
+    private Long checkListItemId;
 
-     @ApiModelProperty(required = true)
-     private Long tclassId;
+    @ApiModelProperty(required = true)
+    private Long tclassId;
 
-      @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassCheckListInfo")
@@ -46,7 +45,7 @@ public class ClassCheckListDTO implements Serializable {
         private String lastModifiedBy;
     }
 
-     @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassCheckListCreateRq")
@@ -103,10 +102,6 @@ public class ClassCheckListDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
-
-
-
 
 
 }

@@ -12,7 +12,6 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Personnel;
 import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -47,7 +46,7 @@ public class TclassRestController {
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
     public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
-        PersonnelDTO.Ids personsIds= modelMapper.map(request, PersonnelDTO.Ids.class);
+        PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
         tclassService.addStudents(classId, personsIds.getIds());
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -168,7 +167,6 @@ public class TclassRestController {
     }
 
 
-
     @Loggable
     @GetMapping(value = "/otherStudent")
 //    @PreAuthorize("hasAuthority('r_tclass')")
@@ -204,7 +202,6 @@ public class TclassRestController {
         tclassService.addStudent(studentId, classId);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 
 //
@@ -254,8 +251,8 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/end_group/{courseId}/{termId}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId,@PathVariable Long termId) {
-        return new ResponseEntity<>(tclassService.getEndGroup(courseId,termId), HttpStatus.OK);
+    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
+        return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
     }
 
 

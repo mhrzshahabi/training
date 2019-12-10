@@ -3,7 +3,6 @@ package com.nicico.training.dto;
 @Author:Lotfy
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -103,7 +102,7 @@ public class PersonnelRegisteredDTO {
     @Accessors(chain = true)
     @ApiModel("PersonnelRegisteredCreateRq")
     public static class Create extends PersonnelRegisteredDTO {
-       }
+    }
 
     // ------------------------------
 

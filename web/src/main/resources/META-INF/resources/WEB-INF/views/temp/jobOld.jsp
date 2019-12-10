@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     let jobMethod;
     let jobCompetenceMethod_job;
@@ -29,15 +29,15 @@
                     show_JobRemoveForm();
                 }
             }, {isSeparator: true}, {
-                 title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
+                title: "ارسال به Pdf", icon: "icon/pdf.png", click: function () {
                     print_JobListGrid("pdf");
-                 }
-             }, {
-                 title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
+                }
+            }, {
+                title: "ارسال به Excel", icon: "icon/excel.png", click: function () {
                     print_JobListGrid("excel");
-                 }
-             }, {
-                 title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
+                }
+            }, {
+                title: "ارسال به Html", icon: "icon/html.jpg", click: function () {
                     print_JobListGrid("html");
                 }
             }]
@@ -580,7 +580,13 @@
         if (jobCompetenceMethod_job.localeCompare("POST") == 0) {
             let competenceRecords = LG_Competence_job.getSelectedRecords();
             if (checkRecord(competenceRecords, true, 'حداقل يک شايستگي شغلي را انتخاب نمائيد.')) {
-                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r => r.id), "eJobCompetenceTypeId": eJobCompetenceTypeId};
+                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r = > r.id
+            ),
+                "eJobCompetenceTypeId"
+            :
+                eJobCompetenceTypeId
+            }
+                ;
                 isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
             }
         } else {
@@ -670,7 +676,7 @@
     function show_JobCompetenceActionResult(resp) {
         respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            var MyOkDialog_job =  isc.MyOkDialog.create({
+            var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
             });
 

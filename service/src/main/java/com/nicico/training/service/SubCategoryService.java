@@ -63,7 +63,7 @@ public class SubCategoryService implements ISubCategoryService {
     public SubCategoryDTO.Info update(Long id, Object request) {
         final Optional<SubCategory> cById = subCategoryDAO.findById(id);
         final SubCategory subCategory = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
-        SubCategoryDTO.Update update=modelMapper.map(request,SubCategoryDTO.Update.class);
+        SubCategoryDTO.Update update = modelMapper.map(request, SubCategoryDTO.Update.class);
         SubCategory updating = new SubCategory();
         modelMapper.map(subCategory, updating);
         modelMapper.map(update, updating);
@@ -93,7 +93,7 @@ public class SubCategoryService implements ISubCategoryService {
 
     // ------------------------------
 
-    private SubCategoryDTO.Info save(SubCategory subCategory,Long categoryId) {
+    private SubCategoryDTO.Info save(SubCategory subCategory, Long categoryId) {
 
         Optional<Category> optionalCategory = categoryDAO.findById(categoryId);
         Category category = optionalCategory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CategoryNotFound));
@@ -111,6 +111,6 @@ public class SubCategoryService implements ISubCategoryService {
         final Optional<SubCategory> ssById = subCategoryDAO.findById(subCategoryId);
         final SubCategory subCategory = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SubCategoryNotFound));
 
-        return modelMapper.map(subCategory.getCategory(),CategoryDTO.Info.class);
+        return modelMapper.map(subCategory.getCategory(), CategoryDTO.Info.class);
     }
 }

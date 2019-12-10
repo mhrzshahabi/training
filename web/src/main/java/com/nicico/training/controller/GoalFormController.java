@@ -49,17 +49,18 @@ public class GoalFormController {
 
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-        if(type.equals("pdf"))
+        if (type.equals("pdf"))
             return restTemplate.exchange(restApiUrl + "/api/goal/print-all/pdf", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("excel"))
+        else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/goal/print-all/excel", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("html"))
+        else if (type.equals("html"))
             return restTemplate.exchange(restApiUrl + "/api/goal/print-all/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }
+
     @RequestMapping("/print-one-course/{courseId}/{type}/{token}")
     public ResponseEntity<?> printOneCourse(final HttpServletRequest request, @PathVariable String type, @PathVariable Long courseId, @PathVariable String token) {
 //        String token = (String) request.getSession().getAttribute("AccessToken");
@@ -73,15 +74,15 @@ public class GoalFormController {
 
         HttpEntity<String> entity = new HttpEntity<String>(headers);
 
-        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
 
-        if(type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/pdf", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("excel"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/excel", HttpMethod.GET, entity, byte[].class);
-        else if(type.equals("html"))
-            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/"+courseId+"/html", HttpMethod.GET, entity, byte[].class);
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + courseId + "/pdf", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + courseId + "/excel", HttpMethod.GET, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/goal/print-one-course/" + courseId + "/html", HttpMethod.GET, entity, byte[].class);
         else
             return null;
     }

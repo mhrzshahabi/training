@@ -3,8 +3,6 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttachmentDTO;
 
-import java.util.List;
-
 public interface IAttachmentService {
     AttachmentDTO.Info get(Long id);
 

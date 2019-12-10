@@ -4,7 +4,6 @@ package com.nicico.training.dto;/* com.nicico.training.dto
 @Time:11:27 AM
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -47,6 +46,7 @@ public class EquipmentDTO {
         private String lastModifiedBy;
         private Integer version;
     }
+
     //-------------------------------
     @Getter
     @Setter
@@ -79,11 +79,7 @@ public class EquipmentDTO {
     }
 
 
-
-
-
     // ------------------------------
-
 
 
     @Getter

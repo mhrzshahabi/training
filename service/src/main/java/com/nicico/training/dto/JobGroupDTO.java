@@ -5,7 +5,6 @@ com.nicico.training.dto
 @Time :2:49 PM
     */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +20,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Accessors(chain=true)
+@Accessors(chain = true)
 
 public class JobGroupDTO {
 
@@ -38,7 +37,7 @@ public class JobGroupDTO {
 
     @Getter
     @Setter
-    @Accessors(chain=true)
+    @Accessors(chain = true)
     @ApiModel("JobGroupInfo")
     public static class Info extends JobGroupDTO {
         private Long id;
@@ -51,7 +50,7 @@ public class JobGroupDTO {
 
     @Getter
     @Setter
-    @Accessors(chain=true)
+    @Accessors(chain = true)
     @ApiModel("JobGroupTuple")
     public static class Tuple extends JobGroupDTO {
     }
@@ -62,7 +61,7 @@ public class JobGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("JobGroupCreateRq")
-    public static  class Create extends JobGroupDTO {
+    public static class Create extends JobGroupDTO {
         private Set<Long> jobIds;
 //        private Set<Long> competenceIds;
     }
@@ -87,7 +86,7 @@ public class JobGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("JobGroupIdListRq")
-    public static class JobGroupIdList{
+    public static class JobGroupIdList {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
@@ -101,7 +100,7 @@ public class JobGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("JobGroupDeleteRq")
-    public static class Delete{
+    public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
         private Set<Long> ids;
@@ -114,7 +113,7 @@ public class JobGroupDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("JobGroupSpecRs")
-    public static class JobGroupSpecRs{
+    public static class JobGroupSpecRs {
         private SpecRs response;
     }
 

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
     var methodEducation = "GET";
     var saveActionUrl;
     var educationLevelUrl = educationUrl + "level/";
@@ -22,7 +22,7 @@
             {name: "titleFa"},
             {name: "titleEn"},
             {name: "code"}
-            ],
+        ],
         fetchDataURL: educationLevelUrl + "spec-list"
     });
 
@@ -228,7 +228,7 @@
         }
     });
     var ToolStripButton_Remove_EducationOrientation = isc.ToolStripButtonRemove.create({
-       // icon: "[SKIN]/actions/remove.png",
+        // icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/> ",
         click: function () {
             EducationListGrid = ListGrid_EducationOrientation;
@@ -283,7 +283,7 @@
         members: [IButton_EducationOrientation_Save, isc.IButtonCancel.create({
             prompt: "",
             width: 100,
-           // icon: "<spring:url value="remove.png"/>",
+            // icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 DynamicForm_EducationOrientation.clearValues();
@@ -451,7 +451,7 @@
         }
     });
     var ToolStripButton_Print_EducationMajor = isc.ToolStripButtonPrint.create({
-       // icon: "[SKIN]/RichTextEditor/print.png",
+        // icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="education/major/printWithCriteria/"/>" + "pdf",
@@ -677,7 +677,7 @@
         }
     });
     var ToolStripButton_Print_EducationLevel = isc.ToolStripButtonPrint.create({
-       // icon: "[SKIN]/RichTextEditor/print.png",
+        // icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="education/level/printWithCriteria/"/>" + "pdf",
@@ -726,7 +726,7 @@
         members: [IButton_EducationLevel_Save, isc.IButtonCancel.create({
             prompt: "",
             width: 100,
-           // icon: "<spring:url value="remove.png"/>",
+            // icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 DynamicForm_EducationLevel.clearValues();

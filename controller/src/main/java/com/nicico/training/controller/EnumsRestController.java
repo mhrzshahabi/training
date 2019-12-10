@@ -27,12 +27,12 @@ public class EnumsRestController {
 
     @GetMapping("eRunType/spec-list")
     public ResponseEntity<ERunTypeDTO.ERunTypeSpecRs> getERunType() {
-        return  new ResponseEntity<>(new ERunTypeDTO.ERunTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ERunTypeDTO.ERunTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eLevelType")
     public ResponseEntity<ELevelTypeDTO.ELevelTypeSpecRs> getELevelType() {
-        return  new ResponseEntity<>(new ELevelTypeDTO.ELevelTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ELevelTypeDTO.ELevelTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eTechnicalType/spec-list")
@@ -42,9 +42,9 @@ public class EnumsRestController {
         Map<Integer, String> map = new HashMap<>();
         ETechnicalType[] data = response.getData();
         for (ETechnicalType datum : data) {
-            map.put(datum.getId(),datum.getTitleFa());
+            map.put(datum.getId(), datum.getTitleFa());
         }
-        return  new ResponseEntity<>(new ETechnicalTypeDTO.ETechnicalTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ETechnicalTypeDTO.ETechnicalTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eTechnicalType/map")
@@ -52,19 +52,19 @@ public class EnumsRestController {
         ETechnicalType[] data = ETechnicalType.values();
         Map<Integer, String> map = new HashMap<>();
         for (ETechnicalType datum : data) {
-            map.put(datum.getId(),datum.getTitleFa());
+            map.put(datum.getId(), datum.getTitleFa());
         }
-        return  new ResponseEntity<>(map,HttpStatus.OK);
+        return new ResponseEntity<>(map, HttpStatus.OK);
     }
 
     @GetMapping("eTheoType")
     public ResponseEntity<ETheoTypeDTO.ETheoTypeSpecRs> getETheoType() {
-        return  new ResponseEntity<>(new ETheoTypeDTO.ETheoTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ETheoTypeDTO.ETheoTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eCompetenceInputType/spec-list")
     public ResponseEntity<ECompetenceInputTypeDTO.ECompetenceInputTypeSpecRs> getECompetenceInputType() {
-        return  new ResponseEntity<>(new ECompetenceInputTypeDTO.ECompetenceInputTypeSpecRs(),HttpStatus.OK);
+        return new ResponseEntity<>(new ECompetenceInputTypeDTO.ECompetenceInputTypeSpecRs(), HttpStatus.OK);
     }
 
     @GetMapping("eJobCompetenceType/spec-list")

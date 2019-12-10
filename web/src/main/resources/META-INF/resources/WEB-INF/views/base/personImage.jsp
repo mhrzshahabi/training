@@ -5,31 +5,31 @@
 
 <%--<script>--%>
 
-	personImage = isc.Img.create({
-		height: "130px",
-        width: "120px",
-		align: "center",
-		src: "data:image/jpeg;base64, ${personImg}",
-		overflow: "hidden",
-		imageHeight:130,
-		imageWidth:120,
-		scrollbarSize: 0,
-		imageType: "center"
-	});
+personImage = isc.Img.create({
+height: "130px",
+width: "120px",
+align: "center",
+src: "data:image/jpeg;base64, ${personImg}",
+overflow: "hidden",
+imageHeight:130,
+imageWidth:120,
+scrollbarSize: 0,
+imageType: "center"
+});
 
-	isc.VLayout.create({
-		ID: "personPhotoVLayout",
-		layoutMargin: 5,
-		membersMargin: 10,
-		showEdges: false,
-		overflow: "scroll",
-		scrollbarSize: 0,
-		edgeImage: "",
-		width: "100%",
-		height: "100%",
-		alignLayout: "center",
-		members: [
-			personImage
-		]
-	});
+isc.VLayout.create({
+ID: "personPhotoVLayout",
+layoutMargin: 5,
+membersMargin: 10,
+showEdges: false,
+overflow: "scroll",
+scrollbarSize: 0,
+edgeImage: "",
+width: "100%",
+height: "100%",
+alignLayout: "center",
+members: [
+personImage
+]
+});
 

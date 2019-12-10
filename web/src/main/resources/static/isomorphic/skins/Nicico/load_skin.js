@@ -3,7 +3,7 @@ isc.loadSkin = function (theWindow) {
         theWindow = window
     }
     with (theWindow) {
-        const actions_btn ={
+        const actions_btn = {
             add: 'افزودن',
             remove: 'حذف',
             edit: 'ویرایش',

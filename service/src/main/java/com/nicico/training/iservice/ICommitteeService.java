@@ -22,13 +22,22 @@ public interface ICommitteeService {
     void delete(CommitteeDTO.Delete request);
 
     SearchDTO.SearchRs<CommitteeDTO.Info> search(SearchDTO.SearchRq request);
-     void addMember(Long committeeId, Long personInfiId);
-     void removeMember(Long committeeId, Long personInfiId);
-     void removeMembers(Long committeeId,Set<Long> personIds);
-      void addMembers(Long committeeId, Set<Long> personInfiIds);
-     List<PersonalInfoDTO.Info> getMembers(Long committeeId);
-     Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
-      boolean checkForDelete(Long CommitteeId);
+
+    void addMember(Long committeeId, Long personInfiId);
+
+    void removeMember(Long committeeId, Long personInfiId);
+
+    void removeMembers(Long committeeId, Set<Long> personIds);
+
+    void addMembers(Long committeeId, Set<Long> personInfiIds);
+
+    List<PersonalInfoDTO.Info> getMembers(Long committeeId);
+
+    Set<PersonalInfoDTO.Info> unAttachMember(Long committeeId);
+
+    boolean checkForDelete(Long CommitteeId);
+
     String findConflictCommittee(Long category, Long subcategory);
+
     String findConflictWhenEdit(Long category, Long subcategory, Long id);
 }

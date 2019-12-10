@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+// script
 
     // -------------------------------------------  Menu -------------------------------------------
     JobMenu_job = isc.Menu.create({
@@ -31,10 +31,10 @@
                     refreshJobLG_job();
                 }
             }),
-           /* isc.TrPrintBtn.create({
-                click: function () {
-                }
-            }),*/
+            /* isc.TrPrintBtn.create({
+                 click: function () {
+                 }
+             }),*/
         ]
     });
 
@@ -64,8 +64,6 @@
     isc.VLayout.create({
         members: [JobTS_job, JobLG_job],
     });
-
-
 
 
     <%@ page contentType="text/html;charset=UTF-8" %>
@@ -654,7 +652,13 @@
         if (jobCompetenceMethod_job.localeCompare("POST") == 0) {
             let competenceRecords = LG_Competence_job.getSelectedRecords();
             if (checkRecord(competenceRecords, true, 'حداقل يک شايستگي شغلي را انتخاب نمائيد.')) {
-                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r => r.id), "eJobCompetenceTypeId": eJobCompetenceTypeId};
+                let data = {"jobId": jobId, "competenceIds": competenceRecords.map(r = > r.id
+            ),
+                "eJobCompetenceTypeId"
+            :
+                eJobCompetenceTypeId
+            }
+                ;
                 isc.RPCManager.sendRequest(MyDsRequest(jobCompetenceUrl + "job", jobCompetenceMethod_job, JSON.stringify(data), "callback: show_JobCompetenceActionResult(rpcResponse)"));
             }
         } else {
@@ -744,7 +748,7 @@
     function show_JobCompetenceActionResult(resp) {
         respCode = resp.httpResponseCode;
         if (respCode == 200 || respCode == 201) {
-            var MyOkDialog_job =  isc.MyOkDialog.create({
+            var MyOkDialog_job = isc.MyOkDialog.create({
                 message: "عمليات با موفقيت اجرا شد.",
             });
 

@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     var RestDataSource_Post_Group_Jsp = isc.TrDS.create({
         fields: [
@@ -40,89 +40,89 @@
                 <%--var postGrouprecord = ListGrid_Post_Group_Jsp.getSelectedRecord();--%>
                 <%--if (postGrouprecord == null || postGrouprecord.id == null) {--%>
 
-                    <%--simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "stop");--%>
+                <%--simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "stop");--%>
 
                 <%--} else {--%>
-                    <%--isc.RPCManager.sendRequest({--%>
-                        <%--actionURL: postGroupUrl + postGrouprecord.id + "/canDelete",--%>
-                        <%--httpMethod: "GET",--%>
-                        <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                        <%--useSimpleHttp: true,--%>
-                        <%--contentType: "application/json; charset=utf-8",--%>
-                        <%--showPrompt: false,--%>
-<%--// data: JSON.stringify(data1),--%>
-                        <%--serverOutputAsString: false,--%>
-                        <%--callback: function (resp) {--%>
+                <%--isc.RPCManager.sendRequest({--%>
+                <%--actionURL: postGroupUrl + postGrouprecord.id + "/canDelete",--%>
+                <%--httpMethod: "GET",--%>
+                <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                <%--useSimpleHttp: true,--%>
+                <%--contentType: "application/json; charset=utf-8",--%>
+                <%--showPrompt: false,--%>
+                <%--// data: JSON.stringify(data1),--%>
+                <%--serverOutputAsString: false,--%>
+                <%--callback: function (resp) {--%>
 
-                            <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
+                <%--if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {--%>
 
-                                <%--if (resp.data == "true") {--%>
+                <%--if (resp.data == "true") {--%>
 
-                                    <%--ListGrid_Post_Group_remove();--%>
+                <%--ListGrid_Post_Group_remove();--%>
 
-                                <%--} else {--%>
-                                    <%--msg = " گروه پست " + getFormulaMessage(postGrouprecord.titleFa, "2", "red", "B") + " بدلیل مرتبط بودن با شایستگی قابل حذف نمی باشد ";--%>
-                                    <%--simpleDialog("خطا در حذف", msg, 0, "stop");--%>
-                                <%--}--%>
-                            <%--}--%>
+                <%--} else {--%>
+                <%--msg = " گروه پست " + getFormulaMessage(postGrouprecord.titleFa, "2", "red", "B") + " بدلیل مرتبط بودن با شایستگی قابل حذف نمی باشد ";--%>
+                <%--simpleDialog("خطا در حذف", msg, 0, "stop");--%>
+                <%--}--%>
+                <%--}--%>
 
-                        <%--}--%>
-                    <%--});--%>
+                <%--}--%>
+                <%--});--%>
                 <%--}--%>
             }
         }, {isSeparator: true},
             {
-            title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",
+                title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>",
                 click: "window.open('post-group/print/pdf/<%=accessToken%>/')"
             },
             {
-            title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",
+                title: "چاپ با جزئیات", icon: "<spring:url value="pdf.png"/>",
                 click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
             },
             {isSeparator: true},
             {
-            title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
-                var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {
+                    var record = ListGrid_Post_Group_Jsp.getSelectedRecord();
 
 
-                if (record == null || record.id == null) {
+                    if (record == null || record.id == null) {
 
-                    isc.Dialog.create({
+                        isc.Dialog.create({
 
-                        message: "<spring:message code="msg.no.records.selected"/>",
-                        icon: "[SKIN]ask.png",
-                        title: "پیام",
-                        buttons: [isc.IButtonSave.create({title: "تائید"})],
-                        buttonClick: function (button, index) {
-                            this.close();
-                        }
-                    });
-                } else {
-
-
-                    var Dialog_Delete = isc.Dialog.create({
-                        message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                        icon: "[SKIN]ask.png",
-                        title: "تائید حذف",
-                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                            title: "خیر"
-                        })],
-                        buttonClick: function (button, index) {
-                            this.close();
-
-                            if (index == 0) {
-                                deletePostGroupFromAllCompetence(record.id);
-                                simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");
+                            message: "<spring:message code="msg.no.records.selected"/>",
+                            icon: "[SKIN]ask.png",
+                            title: "پیام",
+                            buttons: [isc.IButtonSave.create({title: "تائید"})],
+                            buttonClick: function (button, index) {
+                                this.close();
                             }
-                        }
-                    });
+                        });
+                    } else {
 
 
-                   // ListGrid_Post_Group_Competence.invalidateCache();
+                        var Dialog_Delete = isc.Dialog.create({
+                            message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                            icon: "[SKIN]ask.png",
+                            title: "تائید حذف",
+                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                                title: "خیر"
+                            })],
+                            buttonClick: function (button, index) {
+                                this.close();
 
+                                if (index == 0) {
+                                    deletePostGroupFromAllCompetence(record.id);
+                                    simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");
+                                }
+                            }
+                        });
+
+
+                        // ListGrid_Post_Group_Competence.invalidateCache();
+
+                    }
                 }
-            }
-        },
+            },
             {isSeparator: true},
             {
                 title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {
@@ -151,7 +151,6 @@
                         ListGrid_AllPosts.invalidateCache();
 
 
-
                         RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + record.id + "/getPosts"
                         // RestDataSource_ForThisPostGroup_GetPosts.invalidateCache();
                         // RestDataSource_ForThisPostGroup_GetPosts.fetchData();
@@ -166,7 +165,7 @@
     });
     var ListGrid_Post_Group_Jsp = isc.TrLG.create({
         color: "red",
-        selectionType:"multiple",
+        selectionType: "multiple",
         dataSource: RestDataSource_Post_Group_Jsp,
         contextMenu: Menu_ListGrid_Post_Group_Jsp,
         selectionChange: function (record, state) {
@@ -193,77 +192,77 @@
     });
     var method = "POST";
     var Menu_ListGrid_Post_Group_Competences = isc.Menu.create({
-            width: 150,
-            data: [{
-                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                    ListGrid_Post_Group_Competence_refresh();
-                }
-            }, {
-                title: " حذف گروه پست از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
-                    activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                    activeCompetence = ListGrid_Post_Group_Competence.getSelectedRecord();
-                    if (activePostGroup == null || activeCompetence == null) {
-                        simpleDialog("پیام", "شایستگی یا گروه پست انتخاب نشده است.", 0, "confirm");
+        width: 150,
+        data: [{
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                ListGrid_Post_Group_Competence_refresh();
+            }
+        }, {
+            title: " حذف گروه پست از  شایستگی مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
+                activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                activeCompetence = ListGrid_Post_Group_Competence.getSelectedRecord();
+                if (activePostGroup == null || activeCompetence == null) {
+                    simpleDialog("پیام", "شایستگی یا گروه پست انتخاب نشده است.", 0, "confirm");
 
-                    } else {
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
+                } else {
+                    var Dialog_Delete = isc.Dialog.create({
+                        message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" از  شایستگی:' ", "2", "black", "c") + getFormulaMessage(activeCompetence.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                        icon: "[SKIN]ask.png",
+                        title: "تائید حذف",
+                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                            title: "خیر"
+                        })],
+                        buttonClick: function (button, index) {
+                            this.close();
 
-                                if (index == 0) {
-                                    deleteCompetenceFromPostGroup(activeCompetence.id, activePostGroup.id);
-                                }
+                            if (index == 0) {
+                                deleteCompetenceFromPostGroup(activeCompetence.id, activePostGroup.id);
                             }
-                        });
+                        }
+                    });
 
-                    }
                 }
-            },
+            }
+        },
 
-            ]
-        });
+        ]
+    });
     var Menu_ListGrid_Post_Group_Posts = isc.Menu.create({
-            width: 150,
-            data: [{
-                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
-                    ListGrid_Post_Group_Posts_refresh();
-                }
-            }, {
-                title: " حذف پست از گروه پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
-                    activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
-                    activePost = ListGrid_Post_Group_Posts.getSelectedRecord();
-                    if (activePostGroup == null || activePost == null) {
-                        simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");
+        width: 150,
+        data: [{
+            title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                ListGrid_Post_Group_Posts_refresh();
+            }
+        }, {
+            title: " حذف پست از گروه پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {
+                activePostGroup = ListGrid_Post_Group_Jsp.getSelectedRecord();
+                activePost = ListGrid_Post_Group_Posts.getSelectedRecord();
+                if (activePostGroup == null || activePost == null) {
+                    simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");
 
-                    } else {
-                        var Dialog_Delete = isc.Dialog.create({
-                            message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
-                            icon: "[SKIN]ask.png",
-                            title: "تائید حذف",
-                            buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
-                                title: "خیر"
-                            })],
-                            buttonClick: function (button, index) {
-                                this.close();
+                } else {
+                    var Dialog_Delete = isc.Dialog.create({
+                        message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",
+                        icon: "[SKIN]ask.png",
+                        title: "تائید حذف",
+                        buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({
+                            title: "خیر"
+                        })],
+                        buttonClick: function (button, index) {
+                            this.close();
 
-                                if (index == 0) {
-                                    deletePostFromPostGroup(activePost.id, activePostGroup.id);
-                                }
+                            if (index == 0) {
+                                deletePostFromPostGroup(activePost.id, activePostGroup.id);
                             }
-                        });
+                        }
+                    });
 
-                    }
                 }
-            },
+            }
+        },
 
-            ]
-        });
+        ]
+    });
 
     function ListGrid_Post_Group_Posts_refresh() {
 
@@ -283,7 +282,7 @@
 
     var RestDataSource_Post_Group_Posts_Jsp = isc.TrDS.create({
         fields: [
-            {name: "id",primaryKey:true},
+            {name: "id", primaryKey: true},
             {name: "titleFa", filterOperator: "iContains"},
             {name: "code", filterOperator: "iContains"},
             // {name: "description"},
@@ -292,7 +291,7 @@
     });
     var RestDataSource_All_Posts = isc.TrDS.create({
         fields: [
-            {name: "id",primaryKey:true},
+            {name: "id", primaryKey: true},
             {name: "code", filterOperator: "iContains"},
             {name: "titleFa", filterOperator: "iContains"},
             {name: "titleEn", filterOperator: "iContains"},
@@ -303,7 +302,7 @@
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
-            {name: "id", primaryKey:true},
+            {name: "id", primaryKey: true},
             {name: "code", filterOperator: "iContains"},
             {name: "titleFa", filterOperator: "iContains"},
             {name: "titleEn", filterOperator: "iContains"},
@@ -812,7 +811,7 @@
                 type: "text",
                 required: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
                 hint: "Persian/فارسی",
                 showHintInField: true,
                 length: "250",
@@ -829,7 +828,7 @@
                 hint: "English/انگلیسی",
                 showHintInField: true,
                 keyPressFilter: "[a-z|A-Z|0-9 |]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
             },
             {
                 name: "description",
@@ -841,7 +840,7 @@
                 hint: "توضیحات",
                 showHintInField: true,
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
-                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar,TrValidators.NotStartWithNumber],
+                validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
             }
         ]
     });
@@ -941,8 +940,6 @@
     });
 
 
-
-
     function deletePostFromPostGroup(postId, postGroupId) {
 
         isc.RPCManager.sendRequest({
@@ -1006,11 +1003,8 @@
     };
 
 
-
-
-
     var ToolStripButton_Refresh_Post_Group_Jsp = isc.ToolStripButtonRefresh.create({
-       // icon: "<spring:url value="refresh.png"/>",
+        // icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Post_Group_refresh();
@@ -1033,38 +1027,48 @@
         }
     });
     var ToolStripButton_Remove_Post_Group_Jsp = isc.ToolStripButtonRemove.create({
-       // icon: "[SKIN]/actions/remove.png",
+        // icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
-                ListGrid_Post_Group_remove();
+            ListGrid_Post_Group_remove();
         }
     });
     var ToolStripButton_Print_Post_Group_Jsp = isc.ToolStripButtonPrint.create({
         menu: isc.Menu.create({
             data: [
-                {title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>" , submenu:[
-                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>" ,
+                {
+                    title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>", submenu: [
+                        {
+                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
                             click: "window.open('post-group/print/pdf/<%=accessToken%>')"
                         },
-                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>" ,
+                        {
+                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
                             click: "window.open('post-group/print/excel/<%=accessToken%>')"
                         },
-                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>" ,
+                        {
+                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
                             click: "window.open('post-group/print/html/<%=accessToken%>')"
                         }
 
-                    ]},
-                {title:"<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu:[
-                        {title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
+                    ]
+                },
+                {
+                    title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu: [
+                        {
+                            title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",
                             click: "window.open('post-group/printDetail/pdf/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
                         },
-                        {title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
+                        {
+                            title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",
                             click: "window.open('post-group/printDetail/excel/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
                         },
-                        {title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
+                        {
+                            title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",
                             click: "window.open('post-group/printDetail/html/<%=accessToken%>/'+ListGrid_Post_Group_Jsp.getSelectedRecord().id)"
                         }
-                    ]},
+                    ]
+                },
             ]
         })
     });

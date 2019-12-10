@@ -13,16 +13,16 @@ import java.util.Set;
 @Repository
 public interface ClassCheckListDAO extends JpaRepository<ClassCheckList, Long>, JpaSpecificationExecutor<ClassCheckList> {
 
-//List<ClassCheckList> getAllByTclassId(Long id);
+    //List<ClassCheckList> getAllByTclassId(Long id);
 //
-@Query(value = "select  f_check_list_item_id from tbl_Class_Check_List where f_check_list_item_id =:checklistItemId",nativeQuery = true)
-List<Long> getCheckListItemIdsBychecklistItemId(@Param("checklistItemId") Long id);
+    @Query(value = "select  f_check_list_item_id from tbl_Class_Check_List where f_check_list_item_id =:checklistItemId", nativeQuery = true)
+    List<Long> getCheckListItemIdsBychecklistItemId(@Param("checklistItemId") Long id);
 
 
-@Query(value = "select f_check_list_item_id from tbl_Class_Check_List where f_tclass_id=:tclassid ",nativeQuery = true)
-List<Long> getCheckListItemIdsByTclassId(@Param("tclassid") Long id);
+    @Query(value = "select f_check_list_item_id from tbl_Class_Check_List where f_tclass_id=:tclassid ", nativeQuery = true)
+    List<Long> getCheckListItemIdsByTclassId(@Param("tclassid") Long id);
 
-@Query(value = "select f_check_list_item_id from tbl_Class_Check_List where f_tclass_id=:tclassid ",nativeQuery = true)
-Set<Long> getSetCheckListItemIdsByTclassId(@Param("tclassid") Long id);
+    @Query(value = "select f_check_list_item_id from tbl_Class_Check_List where f_tclass_id=:tclassid ", nativeQuery = true)
+    Set<Long> getSetCheckListItemIdsByTclassId(@Param("tclassid") Long id);
 
 }

@@ -26,7 +26,7 @@ import java.util.*;
 
 @Service
 @RequiredArgsConstructor
-public class CategoryService  implements ICategoryService {
+public class CategoryService implements ICategoryService {
 
     private final ModelMapper modelMapper;
     private final CategoryDAO categoryDAO;

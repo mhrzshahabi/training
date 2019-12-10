@@ -3,7 +3,6 @@ ghazanfari_f, 9/14/2019, 9:56 AM
 */
 package com.nicico.training.dto.enums;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ENeedAssessmentPriority;
 import io.swagger.annotations.ApiModel;

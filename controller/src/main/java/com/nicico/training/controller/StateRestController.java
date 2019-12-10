@@ -15,6 +15,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @Slf4j
 @RequiredArgsConstructor
 @RestController
@@ -71,8 +72,8 @@ public class StateRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_state')")
     public ResponseEntity<StateDTO.StateSpecRs> list(@RequestParam("_startRow") Integer startRow,
-    @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
-    @RequestParam(value = "criteria", required = false) String criteria) {
+                                                     @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator,
+                                                     @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -105,10 +106,10 @@ public class StateRestController {
     @GetMapping(value = "/spec-list-by-stateId/{id}")
 //    @PreAuthorize("hasAuthority('r_educationOrientation')")
     public ResponseEntity<CityDTO.CitySpecRs> listByStateId(@RequestParam("_startRow") Integer startRow,
-                                                                            @RequestParam("_endRow") Integer endRow,
-                                                                            @RequestParam(value = "operator", required = false) String operator,
-                                                                            @RequestParam(value = "criteria", required = false) String criteria,
-                                                                            @PathVariable Long id) {
+                                                            @RequestParam("_endRow") Integer endRow,
+                                                            @RequestParam(value = "operator", required = false) String operator,
+                                                            @RequestParam(value = "criteria", required = false) String criteria,
+                                                            @PathVariable Long id) {
         List<CityDTO.Info> cities = stateService.listByStateId(id);
         final CityDTO.SpecRs specResponse = new CityDTO.SpecRs();
         specResponse.setData(cities)
@@ -117,7 +118,7 @@ public class StateRestController {
                 .setTotalRows(cities.size());
         final CityDTO.CitySpecRs specRs = new CityDTO.CitySpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 

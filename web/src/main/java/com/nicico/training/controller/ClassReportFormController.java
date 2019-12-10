@@ -19,29 +19,29 @@ import javax.servlet.http.HttpServletRequest;
 public class ClassReportFormController {
 
 
-	@RequestMapping("/show-form")
-	public String showForm() {
-		return "reports/classReport";
-	}
+    @RequestMapping("/show-form")
+    public String showForm() {
+        return "reports/classReport";
+    }
 
-	@PostMapping("/print")
-	public ResponseEntity<?> print(final HttpServletRequest request) {
-		String token = (String) request.getSession().getAttribute("AccessToken");
+    @PostMapping("/print")
+    public ResponseEntity<?> print(final HttpServletRequest request) {
+        String token = (String) request.getSession().getAttribute("AccessToken");
 
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
 
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
-		return restTemplate.exchange(restApiUrl + "/api/classReport/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-	}
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/classReport/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+    }
 }

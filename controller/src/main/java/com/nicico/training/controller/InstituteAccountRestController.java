@@ -61,30 +61,30 @@ public class InstituteAccountRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_account')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             accountService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_account')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody InstituteAccountDTO.Delete request) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             accountService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable

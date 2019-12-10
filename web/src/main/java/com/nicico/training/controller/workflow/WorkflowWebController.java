@@ -99,16 +99,11 @@ public class WorkflowWebController {
     }
 
 
-
     @GetMapping(value = {"/getUserCartableDetailForm2/{id}"})
     public ResponseEntity<TaskFormData> getUserCartableDetailFormFields2(@PathVariable String id) {
         TaskFormData taskFormData = businessWorkflowEngine.getTaskFormData(id);
-        return  new ResponseEntity(taskFormData.getTask(),HttpStatus.OK);
+        return new ResponseEntity(taskFormData.getTask(), HttpStatus.OK);
     }
-
-
-
-
 
 
     @GetMapping(value = {"/getGroupCartableDetailForm/{id}"})
@@ -149,7 +144,7 @@ public class WorkflowWebController {
 
 
     @GetMapping(value = "/processInstance/diagram/{id}")
-    public String processInstanceDiagram(@PathVariable String id, @RequestParam(value = "procDefId", defaultValue = "") String procDefId, ModelMap modelMap,@RequestParam("Authorization") String auth) {
+    public String processInstanceDiagram(@PathVariable String id, @RequestParam(value = "procDefId", defaultValue = "") String procDefId, ModelMap modelMap, @RequestParam("Authorization") String auth) {
         if (procDefId.equals("")) {
             procDefId = businessWorkflowEngine.getProcessInstanceById(id).getProcessDefinitionId();
         }
@@ -170,13 +165,13 @@ public class WorkflowWebController {
 //        RestTemplate restTemplate = new RestTemplate();
 //
 //        ResponseEntity<byte[]> processDiagram = restTemplate.exchange(restApiUrl + "http://localhost:8080/evaluation/api/workflow/processInstance/diagram/" + id, HttpMethod.GET, request, byte[].class);
-        modelMap.addAttribute("diagramName",  Base64.getEncoder().encodeToString(baos.toByteArray()));
+        modelMap.addAttribute("diagramName", Base64.getEncoder().encodeToString(baos.toByteArray()));
         return "workflow/processDiagramForm";
 
     }
 
     @GetMapping(value = "/processDefinition/diagram/{id}")
-    public String processDefinitionDiagram(@PathVariable String id,ModelMap modelMap) {
+    public String processDefinitionDiagram(@PathVariable String id, ModelMap modelMap) {
         InputStream processDiagram = repositoryService.getProcessDiagram(id);
 //        return generateProcessDefinitionPng(id, modelMap, processDiagram);
         ByteArrayOutputStream baos = getByteArrayOutputStream(processDiagram);
@@ -209,14 +204,14 @@ public class WorkflowWebController {
     private String generateProcessDefinitionPng(String id, ModelMap modelMap, InputStream definitionImageStream) {
         try {
 
-            String filename = "snapshot-" + id.replace(":","-") + ".png";
+            String filename = "snapshot-" + id.replace(":", "-") + ".png";
             modelMap.addAttribute("diagramName", filename);
 
             File file = new File(uploadDir);
-            if(!file.exists()){
+            if (!file.exists()) {
                 file.mkdirs();
             }
-            FileOutputStream stream = new FileOutputStream(uploadDir + "\\"+ filename);
+            FileOutputStream stream = new FileOutputStream(uploadDir + "\\" + filename);
             int read = 0;
             byte[] bytes = new byte[1024];
             while ((read = definitionImageStream.read(bytes)) != -1) {
@@ -233,7 +228,7 @@ public class WorkflowWebController {
 
     @PostMapping(value = "/processDefinition/remove/{id}")
     @ResponseBody
-    public String removeProcessDefinition(@PathVariable String id,@RequestParam("Authorization") String auth) {
+    public String removeProcessDefinition(@PathVariable String id, @RequestParam("Authorization") String auth) {
         HttpHeaders headers = new HttpHeaders();
         headers.add("Authorization", auth);
         HttpEntity<String> request = new HttpEntity<String>(headers);
@@ -418,6 +413,7 @@ public class WorkflowWebController {
             formProperties.add(formProperty);
         }
     }
+
     private ByteArrayOutputStream getByteArrayOutputStream(InputStream processDiagram) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         BufferedInputStream bis = new BufferedInputStream(processDiagram);

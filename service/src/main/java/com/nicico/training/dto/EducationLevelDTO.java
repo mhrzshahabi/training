@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -40,7 +39,7 @@ public class EducationLevelDTO {
         private Integer version;
     }
 
-      //-------------------------------
+    //-------------------------------
     @Getter
     @Setter
     @ApiModel("EducationLevelInfoTuple")
