@@ -83,9 +83,12 @@ abaspour 9803
         click: function () {
 
             var data = taskStartConfirmForm.getValues();
-            workflowRecordId  = data.cId;
+            workflowRecordId = data.cId;
+            trainingTabSet.removeTab(targetTitleFa)
             createTab(targetTitleFa, "${addDocumentUrl}");
-            taskConfirmationWindow.minimize
+            taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+
+            workflowParameters = {"taskId": "${id}", "usr": "${username}", "workflowdata" : taskStartConfirmForm.getValues()};
         }
     });
     </c:if>
@@ -316,10 +319,6 @@ abaspour 9803
                             callback: function (RpcResponse_o) {
                                 console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
-                                    //------------------------------------------------------------------
-                                    //  trainingTabSet.removeTab(targetTitleFa);
-                                    <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
-                                    //-----------------------------------------------------------------------
 
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
@@ -489,7 +488,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,
