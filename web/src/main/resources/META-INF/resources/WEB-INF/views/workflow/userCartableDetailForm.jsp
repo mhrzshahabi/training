@@ -9,12 +9,13 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// script
+// <script>
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
     var doDeleteTaskButton = null;
     var viewDocButton = null;
+    var targetUrl = null;
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
             {name: "REJECTVAL", type: "text", required: true},
@@ -62,7 +63,11 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='target'}">
+
     <spring:url value="${taskFormVariable.value}" var="addDocumentUrl"/>
+
+    <%--var targetUrl = "${taskFormVariable.value}";--%>
+
     </c:if>
 
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
@@ -76,10 +81,11 @@ abaspour 9803
         align: "center",
         width: "150",
         click: function () {
+
             var data = taskStartConfirmForm.getValues();
-            class_userCartableId = data.cId;
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>", true);
-            <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
+            workflowRecordId  = data.cId;
+            createTab(targetTitleFa, "${addDocumentUrl}");
+            taskConfirmationWindow.minimize
         }
     });
     </c:if>

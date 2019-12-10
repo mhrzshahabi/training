@@ -6,7 +6,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// script
+// <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -271,6 +271,7 @@
         },
         //working
         dataArrived: function () {
+            selectWorkflowRecord();
             // var gridState = "[{id:285}]";
             // ListGrid_Course.setSelectedState(gridState);
 
@@ -2301,11 +2302,9 @@
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        }
-        else if(sRecord.workflowStatusCode === "2"){
+        } else if (sRecord.workflowStatusCode === "2") {
             createDialog("info", "<spring:message code='course.workflow.confirm'/>");
-        }
-        else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
+        } else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
             createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
         } else {
 
@@ -2332,7 +2331,7 @@
                             "workflowStatusCode": "0"
                         }]
 
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }
                 }
@@ -2349,6 +2348,21 @@
         } else {
             isc.say("کد خطا : " + resp.httpResponseCode);
         }
+    }
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_Course.setSelectedState(gridState);
+
+            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+
+            workflowRecordId = null;
+        }
+
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
