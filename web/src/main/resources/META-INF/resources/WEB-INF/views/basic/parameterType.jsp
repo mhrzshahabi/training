@@ -4,20 +4,20 @@
 // <script>
 
     // ------------------------------------------- Menu -------------------------------------------
-    JobMenu_job = isc.Menu.create({
+    ParameterTypeMenu_parameterType = isc.Menu.create({
         data: [
             {
                 title: "<spring:message code="refresh"/>",
                 icon: "<spring:url value="refresh.png"/>",
                 click: function () {
-                    refreshJobLG_job();
+                    refreshParameterTypeLG_parameterType();
                 }
             },
         ]
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    JobTS_job = isc.ToolStrip.create({
+    ParameterTypeTS_parameterType = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members: [
@@ -26,17 +26,17 @@
                     data: [
                         {
                             title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {
-                                printJobLG_job("pdf");
+                                printParameterTypeLG_parameterType("pdf");
                             }
                         },
                         {
                             title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {
-                                printJobLG_job("excel");
+                                printParameterTypeLG_parameterType("excel");
                             }
                         },
                         {
                             title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {
-                                printJobLG_job("html");
+                                printParameterTypeLG_parameterType("html");
                             }
                         },
                     ]
@@ -51,11 +51,11 @@
                 border: '0px',
                 members: [
                     isc.Label.create({
-                        ID: "totalsLabel_job"
+                        ID: "totalsLabel_parameterType"
                     }),
                     isc.ToolStripButtonRefresh.create({
                         click: function () {
-                            refreshJobLG_job();
+                            refreshParameterTypeLG_parameterType();
                         }
                     }),
                 ]
@@ -66,10 +66,10 @@
 
     // ------------------------------------------- TabSet -------------------------------------------
 
-    let JobTabs_job = isc.TabSet.create({
+    let ParameterTypeTabs_parameterType = isc.TabSet.create({
         tabs: [
             {
-                title: "<spring:message code="job.group.plural.list"/>",
+                title: "<spring:message code="parameterType.group.plural.list"/>",
                 pane: isc.TrVLayout.create({
                     members: []
                 }),
@@ -114,49 +114,49 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    JobDS_job = isc.TrDS.create({
+    ParameterTypeDS_parameterType = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="parameterType.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="parameterType.title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: parameterTypeUrl + "iscList"
     });
 
-    JobLG_job = isc.TrLG.create({
-        dataSource: JobDS_job,
+    ParameterTypeLG_parameterType = isc.TrLG.create({
+        dataSource: ParameterTypeDS_parameterType,
         fields: [
             {name: "code",},
             {name: "titleFa",},
         ],
         autoFetchData: true,
-        gridComponents: [JobTS_job, "filterEditor", "header", "body"],
-        contextMenu: JobMenu_job,
+        gridComponents: [ParameterTypeTS_parameterType, "filterEditor", "header", "body"],
+        contextMenu: ParameterTypeMenu_parameterType,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsLabel_job.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                totalsLabel_parameterType.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                totalsLabel_job.setContents("&nbsp;");
+                totalsLabel_parameterType.setContents("&nbsp;");
             }
         },
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-// members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
-        members: [JobLG_job],
+// members: [ParameterTypeLG_parameterType, isc.HLayout.create({members: [ParameterTypeTabs_parameterType]})],
+        members: [ParameterTypeLG_parameterType],
     });
 
 
     // ------------------------------------------- Functions -------------------------------------------
-    function refreshJobLG_job() {
-        JobLG_job.filterByEditor();
+    function refreshParameterTypeLG_parameterType() {
+        ParameterTypeLG_parameterType.filterByEditor();
     }
 
-    function printJobLG_job(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
+    function printParameterTypeLG_parameterType(type) {
+        isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
 
 // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
 
@@ -165,10 +165,10 @@
 
 // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
 
-// trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
+// trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", ParameterTypeLG_parameterType.getCriteria());
 // trPrintWithCriteria(,
-// JobLG_job.getCriteria());
-// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));
+// ParameterTypeLG_parameterType.getCriteria());
+// isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": ParameterTypeLG_parameterType.getCriteria()}), "test"));
     }
 
     function test(resp) {
