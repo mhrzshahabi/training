@@ -78,7 +78,7 @@
             {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true, autoFitWidth: true},
         ],
-        fetchDataURL: personnelUrl + "iscList"
+        fetchDataURL: personnelUrl + "/iscList"
     });
 
     PersonnelLG_personnel = isc.TrLG.create({

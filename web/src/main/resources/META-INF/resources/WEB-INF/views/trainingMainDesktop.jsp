@@ -910,6 +910,8 @@
         title: "<spring:message code="cancel"/>",
     });
 
+    createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");
+
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
