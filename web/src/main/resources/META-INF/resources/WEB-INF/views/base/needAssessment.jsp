@@ -157,7 +157,7 @@ title: "<spring:message code="input"/>",
 filterOperator: "iContains"
 },
 ],
-fetchDataURL: competenceUrl + "iscList"
+fetchDataURL: competenceUrl + "/iscList"
 });
 
 let SkillDS_needAssessment = isc.TrDS.create({
