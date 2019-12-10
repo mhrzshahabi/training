@@ -11,10 +11,10 @@
 
 var instituteMethod = "POST";
 var reqMethod = "POST";
-var institute_Institute_Url = rootUrl + "institute/";
-var institute_Institute_Account_Url = rootUrl + "institute-account/";
-var institute_Institute_TrainingPlace_Url = rootUrl + "training-place/";
-var institute_Bank_Url = rootUrl + "bank/";
+var institute_Institute_Url = rootUrl + "/institute/";
+var institute_Institute_Account_Url = rootUrl + "/institute-account/";
+var institute_Institute_TrainingPlace_Url = rootUrl + "/raining-place/";
+var institute_Bank_Url = rootUrl + "/bank/";
 var equipmentDestUrl = "";
 var globalWait = undefined;
 //--------------------------------------------------------------------------------------------------------------------//

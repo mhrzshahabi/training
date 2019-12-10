@@ -53,7 +53,7 @@
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: parameterTypeUrl + "iscList"
+        fetchDataURL: parameterTypeUrl + "/iscList"
     });
 
     ParameterTypeLG_parameter = isc.TrLG.create({
@@ -89,7 +89,7 @@
     }
 
     function printParameterTypeLG_parameter(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));
 
         // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
 
@@ -101,7 +101,7 @@
         // trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", ParameterTypeLG_parameter.getCriteria());
         // trPrintWithCriteria(,
         // ParameterTypeLG_parameter.getCriteria());
-        // isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": ParameterTypeLG_parameter.getCriteria()}), "test"));
+        // isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": ParameterTypeLG_parameter.getCriteria()}), "test"));
     }
 
     function test(resp) {

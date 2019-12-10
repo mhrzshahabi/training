@@ -20,7 +20,7 @@
         clientOnly: true,
         testData: sessionInOneDate,
         // dataFormat: "json",
-        // dataURL: attendanceUrl + "session-in-date",
+        // dataURL: attendanceUrl + "/session-in-date",
         fields: [
             {name: "studentId", hidden:true, primaryKey: true},
             {name: "studentName", type: "text", title: "نام"},
@@ -34,7 +34,7 @@
            {name:"dayName"},
        ],
         autoFetchData:false,
-        fetchDataURL: attendanceUrl + "session-date?id=0"
+        fetchDataURL: attendanceUrl + "/session-date?id=0"
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         numCols:6,
@@ -52,14 +52,14 @@
                    {name: "sessionDate",title:"تاریخ"}
                ],
                click: function (form,item) {
-                   RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "session-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                   RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "/session-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id;
                    item.fetchData();
                },
                changed: function(form, item, value) {
                    // alert("1")
                    // isc.RPCManager.sendRequest(TrDSRequest(attendanceUrl + "session-in-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value, "GET", JSON.stringify(JSONObj), "callback: sessions_for_one_date(rpcResponse)"));
                    isc.RPCManager.sendRequest({
-                       actionURL: attendanceUrl + "session-in-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
+                       actionURL: attendanceUrl + "/session-in-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
                        httpMethod: "GET",
                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                        useSimpleHttp: true,
@@ -94,7 +94,7 @@
                                // alert("2");
                            }
                            isc.RPCManager.sendRequest({
-                               actionURL: attendanceUrl + "auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
+                               actionURL: attendanceUrl + "/auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
                                httpMethod: "GET",
                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                useSimpleHttp: true,
@@ -156,7 +156,7 @@
                 isc.IButtonSave.create({
                 click: function () {
                     isc.RPCManager.sendRequest({
-                        actionURL: attendanceUrl + "save-attendance?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
+                        actionURL: attendanceUrl + "/save-attendance?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                         willHandleError: true,
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
