@@ -10,7 +10,7 @@
 <head>
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
-    <link rel="stylesheet" href='<spring:url value="/static/css/commonStyle.css"/>'/>
+    <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
 
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
@@ -21,28 +21,24 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
-    <%--
-        <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
-    --%>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
-    <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
-    <link rel="stylesheet" href="<spring:url value='/static/css/training.css' />"/>
-    <script src="<spring:url value='/static/script/js/calendar.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/jalali.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/training_function.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/all.js'/>"></script>
-    <script src="<spring:url value='/static/script/js/jquery.min.js' />"></script>
-    <script src="<spring:url value='/static/script/js/changeSkin.js'/>"></script>
 
+    <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
+    <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
+    <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
+    <script src="<spring:url value='/js/calendar.js'/>"></script>
+    <script src="<spring:url value='/js/jalali.js'/>"></script>
+    <script src="<spring:url value='/js/training_function.js'/>"></script>
+    <script src="<spring:url value='/js/all.js'/>"></script>
+    <script src="<spring:url value='/js/jquery.min.js' />"></script>
+    <script src="<spring:url value='/js/changeSkin.js'/>"></script>
     <!-- ---------------------------------------- Not Ok - End ---------------------------------------- -->
 </head>
 
 <body dir="rtl">
-
 <script type="application/javascript">
 
-    // -------------------------------------------  URLs & Filters  -----------------------------------------------
+    // -------------------------------------------  URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api/";
@@ -60,7 +56,7 @@
     const personnelRegUrl = rootUrl + "personnelRegistered/";
     const attendanceUrl = rootUrl + "attendance/";
 
-
+    // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
     const numFilter = "[0-9]";
@@ -449,7 +445,7 @@
             data: [
                 {
                     title: "<spring:message code="skill.categorize"/>",
-                    <%--icon: "<spring:url value="categorize.png"/>",--%>
+
                     click: function () {
                         createTab(this.title, "<spring:url value="/category/show-form"/>");
                     }
@@ -689,6 +685,13 @@
         }),
     });
 
+    reportTSMB = isc.ToolStripMenuButton.create({
+        title: /*Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="report"/>",
+        menu: isc.Menu.create({
+            data: []
+        }),
+    });
+
     securityTSMB = isc.ToolStripMenuButton.create({
         title:/* Canvas.imgHTML("<spring:url value="folder.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="security"/>",
         menu: isc.Menu.create({
@@ -736,12 +739,7 @@
         }),
     });
 
-    reportTSMB = isc.ToolStripMenuButton.create({
-        title: /*Canvas.imgHTML("<spring:url value="report.png"/>", 16, 16) +*/ "&nbsp; <spring:message code="report"/>",
-        menu: isc.Menu.create({
-            data: []
-        }),
-    });
+
 
     trainingToolStrip = isc.ToolStrip.create({
         align: "center",
@@ -798,7 +796,6 @@
 
 
     var headerLayout = isc.HLayout.create({
-
         width: "100%",
         height: "52",
         styleName: "header",
