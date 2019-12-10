@@ -556,7 +556,7 @@
                 members: [
                     ToolStripButton_Refresh
                 ]
-            }),
+            })
 
         ]
     });
@@ -2295,36 +2295,49 @@
         })
     }
 
-
     // <<---------------------------------------- Send To Workflow ----------------------------------------
     function sendCourseToWorkflow() {
 
         var sRecord = ListGrid_Course.getSelectedRecord();
 
-        if (sRecord == null || sRecord.id == null) {
+        if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        } else if (sRecord.workflowStatusCode !== "0") {
+        }
+        else if(sRecord.workflowStatusCode === "2"){
+            createDialog("info", "<spring:message code='course.workflow.confirm'/>");
+        }
+        else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
             createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
         } else {
 
-            var varParams = [{
-                "processKey": "courseWorkflow",
-                "cId": sRecord.id,
-                "mainObjective": sRecord.mainObjective,
-                "titleFa": sRecord.titleFa,
-                "theoryDuration": sRecord.theoryDuration.toString(),
-                "courseCreatorId": "${username}",
-                "courseCreator": userFullName,
-                "REJECTVAL": "",
-                "REJECT": "",
-                "target": "/course/show-form",
-                "targetTitleFa": "دوره",
-                "workflowStatus": "ثبت اولیه",
-                "workflowStatusCode": "0"
-            }]
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="course.sent.to.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
 
-            isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        var varParams = [{
+                            "processKey": "courseWorkflow",
+                            "cId": sRecord.id,
+                            "mainObjective": sRecord.mainObjective,
+                            "titleFa": sRecord.titleFa,
+                            "theoryDuration": sRecord.theoryDuration.toString(),
+                            "courseCreatorId": "${username}",
+                            "courseCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/course/show-form",
+                            "targetTitleFa": "دوره",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0"
+                        }]
 
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+
+                    }
+                }
+            });
         }
 
     }
@@ -2340,5 +2353,3 @@
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
-
-    //

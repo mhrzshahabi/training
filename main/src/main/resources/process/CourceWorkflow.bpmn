@@ -20,13 +20,13 @@
     <userTask id="courseSupervisorCheck" name="بررسی سرپرست" activiti:assignee="${courseSupervisor}">
       <documentation>${mainObjective}</documentation>
       <extensionElements>
+        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
         <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
         <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
         <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
         <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" expression="${courseCreator}" writable="false" required="true"></activiti:formProperty>
         <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
         <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
         <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
         <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
         <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
@@ -35,11 +35,15 @@
     <userTask id="courseCorrection" name="بررسی کاربر" activiti:assignee="${courseCreatorId}">
       <documentation>${REJECTVAL}</documentation>
       <extensionElements>
+        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
         <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
         <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
         <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
         <activiti:formProperty id="REJECTVAL" name="دلیل عودت" type="string" expression="${REJECTVAL}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت بررسی" type="string" expression="${C_WORKFLOW_STATUS}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowStatus" name="وضعیت بررسی" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
+        <activiti:formProperty id="DELETE" name="DELETE" type="string" default="delete" required="true"></activiti:formProperty>
+        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
       </extensionElements>
     </userTask>
     <endEvent id="courseCheckend" name="End"></endEvent>
@@ -171,7 +175,7 @@
         <omgdi:waypoint x="971.0" y="138.0"></omgdi:waypoint>
         <omgdi:waypoint x="1060.0" y="139.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="100.0" x="979.0" y="140.0"></omgdc:Bounds>
+          <omgdc:Bounds height="14.0" width="65.0" x="979.0" y="140.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="serviceCorrectionflow" id="BPMNEdge_serviceCorrectionflow">
