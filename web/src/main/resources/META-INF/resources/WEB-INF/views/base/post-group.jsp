@@ -298,7 +298,7 @@
             {name: "description", filterOperator: "iContains"},
             {name: "version", filterOperator: "iContains"}
         ]
-        , fetchDataURL: postUrl + "iscList"
+        , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
@@ -1096,7 +1096,7 @@
 
             } else {
                 // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
-                // RestDataSource_All_Posts.fetchDataURL = postUrl + "iscList";
+                // RestDataSource_All_Posts.fetchDataURL = postUrl + "/iscList";
                 ListGrid_AllPosts.fetchData();
                 ListGrid_AllPosts.invalidateCache();
 

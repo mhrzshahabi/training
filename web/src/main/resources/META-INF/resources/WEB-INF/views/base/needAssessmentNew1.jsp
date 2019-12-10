@@ -87,7 +87,7 @@
                         restData_Job.fetchDataURL = jobUrl + "/iscList";
                     } else if (value == "پست") {
                         form.getField("combo").setValue("");
-                        restData_Post.fetchDataURL = postUrl + "iscList";
+                        restData_Post.fetchDataURL = postUrl + "/iscList";
                         item.pickListFields = [
                             {name: "code"},
                             {name: "titleFa"},
