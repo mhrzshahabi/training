@@ -12,6 +12,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -56,8 +57,8 @@ public class EmploymentHistoryDTO {
     @ApiModel("EmploymentHistory - Info")
     public static class Info extends EmploymentHistoryDTO {
         private Long id;
-//        private Set<CategoryDTO.CategoryInfoTuple> categories;
-//        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
     }
 
     @Getter

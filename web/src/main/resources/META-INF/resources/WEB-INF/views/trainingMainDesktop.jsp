@@ -55,7 +55,8 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/"
+    const parameterTypeUrl = rootUrl + "/";
+    const employmentHistoryUrl = rootUrl + "/employmentHistory";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -732,6 +733,7 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
+    const subCategoryUrl = rootUrl + "/sub-category/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";

@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// script
+// <script>
     var dummy;
     var teacherMethod = "POST";
     var teacherWait;
@@ -17,6 +17,7 @@
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
+    var isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Rest Data Sources*/
@@ -57,6 +58,11 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
 
+    var RestDataSource_SubCategory_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     var RestDataSource_Education_Level_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
         fetchDataURL: educationUrl + "level/spec-list"
@@ -93,14 +99,195 @@
     /*EmploymentHistory*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    Menu_ListGrid_JspEmploymentHistory = isc.Menu.create({
+    DynamicForm_EmploymentHistory_JspTeacher = isc.DynamicForm.create({
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "employmentHistories.companyName",
+                title: "نام سازمان",
+            },
+            {
+                name: "employmentHistories.jobTitle",
+                title: "عنوان شغل",
+            },
+            {
+                name: "employmentHistories.categories",
+                type: "selectItem",
+                textAlign: "center",
+                title: "<spring:message code='category'/>",
+                autoFetchData: true,
+                optionDataSource: RestDataSource_Category_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                },
+                changed: function () {
+                    isCategoriesChanged = true;
+
+                    let subCategoryField = DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.subCategories");
+
+                    if(subCategoryField.getValue() === undefined)
+                        return;
+                    let subCategories = subCategoryField.getSelectedRecords();
+                    let ids = DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.categories").getValue();
+                    let SubCats = [];
+                    for (let i = 0; i < subCategories.length; i++) {
+                        if(ids.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    // DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.subCategories").invalidateDisplayValueCache();
+                    // DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.subCategories").clearValue();
+                    subCategoryField.setValue(SubCats);
+
+                    console.log(subCategoryField.getSelectedRecords());
+                }
+            },
+            {
+                name: "employmentHistories.subCategories",
+                type: "selectItem",
+                textAlign: "center",
+                title: "<spring:message code='subcategory'/>",
+                autoFetchData: true,
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                },
+                filterLocally: true,
+                focus: function (){
+                    if(isCategoriesChanged){
+                        isCategoriesChanged = false;
+                        let ids = DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.categories").getValue();
+                        if(ids === []){
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        }
+                        else{
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            },
+            {
+                name: "employmentHistories.persianStartDate",
+                title: "تاریخ شروع",
+                ID: "employmentHistories_startDate_jspTeacher",
+                hint: "YYYY/MM/DD",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('employmentHistories_startDate_jspTeacher', this, 'ymd', '/');
+                    }
+                }],
+                changed: function () {
+                }
+            },
+            {
+                name: "employmentHistories.persianEndDate",
+                title: "تاریخ پایان",
+                ID: "employmentHistories_endDate_jspTeacher",
+                hint: "YYYY/MM/DD",
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('employmentHistories_endDate_jspTeacher', this, 'ymd', '/');
+                    }
+                }],
+                changed: function () {
+                }
+            }
+        ],
+        itemChanged: function (item, newValue) {
+        }
+    });
+
+    IButton_Save_EmploymentHistory_JspTeacher = isc.TrSaveBtn.create({
+        top: 260,
+        click: function () {
+            console.log(DynamicForm_EmploymentHistory_JspTeacher.getField("employmentHistories.subCategories").getSelectedRecords());
+        //     DynamicForm_EmploymentHistory_JspTeacher.validate();
+        //     if (DynamicForm_EmploymentHistory_JspTeacher.hasErrors()) {
+        //         return;
+        //     }
+        //     if (methodAttachment === "POST") {
+        //         let formData1 = new FormData();
+        //         let fileBrowserId = document.getElementById(window.file.uploadItem.getElement().id);
+        //         let file = fileBrowserId.files[0];
+        //
+        //         formData1.append("file", file);
+        //         formData1.append("objectType", objectTypeAttachment);
+        //         formData1.append("objectId", objectIdAttachment);
+        //         formData1.append("fileName", DynamicForm_EmploymentHistory_JspTeacher.getValue("fileName"));
+        //         formData1.append("fileTypeId", DynamicForm_EmploymentHistory_JspTeacher.getValue("fileTypeId"));
+        //         formData1.append("description", DynamicForm_EmploymentHistory_JspTeacher.getValue("description"));
+        //         TrnXmlHttpRequest(formData1, saveActionUrlAttachment, methodAttachment, save_result_Attachments);
+        //     } else if (methodAttachment === "PUT") {
+        //         let data = DynamicForm_EmploymentHistory_JspTeacher.getValues();
+        //         isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlAttachment,
+        //             methodAttachment, JSON.stringify(data), save_result_Attachments));
+        //     }
+        }
+    });
+
+    IButton_Cancel_EmploymentHistory_JspTeacher = isc.TrCancelBtn.create({
+        prompt: "",
+        // width: 100,
+        orientation: "vertical",
+        click: function () {
+            DynamicForm_EmploymentHistory_JspTeacher.clearValues();
+            Window_EmploymentHistory_JspTeacher.close();
+        }
+    });
+
+    HLayout_SaveOrExit_EmploymentHistory_JspTeacher = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        members: [IButton_Save_EmploymentHistory_JspTeacher, IButton_Cancel_EmploymentHistory_JspTeacher]
+    });
+
+    Window_EmploymentHistory_JspTeacher = isc.Window.create({
+        align: "center",
+        border: "1px solid gray",
+        title: "سابقه کاری",
+        // closeClick: function () {
+        //     this.Super("closeClick", arguments);
+        // },
+        items: [isc.TrVLayout.create({
+            width: "500",
+            height: "120",
+            members: [DynamicForm_EmploymentHistory_JspTeacher, HLayout_SaveOrExit_EmploymentHistory_JspTeacher]
+        })]
+    });
+
+
+    Menu_EmploymentHistory_JspTeacher = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
                 ListGrid_Attachments_refresh();
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                ListGrid_Attachments_Add();
+                ListGrid_EmploymentHistory_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
@@ -116,7 +303,7 @@
 
     ListGrid_EmploymentHistory_JspTeacher = isc.TrLG.create({
         dataSource: RestDataSource_Teacher_JspTeacher,
-        contextMenu: Menu_ListGrid_JspEmploymentHistory,
+        contextMenu: Menu_EmploymentHistory_JspTeacher,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -170,7 +357,7 @@
     });
     ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonAdd.create({
         click: function () {
-            ListGrid_Attachments_Add();
+            ListGrid_EmploymentHistory_Add();
         }
     });
     ToolStripButton_Remove_JspEmploymentHistory = isc.ToolStripButtonRemove.create({
@@ -204,6 +391,13 @@
             ListGrid_EmploymentHistory_JspTeacher
         ]
     });
+
+    function ListGrid_EmploymentHistory_Add() {
+        // methodAttachment = "POST";
+        // saveActionUrlAttachment = attachmentUrl + "upload";
+        DynamicForm_EmploymentHistory_JspTeacher.clearValues();
+        Window_EmploymentHistory_JspTeacher.show();
+    }
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
@@ -1917,4 +2111,4 @@
         }
     }
 
-    //</script>
+    // </script>
