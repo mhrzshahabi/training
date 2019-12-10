@@ -15,9 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-
 import java.io.IOException;
 import java.util.List;
 
@@ -54,7 +54,7 @@ public class ClassStudentRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
         ClassStudentDTO.Update update = (new ModelMapper()).map(request, ClassStudentDTO.Update.class);
-        return new ResponseEntity<>(classStudentService.update(id, update), HttpStatus.OK);
+       return new ResponseEntity<>(classStudentService.update(id, update), HttpStatus.OK);
     }
 
 
@@ -106,20 +106,43 @@ public class ClassStudentRestController {
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
-
-
     @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<ClassStudentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(classStudentService.search(request), HttpStatus.OK);
     }
 
+//    @Loggable
+//    @GetMapping(value = "/getStudent/{id}")
+//    public ResponseEntity getStudent(@PathVariable Long id) {
+//
+//              List<ClassStudentDTO.Info> student =classStudentService.fillTable(id);
+//              return null;
+//    }
+
+     @Loggable
+    @GetMapping(value = "/{getStudent}/{id}")
+    public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> getStudent(@PathVariable Long id) {
+
+        List<ClassStudentDTO.Info> list = classStudentService.getStudent(id);
+        final ClassStudentDTO.SpecRs specResponse = new ClassStudentDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final ClassStudentDTO.ClassStudentSpecRs specRs = new ClassStudentDTO.ClassStudentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+     @Loggable
+    @PostMapping(value = "/edit")
+    public ResponseEntity<ClassStudentDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
+        return new ResponseEntity(classStudentService.updateDescriptionCheck(body), HttpStatus.OK);
+    }
 
 
 
-
-
-
-
-
-}
+    }
