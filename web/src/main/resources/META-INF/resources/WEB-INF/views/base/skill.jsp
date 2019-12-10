@@ -11,11 +11,11 @@
 
 var skill_Level_Symbol = "";
 var skill_Method = "GET";
-var skill_SkillHomeUrl = rootUrl + "skill";
-var skill_CategoryHomeUrl = rootUrl + "category";
-var skill_ActionUrl = rootUrl + "skill";
-var skill_CategoryUrl = rootUrl + "category/spec-list";
-var skill_SkillLevelUrl = rootUrl + "skill-level/spec-list";
+var skill_SkillHomeUrl = rootUrl + "/skill";
+var skill_CategoryHomeUrl = rootUrl + "/category";
+var skill_ActionUrl = rootUrl + "/skill";
+var skill_CategoryUrl = rootUrl + "/category/spec-list";
+var skill_SkillLevelUrl = rootUrl + "/skill-level/spec-list";
 var skill_selectedSkillId = -1;
 
 // Start Block Of Combo And List Data Sources ----------------------------------------------------------
@@ -870,7 +870,7 @@ isc.say("<spring:message code='msg.operation.error'/>");
 }
 });
 var ToolStripButton_Skill_AddSkillGroup_Select_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: getFormulaMessage(">>", "5", "blue", "B"),
 click: function () {
 if (ListGrid_Skill_UnAttached_SkillGroup.getSelectedRecord() != null) {
@@ -935,7 +935,7 @@ isc.say("<spring:message code='msg.operation.error'/>");
 }
 });
 var ToolStripButton_Skill_AddSkillGroup_Deselect_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: getFormulaMessage("<<", "5", "blue", "B"),
 click: function () {
 if (ListGrid_Skill_Selected_SkillGroup.getSelectedRecords() != null) {
@@ -1312,7 +1312,7 @@ isc.say("<spring:message code='msg.operation.error'/>");
 }
 });
 var ToolStripButton_Skill_AddCourse_Select_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: getFormulaMessage(">>", "5", "blue", "B"),
 click: function () {
 if (ListGrid_Skill_UnAttached_Course.getSelectedRecord() != null) {
@@ -1377,7 +1377,7 @@ isc.say("<spring:message code='msg.operation.error'/>");
 }
 });
 var ToolStripButton_Skill_AddCourse_Deselect_Multiple = isc.ToolStripButton.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: getFormulaMessage("<<", "5", "blue", "B"),
 click: function () {
 if (ListGrid_Skill_Selected_Course.getSelectedRecords() != null) {

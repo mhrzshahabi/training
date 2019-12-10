@@ -145,7 +145,7 @@ return this.Super("transformRequest", arguments);
 },
 
 <%--		fetchDataURL: "<spring:url value="/rest/workflow/groupTask/list?roles=${userRoles}"/>"--%>
-fetchDataURL: workflowUrl + "groupTask/list?roles=${userRoles}"
+fetchDataURL: workflowUrl + "/groupTask/list?roles=${userRoles}"
 });
 
 var ListGrid_GroupTaskList = isc.ListGrid.create({

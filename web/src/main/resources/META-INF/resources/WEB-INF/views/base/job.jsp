@@ -120,7 +120,7 @@
             {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     JobLG_job = isc.TrLG.create({
@@ -156,7 +156,7 @@
     }
 
     function printJobLG_job(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/pdf", "POST", null, "callback:test(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));
 
 // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
 
@@ -168,7 +168,7 @@
 // trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", JobLG_job.getCriteria());
 // trPrintWithCriteria(,
 // JobLG_job.getCriteria());
-// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));
+// isc.RPCManager.sendRequest(TrDSRequest(jobUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": JobLG_job.getCriteria()}), "test"));
     }
 
     function test(resp) {

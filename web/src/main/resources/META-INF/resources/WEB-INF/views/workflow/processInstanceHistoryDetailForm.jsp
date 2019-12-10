@@ -78,7 +78,7 @@ dsRequest.httpHeaders = {
 };
 return this.Super("transformRequest", arguments);
 },
-fetchDataURL: workflowUrl + "userTaskHistory/list/${pId}"
+fetchDataURL: workflowUrl + "/userTaskHistory/list/${pId}"
 
 
 });

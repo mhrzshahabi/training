@@ -20,7 +20,7 @@
                 {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: skillUrl + "spec-list"
+        fetchDataURL: skillUrl + "/spec-list"
     });
 
     restData_All_Jobs_NASB_JPA = isc.TrDS.create({
@@ -30,7 +30,7 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     restData_All_Posts_NASB_JPA = isc.TrDS.create({
@@ -40,7 +40,7 @@
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     restData_All_JobGroups_NASB_JPA = isc.TrDS.create({
@@ -58,7 +58,7 @@
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postGroupUrl + "spec-list"
+        fetchDataURL: postGroupUrl + "/spec-list"
     });
 
     restData_For_This_Object_Skills_NASB_JPA = isc.TrDS.create({

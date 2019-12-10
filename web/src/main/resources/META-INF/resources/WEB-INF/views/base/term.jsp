@@ -294,7 +294,7 @@ show_TermEditForm();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-//icon: "[SKIN]/actions/add.png",
+
 title: "<spring:message code="create"/>",
 click: function () {
 term_method = "POST";

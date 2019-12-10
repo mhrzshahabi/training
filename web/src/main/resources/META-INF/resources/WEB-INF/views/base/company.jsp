@@ -442,7 +442,7 @@
         }
     });
     ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code="edit"/>",
         click: function () {
 
@@ -450,7 +450,7 @@
         }
     });
     ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code="remove"/>",
         click: function () {
             show_CompanyRemoveForm();

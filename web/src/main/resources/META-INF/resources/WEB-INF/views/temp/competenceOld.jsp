@@ -42,7 +42,7 @@
             {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
             {name: "ecompetenceInputType.titleFa", title: "نوع ورودي", align: "center"},
             {name: "description", title: "توضيحات", align: "center"}],
-        fetchDataURL: competenceUrl + "spec-list"
+        fetchDataURL: competenceUrl + "/spec-list"
     });
 
     let LG_Competence_competence = isc.MyListGrid.create({
@@ -558,7 +558,7 @@
 
             DF_JobCompetenceType_competence.clearValues();
 
-            DS_Job_competence.fetchDataURL = jobUrl + "competence/not/" + record.id + "/spec-list";
+            DS_Job_competence.fetchDataURL = jobUrl + "/competence/not/" + record.id + "/spec-list";
             LG_Job_competence.invalidateCache();
             LG_Job_competence.fetchData();
             LG_Job_competence.show();

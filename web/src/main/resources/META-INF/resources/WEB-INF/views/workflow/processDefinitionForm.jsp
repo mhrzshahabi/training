@@ -52,7 +52,7 @@ var fileToLoad = filesList.files[0];
 var formData = new FormData();
 formData.append("file", fileToLoad);
 if (fileToLoad !== undefined) {
-TrnXmlHttpRequest(formData, workflowUrl + "uploadProcessDefinition", "POST", checkUploadResult);
+TrnXmlHttpRequest(formData, workflowUrl + "/uploadProcessDefinition", "POST", checkUploadResult);
 } else {
 isc.say("فایلی برای آپلود انتخاب نشده است.");
 }
@@ -151,7 +151,7 @@ this.hide();
 if (index == 0) {
 var deployId = record.deploymentId;
 isc.RPCManager.sendRequest(
-TrDSRequest(workflowUrl + "processDefinition/remove/" + deployId, "DELETE",
+TrDSRequest(workflowUrl + "/processDefinition/remove/" + deployId, "DELETE",
 null, ProcessDefinition_remove_result));
 }
 }
@@ -262,7 +262,7 @@ fields: [
 {name: "version", title: "نسخه"},
 {name: "id", title: "id", type: "text"}
 ],
-fetchDataURL: workflowUrl + "processDefinition/list"
+fetchDataURL: workflowUrl + "/processDefinition/list"
 });
 
 var ListGrid_ProcessDefinitionList = isc.ListGrid.create({

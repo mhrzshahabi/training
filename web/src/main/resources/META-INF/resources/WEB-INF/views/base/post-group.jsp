@@ -17,7 +17,7 @@
             {name: "description", title: "توضیحات", align: "center"},
             {name: "version", title: "version", canEdit: false, hidden: true}
         ],
-        fetchDataURL: postGroupUrl + "spec-list"
+        fetchDataURL: postGroupUrl + "/spec-list"
     });
     var Menu_ListGrid_Post_Group_Jsp = isc.Menu.create({
         width: 150,
@@ -144,14 +144,14 @@
                     } else {
 
                         // alert(record.id);
-                        // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + record.id + "/unAttachPosts";
+                        // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
                         // RestDataSource_All_Posts.invalidateCache();
                         // RestDataSource_All_Posts.fetchData();
                         ListGrid_AllPosts.fetchData();
                         ListGrid_AllPosts.invalidateCache();
 
 
-                        RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + record.id + "/getPosts"
+                        RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts"
                         // RestDataSource_ForThisPostGroup_GetPosts.invalidateCache();
                         // RestDataSource_ForThisPostGroup_GetPosts.fetchData();
                         ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
@@ -172,8 +172,8 @@
             record = ListGrid_Post_Group_Jsp.getSelectedRecord();
             if (record == null || record.id == null) {
             } else {
-                // RestDataSource_Post_Group_Competencies_Jsp.fetchDataURL = postGroupUrl + record.id + "/getCompetences"
-                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + record.id + "/getPosts";
+                // RestDataSource_Post_Group_Competencies_Jsp.fetchDataURL = postGroupUrl + "/" + record.id + "/getCompetences"
+                RestDataSource_Post_Group_Posts_Jsp.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                 ListGrid_Post_Group_Posts.fetchData();
                 ListGrid_Post_Group_Posts.invalidateCache();
                 // RestDataSource_Post_Group_Competencies_Jsp.invalidateCache();
@@ -298,7 +298,7 @@
             {name: "description", filterOperator: "iContains"},
             {name: "version", filterOperator: "iContains"}
         ]
-        , fetchDataURL: postUrl + "iscList"
+        , fetchDataURL: postUrl + "/iscList"
     });
     var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
         fields: [
@@ -382,7 +382,7 @@
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "removePosts/" + postGroupId + "/" + postIds,
+                actionURL: postGroupUrl + "/removePosts/" + postGroupId + "/" + postIds,
                 httpMethod: "DELETE",
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
@@ -451,7 +451,7 @@
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
-                            actionURL: postGroupUrl + "removePost/" + activePostGroupId + "/" + activePostId,
+                            actionURL: postGroupUrl + "/removePost/" + activePostGroupId + "/" + activePostId,
                             httpMethod: "DELETE",
                             serverOutputAsString: false,
                             callback: function (resp) {
@@ -501,7 +501,7 @@
                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                 useSimpleHttp: true,
                 contentType: "application/json; charset=utf-8",
-                actionURL: postGroupUrl + "addPosts/" + postGroupId + "/" + postIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
+                actionURL: postGroupUrl + "/addPosts/" + postGroupId + "/" + postIds, //"${restApiUrl}/api/tclass/addStudents/" + ClassID,
                 httpMethod: "POST",
                 data: JSON.stringify(JSONObj),
                 serverOutputAsString: false,
@@ -714,7 +714,7 @@
         } else {
             DynamicForm_Post_Group_Jsp.clearValues();
             method = "PUT";
-            url = postGroupUrl + record.id;
+            url = postGroupUrl + "/" + record.id;
             DynamicForm_Post_Group_Jsp.editRecord(record);
             Window_Post_Group_Jsp.show();
         }
@@ -742,7 +742,7 @@
                             title: "پیام"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: postGroupUrl + record.id,
+                            actionURL: postGroupUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -946,7 +946,7 @@
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "removePost/" + postGroupId + "/" + postId,
+            actionURL: postGroupUrl + "/removePost/" + postGroupId + "/" + postId,
             httpMethod: "DELETE",
             serverOutputAsString: false,
             callback: function (resp) {
@@ -966,7 +966,7 @@
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "removeCompetence/" + postGroupId + "/" + competenceId,
+            actionURL: postGroupUrl + "/removeCompetence/" + postGroupId + "/" + competenceId,
             httpMethod: "DELETE",
             serverOutputAsString: false,
             callback: function (resp) {
@@ -988,7 +988,7 @@
             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
             useSimpleHttp: true,
             contentType: "application/json; charset=utf-8",
-            actionURL: postGroupUrl + "removeAllCompetence/" + postGroupId + "/",
+            actionURL: postGroupUrl + "/removeAllCompetence/" + postGroupId + "/",
             httpMethod: "DELETE",
             serverOutputAsString: false,
             callback: function (resp) {
@@ -1011,7 +1011,7 @@
         }
     });
     var ToolStripButton_Edit_Post_Group_Jsp = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
 
@@ -1019,7 +1019,7 @@
         }
     });
     var ToolStripButton_Add_Post_Group_Jsp = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
 
@@ -1095,12 +1095,12 @@
                 });
 
             } else {
-                // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + record.id + "/unAttachPosts";
-                // RestDataSource_All_Posts.fetchDataURL = postUrl + "iscList";
+                // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";
+                // RestDataSource_All_Posts.fetchDataURL = postUrl + "/iscList";
                 ListGrid_AllPosts.fetchData();
                 ListGrid_AllPosts.invalidateCache();
 
-                RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + record.id + "/getPosts";
+                RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts";
                 ListGrid_ForThisPostGroup_GetPosts.invalidateCache();
                 ListGrid_ForThisPostGroup_GetPosts.fetchData();
                 DynamicForm_thisPostGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));

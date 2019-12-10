@@ -181,7 +181,7 @@
             return this.Super("transformRequest", arguments);
         },
 
-        fetchDataURL: workflowUrl + "userTask/list?usr=${username}"
+        fetchDataURL: workflowUrl + "/userTask/list?usr=${username}"
     });
 
     var ListGrid_UserTaskList = isc.ListGrid.create({

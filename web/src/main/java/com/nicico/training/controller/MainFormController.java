@@ -18,6 +18,11 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class MainFormController {
 
+    @RequestMapping("/parameter-type")
+    public String showParameterTypeForm() {
+        return "basic/parameter";
+    }
+
     @RequestMapping("/job")
     public String showJobForm() {
         return "base/job";
@@ -52,6 +57,7 @@ public class MainFormController {
     public String showPostGradeGroupForm() {
         return "base/postGradeGroup";
     }
+
 
     @RequestMapping("/needAssessmentSkillBased")
     public String showNeedAssessmentSkillBasedForm() {

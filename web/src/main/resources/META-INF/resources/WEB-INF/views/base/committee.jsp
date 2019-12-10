@@ -357,7 +357,7 @@ show_CommitteEditForm();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-//icon: "[SKIN]/actions/add.png",
+
 title: "<spring:message code="create"/>",
 click: function () {
 committee_method = "POST";

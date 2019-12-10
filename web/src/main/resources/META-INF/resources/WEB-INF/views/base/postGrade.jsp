@@ -50,7 +50,7 @@ fields: [
 {name: "code", title: "<spring:message code="post.grade.code"/>", filterOperator: "iContains", autoFitWidth:true},
 {name: "titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains"},
 ],
-fetchDataURL: postGradeUrl + "iscList"
+fetchDataURL: postGradeUrl + "/iscList"
 });
 
 PostGradeLG_postGrade = isc.TrLG.create({

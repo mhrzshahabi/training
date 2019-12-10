@@ -64,7 +64,7 @@
             <%--{name: "department.section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},--%>
             <%--{name: "department.unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},--%>
         ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     PostLG_post = isc.TrLG.create({

@@ -37,7 +37,7 @@
             {name: "description", filterOperator: "iContains"},
             {name: "version"}
         ]
-        , fetchDataURL: jobUrl + "iscList"
+        , fetchDataURL: jobUrl + "/iscList"
     });
     var RestDataSource_ForThisJobGroup_GetJobs = isc.TrDS.create({
         fields: [
@@ -827,7 +827,7 @@
         }
     });
     var ToolStripButton_Edit_Job_Group_Jsp = isc.ToolStripButtonEdit.create({
-        // icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
 
@@ -835,7 +835,7 @@
         }
     });
     var ToolStripButton_Add_Job_Group_Jsp = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
 
@@ -843,7 +843,7 @@
         }
     });
     var ToolStripButton_Remove_Job_Group_Jsp = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "حذف",
         click: function () {
             ListGrid_Job_Group_remove();
@@ -913,7 +913,7 @@
 
             } else {
                 // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "iscList";
+                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "/iscList";
                 ListGrid_AllJobs.fetchData();
                 ListGrid_AllJobs.invalidateCache();
 

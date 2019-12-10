@@ -44,7 +44,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     var RestDataSource_company_PerReg = isc.TrDS.create({
@@ -160,7 +160,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: postGradeUrl + "iscList"
+        fetchDataURL: postGradeUrl + "/iscList"
     });
 
     var RestDataSource_Post_PerReg = isc.TrDS.create({
@@ -204,7 +204,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     var RestDataSource_Egender_PerReg = isc.TrDS.create({
@@ -375,7 +375,7 @@
 
             {name: "version"}
         ],
-        fetchDataURL: personnelRegUrl + "spec-list"
+        fetchDataURL: personnelRegUrl + "/spec-list"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1227,7 +1227,7 @@
                 var personnelRegSaveUrl = personnelRegUrl;
                 if (personnelRegMethod.localeCompare("PUT") == 0) {
                     var personnelRegRecord = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
-                    personnelRegSaveUrl += personnelRegRecord.id;
+                    personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
                 Window_PersonnelReg_JspPersonnelReg.close();
@@ -1283,7 +1283,7 @@
     });
 
     var ToolStripButton_Edit_JspPersonnelReg = isc.ToolStripButtonEdit.create({
-        // icon: "[SKIN]/actions/edit.png",
+
         // title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_personnelReg_edit();
@@ -1291,7 +1291,7 @@
     });
 
     var ToolStripButton_Add_JspPersonnelReg = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         // title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_personnelReg_add();
@@ -1476,7 +1476,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(TrDSRequest(personnelRegUrl + record.id, "DELETE", null, "callback: personnelReg_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(personnelRegUrl + "/" + record.id, "DELETE", null, "callback: personnelReg_delete_result(rpcResponse)"));
                     }
                 }
             });

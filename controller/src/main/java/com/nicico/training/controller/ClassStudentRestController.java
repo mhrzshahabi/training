@@ -15,6 +15,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,12 +27,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/classStudent")
 public class ClassStudentRestController {
-    private final ClassStudentService classStudentService;
+   private final ClassStudentService classStudentService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
-    @Loggable
+     @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(classStudentService.get(id), HttpStatus.OK);
@@ -54,8 +55,9 @@ public class ClassStudentRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
         ClassStudentDTO.Update update = (new ModelMapper()).map(request, ClassStudentDTO.Update.class);
-        return new ResponseEntity<>(classStudentService.update(id, update), HttpStatus.OK);
+       return new ResponseEntity<>(classStudentService.update(id, update), HttpStatus.OK);
     }
+
 
 
     @Loggable
@@ -69,11 +71,11 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                                   @RequestParam("_endRow") Integer endRow,
-                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
-                                                                   @RequestParam(value = "operator", required = false) String operator,
-                                                                   @RequestParam(value = "criteria", required = false) String criteria,
-                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                             @RequestParam("_endRow") Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -114,4 +116,29 @@ public class ClassStudentRestController {
     }
 
 
-}
+     @Loggable
+    @GetMapping(value = "/{getStudent}/{id}")
+    public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> getStudent(@PathVariable Long id) {
+
+        List<ClassStudentDTO.Info> list = classStudentService.getStudent(id);
+        final ClassStudentDTO.SpecRs specResponse = new ClassStudentDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final ClassStudentDTO.ClassStudentSpecRs specRs = new ClassStudentDTO.ClassStudentSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+     @Loggable
+    @PostMapping(value = "/edit")
+    public ResponseEntity<ClassStudentDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
+        return new ResponseEntity(classStudentService.updateDescriptionCheck(body), HttpStatus.OK);
+    }
+
+
+
+    }

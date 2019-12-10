@@ -164,7 +164,7 @@
             {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: personnelUrl + "iscList",
+        fetchDataURL: personnelUrl + "/iscList",
     });
 
     PersonnelsLG_student = isc.TrLG.create({

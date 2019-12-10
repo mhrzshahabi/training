@@ -11,7 +11,7 @@
 
 
 var skillLevelMethod = "get";
-var skillLevelHomeUrl= rootUrl + "skill-level";
+var skillLevelHomeUrl= rootUrl + "/skill-level";
 var skillLevelActionUrl = skillLevelHomeUrl;
 var Menu_ListGrid_skill_level = isc.Menu.create({
 width: 150,
@@ -330,7 +330,7 @@ ListGrid_skill_level_edit();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_skill_level_Add();

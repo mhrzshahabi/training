@@ -10,7 +10,7 @@
 %>
 
 var equipmentMethod = "get";
-var equipmentHomeUrl = rootUrl + "equipment";
+var equipmentHomeUrl = rootUrl + "/equipment";
 var equipmentActionUrl = equipmentHomeUrl;
 var Menu_ListGrid_Equipment = isc.Menu.create({
 width: 150,
@@ -346,7 +346,7 @@ ListGrid_Equipment_edit();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-//icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_Equipment_Add();
