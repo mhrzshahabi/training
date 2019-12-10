@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 
-// <script>
+// script
 
     //************************************************************************************
     // RestDataSource & ListGrid
@@ -307,7 +307,7 @@
                 filterFields: ["name"],
                 changed: function (form, item, value) {
                     DynamicForm_Address_Company.clearValue("address.cityId");
-                    if(value !== null && value !== undefined){
+                    if (value !== null && value !== undefined) {
                         RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + value;
                         DynamicForm_Address_Company.getItem("address.cityId").fetchData();
                     }
@@ -471,14 +471,14 @@
             ToolStripButton_Remove,
             //ToolStripButton_Print,
             isc.ToolStrip.create({
-            width: "100%",
-            align: "left",
-            border: '0px',
-            members: [
-                ToolStripButton_Refresh,
-            ]
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh,
+                ]
             })
-]
+        ]
     });
 
     //***********************************************************************************

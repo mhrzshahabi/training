@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/skill-level")
 public class SkillLevelFormController {
 
-	@RequestMapping("/show-form")
-	public String showFiscalYear() {
-		return "base/skill-level";
-	}
+    @RequestMapping("/show-form")
+    public String showFiscalYear() {
+        return "base/skill-level";
+    }
 
 }

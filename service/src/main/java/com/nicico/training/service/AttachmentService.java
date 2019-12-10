@@ -25,11 +25,10 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AttachmentService implements IAttachmentService {
 
-    @Value("${nicico.upload.dir}")
-    private String uploadDir;
-
     private final ModelMapper modelMapper;
     private final AttachmentDAO attachmentDAO;
+    @Value("${nicico.upload.dir}")
+    private String uploadDir;
 
     @Transactional(readOnly = true)
     @Override

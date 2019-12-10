@@ -52,7 +52,7 @@ public class ClassSession extends Auditable {
     private String sessionType;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="f_institute_id", insertable = false, updatable = false)
+    @JoinColumn(name = "f_institute_id", insertable = false, updatable = false)
     private Institute institute;
 
     @Column(name = "f_institute_id")

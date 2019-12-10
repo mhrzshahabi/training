@@ -21,9 +21,9 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
-<%--
-    <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
---%>
+    <%--
+        <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
+    --%>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href="<spring:url value='/static/css/calendar.css' />"/>
@@ -83,7 +83,7 @@
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
-        autoSize:true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
+        autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
@@ -130,7 +130,7 @@
         showFilterEditor: true,
         autoFitWidthApproach: "both",
         // canHover:true,
-        showClippedValuesOnHover:true,
+        showClippedValuesOnHover: true,
         hoverMoveWithMouse: true,
         showRowNumbers: true,
         rowNumberFieldProperties: {
@@ -317,11 +317,11 @@
     });
 
     <%--nicicoIcon = isc.Img.create({--%>
-        <%--src: "<spring:url value="nicico.png"/>",--%>
-        <%--width: 24,--%>
-        <%--height: 24,--%>
-        <%--imageType: "stretch",--%>
-        <%--padding: 4,--%>
+    <%--src: "<spring:url value="nicico.png"/>",--%>
+    <%--width: 24,--%>
+    <%--height: 24,--%>
+    <%--imageType: "stretch",--%>
+    <%--padding: 4,--%>
     <%--});--%>
 
     var headerFlow = isc.HTMLFlow.create({
@@ -334,11 +334,10 @@
 
 
     <%--systemLabel = isc.Label.create({--%>
-        <%--contents: "<spring:message code="training.system.version"/>",--%>
-        <%--styleName: "customHeader",--%>
-        <%--padding: 4,--%>
+    <%--contents: "<spring:message code="training.system.version"/>",--%>
+    <%--styleName: "customHeader",--%>
+    <%--padding: 4,--%>
     <%--});--%>
-
 
 
     var label_Username = isc.Label.create({
@@ -356,14 +355,13 @@
     });
 
 
-
     <%--userLabel = isc.Label.create({--%>
-        <%--contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,--%>
-        <%--styleName: "customHeader",--%>
-        <%--padding: 4,--%>
+    <%--contents: "<spring:message code="user"/>" + ": " + `<%= SecurityUtil.getFullName()%>`,--%>
+    <%--styleName: "customHeader",--%>
+    <%--padding: 4,--%>
     <%--});--%>
 
-     logoutButton = isc.IButton.create({
+    logoutButton = isc.IButton.create({
 
         width: "100",
         baseStyle: "header-logout",
@@ -381,9 +379,6 @@
         defaultLayoutAlign: "left",
         members: [logoutButton]
     });
-
-
-
 
 
     <%--logoutButton = isc.Button.create({--%>
@@ -446,7 +441,6 @@
     });
 
     languageForm.setValue("languageName", "<c:out value='${pageContext.response.locale}'/>");
-
 
 
     basicTSMB = isc.ToolStripMenuButton.create({
@@ -676,7 +670,7 @@
                     submenu: [
                         {
                             title: "<spring:message code="process.definition"/>",
-                           // icon: "<spring:url value="processDefinition.png"/>",
+                            // icon: "<spring:url value="processDefinition.png"/>",
                             click: function () {
                                 createTab(this.title, "<spring:url value="/web/workflow/processDefinition/showForm"/>");
                             }
@@ -769,9 +763,9 @@
         ]
     });
 
-     closeAllButton = isc.IButtonClose.create({
+    closeAllButton = isc.IButtonClose.create({
         width: 100,
-       <%--icon: "<spring:url value="closeAllTabs.png"/>",--%>
+        <%--icon: "<spring:url value="closeAllTabs.png"/>",--%>
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
@@ -796,10 +790,10 @@
     var headerExitHLayout = isc.HLayout.create({
 
         width: "60%",
-        height:"100%",
+        height: "100%",
         align: "center",
         styleName: "header-exit",
-        members: [ isc.LayoutSpacer.create({width: "80%"}),userNameHLayout, languageVLayout, logoutVLayout]
+        members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageVLayout, logoutVLayout]
     });
 
 
@@ -808,7 +802,7 @@
         width: "100%",
         height: "52",
         styleName: "header",
-        members: [headerLogo, headerFlow,headerExitHLayout],
+        members: [headerLogo, headerFlow, headerExitHLayout],
     });
 
     var MainDesktopMenuH = isc.HLayout.create({
@@ -822,21 +816,20 @@
     })
 
 
-
     isc.TrVLayout.create({
         autoDraw: true,
         styleName: "relativePosition",
-       // styleName: "header",
+        // styleName: "header",
         members: [
             headerLayout,
-/*            isc.HLayout.create({
-                height: "1%",
-                minWidth: 1024,
-                backgroundColor: "#003168",
-                defaultLayoutAlign: "center",
-                members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
-            }),*/
-           // isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
+            /*            isc.HLayout.create({
+                            height: "1%",
+                            minWidth: 1024,
+                            backgroundColor: "#003168",
+                            defaultLayoutAlign: "center",
+                            members: [nicicoIcon, systemLabel, isc.LayoutSpacer.create({width: "*"}), userLabel, isc.LayoutSpacer.create({width: "15"}), languageForm, logoutButton],
+                        }),*/
+            // isc.HLayout.create({height: "1%", minWidth: 1024, members: [trainingToolStrip]}),
             MainDesktopMenuH,
             trainingTabSet,
         ]

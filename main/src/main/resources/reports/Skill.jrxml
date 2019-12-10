@@ -1,193 +1,196 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty" uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
-	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="Training"/>
-	<property name="ireport.zoom" value="1.6105100000000008"/>
-	<property name="ireport.x" value="0"/>
-	<property name="ireport.y" value="0"/>
-	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
-	<parameter name="logo_nicico" class="java.lang.Object"/>
-	<queryString language="SQL">
-		<![CDATA[select * from  Training.SKILL_REPORT]]>
-	</queryString>
-	<field name="CODE" class="java.lang.String"/>
-	<field name="TILTE_FA" class="java.lang.String"/>
-	<field name="TITLE_EN" class="java.lang.String"/>
-	<field name="CAT" class="java.lang.String"/>
-	<field name="SUBCAT" class="java.lang.String"/>
-	<background>
-		<band splitType="Stretch"/>
-	</background>
-	<title>
-		<band height="80" splitType="Stretch">
-			<rectangle radius="5">
-				<reportElement x="0" y="0" width="550" height="80" backcolor="#F0F0F0" uuid="124e70d7-37fb-4b10-8ac2-8ee36a1d0214"/>
-			</rectangle>
-			<staticText>
-				<reportElement x="184" y="20" width="186" height="40" uuid="5ee4ac6e-8e6b-4367-8ab5-69ab11499f40"/>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
-				</textElement>
-				<text><![CDATA[لیست مهارت ها]]></text>
-			</staticText>
-			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="450" y="6" width="84" height="69" uuid="9f9a23b5-2f44-4465-a0c5-9a396c0c9b9c"/>
-				<imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
-			</image>
-		</band>
-	</title>
-	<pageHeader>
-		<band height="14" splitType="Stretch"/>
-	</pageHeader>
-	<columnHeader>
-		<band height="20" splitType="Stretch">
-			<staticText>
-				<reportElement x="50" y="0" width="60" height="20" uuid="c221b6ad-76a1-4674-9cdb-f20a829f5b47"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[زیرگروه]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="110" y="0" width="90" height="20" uuid="2072ea70-ad42-4f72-9646-c137e63b5d4c"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[گروه]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="200" y="0" width="120" height="20" uuid="ce795c47-e713-4f13-afd1-73ee80e103b2"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[نام لاتین]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="320" y="0" width="100" height="20" uuid="976e55ba-e39f-448e-9b6e-d620f0c71ee1"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[نام فارسی]]></text>
-			</staticText>
-			<staticText>
-				<reportElement x="420" y="0" width="60" height="20" uuid="6a309cf6-7040-4e51-b913-525d98138106"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<text><![CDATA[کد]]></text>
-			</staticText>
-		</band>
-	</columnHeader>
-	<detail>
-		<band height="20" splitType="Stretch">
-			<textField>
-				<reportElement x="420" y="0" width="60" height="20" uuid="aeb588c5-70cc-4e7b-b567-4b0a00d62f8a"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="320" y="0" width="100" height="20" uuid="5924a44d-ec37-4f28-8e0d-fa57ec18a15e"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TILTE_FA}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="200" y="0" width="120" height="20" uuid="27b34670-3407-472c-9ef0-aadda39f58c6"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{TITLE_EN}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="110" y="0" width="90" height="20" uuid="4e1f9897-5c89-4880-b8da-66e38033803a"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{CAT}]]></textFieldExpression>
-			</textField>
-			<textField>
-				<reportElement x="50" y="0" width="60" height="20" uuid="b8d5844d-6b98-44de-85ff-cc85a81b8bbe"/>
-				<box>
-					<pen lineWidth="0.5"/>
-					<topPen lineWidth="0.5"/>
-					<leftPen lineWidth="0.5"/>
-					<bottomPen lineWidth="0.5"/>
-					<rightPen lineWidth="0.5"/>
-				</box>
-				<textElement textAlignment="Center" verticalAlignment="Middle">
-					<font fontName="Shabnam-FD"/>
-				</textElement>
-				<textFieldExpression><![CDATA[$F{SUBCAT}]]></textFieldExpression>
-			</textField>
-		</band>
-	</detail>
-	<pageFooter>
-		<band height="28" splitType="Stretch"/>
-	</pageFooter>
+<jasperReport xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="Fiscal_year_A4" pageWidth="595" pageHeight="842"
+              whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Empty"
+              uuid="3bbc703e-003d-460f-be05-f96bdb551f98">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="Training"/>
+    <property name="ireport.zoom" value="1.6105100000000008"/>
+    <property name="ireport.x" value="0"/>
+    <property name="ireport.y" value="0"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+    <parameter name="logo_nicico" class="java.lang.Object"/>
+    <queryString language="SQL">
+        <![CDATA[select * from  Training.SKILL_REPORT]]>
+    </queryString>
+    <field name="CODE" class="java.lang.String"/>
+    <field name="TILTE_FA" class="java.lang.String"/>
+    <field name="TITLE_EN" class="java.lang.String"/>
+    <field name="CAT" class="java.lang.String"/>
+    <field name="SUBCAT" class="java.lang.String"/>
+    <background>
+        <band splitType="Stretch"/>
+    </background>
+    <title>
+        <band height="80" splitType="Stretch">
+            <rectangle radius="5">
+                <reportElement x="0" y="0" width="550" height="80" backcolor="#F0F0F0" uuid="124e70d7-37fb-4b10-8ac2-8ee36a1d0214"/>
+            </rectangle>
+            <staticText>
+                <reportElement x="184" y="20" width="186" height="40" uuid="5ee4ac6e-8e6b-4367-8ab5-69ab11499f40"/>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="B Titr" size="18" isBold="true" pdfFontName="" pdfEncoding="Identity-H" isPdfEmbedded="true"/>
+                </textElement>
+                <text><![CDATA[لیست مهارت ها]]></text>
+            </staticText>
+            <image hAlign="Center" vAlign="Middle">
+                <reportElement x="450" y="6" width="84" height="69" uuid="9f9a23b5-2f44-4465-a0c5-9a396c0c9b9c"/>
+                <imageExpression><![CDATA[$P{logo_nicico}]]></imageExpression>
+            </image>
+        </band>
+    </title>
+    <pageHeader>
+        <band height="14" splitType="Stretch"/>
+    </pageHeader>
+    <columnHeader>
+        <band height="20" splitType="Stretch">
+            <staticText>
+                <reportElement x="50" y="0" width="60" height="20" uuid="c221b6ad-76a1-4674-9cdb-f20a829f5b47"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <text><![CDATA[زیرگروه]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="110" y="0" width="90" height="20" uuid="2072ea70-ad42-4f72-9646-c137e63b5d4c"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <text><![CDATA[گروه]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="200" y="0" width="120" height="20" uuid="ce795c47-e713-4f13-afd1-73ee80e103b2"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <text><![CDATA[نام لاتین]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="320" y="0" width="100" height="20" uuid="976e55ba-e39f-448e-9b6e-d620f0c71ee1"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <text><![CDATA[نام فارسی]]></text>
+            </staticText>
+            <staticText>
+                <reportElement x="420" y="0" width="60" height="20" uuid="6a309cf6-7040-4e51-b913-525d98138106"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <text><![CDATA[کد]]></text>
+            </staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="20" splitType="Stretch">
+            <textField>
+                <reportElement x="420" y="0" width="60" height="20" uuid="aeb588c5-70cc-4e7b-b567-4b0a00d62f8a"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{CODE}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="320" y="0" width="100" height="20" uuid="5924a44d-ec37-4f28-8e0d-fa57ec18a15e"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{TILTE_FA}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="200" y="0" width="120" height="20" uuid="27b34670-3407-472c-9ef0-aadda39f58c6"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{TITLE_EN}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="110" y="0" width="90" height="20" uuid="4e1f9897-5c89-4880-b8da-66e38033803a"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{CAT}]]></textFieldExpression>
+            </textField>
+            <textField>
+                <reportElement x="50" y="0" width="60" height="20" uuid="b8d5844d-6b98-44de-85ff-cc85a81b8bbe"/>
+                <box>
+                    <pen lineWidth="0.5"/>
+                    <topPen lineWidth="0.5"/>
+                    <leftPen lineWidth="0.5"/>
+                    <bottomPen lineWidth="0.5"/>
+                    <rightPen lineWidth="0.5"/>
+                </box>
+                <textElement textAlignment="Center" verticalAlignment="Middle">
+                    <font fontName="Shabnam-FD"/>
+                </textElement>
+                <textFieldExpression><![CDATA[$F{SUBCAT}]]></textFieldExpression>
+            </textField>
+        </band>
+    </detail>
+    <pageFooter>
+        <band height="28" splitType="Stretch"/>
+    </pageFooter>
 </jasperReport>

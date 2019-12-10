@@ -34,9 +34,4 @@ public interface ICheckListItemService {
     CheckListItemDTO.Info is_Delete(Long id, CheckListItemDTO.Update request);
 
 
-
-
-
-
-
 }

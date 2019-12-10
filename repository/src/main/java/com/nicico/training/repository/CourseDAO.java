@@ -17,6 +17,7 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
 
     @Query(value = "select count(*) from TBL_COURSE c  where Not EXISTS(select F_COURSE_ID from TBL_SKILL_COURSE sc where  sc.F_COURSE_ID=c.ID and sc.F_SKILL_ID = ?)", nativeQuery = true)
     Integer getUnAttachedCoursesCountBySkillId(Long skillId);
+
     List<Course> findByCodeStartingWith(String code);
 
     @Query(value = "select * from TBL_COURSE where C_TITLE_FA = :titleFa", nativeQuery = true)

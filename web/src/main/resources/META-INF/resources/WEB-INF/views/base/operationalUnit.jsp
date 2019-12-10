@@ -7,11 +7,11 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     // <<========== Global - Variables ==========
     {
-    var operational_method = "POST";
+        var operational_method = "POST";
     }
     // ============ Global - Variables ========>>
 
@@ -134,7 +134,7 @@
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-           // icon: "[SKIN]/actions/refresh.png",
+            // icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_operational.invalidateCache();

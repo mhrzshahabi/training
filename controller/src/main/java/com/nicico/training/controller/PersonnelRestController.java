@@ -29,12 +29,11 @@ import java.util.List;
 @RequestMapping("/api/personnel/")
 public class PersonnelRestController {
 
-    private final PersonnelService personnelService;
     final ObjectMapper objectMapper;
     final CourseService courseService;
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
-
+    private final PersonnelService personnelService;
 
     @GetMapping("list")
     public ResponseEntity<List<PersonnelDTO.Info>> list() {

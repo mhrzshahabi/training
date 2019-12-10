@@ -8,6 +8,20 @@ import lombok.RequiredArgsConstructor;
 @Getter
 public class TrainingException extends NICICOException {
 
+    public TrainingException(IErrorCode errorCode) {
+        super(errorCode);
+    }
+
+    // ------------------------------
+
+    public TrainingException(ErrorType errorCode) {
+        this(errorCode, null);
+    }
+
+    public TrainingException(ErrorType errorCode, String field) {
+        super(errorCode, field);
+    }
+
     @Getter
     @RequiredArgsConstructor
     public enum ErrorType implements IErrorCode {
@@ -73,19 +87,5 @@ public class TrainingException extends NICICOException {
         }
 
 
-    }
-
-    // ------------------------------
-
-    public TrainingException(IErrorCode errorCode) {
-        super(errorCode);
-    }
-
-    public TrainingException(ErrorType errorCode) {
-        this(errorCode, null);
-    }
-
-    public TrainingException(ErrorType errorCode, String field) {
-        super(errorCode, field);
     }
 }

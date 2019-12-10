@@ -9,5 +9,5 @@ import java.util.List;
 
 @Repository
 public interface CompanyDAO extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
-List<Company> findByManagerId(Long managerId);
+    List<Company> findByManagerId(Long managerId);
 }

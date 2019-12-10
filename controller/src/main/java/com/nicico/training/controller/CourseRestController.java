@@ -162,14 +162,14 @@ public class CourseRestController {
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
         }
-        if(id != null){
+        if (id != null) {
             criteriaRq = new SearchDTO.CriteriaRq();
             criteriaRq.setOperator(EOperator.equals)
                     .setFieldName("id")
                     .setValue(id);
             request.setCriteria(criteriaRq);
-            startRow=0;
-            endRow=1;
+            startRow = 0;
+            endRow = 1;
         }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
@@ -243,7 +243,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/job/{courseId}")
-    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId){
+    public ResponseEntity<ISC.Response> getJob(@PathVariable Long courseId) {
         List<JobDTO.Info> job = courseService.getJob(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(job)
@@ -255,7 +255,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = "/post/{courseId}")
-    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId){
+    public ResponseEntity<ISC.Response> getPost(@PathVariable Long courseId) {
         List<PostDTO.Info> post = courseService.getPost(courseId);
         ISC.Response response = new ISC.Response();
         response.setData(post)
@@ -399,7 +399,7 @@ public class CourseRestController {
 
     @Loggable
     @GetMapping(value = {"/printTest/{courseId}"})
-    public void printGoalsAndSyllabus(HttpServletResponse response,@PathVariable Long courseId) throws Exception {
+    public void printGoalsAndSyllabus(HttpServletResponse response, @PathVariable Long courseId) throws Exception {
         final Map<String, Object> params = new HashMap<>();
         String domain = courseService.getDomain(courseId);
         List<CourseDTO.Info> preCourseList = courseService.preCourseList(courseId);
@@ -420,10 +420,10 @@ public class CourseRestController {
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         params.put("courseId", courseId);
         params.put("domain", domain);
-        params.put("preCourse",preCourse);
+        params.put("preCourse", preCourse);
         params.put("equalCourse", equalCourse);
         params.put("eRun", eRun.getTitleFa());
-        params.put("theo",eTheo.getTitleFa());
+        params.put("theo", eTheo.getTitleFa());
         reportUtil.export("/reports/test1.jasper", params, response);
     }
 
@@ -431,7 +431,7 @@ public class CourseRestController {
     @GetMapping(value = "/get_teachers/{id}")
     public ResponseEntity<TeacherDTO.TeacherFullNameSpecRs> getTeachers(@PathVariable Long id) {
         List<TeacherDTO.TeacherFullNameTuple> infoList = new ArrayList<>();
-        if(id != 0) {
+        if (id != 0) {
             infoList = courseService.getTeachers(id);
         }
         final TeacherDTO.FullNameSpecRs specResponse = new TeacherDTO.FullNameSpecRs();

@@ -8,20 +8,20 @@ import java.util.List;
 
 public interface IAttendanceService {
 
-	AttendanceDTO.Info get(Long id);
+    AttendanceDTO.Info get(Long id);
 
-	List<AttendanceDTO.Info> list();
+    List<AttendanceDTO.Info> list();
 
-	AttendanceDTO.Info create(AttendanceDTO.Create request);
+    AttendanceDTO.Info create(AttendanceDTO.Create request);
 
-	@Transactional
+    @Transactional
     List<AttendanceDTO.Info> autoCreate(Long classId, String date);
 
-	AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
+    AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 
-	void delete(Long id);
+    void delete(Long id);
 
-	void delete(AttendanceDTO.Delete request);
+    void delete(AttendanceDTO.Delete request);
 
-	SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
+    SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
 }

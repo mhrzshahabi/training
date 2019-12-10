@@ -3,7 +3,7 @@ package com.nicico.training.dto;/* com.nicico.training.dto
 @Date:6/2/2019
 @Time:11:18 AM
 */
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,6 +16,7 @@ import javax.validation.constraints.NotNull;
 import java.util.Date;
 import java.util.List;
 import java.util.Set;
+
 @Getter
 @Setter
 @Accessors(chain = true)
@@ -37,7 +38,7 @@ public class CategoryDTO {
     private String description;
 
 
-      //---------------------
+    //---------------------
 
     @Getter
     @Setter

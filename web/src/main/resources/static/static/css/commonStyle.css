@@ -7,6 +7,7 @@
     padding: 4px;
     border: 0px dotted black;
 }
+
 .mainHeaderStyleOnline {
     display: flex;
     flex-direction: column;
@@ -51,9 +52,11 @@
     font-size: 14px;
     font-weight: bold;
 }
-.header-logout{
+
+.header-logout {
     background: none;
 }
+
 .header-logo-title span {
     padding-right: 32px;
 }
@@ -93,6 +96,7 @@
     background-color: #fe9d2a;
     border: solid 1px #fe9d2a;
 }
+
 .toolStripButtonRefresh:hover,
 .toolStripButtonRefreshOver:hover,
 .toolStripButtonRefreshFocused:hover,
@@ -118,6 +122,7 @@
 .toolStripButtonRefreshSelectedOverOpened:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+
 .toolStripButtonRefresh td,
 .toolStripButtonRefreshOver td,
 .toolStripButtonRefreshFocused td,
@@ -180,6 +185,7 @@
     background-color: #e8f0e6;
     border: solid 1px #05a74a;
 }
+
 .toolStripButtonAdd:hover,
 .toolStripButtonAddOver:hover,
 .toolStripButtonAddFocused:hover,
@@ -205,6 +211,7 @@
 .toolStripButtonAddSelectedOverOpened:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+
 .toolStripButtonAdd td,
 .toolStripButtonAddOver td,
 .toolStripButtonAddFocused td,
@@ -268,6 +275,7 @@
     background-color: #f0ece6;
     border: solid 1px #f5a623;
 }
+
 .toolStripButtonEdit:hover,
 .toolStripButtonEditOver:hover,
 .toolStripButtonEditFocused:hover,
@@ -293,6 +301,7 @@
 .toolStripButtonEditSelectedOverOpened:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+
 .toolStripButtonEdit td,
 .toolStripButtonEditOver td,
 .toolStripButtonEditFocused td,
@@ -355,6 +364,7 @@
     background-color: #15356012;
     border: solid 1px #153560;
 }
+
 .toolStripButtonExcel:hover,
 .toolStripButtonExcelOver:hover,
 .toolStripButtonExcelFocused:hover,
@@ -380,6 +390,7 @@
 .toolStripButtonExcelSelectedOverOpened:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+
 .toolStripButtonExcel td,
 .toolStripButtonExcelOver td,
 .toolStripButtonExcelFocused td,
@@ -442,6 +453,7 @@
     background-color: #f0e6ec;
     border: solid 1px #ff0000;
 }
+
 .toolStripButtonRemove:hover,
 .toolStripButtonRemoveOver:hover,
 .toolStripButtonRemoveFocused:hover,
@@ -467,6 +479,7 @@
 .toolStripButtonRemoveSelectedOverOpened:hover {
     box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
+
 .toolStripButtonRemove td,
 .toolStripButtonRemoveOver td,
 .toolStripButtonRemoveFocused td,

@@ -1,6 +1,5 @@
 package com.nicico.training.dto.enums;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.EArrangementType;
 import io.swagger.annotations.ApiModel;

@@ -3,7 +3,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-// <script>
+// script
 
     var method = "POST";
     var url;
@@ -308,7 +308,7 @@
 
 
     var IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
-      //  icon: "<spring:url value="remove.png"/>",
+        //  icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Post_Grade_Group_Jsp.close();
         }

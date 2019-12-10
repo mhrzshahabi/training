@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+//<script>
 
     var classMethod = "POST";
     var autoValid = false;

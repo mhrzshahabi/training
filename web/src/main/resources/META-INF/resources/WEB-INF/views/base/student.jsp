@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// <script>
+// script
 
     var studentMethod = "POST";
     var studentWait;
@@ -472,8 +472,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-        }
-        else if (resp.data == false) {
+        } else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.student.remove.error'/>",
                 icon: "[SKIN]stop.png",
@@ -482,8 +481,7 @@
             setTimeout(function () {
                 ERROR.close();
             }, 3000);
-        }
-        else {
+        } else {
             var ERROR = isc.Dialog.create({
                 message: "<spring:message code='msg.record.remove.failed'/>",
                 icon: "[SKIN]stop.png",

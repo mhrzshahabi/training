@@ -6,7 +6,7 @@
     final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     // <<========== Global - Variables ==========
     {

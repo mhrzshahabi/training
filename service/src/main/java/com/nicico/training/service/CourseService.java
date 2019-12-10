@@ -132,7 +132,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public void setPreCourse(Long id, List<Long> preCourseListId){
+    public void setPreCourse(Long id, List<Long> preCourseListId) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         List<Course> allById = courseDAO.findAllById(preCourseListId);
@@ -143,7 +143,7 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public void setEqualCourse(Long id, List<String> equalCourseList){
+    public void setEqualCourse(Long id, List<String> equalCourseList) {
         final Optional<Course> cById = courseDAO.findById(id);
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String s1 = Joiner.on(',').join(equalCourseList);
@@ -185,7 +185,7 @@ public class CourseService implements ICourseService {
     @Override
     public CourseDTO.Info create(CourseDTO.Create request) {
         Course course = modelMapper.map(request, Course.class);
-        if(courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()){
+        if (courseDAO.findByTitleFa(course.getTitleFa()).isEmpty()) {
             course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
             course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
             course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
@@ -200,8 +200,7 @@ public class CourseService implements ICourseService {
 //            course.setEqualCourse(s1);
             Course course1 = courseDAO.saveAndFlush(course);
             return modelMapper.map(course1, CourseDTO.Info.class);
-        }
-        else
+        } else
             return null;
     }
 
@@ -392,8 +391,6 @@ public class CourseService implements ICourseService {
     }
 
 
-
-
     //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
 //                for (Competence competence : competenceSet) {
 //                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
@@ -402,7 +399,7 @@ public class CourseService implements ICourseService {
 //                        jobSet.add(job);
 //                    }
 //                }
-                //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
+    //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
 
 //            }
 //            Set<Competence> competenceSet = skill.getCompetenceSet();

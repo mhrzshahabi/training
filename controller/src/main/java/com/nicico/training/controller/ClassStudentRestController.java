@@ -26,12 +26,12 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/classStudent")
 public class ClassStudentRestController {
-   private final ClassStudentService classStudentService;
+    private final ClassStudentService classStudentService;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(classStudentService.get(id), HttpStatus.OK);
@@ -58,7 +58,6 @@ public class ClassStudentRestController {
     }
 
 
-
     @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody ClassStudentDTO.Delete request) {
@@ -70,11 +69,11 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                             @RequestParam("_endRow") Integer endRow,
-                                                             @RequestParam(value = "_constructor", required = false) String constructor,
-                                                             @RequestParam(value = "operator", required = false) String operator,
-                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                   @RequestParam("_endRow") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -113,13 +112,6 @@ public class ClassStudentRestController {
     public ResponseEntity<SearchDTO.SearchRs<ClassStudentDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(classStudentService.search(request), HttpStatus.OK);
     }
-
-
-
-
-
-
-
 
 
 }

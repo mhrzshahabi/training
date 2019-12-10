@@ -6,7 +6,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// <script>
+// script
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -1187,7 +1187,7 @@
                                         "targetTitleFa": "دوره"
                                     }]
 
-                                     startProcess(varParams);
+                                    startProcess(varParams);
 // ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
@@ -1768,7 +1768,7 @@
                 // styleName:"paddingRight",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid LightBlue",
-                borderRadius:"6px",
+                borderRadius: "6px",
                 // align: "center",
                 // vAlign: "center",
                 // wrap: false,
@@ -1778,19 +1778,19 @@
             isc.DynamicForm.create({
                 colWidths: ["8%", "18%", "1%"],
                 ID: "teacherForm",
-                titleOrientation:"top",
+                titleOrientation: "top",
                 numCols: 2,
                 // padding: 50,
-                padding:"10px",
+                padding: "10px",
                 isGroup: true,
-                titleAlign:"center",
+                titleAlign: "center",
                 // wrapItemTitles:true,
                 groupTitle: "شرایط مدرس دوره",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid lightBlue",
                 width: "96%",
                 height: "74%",
-                borderRadius:"6px",
+                borderRadius: "6px",
                 textAlign: "right",
                 // margin:20,
                 fields: [
@@ -1803,7 +1803,7 @@
                         // height: "30",
                         // width: "*",
                         textAlign: "center",
-                        titleAlign:"center",
+                        titleAlign: "center",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
@@ -1816,7 +1816,7 @@
                     {
                         name: "minTeacherExpYears",
                         colSpan: 2,
-                        title: "<spring:message code="course_minTeacherExpYears"/>"+":",
+                        title: "<spring:message code="course_minTeacherExpYears"/>" + ":",
                         prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
@@ -1833,7 +1833,7 @@
                     {
                         name: "minTeacherEvalScore",
                         colSpan: 2,
-                        title: "<spring:message code="course_minTeacherEvalScore"/>"+":",
+                        title: "<spring:message code="course_minTeacherEvalScore"/>" + ":",
                         prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
                         shouldSaveValue: true,
                         textAlign: "center",
@@ -1870,7 +1870,7 @@
             styleName: "paddingRight",
             groupLabelBackgroundColor: "lightBlue",
             groupBorderCSS: "1px solid lightBlue",
-            borderRadius:"6px",
+            borderRadius: "6px",
             members: [DynamicForm_course_MainTab, DynamicForm_course_GroupTab]
         }), VLayout_Tab_JspCourse]
     });
@@ -1885,10 +1885,10 @@
             members: [isc.TrVLayout.create({
                 members: [HLayOut_Tab_JspCourse, courseSaveOrExitHlayout],
                 border: "3px solid lightBlue",
-                borderRadius:"10px",
+                borderRadius: "10px",
                 height: "40%",
                 layoutMargin: 5,
-                margin:"2%",
+                margin: "2%",
             }), TabSet_Goal_JspCourse],
         })],
         minWidth: 1024,
@@ -2024,7 +2024,7 @@
         vm_JspCourse.clearValues();
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
-        Window_course.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="course"/>");
+        Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
         lblCourse.hide();
@@ -2168,7 +2168,7 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
-            Window_course.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="course"/>");
+            Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
             setTimeout(function () {

@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -34,7 +33,7 @@ public class CheckListDTO implements Serializable {
         private String lastModifiedBy;
     }
 
-     @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("CheckListCreateRq")
@@ -91,7 +90,6 @@ public class CheckListDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
-
 
 
 }

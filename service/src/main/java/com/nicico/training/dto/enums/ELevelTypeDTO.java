@@ -4,7 +4,6 @@ package com.nicico.training.dto.enums;/* com.nicico.training.dto
 @Time:9:50 AM
 */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ELevelType;
 import io.swagger.annotations.ApiModel;

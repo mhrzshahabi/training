@@ -5,7 +5,6 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.iservice.ITermService;
 import com.nicico.training.model.Term;
@@ -15,7 +14,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 
 import java.util.List;
 import java.util.Optional;
@@ -114,7 +112,7 @@ public class TermService implements ITermService {
         return String.valueOf(max);
     }
 
-     @Transactional
+    @Transactional
     @Override
     public TotalResponse<TermDTO.Info> search(NICICOCriteria request) {
         return SearchUtil.search(termDAO, request, job -> mapper.map(job, TermDTO.Info.class));

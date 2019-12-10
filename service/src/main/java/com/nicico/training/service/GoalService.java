@@ -88,7 +88,7 @@ public class GoalService implements IGoalService {
 
         Set<Syllabus> syllabusSet = goal.getSyllabusSet();
         for (Syllabus syllabus : syllabusSet) {
-           syllabusDAO.delete(syllabus);
+            syllabusDAO.delete(syllabus);
         }
         goalDAO.delete(goal);
     }
@@ -122,7 +122,7 @@ public class GoalService implements IGoalService {
 
     @Transactional
     @Override
-    public List<CourseDTO.Info> getCourses(Long goalId){
+    public List<CourseDTO.Info> getCourses(Long goalId) {
         final Optional<Goal> ssById = goalDAO.findById(goalId);
         final Goal goal = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.GoalNotFound));
         List<CourseDTO.Info> courses = new ArrayList<>();

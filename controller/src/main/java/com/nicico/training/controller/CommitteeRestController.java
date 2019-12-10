@@ -36,11 +36,11 @@ import java.util.*;
 @RequiredArgsConstructor
 @RequestMapping("/api/committee")
 public class CommitteeRestController {
-  private final CommitteeService committeeService;
-   private final ObjectMapper objectMapper;
-   private final DateUtil dateUtil;
-   private final ReportUtil reportUtil;
-   private final CategoryDAO categoryDAO;
+    private final CommitteeService committeeService;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
+    private final ReportUtil reportUtil;
+    private final CategoryDAO categoryDAO;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -48,7 +48,7 @@ public class CommitteeRestController {
         return new ResponseEntity<>(committeeService.get(id), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/list")
     public ResponseEntity<List<CommitteeDTO.Info>> list() {
         return new ResponseEntity<>(committeeService.list(), HttpStatus.OK);
@@ -61,7 +61,7 @@ public class CommitteeRestController {
         return new ResponseEntity<>(committeeService.create(create), HttpStatus.CREATED);
     }
 
- @Loggable
+    @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CommitteeDTO.Info> update(@PathVariable Long id, @RequestBody CommitteeDTO.Update request) {
         CommitteeDTO.Update update = (new ModelMapper()).map(request, CommitteeDTO.Update.class);
@@ -71,14 +71,14 @@ public class CommitteeRestController {
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-    boolean check=committeeService.checkForDelete(id);
-      if(check) {
-          committeeService.delete(id);
-      }
-        return new ResponseEntity<>(check,HttpStatus.OK);
+        boolean check = committeeService.checkForDelete(id);
+        if (check) {
+            committeeService.delete(id);
+        }
+        return new ResponseEntity<>(check, HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/list")
     public ResponseEntity<Void> delete(@Validated @RequestBody CommitteeDTO.Delete request) {
         committeeService.delete(request);
@@ -86,7 +86,7 @@ public class CommitteeRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<CommitteeDTO.CommitteeSpecRs> list(@RequestParam("_startRow") Integer startRow,
                                                              @RequestParam("_endRow") Integer endRow,
@@ -103,7 +103,7 @@ public class CommitteeRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-        request.setCriteria(criteriaRq);
+            request.setCriteria(criteriaRq);
         }
         if (StringUtils.isNotEmpty(sortBy)) {
             request.setSortBy(sortBy);
@@ -127,7 +127,7 @@ public class CommitteeRestController {
     }
 
 
-      @Loggable
+    @Loggable
     @PostMapping(value = "/search")
     public ResponseEntity<SearchDTO.SearchRs<CommitteeDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(committeeService.search(request), HttpStatus.OK);
@@ -172,9 +172,9 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping(value = "/addmember/{personId}/{committeeId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addMember(@PathVariable Long committeeId,@PathVariable Long personId) {
+    public ResponseEntity<Void> addMember(@PathVariable Long committeeId, @PathVariable Long personId) {
 
-        committeeService.addMember(committeeId,personId);
+        committeeService.addMember(committeeId, personId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -182,26 +182,26 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping(value = "/addmembers/{personIds}/{committeeId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addMembers(@PathVariable Long committeeId,@PathVariable Set<Long> personIds) {
+    public ResponseEntity<Void> addMembers(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
 
-        committeeService.addMembers(committeeId,personIds);
+        committeeService.addMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @DeleteMapping(value = "/removeMember/{committeeId}/{personId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeMember(@PathVariable Long committeeId,@PathVariable Long personId) {
+    public ResponseEntity<Void> removeMember(@PathVariable Long committeeId, @PathVariable Long personId) {
 
-         committeeService.removeMember(committeeId,personId);
+        committeeService.removeMember(committeeId, personId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeMembers/{committeeId}/{personIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId,@PathVariable Set<Long> personIds) {
-        committeeService.removeMembers(committeeId,personIds);
+    public ResponseEntity<Void> removeSkills(@PathVariable Long committeeId, @PathVariable Set<Long> personIds) {
+        committeeService.removeMembers(committeeId, personIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
@@ -209,7 +209,7 @@ public class CommitteeRestController {
     @Loggable
     @GetMapping(value = "/{committeeId}/getMembers")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs>  getMember(@PathVariable Long committeeId) {
+    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> getMember(@PathVariable Long committeeId) {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -218,42 +218,39 @@ public class CommitteeRestController {
         final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
         specResponse.setData(list)
                 .setStartRow(0)
-                .setEndRow( list.size())
+                .setEndRow(list.size())
                 .setTotalRows(list.size());
 
 
-        final PersonalInfoDTO.CompetenceSpecRs specRs=new PersonalInfoDTO.CompetenceSpecRs();
+        final PersonalInfoDTO.CompetenceSpecRs specRs = new PersonalInfoDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
-
 
 
 //        final SkillDTO.SkillSpecRs specRs = new SkillDTO.SkillSpecRs();
 //        specRs.setResponse(specResponse);
 
-        return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
 
     }
 
     @Loggable
-    @GetMapping(value="/{committeeId}/unAttachMember")
-    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> unAttachMember(@PathVariable Long committeeId)
-    {
-        Set<PersonalInfoDTO.Info>persInfoSet=  committeeService.unAttachMember(committeeId);
+    @GetMapping(value = "/{committeeId}/unAttachMember")
+    public ResponseEntity<PersonalInfoDTO.CompetenceSpecRs> unAttachMember(@PathVariable Long committeeId) {
+        Set<PersonalInfoDTO.Info> persInfoSet = committeeService.unAttachMember(committeeId);
 
-         List<PersonalInfoDTO.Info> arrayList=new ArrayList<>();
-        for (PersonalInfoDTO.Info personDTOInfo:persInfoSet)
-        {
+        List<PersonalInfoDTO.Info> arrayList = new ArrayList<>();
+        for (PersonalInfoDTO.Info personDTOInfo : persInfoSet) {
             arrayList.add(personDTOInfo);
 
         }
-         final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
+        final PersonalInfoDTO.SpecRs specResponse = new PersonalInfoDTO.SpecRs();
         specResponse.setData(arrayList)
                 .setStartRow(0)
-                .setEndRow( persInfoSet.size())
+                .setEndRow(persInfoSet.size())
                 .setTotalRows(persInfoSet.size());
-        final PersonalInfoDTO.CompetenceSpecRs specRs=new PersonalInfoDTO.CompetenceSpecRs();
+        final PersonalInfoDTO.CompetenceSpecRs specRs = new PersonalInfoDTO.CompetenceSpecRs();
         specRs.setResponse(specResponse);
-          return new ResponseEntity<>(specRs,HttpStatus.OK);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
 
     }
 
@@ -267,8 +264,8 @@ public class CommitteeRestController {
 //        reportUtil.export("/reports/CommitteeWithMember.jasper", params, response);
 //    }
 
- @Loggable
-   @GetMapping(value = {"/printCommitteeWithMember/{type}"})
+    @Loggable
+    @GetMapping(value = {"/printCommitteeWithMember/{type}"})
     public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
         Map<String, Object> params = new HashMap<>();
         params.put(ConstantVARs.REPORT_TYPE, type);
@@ -307,28 +304,17 @@ public class CommitteeRestController {
 //    //---------------
 
 
-
-
-
-
-
-
-
-
-
     @Loggable
     @GetMapping(value = {"/findConflictCommittee/{category}/{subcategory}"})
-      public  ResponseEntity<String> findConflictCommittee(@PathVariable Long category,@PathVariable Long subcategory)
-     {
-         String s = committeeService.findConflictCommittee(category, subcategory);
+    public ResponseEntity<String> findConflictCommittee(@PathVariable Long category, @PathVariable Long subcategory) {
+        String s = committeeService.findConflictCommittee(category, subcategory);
 //         String d = "d";
-         return  new ResponseEntity<>(s,HttpStatus.OK);
-     }
+        return new ResponseEntity<>(s, HttpStatus.OK);
+    }
 
-       @Loggable
+    @Loggable
     @GetMapping(value = {"/findConflictWhenEdit/{category}/{subcategory}/{id}"})
-      public  ResponseEntity<String> fincConflictWhenEdit(@PathVariable Long category,@PathVariable Long subcategory,@PathVariable Long id)
-     {
-     return  new ResponseEntity<>(committeeService.findConflictWhenEdit(category,subcategory,id),HttpStatus.OK);
-     }
+    public ResponseEntity<String> fincConflictWhenEdit(@PathVariable Long category, @PathVariable Long subcategory, @PathVariable Long id) {
+        return new ResponseEntity<>(committeeService.findConflictWhenEdit(category, subcategory, id), HttpStatus.OK);
+    }
 }

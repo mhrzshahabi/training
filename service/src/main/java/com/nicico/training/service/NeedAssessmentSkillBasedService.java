@@ -1,4 +1,3 @@
-
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;

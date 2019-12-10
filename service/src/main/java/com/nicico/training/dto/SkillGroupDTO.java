@@ -5,7 +5,6 @@ com.nicico.training.dto
 @Time :2:49 PM
     */
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -21,7 +20,7 @@ import java.util.Set;
 
 @Getter
 @Setter
-@Accessors(chain=true)
+@Accessors(chain = true)
 
 public class SkillGroupDTO {
 
@@ -38,9 +37,9 @@ public class SkillGroupDTO {
 
     @Getter
     @Setter
-    @Accessors(chain=true)
+    @Accessors(chain = true)
     @ApiModel("SkillGroupInfo")
-    public static class Info extends SkillGroupDTO{
+    public static class Info extends SkillGroupDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
@@ -55,7 +54,7 @@ public class SkillGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillGroupCreateRq")
-    public static  class Create extends SkillGroupDTO{
+    public static class Create extends SkillGroupDTO {
         private Set<Long> skillIds;
         private Set<Long> competenceIds;
     }
@@ -66,7 +65,7 @@ public class SkillGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillGroupUpdateRq")
-    public static class Update extends SkillGroupDTO{
+    public static class Update extends SkillGroupDTO {
         private Set<Long> skillIds;
         private Set<Long> competenceIds;
         @NotNull
@@ -80,7 +79,7 @@ public class SkillGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillGroupIdListRq")
-    public static class SkillGroupIdList{
+    public static class SkillGroupIdList {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
@@ -94,7 +93,7 @@ public class SkillGroupDTO {
     @Setter
     @Accessors(chain = true)
     @ApiModel("SkillGroupDeleteRq")
-    public static class Delete{
+    public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
         private Set<Long> ids;
@@ -107,7 +106,7 @@ public class SkillGroupDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("SkillGroupSpecRs")
-    public static class SkillGroupSpecRs{
+    public static class SkillGroupSpecRs {
         private SpecRs response;
     }
 

@@ -19,7 +19,6 @@ import javax.persistence.*;
 public class PersonnelRegistered extends Auditable {
 
 
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq_personnel_registered_id")
     @SequenceGenerator(name = "seq_personnel_registered_id", sequenceName = "seq_personnel_registered_id", allocationSize = 1)
