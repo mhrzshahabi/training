@@ -802,14 +802,14 @@ ListGrid_Sub_Category_refresh();
 });
 
 var ToolStripButton_Sub_Category_Edit = isc.ToolStripButtonEdit.create({
-// icon: "[SKIN]/actions/edit.png",
+
 title: "ویرایش",
 click: function () {
 ListGrid_Sub_Category_Edit();
 }
 });
 var ToolStripButton_Sub_Category_Add = isc.ToolStripButtonAdd.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_Sub_Category_Add();
@@ -857,7 +857,7 @@ ListGrid_Category_Edit();
 }
 });
 var ToolStripButton_Category_Add = isc.ToolStripButtonAdd.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_Category_Add();

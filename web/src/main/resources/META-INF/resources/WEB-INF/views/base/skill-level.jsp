@@ -330,7 +330,7 @@ ListGrid_skill_level_edit();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-// icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_skill_level_Add();

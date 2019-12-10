@@ -142,7 +142,7 @@
         });
 
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-            //icon: "[SKIN]/actions/add.png",
+
             title: "<spring:message code="create"/>",
             click: function () {
                 create_OperationalUnit();
@@ -150,7 +150,7 @@
         });
 
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-            //icon: "[SKIN]/actions/edit.png",
+
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_OperationalUnitEditForm();
@@ -158,7 +158,7 @@
         });
 
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-            //icon: "[SKIN]/actions/remove.png",
+
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_OperationalUnit();

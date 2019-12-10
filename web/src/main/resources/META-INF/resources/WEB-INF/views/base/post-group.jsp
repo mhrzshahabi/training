@@ -1011,7 +1011,7 @@
         }
     });
     var ToolStripButton_Edit_Post_Group_Jsp = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
 
@@ -1019,7 +1019,7 @@
         }
     });
     var ToolStripButton_Add_Post_Group_Jsp = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
 

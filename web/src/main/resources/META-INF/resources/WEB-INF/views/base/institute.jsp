@@ -2971,7 +2971,7 @@ ListGrid_Institute_Institute_Edit();
 }
 });
 var ToolStripButton_Institute_Institute_Add = isc.ToolStripButtonAdd.create({
-//icon: "[SKIN]/actions/add.png",
+
 title: "<spring:message code='create'/>",
 click: function () {
 ListGrid_Institute_Institute_Add();

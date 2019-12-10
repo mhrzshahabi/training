@@ -827,7 +827,7 @@
         }
     });
     var ToolStripButton_Edit_Job_Group_Jsp = isc.ToolStripButtonEdit.create({
-        // icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
 
@@ -835,7 +835,7 @@
         }
     });
     var ToolStripButton_Add_Job_Group_Jsp = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
 
@@ -843,7 +843,7 @@
         }
     });
     var ToolStripButton_Remove_Job_Group_Jsp = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "حذف",
         click: function () {
             ListGrid_Job_Group_remove();

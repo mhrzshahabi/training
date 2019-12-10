@@ -629,21 +629,21 @@
         }
     });
     var ToolStripButton_Syllabus_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
             ListGrid_Syllabus_Goal_Edit();
         }
     });
     var ToolStripButton_Syllabus_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
             ListGrid_Syllabus_Goal_Add();
         }
     });
     var ToolStripButton_Syllabus_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "حذف",
         click: function () {
             ListGrid_Syllabus_Goal_Remove();
@@ -708,7 +708,7 @@
         }
     });
     var ToolStripButton_Goal_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         prompt: "اخطار<br/>ویرایش هدف در تمامی دوره های ارضا کننده هدف نیز اعمال خواهد شد.",
         hoverWidth: 320,
@@ -717,7 +717,7 @@
         }
     });
     var ToolStripButton_Goal_Add = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         prompt: "تعریف هدف جدید برای دوره مذکور",
         hoverWidth: 160,
@@ -726,7 +726,7 @@
         }
     });
     var ToolStripButton_Goal_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "حذف",
         prompt: "اخطار<br/>هدف انتخاب شده از تمامی دوره های موجود حذف خواهد شد.",
         hoverWidth: 280,

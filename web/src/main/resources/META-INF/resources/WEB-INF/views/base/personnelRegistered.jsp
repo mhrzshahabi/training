@@ -1283,7 +1283,7 @@
     });
 
     var ToolStripButton_Edit_JspPersonnelReg = isc.ToolStripButtonEdit.create({
-        // icon: "[SKIN]/actions/edit.png",
+
         // title: "<spring:message code='edit'/>",
         click: function () {
             ListGrid_personnelReg_edit();
@@ -1291,7 +1291,7 @@
     });
 
     var ToolStripButton_Add_JspPersonnelReg = isc.ToolStripButtonAdd.create({
-        // icon: "[SKIN]/actions/add.png",
+
         // title: "<spring:message code='create'/>",
         click: function () {
             ListGrid_personnelReg_add();

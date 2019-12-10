@@ -479,14 +479,14 @@
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
     var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code="create"/>",
 
         click: function () {
@@ -501,7 +501,7 @@
     <%--}--%>
     <%--});--%>
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()

@@ -346,7 +346,7 @@ ListGrid_Equipment_edit();
 }
 });
 var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-//icon: "[SKIN]/actions/add.png",
+
 title: "ایجاد",
 click: function () {
 ListGrid_Equipment_Add();

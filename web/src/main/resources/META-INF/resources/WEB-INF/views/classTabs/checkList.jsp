@@ -126,21 +126,21 @@
         }
     });
     var ToolStripButton_CheckList_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListEditForm();
         }
     });
     var ToolStripButton_CheckList_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListAddForm();
         }
     });
     var ToolStripButton_CheckList_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code="remove"/>",
         click: function () {
             show_CheckListDeleteForm();
@@ -156,21 +156,21 @@
         }
     });
     var ToolStripButton_CheckListItem_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code="edit"/>",
         click: function () {
             show_CheckListItemEditForm();
         }
     });
     var ToolStripButton_CheckListItem_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code="create"/>",
         click: function () {
             show_CheckListItemAddForm();
         }
     });
     var ToolStripButton_CheckListItem_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code="deactivate"/>",
         click: function () {
             is_Delete();
