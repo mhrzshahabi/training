@@ -727,33 +727,33 @@
     }
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
-    const enumUrl = rootUrl + "enum/";
-    const goalUrl = rootUrl + "goal/";
-    const syllabusUrl = rootUrl + "syllabus/";
-    const courseUrl = rootUrl + "course/";
-    const categoryUrl = rootUrl + "category/";
-    const teacherUrl = rootUrl + "teacher/";
-    const studentUrl = rootUrl + "student/";
-    const classUrl = rootUrl + "tclass/";
-    const classReportUrl = rootUrl + "classReport/";
-    const instituteUrl = rootUrl + "institute/";
-    const educationUrl = rootUrl + "education/";
-    const termUrl = rootUrl + "term/";
-    const cityUrl = rootUrl + "city/";
-    const stateUrl = rootUrl + "state/";
-    const personalInfoUrl = rootUrl + "personalInfo/";
-    const committeeUrl = rootUrl + "committee/";
-    const skillGroupUrl = rootUrl + "skill-group/";
-    const jobGroupUrl = rootUrl + "job-group/";
-    const companyUrl = rootUrl + "company/";
-    const addressUrl = rootUrl + "address/";
-    const operationalUnitUrl = rootUrl + "operationalUnit/";
-    const postGradeGroupUrl = rootUrl + "postGradeGroup/";
-    const checklistUrl = rootUrl + "checklist/";
-    const checklistItemUrl = rootUrl + "checklistItem/";
-    const classCheckListUrl = rootUrl + "class-checklist/";
-    const needAssessmentSkillBasedUrl = rootUrl + "needAssessmentSkillBased/";
-    const sessionServiceUrl = rootUrl + "sessionService/";
+    const enumUrl = rootUrl + "/enum/";
+    const goalUrl = rootUrl + "/goal/";
+    const syllabusUrl = rootUrl + "/syllabus/";
+    const courseUrl = rootUrl + "/course/";
+    const categoryUrl = rootUrl + "/category/";
+    const teacherUrl = rootUrl + "/teacher/";
+    const studentUrl = rootUrl + "/student/";
+    const classUrl = rootUrl + "/tclass/";
+    const classReportUrl = rootUrl + "/classReport/";
+    const instituteUrl = rootUrl + "/institute/";
+    const educationUrl = rootUrl + "/education/";
+    const termUrl = rootUrl + "/term/";
+    const cityUrl = rootUrl + "/city/";
+    const stateUrl = rootUrl + "/state/";
+    const personalInfoUrl = rootUrl + "/personalInfo/";
+    const committeeUrl = rootUrl + "/committee/";
+    const skillGroupUrl = rootUrl + "/skill-group/";
+    const jobGroupUrl = rootUrl + "/job-group/";
+    const companyUrl = rootUrl + "/company/";
+    const addressUrl = rootUrl + "/address/";
+    const operationalUnitUrl = rootUrl + "/operationalUnit/";
+    const postGradeGroupUrl = rootUrl + "/postGradeGroup/";
+    const checklistUrl = rootUrl + "/checklist/";
+    const checklistItemUrl = rootUrl + "/checklistItem/";
+    const classCheckListUrl = rootUrl + "/class-checklist/";
+    const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
+    const sessionServiceUrl = rootUrl + "/sessionService/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
