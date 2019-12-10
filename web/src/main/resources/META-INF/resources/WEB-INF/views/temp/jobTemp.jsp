@@ -45,7 +45,7 @@
             {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     JobLG_job = isc.TrLG.create({
@@ -121,7 +121,7 @@
             {name: "code", title: "کد شغل", align: "center", filterOperator: "iContains"},
             {name: "costCenter", title: "مرکز هزينه", align: "center", filterOperator: "iContains"},
             {name: "description", title: "توضيحات", align: "center", filterOperator: "iContains"}],
-        fetchDataURL: jobUrl + "spec-list"
+        fetchDataURL: jobUrl + "/spec-list"
     });
 
     let LG_Job_job = isc.MyListGrid.create({
@@ -530,7 +530,7 @@
             return;
         }
         let jobData = DF_Job_job.getValues();
-        let jobSaveUrl = jobUrl;
+        let jobSaveUrl = jobUrl + "/";
         if (jobMethod.localeCompare("PUT") == 0) {
             let jobRecord = LG_Job_job.getSelectedRecord();
             jobSaveUrl += jobRecord.id;
@@ -570,7 +570,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(MyDsRequest(jobUrl + record.id, "DELETE", null, "callback: show_JobActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(MyDsRequest(jobUrl + "/" + record.id, "DELETE", null, "callback: show_JobActionResult(rpcResponse)"));
                     }
                 }
             });
@@ -580,7 +580,7 @@
     function refresh_JobCompetenceListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_JobCompetence_job.fetchDataURL = jobUrl + record.id + "/job-competence/spec-list";
+            DS_JobCompetence_job.fetchDataURL = jobUrl + "/" + record.id + "/job-competence/spec-list";
             LG_JobCompetence_job.invalidateCache();
             LG_JobCompetence_job.fetchData();
         } else {
@@ -591,7 +591,7 @@
     function refresh_SkillListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_Skill_job.fetchDataURL = jobUrl + record.id + "/skills/spec-list";
+            DS_Skill_job.fetchDataURL = jobUrl + "/" + record.id + "/skills/spec-list";
             LG_Skill_job.invalidateCache();
             LG_Skill_job.fetchData();
         } else {
@@ -602,7 +602,7 @@
     function refresh_SkillGroupListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_SkillGroup_job.fetchDataURL = jobUrl + record.id + "/skillGroups/spec-list";
+            DS_SkillGroup_job.fetchDataURL = jobUrl + "/" + record.id + "/skillGroups/spec-list";
             LG_SkillGroup_job.invalidateCache();
             LG_SkillGroup_job.fetchData();
         } else {
@@ -613,7 +613,7 @@
     function refresh_CourseListGrid_job() {
         let record = LG_Job_job.getSelectedRecord();
         if (checkRecord(record)) {
-            DS_Course_job.fetchDataURL = jobUrl + record.id + "/courses/spec-list";
+            DS_Course_job.fetchDataURL = jobUrl + "/" + record.id + "/courses/spec-list";
             LG_Course_job.invalidateCache();
             LG_Course_job.fetchData();
         } else {

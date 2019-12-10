@@ -16,7 +16,7 @@
                 {name: "code", title: "<spring:message code="job.code"/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains"},
             ],
-            fetchDataURL: jobUrl + "iscList"
+            fetchDataURL: jobUrl + "/iscList"
         }
     );
     var restData_Post = isc.TrDS.create(
@@ -84,7 +84,7 @@
                 change: function (form, item, value, oldValue) {
                     if (value == "شغل") {
                         form.getField("combo").setValue("");
-                        restData_Job.fetchDataURL = jobUrl + "iscList";
+                        restData_Job.fetchDataURL = jobUrl + "/iscList";
                     } else if (value == "پست") {
                         form.getField("combo").setValue("");
                         restData_Post.fetchDataURL = postUrl + "iscList";

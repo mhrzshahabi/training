@@ -44,7 +44,7 @@
         filterUsingText: "<spring:message code='filterUsingText'/>",
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     var RestDataSource_company_PerReg = isc.TrDS.create({

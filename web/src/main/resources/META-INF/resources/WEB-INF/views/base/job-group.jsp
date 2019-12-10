@@ -37,7 +37,7 @@
             {name: "description", filterOperator: "iContains"},
             {name: "version"}
         ]
-        , fetchDataURL: jobUrl + "iscList"
+        , fetchDataURL: jobUrl + "/iscList"
     });
     var RestDataSource_ForThisJobGroup_GetJobs = isc.TrDS.create({
         fields: [
@@ -913,7 +913,7 @@
 
             } else {
                 // RestDataSource_All_Jobs.fetchDataURL = jobGroupUrl + record.id + "/unAttachJobs";
-                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "iscList";
+                // RestDataSource_All_Jobs.fetchDataURL = jobUrl + "/iscList";
                 ListGrid_AllJobs.fetchData();
                 ListGrid_AllJobs.invalidateCache();
 
