@@ -125,7 +125,7 @@
             {name: "capacity", title: "ظرفیت"}
         ],
         // fetchDataURL: instituteUrl + "0/training-places"
-        fetchDataURL: trainingPlaceUrl + "with-institute"
+        fetchDataURL: trainingPlaceUrl + "/with-institute"
     });
 
 
