@@ -58,7 +58,7 @@
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             ],
-        fetchDataURL: postGroupUrl + "spec-list"
+        fetchDataURL: postGroupUrl + "/spec-list"
     });
 
     restData_For_This_Object_Skills_NASB_JPA = isc.TrDS.create({
