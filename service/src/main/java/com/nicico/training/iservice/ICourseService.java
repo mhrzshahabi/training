@@ -68,4 +68,6 @@ public interface ICourseService {
 
     @Transactional(readOnly = true)
     List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId);
+
+    int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
 }

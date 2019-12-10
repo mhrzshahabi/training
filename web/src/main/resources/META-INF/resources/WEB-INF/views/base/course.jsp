@@ -57,7 +57,9 @@
             // {name: "skill"},
             // {name: "attitude"},
             {name: "needText"},
-            {name: "description"}
+            {name: "description"},
+            {name: "workflowStatus"},
+            {name: "workflowStatusCode"}
             // {name: "version"},
         ],
         fetchDataURL: courseUrl + "spec-list",
@@ -374,7 +376,21 @@
             //     width: "50"
             // },
             {name: "needText", title: "شرح", hidden: true},
-            {name: "description", title: "توضیحات", hidden: true}
+            {name: "description", title: "توضیحات", hidden: true},
+            {
+                name: "workflowStatus",
+                title: "<spring:message code="status"/>",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            },
+            {
+                name: "workflowStatusCode",
+                title: "<spring:message code="status"/>",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+            }
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
         ],
@@ -514,6 +530,16 @@
             print_CourseListGrid("pdf");
         }
     });
+
+    var ToolStripButton_SendToWorkflow = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/column_preferences.png",
+        title: "<spring:message code='send.to.workflow'/>",
+        click: function () {
+            sendCourseToWorkflow();
+        }
+    });
+
+
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -522,6 +548,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
+            ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -529,7 +556,7 @@
                 members: [
                     ToolStripButton_Refresh
                 ]
-            }),
+            })
 
         ]
     });
@@ -1149,6 +1176,10 @@
                         }
                         data2.equalCourseListId = equalCourseIdList;
                         data2.preCourseListId = preCourseIdList;
+
+                        data2["workflowStatus"] = "ثبت اولیه";
+                        data2["workflowStatusCode"] = "0";
+
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             willHandleError: true,
@@ -1170,24 +1201,6 @@
                                     var gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     // Window_course.close();
-
-// <<---------------------------------------- Workflow - Call StartProcess ----------------------------------------
-                                    var varParams = [{
-                                        "processKey": "courseWorkflow",
-                                        "cId": JSON.parse(resp.data).id,
-                                        "mainObjective": JSON.parse(resp.data).mainObjective,
-                                        "titleFa": JSON.parse(resp.data).titleFa,
-                                        "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                        "courseCreatorId": "${username}",
-                                        "courseCreator": userFullName,
-                                        "REJECTVAL": "",
-                                        "REJECT": "",
-                                        "target": "/course/show-form",
-                                        "targetTitleFa": "دوره"
-                                    }]
-
-                                    startProcess(varParams);
-// ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
@@ -1262,22 +1275,6 @@
         },
         disabled: true
     });
-
-    // <<---------------------------------------- Workflow - StartProcess ----------------------------------------
-    function startProcess(varParams) {
-        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-    }
-
-    function startProcess_callback(resp) {
-
-        if (resp.httpResponseCode == 200)
-            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
-        else {
-            isc.say("کد خطا : " + resp.httpResponseCode);
-        }
-    }
-
-    // ---------------------------------------- Workflow - StartProcess ---------------------------------------->>
 
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
@@ -2297,4 +2294,61 @@
         })
     }
 
-    //</script>
+    // <<---------------------------------------- Send To Workflow ----------------------------------------
+    function sendCourseToWorkflow() {
+
+        var sRecord = ListGrid_Course.getSelectedRecord();
+
+        if (sRecord === null || sRecord.id === null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        }
+        else if(sRecord.workflowStatusCode === "2"){
+            createDialog("info", "<spring:message code='course.workflow.confirm'/>");
+        }
+        else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
+            createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
+        } else {
+
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="course.sent.to.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+
+                        var varParams = [{
+                            "processKey": "courseWorkflow",
+                            "cId": sRecord.id,
+                            "mainObjective": sRecord.mainObjective,
+                            "titleFa": sRecord.titleFa,
+                            "theoryDuration": sRecord.theoryDuration.toString(),
+                            "courseCreatorId": "${username}",
+                            "courseCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/course/show-form",
+                            "targetTitleFa": "دوره",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0"
+                        }]
+
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+
+                    }
+                }
+            });
+        }
+
+    }
+
+    function startProcess_callback(resp) {
+
+        if (resp.httpResponseCode == 200) {
+            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+            ListGrid_Course_refresh()
+        } else {
+            isc.say("کد خطا : " + resp.httpResponseCode);
+        }
+    }
+
+    // ---------------------------------------- Send To Workflow ---------------------------------------->>

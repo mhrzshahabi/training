@@ -586,6 +586,14 @@ public class CourseService implements ICourseService {
         return modelMapper.map(teachers, new TypeToken<List<TeacherDTO.TeacherFullNameTuple>>() {
         }.getType());
     }
+
+
+    @Transactional(readOnly = true)
+    @Override
+    public int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode) {
+        return courseDAO.updateCourseState(courseId, workflowStatus, workflowStatusCode);
+    }
+
 }
 
 
