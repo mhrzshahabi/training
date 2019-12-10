@@ -1144,7 +1144,6 @@
         title: "<spring:message code="save"/>",
         //icon: "[SKIN]/actions/save.png",
         click: function () {
-
             vm_JspCourse.validate();
             if (vm_JspCourse.hasErrors()) {
                 return;

@@ -42,7 +42,7 @@
             {name: "etechnicalType.titleFa", title: "نوع تخصص", align: "center"},
             {name: "ecompetenceInputType.titleFa", title: "نوع ورودي", align: "center"},
             {name: "description", title: "توضيحات", align: "center"}],
-        fetchDataURL: competenceUrl + "spec-list"
+        fetchDataURL: competenceUrl + "/spec-list"
     });
 
     let LG_Competence_competence = isc.MyListGrid.create({
