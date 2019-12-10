@@ -164,7 +164,7 @@ let SkillDS_needAssessment = isc.TrDS.create({
 fields: [
 {name: "id", hidden: true},
 {name: "titleFa"},],
-fetchDataURL: skillUrl + "spec-list"
+fetchDataURL: skillUrl + "/spec-list"
 });
 
 let EDomainTypeDS_needAssessment = isc.TrDS.create({
