@@ -7,6 +7,7 @@
 %>
 
 // <script>
+    var selectedRecordClassGrid;
     var sessionInOneDate = [];
     var attendanceState = {
         "0" : "نامشخص",
@@ -158,7 +159,7 @@
                     isc.RPCManager.sendRequest({
                         actionURL: attendanceUrl + "/save-attendance?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                         willHandleError: true,
-                        httpMethod: "GET",
+                        httpMethod: "POST",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
                         contentType: "application/json; charset=utf-8",
@@ -210,6 +211,16 @@
         <%--else {--%>
             <%--isc.say("<spring:message code='error'/>");--%>
         <%--}--%>
+    }
+
+    function loadPage_Attendance() {
+        selectedRecordClassGrid = ListGrid_Class_JspClass.getSelectedRecord();
+        if (!(selectedRecordClassGrid == undefined || selectedRecordClassGrid == null)) {
+            DynamicForm_Attendance.setValue("sessionDate","");
+            sessionInOneDate.length = 0;
+            ListGrid_Attendance_AttendanceJSP.invalidateCache();
+            // StudentsLG_student.fetchData({"classID": selectedRecordClassGrid.id});
+        }
     }
 
 

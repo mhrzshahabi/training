@@ -6,7 +6,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// script
+// <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -271,6 +271,7 @@
         },
         //working
         dataArrived: function () {
+            selectWorkflowRecord();
             // var gridState = "[{id:285}]";
             // ListGrid_Course.setSelectedState(gridState);
 
@@ -382,7 +383,7 @@
                 title: "<spring:message code="status"/>",
                 align: "center",
                 autoFitWidth: true,
-                filterOperator: "iContains",
+                filterOperator: "iContains"
             },
             {
                 name: "workflowStatusCode",
@@ -390,6 +391,7 @@
                 align: "center",
                 autoFitWidth: true,
                 filterOperator: "iContains",
+                hidden: true
             }
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
@@ -1257,6 +1259,9 @@
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                             // Window_course.close();
+
+                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
                             }, 3000);
@@ -2301,11 +2306,9 @@
 
         if (sRecord === null || sRecord.id === null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-        }
-        else if(sRecord.workflowStatusCode === "2"){
+        } else if (sRecord.workflowStatusCode === "2") {
             createDialog("info", "<spring:message code='course.workflow.confirm'/>");
-        }
-        else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
+        } else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
             createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
         } else {
 
@@ -2332,7 +2335,7 @@
                             "workflowStatusCode": "0"
                         }]
 
-                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
 
                     }
                 }
@@ -2349,6 +2352,74 @@
         } else {
             isc.say("کد خطا : " + resp.httpResponseCode);
         }
+    }
+
+    var course_workflowParameters = null;
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            course_workflowParameters = workflowParameters;
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_Course.setSelectedState(gridState);
+
+            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+
+            workflowRecordId = null;
+            workflowParameters = null;
+        }
+
+    }
+
+    function sendToWorkflowAfterUpdate(selectedRecord) {
+
+        var sRecord = selectedRecord;
+
+        if (sRecord !== null && sRecord.id !== null && course_workflowParameters !== null) {
+
+            if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {
+
+                course_workflowParameters.workflowdata["REJECT"] = "N";
+                course_workflowParameters.workflowdata["REJECTVAL"] = " ";
+                course_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;
+                course_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;
+                course_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();
+                course_workflowParameters.workflowdata["courseCreatorId"] = "${username}";
+                course_workflowParameters.workflowdata["courseCreator"] = userFullName;
+                course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
+                course_workflowParameters.workflowdata["workflowStatusCode"] = "20";
+
+                var ndat = course_workflowParameters.workflowdata;
+
+                isc.RPCManager.sendRequest({
+                    actionURL: workflowUrl + "/doUserTask",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpMethod: "POST",
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    data: JSON.stringify(ndat),
+                    params: {"taskId": course_workflowParameters.taskId, "usr": course_workflowParameters.usr},
+                    serverOutputAsString: false,
+                    callback: function (RpcResponse_o) {
+                        console.log(RpcResponse_o);
+                        if (RpcResponse_o.data == 'success') {
+
+                            isc.say("دوره ویرایش و به گردش کار ارسال شد");
+                            taskConfirmationWindow.hide();
+                            taskConfirmationWindow.setHeight("90%");
+                            ListGrid_UserTaskList.invalidateCache();
+                        }
+                    }
+                });
+
+            }
+        }
+
+
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>

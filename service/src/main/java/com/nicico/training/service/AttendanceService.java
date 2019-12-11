@@ -157,25 +157,35 @@ public class AttendanceService implements IAttendanceService {
                 attendanceSaving.add(attendance);
             }
         }
-
-        List<ClassSessionDTO.Info> sessions = classSessionService.getSessionsForDate(classId, date);
-        ArrayList<Attendance> attendances = new ArrayList<>();
-        sessions.forEach(s -> attendances.addAll(attendanceDAO.findBySessionId(s.getId())));
-        List<Long> sessionIdSaved = attendances.stream().map(c -> c.getSessionId()).collect(Collectors.toList());
-        List<Long> studentIdSaved = attendances.stream().map(c -> c.getStudentId()).collect(Collectors.toList());
-
-        for (Attendance saving : attendanceSaving) {
-            if(sessionIdSaved.contains(saving.getSessionId())&&studentIdSaved.contains(saving.getStudentId())){
-                List<Attendance> saved = attendances.stream().filter((a) -> a.getSessionId().equals(saving.getSessionId()) && a.getStudentId().equals(saving.getStudentId())).collect(Collectors.toList());
-                Attendance attendanceNull = new Attendance();
-                modelMapper.map(saved, attendanceNull);
-                modelMapper.map(saving, attendanceNull);
-                attendanceDAO.saveAndFlush(attendanceNull);
+        for (Attendance attendance : attendanceSaving) {
+            Attendance saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+            if (saved == null){
+                attendanceDAO.save(attendance);
             }
-            else {
-                attendanceDAO.saveAndFlush(saving);
+            else{
+                saved.setState(attendance.getState());
+                attendanceDAO.save(saved);
             }
         }
+
+//        List<ClassSessionDTO.Info> sessions = classSessionService.getSessionsForDate(classId, date);
+//        ArrayList<Attendance> attendances = new ArrayList<>();
+//        sessions.forEach(s -> attendances.addAll(attendanceDAO.findBySessionId(s.getId())));
+//        List<Long> sessionIdSaved = attendances.stream().map(c -> c.getSessionId()).collect(Collectors.toList());
+//        List<Long> studentIdSaved = attendances.stream().map(c -> c.getStudentId()).collect(Collectors.toList());
+//
+//        for (Attendance saving : attendanceSaving) {
+//            if(sessionIdSaved.contains(saving.getSessionId())&&studentIdSaved.contains(saving.getStudentId())){
+//                List<Attendance> saved = attendances.stream().filter((a) -> a.getSessionId().equals(saving.getSessionId()) && a.getStudentId().equals(saving.getStudentId())).collect(Collectors.toList());
+//                Attendance attendanceNull = new Attendance();
+//                modelMapper.map(saved, attendanceNull);
+//                modelMapper.map(saving, attendanceNull);
+//                attendanceDAO.saveAndFlush(attendanceNull);
+//            }
+//            else {
+//                attendanceDAO.saveAndFlush(saving);
+//            }
+//        }
     }
 
     @Transactional
