@@ -10,11 +10,14 @@
     });
     var ListGrid_ClassStudent = isc.ListGrid.create({
         width: "100%",
+
+        //-----
+        //   canFocus :true,
+          editOnFocus :true,
+        //-----
 //------------
         editByCell: true,
-        // canFocus :true,
-        editOnFocus :true,
-        // editEvent: "click",
+        editEvent: "click",
         modalEditing: true,
         autoSaveEdits: false,
 
@@ -49,8 +52,8 @@
                 valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
-                    ListGrid_ClassStudent.refreshFields();
                     this.grid.startEditing(this.rowNum,this.colNum+2);
+                      ListGrid_ClassStudent.refreshFields();
 
                 },
 
@@ -65,33 +68,38 @@
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 change: function (form, item, value) {
                     ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
+                     ListGrid_ClassStudent.refreshFields();
+                      ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
+                      ListGrid_ClassStudent.refreshFields();
+                      this.grid.startEditing(this.rowNum,this.colNum+1);
+
                 }
             },
 
             {
                 name: "score", title: "نمره", filterOperator: "iContains", canEdit: true, shouldSaveValue: false,
-                editorType: "Float",
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue >= 10) {
+                    if (newValue >= 10 ) {
                         ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-                        ListGrid_Cell_failurereason_Update(record, "")
                         ListGrid_Cell_score_Update(record, newValue);
+                        ListGrid_Cell_failurereason_Update(record, null)
 
 
-                    } else {
-                        ListGrid_Cell_score_Update(record, newValue);
+
                     }
 
-                    if (0 <= newValue && newValue < 10 && newValue != null) {
+                    if (0 <= newValue && newValue < 10 && newValue !== null ) {
 
                         ListGrid_Cell_scoresState_Update(record, "مردود")
                         ListGrid_Cell_score_Update(record, newValue);
+                        ListGrid_ClassStudent.refreshFields();
                         createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
                         ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
+                        ListGrid_ClassStudent.refreshFields();
                     }
 
-                    if (newValue == null) {
+                    if (newValue ===null) {
                         ListGrid_Cell_score_Update(record, newValue);
                         ListGrid_Cell_failurereason_Update(record, null)
                         ListGrid_Cell_scoresState_Update(record, null)
