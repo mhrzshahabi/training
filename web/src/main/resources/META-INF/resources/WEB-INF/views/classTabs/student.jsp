@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// script
+// <script>
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -27,42 +27,21 @@
     // ------------------------------------------- ToolStrip -------------------------------------------
     StudentTS_student = isc.ToolStrip.create({
         members: [
-            isc.TrRefreshBtn.create({
+            isc.ToolStripButtonRefresh.create({
                 click: function () {
                     refreshStudentsLG_student();
                 }
             }),
-            isc.TrAddBtn.create({
+            isc.ToolStripButtonAdd.create({
                 click: function () {
                     addStudent_student();
                 }
             }),
-            isc.TrRemoveBtn.create({
+            isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
                 }
             }),
-            <%--isc.TrPrintBtn.create({--%>
-            <%--    menu: isc.Menu.create({--%>
-            <%--        data: [--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-            <%--                    printStudentsLG_student("pdf");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>", click: function () {--%>
-            <%--                    printStudentsLG_student("excel");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--            {--%>
-            <%--                title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>", click: function () {--%>
-            <%--                    printStudentsLG_student("html");--%>
-            <%--                }--%>
-            <%--            },--%>
-            <%--        ]--%>
-            <%--    })--%>
-            <%--}),--%>
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "StudentsCount_student"}),
         ]
@@ -142,7 +121,6 @@
             {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
             {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
             {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
-
         ],
         gridComponents: ["filterEditor", "header", "body"],
         canRemoveRecords: true,
@@ -238,9 +216,7 @@
                                         isc.TrSaveBtn.create({
                                             click: function () {
                                                 var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                                var personnelsIds = SelectedPersonnelsLG_student.data.map(r = > r.personnelNo
-                                            )
-                                                ;
+                                                var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
 
                                                 var data = {"classId": classId, "personnelsIds": personnelsIds};
                                                 if (personnelsIds.getLength() > 0)
@@ -264,7 +240,9 @@
 
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrVLayout.create({
-        members: [StudentsLG_student],
+        members: [
+            StudentsLG_student
+        ],
     });
 
     // ------------------------------------------- Functions -------------------------------------------
@@ -328,6 +306,7 @@
 
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+        console.log(classRecord);
         if (!(classRecord == undefined || classRecord == null)) {
             StudentsLG_student.fetchData({"classID": classRecord.id});
         }
