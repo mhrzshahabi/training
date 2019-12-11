@@ -53,6 +53,7 @@
                 changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
                      ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), null);
+                      ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), null);
                          ListGrid_ClassStudent.refreshFields();
 
                     this.grid.startEditing(this.rowNum,this.colNum+2);
