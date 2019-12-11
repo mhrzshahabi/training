@@ -80,11 +80,12 @@ public class AttendanceRestController {
 	}
 
     @Loggable
-    @GetMapping(value = "/save-attendance")
+    @PostMapping(value = "/save-attendance")
     public ResponseEntity createAndSave(@RequestBody List<Map<String,String>> req,
-                                        @RequestParam("classId") String classId,
-                                        @RequestParam("date") String date) {
-        attendanceService.convertToModelAndSave(req, Long.valueOf(classId), date);
+                                        @RequestParam("classId") Long classId,
+                                        @RequestParam("date") String date)
+    {
+        attendanceService.convertToModelAndSave(req, classId, date);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
