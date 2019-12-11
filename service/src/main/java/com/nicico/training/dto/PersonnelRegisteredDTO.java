@@ -81,6 +81,7 @@ public class PersonnelRegisteredDTO {
     private String mobile;
     private String email;
     private String accountNumber;
+    private String personnelNo2;
 
 
     @Getter

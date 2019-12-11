@@ -9,12 +9,13 @@ abaspour 9803
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-// script
+// <script>
 
     var rejectDocumentLabel = null;
     var doRejectTaskButton = null;
     var doDeleteTaskButton = null;
     var viewDocButton = null;
+    var targetUrl = null;
     var taskActionsDS = isc.RestDataSource.create({
         fields: [
             {name: "REJECTVAL", type: "text", required: true},
@@ -62,7 +63,11 @@ abaspour 9803
     </c:if>
 
     <c:if test="${taskFormVariable.id =='target'}">
+
     <spring:url value="${taskFormVariable.value}" var="addDocumentUrl"/>
+
+    <%--var targetUrl = "${taskFormVariable.value}";--%>
+
     </c:if>
 
     <c:if test="${taskFormVariable.id =='targetTitleFa'}">
@@ -76,10 +81,14 @@ abaspour 9803
         align: "center",
         width: "150",
         click: function () {
+
             var data = taskStartConfirmForm.getValues();
-            class_userCartableId = data.cId;
-            createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>", true);
-            <%--createTab(targetTitleFa + " " + data.cId, "${addDocumentUrl}" + data.cId, false);--%>
+            workflowRecordId = data.cId;
+            trainingTabSet.removeTab(targetTitleFa)
+            createTab(targetTitleFa, "${addDocumentUrl}");
+            taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+
+            workflowParameters = {"taskId": "${id}", "usr": "${username}", "workflowdata" : taskStartConfirmForm.getValues()};
         }
     });
     </c:if>
@@ -310,10 +319,6 @@ abaspour 9803
                             callback: function (RpcResponse_o) {
                                 console.log(RpcResponse_o);
                                 if (RpcResponse_o.data == 'success') {
-                                    //------------------------------------------------------------------
-                                    //  trainingTabSet.removeTab(targetTitleFa);
-                                    <%--createTab(targetTitleFa, "<spring:url value="/tclass/show-form"/>",true);--%>
-                                    //-----------------------------------------------------------------------
 
                                     // isc.say(rejectDocumentLabel == null ? targetTitleFa + " تایید شد." : targetTitleFa + " جهت بررسی ارسال شد.");
                                     isc.say(rejectDocumentLabel == null ? " تایید شد." : " جهت بررسی ارسال شد.");
@@ -483,7 +488,7 @@ abaspour 9803
                                 ndat[pr] = data[pr];
 
                         isc.RPCManager.sendRequest({
-                            actionURL: workflowUrl + "doUserTask",
+                            actionURL: workflowUrl + "/doUserTask",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             httpMethod: "POST",
                             useSimpleHttp: true,

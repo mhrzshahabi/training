@@ -84,7 +84,11 @@ public class ServiceTaskCourse implements JavaDelegate {
         //**********service task correct course*************
         if (taskName.equalsIgnoreCase("servicetaskCorrection")) {
 
-
+            if (exe.getVariable("REJECT").toString().equals("N")) {
+                courseService.updateCourseState(Long.parseLong(exe.getVariable("cId").toString()), "اصلاح دوره", 20);
+                exe.setVariable("C_WORKFLOW_STATUS", "اصلاح دوره");
+                exe.setVariable("C_WORKFLOW_STATUS_CODE", "20");
+            }
         }
         //**************************************************
 
