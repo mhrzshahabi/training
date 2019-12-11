@@ -12,11 +12,14 @@
         width: "100%",
 //------------
         editByCell: true,
-        editEvent: "click",
+        // canFocus :true,
+        editOnFocus :true,
+        // editEvent: "click",
         modalEditing: true,
         autoSaveEdits: false,
 
 //------
+         canSelectCells:true,
         sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         filterOperator: "iContains",
@@ -44,11 +47,14 @@
                 canEdit: true,
                 editorType: "SelectItem",
                 valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
-                change: function (form, item, value) {
-
+                changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
+                    ListGrid_ClassStudent.refreshFields();
+                    this.grid.startEditing(this.rowNum,this.colNum+2);
 
-                }
+                },
+
+
             },
             {
                 name: "failurereason",
@@ -71,6 +77,8 @@
                         ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
                         ListGrid_Cell_failurereason_Update(record, "")
                         ListGrid_Cell_score_Update(record, newValue);
+
+
                     } else {
                         ListGrid_Cell_score_Update(record, newValue);
                     }
@@ -110,7 +118,7 @@
             }
            return false;
 
-            },
+            }
 
 
     });
