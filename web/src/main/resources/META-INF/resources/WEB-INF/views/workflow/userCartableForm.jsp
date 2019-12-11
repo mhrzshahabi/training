@@ -56,6 +56,7 @@
             canDragResize: true,
             autoDraw: false,
             autoCenter: true,
+            isModal: false,
             items: [
                 taskConfirmViewLoader
             ]
