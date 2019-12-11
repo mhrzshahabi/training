@@ -6,6 +6,7 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.iservice.IBaseService;
 import com.nicico.training.repository.BaseDAO;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,16 +17,18 @@ import java.lang.reflect.ParameterizedType;
 import java.util.List;
 
 @Transactional
+@RequiredArgsConstructor
 public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDATE, DELETE extends Serializable, DAO extends BaseDAO<E, ID>> implements IBaseService<E, ID, INFO, CREATE, UPDATE, DELETE> {
 
     @Autowired
     protected ModelMapper modelMapper;
-    DAO dao;
+    protected DAO dao;
 
     private Class<INFO> infoClassType;
     private Class<CREATE> createClassType;
     private Class<UPDATE> updateClassType;
     private Class<DELETE> deleteClassType;
+    private Class<DAO> daoClassType;
 
     {
         infoClassType = (Class<INFO>)
@@ -43,6 +46,10 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         deleteClassType = (Class<DELETE>)
                 ((ParameterizedType) getClass().getGenericSuperclass())
                         .getActualTypeArguments()[5];
+    }
+
+    BaseService(DAO dao) {
+        this.dao = dao;
     }
 
     @Override
