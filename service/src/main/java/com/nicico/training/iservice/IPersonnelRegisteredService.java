@@ -3,8 +3,11 @@ package com.nicico.training.iservice;
 @Author:Lotfy
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,4 +26,7 @@ public interface IPersonnelRegisteredService {
     void delete(PersonnelRegisteredDTO.Delete request);
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
+
+    @Transactional(readOnly = true)
+    TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 }
