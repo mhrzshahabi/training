@@ -728,7 +728,7 @@
                         "اخراج": "<spring:message code='employmentStatus.layingOff'/>"}
                         },
             {
-                name: "employmentTypeTitle",
+                name: "employmentType",
                 title: "<spring:message code='employment.type'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
@@ -966,7 +966,7 @@
                     }
                 ]
             },
-            {name: "workPlaceTitle", title: "<spring:message code='work.place'/>" , valueMap:
+            {name: "workPlace", title: "<spring:message code='work.place'/>" , valueMap:
                     {
                         "سرچشمه": "<spring:message code='workPlaceTitle.sarcheshmeh'/>",
                         "شهربابک": "<spring:message code='workPlaceTitle.shahrbabak'/>",
@@ -1024,7 +1024,7 @@
         fields: [
 
             {
-                name: "operationalUnitTitle",
+                name: "operationalUnit",
                 title: "<spring:message code='operational.unit'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30",
