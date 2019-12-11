@@ -47,13 +47,17 @@
                 name: "scoresState",
                 title: "وضعیت قبولی",
                 filterOperator: "iContains",
-                canEdit: true,
+                canEdit: false,
                 editorType: "SelectItem",
-                valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
+                valueMap: ["قبول با نمره", "قبول بدون نمره","مردود"],
                 changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
+                     ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), null);
+                         ListGrid_ClassStudent.refreshFields();
+
                     this.grid.startEditing(this.rowNum,this.colNum+2);
-                      ListGrid_ClassStudent.refreshFields();
+
+                    ListGrid_ClassStudent.refreshFields();
 
                 },
 
@@ -71,13 +75,14 @@
                      ListGrid_ClassStudent.refreshFields();
                       ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
                       ListGrid_ClassStudent.refreshFields();
-                      this.grid.startEditing(this.rowNum,this.colNum+1);
+                     // this.grid.startEditing(this.rowNum,this.colNum+1);
 
                 }
             },
 
             {
                 name: "score", title: "نمره", filterOperator: "iContains", canEdit: true, shouldSaveValue: false,
+
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
                     if (newValue >= 10 ) {
@@ -99,11 +104,13 @@
                         ListGrid_ClassStudent.refreshFields();
                     }
 
-                    if (newValue ===null) {
-                        ListGrid_Cell_score_Update(record, newValue);
-                        ListGrid_Cell_failurereason_Update(record, null)
-                        ListGrid_Cell_scoresState_Update(record, null)
+                    if(newValue === null) {
+
+                        ListGrid_Cell_scoresState_Update(record, "")
+                        ListGrid_Cell_score_Update(record, null);
+                        ListGrid_Cell_failurereason_Update(record, "")
                         ListGrid_ClassStudent.refreshFields();
+
                     }
 
                 }
