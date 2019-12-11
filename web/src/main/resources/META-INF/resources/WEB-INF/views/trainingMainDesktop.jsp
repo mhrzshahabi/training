@@ -55,7 +55,10 @@
     const personnelUrl = rootUrl + "/personnel"
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/"
+    const parameterTypeUrl = rootUrl + "/";
+
+    var workflowRecordId = null;
+    var workflowParameters = null;
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -754,6 +757,7 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
+    const classStudent=rootUrl +"/classStudent/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
