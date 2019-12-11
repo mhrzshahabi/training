@@ -47,7 +47,6 @@
                title:"حضور و غیاب براساس تاریخ:",
                type:"SelectItem",
                optionDataSource: RestData_SessionDate_AttendanceJSP,
-               // valueMap:[1,2,3],
                textAlign:"center",
                pickListFields: [
                    {name: "dayName",title:"روز هفته"},
@@ -135,6 +134,25 @@
                                    attendanceGrid.data.allRows = [];
                                }
                                attendanceGrid.setFields(fields1);
+                               for (let i = 4; i <attendanceGrid.getAllFields().size() ; i++) {
+                                   attendanceGrid.setFieldProperties(i, {
+                                       change(form, item, value, oldValue) {
+                                           if(value == 4){
+                                               isc.askForValue("لطفاً علت غیبت را وارد کنید:",function (value) {
+                                                   alert(value)
+                                               },{
+                                                   title:"علت غیبت",
+                                                   buttonClick: function (button, index) {
+                                                       if(index === 1){
+                                                           alert("2")
+                                                       }
+                                                   }
+                                               });
+                                           }
+                                       }
+                                   });
+                               }
+
                                attendanceGrid.fetchData();
                            }
                        });
@@ -202,6 +220,29 @@
         // autoFetchData:true,
 
     });
+
+    // var DynamicForm_Absence = isc.DynamicForm.create({
+    //     fields: [
+    //         {name: "id", hidden: true},
+    //         {
+    //             name: "titleFa",
+    //             title: "نام فارسی",
+    //             required: true,
+    //             readonly: true,
+    //             keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
+    //             validators: [TrValidators.NotEmpty],
+    //         },
+    //     ],
+    // });
+    // var Window_Goal = isc.Window.create({
+    //     items: [isc.VLayout.create({
+    //         width: "100%",
+    //         height: "100%",
+    //         members: [DynamicForm_Absence, Hlayout_Goal_SaveOrExit]
+    //     })],
+    //     width: "400",
+    //     height: "150",
+    // });
 
 
     var VLayout_Body_All_Goal = isc.VLayout.create({
