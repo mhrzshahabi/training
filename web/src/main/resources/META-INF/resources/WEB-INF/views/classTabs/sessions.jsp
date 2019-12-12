@@ -6,7 +6,7 @@
     final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
 
     // <<========== Global - Variables ==========
     {
@@ -260,41 +260,31 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
-        var ToolStripButton_Refresh = isc.ToolStripButton.create({
-            icon: "<spring:url value="refresh.png"/>",
-            title: "<spring:message code="refresh"/>",
+        var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             click: function () {
                 ListGrid_session.invalidateCache();
             }
         });
 
-        var ToolStripButton_Add = isc.ToolStripButton.create({
-            icon: "<spring:url value="create.png"/>",
-            title: "<spring:message code="create"/>",
+        var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
             click: function () {
                 create_Session();
             }
         });
 
-        var ToolStripButton_Edit = isc.ToolStripButton.create({
-            icon: "<spring:url value="edit.png"/>",
-            title: "<spring:message code="edit"/>",
+        var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
             click: function () {
                 show_SessionEditForm();
             }
         });
 
-        var ToolStripButton_Remove = isc.ToolStripButton.create({
-            icon: "<spring:url value="remove.png"/>",
-            title: "<spring:message code="remove"/>",
+        var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
             click: function () {
                 remove_Session();
             }
         });
 
-        var ToolStripButton_Print = isc.ToolStripButton.create({
-            icon: "<spring:url value="print.png"/>",
-            title: "<spring:message code="print"/>",
+        var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
             click: function () {
                 print_SessionListGrid("pdf");
             }
@@ -302,7 +292,20 @@
 
         var ToolStrip_session = isc.ToolStrip.create({
             width: "100%",
-            members: [ToolStripButton_Refresh, ToolStripButton_Add, ToolStripButton_Edit, ToolStripButton_Remove, ToolStripButton_Print]
+            members: [
+                ToolStripButton_Add,
+                ToolStripButton_Edit,
+                ToolStripButton_Remove,
+                ToolStripButton_Print,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh
+                    ]
+                })
+            ]
         });
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
@@ -706,12 +709,12 @@
                 let responseID = JSON.parse(resp.data).id;
                 let gridState = "[{id:" + responseID + "}]";
 
-                // ListGrid_session.invalidateCache();
                 MyOkDialog_Session = isc.MyOkDialog.create({
                     message: "<spring:message code="global.form.request.successful"/>"
                 });
 
                 setTimeout(function () {
+
                     close_MyOkDialog_Session();
 
                     ListGrid_session.setSelectedState(gridState);
@@ -769,7 +772,8 @@
                 var advancedCriteria_session = ListGrid_session.getCriteria();
                 var criteriaForm_session = isc.DynamicForm.create({
                     method: "POST",
-                    action: "<spring:url value="/class-session/printWithCriteria/"/>" + type + "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
+                    action: "<spring:url
+        value="/class-session/printWithCriteria/"/>" + type + "/" + ListGrid_Class_JspClass.getSelectedRecord().id,
                     target: "_Blank",
                     canSubmit: true,
                     fields:

@@ -9,6 +9,8 @@ import org.springframework.stereotype.Repository;
 
 import java.util.List;
 
+////*****rastegari 9809*****
+
 @Repository
 public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaSpecificationExecutor<ClassSession> {
 
@@ -18,7 +20,6 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     @Query(value = "SELECT DISTINCT p.C_SESSION_DATE,p.C_DAY_NAME FROM TBL_SESSION p WHERE p.F_CLASS_ID = ?1", nativeQuery = true)
     List<IClassSessionDTO> findSessionDate(Long classId);
-
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour);
 

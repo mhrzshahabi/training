@@ -5,7 +5,7 @@
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
-//<script>
+// <script>
 
     var classMethod = "POST";
     var autoValid = false;
@@ -1420,6 +1420,11 @@
                 title: "<spring:message code="register.scores"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/scores-tab"})
             },
+            {
+                ID: "classAlarmsTab",
+                title: "<spring:message code="alarms"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
+            }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
