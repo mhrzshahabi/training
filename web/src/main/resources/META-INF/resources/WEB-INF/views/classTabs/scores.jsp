@@ -87,27 +87,19 @@
                 canEdit: true,
                 shouldSaveValue: false,
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue >= 10 && (newValue !==null || newValue !=null)) {
-                        ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-                        ListGrid_ClassStudent.refreshFields();
+                    if (newValue >= 10 && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
                         ListGrid_Cell_score_Update(record, newValue);
-                        ListGrid_ClassStudent.refreshFields();
                         ListGrid_Cell_failurereason_Update(record, null)
-                        ListGrid_ClassStudent.refreshFields();
-
 
                     }
-                    else if ((newValue>=0 && newValue < 10) && (newValue !==null || newValue !=null) && editCompletionEvent=="enter" ) {
+                    else if ((newValue>=0 && newValue < 10) && (editCompletionEvent=="enter" || editCompletionEvent=="click")&& (newValue !==null || newValue !=null)) {
                          ListGrid_Cell_score_Update(record, newValue);
-                         ListGrid_ClassStudent.refreshFields();
-                         ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
-                         ListGrid_ClassStudent.refreshFields();
                          createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
                          ListGrid_Cell_scoresState_Update(record, "مردود")
-
+                         ListGrid_ClassStudent.refreshFields();
                     }
 
-                    else  if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue == null || newValue===null) && (!editCompletionEvent=="enter" || editCompletionEvent=="click")) {
+                    else  if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (record.score=== null || record.score== null)&& (newValue == null || newValue===null || record.score ===null) && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
                           ListGrid_Cell_scoresState_Update(record, null)
                           ListGrid_ClassStudent.refreshFields();
                           ListGrid_Cell_score_Update(record, null);
@@ -116,15 +108,15 @@
                           ListGrid_ClassStudent.refreshFields();
                     }
 
-                     else if(newValue === null) {
+
+                     else if((newValue===null)){
 
                         ListGrid_Cell_scoresState_Update(record, null)
-                            ListGrid_ClassStudent.refreshFields();
-                        ListGrid_Cell_score_Update(record, null);
-                            ListGrid_ClassStudent.refreshFields();
-                        ListGrid_Cell_failurereason_Update(record, null)
                         ListGrid_ClassStudent.refreshFields();
-
+                        ListGrid_Cell_score_Update(record, null);
+                        ListGrid_ClassStudent.refreshFields();
+                        ListGrid_Cell_failurereason_Update(record, null)
+                       ListGrid_ClassStudent.refreshFields();
                         }
 
                          // else if ((editCompletionEvent == "click")&& (newValue ===null || newValue ==null)) {
@@ -139,11 +131,8 @@
                     ListGrid_ClassStudent.refreshFields();
 
                 },
-
-
             }
-
-        ],
+      ],
 
 
         canEditCell: function (rowNum, colNum) {
@@ -184,8 +173,12 @@
     }
 
     function ListGrid_Cell_score_Update(record, newValue) {
+
         record.score = newValue
         isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
+
+
+
     }
 
 
@@ -210,8 +203,17 @@
 
      function Edit_Cell_score_Update(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                var record=ListGrid_ClassStudent.getSelectedRecord();
-
+                    var score = JSON.parse(resp.data).score;
+                    var record=ListGrid_ClassStudent.getSelectedRecord();
+                    if(score>=10)
+                    { ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
+                     ListGrid_ClassStudent.refreshFields();
+                     }
+                     else if(score>=0 && score < 10)
+                     {
+                         ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
+                         ListGrid_ClassStudent.refreshFields();
+                     }
         } else {
 
         }
