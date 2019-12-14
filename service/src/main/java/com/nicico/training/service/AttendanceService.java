@@ -73,17 +73,17 @@ public class AttendanceService implements IAttendanceService {
 //	}
     @Transactional
     @Override
-    public List<Map> autoCreate(Long classId, String date) {
+    public List<List<Map>> autoCreate(Long classId, String date) {
         List<ClassSessionDTO.Info> sessions = classSessionService.getSessionsForDate(classId, date);
         List<Long> sessionIds = sessions.stream().map(s -> s.getId()).collect(Collectors.toList());
         Tclass tclass = tclassService.getEntity(classId);
         List<Student> students = tclass.getStudentSet();
 //        if(attendanceDAO.existsBySessionId(sessions.get(0).getId())){
 //        ArrayList<Long> sessionIds = new ArrayList<>();
-        ArrayList<Attendance> attendances = new ArrayList<>();
+        List<Attendance> attendances = new ArrayList<>();
         sessions.forEach(s -> attendances.addAll(attendanceDAO.findBySessionId(s.getId())));
 //        List<Attendance> attendances = attendanceDAO.findBySessionId(sessionIds);
-        ArrayList<Map> maps = new ArrayList<>();
+        List<Map> maps = new ArrayList<>();
         for (Student student : students) {
             Map<String, String> map = new HashMap<>();
             map.put("studentId", String.valueOf(student.getId()));
@@ -106,7 +106,19 @@ public class AttendanceService implements IAttendanceService {
             }
             maps.add(map);
         }
-        return maps;
+        List<Attendance> causesOfAbsence = attendances.stream().filter(a -> a.getState().equals("4")).collect(Collectors.toList());
+        List<Map> causesMap = new ArrayList<>();
+        for (Attendance attendance : causesOfAbsence) {
+            Map<String, String> map = new HashMap<>();
+            map.put("studentId", attendance.getStudentId().toString());
+            map.put("sessionId", attendance.getSessionId().toString());
+            map.put("description", attendance.getDescription());
+            causesMap.add(map);
+        }
+        List<List<Map>> returnList = new ArrayList<>();
+        returnList.add(maps);
+        returnList.add(causesMap);
+        return returnList;
     }
 //        else {
 ////            tclass = tclassService.getEntity(classId);
@@ -138,8 +150,8 @@ public class AttendanceService implements IAttendanceService {
 
     @Transactional
     @Override
-    public void convertToModelAndSave(List<Map<String, String>> maps, Long classId, String date) {
-        Map<String, String> map1 = maps.get(0);
+    public void convertToModelAndSave(List<List<Map<String, String>>> maps, Long classId, String date) {
+        Map<String, String> map1 = maps.get(0).get(0);
         Set<String> keySet = map1.keySet();
         ArrayList<Long> sessionIds = new ArrayList<>();
         ArrayList<Attendance> attendanceSaving = new ArrayList<>();
@@ -148,22 +160,27 @@ public class AttendanceService implements IAttendanceService {
                 sessionIds.add(Long.valueOf(s.substring(2)));
             }
         }
-        for (Map<String, String> map : maps) {
+        for (Map<String, String> map : maps.get(0)) {
             for (Long sessionId : sessionIds) {
                 Attendance attendance = new Attendance();
                 attendance.setSessionId(sessionId);
                 attendance.setStudentId(Long.valueOf(map.get("studentId")));
                 attendance.setState(map.get("se" + sessionId));
+                for (Map<String, String> causeOfAbsenceList : maps.get(1)) {
+                    if (map.get("se" + sessionId).equals("4") && causeOfAbsenceList.get("studentId").equals(map.get("studentId")) && causeOfAbsenceList.get("sessionId").equals(attendance.getSessionId().toString())) {
+                        attendance.setDescription(causeOfAbsenceList.get("description"));
+                    }
+                }
                 attendanceSaving.add(attendance);
             }
         }
         for (Attendance attendance : attendanceSaving) {
             Attendance saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
-            if (saved == null){
+            if (saved == null) {
                 attendanceDAO.save(attendance);
-            }
-            else{
+            } else {
                 saved.setState(attendance.getState());
+                saved.setDescription(attendance.getDescription());
                 attendanceDAO.save(saved);
             }
         }

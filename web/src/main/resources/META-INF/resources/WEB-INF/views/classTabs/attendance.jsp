@@ -107,7 +107,7 @@
                                    showPrompt: false,
                                    serverOutputAsString: false,
                                    callback: function (resp1) {
-                                       var data1 = JSON.parse(resp1.data);
+                                       var data1 = JSON.parse(resp1.data[0]);
                                        // alert(JSON.parse(resp1.data).length);
                                        // sessionInOneDate.addList(JSON.parse(resp1.data));
                                        // alert(sessionInOneDate[0].getPropertyName())
@@ -169,11 +169,21 @@
                                                                            absenceWindow.close();
                                                                        }
                                                                        else{
-                                                                           let data = {};
-                                                                           data.sessionId = item.getFieldName().substr(2);
-                                                                           data.studentId = attendanceGrid.getSelectedRecord().studentId;
-                                                                           data.description = absenceForm.getValue("cause");
-                                                                           causeOfAbsence.add(data);
+                                                                           // for (let i = 0; i <causeOfAbsence.length ; i++) {
+                                                                           let i = 0;
+                                                                           do{
+                                                                               if((!causeOfAbsence.isEmpty())&&(causeOfAbsence[i].studentId == attendanceGrid.getSelectedRecord().studentId)&&(causeOfAbsence[i].sessionId == item.getFieldName().substr(2))){
+                                                                                   causeOfAbsence[i].description = absenceForm.getValue("cause");
+                                                                               }
+                                                                               else{
+                                                                                   let data = {};
+                                                                                   data.sessionId = item.getFieldName().substr(2);
+                                                                                   data.studentId = attendanceGrid.getSelectedRecord().studentId;
+                                                                                   data.description = absenceForm.getValue("cause");
+                                                                                   causeOfAbsence.add(data);
+                                                                               }
+                                                                               i++;
+                                                                           }while (i <causeOfAbsence.length);
                                                                            absenceWindow.close();
                                                                            // alert(item.getFieldName())
                                                                            // alert(attendanceGrid.getSelectedRecord().studentId)
@@ -192,9 +202,14 @@
                                                });
                                                absenceWindow.show();
                                                for (let i = 0; i <causeOfAbsence.length ; i++) {
-                                                   if(causeOfAbsence[i].studentId == absenceGrid.getSelectedRecord().studentId){
-                                                       alert("q");
-                                                       absenceForm.setValue("description",causeOfAbsence[i].description);
+                                                   if(causeOfAbsence[i].studentId == attendanceGrid.getSelectedRecord().studentId){
+                                                       if(causeOfAbsence[i].sessionId == item.getFieldName().substr(2)){
+                                                           absenceForm.setValue("cause",causeOfAbsence[i].description);
+                                                           break;
+                                                       }
+                                                       else {
+                                                           absenceForm.setValue("cause", causeOfAbsence[i].description);
+                                                       }
                                                    }
                                                }
                                                // isc.askForValue("لطفاً علت غیبت را وارد کنید:",function (value1) {
@@ -258,6 +273,7 @@
                     click: function () {
                     attendanceGrid.saveAllEdits();
                     setTimeout(function () {
+
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/save-attendance?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                             willHandleError: true,
@@ -266,7 +282,7 @@
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
                             showPrompt: false,
-                            data: JSON.stringify(sessionInOneDate),
+                            data: JSON.stringify([sessionInOneDate,causeOfAbsence]),
                             serverOutputAsString: false,
                             callback: function (resp) {
                                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
