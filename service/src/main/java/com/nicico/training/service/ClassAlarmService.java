@@ -5,14 +5,18 @@ import com.nicico.training.iservice.IClassAlarm;
 import com.nicico.training.model.ClassAlarm;
 import com.nicico.training.repository.ClassAlarmDAO;
 import lombok.RequiredArgsConstructor;
+import lombok.var;
+import org.hibernate.transform.AliasToBeanResultTransformer;
+import org.hibernate.transform.Transformers;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.ui.Model;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
+import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -22,31 +26,27 @@ public class ClassAlarmService implements IClassAlarm {
     @Autowired
     protected EntityManager entityManager;
 
-//     private final ClassAlarmDAO classAlarmDAO;
-//     private final ModelMapper modelMapper;
+    //     private final ClassAlarmDAO classAlarmDAO;
+    private final ModelMapper modelMapper;
 
 
     //*********************************
     @Transactional
     @Override
     public List<ClassAlarmDTO> list() {
-//        List<ClassAlarm> classSessionList = classAlarmDAO.findSessionAlarms();
-//        return modelMapper.map(classSessionList, new TypeToken<List<ClassAlarmDTO>>() {
-//        }.getType());
 
-        List<ClassAlarmDTO> mainList = null;
-
-
+//        List<ClassAlarmDTO> AlarmList = null;
+        List<Object> AlarmList = null;
+        List<ClassAlarmDTO> classAlarmDTO = null;
         try {
 
-
             String mainSql = "SELECT " +
-                    "    f_class_id AS TARGET_RECORD_ID, " +
-                    "    'classSessionsTab' AS TAB_NAME, " +
-                    "    '/tclass/show-form' AS PAGE_ADDRESS, " +
-                    "    'جلسات' AS ALARM_TYPE, " +
+                    "    f_class_id AS targetRecordId, " +
+                    "    'classSessionsTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'جلسات' AS alarmType, " +
                     "   CONCAT(class_name, (CASE WHEN floor( (class_time - session_time) / 60) > 0 THEN concat(concat('مجموع ساعت جلسات ',floor( (class_time - session_time) / 60) ),' ساعت کمتر از مدت کلاس است') " +
-                    "                            ELSE concat(concat('مجموع ساعت جلسات ',abs(floor( (class_time - session_time) / 60) ) ),' ساعت بیشتر از مدت کلاس است') END)) AS ALARM     " +
+                    "                            ELSE concat(concat('مجموع ساعت جلسات ',abs(floor( (class_time - session_time) / 60) ) ),' ساعت بیشتر از مدت کلاس است') END)) AS alarm     " +
                     " FROM " +
                     "    ( " +
                     "        SELECT " +
@@ -64,19 +64,31 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tbl_class.c_title_class " +
                     "    ) " +
                     " WHERE " +
-                    "    floor(abs((class_time - session_time) / 60)) > 0;";
+                    "    floor(abs((class_time - session_time) / 60)) > 0";
 
+            AlarmList = (List<Object>) entityManager.createNativeQuery(mainSql).getResultList();
 
-            Query queryMain = entityManager.createNativeQuery(mainSql);
-            mainList = queryMain.getResultList();
+            classAlarmDTO = new ArrayList<>(AlarmList.size());
+
+            List<ClassAlarmDTO> dtos = entityManager.createQuery(mainSql, ClassAlarmDTO.class)
+                    .getResultList();
+
+            ClassAlarmDTO test = modelMapper.map(AlarmList.get(0), ClassAlarmDTO.class);
+
+            for (int i = 0; i < AlarmList.size(); i++) {
+                Object[] alarm = (Object[]) AlarmList.get(i);
+                classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+
+            }
+
+        } catch (Exception ex) {
+            throw new RuntimeException("اشکال در ارتباط با دیتابیس");
         }
-        catch (Exception ex)
-        {
-            System.out.println(ex
-            .getMessage());
-        }
-        return mainList;
+
+        return modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>(){}.getType());
 
     }
     //*********************************
+
+
 }

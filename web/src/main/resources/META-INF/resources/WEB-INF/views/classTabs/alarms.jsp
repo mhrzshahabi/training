@@ -26,14 +26,14 @@
             },
             fields:
                 [
-                    {name: "id", primaryKey: true},
-                    {name: "alarmTarget"},
-                    {name: "alarmTargetId"},
-                    {name: "alarmCode"},
-                    {name: "alarmType"},
-                    {name: "description"}
+                    // {name: "id", primaryKey: true},
+                    {name: "targetRecordId",  autoFitWidth: true},
+                    {name: "tabName", autoFitWidth: true},
+                    {name: "pageAddress", autoFitWidth: true},
+                    {name: "alarmType", autoFitWidth: true},
+                    {name: "alarm"}
                 ],
-                     fetchDataURL: classAlarm + "list"
+            fetchDataURL: classAlarm + "list"
         });
 
 
@@ -42,37 +42,29 @@
             height: "100%",
             dataSource: RestDataSource_alarm,
             canAddFormulaFields: false,
-             autoFetchData: true,
+            autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
             selectionType: "single",
-            // initialSort: [
-            //     {property: "sessionDate", direction: "ascending"},
-            //     {property: "sessionStartHour", direction: "ascending"}
-            // ],
-        // {name: ""},
-        // {name: ""},
-        // {name: ""},
-        // {name: ""}
             fields: [
-                {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
-                    name: "alarmTarget",
-                    title: "alarmTarget",
+                    name: "targetRecordId",
+                    title: "targetRecordId",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "alarmTargetId",
-                    title: "alarmTargetId",
+                    name: "tabName",
+                    title: "tabName",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "alarmCode",
-                    title: "alarmCode",
+                    name: "pageAddress",
+                    title: "pageAddress",
                     align: "center",
                     filterOperator: "iContains"
                 },
@@ -82,38 +74,20 @@
                     align: "center",
                     filterOperator: "iContains"
                 },
-                 {
-                    name: "description",
-                    title: "<spring:message code="description"/>",
+                {
+                    name: "alarm",
+                    title: "alarm",
                     align: "center",
                     filterOperator: "iContains"
                 }
             ],
             doubleClick: function () {
-                show_alarmEditForm();
+                // show_alarmEditForm();
+
+                console.log("here");
+                console.log(RestDataSource_alarm);
+
             }
-        });
-
-        var RestDataSource_Institute_JspAlarm = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleFa", title: "<spring:message code="institution.name"/>"},
-                {name: "manager.firstNameFa", title: "<spring:message code="manager.name"/>"},
-                {name: "manager.lastNameFa", title: "<spring:message code="manager.family"/>"},
-                {name: "mobile", title: "<spring:message code="mobile"/>"},
-                {name: "restAddress", title: "<spring:message code="address"/>"},
-                {name: "phone", title: "<spring:message code="telephone"/>"}
-            ],
-            fetchDataURL: instituteUrl + "spec-list"
-        });
-
-        var RestDataSource_TrainingPlace_JspAlarm = isc.TrDS.create({
-            fields: [
-                {name: "id", primaryKey: true},
-                {name: "titleFa", title: "<spring:message code="location.name"/>"},
-                {name: "capacity", title: "<spring:message code="capacity"/>"}
-            ],
-            fetchDataURL: instituteUrl + "0/training-places"
         });
 
     }
@@ -169,7 +143,6 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-
 
 
         function loadPage_alarm() {

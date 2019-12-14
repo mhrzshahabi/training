@@ -2,6 +2,7 @@ package com.nicico.training.controller;
 
 import com.nicico.copper.common.Loggable;
 import com.nicico.training.dto.ClassAlarmDTO;
+import com.nicico.training.model.ClassAlarm;
 import com.nicico.training.service.ClassAlarmService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -20,16 +21,27 @@ import java.util.List;
 @RequestMapping("/api/classAlarm")
 public class ClassAlarmRestController {
 
-//    private final ClassAlarmService classAlarmService;
-//    private final ModelMapper modelMapper;
-//
-//    //*********************************
-//
-//    @Loggable
-//    @GetMapping(value = "/list")
-//    public ResponseEntity<List<ClassAlarmDTO>> list() {
-//        return new ResponseEntity<>(classAlarmService.list(), HttpStatus.OK);
-//    }
+    private final ClassAlarmService classAlarmService;
+    private final ModelMapper modelMapper;
+
+    //*********************************
+
+    @Loggable
+    @GetMapping(value = "/list")
+    public ResponseEntity<ClassAlarmDTO.ClassAlarmSpecRs> list() {
+
+         List<ClassAlarmDTO> list = classAlarmService.list();
+
+        final ClassAlarmDTO.SpecRs specResponse = new ClassAlarmDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final ClassAlarmDTO.ClassAlarmSpecRs specRs = new ClassAlarmDTO.ClassAlarmSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
     //*********************************
 }
