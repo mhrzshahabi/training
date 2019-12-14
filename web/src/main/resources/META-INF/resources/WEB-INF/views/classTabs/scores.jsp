@@ -2,9 +2,9 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 //
-// <script>
+//
+//<script>
 
-    var x;
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [],
     });
@@ -13,7 +13,7 @@
 
         //-----
         //   canFocus :true,
-          editOnFocus :true,
+        editOnFocus: true,
         //-----
 //------------
         editByCell: true,
@@ -22,7 +22,7 @@
         autoSaveEdits: false,
 
 //------
-         canSelectCells:true,
+        canSelectCells: true,
         sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         filterOperator: "iContains",
@@ -45,19 +45,17 @@
             {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains"},
             {
                 name: "scoresState",
-                title: "وضعیت قبولی",
+                title: "<spring:message code="pass.mode"/>",
                 filterOperator: "iContains",
                 canEdit: false,
                 editorType: "SelectItem",
-                valueMap: ["قبول با نمره", "قبول بدون نمره","مردود"],
+                valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
-                     ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), null);
-                      ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), null);
-                         ListGrid_ClassStudent.refreshFields();
-
-                    this.grid.startEditing(this.rowNum,this.colNum+2);
-
+                    ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), null);
+                    ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), null);
+                    ListGrid_ClassStudent.refreshFields();
+                    this.grid.startEditing(this.rowNum, this.colNum + 2)
                     ListGrid_ClassStudent.refreshFields();
 
                 },
@@ -66,38 +64,43 @@
             },
             {
                 name: "failurereason",
-                title: "دلایل مردودی",
+                title: "<spring:message code="faild.reason"/>",
                 filterOperator: "iContains",
                 canEdit: true,
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
-                change: function (form, item, value) {
-                    ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
-                     ListGrid_ClassStudent.refreshFields();
-                      ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
-                      ListGrid_ClassStudent.refreshFields();
-                     // this.grid.startEditing(this.rowNum,this.colNum+1);
+                changed: function (form, item, value) {
 
+                    ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
+                    ListGrid_ClassStudent.refreshFields();
+                    ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
+                    ListGrid_ClassStudent.refreshFields();
+                    this.grid.startEditing((this.rowNum), this.colNum + 1)
                 }
             },
 
             {
-                name: "score", title: "نمره", filterOperator: "iContains", canEdit: true, shouldSaveValue: false,
-
+                name: "score",
+                title: "<spring:message code="score"/>",
+                filterOperator: "iContains",
+                canEdit: true,
+                shouldSaveValue: false,
 
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue >= 10 ) {
+                    if (newValue >= 10) {
                         ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
+                            ListGrid_ClassStudent.refreshFields();
                         ListGrid_Cell_score_Update(record, newValue);
+                            ListGrid_ClassStudent.refreshFields();
                         ListGrid_Cell_failurereason_Update(record, null)
-
 
 
                     }
 
-                    if (0 <= newValue && newValue < 10 && newValue !== null ) {
+                    if ((0 <= newValue && newValue < 10) && newValue !== null) {
 
                         ListGrid_Cell_scoresState_Update(record, "مردود")
+                        ListGrid_ClassStudent.refreshFields();
                         ListGrid_Cell_score_Update(record, newValue);
                         ListGrid_ClassStudent.refreshFields();
                         createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
@@ -105,20 +108,35 @@
                         ListGrid_ClassStudent.refreshFields();
                     }
 
-                    if(newValue === null) {
-
-                        ListGrid_Cell_scoresState_Update(record, "")
+                    if (newValue === null) {
+                        ListGrid_Cell_scoresState_Update(record, null)
+                            ListGrid_ClassStudent.refreshFields();
                         ListGrid_Cell_score_Update(record, null);
-                        ListGrid_Cell_failurereason_Update(record, "")
+                            ListGrid_ClassStudent.refreshFields();
+                        ListGrid_Cell_failurereason_Update(record, null)
                         ListGrid_ClassStudent.refreshFields();
+
 
                     }
 
-                }
+                    if ( editCompletionEvent == "click" && (record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && newValue == null) {
+                          ListGrid_Cell_scoresState_Update(record, null)
+                          ListGrid_ClassStudent.refreshFields();
+                          ListGrid_Cell_score_Update(record, null);
+                          ListGrid_ClassStudent.refreshFields();
+                          ListGrid_Cell_failurereason_Update(record, null)
+                          ListGrid_ClassStudent.refreshFields();
+                    }
+                    ListGrid_ClassStudent.refreshFields();
+
+                },
+
 
             }
 
         ],
+
+
         canEditCell: function (rowNum, colNum) {
             var record = this.getRecord(rowNum),
                 fieldName = this.getFieldName(colNum);
@@ -132,9 +150,9 @@
             if (fieldName === "scoresState") {
                 return true;
             }
-           return false;
+            return false;
 
-            }
+        }
 
 
     });
@@ -148,18 +166,43 @@
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Result_NASB(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell(rpcResponse)"));
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
         record.failurereason = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Result_NASB(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell(rpcResponse)"));
     }
 
     function ListGrid_Cell_score_Update(record, newValue) {
         record.score = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Result_NASB(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell(rpcResponse)"));
     }
+
+
+    function Edit_Cell(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            <%--    var OK = isc.Dialog.create({--%>
+            <%--    message: "<spring:message code="msg.operation.successful"/>",--%>
+            <%--    icon: "[SKIN]say.png",--%>
+            <%--    title: "<spring:message code="global.form.command.done"/>"--%>
+            <%--});--%>
+
+            <%--setTimeout(function () {--%>
+            <%--    OK.close();--%>
+            <%--}, 1000);--%>
+        } else {
+            <%--var OK = isc.Dialog.create({--%>
+            <%--    message: "<spring:message code="msg.operation.error"/>",--%>
+            <%--    icon: "[SKIN]say.png",--%>
+            <%--    title: "<spring:message code="global.form.command.done"/>"--%>
+            <%--});--%>
+            <%--setTimeout(function () {--%>
+            <%--    OK.close();--%>
+            <%--}, 3000);--%>
+        }
+
+    };
 
 
     function loadPage_Scores() {
