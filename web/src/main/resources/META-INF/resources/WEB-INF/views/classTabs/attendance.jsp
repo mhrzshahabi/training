@@ -174,6 +174,7 @@
                                                                            data.studentId = attendanceGrid.getSelectedRecord().studentId;
                                                                            data.description = absenceForm.getValue("cause");
                                                                            causeOfAbsence.add(data);
+                                                                           absenceWindow.close();
                                                                            // alert(item.getFieldName())
                                                                            // alert(attendanceGrid.getSelectedRecord().studentId)
                                                                        }
@@ -190,6 +191,12 @@
                                                    ]
                                                });
                                                absenceWindow.show();
+                                               for (let i = 0; i <causeOfAbsence.length ; i++) {
+                                                   if(causeOfAbsence[i].studentId == absenceGrid.getSelectedRecord().studentId){
+                                                       alert("q");
+                                                       absenceForm.setValue("description",causeOfAbsence[i].description);
+                                                   }
+                                               }
                                                // isc.askForValue("لطفاً علت غیبت را وارد کنید:",function (value1) {
                                                //     // alert(value1);
                                                //     if(value1 == null){
