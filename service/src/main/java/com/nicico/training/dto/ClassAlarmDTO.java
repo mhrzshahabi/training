@@ -5,6 +5,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -15,22 +16,32 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 @AllArgsConstructor
+@NoArgsConstructor
 public class ClassAlarmDTO implements Serializable {
 
     @ApiModelProperty(required = true)
-    private Long targetRecordId; //target_record_id
+    private Long targetRecordId;
 
     @ApiModelProperty(required = true)
-    private String tabName; //tab_name
+    private String tabName;
 
     @ApiModelProperty(required = true)
-    private String pageAddress; //page_address
+    private String pageAddress;
 
     @ApiModelProperty(required = true)
-    private String alarmType; //alarm_type
+    private String alarmType;
 
     @ApiModelProperty(required = true)
-    private String alarm; //alarm
+    private String alarm;
+
+    //*********************************
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassAlarmSpecRs")
+    public static class Info extends ClassAlarmDTO {
+    }
 
     //*********************************
 

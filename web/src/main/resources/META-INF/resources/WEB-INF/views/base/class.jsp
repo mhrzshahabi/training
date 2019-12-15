@@ -1506,7 +1506,8 @@
             {
                 ID: "classAlarmsTab",
                 title: "<spring:message code="alarms"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"}),
+                icon: "<spring:url value="warning-animated.gif"/>"
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -1792,6 +1793,11 @@
                 case "classAttendanceTab": {
                     if (typeof loadPage_Attendance !== "undefined")
                         loadPage_Attendance();
+                    break;
+                }
+                case "classAlarmsTab": {
+                    if (typeof loadPage_alarm !== "undefined")
+                        loadPage_alarm();
                     break;
                 }
             }

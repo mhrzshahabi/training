@@ -797,7 +797,6 @@
     const sessionServiceUrl = rootUrl + "/sessionService/";
     const classStudent=rootUrl +"/classStudent/";
     const classAlarm=rootUrl +"/classAlarm/";
-    const classStudent = rootUrl + "/classStudent/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();

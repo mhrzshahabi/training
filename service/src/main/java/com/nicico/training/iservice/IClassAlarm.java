@@ -6,5 +6,5 @@ import java.util.List;
 
 public interface IClassAlarm {
 
-    List<ClassAlarmDTO> list();
+    List<ClassAlarmDTO> list(Long class_id);
 }

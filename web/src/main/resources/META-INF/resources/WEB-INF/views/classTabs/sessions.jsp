@@ -106,8 +106,8 @@
                     {name: "sessionStateFa"},
                     {name: "description"}
                 ]
-//// fetchDataURL: sessionServiceUrl + "load-sessions/428"
-//// fetchDataURL: sessionServiceUrl + "spec-list"
+                    //// fetchDataURL: sessionServiceUrl + "load-sessions/428"
+                    //// fetchDataURL: sessionServiceUrl + "spec-list"
         });
 
 
@@ -117,7 +117,7 @@
             dataSource: RestDataSource_session,
             contextMenu: Menu_ListGrid_session,
             canAddFormulaFields: false,
-// autoFetchData: true,
+            // autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
@@ -313,7 +313,7 @@
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
     {
-//*****create fields*****
+        //*****create fields*****
         var DynamicForm_Session = isc.DynamicForm.create({
             numCols: 5,
             colWidths: ["10%", "30%", "10%", "10%", "30%"],
@@ -512,7 +512,7 @@
                 ]
         });
 
-//*****create buttons*****
+        //*****create buttons*****
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
@@ -539,7 +539,7 @@
                 ]
         });
 
-//*****create insert/update window*****
+        //*****create insert/update window*****
         var Window_Session = isc.Window.create({
             title: "<spring:message code="create"/> ",
             width: "40%",
@@ -578,7 +578,7 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-//*****open insert window*****
+        //*****open insert window*****
         function create_Session() {
             if (ListGrid_Class_JspClass.getSelectedRecord() === null) {
                 isc.Dialog.create({
@@ -598,7 +598,7 @@
             }
         }
 
-//*****insert function*****
+        //*****insert function*****
         function save_Session() {
 
             if (!DynamicForm_Session.validate())
@@ -609,7 +609,7 @@
 
             let sessionData = DynamicForm_Session.getValues();
 
-//**add new property to form values**
+            //**add new property to form values**
             sessionData["classId"] = classId;
             sessionData["sessionType"] = DynamicForm_Session.getItem("sessionTypeId").getDisplayValue();
             sessionData["sessionStateFa"] = DynamicForm_Session.getItem("sessionState").getDisplayValue();
@@ -617,7 +617,7 @@
             isc.RPCManager.sendRequest(TrDSRequest(sessionServiceUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
-//*****open update window*****
+        //*****open update window*****
         function show_SessionEditForm() {
 
             let record = ListGrid_session.getSelectedRecord();
@@ -652,7 +652,7 @@
             }
         }
 
-//*****update function*****
+        //*****update function*****
         function edit_Session() {
 
             if (!DynamicForm_Session.validate())
@@ -671,7 +671,7 @@
             isc.RPCManager.sendRequest(TrDSRequest(sessionEditUrl, session_method, JSON.stringify(sessionData), show_SessionActionResult));
         }
 
-//*****delete function*****
+        //*****delete function*****
         function remove_Session() {
             var record = ListGrid_session.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -699,7 +699,7 @@
 
         }
 
-//*****show action result function*****
+        //*****show action result function*****
         var MyOkDialog_Session;
 
         function show_SessionActionResult(resp) {
@@ -746,14 +746,14 @@
             }
         }
 
-//*****close dialog*****
+        //*****close dialog*****
         function close_MyOkDialog_Session() {
             setTimeout(function () {
                 MyOkDialog_Session.close();
             }, 3000);
         }
 
-//*****print*****
+        //*****print*****
         function print_SessionListGrid(type) {
 
             var record = ListGrid_session.getTotalRows();

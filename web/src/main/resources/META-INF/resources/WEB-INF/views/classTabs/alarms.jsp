@@ -27,13 +27,14 @@
             fields:
                 [
                     // {name: "id", primaryKey: true},
-                    {name: "targetRecordId",  autoFitWidth: true},
+                    {name: "targetRecordId", autoFitWidth: true},
                     {name: "tabName", autoFitWidth: true},
                     {name: "pageAddress", autoFitWidth: true},
                     {name: "alarmType", autoFitWidth: true},
                     {name: "alarm"}
-                ],
-            fetchDataURL: classAlarm + "list"
+                ]
+            ////// ,
+            ////// fetchDataURL: classAlarm + "list"
         });
 
 
@@ -42,11 +43,14 @@
             height: "100%",
             dataSource: RestDataSource_alarm,
             canAddFormulaFields: false,
-            autoFetchData: true,
             showFilterEditor: true,
             allowAdvancedCriteria: true,
             allowFilterExpressions: true,
             filterOnKeypress: true,
+            initialSort: [
+                {property: "alarmType", direction: "ascending"},
+                {property: "targetRecordId", direction: "ascending"}
+            ],
             selectionType: "single",
             fields: [
                 // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -82,11 +86,14 @@
                 }
             ],
             doubleClick: function () {
-                // show_alarmEditForm();
-
-                console.log("here");
-                console.log(RestDataSource_alarm);
-
+                select_Target();
+            },
+            dataArrived: function () {
+                if (!this.isEmpty()) {
+                    classAlarmsTab.setIcon("<spring:url value="warning-animated.gif"/>")
+                } else {
+                    classAlarmsTab.setIcon(null);
+                }
             }
         });
 
@@ -144,14 +151,13 @@
     // <<----------------------------------------------- Functions --------------------------------------------
     {
 
-
         function loadPage_alarm() {
-            // classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-            // if (!(classRecord == undefined || classRecord == null)) {
-            //     RestDataSource_alarm.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
-            //     ListGrid_alarm.invalidateCache();
-            //     ListGrid_alarm.fetchData();
-            // }
+            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            if (!(classRecord == undefined || classRecord == null)) {
+                RestDataSource_alarm.fetchDataURL = classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                ListGrid_alarm.invalidateCache();
+                ListGrid_alarm.fetchData();
+            }
         }
 
     }
