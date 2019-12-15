@@ -141,7 +141,6 @@
                             for (let i = 4; i < attendanceGrid.getAllFields().size(); i++) {
                                 attendanceGrid.setFieldProperties(i, {
                                     change(form, item, value, oldValue) {
-                                        // alert(form.toString())
                                         if (value == 4) {
                                             isc.Window.create({
                                                 ID: "absenceWindow",
@@ -246,17 +245,19 @@
                                             //     // }
                                             // });
                                         }
-                                        <%--else if(value == 3){--%>
-                                            <%--isc.RPCManager.sendRequest({--%>
-                                                    <%--actionURL: attendanceUrl + "/auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,--%>
-                                                    <%--httpMethod: "GET",--%>
-                                                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
-                                                    <%--useSimpleHttp: true,--%>
-                                                    <%--contentType: "application/json; charset=utf-8",--%>
-                                                    <%--showPrompt: false,--%>
-                                                    <%--serverOutputAsString: false,--%>
-                                                    <%--callback: function (resp1) {--%>
-                                        <%--}--%>
+                                        else if(value == 3){
+                                            isc.RPCManager.sendRequest({
+                                                actionURL: attendanceUrl + "/valid-student?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&studentId=" + form.getValue("studentId"),
+                                                httpMethod: "GET",
+                                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                useSimpleHttp: true,
+                                                contentType: "application/json; charset=utf-8",
+                                                showPrompt: false,
+                                                serverOutputAsString: false,
+                                                callback: function (resp) {
+                                                }
+                                            });
+                                        }
                                     },
                                     hoverHTML(record, value, rowNum, colNum, grid) {
                                         if (value == "غیبت موجه") {
