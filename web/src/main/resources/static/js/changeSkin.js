@@ -2,6 +2,11 @@ function initialButtons() {
     var nicico = isc.getCurrentSkin().name == 'Nicico' ? true : false;
 
     if (!nicico) {
+        isc.ClassFactory.defineClass("ToolStripButtonCreate", "Button").addProperties({
+            baseStyle: "toolStripButton",
+            autoFit: true,
+            icon: "[SKIN]/actions/add.png",
+        });
         isc.ClassFactory.defineClass("ToolStripButtonAdd", "Button").addProperties({
             baseStyle: "toolStripButton",
             autoFit: true,

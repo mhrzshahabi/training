@@ -22,7 +22,7 @@ public class ClassStudentDTO implements Serializable {
     private String scoresState;
 
     @ApiModelProperty(required = true)
-    private String reasonsfailure;
+    private String failurereason;
 
     @ApiModelProperty(required = true)
     private Float score;

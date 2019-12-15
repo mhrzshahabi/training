@@ -74,17 +74,18 @@ public class AttendanceRestController {
 	@Loggable
 	@GetMapping(value = "/auto-create")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<List<Map>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-		List<Map> maps = attendanceService.autoCreate(classId, date);
+	public ResponseEntity<List<List<Map>>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
+		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
 		return new ResponseEntity<>(maps, HttpStatus.CREATED);
 	}
 
     @Loggable
-    @GetMapping(value = "/save-attendance")
-    public ResponseEntity createAndSave(@RequestBody List<Map<String,String>> req,
-                                        @RequestParam("classId") String classId,
-                                        @RequestParam("date") String date) {
-        attendanceService.convertToModelAndSave(req, Long.valueOf(classId), date);
+    @PostMapping(value = "/save-attendance")
+    public ResponseEntity createAndSave(@RequestBody List<List<Map<String,String>>> req,
+                                        @RequestParam("classId") Long classId,
+                                        @RequestParam("date") String date)
+    {
+        attendanceService.convertToModelAndSave(req, classId, date);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

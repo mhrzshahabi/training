@@ -55,10 +55,12 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
+    const parameterTypeUrl = rootUrl + "/parameterType";
     const parameterTypeUrl = rootUrl + "/";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const parameterTypeUrl = rootUrl + "/";
 
+    // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
     var workflowParameters = null;
 
@@ -81,7 +83,7 @@
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
-        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:21px; padding-right: 2px;'>* </span>",
+        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
         requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
     });
     isc.Window.addProperties({
@@ -215,8 +217,8 @@
     isc.defineClass("TrHLayoutButtons", TrHLayout);
     isc.TrHLayoutButtons.addProperties({
         align: "center",
-        height: 34,
-        defaultLayoutAlign: "top",
+        height: 40,
+        defaultLayoutAlign: "center",
         membersMargin: 10,
     });
 
@@ -225,6 +227,38 @@
         click: function (form, item) {
             item.fetchData();
         }
+    });
+
+    isc.ToolStripButtonRefresh.addProperties({
+        title: "<spring:message code="refresh"/>",
+    });
+
+    isc.ToolStripButtonCreate.addProperties({
+        title: "<spring:message code="create"/>",
+    });
+
+    isc.ToolStripButtonAdd.addProperties({
+        title: "<spring:message code="add"/>",
+    });
+
+    isc.ToolStripButtonEdit.addProperties({
+        title: "<spring:message code="edit"/>",
+    });
+
+    isc.ToolStripButtonRemove.addProperties({
+        title: "<spring:message code="remove"/>",
+    });
+
+    isc.ToolStripButtonPrint.addProperties({
+        title: "<spring:message code="print"/>",
+    });
+
+    isc.IButtonSave.addProperties({
+        title: "<spring:message code="save"/>",
+    });
+
+    isc.IButtonCancel.addProperties({
+        title: "<spring:message code="cancel"/>",
     });
 
     // -------------------------------------------  Page UI - Header  -----------------------------------------------
@@ -617,6 +651,8 @@
         ]
     });
 
+    // -------------------------------------------  Page UI - TabSet  -----------------------------------------------
+
     closeAllButton = isc.IButtonClose.create({
         width: 100,
         title: "<spring:message code="close.all"/>",
@@ -640,6 +676,8 @@
         tabBarControls: [closeAllButton]
     });
 
+    // -------------------------------------------  Page UI -----------------------------------------------
+
     var headerExitHLayout = isc.HLayout.create({
         width: "60%",
         height: "100%",
@@ -647,7 +685,6 @@
         styleName: "header-exit",
         members: [isc.LayoutSpacer.create({width: "80%"}), userNameHLayout, languageVLayout, logoutVLayout]
     });
-
 
     var headerLayout = isc.HLayout.create({
         width: "100%",
@@ -664,7 +701,7 @@
         members: [
             trainingToolStrip
         ]
-    })
+    });
 
     isc.TrVLayout.create({
         autoDraw: true,
@@ -760,7 +797,7 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
-    const classStudent=rootUrl +"/classStudent/";
+    const classStudent = rootUrl + "/classStudent/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
@@ -773,7 +810,6 @@
 
             }
         };
-
         xhttpRequest.open(method, url, true);
         xhttpRequest.setRequestHeader("Authorization", "Bearer <%= accessToken %>");
         xhttpRequest.send(formData1);

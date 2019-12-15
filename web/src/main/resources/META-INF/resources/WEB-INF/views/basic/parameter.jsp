@@ -3,8 +3,11 @@
 
 // <script>
 
+    let parameterTypeMethod_parameter;
+
     // ------------------------------------------- Menu -------------------------------------------
-    ParameterTypeMenu_parameter = isc.Menu.create({
+    isc.Menu.create({
+        ID: "ParameterTypeMenu_parameter",
         data: [
             {
                 title: "<spring:message code="refresh"/>",
@@ -16,10 +19,26 @@
     });
 
     // ------------------------------------------- ToolStrip -------------------------------------------
-    ParameterTypeTS_parameter = isc.ToolStrip.create({
+    isc.ToolStrip.create({
+        ID: "ParameterTypeTS_parameter",
         width: "100%",
         membersMargin: 5,
         members: [
+            isc.ToolStripButtonCreate.create({
+                click: function () {
+                    createParameterType_parameter();
+                }
+            }),
+            isc.ToolStripButtonEdit.create({
+                click: function () {
+                    editParameterType_parameter();
+                }
+            }),
+            isc.ToolStripButtonRemove.create({
+                click: function () {
+                    removeParameterType_parameter();
+                }
+            }),
             isc.ToolStripButtonPrint.create({
                 click: function () {
                     printParameterTypeLG_parameter("pdf");
@@ -47,7 +66,8 @@
     });
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
-    ParameterTypeDS_parameter = isc.TrDS.create({
+    isc.TrDS.create({
+        ID: "ParameterTypeDS_parameter",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -56,11 +76,12 @@
         fetchDataURL: parameterTypeUrl + "/iscList"
     });
 
-    ParameterTypeLG_parameter = isc.TrLG.create({
+    isc.TrLG.create({
+        ID: "ParameterTypeLG_parameter",
         dataSource: ParameterTypeDS_parameter,
         fields: [
-            {name: "code",},
-            {name: "titleFa",},
+            {name: "title",},
+            {name: "description",},
         ],
         autoFetchData: true,
         gridComponents: [ParameterTypeTS_parameter, "filterEditor", "header", "body"],
@@ -76,52 +97,65 @@
         },
     });
 
-    // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
-        // members: [ParameterTypeLG_parameter, isc.HLayout.create({members: [ParameterTypeTabs_parameter]})],
-        members: [ParameterTypeLG_parameter],
+    // ------------------------------------------- DynamicForm & Window -------------------------------------------
+    isc.DynamicForm.create({
+        ID: "ParameterTypeDF_parameterType",
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "title", title: "<spring:message code="title"/>",
+                required: true, validators: [TrValidators.NotEmpty],
+            },
+            {
+                name: "description", title: "<spring:message code="description"/>",
+                type: "TextAreaItem",
+            },
+        ]
     });
 
+    isc.Window.create({
+        ID: "ParameterTypeWin_parameterType",
+        width: 800,
+        items: [ParameterTypeDF_parameterType, isc.TrHLayoutButtons.create({
+            members: [
+                isc.IButtonSave.create({
+                    click: function () {
+                        saveParameterType_parameterType();
+                    }
+                }),
+                isc.IButtonCancel.create({
+                    click: function () {
+                        ParameterTypeWin_parameterType.close();
+                    }
+                }),
+            ],
+        }),]
+    });
+
+    // ------------------------------------------- Page UI -------------------------------------------
+    isc.TrVLayout.create({
+        members: [ParameterTypeLG_parameter],
+    });
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshParameterTypeLG_parameter() {
         ParameterTypeLG_parameter.filterByEditor();
     }
 
+    function createParameterType_parameter(type) {
+        parameterTypeMethod_parameter = "POST";
+        ParameterTypeDF_parameterType.clearValues();
+        ParameterTypeWin_parameterType.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.type"/>");
+        ParameterTypeWin_parameterType.show();
+    }
+
+    function editParameterType_parameter(type) {
+
+    }
+
+    function removeParameterType_parameter(type) {
+
+    }
+
     function printParameterTypeLG_parameter(type) {
-        isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "/print/pdf", "POST", null, "callback:test(rpcResponse)"));
-
-        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "callback:show_TermActionResult(rpcResponse)"));
-
-
-        // isc.RPCManager.sendRequest(TrDSRequest(termUrl + "checkForConflict/" + strsData + "/" + streData, "GET", null, "callback:conflictReq(rpcResponse)"));
-
-        // isc.RPCManager.sendRequest(TrDSRequest("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", "POST", null, "test"));
-
-        // trPrintWithCriteria("<spring:url value="education/orientation/printWithCriteria/"/>" + "pdf", ParameterTypeLG_parameter.getCriteria());
-        // trPrintWithCriteria(,
-        // ParameterTypeLG_parameter.getCriteria());
-        // isc.RPCManager.sendRequest(TrDSRequest(parameterTypeUrl + "/print/" + type, "GET", JSON.stringify({"CriteriaStr": ParameterTypeLG_parameter.getCriteria()}), "test"));
     }
-
-    function test(resp) {
-        // alert('hi');
-    }
-
-    <%--function trPrintWithCriteria(url, advancedCriteria) {--%>
-    <%--    let trCriteriaForm = isc.DynamicForm.create({--%>
-    <%--        method: "POST",--%>
-    <%--        action: url,--%>
-    <%--        target: "_Blank",--%>
-    <%--        canSubmit: true,--%>
-    <%--        fields:--%>
-    <%--            [--%>
-    <%--                {name: "CriteriaStr", type: "hidden"},--%>
-    <%--                {name: "token", type: "hidden"}--%>
-    <%--            ]--%>
-    <%--    });--%>
-    <%--    trCriteriaForm.setValue("CriteriaStr", JSON.stringify(advancedCriteria));--%>
-    <%--    trCriteriaForm.setValue("token", "<%=accessToken%>");--%>
-    <%--    trCriteriaForm.show();--%>
-    <%--    trCriteriaForm.submitForm();--%>
-    <%--}--%>
