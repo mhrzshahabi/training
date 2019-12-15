@@ -29,6 +29,7 @@ public class AccountInfoDTO {
     @ApiModel("AccountInfo")
     public static class Info extends AccountInfoDTO {
         private Long id;
+        private Integer version;
     }
 
 

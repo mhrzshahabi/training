@@ -52,10 +52,11 @@
     const skillUrl = rootUrl + "/skill";
     const attachmentUrl = rootUrl + "/attachment";
     const trainingPlaceUrl = rootUrl + "/training-place";
-    const personnelUrl = rootUrl + "/personnel"
+    const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
     const parameterTypeUrl = rootUrl + "/parameterType";
+    const employmentHistoryUrl = rootUrl + "/employmentHistory";
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
@@ -771,6 +772,7 @@
     const syllabusUrl = rootUrl + "/syllabus/";
     const courseUrl = rootUrl + "/course/";
     const categoryUrl = rootUrl + "/category/";
+    const subCategoryUrl = rootUrl + "/sub-category/";
     const teacherUrl = rootUrl + "/teacher/";
     const studentUrl = rootUrl + "/student/";
     const classUrl = rootUrl + "/tclass/";

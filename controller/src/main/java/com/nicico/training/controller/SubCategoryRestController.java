@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -54,7 +56,6 @@ public class SubCategoryRestController {
 
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
-            subCategoryInfo = null;
         }
         return new ResponseEntity<>(subCategoryInfo, httpStatus);
 
@@ -72,7 +73,6 @@ public class SubCategoryRestController {
 
         } catch (Exception e) {
             httpStatus = HttpStatus.NO_CONTENT;
-            subCategoryInfo = null;
         }
         return new ResponseEntity<>(subCategoryInfo, httpStatus);
     }
@@ -108,6 +108,16 @@ public class SubCategoryRestController {
             flag = false;
         }
         return new ResponseEntity<>(flag, httpStatus);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<SubCategoryDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        Integer startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<SubCategoryDTO.Info> searchRs = subCategoryService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable

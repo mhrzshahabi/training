@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// script
+// <script>
     var dummy;
     var teacherMethod = "POST";
     var teacherWait;
@@ -56,6 +56,11 @@
         fetchDataURL: categoryUrl + "spec-list"
     });
 
+    var RestDataSource_SubCategory_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: subCategoryUrl + "iscList"
+    });
+
     var RestDataSource_Education_Level_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleEn"}, {name: "titleFa"}],
         fetchDataURL: educationUrl + "level/spec-list"
@@ -87,6 +92,8 @@
         fields: [{name: "id"}, {name: "name"}],
         fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=100"
     });
+
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*Menu*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -139,6 +146,9 @@
         filterOperator: "iContains",
         doubleClick: function () {
             ListGrid_teacher_edit();
+        },
+        selectionUpdated: function () {
+            refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         },
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
@@ -1188,8 +1198,8 @@
     });
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
-        tabBarPosition: "right",
-        tabBarThickness: 100,
+        tabBarPosition: "top",
+        // tabBarThickness: 100,
         titleEditorTopOffset: 2,
         height: "35%",
         tabs: [
@@ -1206,11 +1216,20 @@
                 pane: DynamicForm_JobInfo_JspTeacher
             },
             {
+                ID: "employmentHistory",
+                title: "سوابق کاری", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/employmentHistory-tab"})
+            },
+            {
                 ID: "attachmentsTab",
                 title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             }
-        ]
+        ],
+        tabSelected: function (tabNum, tabPane, ID, tab) {
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_teacher(tab);
+        }
     });
 
     var Window_Teacher_JspTeacher = isc.Window.create({
@@ -1308,6 +1327,7 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_teacher_refresh() {
+        refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
     }
@@ -1442,10 +1462,10 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+        // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+        TabSet_Bottom_JspTeacher.enable();
 
-        if (typeof loadPage_attachment !== "undefined")
-            loadPage_attachment("Teacher", record.id, "<spring:message code="document"/>");
+        refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), null);
     }
 
     function ListGrid_teacher_add() {
@@ -1473,7 +1493,10 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        TabSet_Bottom_JspTeacher.getTab("attachmentsTab").disable();
+        // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").disable();
+        TabSet_Bottom_JspTeacher.selectTab(0);
+        clearTabs();
+        TabSet_Bottom_JspTeacher.disable();
     }
 
     function ListGrid_teacher_remove() {
@@ -1561,6 +1584,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
+            refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         } else if (resp.data === false) {
             createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
         } else {
@@ -1590,9 +1614,9 @@
                 }, 300);
                 ListGrid_Teacher_JspTeacher.invalidateCache();
                 ListGrid_Teacher_JspTeacher.fetchData();
-                if (typeof loadPage_attachment !== "undefined")
-                    loadPage_attachment("Teacher", responseID, "<spring:message code="document"/>");
-                TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+                refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), responseID);
+                // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
+                TabSet_Bottom_JspTeacher.enable();
                 teacherMethod = "PUT";
             }
         } else {
@@ -1795,4 +1819,24 @@
         }
     }
 
-    //</script>
+    function refreshSelectedTab_teacher(tab, id) {
+        let teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        if (!(teacherId === undefined || teacherId === null)) {
+            if (typeof loadPage_attachment !== "undefined")
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>");
+
+            if (typeof loadPage_EmploymentHistory !== "undefined")
+                loadPage_EmploymentHistory(teacherId);
+
+        }
+    }
+
+    function clearTabs() {
+        if (typeof clear_Attachments !== "undefined")
+            clear_Attachments();
+
+        if (typeof clear_EmploymentHistory !== "undefined")
+            clear_EmploymentHistory();
+    }
+
+    // </script>

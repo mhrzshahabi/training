@@ -48,6 +48,6 @@ public class Teacher extends Auditable {
     @Column(name = "c_economical_record_number")
     private String economicalRecordNumber;
 
-    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EmploymentHistory> employmentHistories;
 }
