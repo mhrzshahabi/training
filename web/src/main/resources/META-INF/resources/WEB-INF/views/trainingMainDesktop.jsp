@@ -135,7 +135,7 @@
         showRowNumbers: true,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
-            width: 80,
+            width: 50,
             align: "center"
         },
         sortFieldAscendingText: "<spring:message code="sort.ascending"/>",

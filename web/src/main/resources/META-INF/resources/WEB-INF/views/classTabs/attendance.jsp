@@ -50,6 +50,8 @@
                 type: "SelectItem",
                 optionDataSource: RestData_SessionDate_AttendanceJSP,
                 textAlign: "center",
+                sortField: 1,
+                // sortDirection: "descending",
                 pickListFields: [
                     {name: "dayName", title: "روز هفته"},
                     {name: "sessionDate", title: "تاریخ"}
@@ -139,6 +141,7 @@
                             for (let i = 4; i < attendanceGrid.getAllFields().size(); i++) {
                                 attendanceGrid.setFieldProperties(i, {
                                     change(form, item, value, oldValue) {
+                                        // alert(form.toString())
                                         if (value == 4) {
                                             isc.Window.create({
                                                 ID: "absenceWindow",
@@ -163,7 +166,8 @@
                                                     }),
                                                     isc.TrHLayoutButtons.create({
                                                         members: [
-                                                            isc.IButtonSave.create({
+                                                            isc.IButton.create({
+                                                                title:"تایید",
                                                                 click: function () {
                                                                     if (absenceForm.getValue("cause") == null) {
                                                                         item.setValue(oldValue);
@@ -192,7 +196,8 @@
                                                                     }
                                                                 }
                                                             }),
-                                                            isc.IButtonCancel.create({
+                                                            isc.IButton.create({
+                                                                title:"لغو",
                                                                 click: function () {
                                                                     item.setValue(oldValue);
                                                                     absenceWindow.close();
@@ -241,12 +246,19 @@
                                             //     // }
                                             // });
                                         }
+                                        <%--else if(value == 3){--%>
+                                            <%--isc.RPCManager.sendRequest({--%>
+                                                    <%--actionURL: attendanceUrl + "/auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,--%>
+                                                    <%--httpMethod: "GET",--%>
+                                                    <%--httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+                                                    <%--useSimpleHttp: true,--%>
+                                                    <%--contentType: "application/json; charset=utf-8",--%>
+                                                    <%--showPrompt: false,--%>
+                                                    <%--serverOutputAsString: false,--%>
+                                                    <%--callback: function (resp1) {--%>
+                                        <%--}--%>
                                     },
-                                    // hoverHTML:"causeOfAbsence.forEach(function (value){if(value.studentId.equals(record.studentId))return value.description;})"
                                     hoverHTML(record, value, rowNum, colNum, grid) {
-                                        // alert(record.studentId)
-                                        // alert(value)
-                                        // alert(colNum)
                                         if (value == "غیبت موجه") {
                                             let i = 0;
                                             do {
@@ -272,13 +284,17 @@
             },
             {
                 name: "presentAll",
-                title: "تبدیل نامشخص به حاضر:",
-                type: "checkbox",
+                title: "تبدیل همه به حاضر",
+                type: "ButtonItem",
+                startRow:false,
                 labelAsTitle: true,
-                changed(form, item, value) {
-                    if (value) {
+                click (form, item) {
+                        for (let i = 0; i < sessionInOneDate.length ; i++) {
+                            for (let j = 4; j < attendanceGrid.getAllFields().length; j++) {
+                                attendanceGrid.setEditValue(i,j,"1");
+                            }
+                        }
 
-                    }
                 }
             }
         ],
@@ -343,41 +359,6 @@
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,
 
-    });
-    var Hlayout_absence_SaveOrExit = isc.TrHLayoutButtons.create({
-        members: [
-            isc.IButtonSave.create({
-                ID: "absenceBtnSave",
-            }),
-            isc.IButtonCancel.create({
-                ID: "absenceBtnCancel",
-                title: "لغو",
-                click: function () {
-                    // DynamicForm_Goal.clearValues();
-                    // Window_Goal.close();
-                }
-            })
-        ]
-    });
-    var DynamicForm_Absence = isc.DynamicForm.create({
-        fields: [
-            {
-                name: "titleFa",
-                title: "علت غیبت",
-                keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|a-z|A-Z|0-9 ]",
-                // validators: [TrValidators.NotEmpty],
-            },
-        ],
-    });
-    var Window_Absence = isc.Window.create({
-        title: "علت غیبت",
-        items: [isc.VLayout.create({
-            width: "100%",
-            height: "100%",
-            members: [DynamicForm_Absence, Hlayout_absence_SaveOrExit]
-        })],
-        width: "400",
-        height: "150",
     });
     var VLayout_Body_All_Goal = isc.VLayout.create({
         width: "100%",
