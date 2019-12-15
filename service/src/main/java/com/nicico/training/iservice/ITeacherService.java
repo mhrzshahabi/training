@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.dto.TeacherDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -31,4 +32,8 @@ public interface ITeacherService {
     void addCategories(CategoryDTO.Delete request, Long teacherId);
 
     List<Long> getCategories(Long teacherId);
+
+    void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
+
+    void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
 }

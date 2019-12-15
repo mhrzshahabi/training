@@ -32,7 +32,7 @@ public class CityDTO {
         @NotEmpty
         @ApiModelProperty(required = true)
         private Long id;
-
+        private Integer version;
         private StateDTO.Info state;
     }
 

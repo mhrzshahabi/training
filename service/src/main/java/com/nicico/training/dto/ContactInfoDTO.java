@@ -29,6 +29,7 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfo")
     public static class Info extends ContactInfoDTO {
         private Long id;
+        private Integer version;
         private AddressDTO.Info homeAddress;
         private AddressDTO.Info workAddress;
     }
