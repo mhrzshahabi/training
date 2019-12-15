@@ -14,5 +14,4 @@ public interface PersonalInfoDAO extends JpaRepository<PersonalInfo, Long>, JpaS
 
     @Transactional
     Optional<PersonalInfo> findByNationalCode(@Param("nationalCode") String nationalCode);
-
 }

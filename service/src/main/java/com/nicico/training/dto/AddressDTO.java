@@ -31,6 +31,7 @@ public class AddressDTO {
     @ApiModel("AddressInfo")
     public static class Info extends AddressDTO {
         private Long id;
+        private Integer version;
         private CityDTO.Info city;
         private StateDTO.Info state;
     }

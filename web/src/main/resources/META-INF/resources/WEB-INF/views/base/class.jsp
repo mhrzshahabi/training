@@ -1697,7 +1697,6 @@
         }
     }
 
-
     function class_delete_result(resp) {
         classWait.close();
         if (resp.httpResponseCode === 200) {
@@ -1761,7 +1760,6 @@
         refreshSelectedTab_class(tabSetClass.getSelectedTab());
     }
 
-
     function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
@@ -1791,11 +1789,16 @@
                         loadPage_Scores();
                     break;
                 }
+                case "classAttendanceTab": {
+                    if (typeof loadPage_Attendance !== "undefined")
+                        loadPage_Attendance();
+                    break;
+                }
             }
         }
     }
 
-    function chechValidDate(termStart, termEnd, classStart, classEnd) {
+    function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
             if (!checkDate(classStart) && !checkDate(classEnd)) {
                 return false;

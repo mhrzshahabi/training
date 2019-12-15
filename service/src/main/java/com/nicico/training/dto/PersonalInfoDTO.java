@@ -64,6 +64,7 @@ public class PersonalInfoDTO {
         private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
         private ContactInfoDTO.Info contactInfo;
         private AccountInfoDTO.Info accountInfo;
+        private Integer version;
     }
 
 //    @Getter

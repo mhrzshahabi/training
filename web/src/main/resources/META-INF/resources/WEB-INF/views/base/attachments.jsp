@@ -354,4 +354,9 @@
         downloadForm.submitForm();
     }
 
+    function clear_Attachments(){
+        ListGrid_JspAttachment.clear();
+    }
+
+
     //</script>

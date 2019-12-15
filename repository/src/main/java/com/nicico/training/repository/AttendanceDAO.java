@@ -13,4 +13,5 @@ public interface AttendanceDAO extends JpaRepository<Attendance, Long>, JpaSpeci
     boolean existsBySessionId(Long id);
 //    List<Attendance> findAllBySessionId(ArrayList<Long> sessionIds);
     List<Attendance> findBySessionId(Long sessionId);
+    Attendance findBySessionIdAndStudentId(Long sessionId, Long studentId);
 }
