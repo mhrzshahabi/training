@@ -58,7 +58,6 @@
     const parameterTypeUrl = rootUrl + "/parameterType";
     const parameterTypeUrl = rootUrl + "/";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
-    const parameterTypeUrl = rootUrl + "/";
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;

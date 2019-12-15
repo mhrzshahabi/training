@@ -50,7 +50,7 @@ public class CategoryDTO {
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-//        private Integer version;
+        private Integer version;
     }
 
     // ------------------------------

@@ -4,12 +4,10 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AttachmentDTO;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
-import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.dto.*;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
+import com.nicico.training.model.EmploymentHistory;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TeacherDAO;
@@ -33,8 +31,10 @@ public class TeacherService implements ITeacherService {
     private final CustomModelMapper modelMapper;
     private final TeacherDAO teacherDAO;
     private final CategoryDAO categoryDAO;
-    private final PersonalInfoService personalInfoService;
-    private final AttachmentService attachmentService;
+
+    private final IPersonalInfoService personalInfoService;
+    private final IAttachmentService attachmentService;
+    private final IEmploymentHistoryService employmentHistoryService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -166,6 +166,27 @@ public class TeacherService implements ITeacherService {
         for (Category category : gAllById) {
             teacher.getCategories().add(category);
         }
+    }
+
+    @Transactional
+    @Override
+    public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
+        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        final EmploymentHistoryDTO.Info employmentHistory = employmentHistoryService.get(employmentHistoryId);
+        teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory,EmploymentHistory.class));
+        employmentHistory.setTeacherId(null);
+    }
+
+    @Transactional
+    @Override
+    public void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
+
+        final Optional<Teacher> tById = teacherDAO.findById(teacherId);
+        final Teacher teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        EmploymentHistory employmentHistory = new EmploymentHistory();
+        modelMapper.map(request, employmentHistory);
+        teacher.getEmploymentHistories().add(employmentHistory);
     }
 
     @Transactional

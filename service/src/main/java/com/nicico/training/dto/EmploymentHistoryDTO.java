@@ -12,7 +12,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-import java.util.Set;
 
 @Getter
 @Setter
@@ -26,26 +25,30 @@ public class EmploymentHistoryDTO {
     private Long teacherId;
 
     public String getPersianStartDate() {
+        if (startDate == null)
+            return null;
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
         return DateUtil.convertMiToKh(ft.format(startDate));
     }
 
     public void setPersianStartDate(String persianStartDate) {
         try {
-            this.startDate = new SimpleDateFormat("yyyy-MM-dd").parse(persianStartDate);
+            this.startDate = new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(persianStartDate));
         } catch (ParseException e) {
             e.printStackTrace();
         }
     }
 
     public String getPersianEndDate() {
+        if (endDate == null)
+            return null;
         SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
         return DateUtil.convertMiToKh(ft.format(endDate));
     }
 
     public void setPersianEndDate(String persianEndDate) {
         try {
-            this.endDate = new SimpleDateFormat("yyyy-MM-dd").parse(persianEndDate);
+            this.endDate = new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(persianEndDate));
         } catch (ParseException e) {
             e.printStackTrace();
         }
@@ -57,8 +60,9 @@ public class EmploymentHistoryDTO {
     @ApiModel("EmploymentHistory - Info")
     public static class Info extends EmploymentHistoryDTO {
         private Long id;
-        private Set<CategoryDTO.CategoryInfoTuple> categories;
-        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
+        private Integer version;
+        private List<CategoryDTO.CategoryInfoTuple> categories;
+        private List<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
     }
 
     @Getter
@@ -67,6 +71,8 @@ public class EmploymentHistoryDTO {
     @ApiModel("EmploymentHistory - Create")
     public static class Create extends EmploymentHistoryDTO {
         private Long id;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -75,6 +81,8 @@ public class EmploymentHistoryDTO {
     @ApiModel("EmploymentHistory - Update")
     public static class Update extends EmploymentHistoryDTO {
         private Long id;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter

@@ -36,6 +36,7 @@ public class TeacherDTO {
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
+        private Integer version;
     }
 
 //    @Getter

@@ -1711,7 +1711,7 @@
         }
     }
 
-    function chechValidDate(termStart, termEnd, classStart, classEnd) {
+    function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
             if (!checkDate(classStart) && !checkDate(classEnd)) {
                 return false;
