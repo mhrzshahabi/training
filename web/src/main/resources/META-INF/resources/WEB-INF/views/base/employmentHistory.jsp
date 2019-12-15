@@ -9,7 +9,6 @@
     let waitEmploymentHistory;
     let teacherIdEmploymentHistory = null;
     let isCategoriesChanged = false;
-    var temp = null;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*EmploymentHistory*/
