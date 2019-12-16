@@ -28,6 +28,7 @@
             {name: "studentName", type: "text", title: "نام"},
             {name: "studentFamily", type: "text", title: "نام خانوادگی"},
             {name: "nationalCode", type: "text", title: "کد ملی"},
+            {name: "studentState", type: "text", title: "وضعیت"},
         ],
     });
     var RestData_SessionDate_AttendanceJSP = isc.TrDS.create({
@@ -88,9 +89,9 @@
                         serverOutputAsString: false,
                         callback: function (resp) {
                             let fields1 = [
-                                {name: "studentName", title: "نام", canEdit: false},
-                                {name: "studentFamily", title: "نام خانوادگی", canEdit: false},
-                                {name: "nationalCode", title: "کد ملی", canEdit: false},
+                                {name: "studentName", title: "نام"},
+                                {name: "studentFamily", title: "نام خانوادگی"},
+                                {name: "nationalCode", title: "کد ملی"},
                             ];
                             for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                 let field1 = {};
@@ -246,8 +247,18 @@
                                             // });
                                         }
                                         else if(value == 3){
+                                            var sessionIds = [];
+                                            sessionIds.add(item.getFieldName().substr(2));
+                                            for (let i = 4; i < this.grid.getAllFields().length ; i++) {
+                                                if(this.grid.getEditValue(this.rowNum,i) == 3){
+                                                    sessionIds.add(this.grid.getAllFields()[i].name.substr(2))
+                                                }
+                                            }
+                                            // alert(attendanceGrid.getAllEditRows().toString())
+                                            // alert(item.getGridColNum())
+                                            // alert(attendanceGrid.getEditValue(1, item.getGridColNum()))
                                             isc.RPCManager.sendRequest({
-                                                actionURL: attendanceUrl + "/valid-student?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&studentId=" + form.getValue("studentId"),
+                                                actionURL: attendanceUrl + "/accept-absent-student?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
                                                 httpMethod: "GET",
                                                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                                 useSimpleHttp: true,
@@ -255,6 +266,28 @@
                                                 showPrompt: false,
                                                 serverOutputAsString: false,
                                                 callback: function (resp) {
+                                                    if(!JSON.parse(resp.data)){
+                                                        // createDialog("info", "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'غیر حضوری' تغییر خواهد کرد");
+                                                        isc.MyYesNoDialog.create({
+                                                            title: "<spring:message code='message'/>",
+                                                            message: "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'غیر حضوری' تغییر خواهد کرد",
+                                                            buttonClick: function (button, index) {
+                                                                this.close();
+                                                                if (index === 0) {
+                                                                    let record1 = attendanceGrid.getSelectedRecord();
+                                                                    record1.studentState = "1";
+                                                                    attendanceGrid.updateData(record1);
+                                                                    // attendanceGrid.endEditing();
+                                                                    return;
+                                                                }
+                                                                item.setValue(oldValue);
+                                                            },
+                                                            closeClick: function () {
+                                                                item.setValue(oldValue);
+                                                                this.close();
+                                                            }
+                                                        });
+                                                    }
                                                 }
                                             });
                                         }
@@ -273,8 +306,6 @@
                                     }
                                 });
                             }
-
-
                             attendanceGrid.fetchData();
                         }
                     });
@@ -311,7 +342,7 @@
         // filterLocalData:true,
         dataSource: "attendanceDS",
         // data:sessionInOneDate,
-        canEdit: true,
+        // canEdit: true,
         modalEditing: true,
         editEvent: "none",
         editOnFocus: true,
@@ -356,6 +387,9 @@
                 })
             ]
         })],
+        canEditCell(rowNum, colNum){
+            return colNum >= 4 && attendanceGrid.getSelectedRecord().studentState !== "1";
+        }
         // fields:[]
         // optionDataSource: DataSource_SessionInOneDate,
         // autoFetchData:true,
