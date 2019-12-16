@@ -350,7 +350,7 @@
                 name: "personality.birthDate",
                 title: "<spring:message code='birth.date'/>",
                 ID: "birthDate_jspTeacher",
-                hint: "YYYY/MM/DD",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -1217,7 +1217,7 @@
             },
             {
                 ID: "employmentHistory",
-                title: "سوابق کاری", canClose: false,
+                title: "<spring:message code='employmentHistory'/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/employmentHistory-tab"})
             },
             {
