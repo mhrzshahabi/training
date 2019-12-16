@@ -395,10 +395,27 @@
         <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_employment_history_category" constraintName="FKq8we5de9koydtcnpwo373yt1g" deferrable="false" initiallyDeferred="false"
                                  referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
     </changeSet>
-
     <changeSet author="ghazanfari_f (generated)" id="1575892208191-173">
         <addForeignKeyConstraint baseColumnNames="f_parameter_type_id" baseTableName="tbl_parameter_value" constraintName="FKh4caea5ygpmsvmkcmsc1dt0dx" deferrable="false" initiallyDeferred="false"
                                  referencedColumnNames="id" referencedTableName="tbl_parameter_type" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-176">
+        <addForeignKeyConstraint baseColumnNames="f_education_level_id" baseTableName="tbl_teaching_history" constraintName="FK2uj1s09vlqomlib51wxc5nn04" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-177">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory" baseTableName="tbl_teaching_history_subcategory" constraintName="FK4bkg6cdprbp9tnibvjt0r4g4q" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-178">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_teaching_history" constraintName="FKhq2bchf5p5sq8wpfhg4q65rui" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-179">
+        <addForeignKeyConstraint baseColumnNames="f_teaching_history" baseTableName="tbl_teaching_history_subcategory" constraintName="FKjd8agep3dqf3nppqeuupjep8o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teaching_history" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-180">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teaching_history_category" constraintName="FKjwhopmy7c93ovem0iajo30mhw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-181">
+        <addForeignKeyConstraint baseColumnNames="f_teaching_history" baseTableName="tbl_teaching_history_category" constraintName="FKk0aqawpdgrq9tehyrxqh4nsc0" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teaching_history" validate="true"/>
     </changeSet>
 
 </databaseChangeLog>
