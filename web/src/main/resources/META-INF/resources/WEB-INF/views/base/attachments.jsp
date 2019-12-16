@@ -25,6 +25,8 @@
     });
 
     DynamicForm_JspAttachments = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
@@ -112,14 +114,12 @@
     });
 
     Window_JspAttachments = isc.Window.create({
+        width: "300",
         align: "center",
         border: "1px solid gray",
-        closeClick: function () {
-            this.Super("closeClick", arguments);
-        },
+        canDragResize: false,
+        showMaximizeButton: false,
         items: [isc.TrVLayout.create({
-            width: "300",
-            height: "120",
             members: [DynamicForm_JspAttachments, HLayout_SaveOrExit_JspAttachments]
         })]
     });

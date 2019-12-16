@@ -157,4 +157,7 @@
     <changeSet author="ghazanfari_f (generated)" id="1575892208191-170">
         <createSequence sequenceName="seq_parameter_value_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576497547010-172">
+        <createSequence sequenceName="seq_teaching_history_id"/>
+    </changeSet>
 </databaseChangeLog>

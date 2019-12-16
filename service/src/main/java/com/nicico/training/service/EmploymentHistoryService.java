@@ -6,9 +6,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.iservice.IEmploymentHistoryService;
-import com.nicico.training.model.Category;
 import com.nicico.training.model.EmploymentHistory;
-import com.nicico.training.model.SubCategory;
 import com.nicico.training.repository.EmploymentHistoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -98,7 +96,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     public SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
-//        if (teacherId != null) {
+        if (teacherId != null) {
             list.add(makeNewCriteria("teacherId", teacherId, EOperator.equals, null));
             SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
             if (request.getCriteria() != null) {
@@ -108,7 +106,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
                     request.getCriteria().setCriteria(list);
             } else
                 request.setCriteria(criteriaRq);
-//        }
+        }
         return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
     }
 
