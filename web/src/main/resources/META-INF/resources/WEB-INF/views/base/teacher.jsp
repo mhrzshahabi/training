@@ -1221,6 +1221,11 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/employmentHistory-tab"})
             },
             {
+                ID: "teachingHistory",
+                title: "<spring:message code='teachingHistory'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
+            },
+            {
                 ID: "attachmentsTab",
                 title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
@@ -1828,6 +1833,9 @@
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);
 
+            if (typeof loadPage_TeachingHistory !== "undefined")
+                loadPage_TeachingHistory(teacherId);
+
         }
     }
 
@@ -1837,6 +1845,9 @@
 
         if (typeof clear_EmploymentHistory !== "undefined")
             clear_EmploymentHistory();
+
+        if (typeof clear_TeachingHistory !== "undefined")
+            clear_TeachingHistory();
     }
 
     // </script>

@@ -9,6 +9,7 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.EmploymentHistory;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.model.TeachingHistory;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
@@ -35,6 +36,7 @@ public class TeacherService implements ITeacherService {
     private final IPersonalInfoService personalInfoService;
     private final IAttachmentService attachmentService;
     private final IEmploymentHistoryService employmentHistoryService;
+    private final ITeachingHistoryService teachingHistoryService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -170,6 +172,19 @@ public class TeacherService implements ITeacherService {
 
     @Transactional
     @Override
+    public List<Long> getCategories(Long teacherId) {
+        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        Set<Category> currents = teacher.getCategories();
+        List<Long> categories = new ArrayList<>();
+        for (Category current : currents) {
+            categories.add(current.getId());
+        }
+        return categories;
+    }
+
+    @Transactional
+    @Override
     public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
         final Optional<Teacher> cById = teacherDAO.findById(teacherId);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
@@ -199,15 +214,31 @@ public class TeacherService implements ITeacherService {
 
     @Transactional
     @Override
-    public List<Long> getCategories(Long teacherId) {
+    public void deleteTeachingHistory(Long teacherId, Long teachingHistoryId) {
         final Optional<Teacher> cById = teacherDAO.findById(teacherId);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        Set<Category> currents = teacher.getCategories();
-        List<Long> categories = new ArrayList<>();
-        for (Category current : currents) {
-            categories.add(current.getId());
+        final TeachingHistoryDTO.Info teachingHistory = teachingHistoryService.get(teachingHistoryId);
+        try {
+            teacher.getTeachingHistories().remove(modelMapper.map(teachingHistory, TeachingHistory.class));
+            teachingHistory.setTeacherId(null);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
-        return categories;
+    }
+
+    @Transactional
+    @Override
+    public void addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId) {
+
+        final Optional<Teacher> tById = teacherDAO.findById(teacherId);
+        final Teacher teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        TeachingHistory teachingHistory = new TeachingHistory();
+        modelMapper.map(request, teachingHistory);
+        try {
+            teacher.getTeachingHistories().add(teachingHistory);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
 }
