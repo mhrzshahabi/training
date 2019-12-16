@@ -277,7 +277,7 @@
                                                                     let record1 = attendanceGrid.getSelectedRecord();
                                                                     record1.studentState = "1";
                                                                     attendanceGrid.updateData(record1);
-                                                                    // attendanceGrid.endEditing();
+                                                                    attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                     return;
                                                                 }
                                                                 item.setValue(oldValue);
