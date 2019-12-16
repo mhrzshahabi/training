@@ -27,12 +27,12 @@
     });
 
     RestDataSource_Category_JspEmploymentHistory = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
     RestDataSource_SubCategory_JspEmploymentHistory = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
@@ -178,9 +178,7 @@
                     }
                 }]
             }
-        ],
-        itemChanged: function (item, newValue) {
-        }
+        ]
     });
 
     IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
