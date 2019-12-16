@@ -41,6 +41,8 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     DynamicForm_JspEmploymentHistory = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
@@ -210,12 +212,11 @@
     });
 
     Window_JspEmploymentHistory = isc.Window.create({
+        width: "500",
         align: "center",
         border: "1px solid gray",
         title: "<spring:message code='employmentHistory'/>",
         items: [isc.TrVLayout.create({
-            width: "500",
-            height: "120",
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
     });
