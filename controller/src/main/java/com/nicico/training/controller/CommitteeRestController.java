@@ -41,6 +41,7 @@ public class CommitteeRestController {
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
     private final CategoryDAO categoryDAO;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -57,14 +58,14 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<CommitteeDTO.Info> create(@RequestBody CommitteeDTO.Create req) {
-        CommitteeDTO.Create create = (new ModelMapper()).map(req, CommitteeDTO.Create.class);
+        CommitteeDTO.Create create =modelMapper.map(req, CommitteeDTO.Create.class);
         return new ResponseEntity<>(committeeService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<CommitteeDTO.Info> update(@PathVariable Long id, @RequestBody CommitteeDTO.Update request) {
-        CommitteeDTO.Update update = (new ModelMapper()).map(request, CommitteeDTO.Update.class);
+        CommitteeDTO.Update update = modelMapper.map(request, CommitteeDTO.Update.class);
         return new ResponseEntity<>(committeeService.update(id, update), HttpStatus.OK);
     }
 

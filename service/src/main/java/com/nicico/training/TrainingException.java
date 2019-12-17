@@ -77,7 +77,8 @@ public class TrainingException extends NICICOException {
         PersonnelRegisteredNotFound(404),
         WrongPostalCode(404),
         ScoresNotFound(404),
-        AttendanceNotFound(404);
+        AttendanceNotFound(404),
+        ParameterTypeNotFound(404);
 
         private final Integer httpStatusCode;
 

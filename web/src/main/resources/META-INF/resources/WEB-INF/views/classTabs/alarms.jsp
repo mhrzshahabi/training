@@ -6,19 +6,162 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
+
+    // <<========== Global - Variables ==========
+    {
+
+    }
+    // ============ Global - Variables ========>>
 
 
-    var HLayout_Body_All_Goal = isc.HLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "2px solid blue",--%>
-        members: [isc.DynamicForm.create({
+    // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
+    {
+        var RestDataSource_alarm = isc.TrDS.create({
+            transformRequest: function (dsRequest) {
+                dsRequest.httpHeaders = {
+                    "Authorization": "Bearer <%= accessToken %>"
+                };
+                return this.Super("transformRequest", arguments);
+            },
+            fields:
+                [
+                    // {name: "id", primaryKey: true},
+                    {name: "targetRecordId", autoFitWidth: true},
+                    {name: "tabName", autoFitWidth: true},
+                    {name: "pageAddress", autoFitWidth: true},
+                    {name: "alarmType", autoFitWidth: true},
+                    {name: "alarm"}
+                ]
+            ////// ,
+            ////// fetchDataURL: classAlarm + "list"
+        });
+
+
+        var ListGrid_alarm = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
+            dataSource: RestDataSource_alarm,
+            canAddFormulaFields: false,
+            showFilterEditor: true,
+            allowAdvancedCriteria: true,
+            allowFilterExpressions: true,
+            filterOnKeypress: true,
+            initialSort: [
+                {property: "alarmType", direction: "ascending"},
+                {property: "targetRecordId", direction: "ascending"}
+            ],
+            selectionType: "single",
             fields: [
-                {title: "تست"}
+                // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+                {
+                    name: "targetRecordId",
+                    title: "targetRecordId",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "tabName",
+                    title: "tabName",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "pageAddress",
+                    title: "pageAddress",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "alarmType",
+                    title: "alarmType",
+                    align: "center",
+                    filterOperator: "iContains"
+                },
+                {
+                    name: "alarm",
+                    title: "alarm",
+                    align: "center",
+                    filterOperator: "iContains"
+                }
+            ],
+            doubleClick: function () {
+                select_Target();
+            },
+            dataArrived: function () {
+                if (!this.isEmpty()) {
+                    classAlarmsTab.setIcon("<spring:url value="warning-animated.gif"/>");
+                } else {
+                    classAlarmsTab.setIcon(null);
+                }
+            }
+        });
+
+    }
+    // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
+
+
+    // <<-------------------------------------- Create - ToolStripButton --------------------------------------
+    {
+        var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
+            click: function () {
+                ListGrid_alarm.invalidateCache();
+            }
+        });
+
+        var ToolStrip_alarm = isc.ToolStrip.create({
+            width: "100%",
+            members: [
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_Refresh
+                    ]
+                })
             ]
-        })]
-    });
+        });
+    }
+    // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
+
+
+    // <<-------------------------------------- Create - HLayout & VLayout ------------------------------------
+    {
+        var HLayout_Actions_alarm = isc.HLayout.create({
+            width: "100%",
+            members: [ToolStrip_alarm]
+        });
+
+        var Hlayout_Grid_alarm = isc.HLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [ListGrid_alarm]
+        });
+
+        var VLayout_Body_alarm = isc.TrVLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [HLayout_Actions_alarm, Hlayout_Grid_alarm]
+        });
+    }
+    // ---------------------------------------- Create - HLayout & VLayout ---------------------------------->>
+
+
+    // <<----------------------------------------------- Functions --------------------------------------------
+    {
+
+        function loadPage_alarm() {
+            classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+            if (!(classRecord == undefined || classRecord == null)) {
+                RestDataSource_alarm.fetchDataURL = classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                ListGrid_alarm.invalidateCache();
+                ListGrid_alarm.fetchData();
+            }
+        }
+
+    }
+    // ------------------------------------------------- Functions ------------------------------------------>>
 
 
     //</script>
