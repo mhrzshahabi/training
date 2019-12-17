@@ -7,7 +7,7 @@
 %>
 
 // <script>
-    var selectedRecordClassGrid;
+    var classGridRecordInAttendanceJsp = null;
     var causeOfAbsence = [];
     var sessionInOneDate = [];
     var attendanceState = {
@@ -60,7 +60,7 @@
                 click: function (form, item) {
                     attendanceGrid.endEditing();
                     if (attendanceGrid.getAllEditRows().isEmpty()) {
-                        RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "/session-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                        RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id;
                         item.fetchData();
                     } else {
                         isc.MyYesNoDialog.create({
@@ -79,7 +79,7 @@
                 },
                 changed: function (form, item, value) {
                     isc.RPCManager.sendRequest({
-                        actionURL: attendanceUrl + "/session-in-date?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
+                        actionURL: attendanceUrl + "/session-in-date?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
                         httpMethod: "GET",
                         httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                         useSimpleHttp: true,
@@ -102,7 +102,7 @@
                                 fields1.add(field1);
                             }
                             isc.RPCManager.sendRequest({
-                                actionURL: attendanceUrl + "/auto-create?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + value,
+                                actionURL: attendanceUrl + "/auto-create?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
                                 httpMethod: "GET",
                                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                 useSimpleHttp: true,
@@ -252,7 +252,7 @@
                                                 }
                                             }
                                             isc.RPCManager.sendRequest({
-                                                actionURL: attendanceUrl + "/accept-absent-student?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
+                                                actionURL: attendanceUrl + "/accept-absent-student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
                                                 httpMethod: "GET",
                                                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                                 useSimpleHttp: true,
@@ -351,14 +351,14 @@
                     ID: "saveBtn",
                     click: function () {
                         if(attendanceGrid.getAllEditRows().length <= 0){
-                            createDialog("error","تغییری رخ نداده است.","خطا");
+                            createDialog("[SKIN]error","تغییری رخ نداده است.","خطا");
                             return;
                         }
                         attendanceGrid.endEditing();
                         attendanceGrid.saveAllEdits();
                         setTimeout(function () {
                             isc.RPCManager.sendRequest({
-                                actionURL: attendanceUrl + "/save-attendance?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
+                                actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
                                 willHandleError: true,
                                 httpMethod: "POST",
                                 httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
@@ -420,12 +420,17 @@
     }
 
     function loadPage_Attendance() {
+        // if(ListGrid_Class_JspClass.getSelectedRecord() === classGridRecordInAttendanceJsp){
+        //     return;
+        // }
         if(attendanceGrid.getAllEditRows().length>0){
+            createDialog("[SKIN]error","حضور و غیاب ذخیره نشده است.","یادآوری");
             return;
         }
-        if (!(ListGrid_Class_JspClass.getSelectedRecord() == null)) {
+        classGridRecordInAttendanceJsp = ListGrid_Class_JspClass.getSelectedRecord();
+        if (!(classGridRecordInAttendanceJsp == null)) {
             DynamicForm_Attendance.setValue("sessionDate", "");
-            DynamicForm_Attendance.getItem("sessionDate").title = "حضور و غیاب کلاس " + getFormulaMessage(ListGrid_Class_JspClass.getSelectedRecord().titleClass,"3px","blue","b") + " براساس تاریخ:";
+            DynamicForm_Attendance.getItem("sessionDate").title = "حضور و غیاب کلاس " + getFormulaMessage(classGridRecordInAttendanceJsp.titleClass,"2px","blue","b") + " گروه" + getFormulaMessage(classGridRecordInAttendanceJsp.group,"2px","red","u") + " براساس تاریخ:";
             DynamicForm_Attendance.redraw();
             sessionInOneDate.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
