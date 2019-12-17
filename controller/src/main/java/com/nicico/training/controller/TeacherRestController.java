@@ -249,8 +249,12 @@ public class TeacherRestController {
             create.setCategories(categories);
         if (subCategories.size() > 0)
             create.setSubCategories(subCategories);
-        teacherService.addEmploymentHistory(create, teacherId);
-        return new ResponseEntity(HttpStatus.OK);
+        try {
+            teacherService.addEmploymentHistory(create, teacherId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
     @Loggable
@@ -258,7 +262,7 @@ public class TeacherRestController {
 //    @PreAuthorize("hasAuthority('d_teacher')")
     public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
         try {
-            teacherService.deleteEmploymentHistory(teacherId,id);
+            teacherService.deleteEmploymentHistory(teacherId, id);
             return new ResponseEntity(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(

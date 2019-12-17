@@ -13,6 +13,6 @@ public class ParameterTypeService extends BaseService<ParameterType, Long, Param
 
     @Autowired
     ParameterTypeService(ParameterTypeDAO parameterTypeDAO) {
-        super(parameterTypeDAO);
+        super(new ParameterType(), parameterTypeDAO);
     }
 }

@@ -13,6 +13,7 @@ import com.nicico.training.dto.CourseDTO;
 import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.model.ClassSession;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -30,9 +31,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -77,6 +76,26 @@ public class AttendanceRestController {
 	public ResponseEntity<List<List<Map>>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
 		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
 		return new ResponseEntity<>(maps, HttpStatus.CREATED);
+	}
+	@Loggable
+	@GetMapping(value = "/accept-absent-student")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+	public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
+												@RequestParam("studentId") Long studentId,
+												@RequestParam("sessionId") List<Long> sessionId) {
+//		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
+//		ClassSessionDTO.Info sessionInfo = ;
+//		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
+		Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId,studentId));
+		for (Long aLong : sessionId) {
+			classSessions.add(classSessionService.get(aLong));
+		}
+		Float sum = (float) 0;
+		for (ClassSessionDTO.Info classSession : classSessions) {
+			sum += Float.valueOf(classSession.getSessionEndHour().replace(':','.')) - Float.valueOf(classSession.getSessionStartHour().replace(':','.'));
+		}
+		Float acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, (float) (0.20));
+		return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
 	}
 
     @Loggable

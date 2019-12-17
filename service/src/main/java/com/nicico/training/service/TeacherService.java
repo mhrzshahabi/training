@@ -174,8 +174,12 @@ public class TeacherService implements ITeacherService {
         final Optional<Teacher> cById = teacherDAO.findById(teacherId);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
         final EmploymentHistoryDTO.Info employmentHistory = employmentHistoryService.get(employmentHistoryId);
-        teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory,EmploymentHistory.class));
-        employmentHistory.setTeacherId(null);
+        try {
+            teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory, EmploymentHistory.class));
+            employmentHistory.setTeacherId(null);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
     }
 
     @Transactional
@@ -186,7 +190,11 @@ public class TeacherService implements ITeacherService {
         final Teacher teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
         EmploymentHistory employmentHistory = new EmploymentHistory();
         modelMapper.map(request, employmentHistory);
-        teacher.getEmploymentHistories().add(employmentHistory);
+        try {
+            teacher.getEmploymentHistories().add(employmentHistory);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
     }
 
     @Transactional

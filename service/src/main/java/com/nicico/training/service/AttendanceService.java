@@ -7,6 +7,7 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.model.Attendance;
+import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
@@ -233,6 +234,31 @@ public class AttendanceService implements IAttendanceService {
     @Override
     public SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(attendanceDAO, request, attendance -> modelMapper.map(attendance, AttendanceDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Float acceptAbsentHoursForClass(Long classId, Float x) {
+        Float hourSum = tclassService.sessionsHourSum(classId);
+        return hourSum * x ;
+    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public Integer acceptAbsent(Long classId, Long studentId) {
+//        Integer acceptAbsentHours = this.acceptAbsentHoursForClass(classId, 5);
+//        return hourSum/x;
+//    }
+    @Transactional()
+    @Override
+    public List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId) {
+        List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
+        List<Long> sessionIds = sessions.stream().map(ClassSessionDTO.Info::getId).collect(Collectors.toList());
+        List<Attendance> absentList = attendanceDAO.findBySessionIdInAndStudentIdAndState(sessionIds, studentId, "3");
+        List<ClassSessionDTO.Info> absentSessionList = new ArrayList<>();
+        absentList.forEach(a->absentSessionList.add(modelMapper.map(a.getSession(),ClassSessionDTO.Info.class)));
+        return absentSessionList;
+//        return modelMapper.map(absentSessionList, new TypeToken<List<ClassSessionDTO.Info>>() {
+//		}.getType());
     }
 
     // ------------------------------

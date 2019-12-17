@@ -29,6 +29,7 @@ import java.util.List;
 public class ClassStudentRestController {
    private final ClassStudentService classStudentService;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
@@ -47,15 +48,15 @@ public class ClassStudentRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<ClassStudentDTO.Info> create(@RequestBody ClassStudentDTO.Create req) {
-        ClassStudentDTO.Create create = (new ModelMapper()).map(req, ClassStudentDTO.Create.class);
+        ClassStudentDTO.Create create = modelMapper.map(req, ClassStudentDTO.Create.class);
         return new ResponseEntity<>(classStudentService.create(create), HttpStatus.CREATED);
     }
 
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
-        ClassStudentDTO.Update update = (new ModelMapper()).map(request, ClassStudentDTO.Update.class);
-       return new ResponseEntity<>(classStudentService.update(id, update), HttpStatus.OK);
+        //ClassStudentDTO.Update update = modelMapper.map(request, ClassStudentDTO.Update.class);
+       return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
     }
 
 
