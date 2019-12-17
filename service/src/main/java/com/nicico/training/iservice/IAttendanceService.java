@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttendanceDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -29,4 +30,13 @@ public interface IAttendanceService {
 	void delete(AttendanceDTO.Delete request);
 
 	SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
+
+//	Integer acceptAbsent(Long classId, Long studentId);
+
+//	@Transactional(readOnly = true)
+//	Integer acceptAbsentHoursForClass(Long classId, Integer x);
+
+	Float acceptAbsentHoursForClass(Long classId, Float x);
+
+	List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId);
 }

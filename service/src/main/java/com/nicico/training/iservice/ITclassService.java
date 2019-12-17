@@ -43,6 +43,9 @@ public interface ITclassService {
 
     void addStudents(StudentDTO.Delete request, Long classId);
 
+    @Transactional(readOnly = true)
+    Float sessionsHourSum(Long classId);
+
     @Transactional
     Long getEndGroup(Long courseId, Long termId);
 }

@@ -12,6 +12,13 @@ JalaliDate = {
     j_days_in_month: [31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29]
 };
 
+JalaliDate.jalaliToGregori = function (date) {
+    var year = parseInt(date.substr(0, 4));
+    var month = parseInt(date.substr(5, 2));
+    var day = parseInt(date.substr(8, 2));
+    return new Date(JalaliDate.jalaliToGregorian(year,month,day));
+};
+
 JalaliDate.jalaliToGregorian = function (j_y, j_m, j_d) {
     j_y = parseInt(j_y);
     j_m = parseInt(j_m);
@@ -63,12 +70,12 @@ JalaliDate.jalaliToGregorian = function (j_y, j_m, j_d) {
     var gd = g_day_no + 1;
 
     return [gy, gm, gd];
-}
+};
 
 JalaliDate.checkDate = function (j_y, j_m, j_d) {
     return !(j_y < 0 || j_y > 32767 || j_m < 1 || j_m > 12 || j_d < 1 || j_d >
         (JalaliDate.j_days_in_month[j_m - 1] + (j_m == 12 && !((j_y - 979) % 33 % 4))));
-}
+};
 
 JalaliDate.gregorianToJalali = function (g_y, g_m, g_d) {
     g_y = parseInt(g_y);
@@ -107,9 +114,11 @@ JalaliDate.gregorianToJalali = function (g_y, g_m, g_d) {
     var jm = i + 1;
     var jd = j_day_no + 1;
 
-
-    return [jy, jm, jd];
-}
+    jm = jm < 10 ? "0" + jm.toString() : jm.toString();
+    jd = jd < 10 ? "0" + jd.toString() : jd.toString();
+    return jy + "/" + jm + "/" + jd;
+    // return [jy, jm, jd];
+};
 
 Date.prototype.setJalaliFullYear = function (y, m, d) {
     var gd = this.getDate();
@@ -128,7 +137,7 @@ Date.prototype.setJalaliFullYear = function (y, m, d) {
     if (d != undefined) j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.setJalaliMonth = function (m, d) {
     var gd = this.getDate();
@@ -143,7 +152,7 @@ Date.prototype.setJalaliMonth = function (m, d) {
     if (d != undefined) j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.setJalaliDate = function (d) {
     var gd = this.getDate();
@@ -153,7 +162,7 @@ Date.prototype.setJalaliDate = function (d) {
     j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.getJalaliFullYear = function () {
     var gd = this.getDate();
@@ -161,7 +170,7 @@ Date.prototype.getJalaliFullYear = function () {
     var gy = this.getFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[0];
-}
+};
 
 Date.prototype.getJalaliMonth = function () {
     var gd = this.getDate();
@@ -169,7 +178,7 @@ Date.prototype.getJalaliMonth = function () {
     var gy = this.getFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[1] - 1;
-}
+};
 
 Date.prototype.getJalaliDate = function () {
     var gd = this.getDate();
@@ -177,13 +186,13 @@ Date.prototype.getJalaliDate = function () {
     var gy = this.getFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[2];
-}
+};
 
 Date.prototype.getJalaliDay = function () {
     var day = this.getDay();
     day = (day + 1) % 7;
     return day;
-}
+};
 
 
 /**
@@ -207,7 +216,7 @@ Date.prototype.setJalaliUTCFullYear = function (y, m, d) {
     if (d != undefined) j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setUTCFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.setJalaliUTCMonth = function (m, d) {
     var gd = this.getUTCDate();
@@ -222,7 +231,7 @@ Date.prototype.setJalaliUTCMonth = function (m, d) {
     if (d != undefined) j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setUTCFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.setJalaliUTCDate = function (d) {
     var gd = this.getUTCDate();
@@ -232,7 +241,7 @@ Date.prototype.setJalaliUTCDate = function (d) {
     j[2] = d;
     var g = JalaliDate.jalaliToGregorian(j[0], j[1], j[2]);
     return this.setUTCFullYear(g[0], g[1] - 1, g[2]);
-}
+};
 
 Date.prototype.getJalaliUTCFullYear = function () {
     var gd = this.getUTCDate();
@@ -240,7 +249,7 @@ Date.prototype.getJalaliUTCFullYear = function () {
     var gy = this.getUTCFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[0];
-}
+};
 
 Date.prototype.getJalaliUTCMonth = function () {
     var gd = this.getUTCDate();
@@ -248,7 +257,7 @@ Date.prototype.getJalaliUTCMonth = function () {
     var gy = this.getUTCFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[1] - 1;
-}
+};
 
 Date.prototype.getJalaliUTCDate = function () {
     var gd = this.getUTCDate();
@@ -256,13 +265,13 @@ Date.prototype.getJalaliUTCDate = function () {
     var gy = this.getUTCFullYear();
     var j = JalaliDate.gregorianToJalali(gy, gm + 1, gd);
     return j[2];
-}
+};
 
 Date.prototype.getJalaliUTCDay = function () {
     var day = this.getUTCDay();
     day = (day + 1) % 7;
     return day;
-}
+};
 
 function checkBirthDate(date) {
     var checkDateFlag = checkDate(date);
@@ -279,13 +288,13 @@ function checkBirthDate(date) {
         return true;
     } else
         return checkDateFlag;
-};
+}
 
 
 function checkDate(date) {
-    var khMonth = new Array(0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29);
-    var dateIndex = new Array(0, 1, 2, 3, 5, 6, 8, 9);
-    if (date.length != 10)
+    var khMonth = [0, 31, 31, 31, 31, 31, 31, 30, 30, 30, 30, 30, 29];
+    var dateIndex = [0, 1, 2, 3, 5, 6, 8, 9];
+    if (date.length !== 10)
         return false;
     var month = parseInt(date.substr(5, 2));
     var day = parseInt(date.substr(8, 2));
@@ -303,6 +312,6 @@ function checkDate(date) {
         }
     }
     return true;
-};
+}
 
 

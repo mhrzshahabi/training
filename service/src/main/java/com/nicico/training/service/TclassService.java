@@ -7,6 +7,7 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
@@ -31,6 +32,7 @@ public class TclassService implements ITclassService {
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
+    private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final StudentService studentService;
     private final AttachmentService attachmentService;
@@ -208,6 +210,17 @@ public class TclassService implements ITclassService {
         for (Student student : gAllById) {
             tclass.getStudentSet().add(student);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Float sessionsHourSum(Long classId) {
+        List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
+        Float sum = (float)0;
+        for (ClassSessionDTO.Info session : sessions) {
+            sum += Float.valueOf(session.getSessionEndHour().replace(':','.')) - Float.valueOf(session.getSessionStartHour().replace(':','.'));
+        }
+        return sum;
     }
 
 

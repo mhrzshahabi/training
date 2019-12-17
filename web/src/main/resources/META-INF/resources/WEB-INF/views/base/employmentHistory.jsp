@@ -11,7 +11,7 @@
     let isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
-    /*EmploymentHistory*/
+    /*RestDataSource*/
     //--------------------------------------------------------------------------------------------------------------------//
 
     RestDataSource_JspEmploymentHistory = isc.TrDS.create({
@@ -27,31 +27,37 @@
     });
 
     RestDataSource_Category_JspEmploymentHistory = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
     RestDataSource_SubCategory_JspEmploymentHistory = isc.TrDS.create({
-        fields: [{name: "id"}, {name: "titleFa"}],
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*window*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
     DynamicForm_JspEmploymentHistory = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
                 name: "companyName",
-                title: "نام سازمان",
+                title: "<spring:message code='company.name'/>",
             },
             {
                 name: "jobTitle",
-                title: "عنوان شغل",
+                title: "<spring:message code='job.title'/>",
             },
             {
                 name: "categories",
+                title: "<spring:message code='category'/>",
                 type: "selectItem",
                 textAlign: "center",
-                title: "<spring:message code='category'/>",
                 optionDataSource: RestDataSource_Category_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
@@ -64,9 +70,8 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let categoryField = DynamicForm_JspEmploymentHistory.getField("categories");
                     let subCategoryField = DynamicForm_JspEmploymentHistory.getField("subCategories");
-                    if (categoryField.getSelectedRecords() == null) {
+                    if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
                         return;
@@ -75,20 +80,21 @@
                     if (subCategoryField.getValue() === undefined)
                         return;
                     let subCategories = subCategoryField.getSelectedRecords();
-                    let categoryIds = categoryField.getValue();
+                    let categoryIds = this.getValue();
                     let SubCats = [];
                     for (let i = 0; i < subCategories.length; i++) {
                         if (categoryIds.contains(subCategories[i].categoryId))
                             SubCats.add(subCategories[i].id);
                     }
                     subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
                 }
             },
             {
                 name: "subCategories",
+                title: "<spring:message code='subcategory'/>",
                 type: "selectItem",
                 textAlign: "center",
-                title: "<spring:message code='subcategory'/>",
                 autoFetchData: false,
                 disabled: true,
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
@@ -120,9 +126,9 @@
             },
             {
                 name: "persianStartDate",
-                title: "تاریخ شروع",
                 ID: "employmentHistories_startDate_JspEmploymentHistory",
-                hint: "YYYY/MM/DD",
+                title: "<spring:message code='start.date'/>",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -132,14 +138,21 @@
                         displayDatePicker('employmentHistories_startDate_JspEmploymentHistory', this, 'ymd', '/');
                     }
                 }],
-                changed: function () {
-                }
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        if (value === undefined)
+                            return DynamicForm_JspEmploymentHistory.getValue("persianEndDate") === undefined;
+                        return checkBirthDate(value);
+                    }
+                }]
             },
             {
                 name: "persianEndDate",
-                title: "تاریخ پایان",
                 ID: "employmentHistories_endDate_JspEmploymentHistory",
-                hint: "YYYY/MM/DD",
+                title: "<spring:message code='end.date'/>",
+                hint: todayDate,
                 keyPressFilter: "[0-9/]",
                 showHintInField: true,
                 icons: [{
@@ -149,22 +162,31 @@
                         displayDatePicker('employmentHistories_endDate_JspEmploymentHistory', this, 'ymd', '/');
                     }
                 }],
-                changed: function () {
-                }
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        if (value === undefined)
+                            return DynamicForm_JspEmploymentHistory.getValue("persianStartDate") === undefined;
+                        if (!checkDate(value))
+                            return false;
+                        if(DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
+                            return true;
+                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianStartDate"));
+                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianEndDate"));
+                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                    }
+                }]
             }
-        ],
-        itemChanged: function (item, newValue) {
-        }
+        ]
     });
 
     IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-
-            DynamicForm_JspEmploymentHistory.validate();
-            if (DynamicForm_JspEmploymentHistory.hasErrors()) {
+            if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() || !DynamicForm_JspEmploymentHistory.validate())
                 return;
-            }
+            waitEmploymentHistory = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
                 methodEmploymentHistory,
                 JSON.stringify(DynamicForm_JspEmploymentHistory.getValues()),
@@ -173,8 +195,6 @@
     });
 
     IButton_Cancel_JspEmploymentHistory = isc.TrCancelBtn.create({
-        prompt: "",
-        orientation: "vertical",
         click: function () {
             DynamicForm_JspEmploymentHistory.clearValues();
             Window_JspEmploymentHistory.close();
@@ -190,16 +210,18 @@
     });
 
     Window_JspEmploymentHistory = isc.Window.create({
+        width: "500",
         align: "center",
         border: "1px solid gray",
-        title: "سابقه کاری",
+        title: "<spring:message code='employmentHistory'/>",
         items: [isc.TrVLayout.create({
-            width: "500",
-            height: "120",
             members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
         })]
     });
 
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*Grid*/
+    //--------------------------------------------------------------------------------------------------------------------//
 
     Menu_JspEmploymentHistory = isc.Menu.create({
         data: [{
@@ -237,14 +259,13 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
         align: "center",
         fields: [
-            {name: "id", hidden: true},
             {
                 name: "companyName",
-                title: "نام سازمان",
+                title: "<spring:message code='company.name'/>",
             },
             {
                 name: "jobTitle",
-                title: "عنوان شغل",
+                title: "<spring:message code='job.title'/>",
             },
             {
                 name: "categories",
@@ -298,13 +319,13 @@
             },
             {
                 name: "persianStartDate",
-                title: "تاریخ شروع",
+                title: "<spring:message code='start.date'/>",
                 canFilter: false,
                 canSort: false
             },
             {
                 name: "persianEndDate",
-                title: "تاریخ پایان",
+                title: "<spring:message code='end.date'/>",
                 canFilter: false,
                 canSort: false
             }
@@ -312,7 +333,6 @@
         doubleClick: function () {
             ListGrid_EmploymentHistory_Edit();
         }
-
     });
 
     ToolStripButton_Refresh_JspEmploymentHistory = isc.ToolStripButtonRefresh.create({
@@ -362,6 +382,10 @@
             ListGrid_JspEmploymentHistory
         ]
     });
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    /*functions*/
+    //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_EmploymentHistory_refresh() {
         ListGrid_JspEmploymentHistory.invalidateCache();
@@ -419,8 +443,15 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        attachmentWait = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "employment-history/" + teacherIdEmploymentHistory + "," + ListGrid_JspEmploymentHistory.getSelectedRecord().id, "DELETE", null, "callback: EmploymentHistory_remove_result(rpcResponse)"));
+                        waitEmploymentHistory = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl +
+                            "employment-history/" +
+                            teacherIdEmploymentHistory +
+                            "," +
+                            ListGrid_JspEmploymentHistory.getSelectedRecord().id,
+                            "DELETE",
+                            null,
+                            "callback: EmploymentHistory_remove_result(rpcResponse)"));
                     }
                 }
             });
@@ -428,16 +459,42 @@
     }
 
     function EmploymentHistory_save_result(resp) {
+        waitEmploymentHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
             ListGrid_EmploymentHistory_refresh();
-            // Window_JspEmploymentHistory.close();
+            Window_JspEmploymentHistory.close();
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                    "<spring:message code="message"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
         }
     }
 
     function EmploymentHistory_remove_result(resp) {
+        waitEmploymentHistory.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_EmploymentHistory_refresh();
-            // Window_JspEmploymentHistory.close();
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
         }
     }
 
@@ -448,18 +505,10 @@
             ListGrid_JspEmploymentHistory.fetchData();
             ListGrid_EmploymentHistory_refresh();
         }
-        else
-            ListGrid_JspEmploymentHistory.clear();
     }
 
-    function clear_EmploymentHistory(){
+    function clear_EmploymentHistory() {
         ListGrid_JspEmploymentHistory.clear();
     }
-
-    //**********************************************************************************************************************
-    //**********************************************************************************************************************
-    //**********************************************************************************************************************
-    //**********************************************************************************************************************
-
 
     //</script>

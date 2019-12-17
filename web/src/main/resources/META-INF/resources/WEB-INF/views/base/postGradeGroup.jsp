@@ -269,8 +269,8 @@
     });
 
     var DynamicForm_Post_Grade_Group_Jsp = isc.DynamicForm.create({
-        width: "750",
-        height: "150",
+        width: "100%",
+        height: "100%",
         align: "center",
         canSubmit: true,
         showInlineErrors: true,
@@ -333,7 +333,6 @@
     var Window_Post_Grade_Group_Jsp = isc.Window.create({
         title: "<spring:message code='post.grade.group'/>",
         width: 700,
-        height: 200,
         align: "center",
         border: "1px solid gray",
         closeClick: function () {
