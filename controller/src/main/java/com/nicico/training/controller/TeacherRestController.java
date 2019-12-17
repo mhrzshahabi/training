@@ -41,8 +41,6 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
-    private final ISubCategoryService subCategoryService;
-    private final ICategoryService categoryService;
 
     // ------------------------------
 
