@@ -139,4 +139,15 @@ public class Tclass extends Auditable {
         trainingPlaceSet.forEach(c -> ids.add(c.getId()));
         return ids;
     }
+
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private String hasWarning;
+
+    @Transient
+    public String getHasWarning() {
+         return "";
+    }
+
 }
