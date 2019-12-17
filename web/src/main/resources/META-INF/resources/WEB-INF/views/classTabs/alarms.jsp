@@ -90,7 +90,7 @@
             },
             dataArrived: function () {
                 if (!this.isEmpty()) {
-                    classAlarmsTab.setIcon("<spring:url value="warning-animated.gif"/>")
+                    classAlarmsTab.setIcon("<spring:url value="warning-animated.gif"/>");
                 } else {
                     classAlarmsTab.setIcon(null);
                 }
