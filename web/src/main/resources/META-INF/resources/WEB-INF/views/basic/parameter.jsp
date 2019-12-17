@@ -36,6 +36,36 @@
         ]
     });
 
+    isc.Menu.create({
+        ID: "ParameterValueMenu_parameter",
+        data: [
+            {
+                title: "<spring:message code="refresh"/>",
+                click: function () {
+                    refreshParameterValueLG_parameter();
+                }
+            },
+            {
+                title: "<spring:message code="create"/>",
+                click: function () {
+                    createParameterValue_parameter();
+                }
+            },
+            {
+                title: "<spring:message code="edit"/>",
+                click: function () {
+                    editParameterValue_parameter();
+                }
+            },
+            {
+                title: "<spring:message code="remove"/>",
+                click: function () {
+                    removeParameterValue_parameter();
+                }
+            },
+        ]
+    });
+
     // ------------------------------------------- ToolStrip -------------------------------------------
     isc.ToolStrip.create({
         ID: "ParameterTypeTS_parameter",
@@ -78,6 +108,47 @@
         ]
     });
 
+    isc.ToolStrip.create({
+        ID: "ParameterValueTS_parameter",
+        width: "100%",
+        membersMargin: 5,
+        members: [
+            isc.ToolStripButtonCreate.create({
+                click: function () {
+                    createParameterValue_parameter();
+                }
+            }),
+            isc.ToolStripButtonEdit.create({
+                click: function () {
+                    editParameterValue_parameter();
+                }
+            }),
+            isc.ToolStripButtonRemove.create({
+                click: function () {
+                    removeParameterValue_parameter();
+                }
+            }),
+            isc.LayoutSpacer.create({
+                width: "*"
+            }),
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    isc.Label.create({
+                        ID: "totalsLabel_parameter"
+                    }),
+                    isc.ToolStripButtonRefresh.create({
+                        click: function () {
+                            refreshParameterValueLG_parameter();
+                        }
+                    }),
+                ]
+            })
+        ]
+    });
+
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
     ParameterTypeDS_parameter = isc.TrDS.create({
         ID: "ParameterTypeDS_parameter",
@@ -87,6 +158,16 @@
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: parameterTypeUrl + "/iscList"
+    });
+
+    ParameterValueDS_parameter = isc.TrDS.create({
+        ID: "ParameterValueDS_parameter",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList"
     });
 
     ParameterTypeLG_parameter = isc.TrLG.create({
