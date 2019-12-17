@@ -22,6 +22,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -214,11 +216,16 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public Float sessionsHourSum(Long classId) {
+    public Long sessionsHourSum(Long classId) {
         List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
-        Float sum = (float)0;
+        Long sum = 0L;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
         for (ClassSessionDTO.Info session : sessions) {
-            sum += Float.valueOf(session.getSessionEndHour().replace(':','.')) - Float.valueOf(session.getSessionStartHour().replace(':','.'));
+            try {
+                sum += sdf.parse(session.getSessionEndHour()).getTime() - sdf.parse(session.getSessionStartHour()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
         }
         return sum;
     }

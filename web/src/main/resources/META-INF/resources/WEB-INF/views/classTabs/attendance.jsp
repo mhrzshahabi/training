@@ -68,7 +68,6 @@
                             message: "<spring:message code='msg.save.changes?'/>",
                             buttonClick: function (button, index) {
                                 this.close();
-                                this.close();
                                 if (index === 0) {
                                     saveBtn.click();
                                 } else {
@@ -96,7 +95,7 @@
                             for (let i = 0; i < JSON.parse(resp.data).length; i++) {
                                 let field1 = {};
                                 field1.name = "se" + JSON.parse(resp.data)[i].id;
-                                field1.title = JSON.parse(resp.data)[i].sessionStartHour + " - " + JSON.parse(resp.data)[i].sessionEndHour;
+                                field1.title = JSON.parse(resp.data)[i].sessionEndHour + " - " + JSON.parse(resp.data)[i].sessionStartHour;
                                 field1.valueMap = attendanceState;
                                 field1.canFilter = false;
                                 field1.showHover = true;
@@ -125,9 +124,7 @@
                                     sessionInOneDate.length = 0;
                                     attendanceGrid.invalidateCache();
                                     for (let j = 0; j < data1[0].length; j++) {
-                                        //     alert(JSON.parse(resp1.data)[j]);
                                         attendanceDS.addData(data1[0][j]);
-                                        // alert(0)
                                     }
                                     causeOfAbsence = data1[1];
                                 }
@@ -254,9 +251,6 @@
                                                     sessionIds.add(this.grid.getAllFields()[i].name.substr(2))
                                                 }
                                             }
-                                            // alert(attendanceGrid.getAllEditRows().toString())
-                                            // alert(item.getGridColNum())
-                                            // alert(attendanceGrid.getEditValue(1, item.getGridColNum()))
                                             isc.RPCManager.sendRequest({
                                                 actionURL: attendanceUrl + "/accept-absent-student?classId=" + ListGrid_Class_JspClass.getSelectedRecord().id + "&studentId=" + form.getValue("studentId") + "&sessionId=" + sessionIds,
                                                 httpMethod: "GET",
@@ -271,13 +265,17 @@
                                                         isc.MyYesNoDialog.create({
                                                             title: "<spring:message code='message'/>",
                                                             message: "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'غیر حضوری' تغییر خواهد کرد",
+                                                            buttons: [
+                                                                isc.IButtonSave.create({title: "موافقم",}),
+                                                                isc.IButtonCancel.create({title: "مخالفم",})],
                                                             buttonClick: function (button, index) {
                                                                 this.close();
                                                                 if (index === 0) {
                                                                     let record1 = attendanceGrid.getSelectedRecord();
                                                                     record1.studentState = "1";
                                                                     attendanceGrid.updateData(record1);
-                                                                    attendanceGrid.saveEdits(null,null,this.rowNum);
+                                                                    // attendanceGrid.saveEdits(null,null,this.rowNum);
+                                                                    attendanceGrid.focusInFilterEditor();
                                                                     return;
                                                                 }
                                                                 item.setValue(oldValue);
@@ -352,6 +350,10 @@
                 isc.IButtonSave.create({
                     ID: "saveBtn",
                     click: function () {
+                        if(attendanceGrid.getAllEditRows().length <= 0){
+                            createDialog("error","تغییری رخ نداده است.","خطا");
+                            return;
+                        }
                         attendanceGrid.endEditing();
                         attendanceGrid.saveAllEdits();
                         setTimeout(function () {
@@ -418,10 +420,19 @@
     }
 
     function loadPage_Attendance() {
+        if(attendanceGrid.getAllEditRows().length>0){
+            return;
+        }
         if (!(ListGrid_Class_JspClass.getSelectedRecord() == null)) {
             DynamicForm_Attendance.setValue("sessionDate", "");
+            DynamicForm_Attendance.getItem("sessionDate").title = "حضور و غیاب کلاس " + getFormulaMessage(ListGrid_Class_JspClass.getSelectedRecord().titleClass,"3px","blue","b") + " براساس تاریخ:";
+            DynamicForm_Attendance.redraw();
             sessionInOneDate.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
+        }
+        else{
+            DynamicForm_Attendance.getItem("sessionDate").title = "حضور و غیاب کلاس براساس تاریخ:";
+            DynamicForm_Attendance.redraw();
         }
     }
 
