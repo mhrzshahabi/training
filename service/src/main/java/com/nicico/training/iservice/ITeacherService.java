@@ -4,6 +4,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.TeachingHistoryDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -36,4 +37,5 @@ public interface ITeacherService {
     void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
 
     void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
+
 }

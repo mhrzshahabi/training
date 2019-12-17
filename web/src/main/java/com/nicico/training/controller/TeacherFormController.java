@@ -33,6 +33,11 @@ public class TeacherFormController {
         return "base/employmentHistory";
     }
 
+    @RequestMapping("/teachingHistory-tab")
+    public String teachingHistoryTab() {
+        return "base/teachingHistory";
+    }
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");

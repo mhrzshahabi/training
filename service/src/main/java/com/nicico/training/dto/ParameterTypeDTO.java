@@ -3,6 +3,8 @@ package com.nicico.training.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -25,7 +27,7 @@ public class ParameterTypeDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterType - Info")
-    public class Info extends ParameterTypeDTO {
+    public static class Info extends ParameterTypeDTO {
         private Long id;
     }
 
@@ -33,21 +35,21 @@ public class ParameterTypeDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterType - Create")
-    public class Create extends ParameterTypeDTO {
+    public static class Create extends ParameterTypeDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterType - Update")
-    public class Update extends ParameterTypeDTO {
+    public static class Update extends ParameterTypeDTO {
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterType - Delete")
-    public class Delete implements Serializable {
+    public static class Delete implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         List<Long> ids;

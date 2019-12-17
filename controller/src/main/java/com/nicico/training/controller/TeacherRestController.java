@@ -9,10 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
@@ -216,6 +213,15 @@ public class TeacherRestController {
     }
 
     @Loggable
+    @PostMapping(value = "/getCategories/{teacherId}")
+    @Transactional
+//    @PreAuthorize("hasAuthority('d_tclass')")
+    public ResponseEntity<List<Long>> getCategories(@PathVariable Long teacherId) {
+        List<Long> categorySet = teacherService.getCategories(teacherId);
+        return new ResponseEntity<>(categorySet, HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping(value = "/employment-history/{teacherId}")
     @Transactional
 //    @PreAuthorize("hasAuthority('d_tclass')")
@@ -268,15 +274,6 @@ public class TeacherRestController {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
-    }
-
-    @Loggable
-    @PostMapping(value = "/getCategories/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<List<Long>> getCategories(@PathVariable Long teacherId) {
-        List<Long> categorySet = teacherService.getCategories(teacherId);
-        return new ResponseEntity<>(categorySet, HttpStatus.OK);
     }
 
     @Loggable

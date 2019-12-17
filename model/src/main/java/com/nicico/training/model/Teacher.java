@@ -50,4 +50,7 @@ public class Teacher extends Auditable {
 
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<EmploymentHistory> employmentHistories;
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<TeachingHistory> teachingHistories;
 }

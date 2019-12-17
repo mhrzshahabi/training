@@ -55,8 +55,9 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/parameterType";
+    const parameterTypeUrl = rootUrl + "/parameter-type";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
+    const teachingHistoryUrl = rootUrl + "/teachingHistory";
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
@@ -796,7 +797,8 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
-    const classStudent = rootUrl + "/classStudent/";
+    const classStudent=rootUrl +"/classStudent/";
+    const classAlarm=rootUrl +"/classAlarm/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();

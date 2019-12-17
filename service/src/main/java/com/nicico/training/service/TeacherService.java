@@ -170,6 +170,19 @@ public class TeacherService implements ITeacherService {
 
     @Transactional
     @Override
+    public List<Long> getCategories(Long teacherId) {
+        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
+        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        Set<Category> currents = teacher.getCategories();
+        List<Long> categories = new ArrayList<>();
+        for (Category current : currents) {
+            categories.add(current.getId());
+        }
+        return categories;
+    }
+
+    @Transactional
+    @Override
     public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
         final Optional<Teacher> cById = teacherDAO.findById(teacherId);
         final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
@@ -195,19 +208,6 @@ public class TeacherService implements ITeacherService {
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
-    }
-
-    @Transactional
-    @Override
-    public List<Long> getCategories(Long teacherId) {
-        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        Set<Category> currents = teacher.getCategories();
-        List<Long> categories = new ArrayList<>();
-        for (Category current : currents) {
-            categories.add(current.getId());
-        }
-        return categories;
     }
 
 }
