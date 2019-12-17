@@ -6,12 +6,13 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.iservice.IEmploymentHistoryService;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.EmploymentHistory;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.EmploymentHistoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
-import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,28 +27,42 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     private final ModelMapper modelMapper;
     private final EmploymentHistoryDAO employmentHistoryDAO;
+    private final ITeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
     public EmploymentHistoryDTO.Info get(Long id) {
-        final Optional<EmploymentHistory> optionalEmploymentHistory = employmentHistoryDAO.findById(id);
-        final EmploymentHistory employmentHistory = optionalEmploymentHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class);
+        return modelMapper.map(getEmploymentHistory(id), EmploymentHistoryDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public List<EmploymentHistoryDTO.Info> list() {
-        List<EmploymentHistory> employmentHistoryList = employmentHistoryDAO.findAll();
-        return modelMapper.map(employmentHistoryList, new TypeToken<List<EmploymentHistoryDTO.Info>>() {
-        }.getType());
+    public EmploymentHistory getEmploymentHistory(Long id) {
+        final Optional<EmploymentHistory> optionalEmploymentHistory = employmentHistoryDAO.findById(id);
+        return optionalEmploymentHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional
     @Override
-    public EmploymentHistoryDTO.Info create(EmploymentHistoryDTO.Create request) {
+    public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        final EmploymentHistoryDTO.Info employmentHistory = get(employmentHistoryId);
         try {
-            return save(modelMapper.map(request, EmploymentHistory.class));
+            teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory, EmploymentHistory.class));
+            employmentHistory.setTeacherId(null);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        EmploymentHistory employmentHistory = new EmploymentHistory();
+        modelMapper.map(request, employmentHistory);
+        try {
+            teacher.getEmploymentHistories().add(employmentHistory);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -56,8 +71,7 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
     @Transactional
     @Override
     public EmploymentHistoryDTO.Info update(Long id, EmploymentHistoryDTO.Update request) {
-        final Optional<EmploymentHistory> optionalEmploymentHistory = employmentHistoryDAO.findById(id);
-        final EmploymentHistory employmentHistory = optionalEmploymentHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final EmploymentHistory employmentHistory = getEmploymentHistory(id);
         employmentHistory.getCategories().clear();
         employmentHistory.getSubCategories().clear();
         EmploymentHistory updating = new EmploymentHistory();
@@ -67,27 +81,6 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
             return save(updating);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void delete(Long id) {
-        try {
-            employmentHistoryDAO.deleteById(id);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void delete(EmploymentHistoryDTO.Delete request) {
-        final List<EmploymentHistory> employmentHistoryList = employmentHistoryDAO.findAllById(request.getIds());
-        try {
-            employmentHistoryDAO.deleteAll(employmentHistoryList);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
     }
 

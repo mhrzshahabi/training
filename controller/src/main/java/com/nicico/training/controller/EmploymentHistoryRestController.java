@@ -16,12 +16,12 @@ import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 
@@ -43,13 +43,6 @@ public class EmploymentHistoryRestController {
         return new ResponseEntity<>(employmentHistoryService.get(id), HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<List<EmploymentHistoryDTO.Info>> list() {
-        return new ResponseEntity<>(employmentHistoryService.list(), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/iscList/{teacherId}")
     public ResponseEntity<ISC<EmploymentHistoryDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
@@ -59,13 +52,42 @@ public class EmploymentHistoryRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/create")
-//    @PreAuthorize("hasAuthority('c_educationLevel')")
-    public ResponseEntity create(@Validated @RequestBody EmploymentHistoryDTO.Create request) {
+    @PostMapping(value = "/{teacherId}")
+    @Transactional
+//    @PreAuthorize("hasAuthority('d_tclass')")
+    public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
+        List<CategoryDTO.Info> categories = null;
+        List<SubCategoryDTO.Info> subCategories = null;
+
+        if (request.get("categories") != null)
+            categories = setCats(request);
+        if (request.get("subCategories") != null)
+            subCategories = setSubCats(request);
+
+        EmploymentHistoryDTO.Create create = modelMapper.map(request, EmploymentHistoryDTO.Create.class);
+        create.setTeacherId(teacherId);
+        if (categories != null && categories.size() > 0)
+            create.setCategories(categories);
+        if (subCategories != null && subCategories.size() > 0)
+            create.setSubCategories(subCategories);
         try {
-            return new ResponseEntity<>(employmentHistoryService.create(request), HttpStatus.OK);
+            employmentHistoryService.addEmploymentHistory(create, teacherId);
+            return new ResponseEntity(HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{teacherId},{id}")
+//    @PreAuthorize("hasAuthority('d_teacher')")
+    public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
+        try {
+            employmentHistoryService.deleteEmploymentHistory(teacherId, id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -73,33 +95,18 @@ public class EmploymentHistoryRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
     public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
-        List<CategoryDTO.Info> categories = new ArrayList<>();
-        List<SubCategoryDTO.Info> subCategories = new ArrayList<>();
+        List<CategoryDTO.Info> categories = null;
+        List<SubCategoryDTO.Info> subCategories = null;
 
-        if (request.get("categories") != null) {
-            SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("categories"));
-            categoriesRequest.setCriteria(criteriaRq);
-            categories = categoryService.search(categoriesRequest).getList();
-            request.remove("categories");
-        }
-        if (request.get("subCategories") != null) {
-            SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("subCategories"));
-            subCategoriesRequest.setCriteria(criteriaRq);
-            subCategories = subCategoryService.search(subCategoriesRequest).getList();
-            request.remove("subCategories");
-        }
+        if (request.get("categories") != null)
+            categories = setCats(request);
+        if (request.get("subCategories") != null)
+            subCategories = setSubCats(request);
+
         EmploymentHistoryDTO.Update update = modelMapper.map(request, EmploymentHistoryDTO.Update.class);
-        if (categories.size() > 0)
+        if (categories != null && categories.size() > 0)
             update.setCategories(categories);
-        if (subCategories.size() > 0)
+        if (subCategories != null && subCategories.size() > 0)
             update.setSubCategories(subCategories);
         try {
             return new ResponseEntity<>(employmentHistoryService.update(id, update), HttpStatus.OK);
@@ -108,25 +115,29 @@ public class EmploymentHistoryRestController {
         }
     }
 
-    @Loggable
-    @DeleteMapping(value = "delete/{id}")
-//    @PreAuthorize("hasAuthority('d_educationLevel')")
-    public ResponseEntity delete(@PathVariable Long id) {
-        try {
-            employmentHistoryService.delete(id);
-            return new ResponseEntity<>(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
-                    HttpStatus.NOT_ACCEPTABLE);
-        }
+    private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
+        SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.inSet);
+        criteriaRq.setFieldName("id");
+        criteriaRq.setValue(request.get("categories"));
+        categoriesRequest.setCriteria(criteriaRq);
+        List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
+        request.remove("categories");
+        return categories;
+
     }
 
-    @Loggable
-    @DeleteMapping(value = "/list")
-//    @PreAuthorize("hasAuthority('d_educationLevel')")
-    public ResponseEntity<Void> delete(@Validated @RequestBody EmploymentHistoryDTO.Delete request) {
-        employmentHistoryService.delete(request);
-        return new ResponseEntity<>(HttpStatus.OK);
+    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
+        SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.inSet);
+        criteriaRq.setFieldName("id");
+        criteriaRq.setValue(request.get("subCategories"));
+        subCategoriesRequest.setCriteria(criteriaRq);
+        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
+        request.remove("subCategories");
+        return subCategories;
     }
+
 }

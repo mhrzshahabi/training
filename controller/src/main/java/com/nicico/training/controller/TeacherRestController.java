@@ -222,61 +222,6 @@ public class TeacherRestController {
     }
 
     @Loggable
-    @PostMapping(value = "/employment-history/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
-        List<CategoryDTO.Info> categories = new ArrayList<>();
-        List<SubCategoryDTO.Info> subCategories = new ArrayList<>();
-
-        if (request.get("categories") != null) {
-            SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("categories"));
-            categoriesRequest.setCriteria(criteriaRq);
-            categories = categoryService.search(categoriesRequest).getList();
-            request.remove("categories");
-        }
-        if (request.get("subCategories") != null) {
-            SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("subCategories"));
-            subCategoriesRequest.setCriteria(criteriaRq);
-            subCategories = subCategoryService.search(subCategoriesRequest).getList();
-            request.remove("subCategories");
-        }
-        EmploymentHistoryDTO.Create create = modelMapper.map(request, EmploymentHistoryDTO.Create.class);
-        create.setTeacherId(teacherId);
-        if (categories.size() > 0)
-            create.setCategories(categories);
-        if (subCategories.size() > 0)
-            create.setSubCategories(subCategories);
-        try {
-            teacherService.addEmploymentHistory(create, teacherId);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/employment-history/{teacherId},{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
-    public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
-        try {
-            teacherService.deleteEmploymentHistory(teacherId, id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
     public void printWithCriteria(HttpServletResponse response,
                                   @PathVariable String type,

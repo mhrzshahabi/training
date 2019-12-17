@@ -170,7 +170,7 @@
                             return DynamicForm_JspEmploymentHistory.getValue("persianStartDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if(DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
                             return true;
                         let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianStartDate"));
                         let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianEndDate"));
@@ -395,7 +395,7 @@
 
     function ListGrid_EmploymentHistory_Add() {
         methodEmploymentHistory = "POST";
-        saveActionUrlEmploymentHistory = teacherUrl + "employment-history/" + teacherIdEmploymentHistory;
+        saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + teacherIdEmploymentHistory;
         DynamicForm_JspEmploymentHistory.clearValues();
         Window_JspEmploymentHistory.show();
     }
@@ -444,8 +444,8 @@
                     this.close();
                     if (index === 0) {
                         waitEmploymentHistory = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl +
-                            "employment-history/" +
+                        isc.RPCManager.sendRequest(TrDSRequest(employmentHistoryUrl +
+                            "/" +
                             teacherIdEmploymentHistory +
                             "," +
                             ListGrid_JspEmploymentHistory.getSelectedRecord().id,
