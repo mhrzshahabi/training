@@ -38,7 +38,4 @@ public interface ITeacherService {
 
     void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
 
-    void addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId);
-
-    void deleteTeachingHistory(Long teacherId, Long teachingHistoryId);
 }

@@ -17,12 +17,14 @@
     RestDataSource_JspTeachingHistory = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "companyName", filterOperator: "iContains"},
-            {name: "jobTitle", filterOperator: "iContains"},
+            {name: "courseTitle", filterOperator: "iContains"},
+            {name: "educationLevelId"},
+            {name: "duration"},
             {name: "categories", filterOperator: "iContains"},
             {name: "subCategories", filterOperator: "iContains"},
             {name: "persianStartDate"},
-            {name: "persianEndDate"}
+            {name: "persianEndDate"},
+            {name: "companyName", filterOperator: "iContains"}
         ]
     });
 
@@ -34,6 +36,11 @@
     RestDataSource_SubCategory_JspTeachingHistory = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: subCategoryUrl + "iscList"
+    });
+
+    RestDataSource_EducationLevel_JspTeachingHistory = isc.TrDS.create({
+        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
+        fetchDataURL: educationUrl + "level/iscList"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -50,8 +57,24 @@
                 title: "<spring:message code='company.name'/>",
             },
             {
-                name: "jobTitle",
-                title: "<spring:message code='job.title'/>",
+                name: "courseTitle",
+                title: "<spring:message code='course.title'/>",
+            },
+            {
+                name: "educationLevelId",
+                title: "<spring:message code='education.level'/>",
+                type: "selectItem",
+                textAlign: "center",
+                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: false,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                },
             },
             {
                 name: "categories",
@@ -125,6 +148,15 @@
                 }
             },
             {
+                name: "duration",
+                title: "<spring:message code='duration'/>",
+                type: "IntegerItem",
+                keyPressFilter: "[0-9]",
+                hint: "<spring:message code='hour'/>",
+                showHintInField: true,
+                length: 5
+            },
+            {
                 name: "persianStartDate",
                 ID: "teachingHistories_startDate_JspTeachingHistory",
                 title: "<spring:message code='start.date'/>",
@@ -170,7 +202,7 @@
                             return DynamicForm_JspTeachingHistory.getValue("persianStartDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if(DynamicForm_JspTeachingHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspTeachingHistory.hasFieldErrors("persianStartDate"))
                             return true;
                         let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianStartDate"));
                         let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianEndDate"));
@@ -264,8 +296,26 @@
                 title: "<spring:message code='company.name'/>",
             },
             {
-                name: "jobTitle",
-                title: "<spring:message code='job.title'/>",
+                name: "courseTitle",
+                title: "<spring:message code='course.title'/>",
+            },
+            {
+                name: "educationLevelId",
+                type: "IntegerItem",
+                title: "<spring:message code='education.level'/>",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
+                canEdit: false,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                filterOperator: "iContains",
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                ]
             },
             {
                 name: "categories",
@@ -316,6 +366,11 @@
                     }
                     return subCat;
                 }
+            },
+            {
+                name: "duration",
+                title: "<spring:message code='duration'/>",
+                filterOperator: "equals"
             },
             {
                 name: "persianStartDate",
@@ -395,7 +450,7 @@
 
     function ListGrid_TeachingHistory_Add() {
         methodTeachingHistory = "POST";
-        saveActionUrlTeachingHistory = teacherUrl + "teaching-history/" + teacherIdTeachingHistory;
+        saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + teacherIdTeachingHistory;
         DynamicForm_JspTeachingHistory.clearValues();
         Window_JspTeachingHistory.show();
     }
@@ -444,8 +499,8 @@
                     this.close();
                     if (index === 0) {
                         waitTeachingHistory = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl +
-                            "teaching-history/" +
+                        isc.RPCManager.sendRequest(TrDSRequest(teachingHistoryUrl +
+                            "/" +
                             teacherIdTeachingHistory +
                             "," +
                             ListGrid_JspTeachingHistory.getSelectedRecord().id,

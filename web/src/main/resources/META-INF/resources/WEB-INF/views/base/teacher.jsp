@@ -1194,6 +1194,7 @@
         padding: 10,
         height: "55%",
         membersMargin: 10,
+        showResizeBar: true,
         members: [TabSet_BasicInfo_JspTeacher, TabSet_Photo_JspTeacher]
     });
 

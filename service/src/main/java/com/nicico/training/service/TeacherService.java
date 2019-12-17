@@ -36,7 +36,6 @@ public class TeacherService implements ITeacherService {
     private final IPersonalInfoService personalInfoService;
     private final IAttachmentService attachmentService;
     private final IEmploymentHistoryService employmentHistoryService;
-    private final ITeachingHistoryService teachingHistoryService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -207,35 +206,6 @@ public class TeacherService implements ITeacherService {
         modelMapper.map(request, employmentHistory);
         try {
             teacher.getEmploymentHistories().add(employmentHistory);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void deleteTeachingHistory(Long teacherId, Long teachingHistoryId) {
-        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        final TeachingHistoryDTO.Info teachingHistory = teachingHistoryService.get(teachingHistoryId);
-        try {
-            teacher.getTeachingHistories().remove(modelMapper.map(teachingHistory, TeachingHistory.class));
-            teachingHistory.setTeacherId(null);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId) {
-
-        final Optional<Teacher> tById = teacherDAO.findById(teacherId);
-        final Teacher teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
-        TeachingHistory teachingHistory = new TeachingHistory();
-        modelMapper.map(request, teachingHistory);
-        try {
-            teacher.getTeachingHistories().add(teachingHistory);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
