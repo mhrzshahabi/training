@@ -55,7 +55,7 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const ParameterUrl = rootUrl + "/parameter-type";
+    const parameterUrl = rootUrl + "/parameter";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
 
