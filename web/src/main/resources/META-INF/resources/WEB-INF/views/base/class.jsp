@@ -1506,8 +1506,7 @@
             {
                 ID: "classAlarmsTab",
                 title: "<spring:message code="alarms"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"}),
-                icon: "<spring:url value="warning-animated.gif"/>"
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
