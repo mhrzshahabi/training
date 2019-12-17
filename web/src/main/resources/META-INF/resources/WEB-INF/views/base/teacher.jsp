@@ -1227,6 +1227,11 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teachingHistory-tab"})
             },
             {
+                ID: "teacherCertification",
+                title: "<spring:message code='teacherCertification'/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherCertification-tab"})
+            },
+            {
                 ID: "attachmentsTab",
                 title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
@@ -1837,6 +1842,9 @@
             if (typeof loadPage_TeachingHistory !== "undefined")
                 loadPage_TeachingHistory(teacherId);
 
+            if (typeof loadPage_TeacherCertification !== "undefined")
+                loadPage_TeacherCertification(teacherId);
+
         }
     }
 
@@ -1849,6 +1857,9 @@
 
         if (typeof clear_TeachingHistory !== "undefined")
             clear_TeachingHistory();
+
+        if (typeof clear_TeacherCertification !== "undefined")
+            clear_TeacherCertification();
     }
 
     // </script>

@@ -88,6 +88,9 @@
     <include file="changes/liq_TeachingHistory.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_TeachingHistory_Category.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_TeachingHistory_SubCategory.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_TeacherCertification.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_TeacherCertification_Category.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_TeacherCertification_SubCategory.xml" relativeToChangelogFile="true"/>
 
     <include file="changes/liq_0_UniqueConstraint.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_0_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>

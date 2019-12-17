@@ -41,4 +41,6 @@ public interface IClassStudentService {
 
 
     ClassStudentDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
+
+    SearchDTO.SearchRs<ClassStudentDTO.Info> search1(SearchDTO.SearchRq request, Long classId);
 }

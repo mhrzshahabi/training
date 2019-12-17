@@ -160,4 +160,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1576497547010-172">
         <createSequence sequenceName="seq_teaching_history_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-180">
+        <createSequence sequenceName="seq_teacher_certification_id"/>
+    </changeSet>
 </databaseChangeLog>

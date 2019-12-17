@@ -247,12 +247,12 @@
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-            RestDataSource_ClassStudent.fetchDataURL = classStudent + "getStudent" + "/" + classRecord.id;
+           // RestDataSource_ClassStudent.fetchDataURL = classStudent + "getStudent" + "/" + classRecord.id;
+              RestDataSource_ClassStudent.fetchDataURL = classStudent + "iscList/" + classRecord.id;
             <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
             ListGrid_Class_Student.fetchData();
             ListGrid_Class_Student.invalidateCache();
         } else {
-// ListGrid_Scores.setFieldProperties(1, {title: " "});
             ListGrid_Class_Student.setData([]);
         }
 
