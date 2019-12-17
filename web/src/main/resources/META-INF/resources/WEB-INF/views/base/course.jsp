@@ -167,13 +167,18 @@
             title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Course_remove()
             }
-        }
+        },
             <%--, {--%>
             <%--title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {--%>
             <%--openTabGoal();--%>
             <%--}--%>
             <%--}--%>
-            , {
+            {
+                title: "<spring:message code='send.to.workflow'/>", click: function () {
+                    sendCourseToWorkflow();
+                }
+            },
+             {
                 isSeparator: true
             }, {
                 title: "<spring:message code="format.pdf"/>",
@@ -1254,14 +1259,14 @@
                     serverOutputAsString: false,
                     callback: function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+
                             ListGrid_Course_refresh();
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
                             simpleDialog("<spring:message code="edit"/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                             // Window_course.close();
-
-                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
-
                             setTimeout(function () {
                                 ListGrid_Course.setSelectedState(gridState);
                             }, 3000);
@@ -2406,7 +2411,17 @@
                     serverOutputAsString: false,
                     callback: function (RpcResponse_o) {
                         console.log(RpcResponse_o);
-                        if (RpcResponse_o.data == 'success') {
+                        if (RpcResponse_o.data === 'success') {
+
+                            ListGrid_Course_refresh();
+
+                            let responseID = sRecord.id;
+
+                            let gridState = "[{id:" + responseID + "}]";
+
+                            ListGrid_Course.setSelectedState(gridState);
+
+                            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
 
                             isc.say("دوره ویرایش و به گردش کار ارسال شد");
                             taskConfirmationWindow.hide();
