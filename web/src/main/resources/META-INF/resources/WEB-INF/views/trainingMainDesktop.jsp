@@ -55,7 +55,7 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/parameter-type";
+    const ParameterUrl = rootUrl + "/parameter-type";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
 
     // -------------------------------------------  Variables  -----------------------------------------------
@@ -363,7 +363,7 @@
                 {
                     title: "<spring:message code="parameter.plural"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/parameter-type/"/>");
+                        createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
                 {

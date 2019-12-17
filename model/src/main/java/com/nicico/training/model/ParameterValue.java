@@ -10,7 +10,7 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(of = "id", callSuper = false)
+@EqualsAndHashCode(of = "id")
 @Entity
 @Table(name = "tbl_parameter_value")
 public class ParameterValue extends Auditable {
@@ -21,16 +21,18 @@ public class ParameterValue extends Auditable {
     private Long id;
 
     @Column(name = "c_title", nullable = false)
-    private String value;
+    private String title;
+
+    @Column(name = "c_code")
+    private String code;
 
     @Column(name = "c_description")
     private String description;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_parameter_type_id", insertable = false, updatable = false)
-    private ParameterType parameterType;
+    @JoinColumn(name = "f_parameter_id", insertable = false, updatable = false)
+    private Parameter parameterType;
 
-    @Column(name = "f_parameter_type_id")
+    @Column(name = "f_parameter_id")
     private Long parameterTypeId;
-
 }

@@ -18,8 +18,8 @@ import javax.servlet.http.HttpServletRequest;
 @RequiredArgsConstructor
 public class MainFormController {
 
-    @RequestMapping("/parameter-type")
-    public String showParameterTypeForm() {
+    @RequestMapping("/parameter")
+    public String showParameterForm() {
         return "basic/parameter";
     }
 

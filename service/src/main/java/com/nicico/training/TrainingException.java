@@ -25,6 +25,7 @@ public class TrainingException extends NICICOException {
     @Getter
     @RequiredArgsConstructor
     public enum ErrorType implements IErrorCode {
+        NotFound(404),
         SkillLevelNotFound(404),
         SkillStandardNotFound(404),
         SkillStandardCategoryNotFound(404),
@@ -78,7 +79,7 @@ public class TrainingException extends NICICOException {
         WrongPostalCode(404),
         ScoresNotFound(404),
         AttendanceNotFound(404),
-        ParameterTypeNotFound(404);
+        ParameterNotFound(404);
 
         private final Integer httpStatusCode;
 

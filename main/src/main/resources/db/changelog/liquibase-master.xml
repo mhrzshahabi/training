@@ -83,7 +83,7 @@
     <include file="changes/liq_EmploymentHistory.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_EmploymentHistory_Category.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_EmploymentHistory_Subcategory.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_ParameterType.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_Parameter.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_ParameterValue.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_TeachingHistory.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_TeachingHistory_Category.xml" relativeToChangelogFile="true"/>
