@@ -3,10 +3,7 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
@@ -68,19 +65,16 @@ public class ClassSessionDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassSessionsInfo")
+    @EqualsAndHashCode(of = {"id"}, callSuper = false)
     public static class Info extends ClassSessionDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
-
         private InstituteDTO.InstituteTitle institute;
-
         private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
-
         private TeacherDTO.TeacherFullNameTuple teacher;
-
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();

@@ -57,6 +57,7 @@
     const attendanceUrl = rootUrl + "/attendance";
     const ParameterUrl = rootUrl + "/parameter-type";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
+    const teachingHistoryUrl = rootUrl + "/teachingHistory";
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;

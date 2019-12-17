@@ -7,7 +7,6 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.model.Attendance;
-import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
@@ -238,9 +237,8 @@ public class AttendanceService implements IAttendanceService {
 
     @Transactional(readOnly = true)
     @Override
-    public Float acceptAbsentHoursForClass(Long classId, Float x) {
-        Float hourSum = tclassService.sessionsHourSum(classId);
-        return hourSum * x ;
+    public Double acceptAbsentHoursForClass(Long classId, Double x) {
+        return tclassService.sessionsHourSum(classId) * x ;
     }
 //    @Transactional(readOnly = true)
 //    @Override

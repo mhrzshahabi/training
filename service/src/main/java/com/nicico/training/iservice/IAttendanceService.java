@@ -36,7 +36,7 @@ public interface IAttendanceService {
 //	@Transactional(readOnly = true)
 //	Integer acceptAbsentHoursForClass(Long classId, Integer x);
 
-	Float acceptAbsentHoursForClass(Long classId, Float x);
+	Double acceptAbsentHoursForClass(Long classId, Double x);
 
 	List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId);
 }

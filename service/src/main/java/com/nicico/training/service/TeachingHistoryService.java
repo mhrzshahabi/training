@@ -4,12 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.iservice.IEmploymentHistoryService;
+import com.nicico.training.dto.TeachingHistoryDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.EmploymentHistory;
+import com.nicico.training.iservice.ITeachingHistoryService;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.repository.EmploymentHistoryDAO;
+import com.nicico.training.model.TeachingHistory;
+import com.nicico.training.repository.TeachingHistoryDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -23,33 +23,33 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EmploymentHistoryService implements IEmploymentHistoryService {
+public class TeachingHistoryService implements ITeachingHistoryService {
 
     private final ModelMapper modelMapper;
-    private final EmploymentHistoryDAO employmentHistoryDAO;
+    private final TeachingHistoryDAO teachingHistoryDAO;
     private final ITeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
-    public EmploymentHistoryDTO.Info get(Long id) {
-        return modelMapper.map(getEmploymentHistory(id), EmploymentHistoryDTO.Info.class);
+    public TeachingHistoryDTO.Info get(Long id) {
+        return modelMapper.map(getTeachingHistory(id), TeachingHistoryDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public EmploymentHistory getEmploymentHistory(Long id) {
-        final Optional<EmploymentHistory> optionalEmploymentHistory = employmentHistoryDAO.findById(id);
-        return optionalEmploymentHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    public TeachingHistory getTeachingHistory(Long id) {
+        final Optional<TeachingHistory> optionalTeachingHistory = teachingHistoryDAO.findById(id);
+        return optionalTeachingHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional
     @Override
-    public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
+    public void deleteTeachingHistory(Long teacherId, Long teachingHistoryId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        final EmploymentHistoryDTO.Info employmentHistory = get(employmentHistoryId);
+        final TeachingHistoryDTO.Info teachingHistory = get(teachingHistoryId);
         try {
-            teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory, EmploymentHistory.class));
-            employmentHistory.setTeacherId(null);
+            teacher.getTeachingHistories().remove(modelMapper.map(teachingHistory, TeachingHistory.class));
+            teachingHistory.setTeacherId(null);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
@@ -57,12 +57,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     @Transactional
     @Override
-    public void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
+    public void addTeachingHistory(TeachingHistoryDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        EmploymentHistory employmentHistory = new EmploymentHistory();
-        modelMapper.map(request, employmentHistory);
+        TeachingHistory teachingHistory = new TeachingHistory();
+        modelMapper.map(request, teachingHistory);
         try {
-            teacher.getEmploymentHistories().add(employmentHistory);
+            teacher.getTeachingHistories().add(teachingHistory);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -70,12 +70,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     @Transactional
     @Override
-    public EmploymentHistoryDTO.Info update(Long id, EmploymentHistoryDTO.Update request) {
-        final EmploymentHistory employmentHistory = getEmploymentHistory(id);
-        employmentHistory.getCategories().clear();
-        employmentHistory.getSubCategories().clear();
-        EmploymentHistory updating = new EmploymentHistory();
-        modelMapper.map(employmentHistory, updating);
+    public TeachingHistoryDTO.Info update(Long id, TeachingHistoryDTO.Update request) {
+        final TeachingHistory teachingHistory = getTeachingHistory(id);
+        teachingHistory.getCategories().clear();
+        teachingHistory.getSubCategories().clear();
+        TeachingHistory updating = new TeachingHistory();
+        modelMapper.map(teachingHistory, updating);
         modelMapper.map(request, updating);
         try {
             return save(updating);
@@ -84,9 +84,10 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         }
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
+    public SearchDTO.SearchRs<TeachingHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (teacherId != null) {
@@ -100,12 +101,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
             } else
                 request.setCriteria(criteriaRq);
         }
-        return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
+        return SearchUtil.search(teachingHistoryDAO, request, teachingHistory -> modelMapper.map(teachingHistory, TeachingHistoryDTO.Info.class));
     }
 
-    private EmploymentHistoryDTO.Info save(EmploymentHistory employmentHistory) {
-        final EmploymentHistory saved = employmentHistoryDAO.saveAndFlush(employmentHistory);
-        return modelMapper.map(saved, EmploymentHistoryDTO.Info.class);
+    private TeachingHistoryDTO.Info save(TeachingHistory teachingHistory) {
+        final TeachingHistory saved = teachingHistoryDAO.saveAndFlush(teachingHistory);
+        return modelMapper.map(saved, TeachingHistoryDTO.Info.class);
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {

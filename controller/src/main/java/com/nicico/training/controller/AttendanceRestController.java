@@ -31,6 +31,9 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalTime;
 import java.util.*;
 
 @Slf4j
@@ -44,7 +47,6 @@ public class AttendanceRestController {
 	private final ReportUtil reportUtil;
 	private final ObjectMapper objectMapper;
 	private final DateUtil dateUtil;
-
 
 	// ------------------------------
 
@@ -82,7 +84,7 @@ public class AttendanceRestController {
 //	@PreAuthorize("hasAuthority('c_attendance')")
 	public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
 												@RequestParam("studentId") Long studentId,
-												@RequestParam("sessionId") List<Long> sessionId) {
+												@RequestParam("sessionId") List<Long> sessionId) throws ParseException {
 //		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
 //		ClassSessionDTO.Info sessionInfo = ;
 //		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
@@ -90,11 +92,12 @@ public class AttendanceRestController {
 		for (Long aLong : sessionId) {
 			classSessions.add(classSessionService.get(aLong));
 		}
-		Float sum = (float) 0;
+		Long sum = 0L;
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
 		for (ClassSessionDTO.Info classSession : classSessions) {
-			sum += Float.valueOf(classSession.getSessionEndHour().replace(':','.')) - Float.valueOf(classSession.getSessionStartHour().replace(':','.'));
+			sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
 		}
-		Float acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, (float) (0.20));
+		Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId,0.2);
 		return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
 	}
 

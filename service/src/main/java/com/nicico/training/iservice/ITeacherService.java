@@ -2,8 +2,8 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.model.Teacher;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -11,6 +11,8 @@ import java.util.List;
 public interface ITeacherService {
 
     TeacherDTO.Info get(Long id);
+
+    Teacher getTeacher(Long id);
 
     List<TeacherDTO.Info> list();
 
@@ -33,7 +35,4 @@ public interface ITeacherService {
 
     List<Long> getCategories(Long teacherId);
 
-    void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId);
-
-    void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId);
 }

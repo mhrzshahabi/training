@@ -9,10 +9,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
@@ -213,61 +210,6 @@ public class TeacherRestController {
     public ResponseEntity addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
         teacherService.addCategories(request, teacherId);
         return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/employment-history/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
-        List<CategoryDTO.Info> categories = new ArrayList<>();
-        List<SubCategoryDTO.Info> subCategories = new ArrayList<>();
-
-        if (request.get("categories") != null) {
-            SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("categories"));
-            categoriesRequest.setCriteria(criteriaRq);
-            categories = categoryService.search(categoriesRequest).getList();
-            request.remove("categories");
-        }
-        if (request.get("subCategories") != null) {
-            SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-            SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-            criteriaRq.setOperator(EOperator.inSet);
-            criteriaRq.setFieldName("id");
-            criteriaRq.setValue(request.get("subCategories"));
-            subCategoriesRequest.setCriteria(criteriaRq);
-            subCategories = subCategoryService.search(subCategoriesRequest).getList();
-            request.remove("subCategories");
-        }
-        EmploymentHistoryDTO.Create create = modelMapper.map(request, EmploymentHistoryDTO.Create.class);
-        create.setTeacherId(teacherId);
-        if (categories.size() > 0)
-            create.setCategories(categories);
-        if (subCategories.size() > 0)
-            create.setSubCategories(subCategories);
-        try {
-            teacherService.addEmploymentHistory(create, teacherId);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/employment-history/{teacherId},{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
-    public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
-        try {
-            teacherService.deleteEmploymentHistory(teacherId, id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
     }
 
     @Loggable

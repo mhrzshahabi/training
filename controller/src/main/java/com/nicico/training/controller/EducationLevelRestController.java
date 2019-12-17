@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -51,6 +52,17 @@ public class EducationLevelRestController {
     public ResponseEntity<List<EducationLevelDTO.Info>> list() {
         return new ResponseEntity<>(educationLevelService.list(), HttpStatus.OK);
     }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<EducationLevelDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<EducationLevelDTO.Info> searchRs = educationLevelService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
 
     @Loggable
     @PostMapping(value = "/create")
