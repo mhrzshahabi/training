@@ -46,7 +46,10 @@
     var ListGrid_Class_Student = isc.TrLG.create({
         selectionType: "single",
         editOnFocus: true,
-//------------
+        //-------------
+        validateOnChange:true,
+
+       //------------
         editByCell: true,
         editEvent: "click",
         modalEditing: true,
@@ -99,7 +102,6 @@
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
-
                     ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                     ListGrid_Class_Student.refreshFields();
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
@@ -114,19 +116,18 @@
                 filterOperator: "iContains",
                 canEdit: true,
                 shouldSaveValue: false,
-                editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue >= 10 && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
+                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+                    if ((10<=newValue && newValue<=20)  && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
                         ListGrid_Cell_score_Update(record, newValue);
                         ListGrid_Cell_failurereason_Update(record, null)
-
                     }
                     else if ((newValue>=0 && newValue < 10) && (editCompletionEvent=="enter" || editCompletionEvent=="click")&& (newValue !==null || newValue !=null)) {
                          ListGrid_Cell_score_Update(record, newValue);
                          createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
                          ListGrid_Cell_scoresState_Update(record, "مردود")
                          ListGrid_Class_Student.refreshFields();
-                    }
 
+                    }
                     else  if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (record.score=== null || record.score== null)&& (newValue == null || newValue===null || record.score ===null) && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
                           ListGrid_Cell_scoresState_Update(record, null)
                           ListGrid_Class_Student.refreshFields();
@@ -135,8 +136,6 @@
                           ListGrid_Cell_failurereason_Update(record, null)
                           ListGrid_Class_Student.refreshFields();
                     }
-
-
                      else if((newValue===null)){
 
                         ListGrid_Cell_scoresState_Update(record, null)
@@ -146,15 +145,19 @@
                         ListGrid_Cell_failurereason_Update(record, null)
                        ListGrid_Class_Student.refreshFields();
                         }
-
                     ListGrid_Class_Student.refreshFields();
+                },
+                validators:{
+                type:"regexp",
+                errorMessage: "<spring:message code="msg.validate.score"/>",
+                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
 
                 },
-            }
+        }
       ],
 
           gridComponents: [ToolStrip_Actions, "filterEditor", "header", "body"],
-        canEditCell: function (rowNum, colNum) {
+          canEditCell: function (rowNum, colNum) {
             var record = this.getRecord(rowNum),
                 fieldName = this.getFieldName(colNum);
             if (fieldName === "failurereason") {
@@ -169,13 +172,12 @@
             }
             return false;
 
-        }
+        },
 
 
     });
 
-
-    var vlayout = isc.VLayout.create({
+        var vlayout = isc.VLayout.create({
         width: "100%",
         members: [ListGrid_Class_Student]
     })
