@@ -19,6 +19,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -47,7 +48,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<ClassStudentDTO.Info> create(@RequestBody ClassStudentDTO.Create req) {
+    public ResponseEntity<ClassStudentDTO.Info> create(@RequestBody Object req) {
         ClassStudentDTO.Create create = modelMapper.map(req, ClassStudentDTO.Create.class);
         return new ResponseEntity<>(classStudentService.create(create), HttpStatus.CREATED);
     }
@@ -58,8 +59,6 @@ public class ClassStudentRestController {
         //ClassStudentDTO.Update update = modelMapper.map(request, ClassStudentDTO.Update.class);
        return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
     }
-
-
 
     @Loggable
     @DeleteMapping(value = "/list")
@@ -133,6 +132,13 @@ public class ClassStudentRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+           @GetMapping(value = "/iscList/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.Info> searchRs =classStudentService.search1(searchRq, classId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 
      @Loggable
     @PostMapping(value = "/edit")
