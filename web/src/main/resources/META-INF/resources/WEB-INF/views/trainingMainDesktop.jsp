@@ -55,7 +55,7 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/parameterType";
+    const parameterTypeUrl = rootUrl + "/parameter-type";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
 
     // -------------------------------------------  Variables  -----------------------------------------------
@@ -952,7 +952,7 @@
         title: "<spring:message code="cancel"/>",
     });
 
-    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
+    createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");
 
 
     // ---------------------------------------- Not Ok - End ----------------------------------------

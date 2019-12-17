@@ -108,6 +108,9 @@
                 totalsLabel_parameter.setContents("&nbsp;");
             }
         },
+        doubleClick: function() {
+            editParameterType_parameter();
+        }
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -216,7 +219,7 @@
                 if ((action == null || action == undefined) || (entityTypeName == null || entityTypeName == undefined) || (entityName == null || entityName == undefined)) {
                     msg = "<spring:message code="msg.operation.successful"/>";
                 } else {
-                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp' + "<spring:message code="successfully.done"/>";
+                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp' + "<spring:message code="msg.successfully.done"/>";
                 }
             } else {
                 msg = "<spring:message code='msg.operation.error'/>";
