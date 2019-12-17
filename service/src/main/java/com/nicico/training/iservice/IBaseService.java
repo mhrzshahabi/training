@@ -14,5 +14,11 @@ public interface IBaseService<E, ID extends Serializable, INFO, CREATE, UPDATE, 
 
     SearchDTO.SearchRs<INFO> search(SearchDTO.SearchRq rq);
 
-    TotalResponse<INFO> search(NICICOCriteria request);
+    TotalResponse<INFO> search(NICICOCriteria rq);
+
+    INFO create(CREATE rq);
+
+    INFO update(ID id, UPDATE rq);
+
+    INFO delete(ID id);
 }
