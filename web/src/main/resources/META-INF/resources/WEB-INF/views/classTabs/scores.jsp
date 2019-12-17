@@ -115,7 +115,7 @@
                 canEdit: true,
                 shouldSaveValue: false,
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue >= 10 && (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
+                    if ((10<=newValue && newValue<=20)&& (editCompletionEvent=="enter" || editCompletionEvent=="click")) {
                         ListGrid_Cell_score_Update(record, newValue);
                         ListGrid_Cell_failurereason_Update(record, null)
 
@@ -146,7 +146,10 @@
                         ListGrid_Cell_failurereason_Update(record, null)
                        ListGrid_Class_Student.refreshFields();
                         }
-
+                         validators:{
+                type:"regexp",
+                errorMessage: "<spring:message code="msg.validate.score"/>",
+                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
                     ListGrid_Class_Student.refreshFields();
 
                 },
