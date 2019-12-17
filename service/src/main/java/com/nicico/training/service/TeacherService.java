@@ -9,7 +9,6 @@ import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.EmploymentHistory;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.model.TeachingHistory;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TeacherDAO;
 import lombok.RequiredArgsConstructor;
