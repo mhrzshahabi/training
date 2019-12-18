@@ -172,7 +172,7 @@
             } else {
                 StudentsCount_student.setContents("&nbsp;");
             }
-        },
+        }
     });
 
     function ListGrid_Cell_CompanyName_Update(record, newValue) {
@@ -252,18 +252,35 @@
         },
         selectionAppearance: "checkbox",
         selectionUpdated: function () {
-            SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
-                if (checkIfAlreadyExist(current)) {
-                    return accumulator
-                } else {
-                    return accumulator.concat([current]);
-                }
 
-                function checkIfAlreadyExist(currentVal) {
-                    return accumulator.some(function (item) {
-                        return (item.nationalCode === currentVal.nationalCode);
+            SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
+
+                if(!nationalCodeExists(current.nationalCode))
+                {
+                    if (checkIfAlreadyExist(current)) {
+                        return accumulator
+                    } else {
+                        return accumulator.concat([current]);
+                    }
+
+                    function checkIfAlreadyExist(currentVal) {
+                        return accumulator.some(function (item) {
+                            return (item.nationalCode === currentVal.nationalCode);
+                        });
+                    }
+                }
+                else {
+                    isc.Dialog.create({
+                        message: "<spring:message code="student.is.duplicate"/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
                     });
                 }
+
             }, []));
 
            // var record = PersonnelsRegLG_student.getSelectedRecord();
@@ -274,6 +291,11 @@
         }
     });
 
+    function nationalCodeExists(nationalCode) {
+        return StudentsLG_student.data.localData.some(function(el) {
+            return el.nationalCode === nationalCode;
+        });
+    }
 
     PersonnelRegDS_student = isc.TrDS.create({
         fields: [
@@ -515,7 +537,7 @@
 
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        console.log(classRecord);
+        // console.log(classRecord);
         if (!(classRecord == undefined || classRecord == null)) {
             StudentsLG_student.fetchData({"classID": classRecord.id});
         }
