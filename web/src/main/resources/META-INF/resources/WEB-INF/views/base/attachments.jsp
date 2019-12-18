@@ -24,6 +24,12 @@
         ]
     });
 
+    RestDataSource_Enum_JspTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "titleFa"}]
+    });
+
     DynamicForm_JspAttachments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
@@ -36,8 +42,21 @@
             },
             {
                 name: "fileTypeId",
-                title: "<spring:message code="attach.file.format"/>",
-                required: true
+                type: "IntegerItem",
+                title: "<spring:message code='attach.file.format'/>",
+                required: true,
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Enum_JspTeacher,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                filterOperator: "iContains",
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                ]
             },
             {
                 name: "description",
@@ -165,6 +184,31 @@
         dataPageSize: 50,
         autoFetchData: false,
         showRollOver: true,
+        fields: [
+            {
+                name: "fileName",
+            },
+            {
+                name: "fileTypeId",
+                type: "IntegerItem",
+                title: "<spring:message code='attach.file.format'/>",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_Enum_JspTeacher,
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                filterOperator: "iContains",
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                ]
+            },
+            {
+                name: "description",
+            }
+        ],
         recordDoubleClick: function (viewer, record) {
             Show_Attachment_Attachments(record);
         }
@@ -227,21 +271,6 @@
     });
 
     ///////////////////////////////////////////////////////functions///////////////////////////////////////
-
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
-        objectTypeAttachment = inputObjectType;
-        objectIdAttachment = inputObjectId;
-        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
-        if (objectTypeAttachment != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
-        RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
-        if (objectIdAttachment != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
-
-        Window_JspAttachments.title = inputTitleAttachment;
-        ListGrid_JspAttachment.fetchData();
-        ListGrid_Attachments_refresh();
-    }
 
     function ListGrid_Attachments_refresh() {
         ListGrid_JspAttachment.invalidateCache();
@@ -354,9 +383,32 @@
         downloadForm.submitForm();
     }
 
-    function clear_Attachments(){
-        ListGrid_JspAttachment.clear();
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
+        objectTypeAttachment = inputObjectType;
+        objectIdAttachment = inputObjectId;
+        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
+        if (objectTypeAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
+        RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
+        if (objectIdAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
+        switch (inputObjectType) {
+            case "Teacher":
+                RestDataSource_Enum_JspTeacher.fetchDataURL = enumUrl + "eTeacherAttachmentType/spec-list";
+                break;
+            case "Tclass":
+                RestDataSource_Enum_JspTeacher.fetchDataURL = enumUrl + "eClassAttachmentType/spec-list";
+                break;
+        }
+        RestDataSource_Enum_JspTeacher.fetchData();
+
+        Window_JspAttachments.title = inputTitleAttachment;
+        ListGrid_JspAttachment.fetchData();
+        ListGrid_Attachments_refresh();
     }
 
+    function clear_Attachments() {
+        ListGrid_JspAttachment.clear();
+    }
 
     //</script>

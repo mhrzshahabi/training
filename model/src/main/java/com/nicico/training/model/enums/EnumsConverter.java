@@ -387,4 +387,44 @@ public abstract class EnumsConverter {
         }
     }
 
+    @Converter(autoApply = true)
+    public static class ETeacherAttachmentTypeConverter implements AttributeConverter<ETeacherAttachmentType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(ETeacherAttachmentType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public ETeacherAttachmentType convertToEntityAttribute(Integer id) {
+
+            for (ETeacherAttachmentType entry : ETeacherAttachmentType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
+    @Converter(autoApply = true)
+    public static class EClassAttachmentTypeConverter implements AttributeConverter<EClassAttachmentType, Integer> {
+
+        @Override
+        public Integer convertToDatabaseColumn(EClassAttachmentType entry) {
+            return entry != null ? entry.getId() : null;
+        }
+
+        @Override
+        public EClassAttachmentType convertToEntityAttribute(Integer id) {
+
+            for (EClassAttachmentType entry : EClassAttachmentType.values()) {
+                if (entry.getId().equals(id)) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+    }
+
 }
