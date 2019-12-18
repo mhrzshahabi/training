@@ -215,7 +215,12 @@
 
     function Edit_Cell_scoresState_Update(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+        var scoreState=JSON.parse(resp.data).scoresState;
+        var record = ListGrid_Class_Student.getSelectedRecord();
+        if (scoreState=="قبول بدون نمره")
+            {
+             ListGrid_Cell_score_Update(record, null)
+            }
         } else {
 
         }
