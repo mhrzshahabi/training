@@ -53,47 +53,42 @@
             ],
             selectionType: "single",
             fields: [
-                // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
                 {
                     name: "targetRecordId",
                     title: "targetRecordId",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "tabName",
                     title: "tabName",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "pageAddress",
                     title: "pageAddress",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    hidden: true
                 },
                 {
                     name: "alarmType",
-                    title: "alarmType",
+                    title: "<spring:message code="alarm.type"/>",
                     align: "center",
                     filterOperator: "iContains"
                 },
                 {
                     name: "alarm",
-                    title: "alarm",
+                    title: "<spring:message code="alarms"/>",
                     align: "center",
                     filterOperator: "iContains"
                 }
             ],
             doubleClick: function () {
                 select_Target();
-            },
-            dataArrived: function () {
-                if (!this.isEmpty()) {
-                    classAlarmsTab.setIcon("<spring:url value="warning-animated.gif"/>");
-                } else {
-                    classAlarmsTab.setIcon(null);
-                }
             }
         });
 

@@ -5,11 +5,11 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
 import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.iservice.ICategoryService;
-import com.nicico.training.iservice.IEmploymentHistoryService;
 import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.iservice.ITeacherCertificationService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -28,67 +28,20 @@ import java.util.List;
 @Slf4j
 @RequiredArgsConstructor
 @RestController
-@RequestMapping(value = "/api/employmentHistory")
-public class EmploymentHistoryRestController {
+@RequestMapping(value = "/api/teacherCertification")
+public class TeacherCertificationRestController {
 
-    private final IEmploymentHistoryService employmentHistoryService;
+    private final ITeacherCertificationService teacherCertificationService;
     private final ISubCategoryService subCategoryService;
     private final ICategoryService categoryService;
     private final ModelMapper modelMapper;
 
-    @Loggable
-    @GetMapping(value = "/{id}")
-//    @PreAuthorize("hasAuthority('r_educationLevel')")
-    public ResponseEntity<EmploymentHistoryDTO.Info> get(@PathVariable Long id) {
-        return new ResponseEntity<>(employmentHistoryService.get(id), HttpStatus.OK);
-    }
-
     @GetMapping(value = "/iscList/{teacherId}")
-    public ResponseEntity<ISC<EmploymentHistoryDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
+    public ResponseEntity<ISC<TeacherCertificationDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long teacherId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs = employmentHistoryService.search(searchRq, teacherId);
+        SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs = teacherCertificationService.search(searchRq, teacherId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addEmploymentHistory(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
-        List<CategoryDTO.Info> categories = null;
-        List<SubCategoryDTO.Info> subCategories = null;
-
-        if (request.get("categories") != null)
-            categories = setCats(request);
-        if (request.get("subCategories") != null)
-            subCategories = setSubCats(request);
-
-        EmploymentHistoryDTO.Create create = modelMapper.map(request, EmploymentHistoryDTO.Create.class);
-        create.setTeacherId(teacherId);
-        if (categories != null && categories.size() > 0)
-            create.setCategories(categories);
-        if (subCategories != null && subCategories.size() > 0)
-            create.setSubCategories(subCategories);
-        try {
-            employmentHistoryService.addEmploymentHistory(create, teacherId);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @Loggable
-    @DeleteMapping(value = "/{teacherId},{id}")
-//    @PreAuthorize("hasAuthority('d_teacher')")
-    public ResponseEntity deleteEmploymentHistory(@PathVariable Long teacherId, @PathVariable Long id) {
-        try {
-            employmentHistoryService.deleteEmploymentHistory(teacherId, id);
-            return new ResponseEntity(HttpStatus.OK);
-        } catch (TrainingException | DataIntegrityViolationException e) {
-            return new ResponseEntity<>(
-                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
     }
 
     @Loggable
@@ -103,15 +56,55 @@ public class EmploymentHistoryRestController {
         if (request.get("subCategories") != null)
             subCategories = setSubCats(request);
 
-        EmploymentHistoryDTO.Update update = modelMapper.map(request, EmploymentHistoryDTO.Update.class);
+        TeacherCertificationDTO.Update update = modelMapper.map(request, TeacherCertificationDTO.Update.class);
         if (categories != null && categories.size() > 0)
             update.setCategories(categories);
         if (subCategories != null && subCategories.size() > 0)
             update.setSubCategories(subCategories);
         try {
-            return new ResponseEntity<>(employmentHistoryService.update(id, update), HttpStatus.OK);
+            return new ResponseEntity<>(teacherCertificationService.update(id, update), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @PostMapping(value = "/{teacherId}")
+    @Transactional
+//    @PreAuthorize("hasAuthority('d_tclass')")
+    public ResponseEntity addTeacherCertification(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
+        List<CategoryDTO.Info> categories = null;
+        List<SubCategoryDTO.Info> subCategories = null;
+
+        if (request.get("categories") != null)
+            categories = setCats(request);
+        if (request.get("subCategories") != null)
+            subCategories = setSubCats(request);
+
+        TeacherCertificationDTO.Create create = modelMapper.map(request, TeacherCertificationDTO.Create.class);
+        create.setTeacherId(teacherId);
+        if (categories != null && categories.size() > 0)
+            create.setCategories(categories);
+        if (subCategories != null && subCategories.size() > 0)
+            create.setSubCategories(subCategories);
+        try {
+            teacherCertificationService.addTeacherCertification(create, teacherId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
+    @Loggable
+    @DeleteMapping(value = "/{teacherId},{id}")
+//    @PreAuthorize("hasAuthority('d_teacher')")
+    public ResponseEntity deleteTeacherCertification(@PathVariable Long teacherId, @PathVariable Long id) {
+        try {
+            teacherCertificationService.deleteTeacherCertification(teacherId, id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
 
@@ -139,5 +132,4 @@ public class EmploymentHistoryRestController {
         request.remove("subCategories");
         return subCategories;
     }
-
 }

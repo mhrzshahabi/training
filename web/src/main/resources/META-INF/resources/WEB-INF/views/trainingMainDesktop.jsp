@@ -55,9 +55,10 @@
     const personnelUrl = rootUrl + "/personnel";
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
-    const parameterTypeUrl = rootUrl + "/parameter-type";
+    const parameterUrl = rootUrl + "/parameter";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
+    const teacherCertificationUrl = rootUrl + "/teacherCertification";
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
@@ -364,7 +365,7 @@
                 {
                     title: "<spring:message code="parameter.plural"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/parameter-type/"/>");
+                        createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
                 {
@@ -953,9 +954,6 @@
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
     });
-
-    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
-
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

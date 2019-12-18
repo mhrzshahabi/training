@@ -17,10 +17,9 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-
 public class TclassDTO {
 
-//    @ApiModelProperty(required = true)
+    //    @ApiModelProperty(required = true)
 //    private Long courseId;
 
     private Long minCapacity;
@@ -84,6 +83,7 @@ public class TclassDTO {
         //        private List<Student> studentSet;
         @Getter(AccessLevel.NONE)
         private TeacherDTO.TeacherFullNameTuple teacher;
+        private String hasWarning;
 
         public String getTeacher() {
             if (teacher != null)

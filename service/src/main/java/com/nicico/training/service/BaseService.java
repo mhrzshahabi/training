@@ -90,7 +90,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Transactional
     public INFO update(ID id, UPDATE rq) {
         final Optional<E> optional = dao.findById(id);
-        final E currentEntity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ParameterTypeNotFound));
+        final E currentEntity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
@@ -101,7 +101,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Transactional
     public INFO delete(ID id) {
         final Optional<E> optional = dao.findById(id);
-        final E entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ParameterTypeNotFound));
+        final E entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         dao.deleteById(id);
         return modelMapper.map(entity, infoType);
     }

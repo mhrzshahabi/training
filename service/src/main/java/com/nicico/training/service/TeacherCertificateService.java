@@ -4,12 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.iservice.IEmploymentHistoryService;
+import com.nicico.training.dto.TeacherCertificationDTO;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.EmploymentHistory;
+import com.nicico.training.iservice.ITeacherCertificationService;
 import com.nicico.training.model.Teacher;
-import com.nicico.training.repository.EmploymentHistoryDAO;
+import com.nicico.training.model.TeacherCertification;
+import com.nicico.training.repository.TeacherCertificationDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -23,33 +23,33 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class EmploymentHistoryService implements IEmploymentHistoryService {
+public class TeacherCertificateService implements ITeacherCertificationService {
 
     private final ModelMapper modelMapper;
-    private final EmploymentHistoryDAO employmentHistoryDAO;
+    private final TeacherCertificationDAO teacherCertificationDAO;
     private final ITeacherService teacherService;
 
     @Transactional(readOnly = true)
     @Override
-    public EmploymentHistoryDTO.Info get(Long id) {
-        return modelMapper.map(getEmploymentHistory(id), EmploymentHistoryDTO.Info.class);
+    public TeacherCertificationDTO.Info get(Long id) {
+        return modelMapper.map(getTeacherCertification(id), TeacherCertificationDTO.Info.class);
     }
 
     @Transactional(readOnly = true)
     @Override
-    public EmploymentHistory getEmploymentHistory(Long id) {
-        final Optional<EmploymentHistory> optionalEmploymentHistory = employmentHistoryDAO.findById(id);
-        return optionalEmploymentHistory.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+    public TeacherCertification getTeacherCertification(Long id) {
+        final Optional<TeacherCertification> optionalTeacherCertification = teacherCertificationDAO.findById(id);
+        return optionalTeacherCertification.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional
     @Override
-    public void deleteEmploymentHistory(Long teacherId, Long employmentHistoryId) {
+    public void deleteTeacherCertification(Long teacherId, Long teacherCertificationId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        final EmploymentHistoryDTO.Info employmentHistory = get(employmentHistoryId);
+        final TeacherCertificationDTO.Info teacherCertification = get(teacherCertificationId);
         try {
-            teacher.getEmploymentHistories().remove(modelMapper.map(employmentHistory, EmploymentHistory.class));
-            employmentHistory.setTeacherId(null);
+            teacher.getTeacherCertifications().remove(modelMapper.map(teacherCertification, TeacherCertification.class));
+            teacherCertification.setTeacherId(null);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.NotDeletable);
         }
@@ -57,12 +57,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     @Transactional
     @Override
-    public void addEmploymentHistory(EmploymentHistoryDTO.Create request, Long teacherId) {
+    public void addTeacherCertification(TeacherCertificationDTO.Create request, Long teacherId) {
         final Teacher teacher = teacherService.getTeacher(teacherId);
-        EmploymentHistory employmentHistory = new EmploymentHistory();
-        modelMapper.map(request, employmentHistory);
+        TeacherCertification teacherCertification = new TeacherCertification();
+        modelMapper.map(request, teacherCertification);
         try {
-            teacher.getEmploymentHistories().add(employmentHistory);
+            teacher.getTeacherCertifications().add(teacherCertification);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
@@ -70,12 +70,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
 
     @Transactional
     @Override
-    public EmploymentHistoryDTO.Info update(Long id, EmploymentHistoryDTO.Update request) {
-        final EmploymentHistory employmentHistory = getEmploymentHistory(id);
-        employmentHistory.getCategories().clear();
-        employmentHistory.getSubCategories().clear();
-        EmploymentHistory updating = new EmploymentHistory();
-        modelMapper.map(employmentHistory, updating);
+    public TeacherCertificationDTO.Info update(Long id, TeacherCertificationDTO.Update request) {
+        final TeacherCertification teacherCertification = getTeacherCertification(id);
+        teacherCertification.getCategories().clear();
+        teacherCertification.getSubCategories().clear();
+        TeacherCertification updating = new TeacherCertification();
+        modelMapper.map(teacherCertification, updating);
         modelMapper.map(request, updating);
         try {
             return save(updating);
@@ -84,9 +84,10 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
         }
     }
 
+
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<EmploymentHistoryDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
+    public SearchDTO.SearchRs<TeacherCertificationDTO.Info> search(SearchDTO.SearchRq request, Long teacherId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (teacherId != null) {
@@ -100,12 +101,12 @@ public class EmploymentHistoryService implements IEmploymentHistoryService {
             } else
                 request.setCriteria(criteriaRq);
         }
-        return SearchUtil.search(employmentHistoryDAO, request, employmentHistory -> modelMapper.map(employmentHistory, EmploymentHistoryDTO.Info.class));
+        return SearchUtil.search(teacherCertificationDAO, request, teacherCertification -> modelMapper.map(teacherCertification, TeacherCertificationDTO.Info.class));
     }
 
-    private EmploymentHistoryDTO.Info save(EmploymentHistory employmentHistory) {
-        final EmploymentHistory saved = employmentHistoryDAO.saveAndFlush(employmentHistory);
-        return modelMapper.map(saved, EmploymentHistoryDTO.Info.class);
+    private TeacherCertificationDTO.Info save(TeacherCertification teacherCertification) {
+        final TeacherCertification saved = teacherCertificationDAO.saveAndFlush(teacherCertification);
+        return modelMapper.map(saved, TeacherCertificationDTO.Info.class);
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {

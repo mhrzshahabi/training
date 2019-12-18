@@ -204,6 +204,7 @@
 
         doubleClick: function () {
             ListGrid_class_edit();
+
         },
         fields: [
             {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -270,6 +271,8 @@
 // },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
+            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"icons/", imageURLSuffix:".gif"}
+
         ]
     });
 
@@ -1493,8 +1496,7 @@
             {
                 ID: "classAlarmsTab",
                 title: "<spring:message code="alarms"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"}),
-                icon: "<spring:url value="warning-animated.gif"/>"
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "tclass/alarms-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab, name) {
@@ -1754,6 +1756,7 @@
     function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
+
             switch (tab.ID) {
                 case "classStudentsTab": {
                     if (typeof loadPage_student !== "undefined")

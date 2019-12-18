@@ -4,21 +4,23 @@
 
 // <script>
 
-    let methodEmploymentHistory = "GET";
-    let saveActionUrlEmploymentHistory;
-    let waitEmploymentHistory;
-    let teacherIdEmploymentHistory = null;
+    let methodTeacherCertification = "GET";
+    let saveActionUrlTeacherCertification;
+    let waitTeacherCertification;
+    let teacherIdTeacherCertification = null;
     let isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    RestDataSource_JspEmploymentHistory = isc.TrDS.create({
+    RestDataSource_JspTeacherCertification = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
+            {name: "courseTitle", filterOperator: "iContains"},
             {name: "companyName", filterOperator: "iContains"},
-            {name: "jobTitle", filterOperator: "iContains"},
+            {name: "companyLocation", filterOperator: "iContains"},
+            {name: "duration"},
             {name: "categories", filterOperator: "iContains"},
             {name: "subCategories", filterOperator: "iContains"},
             {name: "persianStartDate"},
@@ -26,12 +28,12 @@
         ]
     });
 
-    RestDataSource_Category_JspEmploymentHistory = isc.TrDS.create({
+    RestDataSource_Category_JspTeacherCertification = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-    RestDataSource_SubCategory_JspEmploymentHistory = isc.TrDS.create({
+    RestDataSource_SubCategory_JspTeacherCertification = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: subCategoryUrl + "iscList"
     });
@@ -40,25 +42,29 @@
     /*window*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    DynamicForm_JspEmploymentHistory = isc.DynamicForm.create({
+    DynamicForm_JspTeacherCertification = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
+                name: "courseTitle",
+                title: "<spring:message code='course.title'/>",
+            },
+            {
                 name: "companyName",
                 title: "<spring:message code='company.name'/>",
             },
             {
-                name: "jobTitle",
-                title: "<spring:message code='job.title'/>",
+                name: "companyLocation",
+                title: "<spring:message code='location.name'/>",
             },
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
                 type: "selectItem",
                 textAlign: "center",
-                optionDataSource: RestDataSource_Category_JspEmploymentHistory,
+                optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -70,7 +76,7 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let subCategoryField = DynamicForm_JspEmploymentHistory.getField("subCategories");
+                    let subCategoryField = DynamicForm_JspTeacherCertification.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -97,7 +103,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
+                optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -110,11 +116,11 @@
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        let ids = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
+                        let ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
                         if (ids === []) {
-                            RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = null;
+                            RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspEmploymentHistory.implicitCriteria = {
+                            RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -125,8 +131,17 @@
                 }
             },
             {
+                name: "duration",
+                title: "<spring:message code='duration'/>",
+                type: "IntegerItem",
+                keyPressFilter: "[0-9]",
+                hint: "<spring:message code='hour'/>",
+                showHintInField: true,
+                length: 5
+            },
+            {
                 name: "persianStartDate",
-                ID: "employmentHistories_startDate_JspEmploymentHistory",
+                ID: "teachingHistories_startDate_JspTeacherCertification",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -135,7 +150,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('employmentHistories_startDate_JspEmploymentHistory', this, 'ymd', '/');
+                        displayDatePicker('teachingHistories_startDate_JspTeacherCertification', this, 'ymd', '/');
                     }
                 }],
                 validators: [{
@@ -143,14 +158,14 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianEndDate") === undefined;
+                            return DynamicForm_JspTeacherCertification.getValue("persianEndDate") === undefined;
                         return checkBirthDate(value);
                     }
                 }]
             },
             {
                 name: "persianEndDate",
-                ID: "employmentHistories_endDate_JspEmploymentHistory",
+                ID: "teachingHistories_endDate_JspTeacherCertification",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -159,7 +174,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('employmentHistories_endDate_JspEmploymentHistory', this, 'ymd', '/');
+                        displayDatePicker('teachingHistories_endDate_JspTeacherCertification', this, 'ymd', '/');
                     }
                 }],
                 validators: [{
@@ -167,13 +182,13 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspEmploymentHistory.getValue("persianStartDate") === undefined;
+                            return DynamicForm_JspTeacherCertification.getValue("persianStartDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if(DynamicForm_JspEmploymentHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspTeacherCertification.hasFieldErrors("persianStartDate"))
                             return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspEmploymentHistory.getValue("persianEndDate"));
+                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianStartDate"));
+                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianEndDate"));
                         return Date.compareDates(persianStartDate, persianEndDate) === 1;
                     }
                 }]
@@ -181,41 +196,41 @@
         ]
     });
 
-    IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
+    IButton_Save_JspTeacherCertification = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() || !DynamicForm_JspEmploymentHistory.validate())
+            if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() || !DynamicForm_JspTeacherCertification.validate())
                 return;
-            waitEmploymentHistory = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
-                methodEmploymentHistory,
-                JSON.stringify(DynamicForm_JspEmploymentHistory.getValues()),
-                "callback: EmploymentHistory_save_result(rpcResponse)"));
+            waitTeacherCertification = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeacherCertification,
+                methodTeacherCertification,
+                JSON.stringify(DynamicForm_JspTeacherCertification.getValues()),
+                "callback: TeacherCertification_save_result(rpcResponse)"));
         }
     });
 
-    IButton_Cancel_JspEmploymentHistory = isc.TrCancelBtn.create({
+    IButton_Cancel_JspTeacherCertification = isc.TrCancelBtn.create({
         click: function () {
-            DynamicForm_JspEmploymentHistory.clearValues();
-            Window_JspEmploymentHistory.close();
+            DynamicForm_JspTeacherCertification.clearValues();
+            Window_JspTeacherCertification.close();
         }
     });
 
-    HLayout_SaveOrExit_JspEmploymentHistory = isc.TrHLayoutButtons.create({
+    HLayout_SaveOrExit_JspTeacherCertification = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_JspEmploymentHistory, IButton_Cancel_JspEmploymentHistory]
+        members: [IButton_Save_JspTeacherCertification, IButton_Cancel_JspTeacherCertification]
     });
 
-    Window_JspEmploymentHistory = isc.Window.create({
+    Window_JspTeacherCertification = isc.Window.create({
         width: "500",
         align: "center",
         border: "1px solid gray",
-        title: "<spring:message code='employmentHistory'/>",
+        title: "<spring:message code='teacherCertification'/>",
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspEmploymentHistory, HLayout_SaveOrExit_JspEmploymentHistory]
+            members: [DynamicForm_JspTeacherCertification, HLayout_SaveOrExit_JspTeacherCertification]
         })]
     });
 
@@ -223,30 +238,30 @@
     /*Grid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    Menu_JspEmploymentHistory = isc.Menu.create({
+    Menu_JspTeacherCertification = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                ListGrid_EmploymentHistory_refresh();
+                ListGrid_TeacherCertification_refresh();
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                ListGrid_EmploymentHistory_Add();
+                ListGrid_TeacherCertification_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
-                ListGrid_EmploymentHistory_Edit();
+                ListGrid_TeacherCertification_Edit();
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
-                ListGrid_EmploymentHistory_Remove();
+                ListGrid_TeacherCertification_Remove();
             }
         }
         ]
     });
 
-    ListGrid_JspEmploymentHistory = isc.TrLG.create({
-        dataSource: RestDataSource_JspEmploymentHistory,
-        contextMenu: Menu_JspEmploymentHistory,
+    ListGrid_JspTeacherCertification = isc.TrLG.create({
+        dataSource: RestDataSource_JspTeacherCertification,
+        contextMenu: Menu_JspTeacherCertification,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -260,12 +275,16 @@
         align: "center",
         fields: [
             {
+                name: "courseTitle",
+                title: "<spring:message code='course.title'/>",
+            },
+            {
                 name: "companyName",
                 title: "<spring:message code='company.name'/>",
             },
             {
-                name: "jobTitle",
-                title: "<spring:message code='job.title'/>",
+                name: "companyLocation",
+                title: "<spring:message code='location.name'/>",
             },
             {
                 name: "categories",
@@ -318,6 +337,11 @@
                 }
             },
             {
+                name: "duration",
+                title: "<spring:message code='duration'/>",
+                filterOperator: "equals"
+            },
+            {
                 name: "persianStartDate",
                 title: "<spring:message code='start.date'/>",
                 canFilter: false,
@@ -331,55 +355,55 @@
             }
         ],
         doubleClick: function () {
-            ListGrid_EmploymentHistory_Edit();
+            ListGrid_TeacherCertification_Edit();
         }
     });
 
-    ToolStripButton_Refresh_JspEmploymentHistory = isc.ToolStripButtonRefresh.create({
+    ToolStripButton_Refresh_JspTeacherCertification = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_EmploymentHistory_refresh();
+            ListGrid_TeacherCertification_refresh();
         }
     });
 
-    ToolStripButton_Edit_JspEmploymentHistory = isc.ToolStripButtonEdit.create({
+    ToolStripButton_Edit_JspTeacherCertification = isc.ToolStripButtonEdit.create({
         click: function () {
-            ListGrid_EmploymentHistory_Edit();
+            ListGrid_TeacherCertification_Edit();
         }
     });
-    ToolStripButton_Add_JspEmploymentHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonAdd.create({
         click: function () {
-            ListGrid_EmploymentHistory_Add();
+            ListGrid_TeacherCertification_Add();
         }
     });
-    ToolStripButton_Remove_JspEmploymentHistory = isc.ToolStripButtonRemove.create({
+    ToolStripButton_Remove_JspTeacherCertification = isc.ToolStripButtonRemove.create({
         click: function () {
-            ListGrid_EmploymentHistory_Remove();
+            ListGrid_TeacherCertification_Remove();
         }
     });
 
-    ToolStrip_Actions_JspEmploymentHistory = isc.ToolStrip.create({
+    ToolStrip_Actions_JspTeacherCertification = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
-                ToolStripButton_Add_JspEmploymentHistory,
-                ToolStripButton_Edit_JspEmploymentHistory,
-                ToolStripButton_Remove_JspEmploymentHistory,
+                ToolStripButton_Add_JspTeacherCertification,
+                ToolStripButton_Edit_JspTeacherCertification,
+                ToolStripButton_Remove_JspTeacherCertification,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh_JspEmploymentHistory
+                        ToolStripButton_Refresh_JspTeacherCertification
                     ]
                 })
             ]
     });
 
-    VLayout_Body_JspEmploymentHistory = isc.TrVLayout.create({
+    VLayout_Body_JspTeacherCertification = isc.TrVLayout.create({
         members: [
-            ToolStrip_Actions_JspEmploymentHistory,
-            ListGrid_JspEmploymentHistory
+            ToolStrip_Actions_JspTeacherCertification,
+            ListGrid_JspTeacherCertification
         ]
     });
 
@@ -387,53 +411,53 @@
     /*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    function ListGrid_EmploymentHistory_refresh() {
-        ListGrid_JspEmploymentHistory.invalidateCache();
-        // ListGrid_JspEmploymentHistory.filterByEditor();
-        // ListGrid_JspEmploymentHistory.refreshFields();
+    function ListGrid_TeacherCertification_refresh() {
+        ListGrid_JspTeacherCertification.invalidateCache();
+        // ListGrid_JspTeacherCertification.filterByEditor();
+        // ListGrid_JspTeacherCertification.refreshFields();
     }
 
-    function ListGrid_EmploymentHistory_Add() {
-        methodEmploymentHistory = "POST";
-        saveActionUrlEmploymentHistory = teacherUrl + "employment-history/" + teacherIdEmploymentHistory;
-        DynamicForm_JspEmploymentHistory.clearValues();
-        Window_JspEmploymentHistory.show();
+    function ListGrid_TeacherCertification_Add() {
+        methodTeacherCertification = "POST";
+        saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + teacherIdTeacherCertification;
+        DynamicForm_JspTeacherCertification.clearValues();
+        Window_JspTeacherCertification.show();
     }
 
-    function ListGrid_EmploymentHistory_Edit() {
-        let record = ListGrid_JspEmploymentHistory.getSelectedRecord();
+    function ListGrid_TeacherCertification_Edit() {
+        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            methodEmploymentHistory = "PUT";
-            saveActionUrlEmploymentHistory = employmentHistoryUrl + "/" + record.id;
-            DynamicForm_JspEmploymentHistory.clearValues();
-            DynamicForm_JspEmploymentHistory.editRecord(record);
-            let categoryIds = DynamicForm_JspEmploymentHistory.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspEmploymentHistory.getField("subCategories").getValue();
+            methodTeacherCertification = "PUT";
+            saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + record.id;
+            DynamicForm_JspTeacherCertification.clearValues();
+            DynamicForm_JspTeacherCertification.editRecord(record);
+            let categoryIds = DynamicForm_JspTeacherCertification.getField("categories").getValue();
+            let subCategoryIds = DynamicForm_JspTeacherCertification.getField("subCategories").getValue();
             if (categoryIds == null || categoryIds.length === 0)
-                DynamicForm_JspEmploymentHistory.getField("subCategories").disable();
+                DynamicForm_JspTeacherCertification.getField("subCategories").disable();
             else {
-                DynamicForm_JspEmploymentHistory.getField("subCategories").enable();
+                DynamicForm_JspTeacherCertification.getField("subCategories").enable();
                 let catIds = [];
                 for (let i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
-                DynamicForm_JspEmploymentHistory.getField("categories").setValue(catIds);
+                DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
-                DynamicForm_JspEmploymentHistory.getField("subCategories").focus(null, null);
+                DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
                 let subCatIds = [];
                 for (let i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
-                DynamicForm_JspEmploymentHistory.getField("subCategories").setValue(subCatIds);
+                DynamicForm_JspTeacherCertification.getField("subCategories").setValue(subCatIds);
             }
-            Window_JspEmploymentHistory.show();
+            Window_JspTeacherCertification.show();
         }
     }
 
-    function ListGrid_EmploymentHistory_Remove() {
-        let record = ListGrid_JspEmploymentHistory.getSelectedRecord();
+    function ListGrid_TeacherCertification_Remove() {
+        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -443,28 +467,28 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        waitEmploymentHistory = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl +
-                            "employment-history/" +
-                            teacherIdEmploymentHistory +
+                        waitTeacherCertification = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherCertificationUrl +
+                            "/" +
+                            teacherIdTeacherCertification +
                             "," +
-                            ListGrid_JspEmploymentHistory.getSelectedRecord().id,
+                            ListGrid_JspTeacherCertification.getSelectedRecord().id,
                             "DELETE",
                             null,
-                            "callback: EmploymentHistory_remove_result(rpcResponse)"));
+                            "callback: TeacherCertification_remove_result(rpcResponse)"));
                     }
                 }
             });
         }
     }
 
-    function EmploymentHistory_save_result(resp) {
-        waitEmploymentHistory.close();
+    function TeacherCertification_save_result(resp) {
+        waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-            ListGrid_EmploymentHistory_refresh();
-            Window_JspEmploymentHistory.close();
+            ListGrid_TeacherCertification_refresh();
+            Window_JspTeacherCertification.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -479,10 +503,10 @@
         }
     }
 
-    function EmploymentHistory_remove_result(resp) {
-        waitEmploymentHistory.close();
+    function TeacherCertification_remove_result(resp) {
+        waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_EmploymentHistory_refresh();
+            ListGrid_TeacherCertification_refresh();
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
@@ -498,17 +522,17 @@
         }
     }
 
-    function loadPage_EmploymentHistory(id) {
-        if (teacherIdEmploymentHistory !== id) {
-            teacherIdEmploymentHistory = id;
-            RestDataSource_JspEmploymentHistory.fetchDataURL = employmentHistoryUrl + "/iscList/" + teacherIdEmploymentHistory;
-            ListGrid_JspEmploymentHistory.fetchData();
-            ListGrid_EmploymentHistory_refresh();
+    function loadPage_TeacherCertification(id) {
+        if (teacherIdTeacherCertification !== id) {
+            teacherIdTeacherCertification = id;
+            RestDataSource_JspTeacherCertification.fetchDataURL = teacherCertificationUrl + "/iscList/" + teacherIdTeacherCertification;
+            ListGrid_JspTeacherCertification.fetchData();
+            ListGrid_TeacherCertification_refresh();
         }
     }
 
-    function clear_EmploymentHistory() {
-        ListGrid_JspEmploymentHistory.clear();
+    function clear_TeacherCertification() {
+        ListGrid_JspTeacherCertification.clear();
     }
 
     //</script>
