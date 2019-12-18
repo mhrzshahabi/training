@@ -308,7 +308,6 @@
                 displayField: "titleFa",
                 valueField: "id",
                 optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
-                canEdit: false,
                 pickListProperties: {
                     showFilterEditor: false
                 },

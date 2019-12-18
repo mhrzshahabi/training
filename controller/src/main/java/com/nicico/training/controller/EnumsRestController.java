@@ -117,4 +117,14 @@ public class EnumsRestController {
         return new ResponseEntity<>(new EArrangementTypeDTO.EArrangementTypeSpecRs(), HttpStatus.OK);
     }
 
+    @GetMapping("eTeacherAttachmentType/spec-list")
+    public ResponseEntity<ETeacherAttachmentTypeDTO.ETeacherAttachmentTypeSpecRs> ETeacherAttachmentType() {
+        return new ResponseEntity<>(new ETeacherAttachmentTypeDTO.ETeacherAttachmentTypeSpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping("eClassAttachmentType/spec-list")
+    public ResponseEntity<EClassAttachmentTypeDTO.EClassAttachmentTypeSpecRs> EClassAttachmentType() {
+        return new ResponseEntity<>(new EClassAttachmentTypeDTO.EClassAttachmentTypeSpecRs(), HttpStatus.OK);
+    }
+
 }

@@ -389,7 +389,7 @@
             {
                 name: "hduration",
                 colSpan: 2,
-// formatOnBlur:true,
+                formatOnBlur:true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
@@ -398,22 +398,18 @@
                 keyPressFilter: "[0-9.]",
                 mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
                         return "";
                     }
                     return value + " ساعت ";
                 }
             },
             {
-                name: "dduration",
+                name: "dDuration",
                 showTitle: false,
-                disabled: true,
+                canEdit:false,
                 hint: "روز",
                 textAlign: "center",
                 showHintInField: true,
-                keyPressFilter: "[0-9.]",
                 mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
                         if (value) {
@@ -1103,14 +1099,14 @@
 
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
-        width: "90%",
+        // width: "90%",
         minWidth: 1024,
-        autoSize: false,
-        height: "87%",
+        // autoSize: false,
+        // height: "87%",
         keepInParentRect: true,
-// placement:"fillPanel",
-        align: "center",
-        border: "1px solid gray",
+        placement:"fillPanel",
+        // align: "center",
+        // border: "1px solid gray",
 // show: function () {
 // this.Super("show", arguments);
 // for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
@@ -1411,28 +1407,16 @@
         }
     });
 
-    var ToolStripButton_Add_Student_JspClass = isc.ToolStripButton.create({
-
-// icon: "icon/classroom.png",
-        title: " <spring:message code='students.list'/>",
-        click: function () {
-            Add_Student();
-        }
-    });
-
     var ToolStripButton_copy_of_class = isc.ToolStripButton.create({
-// icon: "icon/classroom.png",
         title: "<spring:message code='copy.of.class'/>",
         click: function () {
-            ListGrid_class_edit();
+            ListGrid_class_edit(1);
             setTimeout(function () {
                 evalGroup();
             }, 200);
             setTimeout(function () {
                 classCode();
             }, 700);
-            classMethod = "POST";
-            url = classUrl;
         }
     });
 
@@ -1556,28 +1540,31 @@
         }
     }
 
-    function ListGrid_class_edit() {
+    function ListGrid_class_edit(a = 0) {
         record = classListGrid.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
-// RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
-// DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
-// DynamicForm_Class_JspClass.getField("instituteId").fetchData();
-// DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
-// RestDataSource_Institute_JspClass.mockDataCriteria = {id:record.id};
-// DynamicForm_Class_JspClass.getField("course.id").fetchData();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
-// DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
-            classMethod = "PUT";
-            url = classUrl + record.id;
             VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
-            Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
-            Window_Class_JspClass.show();
-            DynamicForm1_Class_JspClass.setValue("autoValid", false);
+            if(a===0) {
+                classMethod = "PUT";
+                url = classUrl + record.id;
+                Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
+                Window_Class_JspClass.show();
+                DynamicForm1_Class_JspClass.setValue("autoValid", false);
+                getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
+            }
+            else{
+                classMethod = "POST";
+                url = classUrl;
+                Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
+                Window_Class_JspClass.show();
+                DynamicForm1_Class_JspClass.setValue("autoValid", true);
+            }
 
 // RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
         }
@@ -1816,4 +1803,22 @@
                 return false;
             }
         }
+    }
+
+    function getDaysOfClass(classId) {
+        isc.RPCManager.sendRequest({
+            actionURL: attendanceUrl + "/session-date?classId=" + classId,
+            httpMethod: "GET",
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            useSimpleHttp: true,
+            contentType: "application/json; charset=utf-8",
+            showPrompt: false,
+            serverOutputAsString: false,
+            callback: function (resp) {
+                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                    let result = JSON.parse(resp.data).response.data;
+                    DynamicForm_Class_JspClass.setValue("dDuration", result.length);
+                }
+            }
+        });
     }

@@ -31,8 +31,8 @@ public class ParameterValue extends Auditable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_id", insertable = false, updatable = false)
-    private Parameter parameterType;
+    private Parameter parameter;
 
     @Column(name = "f_parameter_id")
-    private Long parameterTypeId;
+    private Long parameterId;
 }

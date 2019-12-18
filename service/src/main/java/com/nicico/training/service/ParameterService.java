@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.Info, ParameterDTO.Create, ParameterDTO.Update, ParameterDTO.Delete, ParameterDAO> {
 
     @Autowired
-    ParameterService(ParameterDAO parameterTypeDAO) {
-        super(new Parameter(), parameterTypeDAO);
+    ParameterService(ParameterDAO parameterDAO) {
+        super(new Parameter(), parameterDAO);
     }
 }

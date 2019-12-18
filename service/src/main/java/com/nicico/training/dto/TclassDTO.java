@@ -32,7 +32,7 @@ public class TclassDTO {
     private String titleClass;
     private String teachingType;//روش آموزش
     private Long hDuration;
-    private Long dDuration;
+//    private Long dDuration;
     private Long supervisor;
     private String reason;
     private String classStatus;

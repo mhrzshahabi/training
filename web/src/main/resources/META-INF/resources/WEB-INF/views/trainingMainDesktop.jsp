@@ -38,7 +38,7 @@
 <body dir="rtl">
 <script type="application/javascript">
 
-    // -------------------------------------------  URLs  -----------------------------------------------
+    // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
@@ -56,19 +56,23 @@
     const personnelRegUrl = rootUrl + "/personnelRegistered";
     const attendanceUrl = rootUrl + "/attendance";
     const parameterUrl = rootUrl + "/parameter";
+    const parameterValueUrl = rootUrl + "/parameter-value";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
-
-    // -------------------------------------------  Variables  -----------------------------------------------
-    var workflowRecordId = null;
-    var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(),new Date().getMonth(),new Date().getDay());
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
     const enNumSpcFilter = "[a-zA-Z0-9 ]";
     const numFilter = "[0-9]";
+
+    // -------------------------------------------  Constant Variables  -----------------------------------------------
+    const dialogShowTime = 2000;
+
+    // -------------------------------------------  Variables  -----------------------------------------------
+    var workflowRecordId = null;
+    var workflowParameters = null;
+    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(),new Date().getMonth(),new Date().getDay());
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
@@ -659,7 +663,7 @@
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
-            dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
+            var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -738,7 +742,10 @@
     }
 
     function createDialog(type, message, title) {
-        dialog = isc.Dialog.create({
+        if (type === 'wait'){
+            message = message ? message : "<spring:message code='in.operation'/>"
+        }
+        var dialog = isc.Dialog.create({
             icon: type + '.png',
             title: title ? title : "<spring:message code="message"/>",
             message: message,
@@ -763,8 +770,6 @@
                 isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
                 isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
-        } else if (type === 'wait') {
-            dialog.message = message ? message : "<spring:message code='in.operation'/>";
         }
         return dialog;
     }
