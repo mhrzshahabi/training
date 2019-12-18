@@ -57,9 +57,9 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code", title: "کد دوره"},
-            {name: "titleFa", title: "نام دوره"},
-            {name:"createdBy",title:"کاربر ایجاد کننده"},
+            {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list"
@@ -303,7 +303,7 @@
                 textAlign: "center",
                 pickListWidth: 500,
                 optionDataSource: RestDataSource_Course_JspClass,
-                autoFetchData: false,
+                // autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
                 filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
@@ -440,16 +440,17 @@
                 useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [
-                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center"},
+                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center", filterOperator: "iContains"},
                     {
                         name: "personality.firstNameFa",
                         title: "<spring:message code='firstName'/>",
-                        titleAlign: "center"
+                        titleAlign: "center", filterOperator: "iContains"
                     },
                     {
                         name: "personality.nationalCode",
                         title: "<spring:message code='national.code'/>",
-                        titleAlign: "center"
+                        titleAlign: "center",
+                        filterOperator: "iContains"
                     }
                 ],
                 filterFields: [
@@ -522,14 +523,14 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
                 pickListFields: [
-                    {name: "titleFa"},
-                    {name: "manager.firstNameFa"},
-                    {name: "manager.lastNameFa"}
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
                 changed: function (form, item, value) {
                     if (form.getValue("instituteId") == null) {
@@ -576,7 +577,7 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
@@ -584,9 +585,9 @@
                 hint: "موسسه",
                 pickListWidth: 500,
                 pickListFields: [
-                    {name: "titleFa"},
-                    {name: "manager.firstNameFa"},
-                    {name: "manager.lastNameFa"}
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
