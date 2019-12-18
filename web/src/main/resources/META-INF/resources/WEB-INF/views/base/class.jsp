@@ -272,7 +272,7 @@
 // },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
-            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"icons/", imageURLSuffix:".gif"}
+            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
         ]
     });
