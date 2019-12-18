@@ -1407,17 +1407,7 @@
         }
     });
 
-    var ToolStripButton_Add_Student_JspClass = isc.ToolStripButton.create({
-
-// icon: "icon/classroom.png",
-        title: " <spring:message code='students.list'/>",
-        click: function () {
-            Add_Student();
-        }
-    });
-
     var ToolStripButton_copy_of_class = isc.ToolStripButton.create({
-// icon: "icon/classroom.png",
         title: "<spring:message code='copy.of.class'/>",
         click: function () {
             ListGrid_class_edit(1);
@@ -1426,13 +1416,7 @@
             }, 200);
             setTimeout(function () {
                 classCode();
-                Window_Class_JspClass.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="class"/>");
-                // DynamicForm_Class_JspClass.setValue("dDuration", "");
-                // Window_Class_JspClass.redraw();
             }, 700);
-            // classMethod = "POST";
-            // url = classUrl;
-
         }
     });
 
@@ -1563,14 +1547,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list";
-// RestDataSource_Institute_JspClass.fetchData([{"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"}]);
-// DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {id:record.instituteId};
-// DynamicForm_Class_JspClass.getField("instituteId").fetchData();
-// DynamicForm_Class_JspClass.getField("instituteId").pickListCriteria = {"fieldName":"titleFa","value":"ایزایرا","operator":"iStartsWith"};
-// RestDataSource_Institute_JspClass.mockDataCriteria = {id:record.id};
-// DynamicForm_Class_JspClass.getField("course.id").fetchData();
             RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + record.instituteId + "/training-places";
-// DynamicForm_Class_JspClass.getField("trainingPlaceIds").fetchData();
             VM_JspClass.clearErrors();
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
@@ -1841,7 +1818,6 @@
                 if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
                     let result = JSON.parse(resp.data).response.data;
                     DynamicForm_Class_JspClass.setValue("dDuration", result.length);
-
                 }
             }
         });
