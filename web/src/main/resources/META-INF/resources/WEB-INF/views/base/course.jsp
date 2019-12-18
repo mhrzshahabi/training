@@ -5,8 +5,7 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-// <script>
+%> // <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -178,7 +177,7 @@
                     sendCourseToWorkflow();
                 }
             },
-             {
+            {
                 isSeparator: true
             }, {
                 title: "<spring:message code="format.pdf"/>",
@@ -799,13 +798,13 @@
                 colSpan: 1,
                 endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
-                prompt: "لطفا طول دوره را به صورت یک عدد وارد کنید",
+                prompt: "لطفا مدت دوره را به صورت یک عدد وارد کنید",
                 // height: "30",
                 required: true,
                 // titleOrientation: "top",
                 textAlign: "center",
                 keyPressFilter: "[0-9.]",
-                requiredMessage: "لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
+                requiredMessage: "لطفا مدت دوره را به صورت یک عدد با حداکثر سه رقم وارد کنید",
                 validators: [{
                     type: "integerRange", min: 0, max: 999,
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
@@ -2050,7 +2049,7 @@
         }, 500)
 
 
-// DynamicForm_course.getFields().get(5).prompt = "لطفا طول دوره را به صورت یک عدد وارد کنید";
+// DynamicForm_course.getFields().get(5).prompt = "لطفا مدت دوره را به صورت یک عدد وارد کنید";
 
     };
 
@@ -2375,6 +2374,9 @@
 
             workflowRecordId = null;
             workflowParameters = null;
+
+            ListGrid_Course_Edit();
+            taskConfirmationWindow.setHeight("90%");
         }
 
     }

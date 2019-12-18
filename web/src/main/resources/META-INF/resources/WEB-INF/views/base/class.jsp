@@ -57,8 +57,9 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name: "code", title: "کد دوره"},
-            {name: "titleFa", title: "نام دوره"},
+            {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
+            {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list"
@@ -271,7 +272,7 @@
 // },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
-            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"icons/", imageURLSuffix:".gif"}
+            {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
         ]
     });
@@ -302,13 +303,14 @@
                 textAlign: "center",
                 pickListWidth: 500,
                 optionDataSource: RestDataSource_Course_JspClass,
-                autoFetchData: false,
+                // autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
-                filterFields: ["titleFa", "code"],
+                filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
                 pickListFields: [
                     {name: "code"},
-                    {name: "titleFa"}
+                    {name: "titleFa"},
+                    {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
@@ -389,7 +391,7 @@
             {
                 name: "hduration",
                 colSpan: 2,
-// formatOnBlur:true,
+                formatOnBlur:true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
@@ -398,9 +400,6 @@
                 keyPressFilter: "[0-9.]",
                 mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
                         return "";
                     }
                     return value + " ساعت ";
@@ -441,16 +440,17 @@
                 useClientFiltering: true,
                 optionDataSource: RestDataSource_Teacher_JspClass,
                 pickListFields: [
-                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center"},
+                    {name: "personality.lastNameFa", title: "<spring:message code='lastName'/>", titleAlign: "center", filterOperator: "iContains"},
                     {
                         name: "personality.firstNameFa",
                         title: "<spring:message code='firstName'/>",
-                        titleAlign: "center"
+                        titleAlign: "center", filterOperator: "iContains"
                     },
                     {
                         name: "personality.nationalCode",
                         title: "<spring:message code='national.code'/>",
-                        titleAlign: "center"
+                        titleAlign: "center",
+                        filterOperator: "iContains"
                     }
                 ],
                 filterFields: [
@@ -523,14 +523,14 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
                 pickListFields: [
-                    {name: "titleFa"},
-                    {name: "manager.firstNameFa"},
-                    {name: "manager.lastNameFa"}
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
                 changed: function (form, item, value) {
                     if (form.getValue("instituteId") == null) {
@@ -577,7 +577,7 @@
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 textAlign: "center",
-                filterFields: ["titleFa", "mobile"],
+                filterFields: ["titleFa", "mobile", "manager.firstNameFa", "manager.lastNameFa"],
 // pickListPlacement: "fillScreen",
 // pickListWidth:300,
                 required: true,
@@ -585,9 +585,9 @@
                 hint: "موسسه",
                 pickListWidth: 500,
                 pickListFields: [
-                    {name: "titleFa"},
-                    {name: "manager.firstNameFa"},
-                    {name: "manager.lastNameFa"}
+                    {name: "titleFa", filterOperator: "iContains"},
+                    {name: "manager.firstNameFa", filterOperator: "iContains"},
+                    {name: "manager.lastNameFa", filterOperator: "iContains"}
                 ],
                 changed: function (form, item) {
                     form.clearValue("trainingPlaceIds")
@@ -1102,14 +1102,14 @@
 
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
-        width: "90%",
+        // width: "90%",
         minWidth: 1024,
-        autoSize: false,
-        height: "87%",
+        // autoSize: false,
+        // height: "87%",
         keepInParentRect: true,
-// placement:"fillPanel",
-        align: "center",
-        border: "1px solid gray",
+        placement:"fillPanel",
+        // align: "center",
+        // border: "1px solid gray",
 // show: function () {
 // this.Super("show", arguments);
 // for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
