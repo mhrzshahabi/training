@@ -59,6 +59,7 @@
             {name: "id", primaryKey: true},
             {name: "code", title: "کد دوره"},
             {name: "titleFa", title: "نام دوره"},
+            {name:"createdBy",title:"کاربر ایجاد کننده"},
             {name: "theoryDuration"},
         ],
         fetchDataURL: courseUrl + "spec-list"
@@ -304,11 +305,12 @@
                 optionDataSource: RestDataSource_Course_JspClass,
                 autoFetchData: false,
                 displayField: "titleFa", valueField: "id",
-                filterFields: ["titleFa", "code"],
+                filterFields: ["titleFa", "code", "createdBy"],
                 required: true,
                 pickListFields: [
                     {name: "code"},
-                    {name: "titleFa"}
+                    {name: "titleFa"},
+                    {name: "createdBy"}
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
