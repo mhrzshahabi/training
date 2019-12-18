@@ -62,7 +62,7 @@
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
     var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(),new Date().getMonth(),new Date().getDay());
+    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -79,7 +79,12 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.ViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        loadingMessage: "<spring:message code="loading"/>",
+    });
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
@@ -91,7 +96,10 @@
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "", useClientFiltering: false,
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+        useClientFiltering: false,
         changeOnKeypress: false,
     });
     isc.defineClass("TrHLayout", HLayout);
@@ -392,6 +400,12 @@
                     title: "<spring:message code="equipment.plural"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/equipment/show-form"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="department"/>",
+                    click: function () {
+                        createTab(this.title, '<spring:url value="/department/show-form"/>');
                     }
                 },
             ]
@@ -797,8 +811,8 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
-    const classStudent=rootUrl +"/classStudent/";
-    const classAlarm=rootUrl +"/classAlarm/";
+    const classStudent = rootUrl + "/classStudent/";
+    const classAlarm = rootUrl + "/classAlarm/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
@@ -859,13 +873,69 @@
         }
     });
 
+    function handleErrors(resp, req) {
+
+        if (resp == null || resp.httpResponseText == null)
+            return;
+
+        const title = {title: "<spring:message code='error'/>"};
+        if (resp.httpResponseCode === 401 || resp.httpResponseCode === 302) {
+            isc.say('<spring:message code="global.form.refresh" />', null, title);
+            return;
+        }
+        if (resp.httpResponseCode === 400) {
+            isc.say('<spring:message code="exception.too-large" />', null, title);
+            return;
+        }
+
+        var errText = "";
+        var response = JSON.parse(resp.httpResponseText);
+
+        if (response == null || response.length === 0)
+            return;
+
+        if (response.errors != null)
+            response.errors.forEach(value => {
+
+                // if (value.field !== "")
+                //     errText += "<strong>" + value.field + "</strong>:<br>";
+                if (value.message != null && value.message !== "") {
+                    if (value.message.startsWith('{') && value.message.endsWith('}'))
+                        errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
+                    else
+                        errText += "<em>" + value.message + "</em><br>";
+                }
+            });
+        else if (response.exception != null)
+            if (response.exception !== "") {
+                if (response.exception.startsWith('{') && response.exception.endsWith('}'))
+                    errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
+                else
+                    errText += "<em>" + response.exception + "</em><br>";
+            }
+
+        if (errText !== "")
+            isc.say(errText, null, title);
+        else if (response.error === "NotFound")
+            isc.say('<spring:message code="exception.record.not−found" />', null, title);
+        else if (response.error === "Unauthorized")
+            isc.say('<spring:message code="exception.unauthorized" />', null, title);
+        else
+            isc.say('<spring:message code="exception.server.connection" />', null, title);
+    }
+
     isc.RPCManager.addClassProperties({
+
         defaultTimeout: 60000,
         willHandleError: true,
-        handleError: function (response, request) {
+        handleError: handleErrors
+    });
+    isc.ViewLoader.addClassProperties({
 
-            isc.say("خطا در اتصال به سرور!");
-        }
+        defaultTimeout: 60000,
+        willHandleError: true,
+        handleError: handleErrors,
+        handleTransportError: handleErrors
     });
 
     function trPrintWithCriteria(url, advancedCriteria) {
