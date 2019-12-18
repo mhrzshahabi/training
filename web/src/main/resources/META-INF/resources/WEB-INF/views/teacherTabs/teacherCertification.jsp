@@ -4,84 +4,67 @@
 
 // <script>
 
-    let methodTeachingHistory = "GET";
-    let saveActionUrlTeachingHistory;
-    let waitTeachingHistory;
-    let teacherIdTeachingHistory = null;
+    let methodTeacherCertification = "GET";
+    let saveActionUrlTeacherCertification;
+    let waitTeacherCertification;
+    let teacherIdTeacherCertification = null;
     let isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    RestDataSource_JspTeachingHistory = isc.TrDS.create({
+    RestDataSource_JspTeacherCertification = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "courseTitle", filterOperator: "iContains"},
-            {name: "educationLevelId"},
+            {name: "companyName", filterOperator: "iContains"},
+            {name: "companyLocation", filterOperator: "iContains"},
             {name: "duration"},
             {name: "categories", filterOperator: "iContains"},
             {name: "subCategories", filterOperator: "iContains"},
             {name: "persianStartDate"},
-            {name: "persianEndDate"},
-            {name: "companyName", filterOperator: "iContains"}
+            {name: "persianEndDate"}
         ]
     });
 
-    RestDataSource_Category_JspTeachingHistory = isc.TrDS.create({
+    RestDataSource_Category_JspTeacherCertification = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: categoryUrl + "spec-list"
     });
 
-    RestDataSource_SubCategory_JspTeachingHistory = isc.TrDS.create({
+    RestDataSource_SubCategory_JspTeacherCertification = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
         fetchDataURL: subCategoryUrl + "iscList"
-    });
-
-    RestDataSource_EducationLevel_JspTeachingHistory = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa", filterOperator: "iContains"}],
-        fetchDataURL: educationUrl + "level/iscList"
     });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*window*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    DynamicForm_JspTeachingHistory = isc.DynamicForm.create({
+    DynamicForm_JspTeacherCertification = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
-            {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
             },
             {
-                name: "educationLevelId",
-                title: "<spring:message code='education.level'/>",
-                type: "selectItem",
-                textAlign: "center",
-                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
-                valueField: "id",
-                displayField: "titleFa",
-                filterFields: ["titleFa"],
-                multiple: false,
-                filterLocally: true,
-                pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
-                },
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
+            },
+            {
+                name: "companyLocation",
+                title: "<spring:message code='location.name'/>",
             },
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
                 type: "selectItem",
                 textAlign: "center",
-                optionDataSource: RestDataSource_Category_JspTeachingHistory,
+                optionDataSource: RestDataSource_Category_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -93,7 +76,7 @@
                 },
                 changed: function () {
                     isCategoriesChanged = true;
-                    let subCategoryField = DynamicForm_JspTeachingHistory.getField("subCategories");
+                    let subCategoryField = DynamicForm_JspTeacherCertification.getField("subCategories");
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -120,7 +103,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeachingHistory,
+                optionDataSource: RestDataSource_SubCategory_JspTeacherCertification,
                 valueField: "id",
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
@@ -133,11 +116,11 @@
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        let ids = DynamicForm_JspTeachingHistory.getField("categories").getValue();
+                        let ids = DynamicForm_JspTeacherCertification.getField("categories").getValue();
                         if (ids === []) {
-                            RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = null;
+                            RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = null;
                         } else {
-                            RestDataSource_SubCategory_JspTeachingHistory.implicitCriteria = {
+                            RestDataSource_SubCategory_JspTeacherCertification.implicitCriteria = {
                                 _constructor: "AdvancedCriteria",
                                 operator: "and",
                                 criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
@@ -158,7 +141,7 @@
             },
             {
                 name: "persianStartDate",
-                ID: "teachingHistories_startDate_JspTeachingHistory",
+                ID: "teachingHistories_startDate_JspTeacherCertification",
                 title: "<spring:message code='start.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -167,7 +150,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('teachingHistories_startDate_JspTeachingHistory', this, 'ymd', '/');
+                        displayDatePicker('teachingHistories_startDate_JspTeacherCertification', this, 'ymd', '/');
                     }
                 }],
                 validators: [{
@@ -175,14 +158,14 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianEndDate") === undefined;
+                            return DynamicForm_JspTeacherCertification.getValue("persianEndDate") === undefined;
                         return checkBirthDate(value);
                     }
                 }]
             },
             {
                 name: "persianEndDate",
-                ID: "teachingHistories_endDate_JspTeachingHistory",
+                ID: "teachingHistories_endDate_JspTeacherCertification",
                 title: "<spring:message code='end.date'/>",
                 hint: todayDate,
                 keyPressFilter: "[0-9/]",
@@ -191,7 +174,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('teachingHistories_endDate_JspTeachingHistory', this, 'ymd', '/');
+                        displayDatePicker('teachingHistories_endDate_JspTeacherCertification', this, 'ymd', '/');
                     }
                 }],
                 validators: [{
@@ -199,13 +182,13 @@
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
                         if (value === undefined)
-                            return DynamicForm_JspTeachingHistory.getValue("persianStartDate") === undefined;
+                            return DynamicForm_JspTeacherCertification.getValue("persianStartDate") === undefined;
                         if (!checkDate(value))
                             return false;
-                        if (DynamicForm_JspTeachingHistory.hasFieldErrors("persianStartDate"))
+                        if (DynamicForm_JspTeacherCertification.hasFieldErrors("persianStartDate"))
                             return true;
-                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianStartDate"));
-                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeachingHistory.getValue("persianEndDate"));
+                        let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianStartDate"));
+                        let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspTeacherCertification.getValue("persianEndDate"));
                         return Date.compareDates(persianStartDate, persianEndDate) === 1;
                     }
                 }]
@@ -213,41 +196,41 @@
         ]
     });
 
-    IButton_Save_JspTeachingHistory = isc.TrSaveBtn.create({
+    IButton_Save_JspTeacherCertification = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_JspTeachingHistory.valuesHaveChanged() || !DynamicForm_JspTeachingHistory.validate())
+            if (!DynamicForm_JspTeacherCertification.valuesHaveChanged() || !DynamicForm_JspTeacherCertification.validate())
                 return;
-            waitTeachingHistory = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeachingHistory,
-                methodTeachingHistory,
-                JSON.stringify(DynamicForm_JspTeachingHistory.getValues()),
-                "callback: TeachingHistory_save_result(rpcResponse)"));
+            waitTeacherCertification = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlTeacherCertification,
+                methodTeacherCertification,
+                JSON.stringify(DynamicForm_JspTeacherCertification.getValues()),
+                "callback: TeacherCertification_save_result(rpcResponse)"));
         }
     });
 
-    IButton_Cancel_JspTeachingHistory = isc.TrCancelBtn.create({
+    IButton_Cancel_JspTeacherCertification = isc.TrCancelBtn.create({
         click: function () {
-            DynamicForm_JspTeachingHistory.clearValues();
-            Window_JspTeachingHistory.close();
+            DynamicForm_JspTeacherCertification.clearValues();
+            Window_JspTeacherCertification.close();
         }
     });
 
-    HLayout_SaveOrExit_JspTeachingHistory = isc.TrHLayoutButtons.create({
+    HLayout_SaveOrExit_JspTeacherCertification = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_JspTeachingHistory, IButton_Cancel_JspTeachingHistory]
+        members: [IButton_Save_JspTeacherCertification, IButton_Cancel_JspTeacherCertification]
     });
 
-    Window_JspTeachingHistory = isc.Window.create({
+    Window_JspTeacherCertification = isc.Window.create({
         width: "500",
         align: "center",
         border: "1px solid gray",
-        title: "<spring:message code='teachingHistory'/>",
+        title: "<spring:message code='teacherCertification'/>",
         items: [isc.TrVLayout.create({
-            members: [DynamicForm_JspTeachingHistory, HLayout_SaveOrExit_JspTeachingHistory]
+            members: [DynamicForm_JspTeacherCertification, HLayout_SaveOrExit_JspTeacherCertification]
         })]
     });
 
@@ -255,30 +238,30 @@
     /*Grid*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    Menu_JspTeachingHistory = isc.Menu.create({
+    Menu_JspTeacherCertification = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                ListGrid_TeachingHistory_refresh();
+                ListGrid_TeacherCertification_refresh();
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
-                ListGrid_TeachingHistory_Add();
+                ListGrid_TeacherCertification_Add();
             }
         }, {
             title: "<spring:message code='edit'/>", click: function () {
-                ListGrid_TeachingHistory_Edit();
+                ListGrid_TeacherCertification_Edit();
             }
         }, {
             title: "<spring:message code='remove'/>", click: function () {
-                ListGrid_TeachingHistory_Remove();
+                ListGrid_TeacherCertification_Remove();
             }
         }
         ]
     });
 
-    ListGrid_JspTeachingHistory = isc.TrLG.create({
-        dataSource: RestDataSource_JspTeachingHistory,
-        contextMenu: Menu_JspTeachingHistory,
+    ListGrid_JspTeacherCertification = isc.TrLG.create({
+        dataSource: RestDataSource_JspTeacherCertification,
+        contextMenu: Menu_JspTeacherCertification,
         sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
@@ -292,30 +275,16 @@
         align: "center",
         fields: [
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
-            },
-            {
                 name: "courseTitle",
                 title: "<spring:message code='course.title'/>",
             },
             {
-                name: "educationLevelId",
-                type: "IntegerItem",
-                title: "<spring:message code='education.level'/>",
-                filterOnKeypress: true,
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
-                canEdit: false,
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                filterOperator: "iContains",
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
-                ]
+                name: "companyName",
+                title: "<spring:message code='company.name'/>",
+            },
+            {
+                name: "companyLocation",
+                title: "<spring:message code='location.name'/>",
             },
             {
                 name: "categories",
@@ -386,55 +355,55 @@
             }
         ],
         doubleClick: function () {
-            ListGrid_TeachingHistory_Edit();
+            ListGrid_TeacherCertification_Edit();
         }
     });
 
-    ToolStripButton_Refresh_JspTeachingHistory = isc.ToolStripButtonRefresh.create({
+    ToolStripButton_Refresh_JspTeacherCertification = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_TeachingHistory_refresh();
+            ListGrid_TeacherCertification_refresh();
         }
     });
 
-    ToolStripButton_Edit_JspTeachingHistory = isc.ToolStripButtonEdit.create({
+    ToolStripButton_Edit_JspTeacherCertification = isc.ToolStripButtonEdit.create({
         click: function () {
-            ListGrid_TeachingHistory_Edit();
+            ListGrid_TeacherCertification_Edit();
         }
     });
-    ToolStripButton_Add_JspTeachingHistory = isc.ToolStripButtonAdd.create({
+    ToolStripButton_Add_JspTeacherCertification = isc.ToolStripButtonAdd.create({
         click: function () {
-            ListGrid_TeachingHistory_Add();
+            ListGrid_TeacherCertification_Add();
         }
     });
-    ToolStripButton_Remove_JspTeachingHistory = isc.ToolStripButtonRemove.create({
+    ToolStripButton_Remove_JspTeacherCertification = isc.ToolStripButtonRemove.create({
         click: function () {
-            ListGrid_TeachingHistory_Remove();
+            ListGrid_TeacherCertification_Remove();
         }
     });
 
-    ToolStrip_Actions_JspTeachingHistory = isc.ToolStrip.create({
+    ToolStrip_Actions_JspTeacherCertification = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
         members:
             [
-                ToolStripButton_Add_JspTeachingHistory,
-                ToolStripButton_Edit_JspTeachingHistory,
-                ToolStripButton_Remove_JspTeachingHistory,
+                ToolStripButton_Add_JspTeacherCertification,
+                ToolStripButton_Edit_JspTeacherCertification,
+                ToolStripButton_Remove_JspTeacherCertification,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
                     border: '0px',
                     members: [
-                        ToolStripButton_Refresh_JspTeachingHistory
+                        ToolStripButton_Refresh_JspTeacherCertification
                     ]
                 })
             ]
     });
 
-    VLayout_Body_JspTeachingHistory = isc.TrVLayout.create({
+    VLayout_Body_JspTeacherCertification = isc.TrVLayout.create({
         members: [
-            ToolStrip_Actions_JspTeachingHistory,
-            ListGrid_JspTeachingHistory
+            ToolStrip_Actions_JspTeacherCertification,
+            ListGrid_JspTeacherCertification
         ]
     });
 
@@ -442,53 +411,53 @@
     /*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    function ListGrid_TeachingHistory_refresh() {
-        ListGrid_JspTeachingHistory.invalidateCache();
-        // ListGrid_JspTeachingHistory.filterByEditor();
-        // ListGrid_JspTeachingHistory.refreshFields();
+    function ListGrid_TeacherCertification_refresh() {
+        ListGrid_JspTeacherCertification.invalidateCache();
+        // ListGrid_JspTeacherCertification.filterByEditor();
+        // ListGrid_JspTeacherCertification.refreshFields();
     }
 
-    function ListGrid_TeachingHistory_Add() {
-        methodTeachingHistory = "POST";
-        saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + teacherIdTeachingHistory;
-        DynamicForm_JspTeachingHistory.clearValues();
-        Window_JspTeachingHistory.show();
+    function ListGrid_TeacherCertification_Add() {
+        methodTeacherCertification = "POST";
+        saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + teacherIdTeacherCertification;
+        DynamicForm_JspTeacherCertification.clearValues();
+        Window_JspTeacherCertification.show();
     }
 
-    function ListGrid_TeachingHistory_Edit() {
-        let record = ListGrid_JspTeachingHistory.getSelectedRecord();
+    function ListGrid_TeacherCertification_Edit() {
+        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            methodTeachingHistory = "PUT";
-            saveActionUrlTeachingHistory = teachingHistoryUrl + "/" + record.id;
-            DynamicForm_JspTeachingHistory.clearValues();
-            DynamicForm_JspTeachingHistory.editRecord(record);
-            let categoryIds = DynamicForm_JspTeachingHistory.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspTeachingHistory.getField("subCategories").getValue();
+            methodTeacherCertification = "PUT";
+            saveActionUrlTeacherCertification = teacherCertificationUrl + "/" + record.id;
+            DynamicForm_JspTeacherCertification.clearValues();
+            DynamicForm_JspTeacherCertification.editRecord(record);
+            let categoryIds = DynamicForm_JspTeacherCertification.getField("categories").getValue();
+            let subCategoryIds = DynamicForm_JspTeacherCertification.getField("subCategories").getValue();
             if (categoryIds == null || categoryIds.length === 0)
-                DynamicForm_JspTeachingHistory.getField("subCategories").disable();
+                DynamicForm_JspTeacherCertification.getField("subCategories").disable();
             else {
-                DynamicForm_JspTeachingHistory.getField("subCategories").enable();
+                DynamicForm_JspTeacherCertification.getField("subCategories").enable();
                 let catIds = [];
                 for (let i = 0; i < categoryIds.length; i++)
                     catIds.add(categoryIds[i].id);
-                DynamicForm_JspTeachingHistory.getField("categories").setValue(catIds);
+                DynamicForm_JspTeacherCertification.getField("categories").setValue(catIds);
                 isCategoriesChanged = true;
-                DynamicForm_JspTeachingHistory.getField("subCategories").focus(null, null);
+                DynamicForm_JspTeacherCertification.getField("subCategories").focus(null, null);
             }
             if (subCategoryIds != null && subCategoryIds.length > 0) {
                 let subCatIds = [];
                 for (let i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
-                DynamicForm_JspTeachingHistory.getField("subCategories").setValue(subCatIds);
+                DynamicForm_JspTeacherCertification.getField("subCategories").setValue(subCatIds);
             }
-            Window_JspTeachingHistory.show();
+            Window_JspTeacherCertification.show();
         }
     }
 
-    function ListGrid_TeachingHistory_Remove() {
-        let record = ListGrid_JspTeachingHistory.getSelectedRecord();
+    function ListGrid_TeacherCertification_Remove() {
+        let record = ListGrid_JspTeacherCertification.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -498,28 +467,28 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        waitTeachingHistory = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(teachingHistoryUrl +
+                        waitTeacherCertification = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherCertificationUrl +
                             "/" +
-                            teacherIdTeachingHistory +
+                            teacherIdTeacherCertification +
                             "," +
-                            ListGrid_JspTeachingHistory.getSelectedRecord().id,
+                            ListGrid_JspTeacherCertification.getSelectedRecord().id,
                             "DELETE",
                             null,
-                            "callback: TeachingHistory_remove_result(rpcResponse)"));
+                            "callback: TeacherCertification_remove_result(rpcResponse)"));
                     }
                 }
             });
         }
     }
 
-    function TeachingHistory_save_result(resp) {
-        waitTeachingHistory.close();
+    function TeacherCertification_save_result(resp) {
+        waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-            ListGrid_TeachingHistory_refresh();
-            Window_JspTeachingHistory.close();
+            ListGrid_TeacherCertification_refresh();
+            Window_JspTeacherCertification.close();
             setTimeout(function () {
                 OK.close();
             }, 3000);
@@ -534,10 +503,10 @@
         }
     }
 
-    function TeachingHistory_remove_result(resp) {
-        waitTeachingHistory.close();
+    function TeacherCertification_remove_result(resp) {
+        waitTeacherCertification.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            ListGrid_TeachingHistory_refresh();
+            ListGrid_TeacherCertification_refresh();
             let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
@@ -553,17 +522,17 @@
         }
     }
 
-    function loadPage_TeachingHistory(id) {
-        if (teacherIdTeachingHistory !== id) {
-            teacherIdTeachingHistory = id;
-            RestDataSource_JspTeachingHistory.fetchDataURL = teachingHistoryUrl + "/iscList/" + teacherIdTeachingHistory;
-            ListGrid_JspTeachingHistory.fetchData();
-            ListGrid_TeachingHistory_refresh();
+    function loadPage_TeacherCertification(id) {
+        if (teacherIdTeacherCertification !== id) {
+            teacherIdTeacherCertification = id;
+            RestDataSource_JspTeacherCertification.fetchDataURL = teacherCertificationUrl + "/iscList/" + teacherIdTeacherCertification;
+            ListGrid_JspTeacherCertification.fetchData();
+            ListGrid_TeacherCertification_refresh();
         }
     }
 
-    function clear_TeachingHistory() {
-        ListGrid_JspTeachingHistory.clear();
+    function clear_TeacherCertification() {
+        ListGrid_JspTeacherCertification.clear();
     }
 
     //</script>

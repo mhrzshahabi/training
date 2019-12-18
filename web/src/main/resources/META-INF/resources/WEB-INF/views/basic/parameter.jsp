@@ -72,6 +72,7 @@
         ID: "ParameterTS_parameter",
         width: "100%",
         membersMargin: 5,
+        border: "0px solid",
         members: [
             isc.ToolStripButtonCreate.create({
                 click: function () {
@@ -91,21 +92,14 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.Label.create({
-                        ID: "totalsLabel_parameter"
-                    }),
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                            refreshParameterLG_parameter();
-                        }
-                    }),
-                ]
-            })
+            isc.Label.create({
+                ID: "CountParameterLG_parameter"
+            }),
+            isc.ToolStripButtonRefresh.create({
+                click: function () {
+                    refreshParameterLG_parameter();
+                }
+            }),
         ]
     });
 
@@ -113,6 +107,7 @@
         ID: "ParameterValueTS_parameter",
         width: "100%",
         membersMargin: 5,
+        border: "0px solid",
         members: [
             isc.ToolStripButtonCreate.create({
                 click: function () {
@@ -132,21 +127,14 @@
             isc.LayoutSpacer.create({
                 width: "*"
             }),
-            isc.ToolStrip.create({
-                width: "100%",
-                align: "left",
-                border: '0px',
-                members: [
-                    isc.Label.create({
-                        ID: "totalsLabel_parameter"
-                    }),
-                    isc.ToolStripButtonRefresh.create({
-                        click: function () {
-                            refreshParameterValueLG_parameter();
-                        }
-                    }),
-                ]
-            })
+            isc.Label.create({
+                ID: "CountParameterValueLG_parameter"
+            }),
+            isc.ToolStripButtonRefresh.create({
+                click: function () {
+                    refreshParameterValueLG_parameter();
+                }
+            }),
         ]
     });
 
@@ -166,6 +154,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: parameterValueUrl + "/iscList"
@@ -185,12 +174,12 @@
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsLabel_parameter.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                CountParameterLG_parameter.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                totalsLabel_parameter.setContents("&nbsp;");
+                CountParameterLG_parameter.setContents("&nbsp;");
             }
         },
-        doubleClick: function() {
+        doubleClick: function () {
             editParameter_parameter();
         }
     });
@@ -200,6 +189,7 @@
         dataSource: ParameterValueDS_parameter,
         fields: [
             {name: "title",},
+            {name: "code",},
             {name: "description",},
         ],
         autoFetchData: true,
@@ -209,12 +199,12 @@
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
             if (totalRows >= 0 && this.data.lengthIsKnown()) {
-                totalsLabel_parameter.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+                CountParameterValueLG_parameter.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
             } else {
-                totalsLabel_parameter.setContents("&nbsp;");
+                CountParameterValueLG_parameter.setContents("&nbsp;");
             }
         },
-        doubleClick: function() {
+        doubleClick: function () {
             editParameterValue_parameter();
         }
     });
@@ -235,6 +225,24 @@
         ]
     });
 
+    ParameterValueDF_parameter = isc.DynamicForm.create({
+        ID: "ParameterValueDF_parameter",
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "title", title: "<spring:message code="title"/>",
+                required: true, validators: [TrValidators.NotEmpty],
+            },
+            {
+                name: "code", title: "<spring:message code="code"/>",
+            },
+            {
+                name: "description", title: "<spring:message code="description"/>",
+                type: "TextAreaItem",
+            },
+        ]
+    });
+
     ParameterWin_parameter = isc.Window.create({
         ID: "ParameterWin_parameter",
         width: 800,
@@ -246,15 +254,15 @@
                             return;
                         }
                         let parameterSaveUrl = parameterUrl;
-                        let parameterAction = '<spring:message code="create"/>';
+                        action = '<spring:message code="create"/>';
                         if (parameterMethod_parameter.localeCompare("PUT") == 0) {
                             let record = ParameterLG_parameter.getSelectedRecord();
                             parameterSaveUrl += "/" + record.id;
-                            parameterAction = '<spring:message code="edit"/>';
+                            action = '<spring:message code="edit"/>';
                         }
                         let data = ParameterDF_parameter.getValues();
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + parameterAction + "','" + "<spring:message code="parameter.type"/>" + "')")
+                            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter"/>" + "')")
                         );
                     }
                 }),
@@ -267,9 +275,45 @@
         }),]
     });
 
+    ParameterValueWin_parameter = isc.Window.create({
+        ID: "ParameterValueWin_parameter",
+        width: 800,
+        items: [ParameterValueDF_parameter, isc.TrHLayoutButtons.create({
+            members: [
+                isc.IButtonSave.create({
+                    click: function () {
+                        if (!ParameterValueDF_parameter.validate()) {
+                            return;
+                        }
+                        let parameterValueSaveUrl = parameterValueUrl;
+                        let action = '<spring:message code="create"/>';
+                        if (parameterValueMethod_parameter.localeCompare("PUT") == 0) {
+                            let record = ParameterValueLG_parameter.getSelectedRecord();
+                            parameterValueSaveUrl += "/" + record.id;
+                            action = '<spring:message code="edit"/>';
+                        }
+                        let data = ParameterValueDF_parameter.getValues();
+                        isc.RPCManager.sendRequest(
+                            TrDSRequest(parameterValueSaveUrl, parameterValueMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.value"/>" + "')")
+                        );
+                    }
+                }),
+                isc.IButtonCancel.create({
+                    click: function () {
+                        ParameterWin_parameter.close();
+                    }
+                }),
+            ],
+        }),]
+    });
+
+
     // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
-        members: [ParameterLG_parameter],
+    isc.TrHLayout.create({
+        members: [
+            ParameterLG_parameter,
+            ParameterValueLG_parameter,
+        ]
     });
 
     // ------------------------------------------- Functions -------------------------------------------
@@ -303,7 +347,7 @@
                     this.close();
                     if (index == 0) {
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(parameterUrl + "/" + record.id, "DELETE", null, "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "','" + "<spring:message code="parameter.type"/>" + "')")
+                            TrDSRequest(parameterUrl + "/" + record.id, "DELETE", null, "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "','" + "<spring:message code="parameter"/>" + "')")
                         );
                     }
                 }
@@ -330,7 +374,10 @@
             } else {
                 msg = "<spring:message code='msg.operation.error'/>";
             }
-            createDialog("info", msg);
+            var dialog = createDialog("info", msg);
+            Timer.setTimeout(function () {
+                dialog.close();
+            }, dialogShowTime);
             ParameterWin_parameter.close();
             refreshParameterLG_parameter();
         }
@@ -342,6 +389,9 @@
         }
         if (showDialog) {
             let dialog = createDialog("info", msg ? msg : "<spring:message code="msg.no.records.selected"/>");
+            Timer.setTimeout(function () {
+                dialog.close();
+            }, dialogShowTime);
         }
         return false;
     }

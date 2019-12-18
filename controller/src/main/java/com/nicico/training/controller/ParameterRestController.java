@@ -16,42 +16,42 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/parameter-type")
+@RequestMapping("/api/parameter")
 public class ParameterRestController {
 
-    private final ParameterService parameterTypeService;
+    private final ParameterService parameterService;
     private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping("/list")
     public ResponseEntity<List<ParameterDTO.Info>> list() {
-        return new ResponseEntity<>(parameterTypeService.list(), HttpStatus.OK);
+        return new ResponseEntity<>(parameterService.list(), HttpStatus.OK);
     }
 
     @Loggable
     @GetMapping(value = "/iscList")
     public ResponseEntity<TotalResponse<ParameterDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
-        return new ResponseEntity<>(parameterTypeService.search(nicicoCriteria), HttpStatus.OK);
+        return new ResponseEntity<>(parameterService.search(nicicoCriteria), HttpStatus.OK);
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<ParameterDTO.Info> create(@RequestBody Object rq) {
         ParameterDTO.Create create = modelMapper.map(rq, ParameterDTO.Create.class);
-        return new ResponseEntity<>(parameterTypeService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(parameterService.create(create), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/{id}")
     public ResponseEntity<ParameterDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
         ParameterDTO.Update update = modelMapper.map(rq, ParameterDTO.Update.class);
-        return new ResponseEntity<>(parameterTypeService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(parameterService.update(id, update), HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<ParameterDTO.Info> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(parameterTypeService.delete(id), HttpStatus.OK);
+        return new ResponseEntity<>(parameterService.delete(id), HttpStatus.OK);
     }
 }

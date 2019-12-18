@@ -23,6 +23,8 @@ public class ParameterValueDTO implements Serializable {
     private String title;
     private String code;
     private String description;
+    @ApiModelProperty(required = true)
+    private Long parameterId;
 
     @Getter
     @Setter
