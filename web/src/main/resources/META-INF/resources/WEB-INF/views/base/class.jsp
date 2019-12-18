@@ -389,7 +389,7 @@
             {
                 name: "hduration",
                 colSpan: 2,
-// formatOnBlur:true,
+                formatOnBlur:true,
                 title: "<spring:message code='duration'/>:",
                 hint: "<spring:message code='hour'/>",
                 textAlign: "center",
@@ -398,9 +398,6 @@
                 keyPressFilter: "[0-9.]",
                 mapValueToDisplay: function (value) {
                     if (isNaN(value)) {
-                        if (value) {
-                            return value;
-                        }
                         return "";
                     }
                     return value + " ساعت ";
@@ -1102,14 +1099,14 @@
 
     var Window_Class_JspClass = isc.Window.create({
         title: "<spring:message code='class'/>",
-        width: "90%",
+        // width: "90%",
         minWidth: 1024,
-        autoSize: false,
-        height: "87%",
+        // autoSize: false,
+        // height: "87%",
         keepInParentRect: true,
-// placement:"fillPanel",
-        align: "center",
-        border: "1px solid gray",
+        placement:"fillPanel",
+        // align: "center",
+        // border: "1px solid gray",
 // show: function () {
 // this.Super("show", arguments);
 // for (i = 0; i < document.getElementsByClassName("textItemLiteRTL").length; i++) {
