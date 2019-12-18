@@ -25,16 +25,16 @@ public class AuthorizationUtil {
             case Get:
             case List:
             case Search:
-                return entityName + "_Show";
+                return entityName + "_R";
             case Create:
             case CreateAll:
-                return entityName + "_Create";
+                return entityName + "_C";
             case Update:
             case UpdateAll:
-                return entityName + "_Update";
+                return entityName + "_U";
             case Delete:
             case DeleteAll:
-                return entityName + "_Delete";
+                return entityName + "_D";
             default:
                 return entityName;
         }
