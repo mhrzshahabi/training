@@ -30,12 +30,17 @@ public class TeacherFormController {
 
     @RequestMapping("/employmentHistory-tab")
     public String employmentHistoryTab() {
-        return "base/employmentHistory";
+        return "teacherTabs/employmentHistory";
     }
 
     @RequestMapping("/teachingHistory-tab")
     public String teachingHistoryTab() {
-        return "base/teachingHistory";
+        return "teacherTabs/teachingHistory";
+    }
+
+    @RequestMapping("/teacherCertification-tab")
+    public String teacherCertificationTab() {
+        return "teacherTabs/teacherCertification";
     }
 
     @PostMapping("/printWithCriteria/{type}")

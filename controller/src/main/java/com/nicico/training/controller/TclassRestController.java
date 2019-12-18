@@ -12,6 +12,7 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -42,6 +43,7 @@ public class TclassRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final ClassAlarmService classAlarmService;
 
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
@@ -146,6 +148,14 @@ public class TclassRestController {
                 .setCount(endRow - startRow);
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
+
+        for(TclassDTO.Info tclassDTO :response.getList())
+        {
+            if(classAlarmService.list(tclassDTO.getId()).size() > 0)
+                tclassDTO.setHasWarning("alarm");
+            else
+                tclassDTO.setHasWarning("");
+        }
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();

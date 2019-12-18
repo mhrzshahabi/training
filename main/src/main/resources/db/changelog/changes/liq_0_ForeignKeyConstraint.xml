@@ -417,5 +417,20 @@
     <changeSet author="ghazanfari_f (generated)" id="1576570814372-180">
         <addForeignKeyConstraint baseColumnNames="f_parameter_id" baseTableName="tbl_parameter_value" constraintName="FKkhd9bcn01y1vgtp4yorc13ti9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-185">
+        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_certification_category" constraintName="FK1qq16758gnawirf02qt0yuu5o" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-187">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_certification" baseTableName="tbl_teacher_certification_subcategory" constraintName="FK8rghn6x9ub6upy5w9wcs4xx4l" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher_certification" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-188">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_teacher_certification" constraintName="FKax7ff2q97cpr6x3fdnw4ui5hk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-189">
+        <addForeignKeyConstraint baseColumnNames="f_teacher_certification" baseTableName="tbl_teacher_certification_category" constraintName="FKieuc5e2j3qq8erkmhl0sjk1yb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher_certification" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1576577464440-190">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory" baseTableName="tbl_teacher_certification_subcategory" constraintName="FKk13ji20ksdk7yqdrd26sjui7j" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
 
 </databaseChangeLog>

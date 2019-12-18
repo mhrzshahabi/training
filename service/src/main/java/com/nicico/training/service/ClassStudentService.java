@@ -1,6 +1,7 @@
 package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.ClassCheckListDTO;
@@ -150,5 +151,33 @@ public class ClassStudentService implements IClassStudentService {
         return mapper.map(classStudent, ClassStudentDTO.Info.class);
     }
 
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<ClassStudentDTO.Info> search1(SearchDTO.SearchRq request, Long classId) {
+        request = (request != null) ? request : new SearchDTO.SearchRq();
+        List<SearchDTO.CriteriaRq> list = new ArrayList<>();
+        if (classId != null) {
+            list.add(makeNewCriteria("tclassId", classId, EOperator.equals, null));
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria(null, null, EOperator.and, list);
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else
+                    request.getCriteria().setCriteria(list);
+            } else
+                request.setCriteria(criteriaRq);
+        }
+        return SearchUtil.search(classStudentDAO, request, classStudent -> mapper.map(classStudent, ClassStudentDTO.Info.class));
+    }
+
+    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
+    }
 
 }
