@@ -11,4 +11,6 @@ import java.util.Optional;
 public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecificationExecutor<Personnel> {
 
     Optional<Personnel> findOneByPersonnelNo(String personnelNo);
+    Optional<Personnel> findOneByNationalCode(String nationalCode);
+
 }

@@ -106,10 +106,9 @@
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
                     ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
+
                     ListGrid_Class_Student.refreshFields();
-                    ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
-                    ListGrid_Class_Student.refreshFields();
-                    this.grid.startEditing((this.rowNum), this.colNum + 1)
+
                 }
             },
 
@@ -134,18 +133,12 @@
                         ListGrid_Cell_failurereason_Update(record, null)
 
                     } else if ((newValue >= 0 && newValue < 10) && (editCompletionEvent == "enter" || editCompletionEvent == "click") && (newValue !== null || newValue != null)) {
+
                         ListGrid_Cell_score_Update(record, newValue);
-                        //createDialog(info, "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
-                        ListGrid_Cell_scoresState_Update(record, "مردود")
+
+
                         ListGrid_Class_Student.refreshFields();
                     } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (record.score === null || record.score == null) && (newValue == null || newValue === null || record.score === null) && (editCompletionEvent == "enter" || editCompletionEvent == "click")) {
-                        ListGrid_Cell_scoresState_Update(record, null)
-                        ListGrid_Class_Student.refreshFields();
-                        ListGrid_Cell_score_Update(record, null);
-                        ListGrid_Class_Student.refreshFields();
-                        ListGrid_Cell_failurereason_Update(record, null)
-                        ListGrid_Class_Student.refreshFields();
-                    } else if ((newValue === null)) {
 
                         ListGrid_Cell_scoresState_Update(record, null)
                         ListGrid_Class_Student.refreshFields();
@@ -153,6 +146,10 @@
                         ListGrid_Class_Student.refreshFields();
                         ListGrid_Cell_failurereason_Update(record, null)
                         ListGrid_Class_Student.refreshFields();
+                    }
+                    else if ((newValue === null)) {
+                        ListGrid_Cell_score_Update(record, null);
+
                     }
                     ListGrid_Class_Student.refreshFields();
 
@@ -173,6 +170,8 @@
             if (fieldName === "failurereason") {
                 return !(record.scoresState === "قبول با نمره" || record.scoresState === "قبول بدون نمره" || record.score >= 10);
             }
+            if(fieldName==="score")
+            {return !(record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان" )}
             if (fieldName === "score") {
                 return record.scoresState !== "قبول بدون نمره";
             }
@@ -222,7 +221,14 @@
              ListGrid_Cell_score_Update(record, null)
             }
         } else {
-
+            var OK = isc.Dialog.create({
+                message: "<spring:message code="msg.operation.error"/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="warning"/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
         }
 
     };
@@ -230,9 +236,17 @@
 
     function Edit_Cell_failurereason_Update(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-
+           var record = ListGrid_Class_Student.getSelectedRecord();
+         ListGrid_Cell_scoresState_Update(record, "مردود");
+        ListGrid_Class_Student.refreshFields();
+         var failurereason= JSON.parse(resp.data).failurereason;
+         if(failurereason === "غیبت در جلسه امتحان" )
+                {
+                     ListGrid_Cell_score_Update(record, null)
+                }
         } else {
 
+         ListGrid_Class_Student.startEditing(record.rowNum,8)
         }
 
     };
@@ -240,15 +254,35 @@
     function Edit_Cell_score_Update(resp) {
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             var score = JSON.parse(resp.data).score;
+
             var record = ListGrid_Class_Student.getSelectedRecord();
-            if (score >= 10) {
+           if(score === null || score==="undefined")
+            {
+              ListGrid_Cell_scoresState_Update(record, null)
+              ListGrid_Class_Student.refreshFields();
+              ListGrid_Cell_failurereason_Update(record, null)
+              ListGrid_Class_Student.refreshFields();
+            }
+           else if (score >= 10) {
                 ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
                 ListGrid_Class_Student.refreshFields();
-            } else if (score >= 0 && score < 10) {
+            } else if ((score >= 0 && score < 10)) {
+
+                 ListGrid_Cell_scoresState_Update(record, "مردود")
+                  ListGrid_Class_Student.refreshFields();
                 ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
                 ListGrid_Class_Student.refreshFields();
             }
         } else {
+        ListGrid_Cell_score_Update(record, null)
+        var OK = isc.Dialog.create({
+                message: "<spring:message code="msg.operation.error"/>",
+                icon: "[SKIN]say.png",
+                title: "<spring:message code="warning"/>"
+            });
+            setTimeout(function () {
+                OK.close();
+            }, 5000);
 
         }
 

@@ -9,9 +9,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
+import com.nicico.training.model.Student;
+import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
@@ -21,6 +24,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,6 +48,7 @@ public class TclassRestController {
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final ClassAlarmService classAlarmService;
+    private final StudentDAO studentDAO;
 
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
@@ -263,6 +268,23 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('r_tclass')")
     public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
         return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
+    }
+
+/////////////////////
+    //////////////////////////
+    ////////////////////////////
+
+    @Loggable
+    @PostMapping(value = "/checkStudentInClass/{nationalCode}/{classId}")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Long> checkStudentInClass(@PathVariable String nationalCode, @PathVariable Long classId) {
+
+        if (((studentDAO.findOneByNationalCodeInClass(nationalCode , classId)) != null )){
+            return null;
+        }
+        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode , classId));
+        return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
+
     }
 
 
