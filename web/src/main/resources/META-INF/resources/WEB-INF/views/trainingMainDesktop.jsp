@@ -742,42 +742,15 @@
     }
 
     function createDialog(type, message, title) {
-        var dialog = isc.Dialog.create({
-            icon: type + '.png',
-            title: title ? title : "<spring:message code="message"/>",
-            message: message,
-        });
-        if (type === 'info') {
-            dialog.setButtons([
-                isc.IButtonSave.create({
-                    title: "<spring:message code="ok"/>",
-                    click: function () {
-                        dialog.close();
-                    }
-                })
-            ]);
-        } else if (type === 'ask') {
-            dialog.setButtons([
-                isc.IButtonSave.create({title: "<spring:message code="yes"/>",}),
-                isc.IButtonCancel.create({title: "<spring:message code="no"/>",})
-            ]);
-        } else if (type === 'confirm') {
-            dialog.setButtons([
-                isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
-                isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
-            ]);
-        } else if (type === 'wait') {
-            dialog.message = message ? message : "<spring:message code='in.operation'/>";
+        if (type === 'wait'){
+            message = message ? message : "<spring:message code='in.operation'/>"
         }
-        return dialog;
-    }
-
-    function createDialog(type, message, title) {
         var dialog = isc.Dialog.create({
             icon: type + '.png',
             title: title ? title : "<spring:message code="message"/>",
             message: message,
         });
+
         if (type === 'info') {
             dialog.setButtons([
                 isc.IButtonSave.create({
@@ -797,8 +770,6 @@
                 isc.IButtonSave.create({title: "<spring:message code="ok"/>",}),
                 isc.IButtonCancel.create({title: "<spring:message code="cancel"/>",})
             ]);
-        } else if (type === 'wait') {
-            dialog.message = message ? message : "<spring:message code='in.operation'/>";
         }
         return dialog;
     }
