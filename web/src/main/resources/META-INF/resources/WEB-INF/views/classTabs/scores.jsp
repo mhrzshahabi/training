@@ -89,7 +89,6 @@
                 valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 changed: function (form, item, value) {
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
-
                     ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum), null);
                     ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), null);
                     ListGrid_Class_Student.refreshFields();
@@ -97,8 +96,6 @@
                     ListGrid_Class_Student.refreshFields();
 
                 },
-
-
             },
             {
                 name: "failurereason",
@@ -108,7 +105,6 @@
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
-
                     ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                     ListGrid_Class_Student.refreshFields();
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), "مردود");
@@ -123,14 +119,23 @@
                 filterOperator: "iContains",
                 canEdit: true,
                 shouldSaveValue: false,
+                change:function(form,item,value)
+                {
+                if(value>20)
+                {
+                        createDialog("info","<spring:message code="msg.less.score"/>","<spring:message code="message"/>")
+                     item.setValue()
+                }
+
+                },
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if ((newValue >= 10 && newValue <= 20) && (editCompletionEvent == "enter" || editCompletionEvent == "click")) {
+                   if ((newValue >= 10 && newValue <= 20) && (editCompletionEvent == "enter" || editCompletionEvent == "click")) {
                         ListGrid_Cell_score_Update(record, newValue);
                         ListGrid_Cell_failurereason_Update(record, null)
 
                     } else if ((newValue >= 0 && newValue < 10) && (editCompletionEvent == "enter" || editCompletionEvent == "click") && (newValue !== null || newValue != null)) {
                         ListGrid_Cell_score_Update(record, newValue);
-                        createDialog("info", "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
+                        //createDialog(info, "دلایل مردود به صورت پیش فرض 'عدم کسب حد نصاب نمره' لحاظ شده است ")
                         ListGrid_Cell_scoresState_Update(record, "مردود")
                         ListGrid_Class_Student.refreshFields();
                     } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (record.score === null || record.score == null) && (newValue == null || newValue === null || record.score === null) && (editCompletionEvent == "enter" || editCompletionEvent == "click")) {
@@ -152,7 +157,7 @@
                     ListGrid_Class_Student.refreshFields();
 
                 },
-                    validators: {
+                validators: {
                     type: "regexp",
                     errorMessage: "<spring:message code="msg.validate.score"/>",
                     expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
@@ -247,8 +252,8 @@
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-           // RestDataSource_ClassStudent.fetchDataURL = classStudent + "getStudent" + "/" + classRecord.id;
-              RestDataSource_ClassStudent.fetchDataURL = classStudent + "iscList/" + classRecord.id;
+// RestDataSource_ClassStudent.fetchDataURL = classStudent + "getStudent" + "/" + classRecord.id;
+            RestDataSource_ClassStudent.fetchDataURL = classStudent + "iscList/" + classRecord.id;
             <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
             ListGrid_Class_Student.fetchData();
             ListGrid_Class_Student.invalidateCache();
