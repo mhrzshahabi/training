@@ -88,6 +88,11 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return SearchUtil.search(personnelRegisteredDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelRegisteredDTO.Info.class));
     }
 
+    @Override
+    public PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode) {
+        return null;
+    }
+
     // ------------------------------
 
     private PersonnelRegisteredDTO.Info save(PersonnelRegistered personnelRegistered) {
