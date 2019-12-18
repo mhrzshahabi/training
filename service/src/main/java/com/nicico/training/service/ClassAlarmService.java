@@ -23,6 +23,7 @@ public class ClassAlarmService implements IClassAlarm {
 
 
     //*********************************
+      /*point : for ended classes do not fetch alarms*/
     @Transactional
     @Override
     public List<ClassAlarmDTO> list(Long class_id) {

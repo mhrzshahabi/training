@@ -5,8 +5,7 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-// <script>
+%> // <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -178,7 +177,7 @@
                     sendCourseToWorkflow();
                 }
             },
-             {
+            {
                 isSeparator: true
             }, {
                 title: "<spring:message code="format.pdf"/>",
@@ -2375,6 +2374,9 @@
 
             workflowRecordId = null;
             workflowParameters = null;
+
+            ListGrid_Course_Edit();
+            taskConfirmationWindow.setHeight("90%");
         }
 
     }
