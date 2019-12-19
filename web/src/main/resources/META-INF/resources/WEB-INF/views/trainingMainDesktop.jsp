@@ -38,7 +38,7 @@
 <body dir="rtl">
 <script type="application/javascript">
 
-    // -------------------------------------------  REST API URLs  -----------------------------------------------
+    // -------------------------------------------  URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
@@ -369,7 +369,7 @@
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/parameter/"/>");
+                        createTab(this.title, "<spring:url value="web/parameter-type/"/>");
                     }
                 },
                 {
@@ -663,7 +663,7 @@
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
-            var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
+            dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -805,6 +805,8 @@
     const sessionServiceUrl = rootUrl + "/sessionService/";
     const classStudent=rootUrl +"/classStudent/";
     const classAlarm=rootUrl +"/classAlarm/";
+    const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
@@ -959,6 +961,9 @@
     isc.TrCancelBtn.addProperties({
         title: "<spring:message code="cancel"/>",
     });
+
+    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
+
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

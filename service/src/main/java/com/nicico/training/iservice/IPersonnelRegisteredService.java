@@ -29,4 +29,7 @@ public interface IPersonnelRegisteredService {
 
     @Transactional(readOnly = true)
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
+
+
+    PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode);
 }

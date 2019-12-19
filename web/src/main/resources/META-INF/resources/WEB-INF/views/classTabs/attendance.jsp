@@ -261,10 +261,10 @@
                                                 serverOutputAsString: false,
                                                 callback: function (resp) {
                                                     if(!JSON.parse(resp.data)){
-                                                        // createDialog("info", "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'غیر حضوری' تغییر خواهد کرد");
+                                                        // createDialog("info", "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'خودآموخته' تغییر خواهد کرد");
                                                         isc.MyYesNoDialog.create({
                                                             title: "<spring:message code='message'/>",
-                                                            message: "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'غیر حضوری' تغییر خواهد کرد",
+                                                            message: "تعداد غیبت ها از تعداد غیبت های مجاز عبور میکند و وضعیت دانشجو در کلاس بصورت خودکار به 'خودآموخته' تغییر خواهد کرد",
                                                             buttons: [
                                                                 isc.IButtonSave.create({title: "موافقم",}),
                                                                 isc.IButtonCancel.create({title: "مخالفم",})],

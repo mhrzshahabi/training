@@ -15,7 +15,7 @@
 %>
 
 
-// script
+// <script>
 
     <spring:eval var="restApiUrl" expression="@environment.getProperty('nicico.rest-api.url')"/>
 

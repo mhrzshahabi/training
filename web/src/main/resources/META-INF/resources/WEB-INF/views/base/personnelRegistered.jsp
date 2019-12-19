@@ -13,6 +13,7 @@
     var persianRegEmpDateCheck = true;
     var mailCheckPerReg = true;
     var cellPhoneCheckPerReg = true;
+    var duplicateCodePerReg = false;
 
 
 
@@ -457,6 +458,7 @@
                 keyPressFilter: "[0-9]",
                 length: "10",
                 changed: function () {
+                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
                     var codeCheckPerReg;
                     codeCheckPerReg = checkCodeMeliPerReg(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
                     codeMeliCheckPerReg = codeCheckPerReg;
@@ -464,9 +466,9 @@
                         DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
                                                                         code='msg.national.code.validation'/>", true);
                     }
-                    if (codeCheck === true) {
+                   else if (codeCheckPerReg === true) {
                         DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("nationalCode", true);
-                        // fillPersonalInfoFields(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
+                        checkPersonalRegNationalCode(DynamicForm_PersonnelReg_BaseInfo.getValue("nationalCode"));
                     }
                 }
             },
@@ -510,6 +512,7 @@
                     }
                 }],
                 changed: function () {
+                    DynamicForm_PersonnelReg_BaseInfo.clearFieldErrors("birthDate", true);
                     var dateCheck;
                     dateCheck = checkBirthDate(DynamicForm_PersonnelReg_BaseInfo.getValue("birthDate"));
                     persianRegDateCheck = dateCheck;
@@ -711,6 +714,7 @@
                     }
                 }],
                 changed: function () {
+                    DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
                     var dateCheck;
                     dateCheck = checkBirthDate(DynamicForm_PersonnelReg_BaseInfo.getValue("employmentDate"));
                     persianRegEmpDateCheck = dateCheck;
@@ -720,6 +724,7 @@
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
                 }},
+
             {name: "employmentStatus", title: "<spring:message code='employment.status'/>" , valueMap:
                     {
                         "اشتغال": "<spring:message code='employmentStatus.employment'/>",
@@ -1106,6 +1111,7 @@
                 showHintInField: true,
                 errorMessage: "<spring:message code='msg.mobile.validation'/>"
                 , changed: function () {
+                    DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
                     var mobileCheck;
                     mobileCheck = checkMobile(DynamicForm_PersonnelReg_ContactInfo.getValue("mobile"));
                     cellPhoneCheckPerReg = mobileCheck;
@@ -1122,6 +1128,7 @@
                 showHintInField: true,
                 length: "30"
                 , changed: function () {
+                    DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("email", true);
                     var emailCheck;
                     emailCheck = checkEmailPerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("email"));
                     mailCheckPerReg = emailCheck;
@@ -1184,29 +1191,29 @@
         align: "center",
         icon: "[SKIN]/actions/save.png",
         click: function () {
+
             if (codeMeliCheckPerReg === false) {
-                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message
-                                                                        code='msg.national.code.validation'/>", true);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.validation'/>", true);
+                return;
+            }
+            if (duplicateCodePerReg === true) {
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.duplicate'/>", true);
                 return;
             }
             if (persianRegDateCheck === false) {
-                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("birthDate", "<spring:message
-                                                                            code='msg.correct.date'/>", true);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("birthDate", "<spring:message  code='msg.correct.date'/>", true);
                 return;
             }
             if (persianRegEmpDateCheck === false) {
-                DynamicForm_PersonnelReg_EmployEdu.addFieldErrors("employmentDate", "<spring:message
-                                                                            code='msg.correct.date'/>", true);
+                DynamicForm_PersonnelReg_EmployEdu.addFieldErrors("employmentDate", "<spring:message  code='msg.correct.date'/>", true);
                 return;
             }
             if (cellPhoneCheckPerReg === false) {
-                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message
-                                                                            code='msg.mobile.validation'/>", true);
+                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message code='msg.mobile.validation'/>", true);
                 return;
             }
             if (mailCheckPerReg === false) {
-                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("email", "<spring:message
-                                                                            code='msg.email.validation'/>", true);
+                DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("email", "<spring:message  code='msg.email.validation'/>", true);
                 return;
             }
             DynamicForm_PersonnelReg_BaseInfo.validate();
@@ -1230,7 +1237,7 @@
                     personnelRegSaveUrl += "/" + personnelRegRecord.id;
                 }
                 isc.RPCManager.sendRequest(TrDSRequest(personnelRegSaveUrl, personnelRegMethod, JSON.stringify(data), "callback: personnelReg_action_result(rpcResponse)"));
-                Window_PersonnelReg_JspPersonnelReg.close();
+                // Window_PersonnelReg_JspPersonnelReg.close();
             }
         }
     });
@@ -1627,3 +1634,25 @@
     function checkEmailPerReg(email) {
         return !(email.indexOf("@") === -1 || email.indexOf(".") === -1 || email.lastIndexOf(".") < email.indexOf("@"));
     };
+
+
+    function checkPersonalRegNationalCode(nationalCode) {
+        isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null,
+        "callback: personalReg_findOne_result(rpcResponse)"));
+    };
+
+
+        function personalReg_findOne_result(resp) {
+            // if (resp == null&&  resp == undefined && resp.data == "") {
+                if (resp == null ||  resp == undefined || resp.data == "") {
+                duplicateCodePerReg = true;
+                var ERROR = isc.Dialog.create({
+                    message: ("<spring:message code='msg.national.code.duplicate'/>"),
+                    icon: "[SKIN]stop.png",
+                    title: "<spring:message code='message'/>"
+                });
+                setTimeout(function () {
+                    ERROR.close();
+                    }, 3000);
+            }
+        };
