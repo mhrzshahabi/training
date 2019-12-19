@@ -367,7 +367,7 @@
         menu: isc.Menu.create({
             data: [
                 {
-                    title: "<spring:message code="parameter.plural"/>",
+                    title: "<spring:message code="parameter"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }

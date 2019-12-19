@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -25,4 +26,7 @@ public class Parameter extends Auditable {
 
     @Column(name = "c_description")
     private String description;
+
+    @OneToMany(mappedBy = "parameter", fetch = FetchType.LAZY)
+    private List<ParameterValue> parameterValueList;
 }
