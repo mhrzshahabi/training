@@ -4,18 +4,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.model.Personnel;
+import com.nicico.training.model.PersonnelRegistered;
+import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.PersonnelRegisteredDAO;
+import com.nicico.training.service.PersonnelRegisteredService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -26,6 +34,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -33,7 +42,10 @@ import java.util.Map;
 @RequestMapping(value = "/api/personnelRegistered")
 public class PersonnelRegisteredRestController {
 
-    private final IPersonnelRegisteredService personnelRegisteredService;
+    private final PersonnelRegisteredService personnelRegisteredService;
+    private final IPersonnelRegisteredService iPersonnelRegisteredService;
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
+    private final PersonnelDAO personnelDAO;
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
@@ -57,6 +69,20 @@ public class PersonnelRegisteredRestController {
 //    @PreAuthorize("hasAuthority('c_personnelRegistered')")
     public ResponseEntity<PersonnelRegisteredDTO.Info> create(@Validated @RequestBody PersonnelRegisteredDTO.Create request) {
         return new ResponseEntity<>(personnelRegisteredService.create(request), HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @GetMapping(value = "/getOneByNationalCode/{nationalCode}")
+//    @PreAuthorize("hasAuthority('r_personalInfo')")
+    public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
+
+//        Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByNationalCode(nationalCode);
+//        Optional<Personnel> optionalPersonnel = personnelDAO.findOneByNationalCode(nationalCode);
+        if (((personnelRegisteredDAO.findOneByNationalCode(nationalCode)) != null  )
+                || ((personnelDAO.findOneByNationalCode(nationalCode)) != null)){
+            return null;
+        }
+           return new ResponseEntity<>(personnelRegisteredService.getOneByNationalCode(nationalCode), HttpStatus.OK);
     }
 
     @Loggable

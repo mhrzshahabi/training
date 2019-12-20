@@ -11,10 +11,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.TrainingPlace;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -40,15 +37,26 @@ public class TclassService implements ITclassService {
     private final AttachmentService attachmentService;
 
     private final PersonnelDAO personnelDAO;
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
     @Transactional
     @Override
     public void addStudents(Long classId, List<String> personsIds) {
         Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
         optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+
         for (String personnelId : personsIds) {
             Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personnelId);
             optionalPersonnel.ifPresent(personnel -> {
+                StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
+                StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
+                addStudent(info.getId(), classId);
+            });
+        }
+        
+        for (String personnelId : personsIds) {
+            Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByPersonnelNo(personnelId);
+            optionalPersonnelReg.ifPresent(personnel -> {
                 StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
                 StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
                 addStudent(info.getId(), classId);

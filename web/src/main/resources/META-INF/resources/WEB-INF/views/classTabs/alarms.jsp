@@ -26,15 +26,12 @@
             },
             fields:
                 [
-                    // {name: "id", primaryKey: true},
                     {name: "targetRecordId", autoFitWidth: true},
                     {name: "tabName", autoFitWidth: true},
                     {name: "pageAddress", autoFitWidth: true},
                     {name: "alarmType", autoFitWidth: true},
                     {name: "alarm"}
                 ]
-            ////// ,
-            ////// fetchDataURL: classAlarm + "list"
         });
 
 
@@ -88,7 +85,7 @@
                 }
             ],
             doubleClick: function () {
-                select_Target();
+                select_target();
             }
         });
 
@@ -145,9 +142,23 @@
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
+        //*****select target tab*****
+        function select_target() {
 
+            var currentAlarm = ListGrid_alarm.getSelectedRecord();
+
+            if (currentAlarm !== null) {
+
+                tabSetClass.selectTab(currentAlarm.tabName);
+
+            }
+
+        }
+
+        //*****fetch alarms when select alarm tab*****
         function loadPage_alarm() {
             classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+
             if (!(classRecord == undefined || classRecord == null)) {
                 RestDataSource_alarm.fetchDataURL = classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
                 ListGrid_alarm.invalidateCache();

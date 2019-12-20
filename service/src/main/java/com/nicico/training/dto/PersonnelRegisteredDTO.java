@@ -150,4 +150,15 @@ public class PersonnelRegisteredDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Student - Ids")
+    public static class Ids {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private List<String> ids;
+    }
+
 }

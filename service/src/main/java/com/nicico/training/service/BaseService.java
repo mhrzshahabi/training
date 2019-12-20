@@ -15,6 +15,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.Serializable;
 import java.lang.reflect.ParameterizedType;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,7 +56,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
                         .getActualTypeArguments()[5];
     }
 
-    BaseService( E entity, DAO dao) {
+    BaseService(E entity, DAO dao) {
         this.entity = entity;
         this.dao = dao;
     }
@@ -104,5 +105,31 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
         final E entity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         dao.deleteById(id);
         return modelMapper.map(entity, infoType);
+    }
+
+    @Override
+    @Transactional
+    public Boolean isExist(ID id) {
+        final Optional<E> optional = dao.findById(id);
+        if (optional.isPresent())
+            return true;
+        return false;
+    }
+
+    @Override
+    @Transactional
+    public E get(ID id) {
+        final Optional<E> optional = dao.findById(id);
+        if (optional.isPresent())
+            return optional.get();
+        return null;
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<INFO> mapEntityToInfo(List<E> eList) {
+        List<INFO> infoList = new ArrayList<>();
+        Optional.ofNullable(eList).ifPresent(entities -> entities.forEach(entity -> infoList.add(modelMapper.map(entity, infoType))));
+        return infoList;
     }
 }
