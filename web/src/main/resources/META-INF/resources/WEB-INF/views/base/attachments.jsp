@@ -43,7 +43,6 @@
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Enum_JspTeacher,
                 pickListProperties: {
                     showFilterEditor: false
                 },
@@ -190,7 +189,6 @@
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_Enum_JspTeacher,
                 pickListProperties: {
                     showFilterEditor: false
                 },
@@ -387,8 +385,8 @@
         if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
 
-        ListGrid_JspAttachment.getField("fileTypeId").setOptionDataSource(RestDataSource_EAttachmentType);
-        DynamicForm_JspAttachments.getField("fileTypeId").setOptionDataSource(RestDataSource_EAttachmentType);
+        ListGrid_JspAttachment.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
+        DynamicForm_JspAttachments.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
 
         Window_JspAttachments.title = inputTitleAttachment;
         ListGrid_JspAttachment.fetchData();
