@@ -98,7 +98,7 @@ var Row_Numbers=null
                      ListGrid_Class_Student.refreshFields();
                   if(value ==="قبول با نمره" || value === "مردود")
                   this.grid.startEditing(this.rowNum, this.colNum + 2)
-                            },
+                },
             },
             {
                 name: "failurereason",
