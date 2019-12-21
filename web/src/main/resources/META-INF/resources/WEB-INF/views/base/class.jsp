@@ -200,6 +200,7 @@
             {property: "code", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
+            tabSet_class_status();
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
 
@@ -274,7 +275,10 @@
             {name: "createdDate", hidden: true},
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
-        ]
+        ],
+         dataArrived: function () {
+             tabSet_class_status();
+         }
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -1061,7 +1065,7 @@
                         }, 3000);
                         Window_Class_JspClass.close();
 
-//**********generate class sessions**********
+                        //**********generate class sessions**********
                         if (!VM_JspClass.hasErrors() && classMethod.localeCompare("POST") === 0) {
                             if (autoValid) {
                                 ClassID = JSON.parse(resp.data).id;
@@ -1078,7 +1082,7 @@
                                 });
                             }
                         }
-//**********generate class sessions**********
+                        //**********generate class sessions**********
 
                     } else {
                         simpleDialog("پیغام", "اجرای عملیات با مشکل مواجه شده است!", "3000", "error");
@@ -1459,6 +1463,7 @@
 
     var TabSet_Class = isc.TabSet.create({
         ID: "tabSetClass",
+        enabled: false,
         tabBarPosition: "top",
         tabs: [
             {
@@ -1824,4 +1829,11 @@
                 }
             }
         });
+    }
+
+    function tabSet_class_status() {
+        if(ListGrid_Class_JspClass.getSelectedRecord() !== null)
+            TabSet_Class.enable();
+        else
+            TabSet_Class.disable();
     }

@@ -23,6 +23,8 @@ public interface IClassSession {
 
     SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
 
+    SearchDTO.SearchRs<ClassSessionDTO.Info> searchWithCriteria(SearchDTO.SearchRq request,Long classId);
+
     @Transactional
     List<ClassSessionDTO.Info> getSessionsForDate(Long classId, String date);
 

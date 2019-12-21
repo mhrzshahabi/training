@@ -796,7 +796,8 @@
         function loadPage_session() {
             classRecord = ListGrid_Class_JspClass.getSelectedRecord();
             if (!(classRecord == undefined || classRecord == null)) {
-                RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                //RestDataSource_session.fetchDataURL = sessionServiceUrl + "load-sessions" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
+                RestDataSource_session.fetchDataURL = sessionServiceUrl + "iscList/" + classRecord.id;
                 ListGrid_session.invalidateCache();
                 ListGrid_session.fetchData();
             }
