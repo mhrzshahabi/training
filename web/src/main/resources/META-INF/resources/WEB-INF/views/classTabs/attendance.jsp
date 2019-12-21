@@ -157,7 +157,7 @@
                                                                 width: "100%",
                                                                 // showTitle: false,
                                                                 titleOrientation: "top",
-                                                                title: "لطفاً علت غیبت یا شماره نامه را در کادر زیر وارد کنید:",
+                                                                title: "لطفاً علت غیبت یا شماره نامه را در کادر زیر وارد کنید:"
                                                             }
                                                         ]
                                                     }),
@@ -166,7 +166,7 @@
                                                             isc.IButton.create({
                                                                 title:"تایید",
                                                                 click: function () {
-                                                                    if (absenceForm.getValue("cause") == null) {
+                                                                    if (trTrim(absenceForm.getValue("cause")) == "") {
                                                                         item.setValue(oldValue);
                                                                         absenceWindow.close();
                                                                     } else {
