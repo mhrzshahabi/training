@@ -6,10 +6,10 @@
                       http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.1.xsd">
 
     <include file="classpath:/db/changelog/changes/liq-activiti.xml"/>
-    <include file="changes/liq_0_Activity.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_Sequences.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_Entity.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_UniqueConstraint.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_EntityChanges.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_Activity.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_Sequences.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_Entity.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_UniqueConstraint.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_EntityChanges.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
