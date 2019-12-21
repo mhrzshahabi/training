@@ -826,8 +826,8 @@
     const classAlarm=rootUrl +"/classAlarm/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
 
-    const classStudent = rootUrl + "/classStudent/";
-    const classAlarm = rootUrl + "/classAlarm/";
+    // const classStudent = rootUrl + "/classStudent/";
+    // const classAlarm = rootUrl + "/classAlarm/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
