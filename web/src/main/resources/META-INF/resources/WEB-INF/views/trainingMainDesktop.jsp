@@ -38,7 +38,7 @@
 <body dir="rtl">
 <script type="application/javascript">
 
-    // -------------------------------------------  URLs  -----------------------------------------------
+    // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
@@ -59,11 +59,6 @@
     const parameterValueUrl = rootUrl + "/parameter-value";
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
-
-    // -------------------------------------------  Variables  -----------------------------------------------
-    var workflowRecordId = null;
-    var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
 
     // -------------------------------------------  Filters  -----------------------------------------------
@@ -72,12 +67,12 @@
     const numFilter = "[0-9]";
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
-    const dialogShowTime = 2000;
+    const dialogShowTime = 2500;
 
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
     var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(),new Date().getMonth(),new Date().getDay());
+    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
@@ -89,12 +84,7 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({
-        width: "100%",
-        height: "100%",
-        border: "0px",
-        loadingMessage: "<spring:message code="loading"/>",
-    });
+    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
@@ -106,10 +96,7 @@
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true},
-        addUnknownValues: false,
-        emptyPickListMessage: "",
-        useClientFiltering: false,
+        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "", useClientFiltering: false,
         changeOnKeypress: false,
     });
     isc.defineClass("TrHLayout", HLayout);
@@ -382,7 +369,7 @@
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/parameter-type/"/>");
+                        createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
                 {
@@ -682,7 +669,7 @@
         title: "<spring:message code="close.all"/>",
         click: function () {
             if (trainingTabSet.tabs.length == 0) return;
-            dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
+            var dialog = createDialog("ask", "<spring:message code="close.all.tabs?"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
@@ -761,7 +748,7 @@
     }
 
     function createDialog(type, message, title) {
-        if (type === 'wait'){
+        if (type === 'wait') {
             message = message ? message : "<spring:message code='in.operation'/>"
         }
         var dialog = isc.Dialog.create({
@@ -822,12 +809,10 @@
     const classCheckListUrl = rootUrl + "/class-checklist/";
     const needAssessmentSkillBasedUrl = rootUrl + "/needAssessmentSkillBased/";
     const sessionServiceUrl = rootUrl + "/sessionService/";
-    const classStudent=rootUrl +"/classStudent/";
-    const classAlarm=rootUrl +"/classAlarm/";
+    const classStudent = rootUrl + "/classStudent/";
+    const classAlarm = rootUrl + "/classAlarm/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
 
-    // const classStudent = rootUrl + "/classStudent/";
-    // const classAlarm = rootUrl + "/classAlarm/";
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {
         let xhttpRequest = new XMLHttpRequest();
@@ -943,6 +928,9 @@
 
         defaultTimeout: 60000,
         willHandleError: true,
+        handleError: function (response, request) {
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server">");
+        }
         handleError: handleErrors
     });
     isc.ViewLoader.addClassProperties({

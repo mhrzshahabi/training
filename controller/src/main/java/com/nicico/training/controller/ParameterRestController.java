@@ -51,7 +51,11 @@ public class ParameterRestController {
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<ParameterDTO.Info> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(parameterService.delete(id), HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            return new ResponseEntity<>(parameterService.delete(id), HttpStatus.OK);
+        } catch (Exception ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
+        }
     }
 }

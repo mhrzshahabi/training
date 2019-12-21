@@ -4,14 +4,9 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.ClassCheckListDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IClassStudentService;
-import com.nicico.training.model.ClassCheckList;
 import com.nicico.training.model.ClassStudent;
-
-import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.ClassStudentDAO;
 import com.nicico.training.repository.TclassDAO;
 import lombok.RequiredArgsConstructor;

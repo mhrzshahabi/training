@@ -3,8 +3,6 @@ package com.nicico.training.dto;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
@@ -23,8 +21,6 @@ public class ParameterValueDTO implements Serializable {
     private String title;
     private String code;
     private String description;
-    @ApiModelProperty(required = true)
-    private Long parameterId;
 
     @Getter
     @Setter
@@ -32,6 +28,7 @@ public class ParameterValueDTO implements Serializable {
     @ApiModel("ParameterValue - Info")
     public static class Info extends ParameterValueDTO {
         private Long id;
+        private ParameterDTO.Info parameter;
     }
 
     @Getter
@@ -39,13 +36,15 @@ public class ParameterValueDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ParameterValue - Create")
     public static class Create extends ParameterValueDTO {
+        @ApiModelProperty(required = true)
+        private Long parameterId;
     }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterValue - Update")
-    public static class Update extends ParameterValueDTO {
+    public static class Update extends Create {
     }
 
     @Getter
