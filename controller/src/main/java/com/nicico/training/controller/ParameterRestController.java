@@ -30,7 +30,7 @@ public class ParameterRestController {
 
     @Loggable
     @GetMapping(value = "/iscList")
-    public ResponseEntity<TotalResponse<ParameterDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
+    public ResponseEntity<TotalResponse<ParameterDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(parameterService.search(nicicoCriteria), HttpStatus.OK);
     }

@@ -14,6 +14,8 @@ public interface IBaseService<E, ID extends Serializable, INFO, CREATE, UPDATE, 
 
     SearchDTO.SearchRs<INFO> search(SearchDTO.SearchRq rq);
 
+    List<INFO> mapEntityToInfo(List<E> eList);
+
     TotalResponse<INFO> search(NICICOCriteria rq);
 
     INFO create(CREATE rq);
@@ -21,4 +23,8 @@ public interface IBaseService<E, ID extends Serializable, INFO, CREATE, UPDATE, 
     INFO update(ID id, UPDATE rq);
 
     INFO delete(ID id);
+
+    Boolean isExist(ID id);
+
+    E get(ID id);
 }

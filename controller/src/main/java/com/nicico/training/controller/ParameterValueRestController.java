@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.service.ParameterValueService;
 import lombok.RequiredArgsConstructor;
@@ -30,16 +31,22 @@ public class ParameterValueRestController {
 
     @Loggable
     @GetMapping(value = "/iscList")
-    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(parameterValueService.search(nicicoCriteria), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping("/iscList/{parameterId}")
+    public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> getParametersValueList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long parameterId) {
+        return iscList(CriteriaUtil.addCriteria(criteria, "parameterId", "equals", parameterId.toString()));
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<ParameterValueDTO.Info> create(@RequestBody Object rq) {
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
-        return new ResponseEntity<>(parameterValueService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
     }
 
     @Loggable

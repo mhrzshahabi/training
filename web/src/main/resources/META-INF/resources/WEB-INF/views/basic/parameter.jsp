@@ -11,26 +11,22 @@
         ID: "ParameterMenu_parameter",
         data: [
             {
-                title: "<spring:message code="refresh"/>",
-                click: function () {
+                title: "<spring:message code="refresh"/>", click: function () {
                     refreshParameterLG_parameter();
                 }
             },
             {
-                title: "<spring:message code="create"/>",
-                click: function () {
+                title: "<spring:message code="create"/>", click: function () {
                     createParameter_parameter();
                 }
             },
             {
-                title: "<spring:message code="edit"/>",
-                click: function () {
+                title: "<spring:message code="edit"/>", click: function () {
                     editParameter_parameter();
                 }
             },
             {
-                title: "<spring:message code="remove"/>",
-                click: function () {
+                title: "<spring:message code="remove"/>", click: function () {
                     removeParameter_parameter();
                 }
             },
@@ -41,26 +37,22 @@
         ID: "ParameterValueMenu_parameter",
         data: [
             {
-                title: "<spring:message code="refresh"/>",
-                click: function () {
+                title: "<spring:message code="refresh"/>", click: function () {
                     refreshParameterValueLG_parameter();
                 }
             },
             {
-                title: "<spring:message code="create"/>",
-                click: function () {
+                title: "<spring:message code="create"/>", click: function () {
                     createParameterValue_parameter();
                 }
             },
             {
-                title: "<spring:message code="edit"/>",
-                click: function () {
+                title: "<spring:message code="edit"/>", click: function () {
                     editParameterValue_parameter();
                 }
             },
             {
-                title: "<spring:message code="remove"/>",
-                click: function () {
+                title: "<spring:message code="remove"/>", click: function () {
                     removeParameterValue_parameter();
                 }
             },
@@ -149,17 +141,6 @@
         fetchDataURL: parameterUrl + "/iscList"
     });
 
-    ParameterValueDS_parameter = isc.TrDS.create({
-        ID: "ParameterValueDS_parameter",
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
-        ],
-        fetchDataURL: parameterValueUrl + "/iscList"
-    });
-
     ParameterLG_parameter = isc.TrLG.create({
         ID: "ParameterLG_parameter",
         dataSource: ParameterDS_parameter,
@@ -167,8 +148,17 @@
             {name: "title",},
             {name: "description",},
         ],
+        sortField: 0,
         autoFetchData: true,
-        gridComponents: [ParameterTS_parameter, "filterEditor", "header", "body"],
+        gridComponents: [
+            isc.Label.create({
+                contents: "<span><b>" + "<spring:message code="parameter.type"/>" + "</b></span>",
+                width: "100%",
+                height: "30",
+                align: "center",
+                showEdges: true,
+            }),
+            ParameterTS_parameter, "filterEditor", "header", "body"],
         contextMenu: ParameterMenu_parameter,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -181,7 +171,22 @@
         },
         doubleClick: function () {
             editParameter_parameter();
+        },
+        selectionUpdated: function(record) {
+            ParameterValueDS_parameter.fetchDataURL = parameterValueUrl + "/iscList/" + record.id;
+            ParameterValueLG_parameter.invalidateCache();
+            ParameterValueLG_parameter.fetchData();
         }
+    });
+
+    ParameterValueDS_parameter = isc.TrDS.create({
+        ID: "ParameterValueDS_parameter",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+        ],
     });
 
     ParameterValueLG_parameter = isc.TrLG.create({
@@ -192,8 +197,16 @@
             {name: "code",},
             {name: "description",},
         ],
-        autoFetchData: true,
-        gridComponents: [ParameterValueTS_parameter, "filterEditor", "header", "body"],
+        sortField: 0,
+        gridComponents: [
+            isc.Label.create({
+                contents: "<span><b>" + "<spring:message code="parameter.value"/>" + "</b></span>",
+                width: "100%",
+                height: "30",
+                align: "center",
+                showEdges: true,
+            }),
+            ParameterValueTS_parameter, "filterEditor", "header", "body"],
         contextMenu: ParameterValueMenu_parameter,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
@@ -225,10 +238,33 @@
         ]
     });
 
+    ParameterWin_parameter = isc.Window.create({
+        ID: "ParameterWin_parameter",
+        width: 800,
+        items: [ParameterDF_parameter, isc.TrHLayoutButtons.create({
+            members: [
+                isc.IButtonSave.create({
+                    click: function () {
+                        saveParameter_parameter();
+                    }
+                }),
+                isc.IButtonCancel.create({
+                    click: function () {
+                        ParameterWin_parameter.close();
+                    }
+                }),
+            ],
+        }),]
+    });
+
     ParameterValueDF_parameter = isc.DynamicForm.create({
         ID: "ParameterValueDF_parameter",
         fields: [
             {name: "id", hidden: true},
+            {name: "parameterId", hidden: true,},
+            {
+                name: "parameterName", title: "<spring:message code="parameter.type"/>", canEdit: false
+            },
             {
                 name: "title", title: "<spring:message code="title"/>",
                 required: true, validators: [TrValidators.NotEmpty],
@@ -243,38 +279,6 @@
         ]
     });
 
-    ParameterWin_parameter = isc.Window.create({
-        ID: "ParameterWin_parameter",
-        width: 800,
-        items: [ParameterDF_parameter, isc.TrHLayoutButtons.create({
-            members: [
-                isc.IButtonSave.create({
-                    click: function () {
-                        if (!ParameterDF_parameter.validate()) {
-                            return;
-                        }
-                        let parameterSaveUrl = parameterUrl;
-                        action = '<spring:message code="create"/>';
-                        if (parameterMethod_parameter.localeCompare("PUT") == 0) {
-                            let record = ParameterLG_parameter.getSelectedRecord();
-                            parameterSaveUrl += "/" + record.id;
-                            action = '<spring:message code="edit"/>';
-                        }
-                        let data = ParameterDF_parameter.getValues();
-                        isc.RPCManager.sendRequest(
-                            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter"/>" + "')")
-                        );
-                    }
-                }),
-                isc.IButtonCancel.create({
-                    click: function () {
-                        ParameterWin_parameter.close();
-                    }
-                }),
-            ],
-        }),]
-    });
-
     ParameterValueWin_parameter = isc.Window.create({
         ID: "ParameterValueWin_parameter",
         width: 800,
@@ -282,38 +286,21 @@
             members: [
                 isc.IButtonSave.create({
                     click: function () {
-                        if (!ParameterValueDF_parameter.validate()) {
-                            return;
-                        }
-                        let parameterValueSaveUrl = parameterValueUrl;
-                        let action = '<spring:message code="create"/>';
-                        if (parameterValueMethod_parameter.localeCompare("PUT") == 0) {
-                            let record = ParameterValueLG_parameter.getSelectedRecord();
-                            parameterValueSaveUrl += "/" + record.id;
-                            action = '<spring:message code="edit"/>';
-                        }
-                        let data = ParameterValueDF_parameter.getValues();
-                        isc.RPCManager.sendRequest(
-                            TrDSRequest(parameterValueSaveUrl, parameterValueMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.value"/>" + "')")
-                        );
+                        saveParameterValue_parameter();
                     }
                 }),
                 isc.IButtonCancel.create({
                     click: function () {
-                        ParameterWin_parameter.close();
+                        ParameterValueWin_parameter.close();
                     }
                 }),
             ],
         }),]
     });
 
-
     // ------------------------------------------- Page UI -------------------------------------------
     isc.TrHLayout.create({
-        members: [
-            ParameterLG_parameter,
-            ParameterValueLG_parameter,
-        ]
+        members: [ParameterLG_parameter, ParameterValueLG_parameter]
     });
 
     // ------------------------------------------- Functions -------------------------------------------
@@ -322,40 +309,105 @@
         ParameterLG_parameter.filterByEditor();
     }
 
+    function refreshParameterValueLG_parameter() {
+        var record = ParameterLG_parameter.getSelectedRecord();
+        if (!checkRecordAsSelected(record, false)) {
+            ParameterValueDS_parameter.fetchDataURL = parameterValueUrl + "/iscList/" + record.id;
+            ParameterValueLG_parameter.invalidateCache();
+            ParameterValueLG_parameter.fetchData();
+        }
+    }
+
     function createParameter_parameter() {
         parameterMethod_parameter = "POST";
         ParameterDF_parameter.clearValues();
+        ParameterWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.type"/>");
         ParameterWin_parameter.show();
+    }
+
+    function saveParameter_parameter() {
+        if (!ParameterDF_parameter.validate()) {
+            return;
+        }
+        let parameterSaveUrl = parameterUrl;
+        action = '<spring:message code="create"/>';
+        if (parameterMethod_parameter.localeCompare("PUT") == 0) {
+            let record = ParameterLG_parameter.getSelectedRecord();
+            parameterSaveUrl += "/" + record.id;
+            action = '<spring:message code="edit"/>';
+        }
+        let data = ParameterDF_parameter.getValues();
+        isc.RPCManager.sendRequest(
+            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.type"/>" + "')")
+        );
+    }
+
+    function createParameterValue_parameter() {
+        let record = ParameterLG_parameter.getSelectedRecord();
+        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
+            parameterValueMethod_parameter = "POST";
+            ParameterValueDF_parameter.clearValues();
+            ParameterValueDF_parameter.getItem("parameterId").setValue(record.id);
+            ParameterValueDF_parameter.getItem("parameterName").setValue(record.title);
+            ParameterValueWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.value"/>");
+            ParameterValueWin_parameter.show();
+        }
+    }
+
+    function saveParameterValue_parameter() {
+        if (!ParameterValueDF_parameter.validate()) {
+            return;
+        }
+        let parameterValueSaveUrl = parameterValueUrl;
+        let action = '<spring:message code="create"/>';
+        if (parameterValueMethod_parameter.localeCompare("PUT") == 0) {
+            let record = ParameterValueLG_parameter.getSelectedRecord();
+            parameterValueSaveUrl += "/" + record.id;
+            action = '<spring:message code="edit"/>';
+        }
+        let data = ParameterValueDF_parameter.getValues();
+        console.log(data);
+        isc.RPCManager.sendRequest(
+            TrDSRequest(parameterValueSaveUrl, parameterValueMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.value"/>" + "')")
+        );
     }
 
     function editParameter_parameter() {
         let record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true)) {
+        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
             parameterMethod_parameter = "PUT";
             ParameterDF_parameter.clearValues();
-            ParameterDF_parameter.editRecord(record)
+            ParameterDF_parameter.editRecord(record);
+            ParameterWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.type"/>");
             ParameterWin_parameter.show();
+        }
+    }
+
+    function editParameterValue_parameter() {
+        let record = ParameterValueLG_parameter.getSelectedRecord();
+        if (checkRecordAsSelected(record, true)) {
+            parameterValueMethod_parameter = "PUT";
+            ParameterValueDF_parameter.clearValues();
+            ParameterValueDF_parameter.editRecord(record);
+            ParameterValueWin_parameter.show();
         }
     }
 
     function removeParameter_parameter() {
         let record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true)) {
+        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
             let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
             dialog.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(parameterUrl + "/" + record.id, "DELETE", null, "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "','" + "<spring:message code="parameter"/>" + "')")
+                            TrDSRequest(parameterUrl + "/" + record.id, "DELETE", null, "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "','" + "<spring:message code="parameter.type"/>" + "')")
                         );
                     }
                 }
             })
         }
-    }
-
-    function printParameterLG_parameter(type) {
     }
 
     function studyResponse(resp, action, entityTypeName) {
@@ -369,7 +421,7 @@
                 if ((action == null || action == undefined) || (entityTypeName == null || entityTypeName == undefined) || (entityName == null || entityName == undefined)) {
                     msg = "<spring:message code="msg.operation.successful"/>";
                 } else {
-                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp' + "<spring:message code="msg.successfully.done"/>";
+                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
                 }
             } else {
                 msg = "<spring:message code='msg.operation.error'/>";
@@ -379,19 +431,23 @@
                 dialog.close();
             }, dialogShowTime);
             ParameterWin_parameter.close();
+            ParameterValueWin_parameter.close();
             refreshParameterLG_parameter();
+            refreshParameterValueLG_parameter();
         }
     }
 
-    function checkRecordAsSelected(record, showDialog, msg) {
+    function checkRecordAsSelected(record, showDialog, entityName, msg) {
         if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {
             return true;
         }
         if (showDialog) {
-            let dialog = createDialog("info", msg ? msg : "<spring:message code="msg.no.records.selected"/>");
+            let dialog = createDialog("info", msg ? msg : (entityName ? "<spring:message code="from"/>&nbsp;<b>" + entityName + "</b>&nbsp;<spring:message code="msg.no.records.selected"/>" : "<spring:message code="msg.no.records.selected"/>"));
             Timer.setTimeout(function () {
                 dialog.close();
             }, dialogShowTime);
         }
         return false;
     }
+
+    //
