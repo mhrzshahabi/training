@@ -4,7 +4,7 @@
 //
 //
 //<script>
-var Row_Number=null
+var Row_Numbers=null
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -110,8 +110,11 @@ var Row_Number=null
                     {
                           ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
                     }
+
                     else  {
                      ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
+
+                        Row_Numbers=this.rowNum;
 
                      this.grid.startEditing(this.rowNum, this.colNum + 1)
                      ListGrid_Class_Student.refreshFields();
@@ -158,10 +161,12 @@ var Row_Number=null
                         ListGrid_Cell_failurereason_Update(record, null)
                         ListGrid_Class_Student.refreshFields();
                     }
-                    else if (newValue === null) {
+                    else if (newValue === null && (editCompletionEvent == "enter" || editCompletionEvent =="click_outside")) {
 
-                          ListGrid_Cell_score_Update(record, null);
-                           ListGrid_Class_Student.refreshFields();
+
+                         ListGrid_Cell_score_Update(record, null);
+                          ListGrid_Cell_scoresState_Update(record, null)
+
 
                     }
                     ListGrid_Class_Student.refreshFields();
@@ -234,7 +239,9 @@ var Row_Number=null
 
         var scoresState=JSON.parse(resp.data).scoresState;
           var failurereason= JSON.parse(resp.data).failurereason;
+          var score=JSON.parse((resp.data).score)
         var record = ListGrid_Class_Student.getSelectedRecord();
+
 
 
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
@@ -252,12 +259,7 @@ var Row_Number=null
             ListGrid_Cell_failurereason_Update(record, null);
 
             }
-            else if(scoresState=== "مردود")
-            {
 
-           //  ListGrid_Cell_failurereason_Update(record, "عدم کسب حد نصاب نمره")
-             ListGrid_Class_Student.refreshFields();
-            }
         }
 
     };
@@ -266,16 +268,18 @@ var Row_Number=null
     function Edit_Cell_failurereason_Update(resp) {
        var record = ListGrid_Class_Student.getSelectedRecord();
          var failurereason= JSON.parse(resp.data).failurereason;
+
         if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
 
         {
-
                 if(failurereason === "غیبت در جلسه امتحان" )
                {
                    ListGrid_Cell_score_Update(record, null)
                    ListGrid_Cell_scoresState_Update(record,"مردود")
                    ListGrid_Class_Student.refreshFields()
                }
+
+
         }
 
     };
@@ -300,17 +304,18 @@ var Row_Number=null
 
 
 
-          else if(score === null || score==="undefined" || score ==null)
+          else if(score === null || score==="undefined" || score ==null || score === undefined)
             {
 
-              ListGrid_Cell_scoresState_Update(record, null)
-              ListGrid_Cell_failurereason_Update(record, null)
+                ListGrid_Cell_failurereason_Update(record,null)
+               ListGrid_Class_Student.refreshFields();
+               ListGrid_Cell_scoresState_Update(record,null)
+
+
               ListGrid_Class_Student.refreshFields();
             }
            else if (score >= 10) {
-
                 ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-
                 ListGrid_Class_Student.refreshFields();
               }
               else if (score >= 0 && score < 10) {
