@@ -37,9 +37,8 @@ public class Post extends Auditable {
     private PostGrade postGrade;
 
 //    @ManyToOne(fetch = FetchType.LAZY)
-////    @JoinColumn(name = "f_department_id", nullable = false)
-////    private Department department;
-
+//    @JoinColumn(name = "f_department_id", nullable = false)
+//    private Department department;
 
     @ManyToMany(mappedBy = "postSet")
     private Set<PostGroup> postGroupSet;
