@@ -929,7 +929,7 @@
         willHandleError: true,
         handleError: function (response, request) {
             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
-        }
+        },
         handleError: handleErrors
     });
     isc.ViewLoader.addClassProperties({
