@@ -925,11 +925,10 @@
     }
 
     isc.RPCManager.addClassProperties({
-
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
-            createDialog("info", "<spring:message code="msg.error.connecting.to.server">");
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
         }
         handleError: handleErrors
     });
