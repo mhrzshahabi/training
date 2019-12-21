@@ -8,6 +8,8 @@ import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.Teacher;
@@ -33,8 +35,9 @@ public class TeacherService implements ITeacherService {
     private final CustomModelMapper modelMapper;
     private final TeacherDAO teacherDAO;
     private final CategoryDAO categoryDAO;
-    private final PersonalInfoService personalInfoService;
-    private final AttachmentService attachmentService;
+
+    private final IPersonalInfoService personalInfoService;
+    private final IAttachmentService attachmentService;
 
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
@@ -42,10 +45,14 @@ public class TeacherService implements ITeacherService {
     @Transactional(readOnly = true)
     @Override
     public TeacherDTO.Info get(Long id) {
-        final Optional<Teacher> tById = teacherDAO.findById(id);
-        final Teacher teacher = tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        return modelMapper.map(getTeacher(id), TeacherDTO.Info.class);
+    }
 
-        return modelMapper.map(teacher, TeacherDTO.Info.class);
+    @Transactional(readOnly = true)
+    @Override
+    public Teacher getTeacher(Long id) {
+        final Optional<Teacher> tById = teacherDAO.findById(id);
+        return tById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
     }
 
     @Transactional(readOnly = true)
@@ -81,8 +88,7 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
 
-        Optional<Teacher> optionalTeacher = teacherDAO.findById(id);
-        Teacher teacher = optionalTeacher.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        final Teacher teacher = getTeacher(id);
 
         if (request.getPersonality() != null) {
             request.getPersonality().setId(teacher.getPersonalityId());
@@ -151,8 +157,7 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public void addCategories(CategoryDTO.Delete request, Long teacherId) {
-        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        final Teacher teacher = getTeacher(teacherId);
 
         Set<Category> currents = teacher.getCategories();
         if (currents != null) {
@@ -171,8 +176,7 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public List<Long> getCategories(Long teacherId) {
-        final Optional<Teacher> cById = teacherDAO.findById(teacherId);
-        final Teacher teacher = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TeacherNotFound));
+        final Teacher teacher = getTeacher(teacherId);
         Set<Category> currents = teacher.getCategories();
         List<Long> categories = new ArrayList<>();
         for (Category current : currents) {

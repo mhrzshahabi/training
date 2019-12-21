@@ -3,7 +3,6 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
-import com.nicico.training.model.ClassSession;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
@@ -23,6 +22,8 @@ public interface IClassSession {
     void delete(ClassSessionDTO.Delete request);
 
     SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
+
+    SearchDTO.SearchRs<ClassSessionDTO.Info> searchWithCriteria(SearchDTO.SearchRq request,Long classId);
 
     @Transactional
     List<ClassSessionDTO.Info> getSessionsForDate(Long classId, String date);

@@ -279,14 +279,14 @@
     //ToolStripButton
     //**********************************************************************************
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-       // icon: "<spring:url value="refresh.png"/>",
+// icon: "<spring:url value="refresh.png"/>",
         title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_Term.invalidateCache();
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+//icon: "[SKIN]/actions/edit.png",
         title: "<spring:message code="edit"/>",
         click: function () {
 
@@ -294,7 +294,7 @@
         }
     });
     var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code="create"/>",
         click: function () {
             term_method = "POST";
@@ -303,7 +303,7 @@
         }
     });
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+//icon: "[SKIN]/actions/remove.png",
         title: "<spring:message code="remove"/>",
         click: function () {
             show_TermRemoveForm()
@@ -311,7 +311,7 @@
     });
 
     var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
+//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code="print"/>",
         click: function () {
             <%--"<spring:url value="/term/printWithCriteria/pdf" var="printUrl"/>"--%>
@@ -331,12 +331,12 @@
             ToolStripButton_Remove,
             ToolStripButton_Print,
             isc.ToolStrip.create({
-            width: "100%",
-            align: "left",
-            border: '0px',
-            members: [
-                ToolStripButton_Refresh,
-            ]
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh,
+                ]
             })
         ]
     });
@@ -512,7 +512,7 @@
             if (resp.data.length > 0) {
                 var OK = isc.Dialog.create({
                     message: getFormulaMessage(resp.data, 2, "red", "I") + "<spring:message code="msg.conflict.term"/>",
-                     icon: "[SKIN]say.png",
+                    icon: "[SKIN]say.png",
                     title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
@@ -568,17 +568,17 @@
             Window_term.close();
 
         } else {
-                if (respCode == 400) {
-                    var OK = isc.Dialog.create({
+            if (respCode == 400) {
+                var OK = isc.Dialog.create({
                     message: "<spring:message code="msg.delete.childRecord"/>",
                     icon: "[SKIN]say.png",
                     title: "<spring:message code="error"/>"
-                    });
+                });
 
-                    setTimeout(function () {
+                setTimeout(function () {
                     OK.close();
-                    }, 2000);
-                }
+                }, 2000);
+            }
         }
     };
 

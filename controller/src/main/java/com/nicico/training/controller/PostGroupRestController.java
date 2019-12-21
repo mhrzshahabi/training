@@ -97,11 +97,11 @@ public class PostGroupRestController {
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_post_group')")
     public ResponseEntity<PostGroupDTO.PostGroupSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                               @RequestParam("_endRow") Integer endRow,
-                                                               @RequestParam(value = "_constructor", required = false) String constructor,
-                                                               @RequestParam(value = "operator", required = false) String operator,
-                                                               @RequestParam(value = "criteria", required = false) String criteria,
-                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                             @RequestParam("_endRow") Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         SearchDTO.CriteriaRq criteriaRq;
         if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
@@ -110,7 +110,6 @@ public class PostGroupRestController {
             criteriaRq.setOperator(EOperator.valueOf(operator))
                     .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
                     }));
-
 
 
             request.setCriteria(criteriaRq);
@@ -122,7 +121,6 @@ public class PostGroupRestController {
 
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
-
 
 
         //SearchDTO.SearchRq request = new SearchDTO.SearchRq();
@@ -201,46 +199,42 @@ public class PostGroupRestController {
     }*/
 
 
-
     @Loggable
     @PostMapping(value = "/addPost/{postId}/{postGroupId}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addPost(@PathVariable Long postId,@PathVariable Long postGroupId) {
-        postGroupService.addPost(postId,postGroupId);
+    public ResponseEntity<Void> addPost(@PathVariable Long postId, @PathVariable Long postGroupId) {
+        postGroupService.addPost(postId, postGroupId);
         return new ResponseEntity(HttpStatus.OK);
     }
-
-
 
 
     @Loggable
     @PostMapping(value = "/addPosts/{postGroupId}/{postIds}")
 //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void>  addPosts(@PathVariable Long postGroupId,@PathVariable Set<Long> postIds) {
+    public ResponseEntity<Void> addPosts(@PathVariable Long postGroupId, @PathVariable Set<Long> postIds) {
         postGroupService.addPosts(postGroupId, postIds);
         return new ResponseEntity(HttpStatus.OK);
     }
 
 
-
     @Loggable
     @DeleteMapping(value = "/removePost/{postGroupId}/{postId}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removePost(@PathVariable Long postGroupId,@PathVariable Long postId) {
-        postGroupService.removePost(postGroupId,postId);
+    public ResponseEntity<Void> removePost(@PathVariable Long postGroupId, @PathVariable Long postId) {
+        postGroupService.removePost(postGroupId, postId);
         return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeCompetence/{postGroupId}/{competenceId}")
-    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long postGroupId,@PathVariable Long competenceId){
-        postGroupService.removeFromCompetency(postGroupId,competenceId);
+    public ResponseEntity<Void> removeFromCompetence(@PathVariable Long postGroupId, @PathVariable Long competenceId) {
+        postGroupService.removeFromCompetency(postGroupId, competenceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @Loggable
     @DeleteMapping(value = "/removeAllCompetence/{postGroupId}/")
-    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long postGroupId){
+    public ResponseEntity<Void> removeFromAllCompetences(@PathVariable Long postGroupId) {
         postGroupService.removeFromAllCompetences(postGroupId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
@@ -253,9 +247,8 @@ public class PostGroupRestController {
 
         Set<PostDTO.Info> posts;
         posts = postGroupService.unAttachPosts(postGroupId);
-        List<PostDTO.Info> postList=new ArrayList<>();
-        for (PostDTO.Info postDTOInfo:posts)
-        {
+        List<PostDTO.Info> postList = new ArrayList<>();
+        for (PostDTO.Info postDTOInfo : posts) {
             postList.add(postDTOInfo);
         }
         ISC.Response<PostDTO.Info> response = new ISC.Response<>();
@@ -264,19 +257,17 @@ public class PostGroupRestController {
                 .setEndRow(postList.size())
                 .setTotalRows(postList.size());
 
-        return new ResponseEntity<>(response,HttpStatus.OK);
+        return new ResponseEntity<>(response, HttpStatus.OK);
     }
-
 
 
     @Loggable
     @DeleteMapping(value = "/removePosts/{postGroupId}/{postIds}")
     //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity<Void> removePosts(@PathVariable Long postGroupId,@PathVariable Set<Long> postIds) {
-        postGroupService.removePosts(postGroupId,postIds);
+    public ResponseEntity<Void> removePosts(@PathVariable Long postGroupId, @PathVariable Set<Long> postIds) {
+        postGroupService.removePosts(postGroupId, postIds);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 
     @Loggable
@@ -290,7 +281,7 @@ public class PostGroupRestController {
                 .setEndRow(list.size())
                 .setTotalRows(list.size());
         ISC<Object> objectISC = new ISC<>(response);
-        return new ResponseEntity<>(objectISC,HttpStatus.OK);
+        return new ResponseEntity<>(objectISC, HttpStatus.OK);
     }
 
     @Loggable

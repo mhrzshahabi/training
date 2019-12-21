@@ -28,6 +28,21 @@ public class TeacherFormController {
         return "base/attachments";
     }
 
+    @RequestMapping("/employmentHistory-tab")
+    public String employmentHistoryTab() {
+        return "teacherTabs/employmentHistory";
+    }
+
+    @RequestMapping("/teachingHistory-tab")
+    public String teachingHistoryTab() {
+        return "teacherTabs/teachingHistory";
+    }
+
+    @RequestMapping("/teacherCertification-tab")
+    public String teacherCertificationTab() {
+        return "teacherTabs/teacherCertification";
+    }
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");

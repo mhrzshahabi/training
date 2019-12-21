@@ -7,11 +7,11 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// <script>
+// script
 
     // <<========== Global - Variables ==========
     {
-    var operational_method = "POST";
+        var operational_method = "POST";
     }
     // ============ Global - Variables ========>>
 
@@ -134,7 +134,7 @@
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-           // icon: "[SKIN]/actions/refresh.png",
+            // icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_operational.invalidateCache();
@@ -142,7 +142,7 @@
         });
 
         var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-            //icon: "[SKIN]/actions/add.png",
+
             title: "<spring:message code="create"/>",
             click: function () {
                 create_OperationalUnit();
@@ -150,7 +150,7 @@
         });
 
         var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-            //icon: "[SKIN]/actions/edit.png",
+
             title: "<spring:message code="edit"/>",
             click: function () {
                 show_OperationalUnitEditForm();
@@ -158,7 +158,7 @@
         });
 
         var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-            //icon: "[SKIN]/actions/remove.png",
+
             title: "<spring:message code="remove"/>",
             click: function () {
                 remove_OperationalUnit();
@@ -246,7 +246,7 @@
 
         //*****create insert/update window*****
         var Window_OperationalUnit = isc.Window.create({
-            title: "<spring:message code="create"/> ",
+            title: "<spring:message code="operational.unit"/> ",
             width: "40%",
             minWidth: 500,
             visibility: "hidden",
@@ -287,7 +287,6 @@
         function create_OperationalUnit() {
             operational_method = "POST";
             DynamicForm_OperationalUnit.clearValues();
-            Window_OperationalUnit.setTitle("<spring:message code="create"/>");
             Window_OperationalUnit.show();
         }
 
@@ -312,7 +311,7 @@
                 isc.Dialog.create({
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
+                    title: "<spring:message code="global.message"/>",
                     buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -323,7 +322,6 @@
                 operational_method = "PUT";
                 DynamicForm_OperationalUnit.clearValues();
                 DynamicForm_OperationalUnit.editRecord(record);
-                Window_OperationalUnit.setTitle("<spring:message code="edit"/>");
                 Window_OperationalUnit.show();
             }
         }
@@ -346,7 +344,7 @@
                 isc.Dialog.create({
                     message: "<spring:message code="msg.no.records.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "<spring:message code="course_Warning"/>",
+                    title: "<spring:message code="global.message"/>",
                     buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
@@ -355,6 +353,7 @@
             } else {
                 isc.MyYesNoDialog.create({
                     message: "<spring:message code="global.grid.record.remove.ask"/>",
+                    title: "<spring:message code="verify.delete"/>",
                     buttonClick: function (button, index) {
                         this.close();
                         if (index === 0) {

@@ -8,16 +8,13 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.CourseDTO;
-import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.AttendanceDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.service.ClassSessionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
-import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
@@ -26,13 +23,11 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.sql.SQLException;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -45,7 +40,6 @@ public class AttendanceRestController {
 	private final ReportUtil reportUtil;
 	private final ObjectMapper objectMapper;
 	private final DateUtil dateUtil;
-
 
 	// ------------------------------
 
@@ -72,24 +66,52 @@ public class AttendanceRestController {
 	}
 
 	@Loggable
-    @GetMapping
+	@GetMapping(value = "/auto-create")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-        List<AttendanceDTO.Info> list = attendanceService.autoCreate(classId, date);
-        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-        specResponse.setData(list)
-                .setStartRow(0)
-                .setEndRow(list.size())
-                .setTotalRows(list.size());
+	public ResponseEntity<List<List<Map>>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
+		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
+		return new ResponseEntity<>(maps, HttpStatus.CREATED);
+	}
+	@Loggable
+	@GetMapping(value = "/accept-absent-student")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+	public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
+												@RequestParam("studentId") Long studentId,
+												@RequestParam("sessionId") List<Long> sessionId) throws ParseException {
+//		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
+//		ClassSessionDTO.Info sessionInfo = ;
+//		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
+		Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId,studentId));
+		for (Long aLong : sessionId) {
+			classSessions.add(classSessionService.get(aLong));
+		}
+		Long sum = 0L;
+		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+		for (ClassSessionDTO.Info classSession : classSessions) {
+			sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
+		}
+		Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId,0.2);
+		return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
+	}
 
-        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+    @Loggable
+    @PostMapping(value = "/save-attendance")
+    public ResponseEntity createAndSave(@RequestBody List<List<Map<String,String>>> req,
+                                        @RequestParam("classId") Long classId,
+                                        @RequestParam("date") String date)
+    {
+        attendanceService.convertToModelAndSave(req, classId, date);
+        return new ResponseEntity(HttpStatus.CREATED);
     }
+
+
 	@Loggable
     @GetMapping(value = "/session-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam("classId") Long classId) {
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
+	    if(classId == null || classId == 0){
+	        return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(),HttpStatus.OK);
+        }
         List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(list)
@@ -99,7 +121,24 @@ public class AttendanceRestController {
 
         final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
         specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.CREATED);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+	@Loggable
+    @GetMapping(value = "/session-in-date")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<List<ClassSessionDTO.Info>> getSessionsForDate(@RequestParam("classId") Long classId, @RequestParam("date") String date) {
+        List<ClassSessionDTO.Info> list = classSessionService.getSessionsForDate(classId, date);
+//        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+//        specResponse.setData(list)
+//                .setStartRow(0)
+//                .setEndRow(list.size())
+//                .setTotalRows(list.size());
+//
+//        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+//        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(list, HttpStatus.CREATED);
     }
 
 	@Loggable

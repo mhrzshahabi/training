@@ -88,6 +88,50 @@ public class Tclass extends Auditable {
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
     private Set<TrainingPlace> trainingPlaceSet;
+    @Column(name = "n_group", nullable = false)
+    private Long group;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_term", insertable = false, updatable = false)
+    private Term term;
+    @Column(name = "f_term")
+    private Long termId;
+    @Column(name = "c_teaching_brand")
+    private String teachingBrand;//نحوه آموزش
+    @Column(name = "c_start_date", nullable = false)
+    private String startDate;
+    @Column(name = "c_end_date", nullable = false)
+    private String endDate;
+    @Column(name = "b_saturday")
+    private Boolean saturday;
+    @Column(name = "b_sunday")
+    private Boolean sunday;
+    @Column(name = "b_monday")
+    private Boolean monday;
+    @Column(name = "b_tuesday")
+    private Boolean tuesday;
+    @Column(name = "b_wednesday")
+    private Boolean wednesday;
+    @Column(name = "b_thursday")
+    private Boolean thursday;
+    @Column(name = "b_friday")
+    private Boolean friday;
+    @Column(name = "b_first")
+    private Boolean first;
+    @Column(name = "b_second")
+    private Boolean second;
+    @Column(name = "b_third")
+    private Boolean third;
+    @Column(name = "b_fourth")
+    private Boolean fourth;
+    @Column(name = "b_fifth")
+    private Boolean fifth;
+    @Column(name = "c_topology")
+    private String topology;
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinTable(name = "tbl_class_student",
+            joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
+    private List<Student> studentSet;
 
     @Transient
     public List<Long> getTrainingPlaceIds() {
@@ -96,67 +140,14 @@ public class Tclass extends Auditable {
         return ids;
     }
 
-    @Column(name = "n_group", nullable = false)
-    private Long group;
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private String hasWarning;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_term", insertable = false, updatable = false)
-    private Term term;
+    @Transient
+    public String getHasWarning() {
+         return "";
+    }
 
-    @Column(name = "f_term")
-    private Long termId;
-
-    @Column(name = "c_teaching_brand")
-    private String teachingBrand;//نحوه آموزش
-
-    @Column(name = "c_start_date", nullable = false)
-    private String startDate;
-
-    @Column(name = "c_end_date", nullable = false)
-    private String endDate;
-
-    @Column(name = "b_saturday")
-    private Boolean saturday;
-
-    @Column(name = "b_sunday")
-    private Boolean sunday;
-
-    @Column(name = "b_monday")
-    private Boolean monday;
-
-    @Column(name = "b_tuesday")
-    private Boolean tuesday;
-
-    @Column(name = "b_wednesday")
-    private Boolean wednesday;
-
-    @Column(name = "b_thursday")
-    private Boolean thursday;
-
-    @Column(name = "b_friday")
-    private Boolean friday;
-
-    @Column(name = "b_first")
-    private Boolean first;
-
-    @Column(name = "b_second")
-    private Boolean second;
-
-    @Column(name = "b_third")
-    private Boolean third;
-
-    @Column(name = "b_fourth")
-    private Boolean fourth;
-
-    @Column(name = "b_fifth")
-    private Boolean fifth;
-
-    @Column(name = "c_topology")
-    private String topology;
-
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
-    @JoinTable(name = "tbl_class_student",
-            joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
-    private List<Student> studentSet;
 }

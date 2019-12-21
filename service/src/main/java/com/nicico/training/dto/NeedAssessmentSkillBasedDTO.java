@@ -1,4 +1,3 @@
-
 package com.nicico.training.dto;
 
 import com.nicico.training.model.enums.ENeedAssessmentPriority;
@@ -70,7 +69,7 @@ public class NeedAssessmentSkillBasedDTO implements Serializable {
         private String objectType;
         private Long objectId;
 
-        public String getObjectTypeFa(){
+        public String getObjectTypeFa() {
             switch (this.objectType) {
                 case "Job":
                     return "شغل";

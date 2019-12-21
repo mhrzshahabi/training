@@ -3,15 +3,14 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-
+    <%
+        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+    %>
 
     var skillLevelMethod = "get";
-    var skillLevelHomeUrl= rootUrl + "skill-level";
+    var skillLevelHomeUrl = rootUrl + "/skill-level";
     var skillLevelActionUrl = skillLevelHomeUrl;
     var Menu_ListGrid_skill_level = isc.Menu.create({
         width: 150,
@@ -121,7 +120,7 @@
 
     var IButton_skill_level_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-        //icon: "pieces/16/save.png",
+//icon: "pieces/16/save.png",
         click: function () {
 
             DynamicForm_skill_level.validate();
@@ -165,13 +164,13 @@
         }
     });
     var skill_levelSaveOrExitHlayout = isc.TrHLayoutButtons.create({
-        // layoutMargin: 5,
-        // showEdges: false,
-        // edgeImage: "",
-        // width: "100%",
-        // alignLayout: "center",
-        // padding: 10,
-        // membersMargin: 10,
+// layoutMargin: 5,
+// showEdges: false,
+// edgeImage: "",
+// width: "100%",
+// alignLayout: "center",
+// padding: 10,
+// membersMargin: 10,
         members: [IButton_skill_level_Save, isc.IButtonCancel.create({
             ID: "courseEditExitIButton",
             title: "لغو",
@@ -215,7 +214,7 @@
 
 
         var record = ListGrid_skill_level.getSelectedRecord();
-        //console.log(record);
+//console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "سطح مهارتی برای حذف انتخاب نشده است!",
@@ -244,7 +243,7 @@
                             title: "<spring:message code='global.message'/>"
                         });
                         isc.RPCManager.sendRequest({
-                            actionURL: skillLevelHomeUrl +"/" + record.id,
+                            actionURL: skillLevelHomeUrl + "/" + record.id,
                             httpMethod: "DELETE",
                             useSimpleHttp: true,
                             contentType: "application/json; charset=utf-8",
@@ -307,7 +306,7 @@
             });
         } else {
             skillLevelMethod = "PUT";
-            skillLevelActionUrl = skillLevelHomeUrl+ "/" + record.id;
+            skillLevelActionUrl = skillLevelHomeUrl + "/" + record.id;
             DynamicForm_skill_level.editRecord(record);
             Window_skill_level.setTitle("ویرایش سطح مهارت '" + record.titleFa + "'");
             Window_skill_level.show();
@@ -316,21 +315,21 @@
 
 
     var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
+//icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_skill_level_refresh();
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+//icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_skill_level_edit();
         }
     });
     var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-       // icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
             ListGrid_skill_level_Add();
@@ -358,7 +357,7 @@
                     ToolStripButton_Refresh
                 ]
             })
-            ]
+        ]
     });
     var HLayout_Actions = isc.HLayout.create({width: "100%", members: [ToolStrip_Actions]});
     var HLayout_Grid = isc.HLayout.create({width: "100%", height: "100%", members: [ListGrid_skill_level]});

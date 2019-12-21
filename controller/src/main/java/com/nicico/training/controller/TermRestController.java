@@ -11,7 +11,6 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
@@ -59,8 +58,8 @@ public class TermRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<TermDTO.Info> create(@RequestBody TermDTO.Create req) {
-        TermDTO.Create create =modelMapper.map(req, TermDTO.Create.class);
+    public ResponseEntity<TermDTO.Info> create(@RequestBody Object req) {
+        TermDTO.Create create = modelMapper.map(req, TermDTO.Create.class);
         return new ResponseEntity<>(termService.create(create), HttpStatus.CREATED);
     }
 
@@ -86,13 +85,13 @@ public class TermRestController {
     }
 
 
- @GetMapping(value = "/spec-list")
+    @GetMapping(value = "/spec-list")
     public ResponseEntity<TotalResponse<TermDTO.Info>> list(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(termService.search(nicicoCriteria), HttpStatus.OK);
     }
 
-//
+    //
 //    @Loggable
 //    @GetMapping(value = "/spec-list")
     public ResponseEntity<TermDTO.TermSpecRs> list(@RequestParam("_startRow") Integer startRow,

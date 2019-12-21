@@ -26,10 +26,14 @@ public interface ITrainingPlaceService {
     List<EquipmentDTO.Info> getEquipments(Long trainingPlaceId);
 
     void removeEquipment(Long equipmentId, Long trainingPlaceId);
+
     void removeEquipments(List<Long> equipmentIds, Long trainingPlaceId);
+
     void addEquipment(Long equipmentId, Long trainingPlaceId);
+
     void addEquipments(List<Long> equipmentIds, Long trainingPlaceId);
 
-    List<EquipmentDTO.Info> getUnAttachedEquipments(Long trainingPlaceId, Pageable pageable)  ;
+    List<EquipmentDTO.Info> getUnAttachedEquipments(Long trainingPlaceId, Pageable pageable);
+
     Integer getUnAttachedEquipmentsCount(Long trainingPlaceId);
 }

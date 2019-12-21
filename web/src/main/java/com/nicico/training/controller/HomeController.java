@@ -19,30 +19,30 @@ import javax.servlet.http.HttpSession;
 @RequestMapping("/")
 public class HomeController {
 
-	private final IBusinessWorkflowEngine businessWorkflowEngine;
+    private final IBusinessWorkflowEngine businessWorkflowEngine;
 
-	@Value("${nicico.rest-api.url}")
-	private String restApiUrl;
+    @Value("${nicico.rest-api.url}")
+    private String restApiUrl;
 
-	@GetMapping(value = {"/", "/home"})
-	public String showHomePage(HttpSession session) {
-		final String username = SecurityContextHolder.getContext().getAuthentication().getName();
-		session.setAttribute("cartableCount", businessWorkflowEngine.getUserTasks(username).size());
+    @GetMapping(value = {"/", "/home"})
+    public String showHomePage(HttpSession session) {
+        final String username = SecurityContextHolder.getContext().getAuthentication().getName();
+        session.setAttribute("cartableCount", businessWorkflowEngine.getUserTasks(username).size());
 
-		return "trainingMainDesktop";
-	}
+        return "trainingMainDesktop";
+    }
 
-	@GetMapping(value = {"/login"})
-	public String showLoginPage() {
-		return "security/login";
-	}
+    @GetMapping(value = {"/login"})
+    public String showLoginPage() {
+        return "security/login";
+    }
 
-	@GetMapping("/oauth_login")
-	public String getLoginPage(Model model) {
-		if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
-			return "redirect:/";
-		} else {
-			return "redirect:/oauth2/authorization/sso-login";
-		}
-	}
+    @GetMapping("/oauth_login")
+    public String getLoginPage(Model model) {
+        if (!(SecurityContextHolder.getContext().getAuthentication() instanceof AnonymousAuthenticationToken) && SecurityContextHolder.getContext().getAuthentication().isAuthenticated()) {
+            return "redirect:/";
+        } else {
+            return "redirect:/oauth2/authorization/sso-login";
+        }
+    }
 }

@@ -2,9 +2,11 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AttendanceDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IAttendanceService {
 
@@ -15,13 +17,26 @@ public interface IAttendanceService {
 	AttendanceDTO.Info create(AttendanceDTO.Create request);
 
 	@Transactional
-    List<AttendanceDTO.Info> autoCreate(Long classId, String date);
+    List<List<Map>> autoCreate(Long classId, String date);
 
-	AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
+
+    @Transactional
+    void convertToModelAndSave(List<List<Map<String, String>>> maps, Long classId, String date);
+
+    AttendanceDTO.Info update(Long id, AttendanceDTO.Update request);
 
 	void delete(Long id);
 
 	void delete(AttendanceDTO.Delete request);
 
 	SearchDTO.SearchRs<AttendanceDTO.Info> search(SearchDTO.SearchRq request);
+
+//	Integer acceptAbsent(Long classId, Long studentId);
+
+//	@Transactional(readOnly = true)
+//	Integer acceptAbsentHoursForClass(Long classId, Integer x);
+
+	Double acceptAbsentHoursForClass(Long classId, Double x);
+
+	List<ClassSessionDTO.Info> studentAbsentSessionsInClass(Long classId, Long studentId);
 }

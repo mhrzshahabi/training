@@ -20,7 +20,7 @@
                 {name: "code", title: "<spring:message code='code'/>", filterOperator: "iContains", autoFitWidth: true},
                 {name: "titleFa", title: "<spring:message code='title'/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: skillUrl + "spec-list"
+        fetchDataURL: skillUrl + "/spec-list"
     });
 
     restData_All_Jobs_NASB_JPA = isc.TrDS.create({
@@ -28,9 +28,9 @@
             [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: jobUrl + "iscList"
+        fetchDataURL: jobUrl + "/iscList"
     });
 
     restData_All_Posts_NASB_JPA = isc.TrDS.create({
@@ -38,16 +38,16 @@
             [
                 {name: "id", primaryKey: true, hidden: true},
                 {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: postUrl + "iscList"
+        fetchDataURL: postUrl + "/iscList"
     });
 
     restData_All_JobGroups_NASB_JPA = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
             ],
         fetchDataURL: jobGroupUrl + "spec-list"
     });
@@ -56,9 +56,9 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
             ],
-        fetchDataURL: postGroupUrl + "spec-list"
+        fetchDataURL: postGroupUrl + "/spec-list"
     });
 
     restData_For_This_Object_Skills_NASB_JPA = isc.TrDS.create({
@@ -73,15 +73,15 @@
                 {name: "skill.titleFa"},
                 {name: "skill.id"},
                 {name: "eneedAssessmentPriority.id"},
-                {name: "eneedAssessmentPriority.titleFa"},
-            ],
+                {name: "eneedAssessmentPriority.titleFa"}
+            ]
     });
 
     restData_Need_Assessment_Priority_NASB_JPA = isc.TrDS.create({
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
             ],
         fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
     });
@@ -190,8 +190,8 @@
                 type: "staticText",
                 title: "<spring:message code='need.assessment'/>",
                 titleAlign: "center",
-                wrapTitle: false,
-            },
+                wrapTitle: false
+            }
         ]
     });
 
@@ -204,7 +204,7 @@
         numCols: 1,
         fields: [
             {
-                type: "SpacerItem",
+                type: "SpacerItem"
             },
             {
                 name: "eneedAssessmentPriorityId",
@@ -224,10 +224,10 @@
                 sortField: ["id"],
                 pickListProperties: {
                     showFilterEditor: false
-                },
+                }
             },
             {
-                type: "SpacerItem",
+                type: "SpacerItem"
             },
             {
                 name: "addButton",
@@ -267,7 +267,7 @@
         selectionAppearance: "checkbox",
         recordDrop: function (dropRecords) {
             ListGrid_For_This_Object_Skills_Remove_NASB(dropRecords);
-        },
+        }
     });
 
     DynamicForm_All_Skills_NASB_Jsp = isc.DynamicForm.create({
@@ -278,8 +278,8 @@
                 name: "Right_LG_Title_NASB",
                 title: "<spring:message code='skill'/>",
                 titleAlign: "center",
-                wrapTitle: false,
-            },
+                wrapTitle: false
+            }
         ]
     });
 
@@ -374,13 +374,13 @@
         align: "left",
         border: '0px',
         members: [
-            ToolStripButton_Refresh_NASB,
+            ToolStripButton_Refresh_NASB
         ]
     });
 
     Main_VLayout_ToolStrip_Actions_NASB = isc.TrVLayout.create({
         border: "2px solid blue",
-        members: [ToolStrip_Actions_NASB, Tabset_Object_NASB_JPA, HLayout_Grids_NASB_JPA],
+        members: [ToolStrip_Actions_NASB, Tabset_Object_NASB_JPA, HLayout_Grids_NASB_JPA]
     });
 
 

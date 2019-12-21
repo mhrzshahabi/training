@@ -3,15 +3,15 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-//<script>
+// <script>
 
     <%
         final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
     %>
 
 
-    var category_CategoryHomeUrl = rootUrl + "category";
-    var category_SubCategoryHomeUrl = rootUrl + "sub-category";
+    var category_CategoryHomeUrl = rootUrl + "/category";
+    var category_SubCategoryHomeUrl = rootUrl + "/sub-category";
     var category_SubCategoryDummyUrl = category_CategoryHomeUrl + "/sub-categories/dummy";
     var category_SubCategoryUrl = category_SubCategoryHomeUrl;
     var method = "GET";
@@ -64,13 +64,13 @@
                 title: "نام فارسی",
                 required: true,
                 type: 'text',
-                // default:"125",
-                //readonly: true,
+// default:"125",
+//readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z| ]",
                 length: "200",
                 width: "100%",
                 height: 30,
-                //paddingTop:9,
+//paddingTop:9,
                 validators: [{
                     validateOnExit: true,
                     type: "lengthRange",
@@ -103,7 +103,7 @@
                 length: "200",
                 width: "100%",
                 height: 30,
-                //paddingTop:9,
+//paddingTop:9,
                 type: 'text'
             }
         ]
@@ -111,7 +111,7 @@
 
     var IButton_Category_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-       // icon: "pieces/16/save.png",
+// icon: "pieces/16/save.png",
         click: function () {
             DynamicForm_Category.validate();
             if (DynamicForm_Category.hasErrors()) {
@@ -158,19 +158,19 @@
     });
 
     var Hlayout_Category_SaveOrExit = isc.TrHLayoutButtons.create({
-        // layoutMargin: 5,
-        // showEdges: false,
-        // edgeImage: "",
-        // width: "100%",
-        // alignLayout: "center",
-        // padding: 10,
-        // membersMargin: 10,
+// layoutMargin: 5,
+// showEdges: false,
+// edgeImage: "",
+// width: "100%",
+// alignLayout: "center",
+// padding: 10,
+// membersMargin: 10,
         members: [IButton_Category_Save, isc.IButtonCancel.create({
             ID: "IButton_Category_Exit",
             title: "لغو",
             prompt: "",
             width: 100,
-            //icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Category.close();
@@ -203,14 +203,14 @@
         width: "500",
         height: "170",
         setMethod: method,
-        // canSubmit: true,
-        padding:20,
+// canSubmit: true,
+        padding: 20,
         showInlineErrors: true,
         numCols: "2",
         showErrorText: true,
         showErrorStyle: true,
         errorOrientation: "right",
-        // colWidths: ["80", "*"],
+// colWidths: ["80", "*"],
         titleAlign: "right",
         requiredMessage: "فیلد اجباری است.",
         <%--margin: "10",--%>
@@ -265,7 +265,7 @@
                 required: true,
                 type: 'text',
                 height: 30,
-                //readonly: true,
+//readonly: true,
                 keyPressFilter: "^[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9|a-z|A-Z| ]",
                 length: "200",
                 width: "100%",
@@ -300,7 +300,7 @@
 
     var IButton_Sub_Category_Save = isc.IButtonSave.create({
         top: 260, title: "ذخیره",
-       // icon: "pieces/16/save.png",
+// icon: "pieces/16/save.png",
         click: function () {
             if (method == "POST") {
                 DynamicForm_Sub_Category.getItem("code").setValue(DynamicForm_Sub_Category.getItem("categoryCode").getValue() + DynamicForm_Sub_Category.getItem("codeNumber").getValue());
@@ -313,7 +313,7 @@
 
             var data = DynamicForm_Sub_Category.getValues();
             crecord = ListGrid_Category.getSelectedRecord();
-            //  alert(substring(data.code,1,2));
+// alert(substring(data.code,1,2));
 
 
             if (data.code.substr(0, 2) == crecord.code) {
@@ -365,17 +365,17 @@
     });
 
     var Hlayout_Sub_Category_SaveOrExit = isc.TrHLayoutButtons.create({
-        // layoutMargin: 5,
-        // showEdges: false,
-        // edgeImage: "",
-        // width: "100%",
-        // alignLayout: "center",
-        // padding: 10,
-        // membersMargin: 10,
+// layoutMargin: 5,
+// showEdges: false,
+// edgeImage: "",
+// width: "100%",
+// alignLayout: "center",
+// padding: 10,
+// membersMargin: 10,
         members: [IButton_Sub_Category_Save, isc.IButtonCancel.create({
             ID: "IButton_Sub_Category_Exit",
             title: "لغو",
-            //icon: "<spring:url value="remove.png"/>",
+//icon: "<spring:url value="remove.png"/>",
             orientation: "vertical",
             click: function () {
                 Window_Sub_Category.close();
@@ -414,7 +414,7 @@
 
     function ListGrid_Sub_Category_Remove() {
         var record = ListGrid_Sub_Category.getSelectedRecord();
-        //console.log(record);
+//console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است!",
@@ -493,22 +493,22 @@
                 }
             });
         } else {
-            //selectedCategoryId=crecord.id;
-            // alert(crecord.titleFa);
+//selectedCategoryId=crecord.id;
+// alert(crecord.titleFa);
             method = "POST";
             url = category_SubCategoryUrl;
             DynamicForm_Sub_Category.clearValues();
             DynamicForm_Sub_Category.getItem("categoryId").setValue(crecord.id);
             DynamicForm_Sub_Category.getItem("categoryCode").setValue(crecord.code);
-            // DynamicForm_Sub_Category.getItem("categoryId").setValue(getFormulaMessage(crecord.titleFa,"2","red","B"));
-            Window_Sub_Category.setTitle(" دسته بندی گرایش های مربوط به گروه:  " + getFormulaMessage(crecord.titleFa, "3", "black", "B"));
-//            DynamicForm_Sub_Category.getItem("code").setValue(crecord.code);
+// DynamicForm_Sub_Category.getItem("categoryId").setValue(getFormulaMessage(crecord.titleFa,"2","red","B"));
+            Window_Sub_Category.setTitle(" دسته بندی گرایش های مربوط به گروه: " + getFormulaMessage(crecord.titleFa, "3", "black", "B"));
+// DynamicForm_Sub_Category.getItem("code").setValue(crecord.code);
             DynamicForm_Sub_Category.getItem("code").visible = false;
             DynamicForm_Sub_Category.getItem("categoryCode").visible = true;
             DynamicForm_Sub_Category.getItem("codeNumber").visible = true;
 
 
-            // Window_Sub_Category.refresh();
+// Window_Sub_Category.refresh();
             Window_Sub_Category.show();
         }
     };
@@ -518,7 +518,7 @@
         var crecord = ListGrid_Category.getSelectedRecord();
         var record = ListGrid_Sub_Category.getSelectedRecord();
 
-        //  alert(crecord.titleFa);
+// alert(crecord.titleFa);
         if (record == null || crecord == null) {
             isc.Dialog.create({
                 message: "گروه یا زیر گروه انتخاب نشده است.",
@@ -541,10 +541,10 @@
             DynamicForm_Sub_Category.editRecord(record);
             Window_Sub_Category.clear();
 
-            Window_Sub_Category.setTitle(" دسته بندی گرایش های مربوط به گروه:  " + getFormulaMessage(crecord.titleFa, "3", "black", "B"));
-            // DynamicForm_Sub_Category.getItem("categoryId").setValue(crecord.id);
-            //  Window_Sub_Category.title= " دسته بندی گرایش های مربوط به گروه:  " +getFormulaMessage(crecord.titleFa,"3","black","B");
-            // DynamicForm_Sub_Category.getItem("category").setValue(getFormulaMessage(crecord.titleFa,"2","red","B"));
+            Window_Sub_Category.setTitle(" دسته بندی گرایش های مربوط به گروه: " + getFormulaMessage(crecord.titleFa, "3", "black", "B"));
+// DynamicForm_Sub_Category.getItem("categoryId").setValue(crecord.id);
+// Window_Sub_Category.title= " دسته بندی گرایش های مربوط به گروه: " +getFormulaMessage(crecord.titleFa,"3","black","B");
+// DynamicForm_Sub_Category.getItem("category").setValue(getFormulaMessage(crecord.titleFa,"2","red","B"));
 
             Window_Sub_Category.show();
         }
@@ -604,14 +604,14 @@
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: true,
-        // showFilterEditor: true,
-        // filterOnKeypress: true,
+// showFilterEditor: true,
+// filterOnKeypress: true,
         sortFieldAscendingText: "مرتب سازی صعودی ",
         sortFieldDescendingText: "مرتب سازی نزولی",
         configureSortText: "تنظیم مرتب سازی",
         autoFitAllText: "متناسب سازی ستون ها براساس محتوا ",
         autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        // filterUsingText: "فیلتر کردن",
+// filterUsingText: "فیلتر کردن",
         groupByText: "گروه بندی",
         freezeFieldText: "ثابت نگه داشتن"
     });
@@ -627,7 +627,7 @@
     function ListGrid_Category_Remove() {
 
         var record = ListGrid_Category.getSelectedRecord();
-        // console.log(record);
+// console.log(record);
         if (record == null) {
             isc.Dialog.create({
                 message: "رکوردی انتخاب نشده است!",
@@ -794,7 +794,7 @@
     });
 
     var ToolStripButton_Sub_Category_Refresh = isc.ToolStripButtonRefresh.create({
-      //  icon: "<spring:url value="refresh.png"/>",
+// icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Sub_Category_refresh();
@@ -802,21 +802,21 @@
     });
 
     var ToolStripButton_Sub_Category_Edit = isc.ToolStripButtonEdit.create({
-      //  icon: "[SKIN]/actions/edit.png",
+
         title: "ویرایش",
         click: function () {
             ListGrid_Sub_Category_Edit();
         }
     });
     var ToolStripButton_Sub_Category_Add = isc.ToolStripButtonAdd.create({
-      //  icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
             ListGrid_Sub_Category_Add();
         }
     });
     var ToolStripButton_Sub_Category_Remove = isc.ToolStripButtonRemove.create({
-      //  icon: "[SKIN]/actions/remove.png",
+// icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Sub_Category_Remove();
@@ -831,40 +831,40 @@
             ToolStripButton_Sub_Category_Edit,
             ToolStripButton_Sub_Category_Remove,
             isc.ToolStrip.create({
-            width: "100%",
-            align: "left",
-            border: '0px',
-            members: [
-            ToolStripButton_Sub_Category_Refresh
-            ]
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Sub_Category_Refresh
+                ]
             }),
-         ]
+        ]
     });
 
 
     var ToolStripButton_Category_Refresh = isc.ToolStripButtonRefresh.create({
-        //icon: "<spring:url value="refresh.png"/>",
+//icon: "<spring:url value="refresh.png"/>",
         title: "بازخوانی اطلاعات",
         click: function () {
             ListGrid_Category_refresh();
         }
     });
     var ToolStripButton_Category_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+//icon: "[SKIN]/actions/edit.png",
         title: "ویرایش",
         click: function () {
             ListGrid_Category_Edit();
         }
     });
     var ToolStripButton_Category_Add = isc.ToolStripButtonAdd.create({
-       // icon: "[SKIN]/actions/add.png",
+
         title: "ایجاد",
         click: function () {
             ListGrid_Category_Add();
         }
     });
     var ToolStripButton_Category_Remove = isc.ToolStripButtonRemove.create({
-       // icon: "[SKIN]/actions/remove.png",
+// icon: "[SKIN]/actions/remove.png",
         title: "حذف",
         click: function () {
             ListGrid_Category_Remove();
@@ -875,18 +875,18 @@
         width: "100%",
         membersMargin: 5,
         members: [,
-                ToolStripButton_Category_Add,
-                ToolStripButton_Category_Edit,
-                ToolStripButton_Category_Remove,
-                isc.ToolStrip.create({
-                    width: "100%",
-                    align: "left",
-                    border: '0px',
-                    members: [
-                         ToolStripButton_Category_Refresh
-                     ]
-                })
+            ToolStripButton_Category_Add,
+            ToolStripButton_Category_Edit,
+            ToolStripButton_Category_Remove,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Category_Refresh
                 ]
+            })
+        ]
     });
 
 

@@ -3,7 +3,9 @@ package com.nicico.training.service;
 @Author:Lotfy
 */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
@@ -77,6 +79,17 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
     @Override
     public SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(personnelRegisteredDAO, request, personnelRegistered -> modelMapper.map(personnelRegistered, PersonnelRegisteredDTO.Info.class));
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request) {
+        return SearchUtil.search(personnelRegisteredDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelRegisteredDTO.Info.class));
+    }
+
+    @Override
+    public PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode) {
+        return null;
     }
 
     // ------------------------------

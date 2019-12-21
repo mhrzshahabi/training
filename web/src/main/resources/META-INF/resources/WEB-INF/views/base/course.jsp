@@ -5,8 +5,7 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-// <script>
+%> // <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -57,7 +56,9 @@
             // {name: "skill"},
             // {name: "attitude"},
             {name: "needText"},
-            {name: "description"}
+            {name: "description"},
+            {name: "workflowStatus"},
+            {name: "workflowStatusCode"}
             // {name: "version"},
         ],
         fetchDataURL: courseUrl + "spec-list",
@@ -165,13 +166,18 @@
             title: "<spring:message code="remove"/>", icon: "<spring:url value="remove.png"/>", click: function () {
                 ListGrid_Course_remove()
             }
-        }
+        },
             <%--, {--%>
             <%--title: "تعریف هدف و سرفصل", icon: "<spring:url value="goal.png"/>", click: function () {--%>
             <%--openTabGoal();--%>
             <%--}--%>
             <%--}--%>
-            , {
+            {
+                title: "<spring:message code='send.to.workflow'/>", click: function () {
+                    sendCourseToWorkflow();
+                }
+            },
+            {
                 isSeparator: true
             }, {
                 title: "<spring:message code="format.pdf"/>",
@@ -269,6 +275,7 @@
         },
         //working
         dataArrived: function () {
+            selectWorkflowRecord();
             // var gridState = "[{id:285}]";
             // ListGrid_Course.setSelectedState(gridState);
 
@@ -374,7 +381,22 @@
             //     width: "50"
             // },
             {name: "needText", title: "شرح", hidden: true},
-            {name: "description", title: "توضیحات", hidden: true}
+            {name: "description", title: "توضیحات", hidden: true},
+            {
+                name: "workflowStatus",
+                title: "<spring:message code="status"/>",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains"
+            },
+            {
+                name: "workflowStatusCode",
+                title: "<spring:message code="status"/>",
+                align: "center",
+                autoFitWidth: true,
+                filterOperator: "iContains",
+                hidden: true
+            }
             // {name: "version", title: "version", canEdit: false, hidden: true},
             // {name: "goalSet", hidden: true}
         ],
@@ -479,14 +501,14 @@
         }
     });
     var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-        //icon: "[SKIN]/actions/edit.png",
+
         title: "<spring:message code="edit"/> ",
         click: function () {
             ListGrid_Course_Edit()
         }
     });
     var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/actions/add.png",
+
         title: "<spring:message code="create"/>",
 
         click: function () {
@@ -501,7 +523,7 @@
     <%--}--%>
     <%--});--%>
     var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/actions/remove.png",
+
         title: "<spring:message code="remove"/> ",
         click: function () {
             ListGrid_Course_remove()
@@ -514,6 +536,16 @@
             print_CourseListGrid("pdf");
         }
     });
+
+    var ToolStripButton_SendToWorkflow = isc.ToolStripButton.create({
+        icon: "[SKIN]/actions/column_preferences.png",
+        title: "<spring:message code='send.to.workflow'/>",
+        click: function () {
+            sendCourseToWorkflow();
+        }
+    });
+
+
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -522,6 +554,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
+            ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -529,7 +562,7 @@
                 members: [
                     ToolStripButton_Refresh
                 ]
-            }),
+            })
 
         ]
     });
@@ -765,13 +798,13 @@
                 colSpan: 1,
                 endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
-                prompt: "لطفا طول دوره را به صورت یک عدد وارد کنید",
+                prompt: "لطفا مدت دوره را به صورت یک عدد وارد کنید",
                 // height: "30",
                 required: true,
                 // titleOrientation: "top",
                 textAlign: "center",
                 keyPressFilter: "[0-9.]",
-                requiredMessage: "لطفا طول دوره را به صورت یک عدد با حداکثر طول سه رقم وارد کنید",
+                requiredMessage: "لطفا مدت دوره را به صورت یک عدد با حداکثر سه رقم وارد کنید",
                 validators: [{
                     type: "integerRange", min: 0, max: 999,
                     errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
@@ -1117,7 +1150,6 @@
         title: "<spring:message code="save"/>",
         //icon: "[SKIN]/actions/save.png",
         click: function () {
-
             vm_JspCourse.validate();
             if (vm_JspCourse.hasErrors()) {
                 return;
@@ -1150,6 +1182,10 @@
                         }
                         data2.equalCourseListId = equalCourseIdList;
                         data2.preCourseListId = preCourseIdList;
+
+                        data2["workflowStatus"] = "ثبت اولیه";
+                        data2["workflowStatusCode"] = "0";
+
                         isc.RPCManager.sendRequest({
                             actionURL: course_url,
                             willHandleError: true,
@@ -1171,24 +1207,6 @@
                                     var gridState = "[{id:" + responseID + "}]";
                                     simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
                                     // Window_course.close();
-
-// <<---------------------------------------- Workflow - Call StartProcess ----------------------------------------
-                                    var varParams = [{
-                                        "processKey": "courceWorkflow",
-                                        "cId": JSON.parse(resp.data).id,
-                                        "mainObjective": JSON.parse(resp.data).mainObjective,
-                                        "titleFa": JSON.parse(resp.data).titleFa,
-                                        "theoryDuration": JSON.parse(resp.data).theoryDuration.toString(),
-                                        "courseCreatorId": "${username}",
-                                        "courseCreator": userFullName,
-                                        "REJECTVAL": "",
-                                        "REJECT": "",
-                                        "target": "/course/show-form",
-                                        "targetTitleFa": "دوره"
-                                    }]
-
-                                     startProcess(varParams);
-// ---------------------------------------- Workflow - Call StartProcess ---------------------------------------->>
 
                                     setTimeout(function () {
                                         ListGrid_Course.setSelectedState(gridState);
@@ -1240,6 +1258,9 @@
                     serverOutputAsString: false,
                     callback: function (resp) {
                         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+
                             ListGrid_Course_refresh();
                             var responseID = JSON.parse(resp.data).id;
                             var gridState = "[{id:" + responseID + "}]";
@@ -1263,22 +1284,6 @@
         },
         disabled: true
     });
-
-    // <<---------------------------------------- Workflow - StartProcess ----------------------------------------
-    function startProcess(varParams) {
-        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
-    }
-
-    function startProcess_callback(resp) {
-
-        if (resp.httpResponseCode == 200)
-            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
-        else {
-            isc.say("کد خطا : " + resp.httpResponseCode);
-        }
-    }
-
-    // ---------------------------------------- Workflow - StartProcess ---------------------------------------->>
 
     var courseSaveOrExitHlayout = isc.HLayout.create({
 
@@ -1768,7 +1773,7 @@
                 // styleName:"paddingRight",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid LightBlue",
-                borderRadius:"6px",
+                borderRadius: "6px",
                 // align: "center",
                 // vAlign: "center",
                 // wrap: false,
@@ -1778,19 +1783,19 @@
             isc.DynamicForm.create({
                 colWidths: ["8%", "18%", "1%"],
                 ID: "teacherForm",
-                titleOrientation:"top",
+                titleOrientation: "top",
                 numCols: 2,
                 // padding: 50,
-                padding:"10px",
+                padding: "10px",
                 isGroup: true,
-                titleAlign:"center",
+                titleAlign: "center",
                 // wrapItemTitles:true,
                 groupTitle: "شرایط مدرس دوره",
                 groupLabelBackgroundColor: "lightBlue",
                 groupBorderCSS: "1px solid lightBlue",
                 width: "96%",
                 height: "74%",
-                borderRadius:"6px",
+                borderRadius: "6px",
                 textAlign: "right",
                 // margin:20,
                 fields: [
@@ -1803,7 +1808,7 @@
                         // height: "30",
                         // width: "*",
                         textAlign: "center",
-                        titleAlign:"center",
+                        titleAlign: "center",
                         displayField: "titleFa",
                         valueField: "titleFa",
                         optionDataSource: RestDataSourceEducationCourseJsp,
@@ -1816,7 +1821,7 @@
                     {
                         name: "minTeacherExpYears",
                         colSpan: 2,
-                        title: "<spring:message code="course_minTeacherExpYears"/>"+":",
+                        title: "<spring:message code="course_minTeacherExpYears"/>" + ":",
                         prompt: "لطفا حداقل سال سابقه تدریس وارد کنید",
                         // shouldSaveValue: true,
                         textAlign: "center",
@@ -1833,7 +1838,7 @@
                     {
                         name: "minTeacherEvalScore",
                         colSpan: 2,
-                        title: "<spring:message code="course_minTeacherEvalScore"/>"+":",
+                        title: "<spring:message code="course_minTeacherEvalScore"/>" + ":",
                         prompt: "لطفا حداقل نمره ارزیابی را وارد کنید",
                         shouldSaveValue: true,
                         textAlign: "center",
@@ -1870,7 +1875,7 @@
             styleName: "paddingRight",
             groupLabelBackgroundColor: "lightBlue",
             groupBorderCSS: "1px solid lightBlue",
-            borderRadius:"6px",
+            borderRadius: "6px",
             members: [DynamicForm_course_MainTab, DynamicForm_course_GroupTab]
         }), VLayout_Tab_JspCourse]
     });
@@ -1885,10 +1890,10 @@
             members: [isc.TrVLayout.create({
                 members: [HLayOut_Tab_JspCourse, courseSaveOrExitHlayout],
                 border: "3px solid lightBlue",
-                borderRadius:"10px",
+                borderRadius: "10px",
                 height: "40%",
                 layoutMargin: 5,
-                margin:"2%",
+                margin: "2%",
             }), TabSet_Goal_JspCourse],
         })],
         minWidth: 1024,
@@ -2024,7 +2029,7 @@
         vm_JspCourse.clearValues();
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
-        Window_course.setTitle("<spring:message code="create"/>"+" "+"<spring:message code="course"/>");
+        Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
         lblCourse.hide();
@@ -2044,7 +2049,7 @@
         }, 500)
 
 
-// DynamicForm_course.getFields().get(5).prompt = "لطفا طول دوره را به صورت یک عدد وارد کنید";
+// DynamicForm_course.getFields().get(5).prompt = "لطفا مدت دوره را به صورت یک عدد وارد کنید";
 
     };
 
@@ -2168,7 +2173,7 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
-            Window_course.setTitle("<spring:message code="edit"/>"+" "+"<spring:message code="course"/>");
+            Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
             setTimeout(function () {
@@ -2298,4 +2303,140 @@
         })
     }
 
-    //</script>
+    // <<---------------------------------------- Send To Workflow ----------------------------------------
+    function sendCourseToWorkflow() {
+
+        var sRecord = ListGrid_Course.getSelectedRecord();
+
+        if (sRecord === null || sRecord.id === null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else if (sRecord.workflowStatusCode === "2") {
+            createDialog("info", "<spring:message code='course.workflow.confirm'/>");
+        } else if (sRecord.workflowStatusCode !== "0" && sRecord.workflowStatusCode !== "-3") {
+            createDialog("info", "<spring:message code='course.sent.to.workflow'/>");
+        } else {
+
+            isc.MyYesNoDialog.create({
+                message: "<spring:message code="course.sent.to.workflow.ask"/>",
+                title: "<spring:message code="message"/>",
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+
+                        var varParams = [{
+                            "processKey": "courseWorkflow",
+                            "cId": sRecord.id,
+                            "mainObjective": sRecord.mainObjective,
+                            "titleFa": sRecord.titleFa,
+                            "theoryDuration": sRecord.theoryDuration.toString(),
+                            "courseCreatorId": "${username}",
+                            "courseCreator": userFullName,
+                            "REJECTVAL": "",
+                            "REJECT": "",
+                            "target": "/course/show-form",
+                            "targetTitleFa": "دوره",
+                            "workflowStatus": "ثبت اولیه",
+                            "workflowStatusCode": "0"
+                        }]
+
+                        isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+
+                    }
+                }
+            });
+        }
+
+    }
+
+    function startProcess_callback(resp) {
+
+        if (resp.httpResponseCode == 200) {
+            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+            ListGrid_Course_refresh()
+        } else {
+            isc.say("کد خطا : " + resp.httpResponseCode);
+        }
+    }
+
+    var course_workflowParameters = null;
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            course_workflowParameters = workflowParameters;
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_Course.setSelectedState(gridState);
+
+            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+
+            workflowRecordId = null;
+            workflowParameters = null;
+
+            ListGrid_Course_Edit();
+            taskConfirmationWindow.setHeight("90%");
+        }
+
+    }
+
+    function sendToWorkflowAfterUpdate(selectedRecord) {
+
+        var sRecord = selectedRecord;
+
+        if (sRecord !== null && sRecord.id !== null && course_workflowParameters !== null) {
+
+            if (sRecord.workflowStatusCode === "-1" || sRecord.workflowStatusCode === "-2") {
+
+                course_workflowParameters.workflowdata["REJECT"] = "N";
+                course_workflowParameters.workflowdata["REJECTVAL"] = " ";
+                course_workflowParameters.workflowdata["mainObjective"] = sRecord.mainObjective;
+                course_workflowParameters.workflowdata["titleFa"] = sRecord.titleFa;
+                course_workflowParameters.workflowdata["theoryDuration"] = sRecord.theoryDuration.toString();
+                course_workflowParameters.workflowdata["courseCreatorId"] = "${username}";
+                course_workflowParameters.workflowdata["courseCreator"] = userFullName;
+                course_workflowParameters.workflowdata["workflowStatus"] = "اصلاح دوره";
+                course_workflowParameters.workflowdata["workflowStatusCode"] = "20";
+
+                var ndat = course_workflowParameters.workflowdata;
+
+                isc.RPCManager.sendRequest({
+                    actionURL: workflowUrl + "/doUserTask",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpMethod: "POST",
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    data: JSON.stringify(ndat),
+                    params: {"taskId": course_workflowParameters.taskId, "usr": course_workflowParameters.usr},
+                    serverOutputAsString: false,
+                    callback: function (RpcResponse_o) {
+                        console.log(RpcResponse_o);
+                        if (RpcResponse_o.data === 'success') {
+
+                            ListGrid_Course_refresh();
+
+                            let responseID = sRecord.id;
+
+                            let gridState = "[{id:" + responseID + "}]";
+
+                            ListGrid_Course.setSelectedState(gridState);
+
+                            ListGrid_Course.scrollToRow(ListGrid_Course.getRecordIndex(ListGrid_Course.getSelectedRecord()), 0);
+
+                            isc.say("دوره ویرایش و به گردش کار ارسال شد");
+                            taskConfirmationWindow.hide();
+                            taskConfirmationWindow.setHeight("90%");
+                            ListGrid_UserTaskList.invalidateCache();
+                        }
+                    }
+                });
+
+            }
+        }
+
+
+    }
+
+    // ---------------------------------------- Send To Workflow ---------------------------------------->>

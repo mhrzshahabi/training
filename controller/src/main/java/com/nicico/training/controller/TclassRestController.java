@@ -12,7 +12,8 @@ import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Personnel;
+import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.service.ClassAlarmService;
 import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -21,6 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -43,11 +45,13 @@ public class TclassRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final ClassAlarmService classAlarmService;
+    private final StudentDAO studentDAO;
 
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
     public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
-        PersonnelDTO.Ids personsIds= modelMapper.map(request, PersonnelDTO.Ids.class);
+        PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
         tclassService.addStudents(classId, personsIds.getIds());
         return new ResponseEntity(HttpStatus.OK);
     }
@@ -148,6 +152,14 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
 
+        for(TclassDTO.Info tclassDTO :response.getList())
+        {
+            if(classAlarmService.list(tclassDTO.getId()).size() > 0)
+                tclassDTO.setHasWarning("alarm");
+            else
+                tclassDTO.setHasWarning("");
+        }
+
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();
         specResponse.setData(response.getList())
@@ -166,7 +178,6 @@ public class TclassRestController {
     public ResponseEntity<SearchDTO.SearchRs<TclassDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(tclassService.search(request), HttpStatus.OK);
     }
-
 
 
     @Loggable
@@ -204,7 +215,6 @@ public class TclassRestController {
         tclassService.addStudent(studentId, classId);
         return new ResponseEntity(HttpStatus.OK);
     }
-
 
 
 //
@@ -254,8 +264,25 @@ public class TclassRestController {
     @Loggable
     @GetMapping(value = "/end_group/{courseId}/{termId}")
 //    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId,@PathVariable Long termId) {
-        return new ResponseEntity<>(tclassService.getEndGroup(courseId,termId), HttpStatus.OK);
+    public ResponseEntity<Long> getEndGroup(@PathVariable Long courseId, @PathVariable Long termId) {
+        return new ResponseEntity<>(tclassService.getEndGroup(courseId, termId), HttpStatus.OK);
+    }
+
+/////////////////////
+    //////////////////////////
+    ////////////////////////////
+
+    @Loggable
+    @PostMapping(value = "/checkStudentInClass/{nationalCode}/{classId}")
+//    @PreAuthorize("hasAuthority('c_tclass')")
+    public ResponseEntity<Long> checkStudentInClass(@PathVariable String nationalCode, @PathVariable Long classId) {
+
+        if (((studentDAO.findOneByNationalCodeInClass(nationalCode , classId)) != null )){
+            return null;
+        }
+        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode , classId));
+        return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
+
     }
 
 

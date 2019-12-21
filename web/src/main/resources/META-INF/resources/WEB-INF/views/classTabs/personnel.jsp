@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 
-// <script>
+// script
 
     // ------------------------------------------- Menu -------------------------------------------
     PersonnelMenu_personnel = isc.Menu.create({
@@ -76,9 +76,9 @@
             {name: "employmentStatus", title: "<spring:message code="employment.status"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "complexTitle", title: "<spring:message code="complex"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
             {name: "workPlaceTitle", title: "<spring:message code="work.place"/>", filterOperator: "iContains", autoFitWidth: true, detail: true},
-            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true,  autoFitWidth: true},
+            {name: "workTurnTitle", title: "<spring:message code="work.turn"/>", filterOperator: "iContains", detail: true, autoFitWidth: true},
         ],
-        fetchDataURL: personnelUrl + "iscList"
+        fetchDataURL: personnelUrl + "/iscList"
     });
 
     PersonnelLG_personnel = isc.TrLG.create({

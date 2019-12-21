@@ -48,14 +48,14 @@ public class CategoryRestController {
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_category')")
     public ResponseEntity<CategoryDTO.Info> create(@Validated @RequestBody CategoryDTO.Create request) {
-        HttpStatus httpStatus=HttpStatus.CREATED;
-        CategoryDTO.Info categoryInfo=null;
+        HttpStatus httpStatus = HttpStatus.CREATED;
+        CategoryDTO.Info categoryInfo = null;
         try {
-            categoryInfo=categoryService.create(request);
+            categoryInfo = categoryService.create(request);
 
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            categoryInfo=null;
+            httpStatus = HttpStatus.NO_CONTENT;
+            categoryInfo = null;
         }
         return new ResponseEntity<>(categoryInfo, httpStatus);
     }
@@ -64,14 +64,14 @@ public class CategoryRestController {
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_category')")
     public ResponseEntity<CategoryDTO.Info> update(@PathVariable Long id, @Validated @RequestBody CategoryDTO.Update request) {
-        HttpStatus httpStatus=HttpStatus.OK;
-        CategoryDTO.Info categoryInfo=null;
+        HttpStatus httpStatus = HttpStatus.OK;
+        CategoryDTO.Info categoryInfo = null;
         try {
-            categoryInfo=categoryService.update(id, request);
+            categoryInfo = categoryService.update(id, request);
 
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            categoryInfo=null;
+            httpStatus = HttpStatus.NO_CONTENT;
+            categoryInfo = null;
         }
         return new ResponseEntity<>(categoryInfo, httpStatus);
     }
@@ -81,16 +81,16 @@ public class CategoryRestController {
 //    @PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             categoryService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
 
     }
 
@@ -98,15 +98,15 @@ public class CategoryRestController {
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_category')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody CategoryDTO.Delete request) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
         try {
             categoryService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
@@ -169,7 +169,7 @@ public class CategoryRestController {
         final SubCategoryDTO.SpecRs specResponse = new SubCategoryDTO.SpecRs();
         specResponse.setData(subCategories)
                 .setStartRow(0)
-                .setEndRow( subCategories.size())
+                .setEndRow(subCategories.size())
                 .setTotalRows(subCategories.size());
 
         final SubCategoryDTO.SubCategorySpecRs specRs = new SubCategoryDTO.SubCategorySpecRs();

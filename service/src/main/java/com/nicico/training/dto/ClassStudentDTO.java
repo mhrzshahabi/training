@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
@@ -16,18 +15,17 @@ import java.util.List;
 @Getter
 @Setter
 @Accessors(chain = true)
-@JsonInclude(JsonInclude.Include.NON_NULL)
-@JsonIgnoreProperties(ignoreUnknown = true)
+
 public class ClassStudentDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String scoresState;
 
     @ApiModelProperty(required = true)
-    private String reasonsfailure;
+    private String failurereason;
 
     @ApiModelProperty(required = true)
-    private double score;
+    private Float score;
 
     @ApiModelProperty(required = true)
     private Long studentId;
@@ -107,6 +105,22 @@ public class ClassStudentDTO implements Serializable {
         private Integer endRow;
         private Integer totalRows;
     }
+
+//    @Getter
+//    @Setter
+//    @Accessors(chain = true)
+//    @ApiModel("ClassStudentgetStudentRq")
+//    public static class getStudent {
+//    private long id;
+//    private String personnelNo;
+//    private String nationalCode;
+//    private String personnelNo2;
+//    private String firstName;
+//    private String lastName;
+//    private Float score;
+//    private String reasonsfailure;
+//    private String scoresState;
+//    }
 
 
 }

@@ -7,13 +7,11 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Student;
-import com.nicico.training.model.Tclass;
-import com.nicico.training.model.TrainingPlace;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
@@ -21,6 +19,8 @@ import org.modelmapper.TypeToken;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.*;
 
 @Service
@@ -31,20 +31,32 @@ public class TclassService implements ITclassService {
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
     private final TeacherDAO teacherDAO;
+    private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
     private final StudentService studentService;
     private final AttachmentService attachmentService;
 
     private final PersonnelDAO personnelDAO;
+    private final PersonnelRegisteredDAO personnelRegisteredDAO;
 
     @Transactional
     @Override
     public void addStudents(Long classId, List<String> personsIds) {
         Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
         optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+
         for (String personnelId : personsIds) {
             Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personnelId);
             optionalPersonnel.ifPresent(personnel -> {
+                StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
+                StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
+                addStudent(info.getId(), classId);
+            });
+        }
+        
+        for (String personnelId : personsIds) {
+            Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByPersonnelNo(personnelId);
+            optionalPersonnelReg.ifPresent(personnel -> {
                 StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
                 StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
                 addStudent(info.getId(), classId);
@@ -208,6 +220,22 @@ public class TclassService implements ITclassService {
         for (Student student : gAllById) {
             tclass.getStudentSet().add(student);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Long sessionsHourSum(Long classId) {
+        List<ClassSessionDTO.Info> sessions = classSessionService.loadSessions(classId);
+        Long sum = 0L;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        for (ClassSessionDTO.Info session : sessions) {
+            try {
+                sum += sdf.parse(session.getSessionEndHour()).getTime() - sdf.parse(session.getSessionStartHour()).getTime();
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        return sum;
     }
 
 

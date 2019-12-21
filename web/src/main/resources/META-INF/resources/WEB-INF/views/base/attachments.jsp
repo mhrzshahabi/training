@@ -25,6 +25,8 @@
     });
 
     DynamicForm_JspAttachments = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
         fields: [
             {name: "id", hidden: true},
             {
@@ -34,8 +36,20 @@
             },
             {
                 name: "fileTypeId",
-                title: "<spring:message code="attach.file.format"/>",
-                required: true
+                type: "IntegerItem",
+                title: "<spring:message code='attach.file.format'/>",
+                required: true,
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                filterOperator: "iContains",
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                ]
             },
             {
                 name: "description",
@@ -48,7 +62,11 @@
                 type: "file",
                 multiple: false,
                 hint: "<spring:message code="file.size.hint"/>",
-                required: true
+                required: true,
+                maxFileSize: 31457280,
+                <%--maxFileSizeExceededMessage: "<spring:message code="file.size.hint"/>",--%>
+                <%--maxFileSizeExceeded: "<spring:message code="file.size.hint"/>",--%>
+                // accept: ".png,.gif,.jpg, .jpeg",
             }
         ],
         itemChanged: function (item, newValue) {
@@ -108,14 +126,12 @@
     });
 
     Window_JspAttachments = isc.Window.create({
+        width: "300",
         align: "center",
         border: "1px solid gray",
-        closeClick: function () {
-            this.Super("closeClick", arguments);
-        },
+        canDragResize: false,
+        showMaximizeButton: false,
         items: [isc.TrVLayout.create({
-            width: "300",
-            height: "120",
             members: [DynamicForm_JspAttachments, HLayout_SaveOrExit_JspAttachments]
         })]
     });
@@ -161,6 +177,30 @@
         dataPageSize: 50,
         autoFetchData: false,
         showRollOver: true,
+        fields: [
+            {
+                name: "fileName"
+            },
+            {
+                name: "fileTypeId",
+                type: "IntegerItem",
+                title: "<spring:message code='attach.file.format'/>",
+                filterOnKeypress: true,
+                editorType: "SelectItem",
+                displayField: "titleFa",
+                valueField: "id",
+                pickListProperties: {
+                    showFilterEditor: false
+                },
+                filterOperator: "iContains",
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                ]
+            },
+            {
+                name: "description"
+            }
+        ],
         recordDoubleClick: function (viewer, record) {
             Show_Attachment_Attachments(record);
         }
@@ -224,21 +264,6 @@
 
     ///////////////////////////////////////////////////////functions///////////////////////////////////////
 
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
-        objectTypeAttachment = inputObjectType;
-        objectIdAttachment = inputObjectId;
-        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "iscList/";
-        if (objectTypeAttachment != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
-        RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
-        if (objectIdAttachment != null)
-            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
-
-        Window_JspAttachments.title = inputTitleAttachment;
-        ListGrid_JspAttachment.fetchData();
-        ListGrid_Attachments_refresh();
-    }
-
     function ListGrid_Attachments_refresh() {
         ListGrid_JspAttachment.invalidateCache();
         ListGrid_JspAttachment.filterByEditor();
@@ -250,7 +275,7 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodAttachment = "PUT";
-            saveActionUrlAttachment = attachmentUrl + record.id;
+            saveActionUrlAttachment = attachmentUrl + "/" + record.id;
             DynamicForm_JspAttachments.clearValues();
             DynamicForm_JspAttachments.editRecord(record);
             DynamicForm_JspAttachments.getItem("file").hide();
@@ -260,7 +285,7 @@
 
     function ListGrid_Attachments_Add() {
         methodAttachment = "POST";
-        saveActionUrlAttachment = attachmentUrl + "upload";
+        saveActionUrlAttachment = attachmentUrl + "/upload";
         DynamicForm_JspAttachments.clearValues();
         DynamicForm_JspAttachments.getItem("file").show();
         Window_JspAttachments.show();
@@ -307,7 +332,7 @@
                     this.close();
                     if (index === 0) {
                         attachmentWait = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "delete/" + record.id, "DELETE", null,
+                        isc.RPCManager.sendRequest(TrDSRequest(attachmentUrl + "/delete/" + record.id, "DELETE", null,
                             "callback: remove_result_Attachments(rpcResponse)"));
                     }
                 }
@@ -348,6 +373,28 @@
         downloadForm.setValue("myToken", "<%=accessToken%>");
         downloadForm.show();
         downloadForm.submitForm();
+    }
+
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, RestDataSource_EAttachmentType) {
+        objectTypeAttachment = inputObjectType;
+        objectIdAttachment = inputObjectId;
+        RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
+        if (objectTypeAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
+        RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
+        if (objectTypeAttachment != null)
+            RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
+
+        ListGrid_JspAttachment.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
+        DynamicForm_JspAttachments.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
+
+        Window_JspAttachments.title = inputTitleAttachment;
+        ListGrid_JspAttachment.fetchData();
+        ListGrid_Attachments_refresh();
+    }
+
+    function clear_Attachments() {
+        ListGrid_JspAttachment.clear();
     }
 
     //</script>

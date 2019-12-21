@@ -16,6 +16,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -47,14 +49,13 @@ public class SubCategoryRestController {
 //    @PreAuthorize("hasAuthority('c_sub_Category')")
     public ResponseEntity<SubCategoryDTO.Info> create(@RequestBody Object request) {
         //SubCategoryDTO.Create create=(new ModelMapper()).map(request,SubCategoryDTO.Create.class);
-        HttpStatus httpStatus=HttpStatus.CREATED;
-        SubCategoryDTO.Info subCategoryInfo=null;
+        HttpStatus httpStatus = HttpStatus.CREATED;
+        SubCategoryDTO.Info subCategoryInfo = null;
         try {
-            subCategoryInfo=subCategoryService.create(request);
+            subCategoryInfo = subCategoryService.create(request);
 
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            subCategoryInfo=null;
+            httpStatus = HttpStatus.NO_CONTENT;
         }
         return new ResponseEntity<>(subCategoryInfo, httpStatus);
 
@@ -65,14 +66,13 @@ public class SubCategoryRestController {
 //    @PreAuthorize("hasAuthority('u_sub_Category')")
     public ResponseEntity<SubCategoryDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
 //        SubCategoryDTO.Update update=(new ModelMapper()).map(request,SubCategoryDTO.Update.class);
-        HttpStatus httpStatus=HttpStatus.OK;
-        SubCategoryDTO.Info subCategoryInfo=null;
+        HttpStatus httpStatus = HttpStatus.OK;
+        SubCategoryDTO.Info subCategoryInfo = null;
         try {
-            subCategoryInfo=subCategoryService.update(id, request);
+            subCategoryInfo = subCategoryService.update(id, request);
 
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            subCategoryInfo=null;
+            httpStatus = HttpStatus.NO_CONTENT;
         }
         return new ResponseEntity<>(subCategoryInfo, httpStatus);
     }
@@ -81,16 +81,16 @@ public class SubCategoryRestController {
     @DeleteMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('d_sub_Category')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             subCategoryService.delete(id);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
     }
 
     @Loggable
@@ -98,16 +98,26 @@ public class SubCategoryRestController {
 //    @PreAuthorize("hasAuthority('d_sub_Category')")
     public ResponseEntity<Boolean> delete(@Validated @RequestBody SubCategoryDTO.Delete request) {
 
-        boolean flag=true;
-        HttpStatus httpStatus=HttpStatus.OK;
+        boolean flag = true;
+        HttpStatus httpStatus = HttpStatus.OK;
 
         try {
             subCategoryService.delete(request);
         } catch (Exception e) {
-            httpStatus=HttpStatus.NO_CONTENT;
-            flag=false;
+            httpStatus = HttpStatus.NO_CONTENT;
+            flag = false;
         }
-        return new ResponseEntity<>(flag,httpStatus);
+        return new ResponseEntity<>(flag, httpStatus);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<SubCategoryDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        Integer startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<SubCategoryDTO.Info> searchRs = subCategoryService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
@@ -140,7 +150,6 @@ public class SubCategoryRestController {
     public ResponseEntity<SearchDTO.SearchRs<SubCategoryDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
         return new ResponseEntity<>(subCategoryService.search(request), HttpStatus.OK);
     }
-
 
 
 }

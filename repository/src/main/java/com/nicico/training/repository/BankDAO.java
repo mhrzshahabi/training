@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface BankDAO extends JpaRepository<Bank,Long>, JpaSpecificationExecutor<Bank> {
+public interface BankDAO extends JpaRepository<Bank, Long>, JpaSpecificationExecutor<Bank> {
 }

@@ -21,6 +21,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -197,4 +198,12 @@ public class ClassSessionRestController {
     }
 
     //*********************************
+
+    @GetMapping(value = "/iscList/{classId}")
+    public ResponseEntity<ISC<ClassSessionDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs =classSessionService.searchWithCriteria(searchRq, classId);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 }

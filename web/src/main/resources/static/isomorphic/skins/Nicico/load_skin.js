@@ -3,7 +3,7 @@ isc.loadSkin = function (theWindow) {
         theWindow = window
     }
     with (theWindow) {
-        const actions_btn ={
+        const actions_btn = {
             add: 'افزودن',
             remove: 'حذف',
             edit: 'ویرایش',
@@ -155,6 +155,20 @@ isc.loadSkin = function (theWindow) {
             showSelectedIcon: true,
         });
         isc.ClassFactory.defineClass("ToolStripButtonAdd", "Button").addProperties({
+            baseStyle: "toolStripButtonAdd",
+            icon: "[SKIN]/actions/add.png",
+            title: actions_btn.add,
+            autoFit: true,
+            iconSize: 15,
+            height: 17,
+            labelVPad: 0,
+            showTitle: false,
+            showRollOver: true,
+            showDown: true,
+            showDownIcon: true,
+            showSelectedIcon: true,
+        });
+        isc.ClassFactory.defineClass("ToolStripButtonCreate", "Button").addProperties({
             baseStyle: "toolStripButtonAdd",
             icon: "[SKIN]/actions/add.png",
             title: actions_btn.add,

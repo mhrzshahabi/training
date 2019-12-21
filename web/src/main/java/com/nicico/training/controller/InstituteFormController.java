@@ -25,30 +25,30 @@ public class InstituteFormController {
     }
 
     @RequestMapping("/printWithCriteria/{type}")
-	public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
-		String token=(String) request.getParameter("token");
-		final RestTemplate restTemplate = new RestTemplate();
-		restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
-		final HttpHeaders headers = new HttpHeaders();
-		headers.add("Authorization", "Bearer " + token);
+    public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
+        String token = (String) request.getParameter("token");
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
 
-		headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
 
-		MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
-		map.add("CriteriaStr", request.getParameter("CriteriaStr"));
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<String, String>();
+        map.add("CriteriaStr", request.getParameter("CriteriaStr"));
 
-		HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<MultiValueMap<String, String>>(map, headers);
 
-		String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(),"");
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
-		if(type.equals("pdf"))
-			return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("excel"))
-			return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
-		else if(type.equals("html"))
-			return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
-		else
-			return null;
-	}
+        if (type.equals("pdf"))
+            return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/PDF", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("excel"))
+            return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
+        else if (type.equals("html"))
+            return restTemplate.exchange(restApiUrl + "/api/institute/printWithCriteria/HTML", HttpMethod.POST, entity, byte[].class);
+        else
+            return null;
+    }
 
 }

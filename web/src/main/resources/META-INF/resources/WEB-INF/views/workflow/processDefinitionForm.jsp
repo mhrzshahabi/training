@@ -38,12 +38,11 @@
     });
 
     var workflowProcessDefinitionViewLoader = isc.ViewLoader.create({
-        <%--width: "100%",--%>
-        <%--height: "100%",--%>
+        width: "100%",
+        height: "100%",
         autoDraw: false,
-        <%--border: "10px solid black",--%>
+// border: "1px solid blue",
         viewURL: "",
-        overflow: "scroll",
         loadingMessage: "فرم فرایندی برای نمایش وجود ندارد"
     });
 
@@ -54,24 +53,24 @@
         var formData = new FormData();
         formData.append("file", fileToLoad);
         if (fileToLoad !== undefined) {
-            TrnXmlHttpRequest(formData, workflowUrl + "uploadProcessDefinition", "POST", checkUploadResult);
-            } else {
+            TrnXmlHttpRequest(formData, workflowUrl + "/uploadProcessDefinition", "POST", checkUploadResult);
+        } else {
             isc.say("فایلی برای آپلود انتخاب نشده است.");
         }
     }
 
     function checkUploadResult(resp) {
 
-       if (resp.status == 200)
+        if (resp.status == 200)
             isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
         else {
             isc.say("کد خطا : " + resp.status);
         }
 
-        // if (resp.status == "error")
-        //     isc.say("آپلود فایل با مشکل مواجه شده است.");
-        // if (resp.responseText == "badFile")
-        //     isc.say("آپلود فایل قابل قرارگیری روی موتور گردش کار نیست.");
+// if (resp.status == "error")
+// isc.say("آپلود فایل با مشکل مواجه شده است.");
+// if (resp.responseText == "badFile")
+// isc.say("آپلود فایل قابل قرارگیری روی موتور گردش کار نیست.");
         ListGrid_ProcessDefinitionList.invalidateCache();
 
     }
@@ -153,7 +152,7 @@
                     if (index == 0) {
                         var deployId = record.deploymentId;
                         isc.RPCManager.sendRequest(
-                            TrDSRequest(workflowUrl + "processDefinition/remove/" + deployId, "DELETE",
+                            TrDSRequest(workflowUrl + "/processDefinition/remove/" + deployId, "DELETE",
                                 null, ProcessDefinition_remove_result));
                     }
                 }
@@ -227,7 +226,7 @@
     var ToolStripButton_deleteProcessDefinitionForm = isc.ToolStripButton.create({
 
 
-        title: "حذف فرایند", icon: "<spring:url value="remove.png"/>",
+        title: "حذف فرایند", icon: "remove.png",
         click: function () {
             ListGrid_ProcessDefinition_remove();
         }
@@ -264,7 +263,7 @@
             {name: "version", title: "نسخه"},
             {name: "id", title: "id", type: "text"}
         ],
-        fetchDataURL: workflowUrl + "processDefinition/list"
+        fetchDataURL: workflowUrl + "/processDefinition/list"
     });
 
     var ListGrid_ProcessDefinitionList = isc.ListGrid.create({
@@ -312,20 +311,10 @@
     var HLayout_ProcessDefinitionGrid = isc.HLayout.create({
         width: "100%",
         height: "100%",
-        <%--border: "10px solid green",--%>
+// border: "10px solid green",
 
         members: [
             ListGrid_ProcessDefinitionList
-        ]
-    });
-    var VLayout_workflowProcessDefinition = isc.VLayout.create({
-        width: "100%",
-        height: "100%",
-        <%--border: "10px solid red",--%>
-        overflow: "auto",
-        members: [
-
-            workflowProcessDefinitionViewLoader
         ]
     });
 
@@ -336,6 +325,6 @@
         members: [
             HLayout_ProcessDefinitionActions,
             HLayout_ProcessDefinitionGrid,
-            VLayout_workflowProcessDefinition
+            workflowProcessDefinitionViewLoader
         ]
     });

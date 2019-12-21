@@ -212,7 +212,6 @@ public class TeacherRestController {
         return new ResponseEntity(HttpStatus.OK);
     }
 
-
     @Loggable
     @PostMapping(value = "/getCategories/{teacherId}")
     @Transactional

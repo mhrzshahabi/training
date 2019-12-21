@@ -59,11 +59,11 @@ public class PostGroupFormController {
                 return null;
         } else {
             if (type.equals("pdf"))
-                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/pdf/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/pdf/" + id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("excel"))
-                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/excel/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/excel/" + id, HttpMethod.GET, entity, byte[].class);
             else if (type.equals("html"))
-                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/html/"+id, HttpMethod.GET, entity, byte[].class);
+                return restTemplate.exchange(restApiUrl + "/api/post-group/printDetail/html/" + id, HttpMethod.GET, entity, byte[].class);
             else
                 return null;
         }

@@ -25,29 +25,29 @@ import java.util.Map;
 @RequestMapping(value = "/api/classReport")
 public class ClassReportRestController {
 
-	private final ReportUtil reportUtil;
-	private final DateUtil dateUtil;
-	private final ObjectMapper objectMapper;
-	private final ITclassService tclassService;
+    private final ReportUtil reportUtil;
+    private final DateUtil dateUtil;
+    private final ObjectMapper objectMapper;
+    private final ITclassService tclassService;
 
-	@Loggable
-	@PostMapping(value = {"/printWithCriteria/{type}"})
-	public void printWithCriteria(HttpServletResponse response,
-								  @PathVariable String type,
-								  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
+    @Loggable
+    @PostMapping(value = {"/printWithCriteria/{type}"})
+    public void printWithCriteria(HttpServletResponse response,
+                                  @PathVariable String type,
+                                  @RequestParam(value = "CriteriaStr") String criteriaStr) throws Exception {
 
-		final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-		final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+        final SearchDTO.CriteriaRq criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
+        final SearchDTO.SearchRq searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
 
-		final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
+        final SearchDTO.SearchRs<TclassDTO.Info> searchRs = tclassService.search(searchRq);
 
-		final Map<String, Object> params = new HashMap<>();
-		params.put("todayDate", dateUtil.todayDate());
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", dateUtil.todayDate());
 
-		String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-		JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
-	}
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/ClassByCriteria.jasper", params, jsonDataSource, response);
+    }
 }
