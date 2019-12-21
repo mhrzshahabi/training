@@ -92,8 +92,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     public INFO update(ID id, UPDATE rq) {
         final Optional<E> optional = dao.findById(id);
         final E currentEntity = optional.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
-        modelMapper.map(currentEntity, entity);
+        modelMapper.map(currentEntity, entityType);
         modelMapper.map(rq, entity);
         return modelMapper.map(dao.save(entity), infoType);
     }

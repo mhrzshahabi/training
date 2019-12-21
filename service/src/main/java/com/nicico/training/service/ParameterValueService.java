@@ -13,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 public class ParameterValueService extends BaseService<ParameterValue, Long, ParameterValueDTO.Info, ParameterValueDTO.Create, ParameterValueDTO.Update, ParameterValueDTO.Delete, ParameterValueDAO> {
 
+    @Autowired
     private ParameterService parameterService;
 
     @Autowired
