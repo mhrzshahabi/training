@@ -1,8 +1,7 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
-
-    <changeSet author="ghazanfari_f (generated)" id="1575813180670-51">
+    <changeSet author="ghazanfari_f (generated)" id="1576927350481-185">
         <createTable tableName="tbl_ac_data_source">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_ac_data_sourcePK"/>
@@ -27,9 +26,5 @@
                 <constraints nullable="false"/>
             </column>
         </createTable>
-    </changeSet>
-
-    <changeSet author="ghazanfari_f (generated)" id="1576922961786-140">
-        <addUniqueConstraint columnNames="c_ds_name" constraintName="UC_TBL_AC_DATA_SOURCEC_DS_NAME_COL" tableName="tbl_ac_data_source"/>
     </changeSet>
 </databaseChangeLog>
