@@ -88,15 +88,17 @@ var Row_Numbers=null
                 editorType: "SelectItem",
                 valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 changed: function (form, item, value) {
+                if(value ===  "قبول بدون نمره")
+                {
+                 ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
+                 ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum),null)
+                 ListGrid_Cell_score_Update(this.grid.getRecord(this.rowNum),null)
+                }
                     ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
                      ListGrid_Class_Student.refreshFields();
-                    if(value ==="قبول با نمره" || value === "مردود")
-                    this.grid.startEditing(this.rowNum, this.colNum + 2)
-
-
-
-
-                },
+                  if(value ==="قبول با نمره" || value === "مردود")
+                  this.grid.startEditing(this.rowNum, this.colNum + 2)
+                            },
             },
             {
                 name: "failurereason",
@@ -249,7 +251,9 @@ var Row_Numbers=null
             if (scoresState ==="قبول بدون نمره")
 
                 {
+
                 ListGrid_Cell_score_Update(record, null);
+
 
                }
 
