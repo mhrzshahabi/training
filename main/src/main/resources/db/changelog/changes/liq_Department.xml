@@ -30,12 +30,32 @@
         </createTable>
     </changeSet>
 
+    <changeSet author="karimi (generated)" id="drop-post-constraint-001">
+        <preConditions onFail="MARK_RAN">
+            <foreignKeyConstraintExists foreignKeyName="F_DEPARTMENT_ID"/>
+        </preConditions>
+        <dropColumn columnName="F_DEPARTMENT_ID" tableName="TBL_POST"/>
+    </changeSet>
+
     <changeSet author="karimi" id="drop-department-001">
+        <preConditions onFail="MARK_RAN">
+            <tableExists tableName="tbl_department"/>
+        </preConditions>
         <dropTable tableName="tbl_department"/>
+    </changeSet>
+
+    <changeSet author="karimi (generated)" id="drop-department-sequence-001">
+        <preConditions onFail="MARK_RAN">
+            <sequenceExists sequenceName="seq_department_id"/>
+        </preConditions>
         <dropSequence sequenceName="seq_department_id"/>
     </changeSet>
 
-    <changeSet author="karimi (generated)" id="1576677117574-185">
+    <changeSet author="karimi (generated)" id="create-department-sequence-001">
+        <createSequence sequenceName="seq_department_id"/>
+    </changeSet>
+
+    <changeSet author="karimi (generated)" id="create-department-001">
         <createTable tableName="tbl_department">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_departmentPK"/>
@@ -63,12 +83,9 @@
             <column name="n_tree_version" type="VARCHAR2(255 CHAR)"/>
         </createTable>
     </changeSet>
-    <changeSet author="karimi (generated)" id="1576677117574-186">
-        <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
-    </changeSet>
 
-    <changeSet author="karimi (generated)" id="1576677117574-132">
-        <createSequence sequenceName="seq_department_id"/>
+    <changeSet author="karimi (generated)" id="create-department-constraint-001">
+        <addForeignKeyConstraint baseColumnNames="dep_parent_id" baseTableName="tbl_department" constraintName="fk_department2Department" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_department" validate="true"/>
     </changeSet>
 
 </databaseChangeLog>
