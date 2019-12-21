@@ -11,5 +11,5 @@
     <include file="changes/liq_0_Entity.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_0_UniqueConstraint.xml" relativeToChangelogFile="true"/>
     <include file="changes/liq_0_ForeignKeyConstraint.xml" relativeToChangelogFile="true"/>
-    <include file="changes/liq_0_Entity_Changes.xml" relativeToChangelogFile="true"/>
+    <include file="changes/liq_0_EntityChanges.xml" relativeToChangelogFile="true"/>
 </databaseChangeLog>
