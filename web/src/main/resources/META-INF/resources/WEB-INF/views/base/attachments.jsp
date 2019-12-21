@@ -24,12 +24,6 @@
         ]
     });
 
-    RestDataSource_Enum_JspTeacher = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"}]
-    });
-
     DynamicForm_JspAttachments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
@@ -186,7 +180,7 @@
         showRollOver: true,
         fields: [
             {
-                name: "fileName",
+                name: "fileName"
             },
             {
                 name: "fileTypeId",
@@ -206,7 +200,7 @@
                 ]
             },
             {
-                name: "description",
+                name: "description"
             }
         ],
         recordDoubleClick: function (viewer, record) {
@@ -383,24 +377,18 @@
         downloadForm.submitForm();
     }
 
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment) {
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, RestDataSource_EAttachmentType) {
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
         RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
         if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectTypeAttachment;
         RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
-        if (objectIdAttachment != null)
+        if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
-        switch (inputObjectType) {
-            case "Teacher":
-                RestDataSource_Enum_JspTeacher.fetchDataURL = enumUrl + "eTeacherAttachmentType/spec-list";
-                break;
-            case "Tclass":
-                RestDataSource_Enum_JspTeacher.fetchDataURL = enumUrl + "eClassAttachmentType/spec-list";
-                break;
-        }
-        RestDataSource_Enum_JspTeacher.fetchData();
+
+        ListGrid_JspAttachment.getField("fileTypeId").setOptionDataSource(RestDataSource_EAttachmentType);
+        DynamicForm_JspAttachments.getField("fileTypeId").setOptionDataSource(RestDataSource_EAttachmentType);
 
         Window_JspAttachments.title = inputTitleAttachment;
         ListGrid_JspAttachment.fetchData();

@@ -29,6 +29,13 @@
         fetchDataURL: teacherUrl + "fullName-list"
     });
 
+    var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eClassAttachmentType/spec-list"
+    });
+
     var RestDataSource_Class_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
@@ -1654,7 +1661,7 @@
                 "coursetitleFa": DynamicForm_Class_JspClass.getItem("course.titleFa").getValue(),
                 "startDate": JSON.parse(resp.data).startDate,
                 "endDate": JSON.parse(resp.data).endDate,
-// "classCreator": "classCreator",
+                // "classCreator": "classCreator",
                 "classCreatorId": "${username}",
                 "classCreator": userFullName,
                 "REJECT": "",
@@ -1777,7 +1784,7 @@
                 }
                 case "classAttachmentsTab": {
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>");
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",RestDataSource_EAttachmentType_JspClass);
                     break;
                 }
                 case "classScoresTab": {

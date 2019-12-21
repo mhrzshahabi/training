@@ -36,6 +36,13 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
 
+    var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
+        fields: [
+            {name: "id"},
+            {name: "titleFa"}],
+        fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
+    });
+
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eGender/spec-list"
@@ -1834,7 +1841,7 @@
         let teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>");
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>",RestDataSource_EAttachmentType_JpaTeacher);
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);
