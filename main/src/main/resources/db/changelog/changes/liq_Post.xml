@@ -38,8 +38,4 @@
         </createTable>
     </changeSet>
 
-    <changeSet author="karimi (generated)" id="1576677117574-238">
-        <dropColumn columnName="F_DEPARTMENT_ID" tableName="TBL_POST"/>
-    </changeSet>
-
 </databaseChangeLog>
