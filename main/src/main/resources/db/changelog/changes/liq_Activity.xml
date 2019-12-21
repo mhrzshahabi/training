@@ -28,4 +28,8 @@
             </column>
         </createTable>
     </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1576922961786-140">
+        <addUniqueConstraint columnNames="c_ds_name" constraintName="UC_TBL_AC_DATA_SOURCEC_DS_NAME_COL" tableName="tbl_ac_data_source"/>
+    </changeSet>
 </databaseChangeLog>
