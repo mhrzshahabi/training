@@ -200,7 +200,6 @@
             {property: "code", direction: "descending", primarySort: true}
         ],
         selectionUpdated: function (record) {
-            tabSet_class_status();
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
 
@@ -275,10 +274,7 @@
             {name: "createdDate", hidden: true},
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
-        ],
-         dataArrived: function () {
-             tabSet_class_status();
-         }
+        ]
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -1760,6 +1756,7 @@
 
     function refreshSelectedTab_class(tab) {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
+         tabSet_class_status();
         if (!(classRecord == undefined || classRecord == null)) {
 
             switch (tab.ID) {
