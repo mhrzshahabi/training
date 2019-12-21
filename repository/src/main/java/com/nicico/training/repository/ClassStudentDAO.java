@@ -1,14 +1,11 @@
 package com.nicico.training.repository;
 
 
-import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import com.nicico.training.model.ClassStudent;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import sun.awt.SunHints;
 
 import java.util.List;
 

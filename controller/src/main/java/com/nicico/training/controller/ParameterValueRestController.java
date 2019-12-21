@@ -45,6 +45,7 @@ public class ParameterValueRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<ParameterValueDTO.Info> create(@RequestBody Object rq) {
+        ModelMapper modelMapper = new ModelMapper();
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
         return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
     }
@@ -52,6 +53,7 @@ public class ParameterValueRestController {
     @Loggable
     @PutMapping("/{id}")
     public ResponseEntity<ParameterValueDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+        ModelMapper modelMapper = new ModelMapper();
         ParameterValueDTO.Update update = modelMapper.map(rq, ParameterValueDTO.Update.class);
         return new ResponseEntity<>(parameterValueService.update(id, update), HttpStatus.OK);
     }
@@ -59,6 +61,6 @@ public class ParameterValueRestController {
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity<ParameterValueDTO.Info> delete(@PathVariable Long id) {
-        return new ResponseEntity<>(parameterValueService.delete(id), HttpStatus.OK);
+        return new ResponseEntity<>(parameterValueService.delete(id), null, HttpStatus.OK);
     }
 }
