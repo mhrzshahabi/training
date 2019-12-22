@@ -89,8 +89,8 @@ public class ClassSessionRestController {
 
     @Loggable
     @DeleteMapping(value = "/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        classSessionService.delete(id);
+    public ResponseEntity<Void> delete(@PathVariable Long id, HttpServletResponse response) {
+        classSessionService.delete(id, response);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
