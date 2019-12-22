@@ -167,7 +167,8 @@ var Row_Numbers=null
 
 
                          ListGrid_Cell_score_Update(record, null);
-                          ListGrid_Cell_scoresState_Update(record, null)
+                         ListGrid_Cell_scoresState_Update(record, null)
+                         ListGrid_Cell_failurereason_Update(record,null)
 
 
                     }
