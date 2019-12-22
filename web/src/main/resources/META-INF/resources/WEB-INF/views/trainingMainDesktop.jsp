@@ -21,6 +21,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
@@ -37,6 +38,8 @@
 
 <body dir="rtl">
 <script type="application/javascript">
+
+    isc.FileLoader.loadLocale("fa");
 
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
@@ -76,6 +79,7 @@
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
+    isc.RPCManager.allowCrossDomainCalls = true;
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27});
@@ -146,16 +150,15 @@
             width: 50,
             align: "center"
         },
-        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
-        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
-        configureSortText: "<spring:message code="sort.config"/>",
-        clearSortFieldText: "<spring:message code="sort.clear"/>",
-        autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
-        autoFitFieldText: "<spring:message code="auto.fit"/>",
-        emptyMessage: "",
-        loadingDataMessage: "<spring:message code="loading"/>"
+        <%--sortFieldAscendingText: "<spring:message code="sort.ascending"/>",--%>
+        <%--sortFieldDescendingText: "<spring:message code="sort.descending"/>",--%>
+        <%--configureSortText: "<spring:message code="sort.config"/>",--%>
+        <%--clearSortFieldText: "<spring:message code="sort.clear"/>",--%>
+        <%--autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",--%>
+        <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
+        <%--emptyMessage: "",--%>
+        <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     });
-
 
     TrValidators = {
         NotEmpty: {
@@ -1026,11 +1029,6 @@
         title: "<spring:message code="cancel"/>",
     });
 
-    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
-
-
-    // ---------------------------------------- Not Ok - End ----------------------------------------
-
     //Calendar
     isc.SimpleType.create({
         name: "persianDate",
@@ -1054,6 +1052,9 @@
             closeCalendarWindow();
         },
     });
+
+
+    // ---------------------------------------- Not Ok - End ----------------------------------------
 
 </script>
 </body>
