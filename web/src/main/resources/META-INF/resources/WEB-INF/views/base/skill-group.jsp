@@ -7,7 +7,7 @@
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
 %>
 
-// script
+// <script>
     var RestDataSource_Skill_Group_Jsp = isc.TrDS.create({
         fields: [
             // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
@@ -1297,16 +1297,16 @@
     <%--    }--%>
     <%--});--%>
 
-    var ToolStripButton_Print_Skill_Group_Jsp = isc.TrPrintBtn.create({
-        // icon: "[SKIN]/RichTextEditor/print.png",
-        // title: "چاپ",
+    var ToolStripButton_Print_Skill_Group_Jsp = isc.IMenuButton.create({
+        icon: "[SKIN]/RichTextEditor/print.png",
+        title: "چاپ",
 
 
         <%--click: function () {--%>
-        <%--    "<spring:url value="/skill-group/print/pdf" var="printUrl"/>"--%>
-        <%--    window.open('${printUrl}');--%>
+            <%--"<spring:url value="/skill-group/print/pdf" var="printUrl"/>"--%>
+            <%--window.open('${printUrl}');--%>
 
-        <%--}--%>
+        <%--},--%>
 
 
         menu: isc.Menu.create({
@@ -1517,8 +1517,9 @@
             ToolStripButton_Add_Skill_Group_Jsp,
             ToolStripButton_Edit_Skill_Group_Jsp,
             ToolStripButton_Remove_Skill_Group_Jsp,
+            ToolStripButton_Add_Skill_Group_AddSkill_Jsp,
             ToolStripButton_Print_Skill_Group_Jsp,
-            ToolStripButton_Add_Skill_Group_AddSkill_Jsp]
+            ]
     });
 
 
