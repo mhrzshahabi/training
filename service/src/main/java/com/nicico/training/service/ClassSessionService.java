@@ -10,6 +10,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.IClassSession;
 import com.nicico.training.model.ClassSession;
 import com.nicico.training.model.IClassSessionDTO;
+import com.nicico.training.repository.AttendanceDAO;
 import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
@@ -18,9 +19,11 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.text.DateFormatSymbols;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -31,6 +34,7 @@ import java.util.*;
 public class ClassSessionService implements IClassSession {
 
     private final ClassSessionDAO classSessionDAO;
+    private final AttendanceDAO attendanceDAO;
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
 
@@ -209,8 +213,20 @@ public class ClassSessionService implements IClassSession {
 
     @Transactional
     @Override
-    public void delete(Long id) {
-        classSessionDAO.deleteById(id);
+    public void delete(Long id,  HttpServletResponse response) {
+
+//        try {
+//            if (!attendanceDAO.existsBySessionId(id)) {
+                classSessionDAO.deleteById(id);
+//            }
+//            else {
+//                response.sendError(503, "جلسه موردنظر حضور و غیاب شده است.");
+//            }
+//        }
+//        catch (Exception ex)
+//        {
+//            ex.printStackTrace();
+//        }
     }
 
     //*********************************

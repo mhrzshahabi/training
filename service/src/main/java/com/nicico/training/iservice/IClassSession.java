@@ -5,6 +5,7 @@ import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.dto.TclassDTO;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 
 public interface IClassSession {
@@ -17,7 +18,7 @@ public interface IClassSession {
 
     ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request);
 
-    void delete(Long id);
+    void delete(Long id, HttpServletResponse response);
 
     void delete(ClassSessionDTO.Delete request);
 
