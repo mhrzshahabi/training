@@ -21,6 +21,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_DataBinding.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Drawing.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
@@ -28,6 +29,7 @@
     <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
     <script src="<spring:url value='/js/calendar.js'/>"></script>
     <script src="<spring:url value='/js/jalali.js'/>"></script>
+    <script src="<spring:url value='/js/persian-date.min.js'/>"></script>
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
@@ -37,6 +39,8 @@
 
 <body dir="rtl">
 <script type="application/javascript">
+
+    isc.FileLoader.loadLocale("fa");
 
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
@@ -68,7 +72,34 @@
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
     const dialogShowTime = 2500;
-
+    const trainingConfigs = {
+        Urls: {
+            DocumentUrl: document.URL.split("?")[0],
+            TClassFee: rootUrl + "/tclass-fee-title",
+            TClassFeeTitle: rootUrl + "/tclass-fee-title",
+            rootUrl: "${contextPath}/api",
+            workflowUrl: rootUrl + "/workflow",
+            jobUrl: rootUrl + "/job",
+            postGroupUrl: rootUrl + "/post-group",
+            postGradeUrl: rootUrl + "/postGrade",
+            postUrl: rootUrl + "/post",
+            competenceUrl: rootUrl + "/competence",
+            needAssessmentUrl: rootUrl + "/needAssessment",
+            skillUrl: rootUrl + "/skill",
+            attachmentUrl: rootUrl + "/attachment",
+            trainingPlaceUrl: rootUrl + "/training-place",
+            personnelUrl: rootUrl + "/personnel",
+            personnelRegUrl: rootUrl + "/personnelRegistered",
+            attendanceUrl: rootUrl + "/attendance",
+            parameterUrl: rootUrl + "/parameter",
+            parameterValueUrl: rootUrl + "/parameter-value",
+            employmentHistoryUrl: rootUrl + "/employmentHistory",
+            teachingHistoryUrl: rootUrl + "/teachingHistory",
+            teacherCertificationUrl: rootUrl + "/teacherCertification",
+        },
+        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+        userFullName: '<%= SecurityUtil.getFullName()%>',
+    };
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
     var workflowParameters = null;
@@ -76,6 +107,7 @@
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
+    isc.RPCManager.allowCrossDomainCalls = true;
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27});
@@ -84,7 +116,12 @@
     isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px", loadingMessage: "<spring:message code="loading"/>",});
+    isc.ViewLoader.addProperties({
+        width: "100%",
+        height: "100%",
+        border: "0px",
+        loadingMessage: "<spring:message code="loading"/>",
+    });
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
@@ -96,7 +133,10 @@
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
     isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true}, addUnknownValues: false, emptyPickListMessage: "", useClientFiltering: false,
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        emptyPickListMessage: "",
+        useClientFiltering: false,
         changeOnKeypress: false,
     });
     isc.defineClass("TrHLayout", HLayout);
@@ -146,16 +186,15 @@
             width: 50,
             align: "center"
         },
-        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
-        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
-        configureSortText: "<spring:message code="sort.config"/>",
-        clearSortFieldText: "<spring:message code="sort.clear"/>",
-        autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",
-        autoFitFieldText: "<spring:message code="auto.fit"/>",
-        emptyMessage: "",
-        loadingDataMessage: "<spring:message code="loading"/>"
+        <%--sortFieldAscendingText: "<spring:message code="sort.ascending"/>",--%>
+        <%--sortFieldDescendingText: "<spring:message code="sort.descending"/>",--%>
+        <%--configureSortText: "<spring:message code="sort.config"/>",--%>
+        <%--clearSortFieldText: "<spring:message code="sort.clear"/>",--%>
+        <%--autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",--%>
+        <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
+        <%--emptyMessage: "",--%>
+        <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     });
-
 
     TrValidators = {
         NotEmpty: {
@@ -1026,11 +1065,6 @@
         title: "<spring:message code="cancel"/>",
     });
 
-    <%--createTab("پارامترها", "<spring:url value="web/parameter-type/"/>");--%>
-
-
-    // ---------------------------------------- Not Ok - End ----------------------------------------
-
     //Calendar
     isc.SimpleType.create({
         name: "persianDate",
@@ -1042,7 +1076,7 @@
         }]
     });
 
-    var persianDatePicker = isc.FormItem.getPickerIcon("date", {
+    const persianDatePicker = isc.FormItem.getPickerIcon("date", {
         disableOnReadOnly: false,
         click: function (form, item, icon) {
             if (!item.getCanEdit())
@@ -1055,6 +1089,25 @@
         },
     });
 
+
+    // ---------------------------------------- Not Ok - End ----------------------------------------
+    (function loadFrameworkMessageFa() {
+
+        window.onload = () => isc.RPCManager.sendRequest({
+
+            httpMethod: "GET",
+            showPrompt: false,
+            useSimpleHttp: true,
+            serverOutputAsString: false,
+            httpHeaders: EvaluationConfigs.httpHeaders,
+            contentType: "application/json; charset=utf-8",
+            actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
+            callback: function (RpcResponse_o) {
+
+                eval(RpcResponse_o.data);
+            }
+        });
+    })();
 </script>
 </body>
 </html>
