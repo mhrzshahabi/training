@@ -1031,6 +1031,30 @@
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
+    //Calendar
+    isc.SimpleType.create({
+        name: "persianDate",
+        inheritsFrom: "text",
+        validators: [{
+            type: "custom",
+            errorMessage: "<spring:message code='validator.field.date'/>",
+            condition: "moment.from(value, 'fa', 'YYYY/MM/DD').isValid()"
+        }]
+    });
+
+    var persianDatePicker = isc.FormItem.getPickerIcon("date", {
+        disableOnReadOnly: false,
+        click: function (form, item, icon) {
+            if (!item.getCanEdit())
+                return;
+            closeCalendarWindow();
+            displayDatePicker(null, item, 'ymd', '/');
+        },
+        blur: function () {
+            closeCalendarWindow();
+        },
+    });
+
 </script>
 </body>
 </html>
