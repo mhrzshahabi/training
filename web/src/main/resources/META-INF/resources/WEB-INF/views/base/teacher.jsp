@@ -25,6 +25,7 @@
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "personality.id"},
             {name: "teacherCode"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
@@ -281,6 +282,7 @@
         canTabToIcons: false,
         fields: [
             {name: "id", hidden: true},
+            {name: "personality.id", hidden: true},
             {
                 name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
@@ -1794,6 +1796,7 @@
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id",personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);

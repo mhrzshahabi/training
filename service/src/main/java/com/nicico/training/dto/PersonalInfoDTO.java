@@ -47,8 +47,8 @@ public class PersonalInfoDTO {
     private Long educationLevelId;
     private Long educationMajorId;
     private Long educationOrientationId;
-    private Long accountInfoId;
-    private Long contactInfoId;
+//    private Long accountInfoId;
+//    private Long contactInfoId;
 
     @Getter
     @Setter
@@ -62,8 +62,8 @@ public class PersonalInfoDTO {
         private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
         private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
         private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
-        private ContactInfoDTO.Info contactInfo;
-        private AccountInfoDTO.Info accountInfo;
+//        private ContactInfoDTO.Info contactInfo;
+//        private AccountInfoDTO.Info accountInfo;
         private Integer version;
     }
 
@@ -88,8 +88,8 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoCreateRq")
     public static class Create extends PersonalInfoDTO {
         private Long id;
-        private ContactInfoDTO.Create contactInfo;
-        private AccountInfoDTO.Create accountInfo;
+//        private ContactInfoDTO.Create contactInfo;
+//        private AccountInfoDTO.Create accountInfo;
     }
 
     @Getter
@@ -98,8 +98,8 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoUpdateRq")
     public static class Update extends PersonalInfoDTO {
         private Long id;
-        private ContactInfoDTO.Create contactInfo;
-        private AccountInfoDTO.Create accountInfo;
+//        private ContactInfoDTO.Create contactInfo;
+//        private AccountInfoDTO.Create accountInfo;
     }
 
     @Getter
