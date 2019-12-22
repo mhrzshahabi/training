@@ -93,10 +93,7 @@ flag1=null
 
                 if(value ===  "قبول بدون نمره")
                 {
-
                  ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
-
-
                 }
                 else if(value === "مردود")
                 {
@@ -163,7 +160,7 @@ flag1=null
                         ListGrid_Class_Student.refreshFields();
                     } else if ((newValue >= 0 && newValue < 10) && (editCompletionEvent == "enter") && (newValue !== null || newValue != null)) {
                         {
-                           flag1=1
+
                         if(record.scoresState ==  "مردود" && (record.failurereason =="عدم کسب حد نصاب نمره" || record.failurereason == "غیبت بیش از حد مجاز"))
                         {
                             ListGrid_Cell_score_Update(record, newValue);
@@ -173,8 +170,7 @@ flag1=null
                             {
 
                              createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
-
-                            //  ListGrid_Cell_scoresState_Update(record,null);
+                             ListGrid_Cell_scoresState_Update(record,null);
                                   ListGrid_Class_Student.invalidateCache();
                             }
 
@@ -293,6 +289,12 @@ flag1=null
              ListGrid_Class_Student.refreshFields();
             }
 
+            if(score>=10 && scoreState==="قبول با نمره")
+            {
+            alert("okl")
+                ListGrid_Cell_failurereason_Update(record,null)
+                  ListGrid_Class_Student.refreshFields();
+            }
         }
 
 
@@ -322,13 +324,13 @@ flag1=null
             var record = ListGrid_Class_Student.getSelectedRecord();
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
 
-              if(score==null)
+              if(score==null && stateScore !=="قبول بدون نمره")
                 {
                   ListGrid_Cell_scoresState_Update(record,null)
 
                 }
 
-                if(stateScore===  "قبول بدون نمره")
+                if(stateScore ===  "قبول بدون نمره")
                 {
                  ListGrid_Cell_failurereason_Update(record,null)
                    ListGrid_Class_Student.refreshFields();
