@@ -198,8 +198,7 @@ var  flag2
                      {
                      flag1=1
 
-                       ListGrid_Cell_score_Update(record, null);
-
+                         ListGrid_Cell_score_Update(record, null);
                          ListGrid_Class_Student.refreshFields();
 
                    }
@@ -334,7 +333,14 @@ var  flag2
           var score= JSON.parse(resp.data).score;
           var scoreState=JSON.parse(resp.data).scoresState
 
-        if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
+       if( flag1==1)
+                {
+
+                flag1=0
+                ListGrid_Cell_scoresState_Update(record,null)
+                ListGrid_Class_Student.refreshFields();
+                }
+       else if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
         {
             if(failurereason=== "غیبت در جلسه امتحان" || failurereason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
                 {
@@ -345,12 +351,7 @@ var  flag2
                 }
 
 
-                if(scoreState == null && flag1==1 && score==null)
-                {
-                flag1=0
-                ListGrid_Cell_scoresState_Update(record,null)
-                ListGrid_Class_Student.refreshFields();
-                }
+
 
         }
 
@@ -362,12 +363,14 @@ var  flag2
             var score=JSON.parse(resp.data).score;
             var record = ListGrid_Class_Student.getSelectedRecord();
 
+
              if(flag1 == 1)
                     {
-                    ListGrid_Cell_scoresState_Update(record,null)
+
+                     ListGrid_Cell_failurereason_Update(record,null)
                     }
 
-        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
+            else if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
 
 
               if(score==null && stateScore !=="قبول بدون نمره" && (failurereason !== "غیبت در جلسه امتحان" && scoreState !== "مردود"))
