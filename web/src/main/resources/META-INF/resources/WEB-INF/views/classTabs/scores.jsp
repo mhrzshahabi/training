@@ -5,7 +5,8 @@
 //
 //<script>
 var Row_Numbers=null
-
+var flag1
+var  flag2
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -99,6 +100,7 @@ var Row_Numbers=null
                 else if(value === "مردود")
                 {
 
+
                 ListGrid_Cell_scoresState_Update(this.grid.getRecord(this.rowNum), value);
                 ListGrid_Class_Student.refreshFields();
                 this.grid.startEditing(this.rowNum, this.colNum + 1)
@@ -129,7 +131,6 @@ var Row_Numbers=null
                else
                 {
                      ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
-
                      this.grid.startEditing(this.rowNum, this.colNum + 1)
                 }
                  ListGrid_Class_Student.refreshFields();
@@ -171,7 +172,7 @@ var Row_Numbers=null
                         else
                         {
 
-                             // ListGrid_Cell_scoresState_Update(record,null);
+                              //ListGrid_Cell_scoresState_Update(record,null);
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
                               ListGrid_Class_Student.invalidateCache();
                         }
@@ -195,9 +196,11 @@ var Row_Numbers=null
 
                     else if (newValue === null && (record.scoresState === "مردود" || record.scoresState === "قبول با نمره"))
                      {
-                       flag1=1
+                     flag1=1
+
                        ListGrid_Cell_score_Update(record, null);
-                       ListGrid_Class_Student.refreshFields();
+
+                         ListGrid_Class_Student.refreshFields();
 
                    }
                     ListGrid_Class_Student.refreshFields();
@@ -220,7 +223,7 @@ var Row_Numbers=null
                 fieldName = this.getFieldName(colNum);
 
             if (fieldName === "failurereason") {
-                return !((record.scoresState === "قبول با نمره" && record.score >= 10) || record.scoresState==="قبول بدون نمره");
+                return !((record.scoresState === "قبول با نمره" && record.score >= 10) || record.scoresState=== "قبول بدون نمره"  ||  record.scoresState === "قبول با نمره" );
             }
 
            if(fieldName==="score")
@@ -305,17 +308,19 @@ var Row_Numbers=null
                       ListGrid_Cell_failurereason_Update(record,null)
                       ListGrid_Class_Student.refreshFields();
                 }
-            if(score==null && scoreState == null)
+
+            if(scoreState === "مردود")
                 {
-                ListGrid_Cell_failurereason_Update(record,null)
-                ListGrid_Class_Student.refreshFields();
+                if(score>=10)
+                    {
+                    ListGrid_Cell_score_Update(record,null)
+                      ListGrid_Class_Student.refreshFields();
+                    }
                 }
-                if(score == null && flag1==1)
-                {
-                flag1=0
-                 ListGrid_Cell_failurereason_Update(record,null)
-                  ListGrid_Class_Student.refreshFields();
-                }
+
+
+
+
 
         }
 
@@ -326,14 +331,25 @@ var Row_Numbers=null
     function Edit_Cell_failurereason_Update(resp) {
        var record = ListGrid_Class_Student.getSelectedRecord();
          var failurereason= JSON.parse(resp.data).failurereason;
+          var score= JSON.parse(resp.data).score;
+          var scoreState=JSON.parse(resp.data).scoresState
 
         if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
         {
-            if(failurereason=== "غیبت در جلسه امتحان")
+            if(failurereason=== "غیبت در جلسه امتحان" || failurereason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
                 {
 
                   ListGrid_Cell_scoresState_Update(record,"مردود")
+                   ListGrid_Class_Student.refreshFields();
 
+                }
+
+
+                if(scoreState == null && flag1==1 && score==null)
+                {
+                flag1=0
+                ListGrid_Cell_scoresState_Update(record,null)
+                ListGrid_Class_Student.refreshFields();
                 }
 
         }
@@ -341,10 +357,18 @@ var Row_Numbers=null
     };
 
     function Edit_Cell_score_Update(resp) {
+
             var stateScore = JSON.parse(resp.data).scoresState;
             var score=JSON.parse(resp.data).score;
             var record = ListGrid_Class_Student.getSelectedRecord();
+
+             if(flag1 == 1)
+                    {
+                    ListGrid_Cell_scoresState_Update(record,null)
+                    }
+
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
+
 
               if(score==null && stateScore !=="قبول بدون نمره" && (failurereason !== "غیبت در جلسه امتحان" && scoreState !== "مردود"))
                 {
@@ -365,13 +389,11 @@ var Row_Numbers=null
 
                    }
 
-                   if(score ==null && (stateScore == "قبول با نمره" || stateScore == "مردود"))
-                    {
 
-                    ListGrid_Cell_scoresState_Update(record,null)
-                    ListGrid_Class_Student.refreshFields();
 
-                    }
+
+
+
 
        }
 
