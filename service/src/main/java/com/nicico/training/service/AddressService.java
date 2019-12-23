@@ -109,4 +109,9 @@ public class AddressService implements IAddressService {
         return address.map(value -> modelMapper.map(value, AddressDTO.Info.class)).orElse(null);
     }
 
+    @Override
+    public Address getAddress(Long id) {
+        return addressDAO.getOne(id);
+    }
+
 }

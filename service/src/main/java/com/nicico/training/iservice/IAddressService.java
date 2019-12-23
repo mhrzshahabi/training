@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.AddressDTO;
+import com.nicico.training.model.Address;
 
 import java.util.List;
 
@@ -23,4 +24,6 @@ public interface IAddressService {
     AddressDTO.Info getOneByPostalCode(String postalCode);
 
     AddressDTO.Info createOrUpdate(AddressDTO.Create request);
+
+    Address getAddress(Long id);
 }

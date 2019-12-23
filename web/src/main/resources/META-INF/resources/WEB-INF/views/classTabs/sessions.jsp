@@ -735,8 +735,15 @@
 
                     close_MyOkDialog_Session()
 
-                } else {
-
+                }
+                // else  if (resp.httpResponseCode === 503)
+                // {
+                //
+                //     let respText = JSON.parse(resp.httpResponseText);
+                //     console.log(respText);
+                //     // alert(resp.responseText);
+                // }
+                else {
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: "<spring:message code="msg.operation.error"/>"
                     });
