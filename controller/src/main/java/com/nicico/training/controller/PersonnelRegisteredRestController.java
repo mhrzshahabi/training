@@ -8,8 +8,12 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.PersonalInfoDTO;
+import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
+import com.nicico.training.model.Personnel;
+import com.nicico.training.model.PersonnelRegistered;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PersonnelRegisteredDAO;
 import com.nicico.training.service.PersonnelRegisteredService;
@@ -17,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -29,6 +34,7 @@ import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -43,6 +49,7 @@ public class PersonnelRegisteredRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
+    private final ModelMapper modelMapper;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -70,13 +77,14 @@ public class PersonnelRegisteredRestController {
 //    @PreAuthorize("hasAuthority('r_personalInfo')")
     public ResponseEntity<PersonnelRegisteredDTO.Info> getOneByNationalCode(@PathVariable String nationalCode) {
 
-//        Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByNationalCode(nationalCode);
-//        Optional<Personnel> optionalPersonnel = personnelDAO.findOneByNationalCode(nationalCode);
-        if (((personnelRegisteredDAO.findOneByNationalCode(nationalCode)) != null  )
-                || ((personnelDAO.findOneByNationalCode(nationalCode)) != null)){
-            return null;
+        Optional<PersonnelRegistered[]> optionalPersonnelReg = personnelRegisteredDAO.findOneByNationalCode(nationalCode);
+        Optional<Personnel[]> optionalPersonnel = personnelDAO.findOneByNationalCode(nationalCode);
+
+        if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null  )
+                || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)){
+            return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-           return new ResponseEntity<>(personnelRegisteredService.getOneByNationalCode(nationalCode), HttpStatus.OK);
+           return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @Loggable
