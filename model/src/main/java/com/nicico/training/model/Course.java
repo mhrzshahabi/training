@@ -74,29 +74,37 @@ public class Course extends Auditable {
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "tbl_course_goal",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> perCourseList;
-    @ManyToMany(fetch = FetchType.LAZY)
+
+    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
     private List<Course> perCourseListOf;
+
     @Column(name = "e_run_type")
     private ERunType eRunType;
+
     @Column(name = "e_level_type")
     private ELevelType eLevelType;
+
     @Column(name = "e_theo_type")
     private ETheoType eTheoType;
+
     @Column(name = "e_technical_type")
     private ETechnicalType eTechnicalType;
+
     @Column(name = "c_pre_course")
     private String preCourse;
 
@@ -139,7 +147,7 @@ public class Course extends Auditable {
 
     @Transient
     public Boolean getHasGoal() {
-        if (goalSet == null) return false;
+        if (goalSet == null) return true;
         else return goalSet.isEmpty();
     }
 }

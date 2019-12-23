@@ -81,15 +81,16 @@ public class GoalService implements IGoalService {
         final Optional<Goal> one = goalDAO.findById(id);
         final Goal goal = one.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SyllabusNotFound));
         List<Course> courses = goal.getCourseSet();
-
+        if(courses.size()>1){
+            return;
+        }
         for (Course course : courses) {
             course.getGoalSet().remove(goal);
         }
-
-        Set<Syllabus> syllabusSet = goal.getSyllabusSet();
-        for (Syllabus syllabus : syllabusSet) {
-            syllabusDAO.delete(syllabus);
-        }
+//        Set<Syllabus> syllabusSet = goal.getSyllabusSet();
+//        for (Syllabus syllabus : syllabusSet) {
+//            syllabusDAO.delete(syllabus);
+//        }
         goalDAO.delete(goal);
     }
 

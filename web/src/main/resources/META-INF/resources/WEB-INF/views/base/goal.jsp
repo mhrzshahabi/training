@@ -750,17 +750,17 @@
             <%--window.open("<spring:url value="/goal/print/pdf"/>");--%>
         }
     });
-    var ToolStripButton_Add_Vertical = isc.ToolStripButtonAdd.create({
-        //icon: "[SKIN]/TransferIcons/left.png",
-        title: "",
+    var ToolStripButton_Add_Vertical = isc.IconButton.create({
+        icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+        showButtonTitle:false,
         prompt: "افزودن اهداف انتخاب شده به اهداف دوره مذکور",
         click: function () {
             addToListGrid()
         }
     });
-    var ToolStripButton_Remove_Vertical = isc.ToolStripButtonRemove.create({
-        //icon: "[SKIN]/TransferIcons/right.png",
-        title: "",
+    var ToolStripButton_Remove_Vertical = isc.IconButton.create({
+        icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+        showButtonTitle:false,
         prompt: "حذف اهداف انتخاب شده از دوره مذکور",
         click: function () {
             removeAsListGrid();
@@ -947,7 +947,8 @@
                                         callback: function (resp) {
                                             wait.close();
                                             if (resp.httpResponseCode == 200) {
-                                                ListGrid_Goal.invalidateCache();
+                                                ListGrid_Goal_refresh();
+                                                ListGrid_Syllabus_Goal_refresh();
                                                 simpleDialog("<spring:message code='msg.command.done'/>", "<spring:message code="msg.operation.successful"/>", 3000, "say");
                                             } else {
                                                 simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
@@ -958,10 +959,9 @@
                             }
                         });
                     }
-
                 }
             });
-            ListGrid_Syllabus_Goal_refresh();
+
         }
     };
 
