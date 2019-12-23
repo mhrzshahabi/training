@@ -19,8 +19,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.List;
@@ -47,6 +49,16 @@ public class EducationMajorRestController {
 //    @PreAuthorize("hasAuthority('r_educationMajor')")
     public ResponseEntity<List<EducationMajorDTO.Info>> list() {
         return new ResponseEntity<>(educationMajorService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<EducationMajorDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<EducationMajorDTO.Info> searchRs = educationMajorService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
