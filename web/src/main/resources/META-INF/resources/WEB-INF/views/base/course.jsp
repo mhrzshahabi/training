@@ -564,7 +564,6 @@
                     ToolStripButton_Refresh
                 ]
             })
-
         ]
     });
 

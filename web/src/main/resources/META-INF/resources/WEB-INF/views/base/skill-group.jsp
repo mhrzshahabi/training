@@ -1469,7 +1469,7 @@
         })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="skill.png"/>",
+        icon: "[SKIN]/actions/skill.png",
         title: "<spring:message code="skill.plural.list"/>",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
@@ -1518,7 +1518,7 @@
             ToolStripButton_Edit_Skill_Group_Jsp,
             ToolStripButton_Remove_Skill_Group_Jsp,
             ToolStripButton_Add_Skill_Group_AddSkill_Jsp,
-            ToolStripButton_Print_Skill_Group_Jsp,
+            // ToolStripButton_Print_Skill_Group_Jsp,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
