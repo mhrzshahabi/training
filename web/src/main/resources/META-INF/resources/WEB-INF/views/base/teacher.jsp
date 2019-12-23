@@ -32,7 +32,8 @@
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories"}
+            {name: "categories"},
+            {name: "personality.contactInfo.homeAddress.id"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -968,6 +969,7 @@
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
+            {name: "personality.contactInfo.homeAddress.id", hidden: true},
             {
                 name: "personality.contactInfo.homeAddress.postalCode",
                 title: "<spring:message code='postal.code'/>",
@@ -1776,6 +1778,7 @@
 
     function setHomeAddressFields(homeAddress) {
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.restAddr", homeAddress.restAddr);
+        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.id", homeAddress.id);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postalCode", homeAddress.postalCode);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.phone", homeAddress.phone);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.fax", homeAddress.fax);

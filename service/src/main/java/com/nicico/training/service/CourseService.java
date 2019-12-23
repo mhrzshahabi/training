@@ -25,6 +25,7 @@ import static java.lang.Math.round;
 public class CourseService implements ICourseService {
 
     private final ModelMapper modelMapper;
+    private final GoalService goalService;
     private final GoalDAO goalDAO;
     private final EducationLevelDAO educationLevelDAO;
     private final TeacherDAO teacherDAO;
@@ -230,14 +231,16 @@ public class CourseService implements ICourseService {
     @Transactional
     @Override
     public void delete(Long id) {
-        courseDAO.deleteById(id);
+        Optional<Course> byId = courseDAO.findById(id);
+        Course course = byId.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        courseDAO.delete(course);
     }
 
     @Transactional
     @Override
     public void delete(CourseDTO.Delete request) {
-        final List<Course> cAllById = courseDAO.findAllById(request.getIds());
-        courseDAO.deleteAll(cAllById);
+        final List<Course> course = courseDAO.findAllById(request.getIds());
+        courseDAO.deleteAll(course);
     }
 
     @Transactional(readOnly = true)

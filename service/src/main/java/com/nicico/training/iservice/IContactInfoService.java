@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ContactInfoDTO;
+import com.nicico.training.model.ContactInfo;
 
 import java.util.List;
 
@@ -21,4 +22,6 @@ public interface IContactInfoService {
     SearchDTO.SearchRs<ContactInfoDTO.Info> search(SearchDTO.SearchRq request);
 
     ContactInfoDTO.Info createOrUpdate(ContactInfoDTO.Create request);
+
+    void modify(ContactInfo contactInfo);
 }

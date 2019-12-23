@@ -78,7 +78,6 @@ public class TeacherService implements ITeacherService {
         if (teacher.getPersonality().getId() != null) {
             PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
             modelMapper.map(teacher.getPersonality(), personalInfo);
-            personalInfoService.modify(personalInfo.getId());
             teacher.setPersonality(personalInfo);
         }
         try {
@@ -99,7 +98,14 @@ public class TeacherService implements ITeacherService {
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
 
-        personalInfoService.modify(request.getPersonality().getId());
+        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
+
+//        if(request.getPersonality().getAccountInfo() != null && personalInfo.getAccountInfo() == null){
+
+//            personalInfoService.modify(personalInfo);
+//        modelMapper.map(request.getPersonality(), personalInfo);
+//        }
+
 
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);

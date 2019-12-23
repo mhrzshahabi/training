@@ -14,6 +14,7 @@ import com.nicico.training.model.enums.ERunType;
 import com.nicico.training.model.enums.ETheoType;
 import com.nicico.training.repository.CourseDAO;
 import com.nicico.training.service.CourseService;
+import com.nicico.training.service.GoalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -43,6 +44,7 @@ public class CourseRestController {
     //------------------------------------------
     private final ReportUtil reportUtil;
     private final CourseService courseService;
+    private final GoalService goalService;
     private final ICourseService iCourseService;
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
@@ -121,9 +123,10 @@ public class CourseRestController {
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
         boolean check = courseService.checkForDelete(id);
         if (check) {
+            List<GoalDTO.Info> goals = courseService.getgoal(id);
+            goals.forEach(g->goalService.delete(g.getId()));
             courseService.deletGoal(id);
             courseService.delete(id);
-
         }
 
         // courseService.delete(id);

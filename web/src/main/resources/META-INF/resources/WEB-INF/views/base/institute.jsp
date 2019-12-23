@@ -362,7 +362,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             ListGrid_Institute_Institute_Edit();
         },
