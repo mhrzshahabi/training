@@ -7,6 +7,7 @@ import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.PersonalInfoDAO;
@@ -148,7 +149,8 @@ public class PersonalInfoService implements IPersonalInfoService {
     }
 
     @Override
-    public PersonalInfoDTO.Info modify(Long id) {
+    public PersonalInfoDTO.Info modify(PersonalInfo personalInfo) {
+        contactInfoService.modify(personalInfo.getContactInfo());
         return null;
     }
 

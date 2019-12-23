@@ -5,8 +5,11 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
+import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.repository.ContactInfoDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -143,5 +146,18 @@ public class ContactInfoService implements IContactInfoService {
     }
 
     // ------------------------------
+
+    @Override
+    public void modify(ContactInfo contactInfo) {
+        if (contactInfo.getHomeAddress().getId() != null) {
+            Address address = addressService.getAddress(contactInfo.getHomeAddress().getId());
+            modelMapper.map(contactInfo.getHomeAddress(), address);
+            contactInfo.setHomeAddress(null);
+            contactInfo.setHomeAddress(address);
+            contactInfo.setHomeAddressId(address.getId());
+//            contactInfoDAO.saveAndFlush(contactInfo);
+        }
+    }
+
 
 }
