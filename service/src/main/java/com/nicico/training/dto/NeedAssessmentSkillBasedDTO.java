@@ -64,6 +64,7 @@ public class NeedAssessmentSkillBasedDTO implements Serializable {
     public static class Info<E> {
         private Long id;
         private ENeedAssessmentPriority eneedAssessmentPriority;
+        private Integer eneedAssessmentPriorityId;
         private SkillDTO.Info skill;
         private E object;
         private String objectType;
