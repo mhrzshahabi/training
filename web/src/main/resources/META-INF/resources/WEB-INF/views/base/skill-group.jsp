@@ -968,7 +968,7 @@
                 title: "<spring:message code="title"/>",
                 type: "text",
                 required: true,
-                keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
+                // keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F|0-9 ]",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber],
                 //   hint: "Persian/فارسی",
                 showHintInField: true,
@@ -1003,13 +1003,13 @@
         ]
     });
 
-    var IButton_Skill_Group_Exit_Jsp = isc.TrCancelBtn.create({
+    var IButton_Skill_Group_Exit_Jsp = isc.IButtonCancel.create({
         click: function () {
             Window_Skill_Group_Jsp.close();
         }
     });
 
-    var IButton_Skill_Group_Save_Jsp = isc.TrSaveBtn.create({
+    var IButton_Skill_Group_Save_Jsp = isc.IButtonSave.create({
         align: "center", click: function () {
 
             DynamicForm_Skill_Group_Jsp.validate();
@@ -1184,27 +1184,21 @@
         }
     });
 
-    var ToolStripButton_Edit_Skill_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code="edit"/>",
+    var ToolStripButton_Edit_Skill_Group_Jsp = isc.ToolStripButtonEdit.create({
         click: function () {
 
             ListGrid_Skill_Group_edit();
         }
     });
 
-    var ToolStripButton_Add_Skill_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code="create"/>",
+    var ToolStripButton_Add_Skill_Group_Jsp = isc.ToolStripButtonAdd.create({
         click: function () {
 
             ListGrid_Skill_Group_add();
         }
     });
 
-    var ToolStripButton_Remove_Skill_Group_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code="remove"/>",
+    var ToolStripButton_Remove_Skill_Group_Jsp = isc.ToolStripButtonRemove.create({
         click: function () {
             var activeSkillGrouprecord = ListGrid_Skill_Group_Jsp.getSelectedRecord();
 
@@ -1469,7 +1463,7 @@
         })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/skill.png",
+        icon: "skill.png",
         title: "<spring:message code="skill.plural.list"/>",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
