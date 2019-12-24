@@ -300,6 +300,7 @@
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
         numCols: 10,
+        itemHoverWidth:"20%",
         colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
         padding: 10,
         valuesManager: "VM_JspClass",
@@ -351,11 +352,14 @@
                 title: "<spring:message code='class.code'/>:",
                 colSpan: 3,
                 textAlign: "center",
-                type: "staticText", textBoxStyle: "textItemLite"
+                readOnlyHover :"به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit:false,
+                // type: "staticText", textBoxStyle: "textItemLite"
             },
             {
                 name: "titleClass",
                 textAlign: "center",
+                required:true,
                 title: "<spring:message code='class.title'/>:",
                 wrapTitle: true
             },
@@ -565,10 +569,13 @@
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
-                required: true,
+                // required: true,
                 colSpan: 1,
+                readOnlyHover :"به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
+                canEdit:false,
                 textAlign: "center",
-                type: "staticText", textBoxStyle: "textItemLite"
+                // type: "staticText",
+                // textBoxStyle: "textItemLite"
             },
             {
                 name: "instituteId",
@@ -1014,6 +1021,9 @@
     var IButton_Class_Save_JspClass = isc.IButtonSave.create({
         align: "center",
         click: function () {
+           if(!checkValidDate(DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().startDate,DynamicForm1_Class_JspClass.getItem("termId").getSelectedRecord().endDate,DynamicForm1_Class_JspClass.getValue("startDate"),DynamicForm1_Class_JspClass.getValue("endDate"))){
+               return;
+           }
 // if (startDateCheck === false || endDateCheck === false)
 // return;
             autoValid = DynamicForm1_Class_JspClass.getValue("autoValid");
@@ -1031,9 +1041,9 @@
                     return;
                 }
             }
-            if (VM_JspClass.hasErrors()) {
-                return;
-            }
+            // if (VM_JspClass.hasErrors()) {
+            //     return;
+            // }
             VM_JspClass.validate();
             if (VM_JspClass.hasErrors()) {
                 return;
@@ -1808,13 +1818,28 @@
 
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
-            if (!checkDate(classStart) && !checkDate(classEnd)) {
+            if (!checkDate(classStart)) {
+                createDialog("info","فرمت تاریخ شروع صحیح نیست.","پیغام");
                 return false;
             }
-            if (classStart < termStart && classStart > termEnd) {
+            if (!checkDate(classEnd)) {
+                createDialog("info","فرمت تاریخ پایان صحیح نیست.","پیغام");
+                return false;            }
+            if (classEnd < classStart) {
+                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","پیغام");
                 return false;
             }
+            if (termStart > classStart) {
+                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","پیغام");
+                return false;
+            }
+            if (termEnd < classStart) {
+                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","پیغام");
+                return false;
+            }
+            return true;
         }
+        return false;
     }
 
     function getDaysOfClass(classId) {
