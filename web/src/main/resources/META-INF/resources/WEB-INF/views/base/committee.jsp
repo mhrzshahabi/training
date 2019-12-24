@@ -15,22 +15,22 @@
     var RestDataSource_committee = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "عنوان ", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "subCategoryId", hidden: true},
             {name: "categoryId", hidden: true},
-            {name: "category.titleFa", title: "گروه", filterOperator: "iContains"},
-            {name: "subCategory.titleFa", title: "زیر گروه", filterOperator: "iContains"},
-            {name: "tasks", title: "وظایف", filterOperator: "iContains"},
-            {name: "description", title: "توضیحات", filterOperator: "iContains"},
+            {name: "category.titleFa", title: "<spring:message code="category"/>", filterOperator: "iContains"},
+            {name: "subCategory.titleFa", title: "<spring:message code="subcategory"/>", filterOperator: "iContains"},
+            {name: "tasks", title: "<spring:message code="tasks"/>", filterOperator: "iContains"},
+            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: committeeUrl + "spec-list",
     });
 
     var RestDataSource_All_Person = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
+            {name: "firstNameFa", width: "35%", title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
         ],
         fetchDataURL: personalInfoUrl + "spec-list",
     });
@@ -38,9 +38,9 @@
     var RestDataSource_ThisCommittee_Person = isc.TrDS.create({
 
         fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
+            {name: "firstNameFa", width: "35%",  title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "nationalCode", align: "center", width: "30%",  title: "<spring:message code="national.code"/>"}
         ],
 
     });
@@ -48,9 +48,9 @@
 
     var Ds_Member_Attached_Committee = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true, hidden: true},
-            {name: "firstNameFa", width: "35%", title: "نام", align: "center"},
-            {name: "lastNameFa", width: "35%", align: "center", title: "نام خانوادگی"},
-            {name: "nationalCode", align: "center", width: "30%", title: "کد ملی"}
+            {name: "firstNameFa", width: "35%",title: "<spring:message code="firstName"/>", align: "center"},
+            {name: "lastNameFa", width: "35%", align: "center", title: "<spring:message code="lastName"/>"},
+            {name: "nationalCode", align: "center", width: "30%", title: "<spring:message code="national.code"/>"}
         ],
         autoFetchData: false,
     });
@@ -73,36 +73,36 @@
     var Menu_ListGrid_committee = isc.Menu.create({
         data: [
             {
-                title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {
+                   title: "<spring:message code="refresh"/>", click: function () {
                     ListGrid_Committee.invalidateCache();
                 }
             }, {
-                title: "ایجاد", icon: "<spring:url value="create.png"/>", click: function () {
+                title: "<spring:message code="create"/>", click: function () {
                     show_CommitteeNewForm();
                 }
             }, {
-                title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {
+                title: "<spring:message code="edit"/>", click: function () {
                     show_CommitteEditForm();
                 }
             }, {
-                title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {
+                title: "<spring:message code="remove"/>", click: function () {
                     show_CommitteeRemoveForm();
                 }
             }, {isSeparator: true}, {
-                title: "ارسال به Pdf", icon: "<spring:url value="pdf.png"/>", click: function () {
+                title: "<spring:message code="print.pdf"/>", click: function () {
                     print_CommitteeListGrid("pdf")
                 }
             }, {
-                title: "ارسال به Excel", icon: "<spring:url value="excel.png"/>", click: function () {
+                title: "<spring:message code="print.excel"/>", click: function () {
                     print_CommitteeListGrid("excel")
                 }
             }, {
-                title: "ارسال به Html", icon: "<spring:url value="html.png"/>", click: function () {
+                 title: "<spring:message code="print.html"/>", click: function () {
                     print_CommitteeListGrid("html")
                 }
             }
             , {isSeparator: true}, {
-                title: "لیست اعضاء", icon: "<spring:url value="CommitteeMembers.png"/>", click: function () {
+                title: "<spring:message code="memberlist"/>", click: function () {
                     ToolStripButton_Member.click();
 
                 }
@@ -188,7 +188,11 @@
 
 
                     } else {
-                        isc.say("خطا");
+                       var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.error"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="message"/>"
+                     });
                     }
                 }
             });
@@ -237,7 +241,11 @@
 
                     } else {
 
-                        isc.say("خطا");
+                        var OK = isc.Dialog.create({
+                        message: "<spring:message code="msg.operation.error"/>",
+                        icon: "[SKIN]say.png",
+                        title: "<spring:message code="message"/>"
+                     });
                     }
                 }
             });
@@ -408,7 +416,7 @@
         width: "50%",
         sections: [
             {
-                title: "لیست اعضاء",
+                title: "<spring:message code="memberlist"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -472,7 +480,7 @@
     });
 
     var Window_Add_User_TO_Committee = isc.Window.create({
-        title: "لیست اعضاء",
+        title: "<spring:message code="memberlist"/>",
         width: "900",
         height: "400",
         autoSize: true,
@@ -497,16 +505,16 @@
 
 
     var ToolStripButton_Member = isc.ToolStripButton.create({
-        icon: "<spring:url value="CommitteeMembers.png"/>",
-        title: "لیست اعضاء",
+
+        title: "<spring:message code="memberlist"/>",
         click: function () {
             var record = ListGrid_Committee.getSelectedRecord();
             if (record == null || record.id == null) {
                 isc.Dialog.create({
-                    message: "کمیته ای انتخاب نشده است",
+                    message: "<spring:message code="global.grid.record.not.selected"/>",
                     icon: "[SKIN]ask.png",
-                    title: "پیام",
-                    buttons: [isc.IButtonSave.create({title: "تائید"})],
+                    title: "<spring:message code="message"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
@@ -522,7 +530,7 @@
                 ListGrid_ThisCommittee_Person.invalidateCache();
                 ListGrid_ThisCommittee_Person.fetchData();
                 DynamicForm_thisCommitteeHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
-                SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle", "لیست اعضای کمیته :" + " " + getFormulaMessage(record.titleFa, "2", "red", "B"));
+                SectionStack_Current_Skill_JspClass.setSectionTitle("sTitle", "<spring:message code="list.member.committee"/>" + " " + getFormulaMessage(record.titleFa, "2", "red", "B"));
                 Window_Add_User_TO_Committee.show();
 
 
@@ -598,7 +606,7 @@
         tabs: [
             {
                 id: "TabPane_Committee_Member",
-                title: "لیست عضوها",
+                title: "<spring:message code="member.list"/>",
                 pane: HLayout_Tab_Committee_Member
             }
         ]
@@ -625,7 +633,7 @@
 
     function show_CommitteeNewForm() {
         committee_method = "POST";
-        Window_Committee.setTitle("ایجاد"),
+        Window_Committee.setTitle("<spring:message code="create"/>"),
             DynamicForm_Committee.clearValues();
         Window_Committee.show();
         DynamicForm_Committee.clearValues();
@@ -655,7 +663,7 @@
             });
         } else {
             committee_method = "PUT";
-            Window_Committee.setTitle("ویرایش");
+            Window_Committee.setTitle("<spring:message code="edit"/>");
             Window_Committee.show();
             DynamicForm_Committee.clearValues();
             DsSubCategory_committee.fetchDataURL = categoryUrl + record.categoryId + "/sub-categories?_startRow=0&_endRow=55";
@@ -727,9 +735,9 @@
             }
         } else {
             var OK = isc.Dialog.create({
-                message: "پاسخی از سمت سرور دریافت نشد",
+                message: "<spring:message code="msg.error.connecting.to.server"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title: "<spring:message code="message"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -744,7 +752,7 @@
                 var OK = isc.Dialog.create({
                     message: "گروه " + cat + " و زیر گروه " + subcat + " وارد شده با کمیته تخصصی " + getFormulaMessage(resp.data, 2, "red", "I") + " تداخل دارد",
                     icon: "[SKIN]say.png",
-                    title: "هشدار"
+                    title: "<spring:message code="warning"/>"
                 });
                 setTimeout(function () {
                     OK.close();
@@ -758,9 +766,9 @@
             }
         } else {
             var OK = isc.Dialog.create({
-                message: "پاسخی از سمت سرور دریافت نشد",
+                message:  "<spring:message code="msg.error.connecting.to.server"/>",
                 icon: "[SKIN]say.png",
-                title: "انجام فرمان"
+                title: "<spring:message code="message"/>"
             });
             setTimeout(function () {
                 OK.close();
@@ -776,7 +784,7 @@
             if ((committee_method == "POST" || committee_method == "PUT") || (committee_method == "DELETE" && resp.data == "true")) {
                 ListGrid_Committee.invalidateCache();
                 var MyOkDialog_committee = isc.MyOkDialog.create({
-                    message: "عمليات با موفقيت اجرا شد.",
+                    message: "<spring:message code="msg.operation.successful"/>",
 
                 });
 
@@ -797,7 +805,7 @@
             }
         } else {
             var MyOkDialog_committee = isc.MyOkDialog.create({
-                message: "خطا در اجراي عمليات! کد خطا: ",
+                message: "<spring:message code="msg.operation.error"/>",
             });
 
             setTimeout(function () {
