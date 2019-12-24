@@ -404,7 +404,7 @@
             {
                 name: "sgTitle",
                 type: "staticText",
-                title: "افزودن اعضا به کمیته",
+                title: "<spring:message code="add.member.committee"/>",
                 wrapTitle: false,
                 width: 250
             }
