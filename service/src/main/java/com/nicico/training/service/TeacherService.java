@@ -9,6 +9,7 @@ import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
@@ -38,6 +39,7 @@ public class TeacherService implements ITeacherService {
     private final CategoryDAO categoryDAO;
 
     private final IPersonalInfoService personalInfoService;
+    private final IContactInfoService contactInfoService;
     private final IAttachmentService attachmentService;
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -72,13 +74,6 @@ public class TeacherService implements ITeacherService {
         if (byTeacherCode.isPresent())
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
 
-        /////////////////////
-//        if (request.getPersonality().getId() != null) {
-//            PersonalInfo personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
-//            personalInfoService.modify(personalInfo);
-//        }
-        ////////////////////////
-
         final Teacher teacher = modelMapper.map(request, Teacher.class);
 
         if (teacher.getPersonality().getId() != null) {
@@ -101,9 +96,8 @@ public class TeacherService implements ITeacherService {
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
 
-        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
-        modelMapper.map(request.getPersonality(), personalInfo);
-        personalInfoService.modify(personalInfo);
+        PersonalInfoDTO.Update personalInfo_new = personalInfoService.modify(request.getPersonality());
+        request.setPersonality(personalInfo_new);
 
         modelMapper.map(request, updating);
 

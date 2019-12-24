@@ -11,6 +11,7 @@ import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.repository.ContactInfoDAO;
+import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -113,14 +114,19 @@ public class ContactInfoService implements IContactInfoService {
     // ------------------------------
 
     @Override
-    public void modify(ContactInfo contactInfo) {
-        if (contactInfo.getHomeAddress().getId() != null) {
-            Address address = addressService.getAddress(contactInfo.getHomeAddress().getId());
-            modelMapper.map(contactInfo.getHomeAddress(), address);
-            contactInfo.setHomeAddress(null);
-            contactInfo.setHomeAddress(address);
-            contactInfo.setHomeAddressId(address.getId());
+    public ContactInfoDTO.Create modify(ContactInfoDTO.Create contactInfo) {
+        ContactInfo contactInfo_new = null;
+        if (contactInfo.getHomeAddress().getId() != null && contactInfo.getHomeAddress().getPostalCode() != null) {
+            contactInfo_new = modelMapper.map(contactInfo,ContactInfo.class);
+            AddressDTO.Info addressDTO = addressService.getOneByPostalCode(contactInfo.getHomeAddress().getPostalCode());
+            if(addressDTO != null) {
+                Address address_old = modelMapper.map(addressDTO, Address.class);
+                contactInfo_new.getHomeAddress().setId(address_old.getId());
+                contactInfo_new.setHomeAddressId(address_old.getId());
+                modelMapper.map(contactInfo_new.getHomeAddress(), address_old);
+            }
         }
+        return  modelMapper.map(contactInfo_new,ContactInfoDTO.Create.class);
     }
 
 }

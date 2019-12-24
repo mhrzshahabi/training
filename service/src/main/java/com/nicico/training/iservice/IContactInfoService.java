@@ -23,5 +23,5 @@ public interface IContactInfoService {
 
     ContactInfoDTO.Info createOrUpdate(ContactInfoDTO.Create request);
 
-    void modify(ContactInfo contactInfo);
+    ContactInfoDTO.Create modify(ContactInfoDTO.Create contactInfo);
 }

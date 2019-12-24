@@ -9,6 +9,7 @@ import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.PersonalInfoDAO;
 import lombok.RequiredArgsConstructor;
@@ -144,11 +145,16 @@ public class PersonalInfoService implements IPersonalInfoService {
         }
     }
 
+
     @Override
-    public PersonalInfoDTO.Info modify(PersonalInfo personalInfo) {
-        if(personalInfo.getContactInfoId() != null)
-            contactInfoService.modify(personalInfo.getContactInfo());
-        return null;
+    public PersonalInfoDTO.Update modify(PersonalInfoDTO.Update personalInfo) {
+        final PersonalInfo personalInfo_old = getPersonalInfo(personalInfo.getId());
+        PersonalInfo updating = new PersonalInfo();
+        modelMapper.map(personalInfo_old, updating);
+        ContactInfoDTO.Create contactInfoDTO = contactInfoService.modify(personalInfo.getContactInfo());
+        personalInfo.setContactInfo(contactInfoDTO);
+        modelMapper.map(personalInfo, updating);
+        return modelMapper.map(updating,PersonalInfoDTO.Update.class);
     }
 
     @Override

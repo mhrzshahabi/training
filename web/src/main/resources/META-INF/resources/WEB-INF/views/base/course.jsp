@@ -2359,10 +2359,10 @@
     function startProcess_callback(resp) {
 
         if (resp.httpResponseCode == 200) {
-            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
             ListGrid_Course_refresh()
         } else {
-            isc.say("کد خطا : " + resp.httpResponseCode);
+            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
         }
     }
 
