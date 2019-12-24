@@ -24,14 +24,14 @@ public class ContactInfo extends Auditable {
     @Column(name = "c_email")
     private String email;
 
-    @ManyToOne(fetch = FetchType.LAZY ,cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "f_home_address")
     private Address homeAddress;
 
     @Column(name = "f_home_address", insertable = false, updatable = false)
     private Long homeAddressId;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.MERGE})
+    @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "f_work_address")
     private Address workAddress;
 
