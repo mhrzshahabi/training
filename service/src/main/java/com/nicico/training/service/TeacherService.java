@@ -6,12 +6,8 @@ import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.iservice.IAttachmentService;
-import com.nicico.training.iservice.IContactInfoService;
-import com.nicico.training.iservice.IPersonalInfoService;
-import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
@@ -39,7 +35,6 @@ public class TeacherService implements ITeacherService {
     private final CategoryDAO categoryDAO;
 
     private final IPersonalInfoService personalInfoService;
-    private final IContactInfoService contactInfoService;
     private final IAttachmentService attachmentService;
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -92,15 +87,10 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
         final Teacher teacher = getTeacher(id);
-
         Teacher updating = new Teacher();
+        personalInfoService.modify(request.getPersonality(), teacher.getPersonality());
         modelMapper.map(teacher, updating);
-
-        PersonalInfoDTO.Update personalInfo_new = personalInfoService.modify(request.getPersonality());
-        request.setPersonality(personalInfo_new);
-
         modelMapper.map(request, updating);
-
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -163,7 +153,6 @@ public class TeacherService implements ITeacherService {
                 teacher.getCategories().remove(o);
             }
         }
-
         List<Category> gAllById = categoryDAO.findAllById(request.getIds());
         for (Category category : gAllById) {
             teacher.getCategories().add(category);

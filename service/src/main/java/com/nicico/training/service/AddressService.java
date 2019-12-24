@@ -109,6 +109,13 @@ public class AddressService implements IAddressService {
         return address.map(value -> modelMapper.map(value, AddressDTO.Info.class)).orElse(null);
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public Address getByPostalCode(String postalCode) {
+        Optional<Address> address = addressDAO.findByPostalCode(postalCode);
+        return address.orElse(null);
+    }
+
     @Override
     public Address getAddress(Long id) {
         return addressDAO.getOne(id);

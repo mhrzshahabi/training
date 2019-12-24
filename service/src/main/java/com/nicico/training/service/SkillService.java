@@ -310,7 +310,7 @@ public class SkillService implements ISkillService {
     public boolean isSkillDeletable(Long skillId) {
         if (skillDAO.getSkillUsedInOther(skillId) != null)
             return true;
-        return false;
+        return true;
     }
 
     @Transactional
