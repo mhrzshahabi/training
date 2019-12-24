@@ -5,6 +5,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
+import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.PersonalInfoDAO;
@@ -149,6 +150,8 @@ public class PersonalInfoService implements IPersonalInfoService {
     public void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo) {
         if (request.getContactInfo() == null)
             return;
+        if(personalInfo.getContactInfo() == null)
+            personalInfo.setContactInfo(new ContactInfo());
         contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
     }
 
