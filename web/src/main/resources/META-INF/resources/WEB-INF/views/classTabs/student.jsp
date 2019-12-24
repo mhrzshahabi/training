@@ -270,6 +270,7 @@
                     }
                 }
                 else {
+
                     isc.Dialog.create({
                         message: "<spring:message code="student.is.duplicate"/>",
                         icon: "[SKIN]stop.png",

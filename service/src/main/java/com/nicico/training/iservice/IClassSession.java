@@ -14,9 +14,9 @@ public interface IClassSession {
 
     List<ClassSessionDTO.Info> list();
 
-    ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request);
+    ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request, HttpServletResponse response);
 
-    ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request);
+    ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request, HttpServletResponse response);
 
     void delete(Long id, HttpServletResponse response);
 
@@ -24,7 +24,7 @@ public interface IClassSession {
 
     SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request);
 
-    SearchDTO.SearchRs<ClassSessionDTO.Info> searchWithCriteria(SearchDTO.SearchRq request,Long classId);
+    SearchDTO.SearchRs<ClassSessionDTO.Info> searchWithCriteria(SearchDTO.SearchRq request, Long classId);
 
     @Transactional
     List<ClassSessionDTO.Info> getSessionsForDate(Long classId, String date);
