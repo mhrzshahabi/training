@@ -362,7 +362,7 @@
         autoFetchData: true,
         allowAdvancedCriteria: true,
         allowFilterExpressions: true,
-        filterOnKeypress: false,
+        filterOnKeypress: true,
         doubleClick: function () {
             ListGrid_Institute_Institute_Edit();
         },
@@ -3168,7 +3168,8 @@
                 }
             });
         } else {
-            DynamicForm_Institute_Institute.clearValues();
+            ValuesManager_Institute_InstituteValue.clearValues();
+            ValuesManager_Institute_InstituteValue.clearErrors();
             DynamicForm_Institute_Institute_Address.getItem("cityId").setOptionDataSource(null);
             DynamicForm_Institute_Institute_Address.getItem("stateId").fetchData();
 
@@ -3191,7 +3192,7 @@
             }
 
             instituteMethod = "PUT";
-            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().code, 3, "red", "I"));
+            Window_Institute_Institute.setTitle(" ویرایش مرکز آموزشی " + getFormulaMessage(ListGrid_Institute_Institute.getSelectedRecord().titleFa, 3, "red", "I"));
             Window_Institute_Institute.show();
         }
     };

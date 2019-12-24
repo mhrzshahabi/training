@@ -11,7 +11,7 @@
 
     //////////////////////////////////////////////////////////////////////////////////////////////
 
-    var RestDataSource_Post_Grade_Group_Jsp = isc.TrDS.create({
+    var RestDataSource_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", title: "id", primaryKey: true, hidden: true},
             {
@@ -24,19 +24,23 @@
                 title: "<spring:message code='post.grade.group.titleEn'/>",
                 filterOperator: "iContains"
             },
-            {name: "description", title: "<spring:message code='description'/>"}
+            {
+                name: "description",
+                title: "<spring:message code='description'/>",
+                filterOperator: "iContains"
+            }
         ],
         fetchDataURL: postGradeGroupUrl + "spec-list"
     });
 
-    var RestDataSource_Post_Grade_Group_PostGrades_Jsp = isc.TrDS.create({
+    var RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "code"},
             {name: "titleFa"}
         ]
     });
-    var RestDataSource_All_PostGrades = isc.TrDS.create({
+    var RestDataSource_All_PostGrades_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -44,7 +48,7 @@
         ],
         fetchDataURL: postGradeUrl + "/iscList"
     });
-    var RestDataSource_ForThisPostGroup_GetPosts = isc.TrDS.create({
+    var RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
             {name: "code"},
@@ -54,17 +58,51 @@
 
     ////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    Menu_ListGrid_Post_Grade_Group_Jsp = isc.Menu.create({
+        data: [
+            {
+                title: "<spring:message code='refresh'/>",
+                click: function () {
+                    ListGrid_Post_Grade_Group_refresh();
+                }
+            }, {
+                title: "<spring:message code='create'/>",
+                click: function () {
+                    ListGrid_Post_Grade_Group_add();
+                }
+            }, {
+                title: "<spring:message code='edit'/>",
+                click: function () {
+                    ListGrid_Post_Grade_Group_edit();
+                }
+            }, {
+                title: "<spring:message code='remove'/>",
+                click: function () {
+                    ListGrid_Post_Grade_Group_remove();
+                }
+            },
+            {
+                isSeparator: true
+            },
+            {
+                title: "<spring:message code="post.grade.list"/>",
+                click: function () {
+                    Add_Post_Grade_Group_AddPostGrade_Jsp();
+                }
+            }
+        ]
+    });
 
     var ListGrid_Post_Grade_Group_Jsp = isc.TrLG.create({
         selectionType: "multiple",
         autoFetchData: true,
         sortField: 1,
-        dataSource: RestDataSource_Post_Grade_Group_Jsp,
-        // contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
+        dataSource: RestDataSource_PostGradeGroup_Jsp,
+        contextMenu: Menu_ListGrid_Post_Grade_Group_Jsp,
         selectionChange: function (record) {
             record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
             if (record !== null) {
-                RestDataSource_Post_Grade_Group_PostGrades_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
+                RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
                 ListGrid_Grades_Post_Grade_Group_Jsp.fetchData();
                 ListGrid_Grades_Post_Grade_Group_Jsp.invalidateCache();
             }
@@ -92,22 +130,20 @@
     var ListGrid_AllPostGrades = isc.TrLG.create({
         width: "100%",
         height: "100%",
+        dataSource: RestDataSource_All_PostGrades_PostGradeGroup_Jsp,
         canDragResize: true,
         canDragRecordsOut: true,
         canAcceptDroppedRecords: true,
         autoFetchData: false,
         showRowNumbers: false,
-        dataSource: RestDataSource_All_PostGrades,
-        fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center"},
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"}
-        ],
         sortField: 1,
         sortDirection: "descending",
         dragTrackerMode: "title",
         canDrag: true,
-
+        fields: [
+            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center"},
+            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"}
+        ],
         recordDrop: function (dropRecords) {
             var postGradeGroupId = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord().id;
             var postGradeIds = [];
@@ -128,11 +164,10 @@
         showRecordComponents: true,
         showRecordComponentsByCell: true,
         autoFetchData: false,
-        dataSource: RestDataSource_ForThisPostGroup_GetPosts,
+        dataSource: RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp,
         fields: [
-            {name: "id", title: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "<spring:message code='post.grade.code'/>", align: "center"},
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", align: "center"},
+            {name: "code", title: "<spring:message code='post.grade.code'/>", filterOperator: "iContains", align: "center"},
+            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains", align: "center"},
             {name: "OnDelete", title: "<spring:message code='global.form.remove'/>", align: "center", canFilter: false}
         ],
         createRecordComponent: function (record, colNum) {
@@ -197,7 +232,6 @@
         width: "50%",
         sections: [
             {
-                title: "<spring:message code="post.grade.list"/>",
                 expanded: true,
                 canCollapse: false,
                 align: "center",
@@ -254,17 +288,20 @@
     });
 
     var ListGrid_Grades_Post_Grade_Group_Jsp = isc.TrLG.create({
-        dataSource: RestDataSource_Post_Grade_Group_PostGrades_Jsp,
+        dataSource: RestDataSource_Post_Grade_Group_PostGradeGroup_Jsp,
         autoFetchData: false,
         fields: [
-            {name: "id", primaryKey: true, hidden: true},
             {
                 name: "code",
                 title: "<spring:message code='post.grade.code'/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            {name: "titleFa", title: "<spring:message code='post.grade.title'/>", filterOperator: "iContains"}
+            {
+                name: "titleFa",
+                title: "<spring:message code='post.grade.title'/>",
+                filterOperator: "iContains"
+            }
         ]
     });
 
@@ -308,7 +345,6 @@
 
 
     var IButton_Post_Grade_Group_Exit_Jsp = isc.IButtonCancel.create({
-        //  icon: "<spring:url value="remove.png"/>",
         click: function () {
             Window_Post_Grade_Group_Jsp.close();
         }
@@ -368,18 +404,7 @@
         icon: "<spring:url value="post.png"/>",
         title: "<spring:message code="post.grade.list"/>",
         click: function () {
-            var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
-            if (record == null || record.id == null) {
-                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
-            } else {
-                ListGrid_AllPostGrades.fetchData();
-                ListGrid_AllPostGrades.invalidateCache();
-                RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
-                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
-                ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
-                DynamicForm_thisPostGradeGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
-                Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();
-            }
+            Add_Post_Grade_Group_AddPostGrade_Jsp();
         }
     });
 
@@ -498,6 +523,23 @@
         }
     }
 
+    function Add_Post_Grade_Group_AddPostGrade_Jsp() {
+        var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            ListGrid_AllPostGrades.fetchData();
+            ListGrid_AllPostGrades.invalidateCache();
+            RestDataSource_ForThisPostGroup_GetPosts_PostGradeGroup_Jsp.fetchDataURL = postGradeGroupUrl + record.id + "/getPostGrades";
+            ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
+            ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();
+            DynamicForm_thisPostGradeGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));
+            SectionStack_Current_Post_Grade_Jsp.setSectionTitle(0,"<spring:message code='post.grade.group'/>" + " " +
+                getFormulaMessage(record.titleFa, "2", "red", "B"));
+            Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();
+        }
+    }
+
     function postGrade_add_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();
@@ -596,527 +638,3 @@
     ////////////////////////////////////////////////////////////////////////////////////////////////////
 
     // </script>
-
-
-<%--var Menu_ListGrid_Post_Grade_Group_Jsp = isc.Menu.create({--%>
-<%--    width: 150,--%>
-<%--    data: [{--%>
-<%--        title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {--%>
-<%--            ListGrid_Post_Grade_Group_refresh();--%>
-<%--        }--%>
-<%--    }, {--%>
-<%--        title: " ایجاد", icon: "<spring:url value="create.png"/>", click: function () {--%>
-<%--            ListGrid_Post_Grade_Group_add();--%>
-<%--        }--%>
-<%--    }, {--%>
-<%--        title: "ویرایش", icon: "<spring:url value="edit.png"/>", click: function () {--%>
-<%--            ListGrid_Post_Grade_Group_edit();--%>
-<%--        }--%>
-<%--    }, {--%>
-<%--        title: "حذف", icon: "<spring:url value="remove.png"/>", click: function () {--%>
-<%--            ListGrid_Post_Grade_Group_remove();--%>
-<%--            &lt;%&ndash;var postGrouprecord = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();&ndash;%&gt;--%>
-<%--            &lt;%&ndash;if (postGrouprecord == null || postGrouprecord.id == null) {&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;simpleDialog("پیغام", "گروه پستی انتخاب نشده است.", 0, "stop");&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;} else {&ndash;%&gt;--%>
-<%--            &lt;%&ndash;isc.RPCManager.sendRequest({&ndash;%&gt;--%>
-<%--            &lt;%&ndash;actionURL: postGroupUrl + "/" + postGrouprecord.id + "/canDelete",&ndash;%&gt;--%>
-<%--            &lt;%&ndash;httpMethod: "GET",&ndash;%&gt;--%>
-<%--            &lt;%&ndash;httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},&ndash;%&gt;--%>
-<%--            &lt;%&ndash;useSimpleHttp: true,&ndash;%&gt;--%>
-<%--            &lt;%&ndash;contentType: "application/json; charset=utf-8",&ndash;%&gt;--%>
-<%--            &lt;%&ndash;showPrompt: false,&ndash;%&gt;--%>
-<%--            &lt;%&ndash;// data: JSON.stringify(data1),&ndash;%&gt;--%>
-<%--            &lt;%&ndash;serverOutputAsString: false,&ndash;%&gt;--%>
-<%--            &lt;%&ndash;callback: function (resp) {&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;if (resp.data == "true") {&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;ListGrid_Post_Grade_Group_remove();&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;} else {&ndash;%&gt;--%>
-<%--            &lt;%&ndash;msg = " گروه پست " + getFormulaMessage(postGrouprecord.titleFa, "2", "red", "B") + " بدلیل مرتبط بودن با شایستگی قابل حذف نمی باشد ";&ndash;%&gt;--%>
-<%--            &lt;%&ndash;simpleDialog("خطا در حذف", msg, 0, "stop");&ndash;%&gt;--%>
-<%--            &lt;%&ndash;}&ndash;%&gt;--%>
-<%--            &lt;%&ndash;}&ndash;%&gt;--%>
-
-<%--            &lt;%&ndash;}&ndash;%&gt;--%>
-<%--            &lt;%&ndash;});&ndash;%&gt;--%>
-<%--            &lt;%&ndash;}&ndash;%&gt;--%>
-<%--        }--%>
-<%--    }, {isSeparator: true},--%>
-<%--        {--%>
-<%--            title: "<spring:message code="print.SelectedRecords"/>",--%>
-<%--            icon: "<spring:url value="print.png"/>",--%>
-<%--            submenu: [--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",--%>
-<%--                    click: function () {--%>
-<%--                        var strPostrecords = "";--%>
-<%--                        var selectedPostGroup = new Array();--%>
-<%--                        var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                        for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                            if (i == 0)--%>
-<%--                                strPostrecords += selectedPostGroup[i].id;--%>
-<%--                            else--%>
-<%--                                strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                        if (strPostrecords == "") {--%>
-<%--                            isc.Dialog.create({--%>
-
-<%--                                message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                icon: "[SKIN]ask.png",--%>
-<%--                                title: "پیام",--%>
-<%--                                buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                buttonClick: function (button, index) {--%>
-<%--                                    this.close();--%>
-<%--                                }--%>
-<%--                            });--%>
-
-<%--                        } else {--%>
-
-
-<%--                            "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}' + strPostrecords);--%>
-<%--                        }--%>
-
-<%--                    }--%>
-<%--                },--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",--%>
-<%--                    click: function () {--%>
-<%--                        var strPostrecords = "";--%>
-<%--                        var selectedPostGroup = new Array();--%>
-<%--                        var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                        for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                            if (i == 0)--%>
-<%--                                strPostrecords += selectedPostGroup[i].id;--%>
-<%--                            else--%>
-<%--                                strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                        if (strPostrecords == "") {--%>
-<%--                            isc.Dialog.create({--%>
-
-<%--                                message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                icon: "[SKIN]ask.png",--%>
-<%--                                title: "پیام",--%>
-<%--                                buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                buttonClick: function (button, index) {--%>
-<%--                                    this.close();--%>
-<%--                                }--%>
-<%--                            });--%>
-
-<%--                        } else {--%>
-
-
-<%--                            "<spring:url value="/post-group/printSelected/excel/" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}' + strPostrecords);--%>
-<%--                        }--%>
-
-<%--                    }--%>
-<%--                },--%>
-<%--                {--%>
-<%--                    title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",--%>
-<%--                    click: function () {--%>
-<%--                        var strPostrecords = "";--%>
-<%--                        var selectedPostGroup = new Array();--%>
-<%--                        var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                        for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                            if (i == 0)--%>
-<%--                                strPostrecords += selectedPostGroup[i].id;--%>
-<%--                            else--%>
-<%--                                strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                        if (strPostrecords == "") {--%>
-<%--                            isc.Dialog.create({--%>
-
-<%--                                message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                icon: "[SKIN]ask.png",--%>
-<%--                                title: "پیام",--%>
-<%--                                buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                buttonClick: function (button, index) {--%>
-<%--                                    this.close();--%>
-<%--                                }--%>
-<%--                            });--%>
-
-<%--                        } else {--%>
-
-
-<%--                            "<spring:url value="/post-group/printSelected/html/" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}' + strPostrecords);--%>
-<%--                        }--%>
-
-<%--                    }--%>
-<%--                }--%>
-<%--            ]--%>
-<%--        }, {--%>
-<%--            title: "چاپ همه گروه پست ها", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-<%--                "<spring:url value="/post-group/print/pdf" var="printUrl"/>"--%>
-<%--                window.open('${printUrl}');--%>
-<%--            }--%>
-<%--        }, {--%>
-<%--            title: "چاپ همه با جزئیات", icon: "<spring:url value="pdf.png"/>", click: function () {--%>
-<%--                "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"--%>
-<%--                window.open('${printUrl}');--%>
-<%--            }--%>
-<%--        }, {isSeparator: true}, {--%>
-<%--            title: "حذف گروه پست از تمام شایستگی ها", icon: "<spring:url value="remove.png"/>", click: function () {--%>
-<%--                var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-
-
-<%--                if (record == null || record.id == null) {--%>
-
-<%--                    isc.Dialog.create({--%>
-
-<%--                        message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                        icon: "[SKIN]ask.png",--%>
-<%--                        title: "پیام",--%>
-<%--                        buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                        buttonClick: function (button, index) {--%>
-<%--                            this.close();--%>
-<%--                        }--%>
-<%--                    });--%>
-<%--                } else {--%>
-
-
-<%--                    var Dialog_Delete = isc.Dialog.create({--%>
-<%--                        message: getFormulaMessage("آیا از حذف  گروه پست:' ", "2", "black", "c") + getFormulaMessage(record.titleFa, "3", "red", "U") + getFormulaMessage(" از  کلیه شایستگی هایش ", "2", "black", "c") + getFormulaMessage("  مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",--%>
-<%--                        icon: "[SKIN]ask.png",--%>
-<%--                        title: "تائید حذف",--%>
-<%--                        buttons: [isc.Button.create({title: "بله"}), isc.Button.create({--%>
-<%--                            title: "خیر"--%>
-<%--                        })],--%>
-<%--                        buttonClick: function (button, index) {--%>
-<%--                            this.close();--%>
-
-<%--                            if (index == 0) {--%>
-<%--                                deletePostGroupFromAllCompetence(record.id);--%>
-<%--                                simpleDialog("پیغام", "حذف با موفقیت انجام گردید.", 0, "confirm");--%>
-<%--                            }--%>
-<%--                        }--%>
-<%--                    });--%>
-
-<%--                }--%>
-<%--            }--%>
-<%--        },--%>
-<%--        {isSeparator: true}, {--%>
-<%--            title: "لیست پست ها", icon: "<spring:url value="post.png"/>", click: function () {--%>
-<%--                var record = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-
-
-<%--                if (record == null || record.id == null) {--%>
-
-<%--                    isc.Dialog.create({--%>
-
-<%--                        message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                        icon: "[SKIN]ask.png",--%>
-<%--                        title: "پیام",--%>
-<%--                        buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                        buttonClick: function (button, index) {--%>
-<%--                            this.close();--%>
-<%--                        }--%>
-<%--                    });--%>
-<%--                } else {--%>
-
-<%--                    // alert(record.id);--%>
-<%--                    // RestDataSource_All_Posts.fetchDataURL = postGroupUrl + "/" + record.id + "/unAttachPosts";--%>
-<%--                    // RestDataSource_All_Posts.invalidateCache();--%>
-<%--                    // RestDataSource_All_Posts.fetchData();--%>
-<%--                    ListGrid_AllPostGrades.fetchData();--%>
-<%--                    ListGrid_AllPostGrades.invalidateCache();--%>
-
-
-<%--                    RestDataSource_ForThisPostGroup_GetPosts.fetchDataURL = postGroupUrl + "/" + record.id + "/getPosts"--%>
-<%--                    // RestDataSource_ForThisPostGroup_GetPosts.invalidateCache();--%>
-<%--                    // RestDataSource_ForThisPostGroup_GetPosts.fetchData();--%>
-<%--                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.invalidateCache();--%>
-<%--                    ListGrid_ForThisPostGradeGroup_GetPostGrades_Jpa.fetchData();--%>
-<%--                    DynamicForm_thisPostGradeGroupHeader_Jsp.setValue("sgTitle", getFormulaMessage(record.titleFa, "2", "red", "B"));--%>
-<%--                    Window_Add_PostGrade_to_PostGradeGroup_Jsp.show();--%>
-<%--                }--%>
-<%--            }--%>
-<%--        }--%>
-<%--    ]--%>
-<%--});--%>
-
-
-<%--var Menu_ListGrid_Post_Grade_Group_Posts = isc.Menu.create({--%>
-<%--    width: 150,--%>
-<%--    data: [{--%>
-<%--        title: "بازخوانی اطلاعات", icon: "<spring:url value="refresh.png"/>", click: function () {--%>
-<%--            ListGrid_Post_Grade_Group_Posts_refresh();--%>
-<%--        }--%>
-<%--    }, {--%>
-<%--        title: " حذف پست از گروه پست مربوطه", icon: "<spring:url value="remove.png"/>", click: function () {--%>
-<%--            activePostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-<%--            activePost = ListGrid_Grades_Post_Grade_Group_Jsp.getSelectedRecord();--%>
-<%--            if (activePostGroup == null || activePost == null) {--%>
-<%--                simpleDialog("پیام", "پست یا گروه پست انتخاب نشده است.", 0, "confirm");--%>
-
-<%--            } else {--%>
-<%--                var Dialog_Delete = isc.Dialog.create({--%>
-<%--                    message: getFormulaMessage("آیا از حذف  پست:' ", "2", "black", "c") + getFormulaMessage(activePost.titleFa, "3", "red", "U") + getFormulaMessage(" از گروه پست:' ", "2", "black", "c") + getFormulaMessage(activePostGroup.titleFa, "3", "red", "U") + getFormulaMessage(" ' مطمئن هستید؟", "2", "black", "c"),//"<font size='2' color='red'>"+"آیا از حذف گروه پست:' " +record.titleFa+ " ' مطمئن هستید؟" +"</font>",--%>
-<%--                    icon: "[SKIN]ask.png",--%>
-<%--                    title: "تائید حذف",--%>
-<%--                    buttons: [isc.Button.create({title: "بله"}), isc.Button.create({--%>
-<%--                        title: "خیر"--%>
-<%--                    })],--%>
-<%--                    buttonClick: function (button, index) {--%>
-<%--                        this.close();--%>
-
-<%--                        if (index == 0) {--%>
-<%--                            deletePostFromPostGroup(activePost.id, activePostGroup.id);--%>
-<%--                        }--%>
-<%--                    }--%>
-<%--                });--%>
-
-<%--            }--%>
-<%--        }--%>
-<%--    },--%>
-
-<%--    ]--%>
-<%--});--%>
-
-
-///////////////////////////////////////////////print///////////////////////////////////////////////
-
-<%--var ToolStripButton_PrintAll_Post_Grade_Group_Jsp = isc.ToolStripButton.create({--%>
-<%--    icon: "[SKIN]/RichTextEditor/print.png",--%>
-<%--    title: "چاپ با جزییات",--%>
-<%--    click: function () {--%>
-<%--        "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"--%>
-<%--        window.open('${printUrl}');--%>
-
-<%--    }--%>
-<%--});--%>
-
-
-<%--var ToolStripButton_Print_selected_Post_Grade_Group = isc.ToolStripButton.create({--%>
-<%--    icon: "[SKIN]/RichTextEditor/print.png",--%>
-<%--    title: "چاپ گروه پست انتخاب شده",--%>
-<%--    click: function () {--%>
-
-
-<%--        var strPostrecords="";--%>
-<%--        var selectedPostGroup=new Array();--%>
-<%--        var selectedPostGroup=ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--        for(i=0;i<selectedPostGroup.length;i++)--%>
-<%--            if(i==0)--%>
-<%--            strPostrecords+=selectedPostGroup[i].id;--%>
-<%--        else--%>
-<%--                strPostrecords+=","+selectedPostGroup[i].id--%>
-
-<%--        if(strPostrecords==""){--%>
-<%--            isc.Dialog.create({--%>
-
-<%--                message: "گروه پستی انتخاب نشده است",--%>
-<%--                icon: "[SKIN]ask.png",--%>
-<%--                title: "پیام",--%>
-<%--                buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                buttonClick: function (button, index) {--%>
-<%--                    this.close();--%>
-<%--                }--%>
-<%--            });--%>
-
-<%--        }--%>
-<%--        else{--%>
-
-
-<%--        "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"--%>
-<%--        window.open('${printUrl}'+strPostrecords);--%>
-<%--        }--%>
-
-<%--    }--%>
-<%--});--%>
-
-<%--var ToolStripButton_Print_Post_Grade_Group_Jsp = isc.TrPrintBtn.create({--%>
-<%--    // icon: "[SKIN]/RichTextEditor/print.png",--%>
-<%--    // title: "چاپ",--%>
-
-
-<%--    &lt;%&ndash;click: function () {&ndash;%&gt;--%>
-<%--    &lt;%&ndash;    "<spring:url value="/post-group/print/pdf" var="printUrl"/>"&ndash;%&gt;--%>
-<%--    &lt;%&ndash;    window.open('${printUrl}');&ndash;%&gt;--%>
-
-<%--    &lt;%&ndash;}&ndash;%&gt;--%>
-
-
-<%--    menu: isc.Menu.create({--%>
-<%--        data: [--%>
-<%--            {--%>
-<%--                title: "<spring:message code="print"/>", icon: "<spring:url value="print.png"/>", submenu: [--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.pdf"/>",--%>
-<%--                        icon: "<spring:url value="pdf.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/print/pdf" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.excel"/>",--%>
-<%--                        icon: "<spring:url value="excel.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/print/excel" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.html"/>",--%>
-<%--                        icon: "<spring:url value="html.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/print/html" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    }--%>
-
-<%--                ]--%>
-<%--            },--%>
-<%--            {--%>
-<%--                title: "<spring:message code="print.Detail"/>", icon: "<spring:url value="print.png"/>", submenu: [--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.pdf"/>",--%>
-<%--                        icon: "<spring:url value="pdf.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/printAll/pdf" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.excel"/>",--%>
-<%--                        icon: "<spring:url value="excel.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/printAll/excel" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.html"/>",--%>
-<%--                        icon: "<spring:url value="html.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            "<spring:url value="/post-group/printAll/html" var="printUrl"/>"--%>
-<%--                            window.open('${printUrl}');--%>
-
-<%--                        }--%>
-<%--                    }--%>
-<%--                ]--%>
-<%--            },--%>
-<%--            {--%>
-<%--                title: "<spring:message code="print.SelectedRecords"/>",--%>
-<%--                icon: "<spring:url value="print.png"/>",--%>
-<%--                submenu: [--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.pdf"/>", icon: "<spring:url value="pdf.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            var strPostrecords = "";--%>
-<%--                            var selectedPostGroup = new Array();--%>
-<%--                            var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                            for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                                if (i == 0)--%>
-<%--                                    strPostrecords += selectedPostGroup[i].id;--%>
-<%--                                else--%>
-<%--                                    strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                            if (strPostrecords == "") {--%>
-<%--                                isc.Dialog.create({--%>
-
-<%--                                    message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                    icon: "[SKIN]ask.png",--%>
-<%--                                    title: "پیام",--%>
-<%--                                    buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                    buttonClick: function (button, index) {--%>
-<%--                                        this.close();--%>
-<%--                                    }--%>
-<%--                                });--%>
-
-<%--                            } else {--%>
-
-
-<%--                                "<spring:url value="/post-group/printSelected/pdf/" var="printUrl"/>"--%>
-<%--                                window.open('${printUrl}' + strPostrecords);--%>
-<%--                            }--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.excel"/>", icon: "<spring:url value="excel.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            var strPostrecords = "";--%>
-<%--                            var selectedPostGroup = new Array();--%>
-<%--                            var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                            for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                                if (i == 0)--%>
-<%--                                    strPostrecords += selectedPostGroup[i].id;--%>
-<%--                                else--%>
-<%--                                    strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                            if (strPostrecords == "") {--%>
-<%--                                isc.Dialog.create({--%>
-
-<%--                                    message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                    icon: "[SKIN]ask.png",--%>
-<%--                                    title: "پیام",--%>
-<%--                                    buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                    buttonClick: function (button, index) {--%>
-<%--                                        this.close();--%>
-<%--                                    }--%>
-<%--                                });--%>
-
-<%--                            } else {--%>
-
-
-<%--                                "<spring:url value="/post-group/printSelected/excel/" var="printUrl"/>"--%>
-<%--                                window.open('${printUrl}' + strPostrecords);--%>
-<%--                            }--%>
-
-<%--                        }--%>
-<%--                    },--%>
-<%--                    {--%>
-<%--                        title: "<spring:message code="format.html"/>", icon: "<spring:url value="html.png"/>",--%>
-<%--                        click: function () {--%>
-<%--                            var strPostrecords = "";--%>
-<%--                            var selectedPostGroup = new Array();--%>
-<%--                            var selectedPostGroup = ListGrid_Post_Grade_Group_Jsp.getSelectedRecords();--%>
-<%--                            for (i = 0; i < selectedPostGroup.length; i++)--%>
-<%--                                if (i == 0)--%>
-<%--                                    strPostrecords += selectedPostGroup[i].id;--%>
-<%--                                else--%>
-<%--                                    strPostrecords += "," + selectedPostGroup[i].id--%>
-
-<%--                            if (strPostrecords == "") {--%>
-<%--                                isc.Dialog.create({--%>
-
-<%--                                    message: "<spring:message code="msg.postGroup.notFound"/>",--%>
-<%--                                    icon: "[SKIN]ask.png",--%>
-<%--                                    title: "پیام",--%>
-<%--                                    buttons: [isc.Button.create({title: "تائید"})],--%>
-<%--                                    buttonClick: function (button, index) {--%>
-<%--                                        this.close();--%>
-<%--                                    }--%>
-<%--                                });--%>
-
-<%--                            } else {--%>
-
-
-<%--                                "<spring:url value="/post-group/printSelected/html/" var="printUrl"/>"--%>
-<%--                                window.open('${printUrl}' + strPostrecords);--%>
-<%--                            }--%>
-
-<%--                        }--%>
-<%--                    }--%>
-<%--                ]--%>
-<%--            }--%>
-<%--        ]--%>
-<%--    })--%>
-<%--});--%>
-
-//////////////////////////////////////////////////////////////////////////////////////////////

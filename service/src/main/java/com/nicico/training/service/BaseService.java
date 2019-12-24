@@ -27,13 +27,11 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     protected ModelMapper modelMapper;
     protected DAO dao;
     protected E entity;
-
     private Class<E> entityType;
     private Class<INFO> infoType;
     private Class<CREATE> createType;
     private Class<UPDATE> updateType;
     private Class<DELETE> deleteType;
-
     {
         entityType = (Class<E>)
                 ((ParameterizedType) getClass().getGenericSuperclass())

@@ -12,6 +12,7 @@ import com.nicico.training.iservice.IAttachmentService;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.CategoryDAO;
 import com.nicico.training.repository.TeacherDAO;
@@ -72,10 +73,13 @@ public class TeacherService implements ITeacherService {
         if (byTeacherCode.isPresent())
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
 
-        request.setPersonalityId(personalInfoService.createOrUpdate(request.getPersonality()).getId());
-        request.setPersonality(null);
-
         final Teacher teacher = modelMapper.map(request, Teacher.class);
+
+        if (teacher.getPersonality().getId() != null) {
+            PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
+            modelMapper.map(teacher.getPersonality(), personalInfo);
+            teacher.setPersonality(personalInfo);
+        }
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -90,19 +94,18 @@ public class TeacherService implements ITeacherService {
 
         final Teacher teacher = getTeacher(id);
 
-        if (request.getPersonality() != null) {
-            request.getPersonality().setId(teacher.getPersonalityId());
-            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.update(request.getPersonality().getId(), request.getPersonality());
-            request.setPersonalityId(personalInfoDTO.getId());
-            request.setPersonality(null);
-        }
-
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
         modelMapper.map(request, updating);
 
-        if (request.getPersonality() == null)
-            updating.setPersonality(null);
+        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
+
+//        if(request.getPersonality().getAccountInfo() != null && personalInfo.getAccountInfo() == null){
+
+//            personalInfoService.modify(personalInfo);
+//        modelMapper.map(request.getPersonality(), personalInfo);
+//        }
+
 
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);

@@ -4,6 +4,8 @@
 
 // script
 
+
+
     var personnelRegMethod = "POST";
     var personnelRegWait;
     var educationLevelUrlPerReg = educationUrl + "level/";
@@ -14,7 +16,7 @@
     var mailCheckPerReg = true;
     var cellPhoneCheckPerReg = true;
     var duplicateCodePerReg = false;
-
+var dummy;
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -1032,7 +1034,7 @@
                 name: "operationalUnit",
                 title: "<spring:message code='operational.unit'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
-                length: "30",
+                length: "70",
                 showHintInField: true
             },
 
@@ -1100,7 +1102,9 @@
             },
             {
                 name: "fax",
-                title: "<spring:message code='telefax'/>"
+                title: "<spring:message code='telefax'/>",
+                keyPressFilter: "[0-9]",
+                length: "11"
             },
             {
                 name: "mobile",
@@ -1197,7 +1201,7 @@
                 return;
             }
             if (duplicateCodePerReg === true) {
-                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.duplicate'/>", true);
+                DynamicForm_PersonnelReg_BaseInfo.addFieldErrors("nationalCode", "<spring:message  code='msg.national.code.personalReg.duplicate'/>", true);
                 return;
             }
             if (persianRegDateCheck === false) {
@@ -1493,6 +1497,8 @@
     function ListGrid_personnelReg_edit() {
         DynamicForm_PersonnelReg_BaseInfo.clearValues();
         DynamicForm_PersonnelReg_EmployEdu.clearValues();
+        DynamicForm_PersonnelReg_OperationalUnit.clearValues();
+        DynamicForm_PersonnelReg_ContactInfo.clearValues();
         var record = ListGrid_PersonnelReg_JspPersonnelReg.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
@@ -1507,6 +1513,7 @@
         } else {
             personnelRegMethod = "PUT";
             PersonnelReg_vm.editRecord(record);
+            // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = true;
             personnelRegTabs.selectTab(0);
             Window_PersonnelReg_JspPersonnelReg.show();
         }
@@ -1521,6 +1528,9 @@
         personnelRegMethod = "POST";
         DynamicForm_PersonnelReg_BaseInfo.clearValues();
         DynamicForm_PersonnelReg_EmployEdu.clearValues();
+        DynamicForm_PersonnelReg_OperationalUnit.clearValues();
+        DynamicForm_PersonnelReg_ContactInfo.clearValues();
+        // DynamicForm_PersonnelReg_BaseInfo.getField("nationalCode").disabled = false;
         personnelRegTabs.selectTab(0);
         Window_PersonnelReg_JspPersonnelReg.show();
     };
@@ -1637,17 +1647,17 @@
 
 
     function checkPersonalRegNationalCode(nationalCode) {
-        isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null,
-        "callback: personalReg_findOne_result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalReg_findOne_result(rpcResponse)"));
     };
 
 
-        function personalReg_findOne_result(resp) {
-            // if (resp == null&&  resp == undefined && resp.data == "") {
-                if (resp == null ||  resp == undefined || resp.data == "") {
+        function personalReg_findOne_result(rpcResponse) {
+            // dummy = rpcResponse;
+            // if (rpcResponse === null ||  rpcResponse === undefined || rpcResponse.data === "") {
+                if (rpcResponse.status != 0 ) {
                 duplicateCodePerReg = true;
                 var ERROR = isc.Dialog.create({
-                    message: ("<spring:message code='msg.national.code.duplicate'/>"),
+                    message: ("<spring:message code='msg.national.code.personalReg.duplicate'/>"),
                     icon: "[SKIN]stop.png",
                     title: "<spring:message code='message'/>"
                 });

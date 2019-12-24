@@ -47,8 +47,8 @@ public class PersonalInfoDTO {
     private Long educationLevelId;
     private Long educationMajorId;
     private Long educationOrientationId;
-    private Long accountInfoId;
-    private Long contactInfoId;
+//    private Long accountInfoId;
+//    private Long contactInfoId;
 
     @Getter
     @Setter
@@ -99,7 +99,7 @@ public class PersonalInfoDTO {
     public static class Update extends PersonalInfoDTO {
         private Long id;
         private ContactInfoDTO.Create contactInfo;
-        private AccountInfoDTO.Create accountInfo;
+            private AccountInfoDTO.Create accountInfo;
     }
 
     @Getter

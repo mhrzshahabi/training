@@ -25,13 +25,15 @@
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "personality.id"},
             {name: "teacherCode"},
             {name: "personality.firstNameFa"},
             {name: "personality.lastNameFa"},
             {name: "personality.educationLevel.titleFa"},
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
-            {name: "categories"}
+            {name: "categories"},
+            {name: "personality.contactInfo.homeAddress.id"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
@@ -281,6 +283,7 @@
         canTabToIcons: false,
         fields: [
             {name: "id", hidden: true},
+            {name: "personality.id", hidden: true},
             {
                 name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
@@ -966,6 +969,7 @@
         newPadding: 5,
         fields: [
             {name: "id", hidden: true},
+            {name: "personality.contactInfo.homeAddress.id", hidden: true},
             {
                 name: "personality.contactInfo.homeAddress.postalCode",
                 title: "<spring:message code='postal.code'/>",
@@ -1774,6 +1778,7 @@
 
     function setHomeAddressFields(homeAddress) {
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.restAddr", homeAddress.restAddr);
+        DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.id", homeAddress.id);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.postalCode", homeAddress.postalCode);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.phone", homeAddress.phone);
         DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.homeAddress.fax", homeAddress.fax);
@@ -1794,6 +1799,7 @@
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id",personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);
