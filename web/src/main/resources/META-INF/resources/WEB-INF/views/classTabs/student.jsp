@@ -255,6 +255,7 @@
 
             SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
 
+
                 if(!nationalCodeExists(current.nationalCode))
                 {
                     if (checkIfAlreadyExist(current)) {
@@ -452,6 +453,8 @@
                                         var data = {"classId": classId, "personnelsIds": personnelsIds};
                                         if (personnelsIds.getLength() > 0)
                                             isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + classId, "POST", JSON.stringify({"ids": personnelsIds}), "callback: class_add_students_result(rpcResponse)"));
+
+                                        SelectedPersonnelsLG_student.data.clearAll();
                                     }
                                 }), isc.TrCancelBtn.create({
                                     click: function () {
