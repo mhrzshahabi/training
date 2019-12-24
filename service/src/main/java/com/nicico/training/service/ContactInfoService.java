@@ -3,15 +3,11 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
-import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.repository.ContactInfoDAO;
-import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -28,7 +24,6 @@ import java.util.Optional;
 public class ContactInfoService implements IContactInfoService {
     private final ModelMapper modelMapper;
     private final ContactInfoDAO contactInfoDAO;
-
     private final AddressService addressService;
 
     @Transactional(readOnly = true)
@@ -49,17 +44,6 @@ public class ContactInfoService implements IContactInfoService {
 
     @Transactional
     @Override
-    public ContactInfoDTO.Info createOrUpdate(ContactInfoDTO.Create request) {
-        if (request.getId() == null)
-            return create(request);
-        else {
-            ContactInfoDTO.Update updating = modelMapper.map(request, ContactInfoDTO.Update.class);
-            return update(updating.getId(), updating);
-        }
-    }
-
-    @Transactional
-    @Override
     public ContactInfoDTO.Info create(ContactInfoDTO.Create request) {
 
         final ContactInfo contactInfo = modelMapper.map(request, ContactInfo.class);
@@ -76,7 +60,6 @@ public class ContactInfoService implements IContactInfoService {
 
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
         ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
         ContactInfo cUpdating = new ContactInfo();
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);
@@ -113,20 +96,24 @@ public class ContactInfoService implements IContactInfoService {
 
     // ------------------------------
 
+    @Transactional
     @Override
-    public ContactInfoDTO.Create modify(ContactInfoDTO.Create contactInfo) {
-        ContactInfo contactInfo_new = null;
-        if (contactInfo.getHomeAddress().getId() != null && contactInfo.getHomeAddress().getPostalCode() != null) {
-            contactInfo_new = modelMapper.map(contactInfo,ContactInfo.class);
-            AddressDTO.Info addressDTO = addressService.getOneByPostalCode(contactInfo.getHomeAddress().getPostalCode());
-            if(addressDTO != null) {
-                Address address_old = modelMapper.map(addressDTO, Address.class);
-                contactInfo_new.getHomeAddress().setId(address_old.getId());
-                contactInfo_new.setHomeAddressId(address_old.getId());
-                modelMapper.map(contactInfo_new.getHomeAddress(), address_old);
+    public void modify(ContactInfoDTO.Create request, ContactInfo contactInfo) {
+        if (request.getHomeAddress() != null && request.getHomeAddress().getPostalCode() != null) {
+            Address address = addressService.getByPostalCode(request.getHomeAddress().getPostalCode());
+            if (address != null) {
+                request.getHomeAddress().setId(address.getId());
+                request.setHomeAddressId(address.getId());
+                contactInfo.setHomeAddress(address);
             }
         }
-        return  modelMapper.map(contactInfo_new,ContactInfoDTO.Create.class);
+        if (request.getWorkAddress() != null && request.getWorkAddress().getPostalCode() != null) {
+            Address address = addressService.getByPostalCode(request.getWorkAddress().getPostalCode());
+            if (address != null) {
+                request.getWorkAddress().setId(address.getId());
+                request.setWorkAddressId(address.getId());
+                contactInfo.setWorkAddress(address);
+            }
+        }
     }
-
 }
