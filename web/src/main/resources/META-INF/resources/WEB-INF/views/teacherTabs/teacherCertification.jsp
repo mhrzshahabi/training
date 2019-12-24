@@ -413,8 +413,7 @@
 
     function ListGrid_TeacherCertification_refresh() {
         ListGrid_JspTeacherCertification.invalidateCache();
-        // ListGrid_JspTeacherCertification.filterByEditor();
-        // ListGrid_JspTeacherCertification.refreshFields();
+        ListGrid_JspTeacherCertification.filterByEditor();
     }
 
     function ListGrid_TeacherCertification_Add() {

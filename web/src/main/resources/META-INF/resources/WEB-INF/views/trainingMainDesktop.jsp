@@ -1,4 +1,4 @@
-<%@ page contentType="text/html;charset=UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
@@ -10,7 +10,6 @@
 <head>
     <title><spring:message code="training.system"/></title>
     <link rel="shortcut icon" href="<spring:url value='/images/nicico.png' />"/>
-    <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
 
     <SCRIPT>var isomorphicDir = "isomorphic/";</SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_Core.js></SCRIPT>
@@ -23,13 +22,14 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
+    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
+    <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
     <link rel="stylesheet" href="<spring:url value='/css/calendar.css' />"/>
     <link rel="stylesheet" href="<spring:url value='/css/training.css' />"/>
     <script src="<spring:url value='/js/calendar.js'/>"></script>
     <script src="<spring:url value='/js/jalali.js'/>"></script>
-    <script src="<spring:url value='/js/persian-date.min.js'/>"></script>
     <script src="<spring:url value='/js/training_function.js'/>"></script>
     <script src="<spring:url value='/js/all.js'/>"></script>
     <script src="<spring:url value='/js/jquery.min.js' />"></script>
@@ -39,9 +39,6 @@
 
 <body dir="rtl">
 <script type="application/javascript">
-
-    isc.FileLoader.loadLocale("fa");
-
     // -------------------------------------------  REST API URLs  -----------------------------------------------
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
@@ -72,90 +69,39 @@
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
     const dialogShowTime = 2500;
-    const trainingConfigs = {
-        Urls: {
-            DocumentUrl: document.URL.split("?")[0],
-            TClassFee: rootUrl + "/tclass-fee-title",
-            TClassFeeTitle: rootUrl + "/tclass-fee-title",
-            rootUrl: "${contextPath}/api",
-            workflowUrl: rootUrl + "/workflow",
-            jobUrl: rootUrl + "/job",
-            postGroupUrl: rootUrl + "/post-group",
-            postGradeUrl: rootUrl + "/postGrade",
-            postUrl: rootUrl + "/post",
-            competenceUrl: rootUrl + "/competence",
-            needAssessmentUrl: rootUrl + "/needAssessment",
-            skillUrl: rootUrl + "/skill",
-            attachmentUrl: rootUrl + "/attachment",
-            trainingPlaceUrl: rootUrl + "/training-place",
-            personnelUrl: rootUrl + "/personnel",
-            personnelRegUrl: rootUrl + "/personnelRegistered",
-            attendanceUrl: rootUrl + "/attendance",
-            parameterUrl: rootUrl + "/parameter",
-            parameterValueUrl: rootUrl + "/parameter-value",
-            employmentHistoryUrl: rootUrl + "/employmentHistory",
-            teachingHistoryUrl: rootUrl + "/teachingHistory",
-            teacherCertificationUrl: rootUrl + "/teacherCertification",
-        },
-        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-        userFullName: '<%= SecurityUtil.getFullName()%>',
-    };
-    // -------------------------------------------  Variables  -----------------------------------------------
-    var workflowRecordId = null;
-    var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
     isc.RPCManager.allowCrossDomainCalls = true;
+    isc.FileLoader.loadLocale("fa");
+    isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
-    isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
-    isc.ViewLoader.addProperties({
-        width: "100%",
-        height: "100%",
-        border: "0px",
-        loadingMessage: "<spring:message code="loading"/>",
-    });
+    isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false,
-        titleSuffix: "", requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
-        requiredTitleSuffix: "", requiredMessage: "<spring:message code="msg.field.is.required"/>"
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true},
-        addUnknownValues: false,
-        emptyPickListMessage: "",
-        useClientFiltering: false,
-        changeOnKeypress: false,
-    });
+    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
-
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
-
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true,
-            showPrompt: false,
-            willHandleError: true,
-            actionURL: actionURLParam,
-            httpMethod: httpMethodParam,
-            data: dataParam,
-            callback: callbackParam,
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"}, contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true, showPrompt: false, willHandleError: true, actionURL: actionURLParam, httpMethod: httpMethodParam,
+            data: dataParam, callback: callbackParam,
         }
     };
 
@@ -186,14 +132,6 @@
             width: 50,
             align: "center"
         },
-        <%--sortFieldAscendingText: "<spring:message code="sort.ascending"/>",--%>
-        <%--sortFieldDescendingText: "<spring:message code="sort.descending"/>",--%>
-        <%--configureSortText: "<spring:message code="sort.config"/>",--%>
-        <%--clearSortFieldText: "<spring:message code="sort.clear"/>",--%>
-        <%--autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",--%>
-        <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
-        <%--emptyMessage: "",--%>
-        <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
     });
 
     TrValidators = {
@@ -259,51 +197,19 @@
     isc.TextAreaItem.addProperties({validators: [TrValidators.Trimmer]});
 
     isc.defineClass("TrHLayoutButtons", TrHLayout);
-    isc.TrHLayoutButtons.addProperties({
-        align: "center",
-        height: 40,
-        defaultLayoutAlign: "center",
-        membersMargin: 10,
-    });
+    isc.TrHLayoutButtons.addProperties({align: "center", height: 40, defaultLayoutAlign: "center", membersMargin: 10,});
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
-    isc.TrComboAutoRefresh.addProperties({
-        click: function (form, item) {
-            item.fetchData();
-        }
-    });
+    isc.TrComboAutoRefresh.addProperties({click: function (form, item) { item.fetchData(); }});
 
-    isc.ToolStripButtonRefresh.addProperties({
-        title: "<spring:message code="refresh"/>",
-    });
-
-    isc.ToolStripButtonCreate.addProperties({
-        title: "<spring:message code="create"/>",
-    });
-
-    isc.ToolStripButtonAdd.addProperties({
-        title: "<spring:message code="add"/>",
-    });
-
-    isc.ToolStripButtonEdit.addProperties({
-        title: "<spring:message code="edit"/>",
-    });
-
-    isc.ToolStripButtonRemove.addProperties({
-        title: "<spring:message code="remove"/>",
-    });
-
-    isc.ToolStripButtonPrint.addProperties({
-        title: "<spring:message code="print"/>",
-    });
-
-    isc.IButtonSave.addProperties({
-        title: "<spring:message code="save"/>",
-    });
-
-    isc.IButtonCancel.addProperties({
-        title: "<spring:message code="cancel"/>",
-    });
+    isc.ToolStripButtonRefresh.addProperties({title: "<spring:message code="refresh"/>",});
+    isc.ToolStripButtonCreate.addProperties({title: "<spring:message code="create"/>",});
+    isc.ToolStripButtonAdd.addProperties({title: "<spring:message code="add"/>",});
+    isc.ToolStripButtonEdit.addProperties({title: "<spring:message code="edit"/>",});
+    isc.ToolStripButtonRemove.addProperties({title: "<spring:message code="remove"/>",});
+    isc.ToolStripButtonPrint.addProperties({title: "<spring:message code="print"/>",});
+    isc.IButtonSave.addProperties({title: "<spring:message code="save"/>",});
+    isc.IButtonCancel.addProperties({title: "<spring:message code="cancel"/>",});
 
     // -------------------------------------------  Page UI - Header  -----------------------------------------------
     var headerLogo = isc.HTMLFlow.create({
@@ -386,7 +292,7 @@
         width: "100",
         baseStyle: "header-logout",
         title: "<spring:message code="logout"/>",
-        icon: "<spring:url value="logout.png"/>",
+        icon: "<spring:url value="/images/logout.png"/>",
         click: function () {
             logout();
         }
@@ -912,71 +818,20 @@
         }
     });
 
-    function handleErrors(resp, req) {
-
-        if (resp == null || resp.httpResponseText == null)
-            return;
-
-        const title = {title: "<spring:message code='error'/>"};
-        if (resp.httpResponseCode === 401 || resp.httpResponseCode === 302) {
-            isc.say('<spring:message code="global.form.refresh" />', null, title);
-            return;
-        }
-        if (resp.httpResponseCode === 400) {
-            isc.say('<spring:message code="exception.too-large" />', null, title);
-            return;
-        }
-
-        var errText = "";
-        var response = JSON.parse(resp.httpResponseText);
-
-        if (response == null || response.length === 0)
-            return;
-
-        if (response.errors != null)
-            response.errors.forEach(value => {
-
-                // if (value.field !== "")
-                //     errText += "<strong>" + value.field + "</strong>:<br>";
-                if (value.message != null && value.message !== "") {
-                    if (value.message.startsWith('{') && value.message.endsWith('}'))
-                        errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
-                    else
-                        errText += "<em>" + value.message + "</em><br>";
-                }
-            });
-        else if (response.exception != null)
-            if (response.exception !== "") {
-                if (response.exception.startsWith('{') && response.exception.endsWith('}'))
-                    errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
-                else
-                    errText += "<em>" + response.exception + "</em><br>";
-            }
-
-        if (errText !== "")
-            isc.say(errText, null, title);
-        else if (response.error === "NotFound")
-            isc.say('<spring:message code="exception.record.not−found" />', null, title);
-        else if (response.error === "Unauthorized")
-            isc.say('<spring:message code="exception.unauthorized" />', null, title);
-        else
-            isc.say('<spring:message code="exception.server.connection" />', null, title);
-    }
-
     isc.RPCManager.addClassProperties({
         defaultTimeout: 60000,
         willHandleError: true,
         handleError: function (response, request) {
             createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
         },
-        handleError: handleErrors
+        // handleError: handleErrors
     });
-    isc.ViewLoader.addClassProperties({
 
+    isc.ViewLoader.addClassProperties({
         defaultTimeout: 60000,
         willHandleError: true,
-        handleError: handleErrors,
-        handleTransportError: handleErrors
+        // handleError: handleErrors,
+        // handleTransportError: handleErrors
     });
 
     function trPrintWithCriteria(url, advancedCriteria) {
@@ -1089,25 +944,106 @@
         },
     });
 
+    function handleErrors(resp, req) {
+
+        if (resp == null || resp.httpResponseText == null)
+            return;
+
+        const title = {title: "<spring:message code='error'/>"};
+        if (resp.httpResponseCode === 401 || resp.httpResponseCode === 302) {
+            isc.say('<spring:message code="global.form.refresh" />', null, title);
+            return;
+        }
+        if (resp.httpResponseCode === 400) {
+            isc.say('<spring:message code="exception.too-large" />', null, title);
+            return;
+        }
+
+        var errText = "";
+        var response = JSON.parse(resp.httpResponseText);
+
+        if (response == null || response.length === 0)
+            return;
+
+        if (response.errors != null)
+            response.errors.forEach(value => {
+
+                // if (value.field !== "")
+                //     errText += "<strong>" + value.field + "</strong>:<br>";
+                if (value.message != null && value.message !== "") {
+                    if (value.message.startsWith('{') && value.message.endsWith('}'))
+                        errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
+                    else
+                        errText += "<em>" + value.message + "</em><br>";
+                }
+            });
+        else if (response.exception != null)
+            if (response.exception !== "") {
+                if (response.exception.startsWith('{') && response.exception.endsWith('}'))
+                    errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
+                else
+                    errText += "<em>" + response.exception + "</em><br>";
+            }
+
+        if (errText !== "")
+            isc.say(errText, null, title);
+        else if (response.error === "NotFound")
+            isc.say('<spring:message code="exception.record.not−found" />', null, title);
+        else if (response.error === "Unauthorized")
+            isc.say('<spring:message code="exception.unauthorized" />', null, title);
+        else
+            isc.say('<spring:message code="exception.server.connection" />', null, title);
+    }
+
+    <%--const trainingConfigs = {--%>
+    <%--    Urls: {--%>
+    <%--        DocumentUrl: document.URL.split("?")[0],--%>
+    <%--        TClassFee: rootUrl + "/tclass-fee-title",--%>
+    <%--        TClassFeeTitle: rootUrl + "/tclass-fee-title",--%>
+    <%--        rootUrl: "${contextPath}/api",--%>
+    <%--        workflowUrl: rootUrl + "/workflow",--%>
+    <%--        jobUrl: rootUrl + "/job",--%>
+    <%--        postGroupUrl: rootUrl + "/post-group",--%>
+    <%--        postGradeUrl: rootUrl + "/postGrade",--%>
+    <%--        postUrl: rootUrl + "/post",--%>
+    <%--        competenceUrl: rootUrl + "/competence",--%>
+    <%--        needAssessmentUrl: rootUrl + "/needAssessment",--%>
+    <%--        skillUrl: rootUrl + "/skill",--%>
+    <%--        attachmentUrl: rootUrl + "/attachment",--%>
+    <%--        trainingPlaceUrl: rootUrl + "/training-place",--%>
+    <%--        personnelUrl: rootUrl + "/personnel",--%>
+    <%--        personnelRegUrl: rootUrl + "/personnelRegistered",--%>
+    <%--        attendanceUrl: rootUrl + "/attendance",--%>
+    <%--        parameterUrl: rootUrl + "/parameter",--%>
+    <%--        parameterValueUrl: rootUrl + "/parameter-value",--%>
+    <%--        employmentHistoryUrl: rootUrl + "/employmentHistory",--%>
+    <%--        teachingHistoryUrl: rootUrl + "/teachingHistory",--%>
+    <%--        teacherCertificationUrl: rootUrl + "/teacherCertification",--%>
+    <%--    },--%>
+    <%--    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},--%>
+    <%--    userFullName: '<%= SecurityUtil.getFullName()%>',--%>
+    <%--    };--%>
+
+    // -------------------------------------------  Variables  -----------------------------------------------
+    var workflowRecordId = null;
+    var workflowParameters = null;
+    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
+
+    <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
+    <%--loadingMessage: "<spring:message code="loading"/>",--%>
+    <%--requiredMessage: "<spring:message code="msg.field.is.required"/>"--%>
+    // emptyPickListMessage: "",
+    <%--sortFieldAscendingText: "<spring:message code="sort.ascending"/>",--%>
+    <%--sortFieldDescendingText: "<spring:message code="sort.descending"/>",--%>
+    <%--configureSortText: "<spring:message code="sort.config"/>",--%>
+    <%--clearSortFieldText: "<spring:message code="sort.clear"/>",--%>
+    <%--autoFitAllText: "<spring:message code="auto.fit.all.columns"/>",--%>
+    <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
+    <%--emptyMessage: "",--%>
+    <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
-    (function loadFrameworkMessageFa() {
 
-        window.onload = () => isc.RPCManager.sendRequest({
-
-            httpMethod: "GET",
-            showPrompt: false,
-            useSimpleHttp: true,
-            serverOutputAsString: false,
-            httpHeaders: EvaluationConfigs.httpHeaders,
-            contentType: "application/json; charset=utf-8",
-            actionURL: "${contextPath}/isomorphic/locales/frameworkMessages_fa.properties",
-            callback: function (RpcResponse_o) {
-
-                eval(RpcResponse_o.data);
-            }
-        });
-    })();
 </script>
 </body>
 </html>

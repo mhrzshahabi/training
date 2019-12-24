@@ -68,10 +68,16 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public TeacherDTO.Info create(TeacherDTO.Create request) {
-
         Optional<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(request.getTeacherCode());
         if (byTeacherCode.isPresent())
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+
+        /////////////////////
+//        if (request.getPersonality().getId() != null) {
+//            PersonalInfo personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
+//            personalInfoService.modify(personalInfo);
+//        }
+        ////////////////////////
 
         final Teacher teacher = modelMapper.map(request, Teacher.class);
 
@@ -87,25 +93,19 @@ public class TeacherService implements ITeacherService {
         }
     }
 
-
     @Transactional
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
-
         final Teacher teacher = getTeacher(id);
 
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
-        modelMapper.map(request, updating);
 
         PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
+        modelMapper.map(request.getPersonality(), personalInfo);
+        personalInfoService.modify(personalInfo);
 
-//        if(request.getPersonality().getAccountInfo() != null && personalInfo.getAccountInfo() == null){
-
-//            personalInfoService.modify(personalInfo);
-//        modelMapper.map(request.getPersonality(), personalInfo);
-//        }
-
+        modelMapper.map(request, updating);
 
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);
