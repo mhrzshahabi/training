@@ -9,6 +9,8 @@ import java.util.List;
 public interface IAddressService {
     AddressDTO.Info get(Long id);
 
+    Address getAddress(Long id);
+
     List<AddressDTO.Info> list();
 
     AddressDTO.Info create(AddressDTO.Create request);
@@ -23,7 +25,7 @@ public interface IAddressService {
 
     AddressDTO.Info getOneByPostalCode(String postalCode);
 
-    AddressDTO.Info createOrUpdate(AddressDTO.Create request);
+    Address getByPostalCode(String postalCode);
 
-    Address getAddress(Long id);
+    AddressDTO.Info createOrUpdate(AddressDTO.Create request);
 }

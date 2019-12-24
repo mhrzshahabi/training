@@ -9,6 +9,8 @@ import java.util.List;
 public interface IPersonalInfoService {
     PersonalInfoDTO.Info get(Long id);
 
+    PersonalInfo getPersonalInfo(Long id);
+
     List<PersonalInfoDTO.Info> list();
 
     PersonalInfoDTO.Info create(PersonalInfoDTO.Create request);
@@ -25,7 +27,5 @@ public interface IPersonalInfoService {
 
     PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request);
 
-    PersonalInfoDTO.Update modify(PersonalInfoDTO.Update personalInfo);
-
-    PersonalInfo getPersonalInfo(Long id);
+    void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo);
 }
