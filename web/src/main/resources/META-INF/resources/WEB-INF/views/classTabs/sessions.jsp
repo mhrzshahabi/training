@@ -726,23 +726,27 @@
                 Window_Session.close();
 
             } else {
-                let respText = resp.httpResponseText;
+
+                let respText = JSON.parse(resp.httpResponseText);
+
                 if (resp.httpResponseCode === 406) {
 
                     MyOkDialog_Session = isc.MyOkDialog.create({
-                        message: "<spring:message code="msg.record.duplicate"/>"
+                        message: respText.message
                     });
 
                     close_MyOkDialog_Session()
 
                 }
-                // else  if (resp.httpResponseCode === 503)
-                // {
-                //
-                //     let respText = JSON.parse(resp.httpResponseText);
-                //     console.log(respText);
-                //     // alert(resp.responseText);
-                // }
+                else if (resp.httpResponseCode === 503)
+                {
+
+                    MyOkDialog_Session = isc.MyOkDialog.create({
+                        message: respText.message,
+                        icon: "[SKIN]stop.png"
+                    });
+
+                }
                 else {
                     MyOkDialog_Session = isc.MyOkDialog.create({
                         message: "<spring:message code="msg.operation.error"/>"

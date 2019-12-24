@@ -1162,9 +1162,9 @@
         });
     };
 
-    var ToolStripButton_Refresh_Skill_Group_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="refresh.png"/>",
-        title: "<spring:message code="refresh"/>",
+    var ToolStripButton_Refresh_Skill_Group_Jsp = isc.ToolStripButtonRefresh.create({
+        <%--icon: "<spring:url value="refresh.png"/>",--%>
+        <%--title: "<spring:message code="refresh"/>",--%>
         click: function () {
             //  var xx;
             //  yesNoDialog("taeed","salam???",0,"stop",xx);
@@ -1469,7 +1469,7 @@
         })
     });
     var ToolStripButton_Add_Skill_Group_AddSkill_Jsp = isc.ToolStripButton.create({
-        icon: "<spring:url value="skill.png"/>",
+        icon: "[SKIN]/actions/skill.png",
         title: "<spring:message code="skill.plural.list"/>",
         click: function () {
             var record = ListGrid_Skill_Group_Jsp.getSelectedRecord();
@@ -1513,12 +1513,20 @@
 
     var ToolStrip_Actions_Skill_Group_Jsp = isc.ToolStrip.create({
         width: "100%",
-        members: [ToolStripButton_Refresh_Skill_Group_Jsp,
+        members: [
             ToolStripButton_Add_Skill_Group_Jsp,
             ToolStripButton_Edit_Skill_Group_Jsp,
             ToolStripButton_Remove_Skill_Group_Jsp,
             ToolStripButton_Add_Skill_Group_AddSkill_Jsp,
-            ToolStripButton_Print_Skill_Group_Jsp,
+            // ToolStripButton_Print_Skill_Group_Jsp,
+            isc.ToolStrip.create({
+                width: "100%",
+                align: "left",
+                border: '0px',
+                members: [
+                    ToolStripButton_Refresh_Skill_Group_Jsp,
+                ]
+            })
             ]
     });
 

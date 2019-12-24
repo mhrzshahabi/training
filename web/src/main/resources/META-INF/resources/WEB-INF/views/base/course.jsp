@@ -5,7 +5,8 @@
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%
     final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%> // <script>
+%>
+// <script>
     var testData = [];
     var equalCourse = [];
     var preCourseIdList = [];
@@ -563,7 +564,6 @@
                     ToolStripButton_Refresh
                 ]
             })
-
         ]
     });
 
@@ -769,6 +769,7 @@
         // sectionVisibilityMode: "mutex",
         colWidths: ["10%", "40%", "9%", "10%"],
         titleAlign: "left",
+        validateOnExit: true,
         showInlineErrors: true,
         numCols: 4,
         fields: [
@@ -798,9 +799,11 @@
                 colSpan: 1,
                 endRow: true,
                 title: "<spring:message code="course_theoryDuration"/>",
-                prompt: "لطفا مدت دوره را به صورت یک عدد وارد کنید",
+                prompt: "لطفا مدت دوره را به صورت یک عدد حداکثر 3 رقمی وارد کنید",
                 // height: "30",
                 required: true,
+                mask:"###",
+                useMask: true,
                 // titleOrientation: "top",
                 textAlign: "center",
                 keyPressFilter: "[0-9.]",
@@ -939,6 +942,7 @@
     var DynamicForm_course_GroupTab = isc.DynamicForm.create({
         colWidths: ["6%", "11%", "6%", "11%"],
         numCols: 4,
+        validateOnExit: true,
 // cellBorder:1,
 // titleAlign:"right",
 
@@ -1302,6 +1306,7 @@
             // orientation: "vertical",
             click: function () {
                 Window_course.closeClick();
+                ListGrid_Course_refresh();
             }
         })]
     });
@@ -1796,6 +1801,7 @@
                 width: "96%",
                 height: "74%",
                 borderRadius: "6px",
+                validateOnExit: true,
                 textAlign: "right",
                 // margin:20,
                 fields: [
@@ -1827,11 +1833,13 @@
                         textAlign: "center",
                         required: true,
                         validators: [{
-                            type: "integerRange", min: 1, max: 15,
-                            errorMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
+                            type: "integerRange", min: 1, max: 50,
+                            errorMessage: "لطفا یک عدد بین 1 تا 50 وارد کنید",
                         }],
                         // height: "30",
                         width: "*",
+                        mask:"##",
+                        useMask:true,
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 1 تا 15 وارد کنید",
                     },
@@ -1846,6 +1854,8 @@
                         // height: "30",
                         required: true,
                         width: "*",
+                        mask:"##",
+                        useMask:true,
                         keyPressFilter: "[0-9]",
                         requiredMessage: "لطفا یک عدد بین 65 تا 100 وارد کنید",
                         validators: [{
@@ -2080,17 +2090,15 @@
                             showPrompt: true,
                             serverOutputAsString: false,
                             callback: function (resp) {
-
-                                if (resp.data == "true") {
+                                if (resp.data === "true") {
                                     ListGrid_Course_refresh();
                                     ListGrid_CourseJob.setData([]);
                                     ListGrid_CourseSkill.setData([]);
                                     ListGrid_CourseSyllabus.setData([]);
-                                    ListGrid_CourseGoal.setData([]);
+                                    // ListGrid_CourseGoal.setData([]);
                                     ListGrid_CourseCompetence.setData([]);
                                     var OK = isc.Dialog.create({
                                         message: "<spring:message code="msg.record.remove.successful"/>",
-
                                         icon: "[SKIN]say.png",
                                         title: "<spring:message code="msg.command.done"/>"
                                     });

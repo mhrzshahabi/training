@@ -43,6 +43,7 @@
                 required: true,
                 title: "کد",
                 type: 'text',
+                characterCasing: "upper",
                 keyPressFilter: "[A-Z]",
                 width: "33%",
                 height: "30",
@@ -236,7 +237,7 @@
                 name: "codeNumber",
                 title: "کد:",
                 type: 'text',
-
+                characterCasing: "upper",
                 keyPressFilter: "[A-Z|1-9]",
                 required: true,
                 length: 1,

@@ -23,12 +23,12 @@
             {name: "titleEn"},
             {name: "code"}
         ],
-        fetchDataURL: educationLevelUrl + "spec-list"
+        fetchDataURL: educationLevelUrl + "iscList"
     });
 
     var RestDataSourceEducationMajor = isc.TrDS.create({
         fields: [{name: "id", primaryKey: true}, {name: "titleFa"}, {name: "titleEn"}],
-        fetchDataURL: educationMajorUrl + "spec-list"
+        fetchDataURL: educationMajorUrl + "iscList"
     });
 
     var RestDataSourceEducationOrientation = isc.TrDS.create({
@@ -40,21 +40,7 @@
             {name: "educationLevel.titleFa"},
             {name: "educationMajor.titleFa"}
         ],
-        fetchDataURL: educationOrientationUrl + "spec-list"
-    });
-
-    var RestDataSource_eduLevel = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
-        ],
-        fetchDataURL: educationLevelUrl + "spec-list?_startRow=0&_endRow=55",
-        autoFetchData: true
-    });
-
-    var RestDataSource_eduMajor = isc.TrDS.create({
-        fields: [{name: "id", primaryKey: true}, {name: "titleFa"}
-        ],
-        fetchDataURL: educationMajorUrl + "spec-list?_startRow=0&_endRow=100",
-        autoFetchData: true
+        fetchDataURL: educationOrientationUrl + "iscList"
     });
 
 
@@ -112,10 +98,13 @@
     });
 
     var ListGrid_EducationOrientation = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
         dataSource: RestDataSourceEducationOrientation,
         contextMenu: Menu_ListGrid_EducationOrientation,
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
         fields: [
             {
                 name: "titleFa",
@@ -148,12 +137,6 @@
                 }
             }
         ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationOrientation, educationOrientationUrl,
                 "<spring:message code='education.orientation'/>",
@@ -184,7 +167,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
-                optionDataSource: RestDataSource_eduLevel,
+                optionDataSource: RestDataSourceEducationLevel,
                 displayField: "titleFa",
                 valueField: "id",
                 filterFields: ["titleFa"],
@@ -197,7 +180,7 @@
                 editorType: "TrComboAutoRefresh",
                 addUnknownValues: false,
                 required: true,
-                optionDataSource: RestDataSource_eduMajor,
+                optionDataSource: RestDataSourceEducationMajor,
                 displayField: "titleFa",
                 valueField: "id",
                 filterFields: ["titleFa"],
@@ -369,10 +352,13 @@
     });
 
     var ListGrid_EducationMajor = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
         dataSource: RestDataSourceEducationMajor,
         contextMenu: Menu_ListGrid_EducationMajor,
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
         fields: [
             {
                 name: "titleFa",
@@ -387,12 +373,6 @@
                 filterOperator: "iContains"
             }
         ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationMajor, educationMajorUrl,
                 "<spring:message code='education.major'/>",
@@ -585,10 +565,13 @@
     });
 
     var ListGrid_EducationLevel = isc.TrLG.create({
-        width: "100%",
-        height: "100%",
         dataSource: RestDataSourceEducationLevel,
         contextMenu: Menu_ListGrid_EducationLevel,
+        selectionType: "multiple",
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
         fields: [
             {
                 name: "titleFa",
@@ -603,12 +586,6 @@
                 filterOperator: "iContains"
             }
         ],
-        selectionType: "multiple",
-        sortField: 1,
-        sortDirection: "descending",
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
         doubleClick: function () {
             ListGrid_Education_Edit(ListGrid_EducationLevel, educationLevelUrl,
                 "<spring:message code='education.level'/>",
@@ -817,10 +794,6 @@
     }
 
     function ListGrid_Education_refresh(listGridEducation) {
-        var record = listGridEducation.getSelectedRecord();
-        if (record != null && record.id != null) {
-            listGridEducation.selectRecord(record);
-        }
         listGridEducation.invalidateCache();
         listGridEducation.filterByEditor();
     }

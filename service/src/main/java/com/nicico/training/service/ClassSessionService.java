@@ -15,11 +15,10 @@ import com.nicico.training.repository.ClassSessionDAO;
 import com.nicico.training.repository.HolidayDAO;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.time.DateUtils;
-import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,6 +36,7 @@ public class ClassSessionService implements IClassSession {
     private final AttendanceDAO attendanceDAO;
     private final ModelMapper modelMapper;
     private final HolidayDAO holidayDAO;
+    private final MessageSource messageSource;
 
     //*********************************
 
@@ -117,116 +117,131 @@ public class ClassSessionService implements IClassSession {
 
     @Transactional
     @Override
-    public ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request) {
+    public ClassSessionDTO.Info create(ClassSessionDTO.ManualSession request, HttpServletResponse response) {
 
-        if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
-                request.getClassId(),
-                request.getSessionDate(),
-                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)
-        )) {
+        ClassSessionDTO.Info info = null;
 
-            //********generated sessions list*********
-            ClassSessionDTO.GeneratedSessions session;
-
-            //********date utils*********
-            Calendar calendar = Calendar.getInstance();
-            Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
-            calendar.setTime(gregorianSessionDate);
-
-
-            session = new ClassSessionDTO.GeneratedSessions(
+        try {
+            if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(
                     request.getClassId(),
-                    daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
-                    getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
                     request.getSessionDate(),
                     MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
-                    request.getSessionTypeId(),
-                    request.getSessionType(),
-                    request.getInstituteId(),
-                    request.getTrainingPlaceId(),
-                    request.getTeacherId(),
-                    request.getSessionState(),
-                    request.getSessionStateFa(),
-                    request.getDescription()
-            );
+                    MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1)
+            )) {
+
+                //********generated sessions list*********
+                ClassSessionDTO.GeneratedSessions session;
+
+                //********date utils*********
+                Calendar calendar = Calendar.getInstance();
+                Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
+                calendar.setTime(gregorianSessionDate);
 
 
-            ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+                session = new ClassSessionDTO.GeneratedSessions(
+                        request.getClassId(),
+                        daysName()[calendar.get(Calendar.DAY_OF_WEEK)],
+                        getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]),
+                        request.getSessionDate(),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        request.getSessionTypeId(),
+                        request.getSessionType(),
+                        request.getInstituteId(),
+                        request.getTrainingPlaceId(),
+                        request.getTeacherId(),
+                        request.getSessionState(),
+                        request.getSessionStateFa(),
+                        request.getDescription()
+                );
 
-            try {
-                return modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
-            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-                throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+
+                ClassSession generatedSession = modelMapper.map(session, ClassSession.class);
+
+                info = modelMapper.map(classSessionDAO.saveAndFlush(generatedSession), ClassSessionDTO.Info.class);
+
+            } else {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(406, messageSource.getMessage("msg.record.duplicate", null, locale));
             }
-
-        } else {
-
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
 
+        return info;
     }
 
     //*********************************
 
     @Transactional
     @Override
-    public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request) {
+    public ClassSessionDTO.Info update(Long id, ClassSessionDTO.Update request, HttpServletResponse response) {
 
-        if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
-                request.getClassId(),
-                request.getSessionDate(),
-                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
-                MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
-                id
-        )) {
+        ClassSessionDTO.Info updateResult = null;
 
-            //********date utils*********
-            Calendar calendar = Calendar.getInstance();
-            Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
-            calendar.setTime(gregorianSessionDate);
+        try {
 
-            request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
-            request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
-            request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
-            request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+            if (!attendanceDAO.existsBySessionId(id)) {
 
-            Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
-            ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-            ClassSession classSession = new ClassSession();
-            modelMapper.map(currentClassSession, classSession);
-            modelMapper.map(request, classSession);
+                if (!classSessionDAO.existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(
+                        request.getClassId(),
+                        request.getSessionDate(),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0),
+                        MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1),
+                        id
+                )) {
 
-            try {
-                return modelMapper.map(classSessionDAO.saveAndFlush(classSession), ClassSessionDTO.Info.class);
-            } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-                throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+                    //********date utils*********
+                    Calendar calendar = Calendar.getInstance();
+                    Date gregorianSessionDate = ConvertToGregorianDate(request.getSessionDate());
+                    calendar.setTime(gregorianSessionDate);
+
+                    request.setDayCode(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]);
+                    request.setDayName(getDayNameFa(daysName()[calendar.get(Calendar.DAY_OF_WEEK)]));
+                    request.setSessionStartHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(0));
+                    request.setSessionEndHour(MainHoursRange().get(Integer.parseInt(request.getSessionTime())).get(1));
+
+                    Optional<ClassSession> optionalClassSession = classSessionDAO.findById(id);
+                    ClassSession currentClassSession = optionalClassSession.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
+                    ClassSession classSession = new ClassSession();
+                    modelMapper.map(currentClassSession, classSession);
+                    modelMapper.map(request, classSession);
+
+                    updateResult = modelMapper.map(classSessionDAO.saveAndFlush(classSession), ClassSessionDTO.Info.class);
+
+                } else {
+
+                    Locale locale = LocaleContextHolder.getLocale();
+                    response.sendError(406, messageSource.getMessage("msg.record.duplicate", null, locale));
+                }
+            } else {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("attendance.meeting", null, locale));
             }
-        } else {
 
-            throw new TrainingException(TrainingException.ErrorType.OperationalUnitDuplicateRecord);
+        } catch (Exception ex) {
+            ex.printStackTrace();
         }
+
+        return updateResult;
     }
 
     //*********************************
 
     @Transactional
     @Override
-    public void delete(Long id,  HttpServletResponse response) {
+    public void delete(Long id, HttpServletResponse response) {
 
-//        try {
-//            if (!attendanceDAO.existsBySessionId(id)) {
+        try {
+            if (!attendanceDAO.existsBySessionId(id)) {
                 classSessionDAO.deleteById(id);
-//            }
-//            else {
-//                response.sendError(503, "جلسه موردنظر حضور و غیاب شده است.");
-//            }
-//        }
-//        catch (Exception ex)
-//        {
-//            ex.printStackTrace();
-//        }
+            } else {
+                Locale locale = LocaleContextHolder.getLocale();
+                response.sendError(503, messageSource.getMessage("attendance.meeting", null, locale));
+            }
+        } catch (Exception ex) {
+            ex.printStackTrace();
+        }
     }
 
     //*********************************
@@ -245,7 +260,6 @@ public class ClassSessionService implements IClassSession {
     public SearchDTO.SearchRs<ClassSessionDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(classSessionDAO, request, classSession -> modelMapper.map(classSession, ClassSessionDTO.Info.class));
     }
-
 
 
     @Transactional(readOnly = true)
