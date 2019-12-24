@@ -43,6 +43,7 @@
     DynamicForm_JspEmploymentHistory = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
+        titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
             {

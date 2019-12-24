@@ -60,8 +60,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.Create homeAddress;
-        private AddressDTO.Create workAddress;
+        private AddressDTO.Update homeAddress;
+        private AddressDTO.Update workAddress;
     }
 
     @Getter
