@@ -542,7 +542,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: term_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -581,6 +581,28 @@
             }
         }
     };
+
+
+
+    function term_delete_result(resp) {
+
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            ListGrid_Term.invalidateCache();
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.fk-class-term-cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.record.fk-class-term-cannot.deleted"/>");
+            }
+        }
+    }
+
 
     function print_TermListGrid(type) {
 
