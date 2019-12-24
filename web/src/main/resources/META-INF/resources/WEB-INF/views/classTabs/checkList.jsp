@@ -1059,7 +1059,7 @@
             var OK = isc.Dialog.create({
                 message: "<spring:message code="msg.operation.error"/>",
                 icon: "[SKIN]say.png",
-                title: "<spring:message code="global.form.command.done"/>"
+                title: "<spring:message code="message"/>"
             });
             // setTimeout(function () {
             //     OK.close();
