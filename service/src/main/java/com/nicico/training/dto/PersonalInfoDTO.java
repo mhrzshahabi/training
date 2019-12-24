@@ -99,7 +99,7 @@ public class PersonalInfoDTO {
     public static class Update extends PersonalInfoDTO {
         private Long id;
         private ContactInfoDTO.Create contactInfo;
-            private AccountInfoDTO.Create accountInfo;
+        private AccountInfoDTO.Create accountInfo;
     }
 
     @Getter

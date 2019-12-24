@@ -65,15 +65,13 @@
         fields:
             [
                 {name: "id", primaryKey: true},
-                {name: "object"},
                 {name: "objectId"},
                 {name: "objectType"},
                 {name: "objectTypeFa"},
-                {name: "skill.code"},
-                {name: "skill.titleFa"},
+                {name: "skill.code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
+                {name: "skill.titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
                 {name: "skill.id"},
-                {name: "eneedAssessmentPriority.id"},
-                {name: "eneedAssessmentPriority.titleFa"}
+                {name: "eneedAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals"}
             ]
     });
 
@@ -81,7 +79,7 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
+                {name: "titleFa", title: "<spring:message code="title"/>"}
             ],
         fetchDataURL: enumUrl + "eNeedAssessmentPriority/spec-list"
     });
@@ -121,20 +119,14 @@
             [
                 {
                     name: "skill.code",
-                    title: "<spring:message code="code"/>",
-                    filterOperator: "iContains",
-                    width: "15%",
                     autoFitWidth: true
                 },
                 {
-                    name: "skill.titleFa",
-                    title: "<spring:message code="title"/>",
-                    filterOperator: "iContains"
+                    name: "skill.titleFa"
                 },
                 {
-                    name: "eneedAssessmentPriority.id",
+                    name: "eneedAssessmentPriorityId",
                     type: "IntegerItem",
-                    title: "<spring:message code='priority'/>",
                     filterOnKeypress: true,
                     editorType: "SelectItem",
                     displayField: "titleFa",
@@ -144,15 +136,11 @@
                     pickListProperties: {
                         showFilterEditor: false
                     },
-                    filterOperator: "iContains",
                     pickListFields: [
-                        {name: "titleFa", width: "30%", filterOperator: "iContains"}
+                        {name: "titleFa", width: "30%"}
                     ],
                     change: function (form, item, value) {
                         ListGrid_For_This_Object_Skills_Edit_NASB(this.grid.getRecord(this.rowNum), value);
-                    },
-                    sortNormalizer: function (record) {
-                        return record.eneedAssessmentPriority.titleFa;
                     }
                 }
             ],
@@ -172,7 +160,7 @@
         canEditCell: function (rowNum, colNum) {
             let record = this.getRecord(rowNum),
                 fieldName = this.getFieldName(colNum);
-            return fieldName === "eneedAssessmentPriority.id" &&
+            return fieldName === "eneedAssessmentPriorityId" &&
                 record.objectType === objectType_NASB;
         },
         canSelectRecord: function (record) {
@@ -185,7 +173,6 @@
         numCols: 1,
         fields: [
             {
-
                 name: "Left_LG_Title_NASB",
                 type: "staticText",
                 title: "<spring:message code='need.assessment'/>",
@@ -404,16 +391,10 @@
                 selectedListGrid = ListGrid_All_PostGroups_NASB;
                 break;
         }
-        // let record = selectedListGrid.getSelectedRecord();
-        // let gridState = null;
-        // if (record != null && record.id != null)
-        //     gridState = "[{id:" + record.id + "}]";
         selectedListGrid.invalidateCache();
-        // setTimeout(function () {
-        //     if (gridState != null) {
-        //         selectedListGrid.setSelectedState(gridState);
-        //     }
-        // }, 1500);
+        selectedListGrid.filterByEditor();
+        ListGrid_All_Skills_NASB.invalidateCache();
+        ListGrid_All_Skills_NASB.filterByEditor();
         Set_For_This_Object_Data();
     }
 

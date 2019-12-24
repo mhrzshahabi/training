@@ -12,7 +12,7 @@ public class TrainingException extends NICICOException {
 
     @Getter
     @Setter(AccessLevel.PRIVATE)
-    private String message;
+    private String msg;
 
     public TrainingException(IErrorCode errorCode) {
         super(errorCode);
@@ -28,10 +28,10 @@ public class TrainingException extends NICICOException {
         super(errorCode, field);
     }
 
-    public TrainingException(ErrorType errorCode, String field, String message) {
+    public TrainingException(ErrorType errorCode, String field, String msg) {
 
         super(errorCode, field);
-        setMessage(message);
+        setMsg(msg);
     }
 
     @Getter

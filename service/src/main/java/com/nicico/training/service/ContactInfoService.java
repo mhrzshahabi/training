@@ -11,6 +11,7 @@ import com.nicico.training.model.Address;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.repository.ContactInfoDAO;
+import io.netty.channel.AdaptiveRecvByteBufAllocator;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
 import org.modelmapper.ModelMapper;
@@ -61,17 +62,6 @@ public class ContactInfoService implements IContactInfoService {
     @Override
     public ContactInfoDTO.Info create(ContactInfoDTO.Create request) {
 
-        if (request.getHomeAddress() != null) {
-            AddressDTO.Info homeAddressDTO = addressService.createOrUpdate(request.getHomeAddress());
-            request.setHomeAddressId(homeAddressDTO.getId());
-            request.setHomeAddress(null);
-        }
-        if (request.getWorkAddress() != null) {
-            AddressDTO.Info workAddressDTO = addressService.createOrUpdate(request.getWorkAddress());
-            request.setWorkAddressId(workAddressDTO.getId());
-            request.setWorkAddress(null);
-        }
-
         final ContactInfo contactInfo = modelMapper.map(request, ContactInfo.class);
         try {
             return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
@@ -87,33 +77,9 @@ public class ContactInfoService implements IContactInfoService {
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
         ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-        if (request.getHomeAddress() != null) {
-            request.getHomeAddress().setId(contactInfo.getHomeAddressId());
-            AddressDTO.Info homeAddressDTO = addressService.createOrUpdate(request.getHomeAddress());
-            request.setHomeAddressId(homeAddressDTO.getId());
-            request.setHomeAddress(null);
-        } else if (contactInfo.getHomeAddress() != null) {
-            request.setHomeAddressId(contactInfo.getHomeAddressId());
-            request.setHomeAddress(modelMapper.map(contactInfo.getHomeAddress(), AddressDTO.Create.class));
-        }
-        if (request.getWorkAddress() != null) {
-            request.getWorkAddress().setId(contactInfo.getWorkAddressId());
-            AddressDTO.Info workAddressDTO = addressService.createOrUpdate(request.getWorkAddress());
-            request.setWorkAddressId(workAddressDTO.getId());
-            request.setWorkAddress(null);
-        } else if (contactInfo.getWorkAddress() != null) {
-            request.setWorkAddressId(contactInfo.getWorkAddressId());
-            request.setWorkAddress(modelMapper.map(contactInfo.getWorkAddress(), AddressDTO.Create.class));
-        }
-
         ContactInfo cUpdating = new ContactInfo();
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);
-
-        if (request.getHomeAddress() == null)
-            cUpdating.setHomeAddress(null);
-        if (request.getWorkAddress() == null)
-            cUpdating.setWorkAddress(null);
 
         try {
             return modelMapper.map(contactInfoDAO.saveAndFlush(cUpdating), ContactInfoDTO.Info.class);
@@ -148,16 +114,19 @@ public class ContactInfoService implements IContactInfoService {
     // ------------------------------
 
     @Override
-    public void modify(ContactInfo contactInfo) {
-        if (contactInfo.getHomeAddress().getId() != null) {
-            Address address = addressService.getAddress(contactInfo.getHomeAddress().getId());
-            modelMapper.map(contactInfo.getHomeAddress(), address);
-            contactInfo.setHomeAddress(null);
-            contactInfo.setHomeAddress(address);
-            contactInfo.setHomeAddressId(address.getId());
-//            contactInfoDAO.saveAndFlush(contactInfo);
+    public ContactInfoDTO.Create modify(ContactInfoDTO.Create contactInfo) {
+        ContactInfo contactInfo_new = null;
+        if (contactInfo.getHomeAddress().getId() != null && contactInfo.getHomeAddress().getPostalCode() != null) {
+            contactInfo_new = modelMapper.map(contactInfo,ContactInfo.class);
+            AddressDTO.Info addressDTO = addressService.getOneByPostalCode(contactInfo.getHomeAddress().getPostalCode());
+            if(addressDTO != null) {
+                Address address_old = modelMapper.map(addressDTO, Address.class);
+                contactInfo_new.getHomeAddress().setId(address_old.getId());
+                contactInfo_new.setHomeAddressId(address_old.getId());
+                modelMapper.map(contactInfo_new.getHomeAddress(), address_old);
+            }
         }
+        return  modelMapper.map(contactInfo_new,ContactInfoDTO.Create.class);
     }
-
 
 }

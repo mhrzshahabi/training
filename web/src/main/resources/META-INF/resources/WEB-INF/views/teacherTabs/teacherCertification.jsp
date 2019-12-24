@@ -45,6 +45,7 @@
     DynamicForm_JspTeacherCertification = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
+        titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
             {
@@ -413,8 +414,7 @@
 
     function ListGrid_TeacherCertification_refresh() {
         ListGrid_JspTeacherCertification.invalidateCache();
-        // ListGrid_JspTeacherCertification.filterByEditor();
-        // ListGrid_JspTeacherCertification.refreshFields();
+        ListGrid_JspTeacherCertification.filterByEditor();
     }
 
     function ListGrid_TeacherCertification_Add() {

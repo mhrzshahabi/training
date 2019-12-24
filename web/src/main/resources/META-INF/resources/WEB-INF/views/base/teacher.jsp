@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    var dummy;
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
@@ -262,7 +261,7 @@
         viewURL: "",
         overflow: "scroll",
         height: "133px",
-        width: "100px",
+        width: "130px",
         border: "1px solid red",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
@@ -273,11 +272,11 @@
         align: "right",
         canSubmit: true,
         titleWidth: 120,
+        titleAlign: "left",
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "right",
         margin: 10,
         newPadding: 5,
         canTabToIcons: false,
@@ -735,7 +734,7 @@
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "right",
+        titleAlign: "left",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -891,7 +890,7 @@
         showErrorText: false,
         valuesManager: "vm",
         numCols: 6,
-        titleAlign: "right",
+        titleAlign: "left",
         margin: 10,
         newPadding: 5,
         fields: [
@@ -963,7 +962,7 @@
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
-        titleAlign: "right",
+        titleAlign: "left",
         numCols: 6,
         margin: 10,
         newPadding: 5,

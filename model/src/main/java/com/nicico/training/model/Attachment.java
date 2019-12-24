@@ -29,7 +29,7 @@ public class Attachment<E> extends Auditable {
     private String fileName;
 
     @Column(name = "f_file_type_id", nullable = false)
-    private Long fileTypeId;
+    private Integer fileTypeId;
 
     @Column(name = "c_description", length = 500)
     private String description;
