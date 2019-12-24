@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
+    <SCRIPT SRC=../../../../../static/imagesOld/frameworkMessages_fa.properties></SCRIPT>
 </head>
 <script type="application/javascript">
 

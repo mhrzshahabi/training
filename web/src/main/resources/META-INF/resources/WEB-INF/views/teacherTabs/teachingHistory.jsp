@@ -18,7 +18,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "courseTitle", filterOperator: "iContains"},
-            {name: "educationLevelId"},
+            {name: "educationLevelId", filterOperator: "equals"},
             {name: "duration"},
             {name: "categories", filterOperator: "iContains"},
             {name: "subCategories", filterOperator: "iContains"},
@@ -308,14 +308,7 @@
                 editorType: "SelectItem",
                 displayField: "titleFa",
                 valueField: "id",
-                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory,
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                filterOperator: "iContains",
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
-                ]
+                optionDataSource: RestDataSource_EducationLevel_JspTeachingHistory
             },
             {
                 name: "categories",
@@ -444,8 +437,7 @@
 
     function ListGrid_TeachingHistory_refresh() {
         ListGrid_JspTeachingHistory.invalidateCache();
-        // ListGrid_JspTeachingHistory.filterByEditor();
-        // ListGrid_JspTeachingHistory.refreshFields();
+        ListGrid_JspTeachingHistory.filterByEditor();
     }
 
     function ListGrid_TeachingHistory_Add() {

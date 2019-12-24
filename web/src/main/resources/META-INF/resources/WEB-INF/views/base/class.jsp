@@ -31,7 +31,7 @@
 
     var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
         fields: [
-            {name: "id"},
+            {name: "id", primaryKey: true},
             {name: "titleFa"}],
         fetchDataURL: enumUrl + "eClassAttachmentType/spec-list"
     });

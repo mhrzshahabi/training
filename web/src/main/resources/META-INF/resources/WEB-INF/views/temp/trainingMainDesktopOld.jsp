@@ -34,7 +34,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Tahoe/load_skin.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
+    <SCRIPT SRC=../../../../../static/imagesOld/frameworkMessages_fa.properties></SCRIPT>
 
 </head>
 

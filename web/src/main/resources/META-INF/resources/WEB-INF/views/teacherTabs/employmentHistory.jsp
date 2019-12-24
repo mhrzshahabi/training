@@ -390,8 +390,7 @@
 
     function ListGrid_EmploymentHistory_refresh() {
         ListGrid_JspEmploymentHistory.invalidateCache();
-        // ListGrid_JspEmploymentHistory.filterByEditor();
-        // ListGrid_JspEmploymentHistory.refreshFields();
+        ListGrid_JspEmploymentHistory.filterByEditor();
     }
 
     function ListGrid_EmploymentHistory_Add() {
