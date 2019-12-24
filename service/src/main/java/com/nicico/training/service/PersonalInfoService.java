@@ -75,8 +75,6 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional
     @Override
     public PersonalInfoDTO.Info create(PersonalInfoDTO.Create request) {
-
-
         PersonalInfo personalInfo = modelMapper.map(request, PersonalInfo.class);
         setEnums(personalInfo, personalInfo.getMarriedId(), personalInfo.getMilitaryId(), personalInfo.getGenderId());
 
@@ -99,8 +97,6 @@ public class PersonalInfoService implements IPersonalInfoService {
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
         modelMapper.map(request, pUpdating);
-
-
         try {
             return modelMapper.map(personalInfoDAO.saveAndFlush(pUpdating), PersonalInfoDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -150,7 +146,8 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     @Override
     public PersonalInfoDTO.Info modify(PersonalInfo personalInfo) {
-        contactInfoService.modify(personalInfo.getContactInfo());
+        if(personalInfo.getContactInfoId() != null)
+            contactInfoService.modify(personalInfo.getContactInfo());
         return null;
     }
 

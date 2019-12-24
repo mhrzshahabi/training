@@ -61,17 +61,6 @@ public class ContactInfoService implements IContactInfoService {
     @Override
     public ContactInfoDTO.Info create(ContactInfoDTO.Create request) {
 
-        if (request.getHomeAddress() != null) {
-            AddressDTO.Info homeAddressDTO = addressService.createOrUpdate(request.getHomeAddress());
-            request.setHomeAddressId(homeAddressDTO.getId());
-            request.setHomeAddress(null);
-        }
-        if (request.getWorkAddress() != null) {
-            AddressDTO.Info workAddressDTO = addressService.createOrUpdate(request.getWorkAddress());
-            request.setWorkAddressId(workAddressDTO.getId());
-            request.setWorkAddress(null);
-        }
-
         final ContactInfo contactInfo = modelMapper.map(request, ContactInfo.class);
         try {
             return modelMapper.map(contactInfoDAO.saveAndFlush(contactInfo), ContactInfoDTO.Info.class);
@@ -87,33 +76,9 @@ public class ContactInfoService implements IContactInfoService {
         final Optional<ContactInfo> cById = contactInfoDAO.findById(id);
         ContactInfo contactInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-        if (request.getHomeAddress() != null) {
-            request.getHomeAddress().setId(contactInfo.getHomeAddressId());
-            AddressDTO.Info homeAddressDTO = addressService.createOrUpdate(request.getHomeAddress());
-            request.setHomeAddressId(homeAddressDTO.getId());
-            request.setHomeAddress(null);
-        } else if (contactInfo.getHomeAddress() != null) {
-            request.setHomeAddressId(contactInfo.getHomeAddressId());
-            request.setHomeAddress(modelMapper.map(contactInfo.getHomeAddress(), AddressDTO.Create.class));
-        }
-        if (request.getWorkAddress() != null) {
-            request.getWorkAddress().setId(contactInfo.getWorkAddressId());
-            AddressDTO.Info workAddressDTO = addressService.createOrUpdate(request.getWorkAddress());
-            request.setWorkAddressId(workAddressDTO.getId());
-            request.setWorkAddress(null);
-        } else if (contactInfo.getWorkAddress() != null) {
-            request.setWorkAddressId(contactInfo.getWorkAddressId());
-            request.setWorkAddress(modelMapper.map(contactInfo.getWorkAddress(), AddressDTO.Create.class));
-        }
-
         ContactInfo cUpdating = new ContactInfo();
         modelMapper.map(contactInfo, cUpdating);
         modelMapper.map(request, cUpdating);
-
-        if (request.getHomeAddress() == null)
-            cUpdating.setHomeAddress(null);
-        if (request.getWorkAddress() == null)
-            cUpdating.setWorkAddress(null);
 
         try {
             return modelMapper.map(contactInfoDAO.saveAndFlush(cUpdating), ContactInfoDTO.Info.class);
@@ -155,9 +120,7 @@ public class ContactInfoService implements IContactInfoService {
             contactInfo.setHomeAddress(null);
             contactInfo.setHomeAddress(address);
             contactInfo.setHomeAddressId(address.getId());
-//            contactInfoDAO.saveAndFlush(contactInfo);
         }
     }
-
 
 }
