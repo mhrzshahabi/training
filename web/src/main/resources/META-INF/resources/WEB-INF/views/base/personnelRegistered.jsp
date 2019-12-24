@@ -1541,6 +1541,7 @@
 
     function ListGrid_personnelReg_refresh() {
         ListGrid_PersonnelReg_JspPersonnelReg.invalidateCache();
+
         // ListGrid_PersonnelReg_JspPersonnelReg.filterByEditor();
     };
 

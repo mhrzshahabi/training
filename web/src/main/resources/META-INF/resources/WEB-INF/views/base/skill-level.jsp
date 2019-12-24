@@ -305,6 +305,8 @@
                 }
             });
         } else {
+            DynamicForm_skill_level.clearFieldErrors("titleFa", true);
+            DynamicForm_skill_level.clearValues();
             skillLevelMethod = "PUT";
             skillLevelActionUrl = skillLevelHomeUrl + "/" + record.id;
             DynamicForm_skill_level.editRecord(record);
