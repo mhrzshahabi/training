@@ -3,7 +3,6 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
 // <script>
-    var dummy;
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
@@ -262,7 +261,7 @@
         viewURL: "",
         overflow: "scroll",
         height: "133px",
-        width: "100px",
+        width: "130px",
         border: "1px solid red",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
