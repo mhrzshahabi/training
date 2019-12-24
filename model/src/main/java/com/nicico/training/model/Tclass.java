@@ -88,13 +88,17 @@ public class Tclass extends Auditable {
             joinColumns = {@JoinColumn(name = "f_class_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_training_place_id", referencedColumnName = "id")})
     private Set<TrainingPlace> trainingPlaceSet;
+
     @Column(name = "n_group", nullable = false)
     private Long group;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_term", insertable = false, updatable = false)
     private Term term;
+
     @Column(name = "f_term")
     private Long termId;
+
     @Column(name = "c_teaching_brand")
     private String teachingBrand;//نحوه آموزش
     @Column(name = "c_start_date", nullable = false)
@@ -127,11 +131,15 @@ public class Tclass extends Auditable {
     private Boolean fifth;
     @Column(name = "c_topology")
     private String topology;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_class_student",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
+
+    @OneToMany(mappedBy = "tclass" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    private Set<ClassSession> classSessions;
 
     @Transient
     public List<Long> getTrainingPlaceIds() {
