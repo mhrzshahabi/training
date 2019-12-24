@@ -287,8 +287,8 @@ abaspour 9803
                 message: "آیا اطمینان دارید؟",
                 icon: "[SKIN]ask.png",
                 buttons: [
-                    isc.IButtonSave.create({title: "بله"}),
-                    isc.IButtonCancel.create({title: "خیر"})
+                    isc.IButtonSave.create({title: "<spring:message code="yes"/>"}),
+                    isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})
                 ],
                 buttonClick: function (button, index) {
                     console.log(index);

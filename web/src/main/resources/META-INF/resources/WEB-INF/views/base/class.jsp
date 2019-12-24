@@ -1702,7 +1702,7 @@
     function startProcess(resp) {
 
         if (resp.httpResponseCode === 200)
-            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+            isc.say("<spring:message code="course.set.on.workflow.engine"/>");
         else {
             isc.say("کد خطا : " + resp.httpResponseCode);
         }

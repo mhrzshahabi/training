@@ -17,19 +17,19 @@
         width: 150,
         data: [
             {
-                title: "نمایش فرم فرایند", icon: "pieces/512/showProcForm.png",
+                title: "<spring:message code="display.process.form"/>", icon: "pieces/512/showProcForm.png",
                 click: function () {
                     ListGrid_WorkflowProcessList_showProcessDefinitionForm();
                 }
             },
             {
-                title: "حذف رکورد", icon: "<spring:url value="remove.png"/>",
+                title: "<spring:message code="remove"/>" , icon: "<spring:url value="remove.png"/>",
                 click: function () {
                     ListGrid_ProcessDefinition_remove();
                 }
             },
             {
-                title: "آپلود فایل فرایند", icon: "pieces/16/icon_add_files.png",
+                title: "<spring:message code="upload.process.file"/>" , icon: "pieces/16/icon_add_files.png",
                 click: function () {
                     ListGrid_WorkflowProcessList_uploadProcessDefinition();
                 }
@@ -43,7 +43,7 @@
         autoDraw: false,
 // border: "1px solid blue",
         viewURL: "",
-        loadingMessage: "فرم فرایندی برای نمایش وجود ندارد"
+        loadingMessage: "<spring:message code="there.is.no.process.form.to.display"/>"
     });
 
     function ListGrid_WorkflowProcessList_uploadProcessDefinition() {
@@ -55,14 +55,14 @@
         if (fileToLoad !== undefined) {
             TrnXmlHttpRequest(formData, workflowUrl + "/uploadProcessDefinition", "POST", checkUploadResult);
         } else {
-            isc.say("فایلی برای آپلود انتخاب نشده است.");
+            isc.say("<spring:message code="no.file.selected.for.upload"/>");
         }
     }
 
     function checkUploadResult(resp) {
 
         if (resp.status == 200)
-            isc.say("فایل فرایند با موفقیت روی موتور گردش کار قرار گرفت");
+            isc.say("<spring:message code="course.set.on.workflow.engine"/>" );
         else {
             isc.say("کد خطا : " + resp.status);
         }
@@ -85,7 +85,7 @@
                 type: "file",
                 accept: ".bpmn",
                 style: "position: relative; filter:alpha(opacity: 0); opacity: 0;",
-                title: "<span style='color:#000000;'><image src='${icon_add_files}' />انتخاب فایل</span>"
+                title: "<span style='color:#000000;'><image src='${icon_add_files}   ' />انتخاب فایل</span>"
             }
         ]
     });
@@ -98,10 +98,10 @@
         var record = ListGrid_ProcessDefinitionList.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است !",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                title: "<spring:message code="global.message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="global.ok"/>"})],
                 buttonClick: function () {
                     this.hide();
                 }
@@ -109,10 +109,10 @@
         } else {
 
             isc.Dialog.create({
-                message: "آیا فرایند انتخاب شده برای شروع آماده شود؟",
+                message: "<spring:message code="have.the.selected.process.ready.to.begin"/>",
                 icon: "[SKIN]ask.png",
-                title: "تائید",
-                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
+                title: "<spring:message code="global.ok"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})],
                 buttonClick: function (button, index) {
                     this.hide();
                     if (index == 0) {
@@ -133,10 +133,10 @@
 
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است !",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                title: "<spring:message code="global.message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="global.ok"/>"})],
                 buttonClick: function (button, index) {
                     this.hide();
                 }
@@ -146,7 +146,7 @@
                 message: "آیا رکورد انتخاب شده حذف گردد؟",
                 icon: "[SKIN]ask.png",
                 title: "حذف تائید",
-                buttons: [isc.IButtonSave.create({title: "بله"}), isc.IButtonCancel.create({title: "خیر"})],
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})],
                 buttonClick: function (button, index) {
                     this.hide();
                     if (index == 0) {
@@ -182,10 +182,10 @@
 
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است !",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                title: "<spring:message code="global.message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="global.ok"/>"})],
                 buttonClick: function (button, index) {
                     this.hide();
                 }
@@ -201,7 +201,7 @@
 
     var ToolStripButton_showProcessDefinitionForm = isc.ToolStripButton.create({
         icon: "task.png",
-        title: " نمایش فرم فرایند",
+        title: "<spring:message code="display.process.form"/>",
         click: function () {
             ListGrid_WorkflowProcessList_showProcessDefinitionForm();
         }
@@ -209,7 +209,7 @@
 
     var ToolStripButton_showProcessDefinitionImage = isc.ToolStripButton.create({
         icon: "contact.png",
-        title: "تصویر فرایند",
+        title: "<spring:message code="process.image"/>",
         click: function () {
             ListGrid_WorkflowProcessList_showProcessDefinitionImage();
         }
@@ -258,9 +258,9 @@
             {name: "name", title: "نام فرایند"},
             {name: "resourceName", title: "نام فایل فرایند"},
             {name: "deploymentId", title: "ای دی فرایند"},
-            {name: "key", title: "کلید"},
-            {name: "description", title: "توصیف"},
-            {name: "version", title: "نسخه"},
+            {name: "key", title: "<spring:message code="key"/>"},
+            {name: "description", title: "<spring:message code="description"/>"},
+            {name: "version", title: "<spring:message code="version"/>"},
             {name: "id", title: "id", type: "text"}
         ],
         fetchDataURL: workflowUrl + "/processDefinition/list"
@@ -280,9 +280,9 @@
             {name: "name", title: "نام", width: "30%"},
             {name: "resourceName", title: "نام فایل فرایند", width: "30%"},
             {name: "deploymentId", title: "ای دی فرایند", width: "30%"},
-            {name: "key", title: "کلید", width: "30%"},
-            {name: "description", title: "توصیف", width: "30%"},
-            {name: "version", title: "نسخه", width: "10%"},
+            {name: "key", title: "<spring:message code="key"/>", width: "30%"},
+            {name: "description", title: "<spring:message code="description"/>", width: "30%"},
+            {name: "version", title: "<spring:message code="version"/>", width: "10%"},
             {name: "id", title: "id", type: "text", width: "30%"}
 
         ],
@@ -291,14 +291,14 @@
         autoFetchData: true,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن",
+        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
+        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
+        configureSortText: "<spring:message code="configureSortText"/>",
+        autoFitAllText: "<spring:message code="autoFitAllText"/>",
+        autoFitFieldText: "<spring:message code="autoFitFieldText"/>",
+        filterUsingText: "<spring:message code="filterUsingText"/>",
+        groupByText: "<spring:message code="groupByText"/>",
+        freezeFieldText: "<spring:message code="freezeFieldText"/>",
         startsWithTitle: "tt"
     });
 
