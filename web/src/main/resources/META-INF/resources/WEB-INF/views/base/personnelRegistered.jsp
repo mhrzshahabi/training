@@ -2,9 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-// script
-
-
+// <script>
 
     var personnelRegMethod = "POST";
     var personnelRegWait;
@@ -16,7 +14,6 @@
     var mailCheckPerReg = true;
     var cellPhoneCheckPerReg = true;
     var duplicateCodePerReg = false;
-var dummy;
 
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -718,14 +715,15 @@ var dummy;
                 changed: function () {
                     DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
                     var dateCheck;
-                    dateCheck = checkBirthDate(DynamicForm_PersonnelReg_BaseInfo.getValue("employmentDate"));
+                    dateCheck = checkBirthDate(DynamicForm_PersonnelReg_EmployEdu.getValue("employmentDate"));
                     persianRegEmpDateCheck = dateCheck;
                     if (dateCheck === false)
                         DynamicForm_PersonnelReg_EmployEdu.addFieldErrors("employmentDate", "<spring:message
                                                                             code='msg.correct.date'/>", true);
                     else if (dateCheck === true)
                         DynamicForm_PersonnelReg_EmployEdu.clearFieldErrors("employmentDate", true);
-                }},
+                }
+                },
 
             {name: "employmentStatus", title: "<spring:message code='employment.status'/>" , valueMap:
                     {
@@ -1097,27 +1095,46 @@ var dummy;
             {
                 name: "phone",
                 title: "<spring:message code='telephone'/>",
-                keyPressFilter: "[0-9]",
-                length: "11"
+                keyPressFilter: "[0-9|-]",
+                validators: [TrValidators.PhoneValidate],
+                blur: function () {
+                    var phoneCheck;
+                    phoneCheck = checkPhonePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("phone"));
+                    if (phoneCheck === false)
+                        DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("phone", "<spring:message code='msg.invalid.phone.number'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("phone", true);
+                },
+                length: "12"
+
+
             },
             {
                 name: "fax",
                 title: "<spring:message code='telefax'/>",
                 keyPressFilter: "[0-9]",
-                length: "11"
+                validators: [TrValidators.PhoneValidate],
+                blur: function () {
+                    var phoneCheck;
+                    phoneCheck = checkPhonePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("fax"));
+                    if (phoneCheck === false)
+                        DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("fax", "<spring:message code='msg.invalid.phone.number'/>", true);
+                    if (mobileCheck === true)
+                        DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("fax", true);
+                },
+                length: "12"
+
             },
             {
                 name: "mobile",
                 title: "<spring:message code='cellPhone'/>",
-                keyPressFilter: "[0-9]",
+                keyPressFilter: "[0-9|-|+]",
                 length: "11",
-                hint: "*********09",
-                showHintInField: true,
-                errorMessage: "<spring:message code='msg.mobile.validation'/>"
-                , changed: function () {
+                // validators: [TrValidators.MobileValidate],
+                changed: function () {
                     DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
                     var mobileCheck;
-                    mobileCheck = checkMobile(DynamicForm_PersonnelReg_ContactInfo.getValue("mobile"));
+                    mobileCheck = checkMobilePerReg(DynamicForm_PersonnelReg_ContactInfo.getValue("mobile"));
                     cellPhoneCheckPerReg = mobileCheck;
                     if (mobileCheck === false)
                         DynamicForm_PersonnelReg_ContactInfo.addFieldErrors("mobile", "<spring:message
@@ -1126,11 +1143,14 @@ var dummy;
                         DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("mobile", true);
                 }
             },
+
             {
                 name: "email",
                 title: "<spring:message code='email'/>",
                 showHintInField: true,
-                length: "30"
+                length: "30",
+                keyPressFilter: "[a-z|A-Z|0-9|.|@|-|_]",
+                validators: [TrValidators.EmailValidate]
                 , changed: function () {
                     DynamicForm_PersonnelReg_ContactInfo.clearFieldErrors("email", true);
                     var emailCheck;
@@ -1646,10 +1666,17 @@ var dummy;
     };
 
 
+    function checkMobilePerReg(mobile) {
+        return mobile[0] === "0" && mobile[1] === "9" && mobile.length === 11;
+    };
+
+    function checkPhonePerReg(phone) {
+        return (phone[0] === "0" && phone.length === 11) || (phone[0] !== "0" && phone.length === 8);
+    };
+
     function checkPersonalRegNationalCode(nationalCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personnelRegByNationalCodeUrl + "getOneByNationalCode/" + nationalCode, "GET", null, "callback: personalReg_findOne_result(rpcResponse)"));
     };
-
 
         function personalReg_findOne_result(rpcResponse) {
             // dummy = rpcResponse;
@@ -1666,3 +1693,6 @@ var dummy;
                     }, 3000);
             }
         };
+
+
+// </script>
