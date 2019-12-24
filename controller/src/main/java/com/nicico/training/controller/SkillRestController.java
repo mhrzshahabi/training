@@ -84,7 +84,6 @@ public class SkillRestController {
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
     }
