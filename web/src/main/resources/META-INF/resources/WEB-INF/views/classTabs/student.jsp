@@ -3,6 +3,8 @@
 
 // <script>
 
+    var studentRemoveWait;
+
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
         data: [
@@ -27,11 +29,7 @@
     // ------------------------------------------- ToolStrip -------------------------------------------
     StudentTS_student = isc.ToolStrip.create({
         members: [
-            isc.ToolStripButtonRefresh.create({
-                click: function () {
-                    refreshStudentsLG_student();
-                }
-            }),
+
             isc.ToolStripButtonAdd.create({
                 click: function () {
                     addStudent_student();
@@ -44,6 +42,12 @@
             }),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "StudentsCount_student"}),
+
+            isc.ToolStripButtonRefresh.create({
+                click: function () {
+                    refreshStudentsLG_student();
+                }
+            }),
         ]
     });
 
@@ -147,8 +151,8 @@
                 ],
                 changed: function (form, item, value) {
                     ListGrid_Cell_CompanyName_Update(this.grid.getRecord(this.rowNum), value);
-                    this.grid.startEditing(this.rowNum,this.colNum+2);
-                    StudentsLG_student.refreshFields();
+                    // this.grid.startEditing(this.rowNum,this.colNum+2);
+                    // StudentsLG_student.refreshFields();
 
                 },
             },
@@ -174,11 +178,6 @@
             }
         }
     });
-
-    function ListGrid_Cell_CompanyName_Update(record, newValue) {
-        record.companyName = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Result_NASB(rpcResponse)"));
-    }
 
     SelectedPersonnelsLG_student = isc.TrLG.create({
         ID: "SelectedPersonnelsLG_student",
@@ -361,6 +360,10 @@
                         return (item.nationalCode === currentVal.nationalCode);
                     });
                 }
+
+
+                SelectedPersonnelsLG_student.invalidateCache();
+
             }, []));
 
             // var record = PersonnelsRegLG_student.getSelectedRecord();
@@ -445,7 +448,11 @@
                         SelectedPersonnelsLG_student,
                         isc.TrHLayoutButtons.create({
                             members: [
-                                isc.TrSaveBtn.create({
+                                isc.IButton.create({
+                                    top: 260,
+                                    title: "<spring:message code='save'/>",
+                                    align: "center",
+                                    icon: "[SKIN]/actions/save.png",
                                     click: function () {
                                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
                                         var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
@@ -456,8 +463,14 @@
 
                                         SelectedPersonnelsLG_student.data.clearAll();
                                     }
-                                }), isc.TrCancelBtn.create({
+                                }), isc.IButton.create({
+                                    top: 260,
+                                    title: "<spring:message code='cancel'/>",
+                                    align: "center",
+                                    icon: "[SKIN]/actions/cancel.png",
                                     click: function () {
+
+                                        SelectedPersonnelsLG_student.invalidateCache();
                                         ClassStudentWin_student.close();
                                     }
                                 }),
@@ -479,7 +492,9 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshStudentsLG_student() {
-        StudentsLG_student.filterByEditor();
+        // StudentsLG_student.filterByEditor();
+        StudentsLG_student.invalidateCache();
+
     }
 
     function addStudent_student() {
@@ -525,19 +540,80 @@
         if (studentRecord == null || studentRecord.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + studentRecord.id + "/" + classId, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
+            var Dialog_Delete = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.ask'/>",
+                icon: "[SKIN]ask.png",
+                title: "<spring:message code='msg.remove.title'/>",
+                buttons: [isc.Button.create({title: "<spring:message code='yes'/>"}), isc.Button.create({
+                    title: "<spring:message code='no'/>"
+                })],
+                buttonClick: function (button, index) {
+                    this.close();
+
+                    if (index == 0) {
+                        studentRemoveWait = isc.Dialog.create({
+                            message: "<spring:message code='msg.waiting'/>",
+                            icon: "[SKIN]say.png",
+                            title: "<spring:message code='message'/>"
+                        });
+                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + studentRecord.id + "/" + classId, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
+                    }
+                }
+            });
         }
-    }
+    };
 
     function class_remove_student_result(resp) {
-        var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
-            "<spring:message code="msg.command.done"/>");
-        setTimeout(function () {
-            OK.close();
-        }, 3000);
-        StudentsLG_student.invalidateCache();
-        StudentsLG_student.fetchData({"classID": classId});
-    }
+        studentRemoveWait.close();
+        if (resp.httpResponseCode == 200) {
+            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+            StudentsLG_student.invalidateCache();
+            StudentsLG_student.fetchData({"classID": classId});
+        }
+        else if (resp.data == false) {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.student.remove.error'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+        else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.record.remove.failed'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    };
+
+    function ListGrid_Cell_CompanyName_Update(record, newValue) {
+        record.companyName = newValue
+        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: class_student_updateCompanyName_result(rpcResponse)"));
+    };
+
+    function class_student_updateCompanyName_result(resp) {
+        var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+        if (resp.httpResponseCode == 200) {
+            StudentsLG_student.invalidateCache();
+            StudentsLG_student.fetchData({"classID": classId});
+        }
+        else {
+            var ERROR = isc.Dialog.create({
+                message: "<spring:message code='msg.operation.error'/>",
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+    };
 
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -552,13 +628,13 @@
     function checkStudentDuplicateNationalCode() {
         var record = PersonnelsRegLG_student.getSelectedRecord().getValue("nationalCode");
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkStudentInClass/" + nationalCode + "/" + classId, "GET",
-                null, "callback: student_national_code_findOne_result(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkStudentInClass/" + nationalCode + "/" + classId, "GET",
+            null, "callback: student_national_code_findOne_result(rpcResponse)"));
     };
 
 
     function student_national_code_findOne_result(resp) {
-        if (resp == null ||  resp == undefined || resp.data == "") {
+        if (resp == null || resp == undefined || resp.data == "") {
             duplicateCodePerReg = true;
             var ERROR = isc.Dialog.create({
                 message: ("<spring:message code='msg.national.code.duplicate'/>"),

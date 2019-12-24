@@ -43,6 +43,7 @@
     DynamicForm_JspEmploymentHistory = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
+        titleAlign: "left",
         fields: [
             {name: "id", hidden: true},
             {
@@ -389,8 +390,7 @@
 
     function ListGrid_EmploymentHistory_refresh() {
         ListGrid_JspEmploymentHistory.invalidateCache();
-        // ListGrid_JspEmploymentHistory.filterByEditor();
-        // ListGrid_JspEmploymentHistory.refreshFields();
+        ListGrid_JspEmploymentHistory.filterByEditor();
     }
 
     function ListGrid_EmploymentHistory_Add() {

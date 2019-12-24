@@ -25,7 +25,7 @@ public interface IPersonalInfoService {
 
     PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request);
 
-    PersonalInfoDTO.Info modify(PersonalInfo personalInfo);
+    PersonalInfoDTO.Update modify(PersonalInfoDTO.Update personalInfo);
 
     PersonalInfo getPersonalInfo(Long id);
 }

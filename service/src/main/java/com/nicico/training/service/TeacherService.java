@@ -9,6 +9,7 @@ import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Category;
@@ -38,6 +39,7 @@ public class TeacherService implements ITeacherService {
     private final CategoryDAO categoryDAO;
 
     private final IPersonalInfoService personalInfoService;
+    private final IContactInfoService contactInfoService;
     private final IAttachmentService attachmentService;
 
     @Value("${nicico.dirs.upload-person-img}")
@@ -68,7 +70,6 @@ public class TeacherService implements ITeacherService {
     @Transactional
     @Override
     public TeacherDTO.Info create(TeacherDTO.Create request) {
-
         Optional<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(request.getTeacherCode());
         if (byTeacherCode.isPresent())
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
@@ -87,25 +88,18 @@ public class TeacherService implements ITeacherService {
         }
     }
 
-
     @Transactional
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
-
         final Teacher teacher = getTeacher(id);
 
         Teacher updating = new Teacher();
         modelMapper.map(teacher, updating);
+
+        PersonalInfoDTO.Update personalInfo_new = personalInfoService.modify(request.getPersonality());
+        request.setPersonality(personalInfo_new);
+
         modelMapper.map(request, updating);
-
-        PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
-
-//        if(request.getPersonality().getAccountInfo() != null && personalInfo.getAccountInfo() == null){
-
-//            personalInfoService.modify(personalInfo);
-//        modelMapper.map(request.getPersonality(), personalInfo);
-//        }
-
 
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(updating), TeacherDTO.Info.class);

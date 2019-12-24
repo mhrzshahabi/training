@@ -76,6 +76,7 @@
             {name: "titleFa"},
             {name: "startDate"},
             {name: "endDate"},
+            {name: "description"}
         ], dataFormat: "json",
         fetchDataURL: termUrl + "spec-list",
         autoFetchData: true,
@@ -88,7 +89,7 @@
         doubleClick: function () {
         },
         fields: [
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+           // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "code", title: "<spring:message code="code"/>", align: "center", filterOperator: "iContains"},
             {name: "titleFa", title: "<spring:message code="title"/>", align: "center", filterOperator: "iContains"},
             {
@@ -97,13 +98,10 @@
                 align: "center",
                 filterOperator: "iContains"
             },
+
             {name: "endDate", title: "<spring:message code="end.date"/>", align: "center", filterOperator: "iContains"},
-            {
-                name: "description",
-                title: "<spring:message code="description"/>",
-                align: "center",
-                filterOperator: "iContains"
-            },
+
+            {name: "description",title: "<spring:message code="description"/>",align: "center",filterOperator: "iContains"},
         ],
         doubleClick: function () {
             DynamicForm_Term.clearValues();
@@ -382,7 +380,7 @@
             isc.Dialog.create({
                 message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "<spring:message code="course_Warning"/>",
+                title: "<spring:message code="message"/>",
                 buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                 buttonClick: function (button, index) {
                     this.close();
@@ -424,7 +422,7 @@
                 var OK = isc.Dialog.create({
                     message: getFormulaMessage(resp.data, 2, "red", "I") + "<spring:message code="msg.conflict.term"/>",
                     icon: "[SKIN]say.png",
-                    title: "<spring:message code="global.form.command.done"/>",
+                    title: "<spring:message code="warning"/>",
                 });
                 setTimeout(function () {
                     OK.close();
@@ -542,7 +540,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index == 0) {
-                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: show_TermActionResult(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(termUrl + record.id, "DELETE", null, "callback: term_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -581,6 +579,28 @@
             }
         }
     };
+
+
+
+    function term_delete_result(resp) {
+
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            ListGrid_Term.invalidateCache();
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.fk-class-term-cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
+        }
+    }
+
 
     function print_TermListGrid(type) {
 

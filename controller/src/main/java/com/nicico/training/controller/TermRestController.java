@@ -11,6 +11,7 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.TrainingException;
 import com.nicico.training.dto.TermDTO;
 import com.nicico.training.service.TermService;
 import lombok.RequiredArgsConstructor;
@@ -18,6 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.modelmapper.ModelMapper;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
@@ -72,9 +74,16 @@ public class TermRestController {
 
     @Loggable
     @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable Long id) {
-        termService.delete(id);
-        return new ResponseEntity<>(HttpStatus.OK);
+    public ResponseEntity delete(@PathVariable Long id) {
+        try {
+            termService.delete(id);
+            return new ResponseEntity<>(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            System.out.println("Test");
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),HttpStatus.NOT_ACCEPTABLE);
+        }
+
     }
 
     @Loggable

@@ -19,7 +19,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "fileName", title: "<spring:message code='attach.file.name'/>", filterOperator: "iContains"},
-            {name: "fileTypeId", title: "<spring:message code='attach.file.format'/>", filterOperator: "iContains"},
+            {name: "fileTypeId", title: "<spring:message code='attach.file.format'/>", filterOperator: "equals"},
             {name: "description", title: "<spring:message code='description'/>", filterOperator: "iContains"}
         ]
     });
@@ -87,6 +87,7 @@
             if (DynamicForm_JspAttachments.hasErrors()) {
                 return;
             }
+            attachmentWait = createDialog("wait");
             if (methodAttachment === "POST") {
                 let formData1 = new FormData();
                 let fileBrowserId = document.getElementById(window.file.uploadItem.getElement().id);
@@ -183,19 +184,11 @@
             },
             {
                 name: "fileTypeId",
-                type: "IntegerItem",
                 title: "<spring:message code='attach.file.format'/>",
                 filterOnKeypress: true,
                 editorType: "SelectItem",
                 displayField: "titleFa",
-                valueField: "id",
-                pickListProperties: {
-                    showFilterEditor: false
-                },
-                filterOperator: "iContains",
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}
-                ]
+                valueField: "id"
             },
             {
                 name: "description"
@@ -294,6 +287,7 @@
     function save_result_Attachments(resp) {
         let stat;
         let respText;
+        attachmentWait.close();
         if (methodAttachment === "POST") {
             stat = resp.status;
             respText = resp.responseText;
