@@ -150,8 +150,6 @@ public class PersonalInfoService implements IPersonalInfoService {
     public void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo) {
         if (request.getContactInfo() == null)
             return;
-        if(personalInfo.getContactInfo() == null)
-            personalInfo.setContactInfo(new ContactInfo());
         contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
     }
 

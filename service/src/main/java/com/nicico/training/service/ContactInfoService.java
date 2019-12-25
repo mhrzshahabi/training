@@ -3,6 +3,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
+import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.iservice.IContactInfoService;
 import com.nicico.training.model.Address;
@@ -94,7 +95,6 @@ public class ContactInfoService implements IContactInfoService {
         return SearchUtil.search(contactInfoDAO, request, contactInfo -> modelMapper.map(contactInfo, ContactInfoDTO.Info.class));
     }
 
-    // ------------------------------
 
     @Transactional
     @Override
@@ -104,7 +104,12 @@ public class ContactInfoService implements IContactInfoService {
             if (address != null) {
                 request.getHomeAddress().setId(address.getId());
                 request.setHomeAddressId(address.getId());
-                contactInfo.setHomeAddress(address);
+                if (contactInfo != null)
+                    contactInfo.setHomeAddress(address);
+                else {
+                    modelMapper.map(request.getHomeAddress(), address);
+                    request.setHomeAddress(modelMapper.map(address, AddressDTO.Create.class));
+                }
             }
         }
         if (request.getWorkAddress() != null && request.getWorkAddress().getPostalCode() != null) {
@@ -112,7 +117,12 @@ public class ContactInfoService implements IContactInfoService {
             if (address != null) {
                 request.getWorkAddress().setId(address.getId());
                 request.setWorkAddressId(address.getId());
-                contactInfo.setWorkAddress(address);
+                if (contactInfo != null)
+                    contactInfo.setWorkAddress(address);
+                else {
+                    modelMapper.map(request.getWorkAddress(), address);
+                    request.setWorkAddress(modelMapper.map(address, AddressDTO.Create.class));
+                }
             }
         }
     }
