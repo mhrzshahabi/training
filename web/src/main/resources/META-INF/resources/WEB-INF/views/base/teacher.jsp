@@ -1388,6 +1388,9 @@
     }
 
     function ListGrid_teacher_edit() {
+
+        gridState =  ListGrid_Teacher_JspTeacher.getSelectedState();
+
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
