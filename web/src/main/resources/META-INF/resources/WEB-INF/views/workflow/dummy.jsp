@@ -78,7 +78,7 @@ name: "documentId"
 , tabIndex: 1
 
 , canEdit: false
-, title: "شماره سند"
+, title: "<spring:message code="document.number"/>"
 , showHover: true
 , align: "right"
 

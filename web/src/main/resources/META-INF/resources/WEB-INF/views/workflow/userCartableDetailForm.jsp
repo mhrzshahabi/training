@@ -37,7 +37,7 @@ abaspour 9803
     // var ${taskFormVariable.dsName} =
     isc.RestDataSource.create({
         fields: [
-            <%--{name: "crDate", title: "تاریخ ایجاد",type:"text"},--%>
+            <%--{name: "crDate", title: "<spring:message code="creation.date"/>",type:"text"},--%>
             {name: "id", title: "id", type: "text"},
             <%--{name: "assignee", title: "assignee", type: "text"},--%>
             <%--{name: "recom", title: "recom", type: "text"}--%>

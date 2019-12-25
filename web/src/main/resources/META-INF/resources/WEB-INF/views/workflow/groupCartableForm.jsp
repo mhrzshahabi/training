@@ -125,10 +125,10 @@
         fields: [
 
             {name: "name", title: "<spring:message code="work.name"/>"},
-            {name: "startDate", title: "تاریخ ایجاد"},
-            {name: "startDateFa", title: "تاریخ ایجاد شمسی"},
-            {name: "cTime", title: "زمان"},
-            {name: "processVariables.documentId.textValue", title: "شماره سند"},
+            {name: "startDate", title: "<spring:message code="creation.date"/>"},
+            {name: "startDateFa", title: "<spring:message code="jalali.date"/>"},
+            {name: "cTime", title: "<spring:message code="time"/>"},
+            {name: "processVariables.documentId.textValue", title: "<spring:message code="document.number"/>"},
             {name: "description", title: "<spring:message code="description"/>"},
             {name: "taskDef", title: "<spring:message code="work.definition"/>"},
             {name: "id", title: "id", type: "text"}
@@ -160,7 +160,7 @@
         fields: [
 
             {name: "name", title: "<spring:message code="work.name"/>", width: "30%"},
-            {name: "processVariables.documentId.textValue", title: "شماره سند", width: "30%"},
+            {name: "processVariables.documentId.textValue", title: "<spring:message code="document.number"/>", width: "30%"},
             {name: "id", title: "id", type: "text", width: "30%"}
         ],
         sortField: 0,

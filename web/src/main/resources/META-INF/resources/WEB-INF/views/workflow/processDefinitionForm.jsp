@@ -143,9 +143,9 @@
             });
         } else {
             isc.Dialog.create({
-                message: "آیا رکورد انتخاب شده حذف گردد؟",
+                message: "<spring:message code="global.grid.record.remove.ask"/>",
                 icon: "[SKIN]ask.png",
-                title: "حذف تائید",
+                title: "<spring:message code="verify.delete"/>",
                 buttons: [isc.IButtonSave.create({title: "<spring:message code="yes"/>"}), isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})],
                 buttonClick: function (button, index) {
                     this.hide();
@@ -216,7 +216,7 @@
     });
 
     var ToolStripButton_uploadProcessDefinitionForm = isc.ToolStripButton.create({
-        title: "آپلود تعریف فرایند", icon: "upload.png",
+        title: "<spring:message code="upload.process.file"/>", icon: "upload.png",
         click: function () {
             ListGrid_WorkflowProcessList_uploadProcessDefinition();
         }
@@ -226,7 +226,7 @@
     var ToolStripButton_deleteProcessDefinitionForm = isc.ToolStripButton.create({
 
 
-        title: "حذف فرایند", icon: "remove.png",
+        title: "<spring:message code="remove.process"/>", icon: "remove.png",
         click: function () {
             ListGrid_ProcessDefinition_remove();
         }
@@ -255,9 +255,9 @@
     var RestDataSource_ProcessDefinitionList = isc.TrDS.create({
         fields: [
 
-            {name: "name", title: "نام فرایند"},
-            {name: "resourceName", title: "نام فایل فرایند"},
-            {name: "deploymentId", title: "ای دی فرایند"},
+            {name: "name", title: "<spring:message code="process.name"/>"},
+            {name: "resourceName", title: "<spring:message code="process.name"/>"},
+            {name: "deploymentId", title: "<spring:message code="process.id"/>"},
             {name: "key", title: "<spring:message code="key"/>"},
             {name: "description", title: "<spring:message code="description"/>"},
             {name: "version", title: "<spring:message code="version"/>"},
@@ -278,8 +278,8 @@
         fields: [
 
             {name: "name", title: "نام", width: "30%"},
-            {name: "resourceName", title: "نام فایل فرایند", width: "30%"},
-            {name: "deploymentId", title: "ای دی فرایند", width: "30%"},
+            {name: "resourceName", title: "<spring:message code="process.name"/>", width: "30%"},
+            {name: "deploymentId", title: "<spring:message code="process.id"/>", width: "30%"},
             {name: "key", title: "<spring:message code="key"/>", width: "30%"},
             {name: "description", title: "<spring:message code="description"/>", width: "30%"},
             {name: "version", title: "<spring:message code="version"/>", width: "10%"},
