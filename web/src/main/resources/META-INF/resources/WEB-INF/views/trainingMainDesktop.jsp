@@ -685,7 +685,7 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({viewURL: url,}),
+                pane: isc.ViewLoader.create({viewURL: url, handleError(rpcRequest, rpcResponse) {createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")}}),
                 canClose: true,
             });
             createTab(title, url);
@@ -819,20 +819,25 @@
     });
 
     isc.RPCManager.addClassProperties({
-        defaultTimeout: 60000,
+        defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
+            createDialog("info","<spring:message code="msg.error.connecting.to.server"/>");
         },
-        // handleError: handleErrors
     });
 
-    isc.ViewLoader.addClassProperties({
-        defaultTimeout: 60000,
-        willHandleError: true,
-        // handleError: handleErrors,
-        // handleTransportError: handleErrors
-    });
+    // isc.ViewLoader.addClassProperties({
+    //     defaultTimeout: 60000,
+    //     willHandleError: true,
+    //     handleError: function (response, request) {
+    //         alert('ViewLoader Error');
+    //         console.log(response);
+    //         // if (response.httpResponseCode == 401) {
+    //         //     logout();
+    //         // }
+    //         return false;
+    //     },
+    // });
 
     function trPrintWithCriteria(url, advancedCriteria) {
         trCriteriaForm = isc.DynamicForm.create({
