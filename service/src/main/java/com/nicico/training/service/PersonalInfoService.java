@@ -3,13 +3,10 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AccountInfoDTO;
-import com.nicico.training.dto.ContactInfoDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
 import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.PersonalInfoDAO;
 import lombok.RequiredArgsConstructor;
@@ -39,9 +36,14 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional(readOnly = true)
     @Override
     public PersonalInfoDTO.Info get(Long id) {
+        return modelMapper.map(getPersonalInfo(id), PersonalInfoDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public PersonalInfo getPersonalInfo(Long id) {
         final Optional<PersonalInfo> gById = personalInfoDAO.findById(id);
-        final PersonalInfo personalInfo = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        return modelMapper.map(personalInfo, PersonalInfoDTO.Info.class);
+        return gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional(readOnly = true)
@@ -90,11 +92,9 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional
     @Override
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
-
-        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
-        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-
+        PersonalInfo personalInfo = getPersonalInfo(id);
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
+        modify(request, personalInfo);
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
         modelMapper.map(request, pUpdating);
@@ -108,8 +108,7 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional
     @Override
     public void delete(Long id) {
-        Optional<PersonalInfo> pById = personalInfoDAO.findById(id);
-        PersonalInfo personalInfo = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        PersonalInfo personalInfo = getPersonalInfo(id);
         try {
             personalInfoDAO.deleteById(id);
             accountInfoService.delete(personalInfo.getAccountInfoId());
@@ -146,19 +145,12 @@ public class PersonalInfoService implements IPersonalInfoService {
     }
 
 
+    @Transactional
     @Override
-    public PersonalInfoDTO.Update modify(PersonalInfoDTO.Update personalInfo) {
-        final PersonalInfo personalInfo_old = getPersonalInfo(personalInfo.getId());
-        PersonalInfo updating = new PersonalInfo();
-        modelMapper.map(personalInfo_old, updating);
-        ContactInfoDTO.Create contactInfoDTO = contactInfoService.modify(personalInfo.getContactInfo());
-        personalInfo.setContactInfo(contactInfoDTO);
-        modelMapper.map(personalInfo, updating);
-        return modelMapper.map(updating,PersonalInfoDTO.Update.class);
+    public void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo) {
+        if (request.getContactInfo() == null)
+            return;
+        contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
     }
 
-    @Override
-    public PersonalInfo getPersonalInfo(Long id) {
-        return personalInfoDAO.getOne(id);
-    }
 }

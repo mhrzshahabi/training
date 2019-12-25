@@ -348,8 +348,9 @@
         ]
     });
 
-    var IButton_Skill_Skill_Save = isc.TrSaveBtn.create({
+    var IButton_Skill_Skill_Save = isc.IButtonSave.create({
         click: function () {
+
             if (skill_Method == "POST") {
                 var sub_cat_code;
                 if (DynamicForm_Skill_Skill.getItem('subCategoryId').getSelectedRecord() != null)
@@ -410,7 +411,7 @@
         alignLayout: "center",
         padding: 10,
         membersMargin: 10,
-        members: [IButton_Skill_Skill_Save, isc.TrCancelBtn.create({
+        members: [IButton_Skill_Skill_Save, isc.IButtonCancel.create({
             click: function () {
                 Window_Skill_Skill.close();
             }
@@ -578,7 +579,7 @@
                 "<spring:message code="verify.delete"/>");
             Dialog_Class_remove.addProperties({
                 buttonClick: function (button, index) {
-                    this.close();
+                      this.close();
 
                     if (index == 0) {
                         var wait = isc.Dialog.create({
@@ -808,23 +809,17 @@
             ListGrid_Skill_Skill_refresh();
         }
     });
-    var ToolStripButton_Skill_Skill_Edit = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/edit.png",
-        title: "<spring:message code="edit"/>",
+    var ToolStripButton_Skill_Skill_Edit = isc.ToolStripButtonEdit.create({
         click: function () {
             ListGrid_Skill_Skill_Edit();
         }
     });
-    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/add.png",
-        title: "<spring:message code="create"/>",
+    var ToolStripButton_Skill_Skill_Add = isc.ToolStripButtonAdd.create({
         click: function () {
             ListGrid_Skill_Skill_Add();
         }
     });
-    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButton.create({
-        icon: "[SKIN]/actions/remove.png",
-        title: "<spring:message code="remove"/>",
+    var ToolStripButton_Skill_Skill_Remove = isc.ToolStripButtonRemove.create({
         click: function () {
             ListGrid_Skill_Skill_Remove();
         }
@@ -841,10 +836,10 @@
     var ToolStrip_Actions_Skill_Skill = isc.ToolStrip.create({
         width: "100%",
         members: [
-            ToolStripButton_Skill_Skill_Add,
-            ToolStripButton_Skill_Skill_Edit,
-            ToolStripButton_Skill_Skill_Remove,
-            ToolStripButton_Skill_Skill_Print,
+             ToolStripButton_Skill_Skill_Add,
+             ToolStripButton_Skill_Skill_Edit,
+             ToolStripButton_Skill_Skill_Remove,
+             ToolStripButton_Skill_Skill_Print,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

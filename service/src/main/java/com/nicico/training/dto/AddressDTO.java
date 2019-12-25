@@ -24,6 +24,7 @@ public class AddressDTO {
     private Boolean otherCountry;
     private Long cityId;
     private Long stateId;
+    private Integer version;
 
     @Getter
     @Setter
@@ -31,7 +32,6 @@ public class AddressDTO {
     @ApiModel("AddressInfo")
     public static class Info extends AddressDTO {
         private Long id;
-        private Integer version;
         private CityDTO.Info city;
         private StateDTO.Info state;
     }

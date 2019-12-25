@@ -289,6 +289,11 @@
                                                 }
                                             });
                                         }
+                                        if(this.colNum == 4 && (value == 1 || value == 2)){
+                                            for (let i = 5; i < this.grid.getAllFields().length ; i++) {
+                                                this.grid.setEditValue(this.rowNum,i,value);
+                                            }
+                                        }
                                     },
                                     hoverHTML(record, value, rowNum, colNum, grid) {
                                         if (value == "غیبت موجه") {

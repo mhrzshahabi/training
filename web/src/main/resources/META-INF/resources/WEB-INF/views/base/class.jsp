@@ -229,9 +229,9 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
-// sortNormalizer: function (record) {
-// return record.course.titleFa;
-// }
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
             },
             {
                 name: "startDate",
@@ -1777,7 +1777,6 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
          tabSet_class_status();
         if (!(classRecord == undefined || classRecord == null)) {
-
             switch (tab.ID) {
                 case "classStudentsTab": {
                     if (typeof loadPage_student !== "undefined")
