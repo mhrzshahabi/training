@@ -74,8 +74,6 @@ public class SkillRestController {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             maxSkillCode = skillService.getMaxSkillCode(create.getCode());
-            if (maxSkillCode == null || maxSkillCode.equals("0"))
-                throw new Exception("Skill with this Code wrong");
             maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
             maxId++;
             newSkillCode = create.getCode() + String.format("%04d", maxId);
