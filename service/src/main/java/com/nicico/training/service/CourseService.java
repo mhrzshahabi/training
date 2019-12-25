@@ -159,22 +159,24 @@ public class CourseService implements ICourseService {
         final Course course = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         String s = course.getEqualCourse();
         if (s != null) {
-            String nameEQ1;
+            StringBuilder nameEQ1;
             List<String> myList = new ArrayList<>(Arrays.asList(s.split(",")));
             for (String idEQ1 : myList) {
-                nameEQ1 = "";
+                nameEQ1 = new StringBuilder();
                 List<Long> x = Arrays.stream(idEQ1.split("_"))
                         .map(Long::parseLong)
                         .collect(Collectors.toList());
                 for (Long j : x) {
                     Optional<Course> pById = courseDAO.findById(j);
-                    Course equalCourse = pById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-                    nameEQ1 = nameEQ1 + " و " + "'" + equalCourse.getTitleFa() + "'";
+                    if(pById.isPresent()) {
+                        Course equalCourse = pById.get();
+                        nameEQ1.append(" و ").append("'").append(equalCourse.getTitleFa()).append("'");
+                    }
                 }
-                nameEQ1 = nameEQ1.substring(3);
+                nameEQ1 = new StringBuilder(nameEQ1.substring(3));
                 Map<String, String> map = new HashMap<>();
                 map.put("idEC", idEQ1);
-                map.put("nameEC", nameEQ1);
+                map.put("nameEC", nameEQ1.toString());
                 listOut.add(map);
             }
         }

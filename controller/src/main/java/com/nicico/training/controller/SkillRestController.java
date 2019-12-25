@@ -74,7 +74,7 @@ public class SkillRestController {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             maxSkillCode = skillService.getMaxSkillCode(create.getCode());
-            if (maxSkillCode == null || (maxSkillCode.length() != 8 && !maxSkillCode.equals("0")))
+            if (maxSkillCode == null || maxSkillCode.equals("0"))
                 throw new Exception("Skill with this Code wrong");
             maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
             maxId++;
@@ -84,7 +84,6 @@ public class SkillRestController {
 
         } catch (Exception e) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-
         }
 
     }
@@ -104,11 +103,11 @@ public class SkillRestController {
 //    @PreAuthorize("hasAuthority('d_skill')")
     public ResponseEntity<Boolean> delete(@PathVariable Long id) {
 
-        boolean flag = false;
+        boolean flag = true;
         HttpStatus httpStatus = HttpStatus.OK;
 
         try {
-            flag = skillService.isSkillDeletable(id);
+//            flag = skillService.isSkillDeletable(id);
             if (flag)
                 skillService.delete(id);
         } catch (Exception e) {

@@ -81,13 +81,13 @@ public class Course extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_goal_id", referencedColumnName = "id")})
     private List<Goal> goalSet;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")})
     private List<Course> perCourseList;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_pre_course",
             joinColumns = {@JoinColumn(name = "f_pre_course_id", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_course_id", referencedColumnName = "id")})
@@ -118,8 +118,10 @@ public class Course extends Auditable {
 //    private Long attitude = Long.valueOf(0);
     @Column(name = "c_equal_course")
     private String equalCourse;
+
     @Column(name = "c_need_text")
     private String needText;
+
     @OneToMany()
     @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Set<EqualCourse> equalCourseSet;
