@@ -30,7 +30,7 @@
     RestDataSource_company = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",},
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
         ],
@@ -599,7 +599,7 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        Wait_Company = createDialog("wait");
+                       // Wait_Company = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(companyUrl + record.id, "DELETE", null, "callback: show_CompanyActionResult(rpcResponse)"));
                     }
                 }
@@ -609,7 +609,7 @@
 
     function show_CompanyActionResult(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
