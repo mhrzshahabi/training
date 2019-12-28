@@ -32,14 +32,13 @@ public class AccountInfoDTO {
         private Integer version;
     }
 
-
-//    @Getter
-//    @Setter
-//    @ApiModel("AccountInfoInfoTuple")
-//    static class AccountInfoInfoTuple extends AccountInfoDTO {
-//        private Long id;
-//    }
-
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AccountInfoCreateOrUpdateRq")
+    public static class CreateOrUpdate extends AccountInfoDTO {
+        private Long id;
+    }
 
     @Getter
     @Setter

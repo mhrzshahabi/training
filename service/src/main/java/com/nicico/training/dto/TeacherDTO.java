@@ -39,21 +39,12 @@ public class TeacherDTO {
         private Integer version;
     }
 
-//    @Getter
-//    @Setter
-//    @ApiModel("TeacherInfoTuple")
-//    static class TeacherInfoTuple {
-//        private Long id;
-//        private PersonalInfoDTO.Create personality;
-//        private Set<CategoryDTO.CategoryInfoTuple> categories;
-//    }
-
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherCreateRq")
     public static class Create extends TeacherDTO {
-        private PersonalInfoDTO.Create personality;
+        private PersonalInfoDTO.CreateOrUpdate personality;
     }
 
     @Getter
@@ -61,7 +52,7 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherUpdateRq")
     public static class Update extends TeacherDTO {
-        private PersonalInfoDTO.Update personality;
+        private PersonalInfoDTO.CreateOrUpdate personality;
     }
 
     @Getter

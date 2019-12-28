@@ -62,11 +62,11 @@ public class CompanyService implements ICompanyService {
             request.setAddressId(addressDTO.getId());
             request.setAddress(null);
         }
-        if (request.getManager() != null) {
-            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-            request.setManagerId(personalInfoDTO.getId());
-            request.setManager(null);
-        }
+//        if (request.getManager() != null) {
+//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+//            request.setManagerId(personalInfoDTO.getId());
+//            request.setManager(null);
+//        }
 
         final Company company = modelMapper.map(request, Company.class);
         try {
@@ -103,15 +103,15 @@ public class CompanyService implements ICompanyService {
             request.setAddressId(currentCompany.getAddressId());
             request.setAddress(modelMapper.map(currentCompany.getAddress(), AddressDTO.Create.class));
         }
-        if (request.getManager() != null) {
-            request.getManager().setId(currentCompany.getManagerId());
-            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-            request.setManagerId(personalInfoDTO.getId());
-            request.setManager(null);
-        } else if (currentCompany.getManager() != null) {
-            request.setManagerId(currentCompany.getManagerId());
-            request.setManager(modelMapper.map(currentCompany.getManager(), PersonalInfoDTO.Create.class));
-        }
+//        if (request.getManager() != null) {
+//            request.getManager().setId(currentCompany.getManagerId());
+//            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
+//            request.setManagerId(personalInfoDTO.getId());
+//            request.setManager(null);
+//        } else if (currentCompany.getManager() != null) {
+//            request.setManagerId(currentCompany.getManagerId());
+//            request.setManager(modelMapper.map(currentCompany.getManager(), PersonalInfoDTO.Create.class));
+//        }
 
         Company company = new Company();
         modelMapper.map(currentCompany, company);

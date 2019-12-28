@@ -21,5 +21,5 @@ public interface IContactInfoService {
 
     SearchDTO.SearchRs<ContactInfoDTO.Info> search(SearchDTO.SearchRq request);
 
-    void modify(ContactInfoDTO.Create request, ContactInfo contactInfo);
+    void modify(ContactInfoDTO.CreateOrUpdate request, ContactInfo contactInfo);
 }

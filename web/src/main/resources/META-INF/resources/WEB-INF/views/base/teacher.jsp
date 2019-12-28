@@ -705,7 +705,7 @@
             {
                 ID: "attachPic",
                 name: "attachPic",
-                title: "<spring:message code='personality.photo'/>",
+                title: "",
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
@@ -1244,7 +1244,7 @@
                 pane: DynamicForm_AccountInfo_JspTeacher
             },
             {
-                title: "<spring:message code='contact.information'/>", canClose: false,
+                title: "<spring:message code='address'/>", canClose: false,
                 pane: DynamicForm_AddressInfo_JspTeacher
             },
             {

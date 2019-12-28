@@ -24,7 +24,6 @@ public class AddressDTO {
     private Boolean otherCountry;
     private Long cityId;
     private Long stateId;
-    private Integer version;
 
     @Getter
     @Setter
@@ -34,15 +33,16 @@ public class AddressDTO {
         private Long id;
         private CityDTO.Info city;
         private StateDTO.Info state;
+        private Integer version;
     }
 
-//    @Getter
-//    @Setter
-//    @ApiModel("AddressInfoTuple")
-//    static class AddressInfoTuple extends AddressDTO {
-//        private CityDTO.CityInfoTuple city;
-//        private StateDTO.StateInfoTuple state;
-//    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("AddressCreateOrUpdateRq")
+    public static class CreateOrUpdate extends AddressDTO {
+        private Long id;
+    }
 
     @Getter
     @Setter
