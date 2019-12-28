@@ -349,6 +349,8 @@
         selectionAppearance: "checkbox",
         selectionUpdated: function () {
             SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
+                if(!nationalCodeExists(current.nationalCode))
+                {
                 if (checkIfAlreadyExist(current)) {
                     return accumulator
                 } else {
@@ -363,6 +365,20 @@
 
 
                 SelectedPersonnelsLG_student.invalidateCache();
+                }
+                else {
+
+                    isc.Dialog.create({
+                        message: "<spring:message code="student.is.duplicate"/>",
+                        icon: "[SKIN]stop.png",
+                        title: "<spring:message code="message"/>",
+                        buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                        buttonClick: function (button, index) {
+                            this.close();
+                        }
+                    });
+                }
+
 
             }, []));
 
