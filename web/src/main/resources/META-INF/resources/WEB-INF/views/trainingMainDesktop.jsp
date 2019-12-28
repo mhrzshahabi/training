@@ -1032,7 +1032,7 @@
     // -------------------------------------------  Variables  -----------------------------------------------
     var workflowRecordId = null;
     var workflowParameters = null;
-    var todayDate = JalaliDate.gregorianToJalali(new Date().getFullYear(), new Date().getMonth(), new Date().getDay());
+    var todayDate = JalaliDate.JalaliTodayDate();
 
     <%--isc.Validator.addProperties({requiredField: "<spring:message code="msg.field.is.required"/>"});--%>
     <%--loadingMessage: "<spring:message code="loading"/>",--%>
