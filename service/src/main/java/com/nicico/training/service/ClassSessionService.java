@@ -306,6 +306,11 @@ public class ClassSessionService implements IClassSession {
         return modelMapper.map(classSessionDAO.findByClassIdAndSessionDate(classId, date), new TypeToken<List<ClassSessionDTO.Info>>() {
         }.getType());
     }
+
+//    public List<ClassSessionDTO.Info> getSessionsForStudent(Long classId, Long studentId) {
+//        classSessionDAO.findByClassIdAndStudent
+//        return null;
+//    }
     //*********************************
 
     @Override
@@ -436,6 +441,8 @@ public class ClassSessionService implements IClassSession {
             }.getType()));
         }
     }
+
+
 
     //*********************************
 
