@@ -114,27 +114,29 @@
         dataSource: RestDataSource_committee,
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
-        doubleClick: function () {
-            show_CommitteEditForm();
+        sortField: 1,
+     // selectionChanged: function (record, state) {
+     //
+     //        // committeeId = record;
+     //
+     //
+     // },
+
+         doubleClick: function () {
+         show_CommitteEditForm();
         },
 
-        selectionChanged: function (record, state) {
-            committeeId = record;
-
-
-        },
-        click: function () {
+      selectionUpdated: function () {
             var record1 = ListGrid_Committee.getSelectedRecord();
             Ds_Member_Attached_Committee.fetchDataURL = committeeUrl + record1.id + "/getMembers";
             ListGrid_Member_Attached_Committee.invalidateCache();
             ListGrid_Member_Attached_Committee.fetchData();
-
         },
 
         dataArrived: function (startRow, endRow) {
         },
-        sortField: 1,
-    });
+
+      });
 
     var ListGrid_Member_Attached_Committee = isc.TrLG.create({
         dataSource: Ds_Member_Attached_Committee,
@@ -714,6 +716,8 @@
     };
 
     function findConflictWhenEdit(resp) {
+         setTimeout(function () {
+             },900);
         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
             if (resp.data.length > 0) { //اگر در زمان ویرایش با خودش ویرایش شود
                 var committeeDataEdit = DynamicForm_Committee.getValues();

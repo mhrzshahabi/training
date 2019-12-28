@@ -229,9 +229,9 @@
                 align: "center",
                 filterOperator: "iContains",
                 autoFitWidth: true,
-// sortNormalizer: function (record) {
-// return record.course.titleFa;
-// }
+                sortNormalizer: function (record) {
+                    return record.course.titleFa;
+                }
             },
             {
                 name: "startDate",
@@ -660,7 +660,7 @@
 // validateOnExit:true,
         isGroup: true,
         wrapItemTitles: true,
-        groupTitle: "زمان جلسات کلاس",
+        groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
 // numCols: 14,
@@ -1777,7 +1777,6 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
          tabSet_class_status();
         if (!(classRecord == undefined || classRecord == null)) {
-
             switch (tab.ID) {
                 case "classStudentsTab": {
                     if (typeof loadPage_student !== "undefined")
@@ -1821,22 +1820,22 @@
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
             if (!checkDate(classStart)) {
-                createDialog("info","فرمت تاریخ شروع صحیح نیست.","پیغام");
+                createDialog("info","فرمت تاریخ شروع صحیح نیست.","<spring:message code='message'/>");
                 return false;
             }
             if (!checkDate(classEnd)) {
-                createDialog("info","فرمت تاریخ پایان صحیح نیست.","پیغام");
+                createDialog("info","فرمت تاریخ پایان صحیح نیست.","<spring:message code='message'/>");
                 return false;            }
             if (classEnd < classStart) {
-                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             if (termStart > classStart) {
-                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             if (termEnd < classStart) {
-                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             return true;
