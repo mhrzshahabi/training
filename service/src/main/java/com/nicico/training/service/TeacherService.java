@@ -81,18 +81,9 @@ public class TeacherService implements ITeacherService {
         }
 
         final Teacher teacher = modelMapper.map(request, Teacher.class);
-        teacher.setPersonality(personalInfo);
+        if (request.getPersonality().getId() != null)
+            teacher.setPersonality(personalInfo);
 
-//        if (teacher.getPersonality().getId() != null) {
-//            PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
-//
-//            PersonalInfoDTO.Update personalInfoDTO = modelMapper.map(request.getPersonality(),PersonalInfoDTO.Update.class);
-//            personalInfoService.modify(personalInfoDTO, personalInfo);
-//
-//
-//            modelMapper.map(teacher.getPersonality(), personalInfo);
-//            teacher.setPersonality(personalInfo);
-//        }
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
