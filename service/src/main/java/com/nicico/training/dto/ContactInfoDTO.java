@@ -22,7 +22,6 @@ public class ContactInfoDTO {
     private String description;
     private Long homeAddressId;
     private Long workAddressId;
-    private Integer version;
 
     @Getter
     @Setter
@@ -32,17 +31,18 @@ public class ContactInfoDTO {
         private Long id;
         private AddressDTO.Info homeAddress;
         private AddressDTO.Info workAddress;
+        private Integer version;
     }
 
-//    @Getter
-//    @Setter
-//    @ApiModel("ContactInfoInfoTuple")
-//    static class ContactInfoInfoTuple extends ContactInfoDTO {
-//        private Long id;
-//        private AddressDTO.Info homeAddress;
-//        private AddressDTO.Info workAddress;
-//
-//    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ContactInfoCreateOrUpdateRq")
+    public static class CreateOrUpdate extends ContactInfoDTO {
+        private Long id;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
+    }
 
     @Getter
     @Setter
@@ -50,8 +50,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfoCreateRq")
     public static class Create extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.Create homeAddress;
-        private AddressDTO.Create workAddress;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
     }
 
     @Getter
@@ -60,8 +60,8 @@ public class ContactInfoDTO {
     @ApiModel("ContactInfoUpdateRq")
     public static class Update extends ContactInfoDTO {
         private Long id;
-        private AddressDTO.Update homeAddress;
-        private AddressDTO.Update workAddress;
+        private AddressDTO.CreateOrUpdate homeAddress;
+        private AddressDTO.CreateOrUpdate workAddress;
     }
 
     @Getter

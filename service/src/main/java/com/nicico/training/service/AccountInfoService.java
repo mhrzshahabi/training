@@ -102,7 +102,7 @@ public class AccountInfoService implements IAccountInfoService {
 
     @Transactional
     @Override
-    public void modify(AccountInfoDTO.Create request, AccountInfo accountInfo) {
+    public void modify(AccountInfoDTO.CreateOrUpdate request, AccountInfo accountInfo) {
 
     }
 

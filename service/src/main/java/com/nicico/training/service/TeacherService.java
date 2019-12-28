@@ -6,7 +6,6 @@ import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
@@ -73,17 +72,12 @@ public class TeacherService implements ITeacherService {
 
         if (request.getPersonality().getId() != null) {
             personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
-
-            PersonalInfoDTO.Update personalInfoDTO = modelMapper.map(request.getPersonality(),PersonalInfoDTO.Update.class);
-            personalInfoService.modify(personalInfoDTO, personalInfo);
-
+            personalInfoService.modify(request.getPersonality(), personalInfo);
             modelMapper.map(request.getPersonality(), personalInfo);
         }
-
         final Teacher teacher = modelMapper.map(request, Teacher.class);
-        if (request.getPersonality().getId() != null)
+        if (personalInfo != null)
             teacher.setPersonality(personalInfo);
-
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

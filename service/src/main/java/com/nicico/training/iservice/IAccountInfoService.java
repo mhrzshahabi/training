@@ -23,6 +23,6 @@ public interface IAccountInfoService {
 
     AccountInfoDTO.Info createOrUpdate(AccountInfoDTO.Create request);
 
-    void modify(AccountInfoDTO.Create request, AccountInfo accountInfo);
+    void modify(AccountInfoDTO.CreateOrUpdate request, AccountInfo accountInfo);
 
     }
