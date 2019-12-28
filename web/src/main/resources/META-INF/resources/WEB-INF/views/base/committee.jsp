@@ -115,23 +115,27 @@
         contextMenu: Menu_ListGrid_committee,
         autoFetchData: true,
         sortField: 1,
-     selectionChanged: function (record, state) {
+     // selectionChanged: function (record, state) {
+     //
+     //        // committeeId = record;
+     //
+     //
+     // },
 
-            // committeeId = record;
+         doubleClick: function () {
+         show_CommitteEditForm();
+        },
 
-
-     },
-      click: function () {
+      selectionUpdated: function () {
             var record1 = ListGrid_Committee.getSelectedRecord();
             Ds_Member_Attached_Committee.fetchDataURL = committeeUrl + record1.id + "/getMembers";
             ListGrid_Member_Attached_Committee.invalidateCache();
             ListGrid_Member_Attached_Committee.fetchData();
         },
+
         dataArrived: function (startRow, endRow) {
         },
-        //   doubleclick: function () {
-        //  show_CommitteEditForm();
-        // },
+
       });
 
     var ListGrid_Member_Attached_Committee = isc.TrLG.create({

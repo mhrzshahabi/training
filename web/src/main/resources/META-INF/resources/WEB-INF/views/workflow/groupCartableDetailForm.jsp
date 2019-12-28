@@ -151,8 +151,8 @@
                 message: "آیا اطمینان دارید؟",
                 icon: "[SKIN]ask.png",
                 buttons: [
-                    isc.Button.create({title: "بله"}),
-                    isc.Button.create({title: "خیر"})
+                    isc.Button.create({title: "<spring:message code="yes"/>"}),
+                    isc.Button.create({title: "<spring:message code="global.no"/>"})
                 ],
                 buttonClick: function (button, index) {
 

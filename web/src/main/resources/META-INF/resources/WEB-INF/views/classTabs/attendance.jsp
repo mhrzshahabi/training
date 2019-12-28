@@ -41,14 +41,32 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 6,
+        numCols: 4,
         padding: 10,
         fields: [
             {
+                name:"attendanceTitle",
+                type:"StaticItem",
+                showTitle:false,
+                width:"*"
+            },
+            {
+                name: "filterType",
+                showTitle: false,
+                width:190,
+                defaultValue:1,
+                valueMap: {
+                    1:"حضور و غیاب براساس تاریخ:",
+                    2:"حضور و غیاب براساس فراگیر:"
+                }
+            },
+            {
                 name: "sessionDate",
                 autoFetchData: false,
+                width:200,
                 title: "حضور و غیاب براساس تاریخ:",
                 type: "SelectItem",
+                showTitle:false,
                 optionDataSource: RestData_SessionDate_AttendanceJSP,
                 textAlign: "center",
                 sortField: 1,
@@ -314,9 +332,9 @@
                     });
                 }
             },
-            {
-                type: "SpacerItem"
-            },
+            // {
+            //     type: "SpacerItem"
+            // },
             {
                 name: "presentAll",
                 title: "تبدیل همه به حاضر",
