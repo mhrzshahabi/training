@@ -705,7 +705,7 @@
             {
                 ID: "attachPic",
                 name: "attachPic",
-                title: "",
+                title: "<spring:message code='personality.photo'/>",
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
@@ -1159,16 +1159,21 @@
         ]
     });
 
-    var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
-        tabBarPosition: "top",
-        titleEditorTopOffset: 2,
-        width: "75%",
-        tabs: [
-            {
-                title: "<spring:message code='basic.information'/>", canClose: false,
-                pane: DynamicForm_BasicInfo_JspTeacher
-            }
-        ]
+    var HLayOut_ViewLoader_JspTeacher = isc.TrHLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        align: "center",
+        members: [showAttachViewLoader]
+    });
+
+    var HLayOut_Photo_JspTeacher = isc.TrHLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        membersMargin: 10,
+        members: [DynamicForm_Photo_JspTeacher]
     });
 
     var VLayOut_Photo_JspTeacher = isc.TrVLayout.create({
@@ -1177,23 +1182,43 @@
         edgeImage: "",
         padding: 10,
         membersMargin: 10,
-        width: "*",
-        members: [showAttachViewLoader, DynamicForm_Photo_JspTeacher]
+        width: "15%",
+        align: "center",
+        members: [HLayOut_ViewLoader_JspTeacher,HLayOut_Photo_JspTeacher]
     });
 
-    var TabSet_Photo_JspTeacher = isc.TabSet.create({
+    var VLayOut_Basic_JspTeacher = isc.TrVLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        membersMargin: 10,
+        width: "75%",
+        members: DynamicForm_BasicInfo_JspTeacher
+    });
+
+    var HLayOut_Basic_JspTeacher = isc.TrHLayout.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        membersMargin: 10,
+        width: "100%",
+        members: [VLayOut_Basic_JspTeacher,VLayOut_Photo_JspTeacher]
+    });
+
+    var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
-        width: "310px",
-        alignLayout: "center",
-        align: "center",
+        width: "100%",
         tabs: [
             {
-                title: "<spring:message code='personality.photo'/>", canClose: false,
-                pane: VLayOut_Photo_JspTeacher
+                title: "<spring:message code='basic.information'/>", canClose: false,
+                pane: HLayOut_Basic_JspTeacher
             }
         ]
     });
+
 
     var HLayOut_Temp_JspTeacher = isc.TrHLayout.create({
         layoutMargin: 5,
@@ -1202,17 +1227,17 @@
         alignLayout: "center",
         align: "center",
         padding: 10,
-        height: "55%",
+        height: "60%",
         membersMargin: 10,
         showResizeBar: true,
-        members: [TabSet_BasicInfo_JspTeacher, TabSet_Photo_JspTeacher]
+        members: [TabSet_BasicInfo_JspTeacher]
     });
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         // tabBarThickness: 100,
         titleEditorTopOffset: 2,
-        height: "35%",
+        height: "30%",
         tabs: [
             {
                 title: "<spring:message code='account.information'/>", canClose: false,
