@@ -30,7 +30,7 @@
     RestDataSource_company = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains",},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
         ],
