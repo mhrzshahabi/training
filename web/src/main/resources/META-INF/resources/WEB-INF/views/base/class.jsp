@@ -660,7 +660,7 @@
 // validateOnExit:true,
         isGroup: true,
         wrapItemTitles: true,
-        groupTitle: "زمان جلسات کلاس",
+        groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
 // numCols: 14,
@@ -1820,22 +1820,22 @@
     function checkValidDate(termStart, termEnd, classStart, classEnd) {
         if (termStart != null && termEnd != null && classStart != null && classEnd != null) {
             if (!checkDate(classStart)) {
-                createDialog("info","فرمت تاریخ شروع صحیح نیست.","پیغام");
+                createDialog("info","فرمت تاریخ شروع صحیح نیست.","<spring:message code='message'/>");
                 return false;
             }
             if (!checkDate(classEnd)) {
-                createDialog("info","فرمت تاریخ پایان صحیح نیست.","پیغام");
+                createDialog("info","فرمت تاریخ پایان صحیح نیست.","<spring:message code='message'/>");
                 return false;            }
             if (classEnd < classStart) {
-                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ پایان کلاس قبل از تاریخ شروع کلاس نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             if (termStart > classStart) {
-                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ شروع کلاس قبل از تاریخ شروع ترم نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             if (termEnd < classStart) {
-                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","پیغام");
+                createDialog("info","تاریخ شروع کلاس بعد از تاریخ پایان ترم نمی تواند باشد.","<spring:message code='message'/>");
                 return false;
             }
             return true;
