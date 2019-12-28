@@ -17,9 +17,7 @@
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Rest Data Sources*/
-    // ------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
@@ -102,9 +100,7 @@
     });
 
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Menu*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------Menu-------------------------------------------------------
 
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
@@ -142,9 +138,8 @@
         }]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*ListGrid*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------ListGrid---------------------------------------------------
+
 
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
@@ -152,7 +147,7 @@
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
         filterOperator: "iContains",
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
         selectionUpdated: function () {
@@ -251,12 +246,7 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*DynamicForm Add Or Edit*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
-    var vm = isc.ValuesManager.create({});
-
+    //--------------------------------------------View Loader-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
         overflow: "scroll",
@@ -266,6 +256,9 @@
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
+
+    //--------------------------------------------Dynamic Form-----------------------------------------------------
+    var vm = isc.ValuesManager.create({});
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
@@ -1118,6 +1111,7 @@
         }
     });
 
+    //-----------------------------------------------Save and Close Buttons--------------------------------------------
     IButton_Teacher_Save_And_Close_JspTeacher = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code="save.and.close"/>",
@@ -1134,8 +1128,6 @@
     });
 
     IButton_Teacher_Exit_JspTeacher = isc.IButtonCancel.create({
-        //icon: "<spring:url value="remove.png"/>",
-        //prompt: "",
         width: 100,
         orientation: "vertical",
         click: function () {
@@ -1145,6 +1137,7 @@
         }
     });
 
+    //-----------------------------------------------LayOuts and Tabsets-Window--------------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
@@ -1235,7 +1228,6 @@
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
-        // tabBarThickness: 100,
         titleEditorTopOffset: 2,
         height: "30%",
         tabs: [
@@ -1295,9 +1287,7 @@
         })]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*ToolStrips and Layout*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------ToolStrips and Layout-Grid----------------------------------------
 
     var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButtonRefresh.create({
         click: function () {
@@ -1368,10 +1358,7 @@
         ]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Functions*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
+    //-------------------------------------------------Functions------------------------------------------------
     function ListGrid_teacher_refresh() {
         refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         ListGrid_Teacher_JspTeacher.invalidateCache();
@@ -1390,10 +1377,10 @@
         if (vm.hasErrors()) {
             return;
         }
-        let nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
+        var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
-        let data = vm.getValues();
-        let teacherSaveUrl = teacherUrl;
+        var data = vm.getValues();
+        var teacherSaveUrl = teacherUrl;
 
         if (teacherMethod.localeCompare("PUT") === 0) {
             var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
@@ -1407,9 +1394,10 @@
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_action_result(rpcResponse)"));
 
-        if(!isSaveButton)
+        if(!isSaveButton) {
+            ListGrid_Teacher_JspTeacher.invalidateCache();
             Window_Teacher_JspTeacher.close();
-
+        }
     }
 
     function ListGrid_teacher_edit() {
@@ -1696,6 +1684,7 @@
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
                     OK.close();
+                    ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                 }, 3000);
                 if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined)
@@ -1883,7 +1872,7 @@
     }
 
     function refreshSelectedTab_teacher(tab, id) {
-        let teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
                 loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>",RestDataSource_EAttachmentType_JpaTeacher);
