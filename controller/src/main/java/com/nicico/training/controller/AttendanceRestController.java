@@ -76,6 +76,13 @@ public class AttendanceRestController {
 		return new ResponseEntity<>(maps, HttpStatus.CREATED);
 	}
 	@Loggable
+	@GetMapping(value = "/student")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+	public ResponseEntity<List<List<Map>>> attendanceForStudent(@RequestParam("classId") Long classId,@RequestParam("studentId") Long studentId) {
+		List<List<Map>> maps = attendanceService.getAttendanceByStudent(classId, studentId);
+		return new ResponseEntity<>(maps, HttpStatus.CREATED);
+	}
+	@Loggable
 	@GetMapping(value = "/accept-absent-student")
 //	@PreAuthorize("hasAuthority('c_attendance')")
 	public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
@@ -104,6 +111,14 @@ public class AttendanceRestController {
                                         @RequestParam("date") String date)
     {
         attendanceService.convertToModelAndSave(req, classId, date);
+        return new ResponseEntity(HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @PostMapping(value = "/student-attendance-save")
+    public ResponseEntity studentAttendanceSave(@RequestBody List<List<Map<String,String>>> req)
+    {
+        attendanceService.studentAttendanceSave(req);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 

@@ -10,6 +10,7 @@
     var classGridRecordInAttendanceJsp = null;
     var causeOfAbsence = [];
     var sessionInOneDate = [];
+    var sessionsForStudent = [];
     var attendanceState = {
         "0": "نامشخص",
         "1": "حاضر",
@@ -30,6 +31,23 @@
             {name: "nationalCode", type: "text", title: "کد ملی"},
             {name: "company", type: "text", title: "شرکت"},
             {name: "studentState", type: "text", title: "وضعیت"},
+        ],
+    });
+    var DataSource_SessionsForStudent = isc.DataSource.create({
+        ID: "attendanceStudentDS",
+        clientOnly: true,
+        testData: sessionsForStudent,
+        // dataFormat: "json",
+        // dataURL: attendanceUrl + "/session-in-date",
+        fields: [
+            {name: "studentId", hidden: true},
+            {name: "sessionId", hidden: true, primaryKey: true},
+            {name: "studentState", hidden:true, type: "text", title: "وضعیت"},
+            {name: "sessionType", title:"نوع جلسه"},
+            {name: "sessionDate", type: "text", title: "تاریخ"},
+            {name: "startHour", type: "text", title: "ساعت شروع"},
+            {name: "endHour", type: "text", title: "ساعت پایان"},
+            {name: "state", type: "text", title: "وضعیت"},
         ],
     });
     var RestData_SessionDate_AttendanceJSP = isc.TrDS.create({
@@ -87,6 +105,8 @@
                           {name: "dayName", title: "روز هفته"},
                           {name: "sessionDate", title: "تاریخ"}
                       ];
+                      form.getItem("sessionDate").displayField = "sessionDate";
+                      form.getItem("sessionDate").valueField = "sessionDate";
                       form.getItem("sessionDate").optionDataSource = RestData_SessionDate_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 200;
                       form.setValue("sessionDate","");
@@ -100,6 +120,8 @@
                           {name: "personnelNo", title: "شماره پرسنلی"},
                           {name: "personnelNo2", title: "شماره پرسنلی"},
                       ];
+                      form.getItem("sessionDate").displayField = "lastName";
+                      form.getItem("sessionDate").valueField = "id";
                       form.getItem("sessionDate").optionDataSource = RestData_Student_AttendanceJSP;
                       form.getItem("sessionDate").pickListWidth = 600;
                       form.setValue("sessionDate","");
@@ -142,7 +164,7 @@
                     }
                 },
                 changed: function (form, item, value) {
-                    if (form.getValue("filterType") === 1) {
+                    if (form.getValue("filterType") == 1) {
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/session-in-date?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + value,
                             httpMethod: "GET",
@@ -201,6 +223,7 @@
                                     attendanceGrid.data.localData = [];
                                     attendanceGrid.data.allRows = [];
                                 }
+                                ListGrid_Attendance_AttendanceJSP.dataSource = "attendanceDS";
                                 attendanceGrid.setFields(fields1);
                                 for (let i = 5; i < attendanceGrid.getAllFields().size(); i++) {
                                     attendanceGrid.setFieldProperties(i, {
@@ -378,7 +401,7 @@
                             }
                         });
                     }
-                    if (form.getValue("filterType") === 2) {
+                    if (form.getValue("filterType") == 2) {
                         isc.RPCManager.sendRequest({
                             actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().id,
                             httpMethod: "GET",
@@ -390,10 +413,11 @@
                             callback: function (resp) {
                                 if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
                                     let fields1 = [
+                                        {name: "sessionType", title: "نوع جلسه"},
                                         {name: "sessionDate", title: "تاریخ"},
                                         {name: "startHour", title: "ساعت شروع"},
                                         {name: "endHour", title: "ساعت پایان"},
-                                        {name: "state", title: "وضعیت"},
+                                        {name: "state", title: "وضعیت", canEdit: true, valueMap:attendanceState},
                                     ];
                                     if (attendanceGrid.originalFields.size() != 0) {
                                         attendanceGrid.originalFields = [];
@@ -401,7 +425,18 @@
                                         attendanceGrid.data.localData = [];
                                         attendanceGrid.data.allRows = [];
                                     }
+                                    ListGrid_Attendance_AttendanceJSP.dataSource = "attendanceStudentDS";
                                     attendanceGrid.setFields(fields1);
+
+
+                                    var data2 = JSON.parse(resp.data);
+                                    sessionsForStudent.length = 0;
+                                    attendanceGrid.invalidateCache();
+                                    for (let j = 0; j < data2[0].length; j++) {
+                                        attendanceStudentDS.addData(data2[0][j]);
+                                    }
+                                    causeOfAbsence = data2[1];
+
                                     for (let i = 5; i < attendanceGrid.getAllFields().size(); i++) {
                                         attendanceGrid.setFieldProperties(i, {
                                             change(form, item, value, oldValue) {
@@ -473,7 +508,7 @@
                                                     absenceWindow.show();
                                                     for (let i = 0; i < causeOfAbsence.length; i++) {
                                                         if (causeOfAbsence[i].studentId == attendanceGrid.getSelectedRecord().studentId) {
-                                                            if (causeOfAbsence[i].sessionId == item.getFieldName().substr(2)) {
+                                                            if (causeOfAbsence[i].sessionId == attendanceGrid.getSelectedRecord().sessionId) {
                                                                 absenceForm.setValue("cause", causeOfAbsence[i].description);
                                                                 break;
                                                             } else {
@@ -510,10 +545,10 @@
                                                     // });
                                                 } else if (value == 3) {
                                                     var sessionIds = [];
-                                                    sessionIds.add(item.getFieldName().substr(2));
-                                                    for (let i = 5; i < this.grid.getAllFields().length; i++) {
-                                                        if (this.grid.getEditValue(this.rowNum, i) == 3) {
-                                                            sessionIds.add(this.grid.getAllFields()[i].name.substr(2))
+                                                    sessionIds.add(attendanceGrid.getSelectedRecord().sessionId);
+                                                    for (let i = 0; i < this.grid.getAllEditRows().length; i++) {
+                                                        if (this.grid.getEditValue(this.grid.getAllEditRows()[i], "state") == 3) {
+                                                            sessionIds.add(this.grid.getRecord(this.grid.getAllEditRows()[i]).sessionId)
                                                         }
                                                     }
                                                     isc.RPCManager.sendRequest({
@@ -536,9 +571,11 @@
                                                                     buttonClick: function (button, index) {
                                                                         this.close();
                                                                         if (index === 0) {
-                                                                            let record1 = attendanceGrid.getSelectedRecord();
-                                                                            record1.studentState = "1";
-                                                                            attendanceGrid.updateData(record1);
+                                                                            for (let i = 0; i <attendanceGrid.getData().allRows.length ; i++) {
+                                                                                let record1 = attendanceGrid.getRecord(i);
+                                                                                record1.studentState = "1";
+                                                                                attendanceGrid.updateData(record1);
+                                                                            }
                                                                             // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                             attendanceGrid.focusInFilterEditor();
                                                                             return;
@@ -554,17 +591,13 @@
                                                         }
                                                     });
                                                 }
-                                                if (this.colNum == 5 && (value == 1 || value == 2)) {
-                                                    for (let i = 6; i < this.grid.getAllFields().length; i++) {
-                                                        this.grid.setEditValue(this.rowNum, i, value);
-                                                    }
-                                                }
                                             },
                                             hoverHTML(record, value, rowNum, colNum, grid) {
                                                 if (value == "غیبت موجه") {
+                                                    alert("1")
                                                     let i = 0;
                                                     do {
-                                                        if ((!causeOfAbsence.isEmpty()) && (causeOfAbsence[i].studentId == record.studentId) && (causeOfAbsence[i].sessionId == grid.getFieldName(colNum).substr(2))) {
+                                                        if ((!causeOfAbsence.isEmpty()) && (causeOfAbsence[i].studentId == record.studentId) && (causeOfAbsence[i].sessionId == record.sessionId)) {
                                                             return causeOfAbsence[i].description;
                                                         }
                                                         i++;
@@ -591,8 +624,8 @@
                 startRow:false,
                 labelAsTitle: true,
                 click (form, item) {
-                        for (let i = 0; i < sessionInOneDate.length ; i++) {
-                            for (let j = 4; j < attendanceGrid.getAllFields().length; j++) {
+                        for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().allRows.length ; i++) {
+                            for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
                                 attendanceGrid.setEditValue(i,j,"1");
                             }
                         }
@@ -629,26 +662,50 @@
                         attendanceGrid.endEditing();
                         attendanceGrid.saveAllEdits();
                         setTimeout(function () {
-                            isc.RPCManager.sendRequest({
-                                actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
-                                willHandleError: true,
-                                httpMethod: "POST",
-                                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-                                useSimpleHttp: true,
-                                contentType: "application/json; charset=utf-8",
-                                showPrompt: false,
-                                data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
-                                serverOutputAsString: false,
-                                callback: function (resp) {
-                                    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
-                                        simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-                                    } else {
-                                        simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
-                                    }
+                            if(attendanceForm.getValue("filterType")==1) {
+                                isc.RPCManager.sendRequest({
+                                    actionURL: attendanceUrl + "/save-attendance?classId=" + classGridRecordInAttendanceJsp.id + "&date=" + DynamicForm_Attendance.getValue("sessionDate"),
+                                    willHandleError: true,
+                                    httpMethod: "POST",
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    showPrompt: false,
+                                    data: JSON.stringify([sessionInOneDate, causeOfAbsence]),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                        } else {
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                        }
 
-                                }
-                            });
+                                    }
+                                });
+                            }
+                            else if(attendanceForm.getValue("filterType")==2) {
+                                isc.RPCManager.sendRequest({
+                                    actionURL: attendanceUrl + "/student-attendance-save",
+                                    willHandleError: true,
+                                    httpMethod: "POST",
+                                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                    useSimpleHttp: true,
+                                    contentType: "application/json; charset=utf-8",
+                                    showPrompt: false,
+                                    data: JSON.stringify([sessionsForStudent, causeOfAbsence]),
+                                    serverOutputAsString: false,
+                                    callback: function (resp) {
+                                        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                            simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
+                                        } else {
+                                            simpleDialog("<spring:message code="message"/>", "<spring:message code="msg.operation.error"/>", 2000, "stop");
+                                        }
+
+                                    }
+                                });
+                            }
                         }, 100)
+
                         // attendanceGrid.endEditing();
                     }
                 }),

@@ -81,17 +81,30 @@ public class AttendanceService implements IAttendanceService {
 //        if(attendanceDAO.existsBySessionId(sessions.get(0).getId())){
 //        ArrayList<Long> sessionIds = new ArrayList<>();
         List<Attendance> attendances = new ArrayList<>();
-        sessions.forEach(s -> attendances.add(attendanceDAO.findBySessionIdAndStudentId(s.getId(),studentId)));
+        for (ClassSessionDTO.Info s : sessions) {
+            Attendance attendance = attendanceDAO.findBySessionIdAndStudentId(s.getId(), studentId);
+            if(attendance == null)continue;
+            attendances.add(attendance);
+        }
+//        sessions.forEach(s -> attendances.add(attendanceDAO.findBySessionIdAndStudentId(s.getId(),studentId)));
 //        List<Attendance> attendances = attendanceDAO.findBySessionId(sessionIds);
         List<Map> maps = new ArrayList<>();
         for (ClassSessionDTO.Info session : sessions) {
             Map<String, String> map = new HashMap<>();
+            map.put("studentId", studentId.toString());
             map.put("sessionId", session.getId().toString());
+            map.put("sessionType", session.getSessionType());
             map.put("sessionDate",session.getSessionDate());
             map.put("startHour",session.getSessionStartHour());
             map.put("endHour",session.getSessionEndHour());
-            List<Attendance> list = attendances.stream().filter(a -> a.getSessionId().equals(session.getId()) && a.getStudentId().equals(studentId)).collect(Collectors.toList());
-            map.put("state", (list.size() > 0)?list.get(0).getState():"0");
+            for (Attendance a : attendances) {
+                if(Objects.equals(a.getSessionId(), session.getId())){
+                    map.put("state",a.getState());
+                }
+            }
+//            List<Attendance> list = attendances.stream().filter(a -> a.getSessionId() == session.getId()).collect(Collectors.toList());
+//            List<Attendance> list1 = list.stream().filter(l -> l.getStudentId() == studentId).collect(Collectors.toList());
+//            map.put("state", (list.size() > 0)?list.get(0).getState():"0");
             maps.add(map);
         }
 //        for (Student student : students) {
@@ -210,6 +223,36 @@ public class AttendanceService implements IAttendanceService {
 //            return maps;
 //        }
 //    }
+
+
+    @Transactional
+    @Override
+    public void studentAttendanceSave(List<List<Map<String, String>>> maps) {
+        List<Map<String, String>> mapList = maps.get(0);
+        ArrayList<Attendance> attendanceSaving = new ArrayList<>();
+        for (Map<String, String> map : mapList) {
+            Attendance attendance = new Attendance();
+            attendance.setSessionId(Long.valueOf(map.get("sessionId")));
+            attendance.setStudentId(Long.valueOf(map.get("studentId")));
+            attendance.setState(map.get("state"));
+            for (Map<String, String> causeOfAbsenceList : maps.get(1)) {
+                if (map.get("state").equals("4") && causeOfAbsenceList.get("studentId").equals(map.get("studentId")) && causeOfAbsenceList.get("sessionId").equals(map.get("sessionId"))) {
+                    attendance.setDescription(causeOfAbsenceList.get("description"));
+                }
+            }
+            attendanceSaving.add(attendance);
+        }
+        for (Attendance attendance : attendanceSaving) {
+            Attendance saved = attendanceDAO.findBySessionIdAndStudentId(attendance.getSessionId(), attendance.getStudentId());
+            if (saved == null) {
+                attendanceDAO.save(attendance);
+            } else {
+                saved.setState(attendance.getState());
+                saved.setDescription(attendance.getDescription());
+                attendanceDAO.save(saved);
+            }
+        }
+    }
 
     @Transactional
     @Override
