@@ -17,6 +17,7 @@
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
 
+    var DUMMY;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -1111,6 +1112,8 @@
         }
     });
 
+
+
     //-----------------------------------------------Save and Close Buttons--------------------------------------------
     IButton_Teacher_Save_And_Close_JspTeacher = isc.IButtonSave.create({
         top: 260,
@@ -1262,6 +1265,11 @@
                 ID: "attachmentsTab",
                 title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
+            },
+            {
+                ID: "foreingLang",
+                title: "<spring:message code="foreign.languages"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1395,7 +1403,6 @@
                 "callback: teacher_action_result(rpcResponse)"));
 
         if(!isSaveButton) {
-            ListGrid_Teacher_JspTeacher.invalidateCache();
             Window_Teacher_JspTeacher.close();
         }
     }
@@ -1565,7 +1572,6 @@
         var JSONObj = {"ids": categoryIds};
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
             "callback: teacher_addCategories_result(rpcResponse)"));
-
     }
 
     function addAttach(personalId) {
@@ -1648,9 +1654,6 @@
                     OK.close();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                 }, 1000);
-                setTimeout(function () {
-                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 2000);
                 if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
                     addAttach(JSON.parse(resp.data).personalityId);
                 }
@@ -1660,10 +1663,7 @@
                     ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
-                ListGrid_Teacher_JspTeacher.invalidateCache();
-                ListGrid_Teacher_JspTeacher.fetchData();
                 refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), responseID);
-                // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
                 TabSet_Bottom_JspTeacher.enable();
                 teacherMethod = "PUT";
             }
@@ -1683,26 +1683,22 @@
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
-                    OK.close();
                     ListGrid_Teacher_JspTeacher.invalidateCache();
+                    ListGrid_Teacher_JspTeacher.fetchData();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 3000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined)
-                    addAttach(JSON.parse(resp.data).personalityId);
-                showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personalityId);
+                    OK.close();
+                }, 1000);
+                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
+                    addAttach(JSON.parse(resp.data).personality.id);
+                    showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personality.id);
+                }
                 setTimeout(function () {
                     if (categoryList !== undefined)
                         addCategories(responseID, categoryList);
-                    ListGrid_Teacher_JspTeacher.invalidateCache();
-                    ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
                 showAttachViewLoader.hide();
-                ListGrid_Teacher_JspTeacher.invalidateCache();
-                ListGrid_Teacher_JspTeacher.fetchData();
-                // Window_Teacher_JspTeacher.close();
             }
         } else {
-            <%--createDialog("info", "<spring:message code='error'/>");--%>
         }
     }
 
