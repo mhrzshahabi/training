@@ -1998,6 +1998,12 @@
                 // id: "TabPane_Competence",
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
+            },
+
+            {
+             title: "اهداف رفتاری دوره",
+             ID:"behavioralGoals",
+             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "behavioral_goals/show-form"})
             }
         ]
     });

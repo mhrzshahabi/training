@@ -13,7 +13,7 @@ import javax.persistence.*;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_behavioral_goal", uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa"})})
-public class behavioralGoal extends Auditable {
+public class BehavioralGoal extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "behavioral_goal_seq")
