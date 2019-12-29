@@ -43,6 +43,8 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
+    const oauthUserUrl =  rootUrl +"/oauth/users";
+    const oauthRoleUrl = rootUrl +"/oauth/app-roles";
     const workflowUrl = rootUrl + "/workflow";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
@@ -86,8 +88,9 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleSuffix: "",
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
+        readOnlyDisplay: "static",
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
@@ -128,6 +131,7 @@
         showClippedValuesOnHover: true,
         hoverMoveWithMouse: true,
         showRowNumbers: true,
+        canAutoFitFields: false,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
@@ -554,6 +558,12 @@
                 {
                     title: "<spring:message code="user.plural"/>",
                     click: function () {
+                        createTab(this.title, "<spring:url value="web/user"/>");
+                    }
+                },
+                {
+                    title: "کاربران قبلی",
+                    click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
                 },
@@ -950,56 +960,56 @@
         },
     });
 
-    function handleErrors(resp, req) {
+    <%--function handleErrors(resp, req) {--%>
 
-        if (resp == null || resp.httpResponseText == null)
-            return;
+    <%--    if (resp == null || resp.httpResponseText == null)--%>
+    <%--        return;--%>
 
-        const title = {title: "<spring:message code='error'/>"};
-        if (resp.httpResponseCode === 401 || resp.httpResponseCode === 302) {
-            isc.say('<spring:message code="global.form.refresh" />', null, title);
-            return;
-        }
-        if (resp.httpResponseCode === 400) {
-            isc.say('<spring:message code="exception.too-large" />', null, title);
-            return;
-        }
+    <%--    const title = {title: "<spring:message code='error'/>"};--%>
+    <%--    if (resp.httpResponseCode === 401 || resp.httpResponseCode === 302) {--%>
+    <%--        isc.say('<spring:message code="global.form.refresh" />', null, title);--%>
+    <%--        return;--%>
+    <%--    }--%>
+    <%--    if (resp.httpResponseCode === 400) {--%>
+    <%--        isc.say('<spring:message code="exception.too-large" />', null, title);--%>
+    <%--        return;--%>
+    <%--    }--%>
 
-        var errText = "";
-        var response = JSON.parse(resp.httpResponseText);
+    <%--    var errText = "";--%>
+    <%--    var response = JSON.parse(resp.httpResponseText);--%>
 
-        if (response == null || response.length === 0)
-            return;
+    <%--    if (response == null || response.length === 0)--%>
+    <%--        return;--%>
 
-        if (response.errors != null)
-            response.errors.forEach(value => {
+    <%--    if (response.errors != null)--%>
+    <%--        response.errors.forEach(value => {--%>
 
-                // if (value.field !== "")
-                //     errText += "<strong>" + value.field + "</strong>:<br>";
-                if (value.message != null && value.message !== "") {
-                    if (value.message.startsWith('{') && value.message.endsWith('}'))
-                        errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
-                    else
-                        errText += "<em>" + value.message + "</em><br>";
-                }
-            });
-        else if (response.exception != null)
-            if (response.exception !== "") {
-                if (response.exception.startsWith('{') && response.exception.endsWith('}'))
-                    errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";
-                else
-                    errText += "<em>" + response.exception + "</em><br>";
-            }
+    <%--            // if (value.field !== "")--%>
+    <%--            //     errText += "<strong>" + value.field + "</strong>:<br>";--%>
+    <%--            if (value.message != null && value.message !== "") {--%>
+    <%--                if (value.message.startsWith('{') && value.message.endsWith('}'))--%>
+    <%--                    errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";--%>
+    <%--                else--%>
+    <%--                    errText += "<em>" + value.message + "</em><br>";--%>
+    <%--            }--%>
+    <%--        });--%>
+    <%--    else if (response.exception != null)--%>
+    <%--        if (response.exception !== "") {--%>
+    <%--            if (response.exception.startsWith('{') && response.exception.endsWith('}'))--%>
+    <%--                errText += "<em><spring:message code='exception.data-validation'/>.</em><br>";--%>
+    <%--            else--%>
+    <%--                errText += "<em>" + response.exception + "</em><br>";--%>
+    <%--        }--%>
 
-        if (errText !== "")
-            isc.say(errText, null, title);
-        else if (response.error === "NotFound")
-            isc.say('<spring:message code="exception.record.not−found" />', null, title);
-        else if (response.error === "Unauthorized")
-            isc.say('<spring:message code="exception.unauthorized" />', null, title);
-        else
-            isc.say('<spring:message code="exception.server.connection" />', null, title);
-    }
+    <%--    if (errText !== "")--%>
+    <%--        isc.say(errText, null, title);--%>
+    <%--    else if (response.error === "NotFound")--%>
+    <%--        isc.say('<spring:message code="exception.record.not−found" />', null, title);--%>
+    <%--    else if (response.error === "Unauthorized")--%>
+    <%--        isc.say('<spring:message code="exception.unauthorized" />', null, title);--%>
+    <%--    else--%>
+    <%--        isc.say('<spring:message code="exception.server.connection" />', null, title);--%>
+    <%--}--%>
 
     <%--const trainingConfigs = {--%>
     <%--    Urls: {--%>
