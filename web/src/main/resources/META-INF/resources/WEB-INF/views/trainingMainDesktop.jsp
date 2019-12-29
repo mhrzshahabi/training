@@ -180,6 +180,15 @@
             errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
             expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
         },
+        PostalCodeValidate: {
+            type: "custom",
+            errorMessage: "<spring:message code='msg.postal.code.validation'/>",
+            condition: function (item, validator, value) {
+                if (value == null)
+                    return true;
+                return value >= 1e9 && value < 1e10;
+            }
+        },
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {

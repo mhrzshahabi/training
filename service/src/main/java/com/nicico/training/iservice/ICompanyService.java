@@ -2,11 +2,14 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.CompanyDTO;
+import com.nicico.training.model.Company;
 
 import java.util.List;
 
 public interface ICompanyService {
     CompanyDTO.Info get(Long id);
+
+    Company getCompany(Long id);
 
     List<CompanyDTO.Info> list();
 

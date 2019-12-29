@@ -1179,7 +1179,7 @@
         membersMargin: 10,
         width: "15%",
         align: "center",
-        members: [HLayOut_ViewLoader_JspTeacher,HLayOut_Photo_JspTeacher]
+        members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
 
     var VLayOut_Basic_JspTeacher = isc.TrVLayout.create({
@@ -1199,7 +1199,7 @@
         padding: 10,
         membersMargin: 10,
         width: "100%",
-        members: [VLayOut_Basic_JspTeacher,VLayOut_Photo_JspTeacher]
+        members: [VLayOut_Basic_JspTeacher, VLayOut_Photo_JspTeacher]
     });
 
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
@@ -1401,14 +1401,14 @@
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_action_result(rpcResponse)"));
 
-        if(!isSaveButton) {
+        if (!isSaveButton) {
             Window_Teacher_JspTeacher.close();
         }
     }
 
     function ListGrid_teacher_edit() {
 
-        gridState =  ListGrid_Teacher_JspTeacher.getSelectedState();
+        gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
 
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -1822,7 +1822,7 @@
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id",personality.id);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id", personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);
@@ -1870,7 +1870,7 @@
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>",RestDataSource_EAttachmentType_JpaTeacher);
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", RestDataSource_EAttachmentType_JpaTeacher);
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);

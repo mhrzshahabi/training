@@ -28,9 +28,9 @@ public class CompanyDTO implements Serializable {
     @ApiModel("CompanyInfo")
     public static class Info extends CompanyDTO {
         private Long id;
-        private PersonalInfoDTO.Info manager;
+        private PersonalInfoDTO.CompanyManager manager;
         private AccountInfoDTO.Info accountInfo;
-        private AddressDTO.Info address;
+        private AddressDTO.CompanyAddress address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;
@@ -42,9 +42,9 @@ public class CompanyDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CompanyCreateRq")
     public static class Create extends CompanyDTO {
-        private PersonalInfoDTO.Create manager;
+        private PersonalInfoDTO.CompanyManager manager;
         private AccountInfoDTO.Create accountInfo;
-        private AddressDTO.Create address;
+        private AddressDTO.CompanyAddress address;
         private Long managerId;
         private Long contactInfoId;
         private Long accountInfoId;

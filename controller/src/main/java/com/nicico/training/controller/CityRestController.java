@@ -11,6 +11,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -32,6 +34,16 @@ public class CityRestController {
 //    @PreAuthorize("hasAuthority('r_city')")
     public ResponseEntity<List<CityDTO.Info>> list() {
         return new ResponseEntity<>(cityService.list(), HttpStatus.OK);
+    }
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<CityDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<CityDTO.Info> searchRs = cityService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
     @Loggable
