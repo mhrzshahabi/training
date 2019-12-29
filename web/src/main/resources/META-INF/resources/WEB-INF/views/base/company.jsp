@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-
 // <script>
 
     //************************************************************************************
@@ -233,17 +232,12 @@
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
                 length: "10",
+                validators: [TrValidators.NationalCodeValidate],
                 changed: function (form, item, value) {
-                    let codeCheck = checkNationalCode(value);
-                    nationalCodeCheck = codeCheck;
-                    if (codeCheck === false)
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.nationalCode", "<spring:message
-                                                                        code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.nationalCode", true);
-                        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
-                            "callback: personalInfo_findOne_result_company(rpcResponse)"));
-                    }
+                    if (value == null || !this.validate())
+                        return;
+                    isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
+                        "callback: personalInfo_findOne_result_company(rpcResponse)"));
                 }
             },
             {
@@ -303,7 +297,7 @@
                 length: "10",
                 validators: [TrValidators.PostalCodeValidate],
                 changed: function (form, item, value) {
-                    if (!this.validate())
+                    if (value == null || !this.validate())
                         return;
                     fillAddressFields(value);
                 }
