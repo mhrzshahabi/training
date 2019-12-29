@@ -17,7 +17,6 @@
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
 
-    var DUMMY;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
