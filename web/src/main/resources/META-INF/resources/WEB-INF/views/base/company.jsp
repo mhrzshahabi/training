@@ -623,7 +623,7 @@
 
     function show_CompanyActionResult(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();

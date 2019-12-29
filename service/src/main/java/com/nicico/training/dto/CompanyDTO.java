@@ -21,6 +21,9 @@ public class CompanyDTO implements Serializable {
     private String titleFa;
     private String email;
     private String workDomain;
+    private String companyId;
+    private String economicalId;
+    private String registerId;
 
     @Getter
     @Setter
