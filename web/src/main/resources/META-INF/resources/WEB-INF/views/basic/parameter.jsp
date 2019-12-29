@@ -192,7 +192,6 @@
 
     // ------------------------------------------- Functions -------------------------------------------
     function refreshParameterLG_parameter(selectedState) {
-        console.log(selectedState);
         ParameterLG_parameter.invalidateCache();
         ParameterLG_parameter.filterByEditor();
         setTimeout(function () {
