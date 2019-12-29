@@ -39,6 +39,21 @@ public class AddressDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CompanyAddress")
+    public static class CompanyAddress {
+        private Long id;
+        private String restAddr;
+        private String postalCode;
+        private String phone;
+        private String fax;
+        private String webSite;
+        private Long cityId;
+        private Long stateId;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("AddressCreateOrUpdateRq")
     public static class CreateOrUpdate extends AddressDTO {
         private Long id;

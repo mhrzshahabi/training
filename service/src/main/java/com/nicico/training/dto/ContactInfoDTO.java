@@ -37,6 +37,16 @@ public class ContactInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("ManagerContactInfo")
+    public static class ManagerContactInfo {
+        private Long id;
+        private String email;
+        private String mobile;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ContactInfoCreateOrUpdateRq")
     public static class CreateOrUpdate extends ContactInfoDTO {
         private Long id;

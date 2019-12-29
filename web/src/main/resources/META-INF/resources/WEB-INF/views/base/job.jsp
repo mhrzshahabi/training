@@ -132,6 +132,7 @@
         autoFetchData: true,
         gridComponents: [JobTS_job, "filterEditor", "header", "body"],
         contextMenu: JobMenu_job,
+        showResizeBar: true,
         dataChanged: function () {
             this.Super("dataChanged", arguments);
             let totalRows = this.data.getLength();
@@ -144,9 +145,9 @@
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
-    isc.TrVLayout.create({
-// members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
-        members: [JobLG_job],
+       isc.TrVLayout.create({
+        members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
+        // members: [JobLG_job],
     });
 
 
