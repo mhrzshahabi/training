@@ -5,7 +5,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.IPersonalInfoService;
-import com.nicico.training.model.ContactInfo;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.enums.EnumsConverter;
 import com.nicico.training.repository.PersonalInfoDAO;
@@ -63,11 +62,11 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     @Transactional
     @Override
-    public PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request) {
+    public PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.CreateOrUpdate request) {
 
         Optional<PersonalInfo> byNationalCode = personalInfoDAO.findByNationalCode(request.getNationalCode());
         if (!byNationalCode.isPresent())
-            return create(request);
+            return create(modelMapper.map(request, PersonalInfoDTO.Create.class));
         else {
             PersonalInfoDTO.Update updating = modelMapper.map(request, PersonalInfoDTO.Update.class);
             updating.setId(byNationalCode.get().getId());
@@ -94,7 +93,7 @@ public class PersonalInfoService implements IPersonalInfoService {
     public PersonalInfoDTO.Info update(Long id, PersonalInfoDTO.Update request) {
         PersonalInfo personalInfo = getPersonalInfo(id);
         setEnums(personalInfo, request.getMarriedId(), request.getMilitaryId(), request.getGenderId());
-        modify(request, personalInfo);
+//        modify(request, personalInfo);
         PersonalInfo pUpdating = new PersonalInfo();
         modelMapper.map(personalInfo, pUpdating);
         modelMapper.map(request, pUpdating);
@@ -147,10 +146,16 @@ public class PersonalInfoService implements IPersonalInfoService {
 
     @Transactional
     @Override
-    public void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo) {
-        if (request.getContactInfo() == null)
-            return;
-        contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
+    public void modify(PersonalInfoDTO.CreateOrUpdate request, PersonalInfo personalInfo) {
+        if (request.getContactInfo() != null) {
+            request.getContactInfo().setId(personalInfo.getContactInfo().getId());
+            contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
+        }
+        if (request.getAccountInfo() != null) {
+            request.getAccountInfo().setId(personalInfo.getAccountInfo().getId());
+//            accountInfoService.modify(request.getAccountInfo(), personalInfo.getAccountInfo());
+        }
+
     }
 
 }

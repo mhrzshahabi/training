@@ -37,7 +37,7 @@ abaspour 9803
     // var ${taskFormVariable.dsName} =
     isc.RestDataSource.create({
         fields: [
-            <%--{name: "crDate", title: "تاریخ ایجاد",type:"text"},--%>
+            <%--{name: "crDate", title: "<spring:message code="creation.date"/>",type:"text"},--%>
             {name: "id", title: "id", type: "text"},
             <%--{name: "assignee", title: "assignee", type: "text"},--%>
             <%--{name: "recom", title: "recom", type: "text"}--%>
@@ -287,8 +287,8 @@ abaspour 9803
                 message: "آیا اطمینان دارید؟",
                 icon: "[SKIN]ask.png",
                 buttons: [
-                    isc.IButtonSave.create({title: "بله"}),
-                    isc.IButtonCancel.create({title: "خیر"})
+                    isc.IButtonSave.create({title: "<spring:message code="yes"/>"}),
+                    isc.IButtonCancel.create({title: "<spring:message code="global.no"/>"})
                 ],
                 buttonClick: function (button, index) {
                     console.log(index);

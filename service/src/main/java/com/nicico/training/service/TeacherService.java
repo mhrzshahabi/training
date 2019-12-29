@@ -66,16 +66,18 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info create(TeacherDTO.Create request) {
         Optional<Teacher> byTeacherCode = teacherDAO.findByTeacherCode(request.getTeacherCode());
+        PersonalInfo personalInfo = null;
         if (byTeacherCode.isPresent())
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
 
-        final Teacher teacher = modelMapper.map(request, Teacher.class);
-
-        if (teacher.getPersonality().getId() != null) {
-            PersonalInfo personalInfo = personalInfoService.getPersonalInfo(teacher.getPersonality().getId());
-            modelMapper.map(teacher.getPersonality(), personalInfo);
-            teacher.setPersonality(personalInfo);
+        if (request.getPersonality().getId() != null) {
+            personalInfo = personalInfoService.getPersonalInfo(request.getPersonality().getId());
+            personalInfoService.modify(request.getPersonality(), personalInfo);
+            modelMapper.map(request.getPersonality(), personalInfo);
         }
+        final Teacher teacher = modelMapper.map(request, Teacher.class);
+        if (personalInfo != null)
+            teacher.setPersonality(personalInfo);
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {

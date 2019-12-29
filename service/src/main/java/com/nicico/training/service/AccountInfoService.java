@@ -100,6 +100,10 @@ public class AccountInfoService implements IAccountInfoService {
         return SearchUtil.search(accountInfoDAO, request, accountInfo -> modelMapper.map(accountInfo, AccountInfoDTO.Info.class));
     }
 
-    // ------------------------------
+    @Transactional
+    @Override
+    public void modify(AccountInfoDTO.CreateOrUpdate request, AccountInfo accountInfo) {
+
+    }
 
 }

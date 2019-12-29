@@ -25,7 +25,7 @@ public interface IPersonalInfoService {
 
     PersonalInfoDTO.Info getOneByNationalCode(String nationalCode);
 
-    PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.Create request);
+    PersonalInfoDTO.Info createOrUpdate(PersonalInfoDTO.CreateOrUpdate request);
 
-    void modify(PersonalInfoDTO.Update request, PersonalInfo personalInfo);
+    void modify(PersonalInfoDTO.CreateOrUpdate request, PersonalInfo personalInfo);
 }

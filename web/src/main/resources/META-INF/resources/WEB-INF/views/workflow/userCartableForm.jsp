@@ -23,13 +23,13 @@
         width: 150,
         data: [
             {
-                title: "نمایش کار مرتبط", icon: "pieces/512/showProcForm.png",
+                title: "<spring:message code="show.workflow.relation.job"/>", icon: "pieces/512/showProcForm.png",
                 click: function () {
                     ListGrid_WorkflowUserTaskList_showTaskForm();
                 }
             },
             {
-                title: "لیست تاریخچه ی کار", icon: "pieces/512/showProcForm.png",
+                title: "<spring:message code="workflow.history"/>", icon: "pieces/512/showProcForm.png",
                 click: function () {
                     ListGrid_WorkflowUserTaskList_showTaskHistory();
                 }
@@ -48,7 +48,7 @@
     isc.Window.create(
         {
             ID: "taskConfirmationWindow",
-            title: "تکمیل فرآیند",
+            title: "<spring:message code="complete.the.process"/>",
             autoSize: false,
             width: "80%",
             height: "90%",
@@ -68,7 +68,7 @@
         autoDraw: false,
         //border: "10px solid black",
         viewURL: "",
-        loadingMessage: "فرم کاری انتخاب نشده است"
+        loadingMessage: "<spring:message code="work.form.not.selected"/>"
     });
 
     <%--Get Process Form Details--%>
@@ -78,10 +78,10 @@
         var record = ListGrid_UserTaskList.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است !",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                title: "<spring:message code="global.message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="global.ok"/>"})],
                 buttonClick: function () {
                     this.hide();
                 }
@@ -101,10 +101,10 @@
         var record = ListGrid_UserTaskList.getSelectedRecord();
         if (record == null || record.id == null) {
             isc.Dialog.create({
-                message: "رکوردی انتخاب نشده است !",
+                message: "<spring:message code="msg.no.records.selected"/>",
                 icon: "[SKIN]ask.png",
-                title: "پیغام",
-                buttons: [isc.IButtonSave.create({title: "تائید"})],
+                title: "<spring:message code="global.message"/>",
+                buttons: [isc.IButtonSave.create({title: "<spring:message code="global.ok"/>"})],
                 buttonClick: function () {
                     this.hide();
                 }
@@ -113,14 +113,19 @@
 
             var pId = record.processInstanceId;
             <spring:url value="/web/workflow/getUserTaskHistoryForm/" var="getUserTaskHistoryForm"/>
+
             userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
             userTaskViewLoader.show();
 
+            setTimeout(function () {
+                userTaskViewLoader.setViewURL("${getUserTaskHistoryForm}" + pId);
+                userTaskViewLoader.show();
+            }, 500);
         }
     }
 
     var TSB_Refresh_userCartableForm = isc.ToolStripButtonRefresh.create({
-        title: "بازخوانی",
+        title: "<spring:message code="refresh"/>",
         click: function () {
             ListGrid_UserTaskList.invalidateCache();
         }
@@ -128,7 +133,7 @@
 
     var ToolStripButton_showUserTaskForm = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/column_preferences.png",
-        title: " نمایش فرم کار",
+        title: "<spring:message code="show.workflow.job.form"/>",
         click: function () {
             ListGrid_WorkflowUserTaskList_showTaskForm();
         }
@@ -136,7 +141,7 @@
 
     var ToolStripButton_showUserTaskHistoryForm = isc.ToolStripButton.create({
         icon: "[SKIN]/actions/column_preferences.png",
-        title: "لیست تاریخچه ی کار",
+        title: "<spring:message code="workflow.history"/>",
         click: function () {
             ListGrid_WorkflowUserTaskList_showTaskHistory();
         }
@@ -160,12 +165,12 @@
     var RestDataSource_UserTaskList = isc.TrDS.create({
         fields: [
 
-            {name: "name", title: "عنوان کار"},
-            {name: "startDateFa", title: "تاریخ ایجاد"},
-            {name: "cTime", title: "زمان"},
-            {name: "endTimeFa", title: "تاریخ خاتمه", width: "30%"},
-            {name: "description", title: "توصیف"},
-            {name: "taskDef", title: "تعریف کار"},
+            {name: "name", title: "<spring:message code="title"/>"},
+            {name: "startDateFa", title: "<spring:message code="creation.date"/>"},
+            {name: "cTime", title: "<spring:message code="time"/>"},
+            {name: "endTimeFa", title: "<spring:message code="end.date"/>", width: "30%"},
+            {name: "description", title: "<spring:message code="description"/>"},
+            {name: "taskDef", title: "<spring:message code="work.definition"/>"},
             {name: "id", title: "id", type: "text"},
             {name: "assignee", title: "assignee", type: "text"},
             {name: "processInstanceId", title: "PID", type: "text"}
@@ -197,8 +202,8 @@
         },
         fields: [
 
-            {name: "name", title: "نام کار", width: "30%"},
-            {name: "description", title: "توصیف", width: "70%"},
+            {name: "name", title: "<spring:message code="work.name"/>", width: "30%"},
+            {name: "description", title: "<spring:message code="description"/>", width: "70%"},
             {name: "id", title: "id", type: "text", width: "1%"},
         ],
         sortField: 0,
@@ -206,14 +211,14 @@
         autoFetchData: true,
         showFilterEditor: true,
         filterOnKeypress: true,
-        sortFieldAscendingText: "مرتب سازی صعودی",
-        sortFieldDescendingText: "مرتب سازی نزولی",
-        configureSortText: "تنظیم مرتب سازی",
-        autoFitAllText: "متناسب سازی ستون ها براساس محتوا",
-        autoFitFieldText: "متناسب سازی ستون بر اساس محتوا",
-        filterUsingText: "فیلتر کردن",
-        groupByText: "گروه بندی",
-        freezeFieldText: "ثابت نگه داشتن"
+        sortFieldAscendingText: "<spring:message code="sort.ascending"/>",
+        sortFieldDescendingText: "<spring:message code="sort.descending"/>",
+        configureSortText: "<spring:message code="configureSortText"/>",
+        autoFitAllText: "<spring:message code="autoFitAllText"/>",
+        autoFitFieldText: "<spring:message code="autoFitFieldText"/>",
+        filterUsingText: "<spring:message code="filterUsingText"/>",
+        groupByText: "<spring:message code="groupByText"/>",
+        freezeFieldText: "<spring:message code="freezeFieldText"/>"
 
     });
 
