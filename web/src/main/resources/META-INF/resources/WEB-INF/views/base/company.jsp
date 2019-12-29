@@ -2,7 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
 
-// script
+// <script>
 
     //************************************************************************************
     // RestDataSource & ListGrid
@@ -16,7 +16,7 @@
             {name: "id"},
             {name: "name"}
         ],
-        fetchDataURL: cityUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: cityUrl + "iscList"
     });
 
     RestDataSource_Work_State_Company = isc.TrDS.create({
@@ -24,7 +24,7 @@
             {name: "id"},
             {name: "name"}
         ],
-        fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: stateUrl + "iscList"
     });
 
     RestDataSource_company = isc.TrDS.create({
@@ -33,6 +33,10 @@
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+            {name: "manager.id"},
+            {name: "manager.contactInfo.id"},
+            {name: "accountInfo.id"},
+            {name: "address.id"}
         ],
         fetchDataURL: companyUrl + "spec-list"
     });
@@ -136,7 +140,7 @@
         margin: 20,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "accountInfo.id", hidden: true},
             {
                 name: "accountInfo.bank",
                 title: "<spring:message code='bank'/>",
@@ -193,6 +197,7 @@
         newPadding: 5,
         fields: [
             {name: "manager.id", hidden: true},
+            {name: "manager.contactInfo.id", hidden: true},
             {
                 name: "manager.nationalCode",
                 // required: "true",
@@ -262,12 +267,18 @@
         margin: 20,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "address.id", hidden: true},
             {
                 name: "address.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10",
+                validators: [TrValidators.PostalCodeValidate],
+                changed: function (form, item, value) {
+                    if (!this.validate())
+                        return;
+                    fillAddressFields(value);
+                }
             },
             {
                 name: "address.restAddr",
@@ -413,6 +424,11 @@
         contextMenu: Menu_ListGrid_Company,
         sortField: 1,
         autoFetchData: true,
+        fields: [
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
+            {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+        ],
         doubleClick: function () {
             show_Company_EditForm();
         },
@@ -579,7 +595,6 @@
             co.clearValues();
             co.clearErrors(true);
             company_method = "PUT";
-            // console.log(record.address);
             if (record.address !== undefined && record.address.stateId !== undefined)
                 RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
             co.editRecord(record);
@@ -599,7 +614,6 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                       // Wait_Company = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(companyUrl + record.id, "DELETE", null, "callback: show_CompanyActionResult(rpcResponse)"));
                     }
                 }
@@ -629,10 +643,32 @@
             DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.firstNameFa);
             DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.lastNameFa);
             if (personal.contactInfo !== null && personal.contactInfo !== undefined) {
+                DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.id", personal.contactInfo.id);
                 DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.mobile", personal.contactInfo.mobile);
                 DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.email", personal.contactInfo.email);
             }
         }
+    }
+
+    function fillAddressFields(postalCode) {
+        if (postalCode !== undefined)
+            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
+                "callback: address_findOne_result(rpcResponse)"));
+    }
+
+    function address_findOne_result(resp) {
+        if (resp === null || resp === undefined || resp.data === "") {
+            return;
+        }
+        let data = JSON.parse(resp.data);
+        DynamicForm_Address_Company.setValue("address.id", data.id);
+        DynamicForm_Address_Company.setValue("address.postalCode", data.postalCode);
+        DynamicForm_Address_Company.setValue("address.restAddr", data.restAddr);
+        DynamicForm_Address_Company.setValue("address.phone", data.phone);
+        DynamicForm_Address_Company.setValue("address.fax", data.fax);
+        DynamicForm_Address_Company.setValue("address.webSite", data.webSite);
+        DynamicForm_Address_Company.setValue("address.stateId", data.stateId);
+        DynamicForm_Address_Company.setValue("address.cityId", data.cityId);
     }
 
     // </script>

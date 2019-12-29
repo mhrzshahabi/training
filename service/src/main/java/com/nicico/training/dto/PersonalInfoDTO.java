@@ -70,6 +70,18 @@ public class PersonalInfoDTO {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("CompanyManager")
+    public static class CompanyManager {
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private ContactInfoDTO.ManagerContactInfo contactInfo;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("PersonalInfoCreateOrUpdateRq")
     public static class CreateOrUpdate extends PersonalInfoDTO {
         private Long id;

@@ -3,7 +3,6 @@ package com.nicico.training.model;
 
 import lombok.*;
 import lombok.experimental.Accessors;
-import org.hibernate.annotations.Cascade;
 
 import javax.persistence.*;
 import java.util.Set;
@@ -30,7 +29,7 @@ public class Teacher extends Auditable {
     @Column(name = "b_enabled")
     private Boolean enableStatus;
 
-    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST,CascadeType.REFRESH, CascadeType.MERGE})
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "f_personality")
     private PersonalInfo personality;
 
