@@ -38,11 +38,14 @@
         width: "100%",
         height: "100%",
         titleAlign: "left",
+        showInlineErrors: true,
         fields: [
             {name: "id", hidden: true},
             {
                 name: "langName",
                 title: "نام زبان خارجی",
+                required: true,
+                validators: [TrValidators.NotEmpty]
             },
             {
                 name: "langLevelReadingId",
@@ -314,13 +317,13 @@
 
     function ListGrid_ForeignLangKnowledge_Add() {
         methodForeignLangKnowledge = "POST";
-        saveActionUrlForeignLangKnowledge = ForeignLangKnowledgeUrl + "/" + teacherIdForeignLangKnowledge;
+        saveActionUrlForeignLangKnowledge = foreignLangKnowledgeUrl + "/" + teacherIdForeignLangKnowledge;
         DynamicForm_JspForeignLangKnowledge.clearValues();
         Window_JspForeignLangKnowledge.show();
     }
 
     function ListGrid_ForeignLangKnowledge_Edit() {
-        let record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
+        var record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
@@ -328,22 +331,10 @@
             saveActionUrlForeignLangKnowledge = ForeignLangKnowledgeUrl + "/" + record.id;
             DynamicForm_JspForeignLangKnowledge.clearValues();
             DynamicForm_JspForeignLangKnowledge.editRecord(record);
-            let categoryIds = DynamicForm_JspForeignLangKnowledge.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspForeignLangKnowledge.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").disable();
-            else {
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").enable();
-                let catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
-                DynamicForm_JspForeignLangKnowledge.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").focus(null, null);
-            }
+            
             if (subCategoryIds != null && subCategoryIds.length > 0) {
-                let subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
+                var subCatIds = [];
+                for (var i = 0; i < subCategoryIds.length; i++)
                     subCatIds.add(subCategoryIds[i].id);
                 DynamicForm_JspForeignLangKnowledge.getField("subCategories").setValue(subCatIds);
             }
@@ -352,11 +343,11 @@
     }
 
     function ListGrid_ForeignLangKnowledge_Remove() {
-        let record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
+        var record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
@@ -380,7 +371,7 @@
     function ForeignLangKnowledge_save_result(resp) {
         waitForeignLangKnowledge.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             ListGrid_ForeignLangKnowledge_refresh();
             Window_JspForeignLangKnowledge.close();
@@ -402,13 +393,13 @@
         waitForeignLangKnowledge.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ForeignLangKnowledge_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
+            var respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
