@@ -1267,7 +1267,7 @@
             },
             {
                 ID: "foreingLang",
-                title: "<spring:message code="foreign.languages"/>",
+                title: "<spring:message code="foreign.languages.knowledge"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
             }
         ],
@@ -1881,6 +1881,9 @@
             if (typeof loadPage_TeacherCertification !== "undefined")
                 loadPage_TeacherCertification(teacherId);
 
+            if (typeof loadPage_ForeignLangKnowledge !== "undefined")
+                loadPage_ForeignLangKnowledge(teacherId);
+
         }
     }
 
@@ -1896,6 +1899,9 @@
 
         if (typeof clear_TeacherCertification !== "undefined")
             clear_TeacherCertification();
+
+        if (typeof clear_ForeignLangKnowledge !== "undefined")
+            clear_ForeignLangKnowledge();
     }
 
     // </script>

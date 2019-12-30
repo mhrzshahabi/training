@@ -8,7 +8,6 @@
     var saveActionUrlForeignLangKnowledge;
     var waitForeignLangKnowledge;
     var teacherIdForeignLangKnowledge = null;
-    var isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -18,10 +17,11 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "langName", filterOperator: "iContains"},
-            {name: "langLevelReading.titleFa"},
-            {name: "langLevelWriting.titleFa"},
-            {name: "langLevelSpeaking.titleFa"},
-            {name: "langLevelTranslation.titleFa"}
+            {name: "langLevel.titleFa"},
+            {name: "instituteName"},
+            {name: "duration"},
+            {name: "persianStartDate"},
+            {name: "persianEndDate"}
         ]
     });
 
@@ -38,16 +38,19 @@
         width: "100%",
         height: "100%",
         titleAlign: "left",
+        showInlineErrors: true,
+        showErrorText: false,
         fields: [
             {name: "id", hidden: true},
             {
                 name: "langName",
-                title: "نام زبان خارجی",
+                title: "<spring:message code="foreign.language"/>",
+                required: true
             },
             {
-                name: "langLevelReadingId",
+                name: "langLevelId",
                 type: "IntegerItem",
-                title: "خواندن",
+                title: "<spring:message code="knowledge.level"/>",
                 textAlign: "center",
                 width: "*",
                 editorType: "ComboBoxItem",
@@ -71,89 +74,74 @@
                     {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
             {
-                name: "langLevelWritingId",
-                type: "IntegerItem",
-                title: "نوشتن",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_ElangLevel_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                name: "instituteName",
+                title: "<spring:message code="institute.place"/>"
             },
             {
-                name: "langLevelSpeakingId",
-                type: "IntegerItem",
-                title: "مکالمه",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_ElangLevel_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                name: "duration",
+                title: "<spring:message code="duration"/>"
             },
             {
-                name: "langLevelTranslationId",
-                type: "IntegerItem",
-                title: "ترجمه",
-                textAlign: "center",
-                width: "*",
-                editorType: "ComboBoxItem",
-                changeOnKeypress: true,
-                defaultToFirstOption: true,
-                displayField: "titleFa",
-                valueField: "id",
-                optionDataSource: RestDataSource_ElangLevel_JspTeacher,
-                autoFetchData: false,
-                addUnknownValues: false,
-                cachePickListResults: false,
-                useClientFiltering: true,
-                filterFields: ["titleFa"],
-                sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
+                name: "persianStartDate",
+                ID: "foreignLangKnowledge_startDate_JspForeignLangKnowledge",
+                title: "<spring:message code='start.date'/>",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('foreignLangKnowledge_startDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                    }
+                }],
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        if (value === undefined)
+                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate") === undefined;
+                        return checkBirthDate(value);
+                    }
+                }]
             },
+            {
+                name: "persianEndDate",
+                ID: "foreignLangKnowledge_endDate_JspForeignLangKnowledge",
+                title: "<spring:message code='end.date'/>",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('foreignLangKnowledge_startDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                    }
+                }],
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        if (value === undefined)
+                            return  DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate") === undefined;
+                        if (!checkDate(value))
+                            return false;
+                        if ( DynamicForm_JspForeignLangKnowledge.hasFieldErrors("persianStartDate"))
+                            return true;
+                        var persianStartDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianStartDate"));
+                        var persianEndDate = JalaliDate.jalaliToGregori( DynamicForm_JspForeignLangKnowledge.getValue("persianEndDate"));
+                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
+                    }
+                }]
+            }
         ]
     });
 
     IButton_Save_JspForeignLangKnowledge = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspForeignLangKnowledge.validate();
             if (!DynamicForm_JspForeignLangKnowledge.valuesHaveChanged() || !DynamicForm_JspForeignLangKnowledge.validate())
                 return;
             waitForeignLangKnowledge = createDialog("wait");
@@ -183,7 +171,7 @@
         width: "500",
         align: "center",
         border: "1px solid gray",
-        title: "آشنایی با زبانهای خارجی",
+        title: "<spring:message code="foreign.languages.knowledge"/>",
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspForeignLangKnowledge, HLayout_SaveOrExit_JspForeignLangKnowledge]
         })]
@@ -217,7 +205,6 @@
     ListGrid_JspForeignLangKnowledge = isc.TrLG.create({
         dataSource: RestDataSource_JspForeignLangKnowledge,
         contextMenu: Menu_JspForeignLangKnowledge,
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
@@ -231,23 +218,31 @@
         fields: [
             {
                 name: "langName",
-                title: "نام زبان خارجی",
+                title: "<spring:message code='foreign.language'/>",
             },
             {
-                name: "langLevelReading.titleFa",
-                title:"خواندن"
+                name: "langLevel.titleFa",
+                title:"<spring:message code='knowledge.level'/>"
             },
             {
-                name: "langLevelWriting.titleFa",
-                title: "نوشتن"
+                name: "instituteName",
+                title: "<spring:message code="institute.place"/>"
             },
             {
-                name: "langLevelSpeaking.titleFa",
-                title: "مکالمه"
+                name: "duration",
+                title: "<spring:message code="duration"/>"
             },
             {
-                name: "langLevelTranslation.titleFa",
-                title: "ترجمه"
+                name: "persianStartDate",
+                title: "<spring:message code='start.date'/>",
+                canFilter: false,
+                canSort: false
+            },
+            {
+                name: "persianEndDate",
+                title: "<spring:message code='end.date'/>",
+                canFilter: false,
+                canSort: false
             }
         ],
         rowDoubleClick: function () {
@@ -308,62 +303,46 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_ForeignLangKnowledge_refresh() {
+        RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
+        ListGrid_JspForeignLangKnowledge.fetchData();
         ListGrid_JspForeignLangKnowledge.invalidateCache();
-        ListGrid_JspForeignLangKnowledge.filterByEditor();
     }
 
     function ListGrid_ForeignLangKnowledge_Add() {
         methodForeignLangKnowledge = "POST";
-        saveActionUrlForeignLangKnowledge = ForeignLangKnowledgeUrl + "/" + teacherIdForeignLangKnowledge;
+        saveActionUrlForeignLangKnowledge = foreignLangKnowledgeUrl + "/" + teacherIdForeignLangKnowledge;
         DynamicForm_JspForeignLangKnowledge.clearValues();
+        DynamicForm_JspForeignLangKnowledge.getField("langName").enable();
         Window_JspForeignLangKnowledge.show();
     }
 
     function ListGrid_ForeignLangKnowledge_Edit() {
-        let record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
+        var record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
         if (record == null || record.id == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
             methodForeignLangKnowledge = "PUT";
-            saveActionUrlForeignLangKnowledge = ForeignLangKnowledgeUrl + "/" + record.id;
+            saveActionUrlForeignLangKnowledge = foreignLangKnowledgeUrl + "/" + record.id;
             DynamicForm_JspForeignLangKnowledge.clearValues();
             DynamicForm_JspForeignLangKnowledge.editRecord(record);
-            let categoryIds = DynamicForm_JspForeignLangKnowledge.getField("categories").getValue();
-            let subCategoryIds = DynamicForm_JspForeignLangKnowledge.getField("subCategories").getValue();
-            if (categoryIds == null || categoryIds.length === 0)
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").disable();
-            else {
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").enable();
-                let catIds = [];
-                for (let i = 0; i < categoryIds.length; i++)
-                    catIds.add(categoryIds[i].id);
-                DynamicForm_JspForeignLangKnowledge.getField("categories").setValue(catIds);
-                isCategoriesChanged = true;
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").focus(null, null);
-            }
-            if (subCategoryIds != null && subCategoryIds.length > 0) {
-                let subCatIds = [];
-                for (let i = 0; i < subCategoryIds.length; i++)
-                    subCatIds.add(subCategoryIds[i].id);
-                DynamicForm_JspForeignLangKnowledge.getField("subCategories").setValue(subCatIds);
-            }
+            DynamicForm_JspForeignLangKnowledge.getField("langName").disable();
             Window_JspForeignLangKnowledge.show();
         }
     }
 
     function ListGrid_ForeignLangKnowledge_Remove() {
-        let record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
+        var record = ListGrid_JspForeignLangKnowledge.getSelectedRecord();
         if (record == null) {
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
         } else {
-            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+            var Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
                 "<spring:message code='verify.delete'/>");
             Dialog_Delete.addProperties({
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
                         waitForeignLangKnowledge = createDialog("wait");
-                        isc.RPCManager.sendRequest(TrDSRequest(ForeignLangKnowledgeUrl +
+                        isc.RPCManager.sendRequest(TrDSRequest(foreignLangKnowledgeUrl +
                             "/" +
                             teacherIdForeignLangKnowledge +
                             "," +
@@ -380,9 +359,9 @@
     function ForeignLangKnowledge_save_result(resp) {
         waitForeignLangKnowledge.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-            ListGrid_ForeignLangKnowledge_refresh();
+            ListGrid_JspForeignLangKnowledge.invalidateCache();
             Window_JspForeignLangKnowledge.close();
             setTimeout(function () {
                 OK.close();
@@ -402,13 +381,13 @@
         waitForeignLangKnowledge.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             ListGrid_ForeignLangKnowledge_refresh();
-            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();
             }, 3000);
         } else {
-            let respText = resp.httpResponseText;
+            var respText = resp.httpResponseText;
             if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
                 createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
             } else {
@@ -420,9 +399,9 @@
     function loadPage_ForeignLangKnowledge(id) {
         if (teacherIdForeignLangKnowledge !== id) {
             teacherIdForeignLangKnowledge = id;
-            RestDataSource_JspForeignLangKnowledge.fetchDataURL = ForeignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
+            RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
             ListGrid_JspForeignLangKnowledge.fetchData();
-            ListGrid_ForeignLangKnowledge_refresh();
+            ListGrid_Teacher_JspTeacher.invalidateCache();
         }
     }
 
