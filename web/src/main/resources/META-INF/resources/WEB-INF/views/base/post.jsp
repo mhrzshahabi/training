@@ -182,7 +182,6 @@
 
     ////////////////////////////Detail Viewer Personnel ////////////////////////////
 
-
     PersonnelDS_personnel = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -266,7 +265,7 @@
                 autoFitWidth: true
             },
 
-        ],
+        ]
         // fetchDataURL: personnelUrl + "/byPostCode"
     });
 
@@ -282,6 +281,7 @@
         dataSource: PersonnelDS_personnel,
         fields: [
 
+            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -293,7 +293,7 @@
             {name: "workPlaceTitle"},
             {name: "workTurnTitle"},
             {name: "postTitle"},
-            {name: "postCode"},
+            {name: "postCode"}
         ]
     });
 
@@ -304,9 +304,7 @@
         // var JSONObj = {"postCode": dummy};
 
 
-        PersonnelDS_personnel.fetchDataURL = personnelUrl + "/byPostCode/"+ postId;
-        console.log (PersonnelDS_personnel.data);
-        console.log(PersonnelDS_personnel.localData);
+        PersonnelDS_personnel.fetchDataURL = personnelUrl + "/byPostCode/" + postId;
         DetailViewer_Personnel.invalidateCache();
         DetailViewer_Personnel.fetchData();
 

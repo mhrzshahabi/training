@@ -15,4 +15,6 @@ public interface IPersonnelService {
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
 
+    List<PersonnelDTO.Info> getByPostCode(Long postId);
+
 }

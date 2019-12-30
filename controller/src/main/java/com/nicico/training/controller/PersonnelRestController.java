@@ -10,10 +10,6 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
-import com.nicico.training.dto.PostDTO;
-import com.nicico.training.iservice.IPersonnelService;
-import com.nicico.training.model.Personnel;
-import com.nicico.training.model.Post;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.service.CourseService;
@@ -25,8 +21,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -53,28 +49,26 @@ public class PersonnelRestController {
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
     }
 
-
     @Loggable
     @GetMapping(value = "/byPostCode/{postId}")
-//    @PreAuthorize("hasAuthority('c_personnel')")
-    public ResponseEntity<Personnel> findPersonnelByPostCode(@PathVariable Long postId) {
-//    public ResponseEntity<Personnel> findPersonnelByPostCode(@RequestParam("postId") Long postId) {
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByPostCode(@PathVariable Long postId) {
 
-//        Optional<Post>  post = (postDAO.findOneById(postId));
-//        String postCode = post.get().getCode();
-        String postCode = postDAO.findOneById(postId);
-        if (((personnelDAO.findOneByPostCode(postCode)) == null )){
-            return null;
-        }
-        else {
-            if ((personnelDAO.findOneByPostCode(postCode)) == null ) {
-                return null;
-            }
-            Optional<Personnel> optPersonnel = (personnelDAO.findOneByPostCode(postCode));
-            Personnel personnel = optPersonnel.get();
-            return new ResponseEntity<Personnel>(personnel, HttpStatus.OK);
+
+        List<PersonnelDTO.Info> list = new ArrayList<>();
+        list = personnelService.getByPostCode(postId);
+
+        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
+        final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
         }
 
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
 }

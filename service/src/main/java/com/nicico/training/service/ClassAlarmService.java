@@ -1,22 +1,27 @@
+////*****rastegari 9809*****
 package com.nicico.training.service;
 
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.ClassAlarmDTO;
 import com.nicico.training.iservice.IClassAlarm;
-import jdk.internal.org.objectweb.asm.TypeReference;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
+import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -25,13 +30,14 @@ public class ClassAlarmService implements IClassAlarm {
     @Autowired
     protected EntityManager entityManager;
     private final ModelMapper modelMapper;
+    private MessageSource messageSource;
 
 
     //*********************************
     /*point : for ended classes do not fetch alarms*/
     @Transactional
     @Override
-    public List<ClassAlarmDTO> list(Long class_id) {
+    public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
 
         DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         Date date = new Date();
@@ -90,7 +96,35 @@ public class ClassAlarmService implements IClassAlarm {
                     "    tbl_session.f_class_id = :class_id  " +
                     "    AND tbl_session.c_session_date <:todaydat " +
                     "    AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0) " +
-                    " ) " +
+                    " ) ");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT targetRecordId, tabName, pageAddress, alarmType,  " +
+                    " ('تعداد شرکت کنندگان کلاس از ' ||  CASE WHEN status = 'MAX' THEN 'حداکثر ظرفیت کلاس بیشتر' ELSE 'حداقل ظرفیت کلاس کمتر' END || ' است')  AS alarm, " +
+                    " 1 AS detailRecordId, sortField " +
+                    " FROM " +
+                    " (SELECT " +
+                    "    tbl_class.id AS targetRecordId, " +
+                    "    'classStudentsTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'ظرفیت کلاس' AS alarmType, " +
+                    "      ('ظرفیت کلاس'|| ' ' || tbl_class.id) AS sortField, " +
+                    "      CASE WHEN COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity THEN 'MAX' WHEN " +
+                    "                COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity THEN 'MIN' END AS status, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity, " +
+                    "   COUNT(tbl_class_student.f_student) AS studentCount " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.f_class " +
+                    " WHERE tbl_class.id = :class_id " +
+                    "    GROUP BY      " +
+                    "    tbl_class.id, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity " +
+                    "    HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity OR " +
+                    "           COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) " +
                     " ORDER BY sortField ");
             //***order by must be in the last script***
 
@@ -111,7 +145,9 @@ public class ClassAlarmService implements IClassAlarm {
 
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException("اشکال در ارتباط با دیتابیس");
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
+
         }
 
         return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
