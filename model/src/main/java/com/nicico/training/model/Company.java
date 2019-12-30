@@ -30,23 +30,31 @@ public class Company extends Auditable {
     @Column(name = "c_work_domain")
     private String workDomain;
 
+    @Column(name = "c_company_id", length = 12, nullable = false)
+    private String companyId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
+    @Column(name = "c_economical_id", length = 12, nullable = false)
+    private String economicalId;
+
+    @Column(name = "c_register_id", length = 12, nullable = false)
+    private String registerId;
+
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "f_account_info_id")
     private AccountInfo accountInfo;
-    @Column(name = "f_account_info_id")
+    @Column(name = "f_account_info_id", nullable = false, insertable = false, updatable = false)
     private Long accountInfoId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_personal_info_id", nullable = false, insertable = false, updatable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "f_personal_info_id")
     private PersonalInfo manager;
-    @Column(name = "f_personal_info_id")
+    @Column(name = "f_personal_info_id", nullable = false, insertable = false, updatable = false)
     private Long managerId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_address_id", nullable = false, insertable = false, updatable = false)
+    @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
+    @JoinColumn(name = "f_address_id")
     private Address address;
-    @Column(name = "f_address_id")
+    @Column(name = "f_address_id", nullable = false, insertable = false, updatable = false)
     private Long addressId;
 }
 

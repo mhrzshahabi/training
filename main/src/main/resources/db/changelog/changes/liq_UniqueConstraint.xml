@@ -59,4 +59,7 @@
     <changeSet author="ghazanfari_f (generated)" id="1576922961786-159">
         <addUniqueConstraint columnNames="f_skill_id, f_post_id" constraintName="UKllsr435txy4fjtvvg3j4a5k4e" tableName="tbl_need_assessment_skill_post"/>
     </changeSet>
+     <changeSet author="heydaripoor (generated)" id="1577516246169-188">
+        <addUniqueConstraint columnNames="c_title_fa" constraintName="UKrmbjiql6px2eqtwiatcae2rwk" tableName="tbl_behavioral_goal"/>
+    </changeSet>
 </databaseChangeLog>

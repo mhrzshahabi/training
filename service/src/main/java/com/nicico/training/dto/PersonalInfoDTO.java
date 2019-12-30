@@ -67,20 +67,27 @@ public class PersonalInfoDTO {
         private Integer version;
     }
 
-//    @Getter
-//    @Setter
-//    @ApiModel("PersonalInfoInfoTuple")
-//    static class PersonalInfoInfoTuple extends PersonalInfoDTO {
-//
-//        private EMilitaryDTO.EMilitaryInfoTuple eMilitary;
-//        private EMarriedDTO.EMarriedInfoTuple eMarried;
-//        private EGenderDTO.EGenderInfoTuple eGender;
-//        private EducationLevelDTO.EducationLevelInfoTuple educationLevel;
-//        private EducationMajorDTO.EducationMajorInfoTuple educationMajor;
-//        private EducationOrientationDTO.EducationOrientationInfoTuple educationOrientation;
-//        private ContactInfoDTO.ContactInfoInfoTuple contactInfo;
-//        private AccountInfoDTO.AccountInfoInfoTuple accountInfo;
-//    }
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("CompanyManager")
+    public static class CompanyManager {
+        private Long id;
+        private String firstNameFa;
+        private String lastNameFa;
+        private String nationalCode;
+        private ContactInfoDTO.ManagerContactInfo contactInfo;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonalInfoCreateOrUpdateRq")
+    public static class CreateOrUpdate extends PersonalInfoDTO {
+        private Long id;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
+        private AccountInfoDTO.CreateOrUpdate accountInfo;
+    }
 
     @Getter
     @Setter
@@ -98,8 +105,8 @@ public class PersonalInfoDTO {
     @ApiModel("PersonalInfoUpdateRq")
     public static class Update extends PersonalInfoDTO {
         private Long id;
-        private ContactInfoDTO.Create contactInfo;
-        private AccountInfoDTO.Create accountInfo;
+        private ContactInfoDTO.CreateOrUpdate contactInfo;
+        private AccountInfoDTO.CreateOrUpdate accountInfo;
     }
 
     @Getter
@@ -142,20 +149,4 @@ public class PersonalInfoDTO {
         private Integer totalRows;
     }
 
-//    @Getter
-//    @Setter
-//    @ApiModel("PersonalInfoFullNameTuple")
-//    static class PersonalInfoFullNameTuple {
-//
-//        private Long id;
-//
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private String lastNameFa;
-//
-//        @NotEmpty
-//        @ApiModelProperty(required = true)
-//        private String nationalCode;
-//
-//    }
 }

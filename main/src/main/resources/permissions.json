@@ -1,6 +1,10 @@
 {
   "list": [
     {
+      "code": "BasicInfo",
+      "title": "اطلاعات پایه"
+    },
+    {
       "code": "AccountInfo_C",
       "title": "ایجاد اطلاعات حساب"
     },

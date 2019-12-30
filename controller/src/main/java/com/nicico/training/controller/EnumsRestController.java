@@ -7,6 +7,7 @@ TIME: 10:40 AM
 */
 
 import com.nicico.training.dto.enums.*;
+import com.nicico.training.model.enums.ELangLevel;
 import com.nicico.training.model.enums.ETechnicalType;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -125,6 +126,11 @@ public class EnumsRestController {
     @GetMapping("eClassAttachmentType/spec-list")
     public ResponseEntity<EClassAttachmentTypeDTO.EClassAttachmentTypeSpecRs> EClassAttachmentType() {
         return new ResponseEntity<>(new EClassAttachmentTypeDTO.EClassAttachmentTypeSpecRs(), HttpStatus.OK);
+    }
+
+    @GetMapping("eLangLevel/spec-list")
+    public ResponseEntity<ELangLevelDTO.ELangLevelSpecRs> ELangLevel() {
+        return new ResponseEntity<>(new ELangLevelDTO.ELangLevelSpecRs(), HttpStatus.OK);
     }
 
 }

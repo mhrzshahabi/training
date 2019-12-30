@@ -7,7 +7,6 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompanyDTO;
-import com.nicico.training.service.AccountInfoService;
 import com.nicico.training.service.CompanyService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -28,7 +27,6 @@ import java.util.List;
 public class CompanyRestController {
     private final CompanyService companyService;
     private final ObjectMapper objectMapper;
-    private final AccountInfoService accountInfoService;
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -67,11 +65,8 @@ public class CompanyRestController {
     @Loggable
     @DeleteMapping("/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
-        final CompanyDTO.Info company = companyService.get(id);
         try {
             companyService.delete(id);
-            if (company.getAccountInfoId() != null)
-                accountInfoService.delete(company.getAccountInfoId());
             return new ResponseEntity<>(HttpStatus.OK);
         } catch (TrainingException | DataIntegrityViolationException e) {
             return new ResponseEntity<>(

@@ -4,12 +4,13 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AccountInfoDTO;
 import com.nicico.training.dto.AddressDTO;
 import com.nicico.training.dto.CompanyDTO;
 import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.iservice.ICompanyService;
+import com.nicico.training.model.Address;
 import com.nicico.training.model.Company;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.repository.CompanyDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -27,7 +28,6 @@ import java.util.Optional;
 public class CompanyService implements ICompanyService {
     private final CompanyDAO companyDAO;
     private final ModelMapper modelMapper;
-    private final AccountInfoService accountInfoService;
     private final AddressService addressService;
     private final PersonalInfoService personalInfoService;
 
@@ -35,9 +35,14 @@ public class CompanyService implements ICompanyService {
     @Transactional(readOnly = true)
     @Override
     public CompanyDTO.Info get(Long id) {
+        return modelMapper.map(getCompany(id), CompanyDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Company getCompany(Long id) {
         final Optional<Company> optionalCompany = companyDAO.findById(id);
-        final Company company = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
-        return modelMapper.map(company, CompanyDTO.Info.class);
+        return optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TermNotFound));
     }
 
     @Transactional
@@ -51,24 +56,9 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info create(CompanyDTO.Create request) {
-
-        if (request.getAccountInfo() != null) {
-            AccountInfoDTO.Info accountInfoDTO = accountInfoService.create(request.getAccountInfo());
-            request.setAccountInfoId(accountInfoDTO.getId());
-            request.setAccountInfo(null);
-        }
-        if (request.getAddress() != null) {
-            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
-            request.setAddressId(addressDTO.getId());
-            request.setAddress(null);
-        }
-        if (request.getManager() != null) {
-            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-            request.setManagerId(personalInfoDTO.getId());
-            request.setManager(null);
-        }
-
         final Company company = modelMapper.map(request, Company.class);
+        setManager(request, company);
+        setAddress(request, company);
         try {
             return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -81,49 +71,12 @@ public class CompanyService implements ICompanyService {
     @Transactional
     @Override
     public CompanyDTO.Info update(Long id, CompanyDTO.Update request) {
-
-        Optional<Company> optionalCompany = companyDAO.findById(id);
-        Company currentCompany = optionalCompany.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompanyNotFound));
-
-        if (request.getAccountInfo() != null) {
-            request.getAccountInfo().setId(currentCompany.getAccountInfoId());
-            AccountInfoDTO.Info accountInfoDTO = accountInfoService.createOrUpdate(request.getAccountInfo());
-            request.setAccountInfoId(accountInfoDTO.getId());
-            request.setAccountInfo(null);
-        } else if (currentCompany.getAccountInfo() != null) {
-            request.setAccountInfoId(currentCompany.getAccountInfoId());
-            request.setAccountInfo(modelMapper.map(currentCompany.getAccountInfo(), AccountInfoDTO.Create.class));
-        }
-        if (request.getAddress() != null) {
-            request.getAddress().setId(currentCompany.getAddressId());
-            AddressDTO.Info addressDTO = addressService.createOrUpdate(request.getAddress());
-            request.setAddressId(addressDTO.getId());
-            request.setAddress(null);
-        } else if (currentCompany.getAddress() != null) {
-            request.setAddressId(currentCompany.getAddressId());
-            request.setAddress(modelMapper.map(currentCompany.getAddress(), AddressDTO.Create.class));
-        }
-        if (request.getManager() != null) {
-            request.getManager().setId(currentCompany.getManagerId());
-            PersonalInfoDTO.Info personalInfoDTO = personalInfoService.createOrUpdate(request.getManager());
-            request.setManagerId(personalInfoDTO.getId());
-            request.setManager(null);
-        } else if (currentCompany.getManager() != null) {
-            request.setManagerId(currentCompany.getManagerId());
-            request.setManager(modelMapper.map(currentCompany.getManager(), PersonalInfoDTO.Create.class));
-        }
-
+        Company currentCompany = getCompany(id);
         Company company = new Company();
         modelMapper.map(currentCompany, company);
+        setManager(request, company);
+        setAddress(request, company);
         modelMapper.map(request, company);
-
-        if (request.getAddress() == null)
-            company.setAddress(null);
-        if (request.getAccountInfo() == null)
-            company.setAccountInfo(null);
-        if (request.getManager() == null)
-            company.setManager(null);
-
         try {
             return modelMapper.map(companyDAO.saveAndFlush(company), CompanyDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -152,6 +105,29 @@ public class CompanyService implements ICompanyService {
     @Override
     public SearchDTO.SearchRs<CompanyDTO.Info> search(SearchDTO.SearchRq request) {
         return SearchUtil.search(companyDAO, request, company -> modelMapper.map(company, CompanyDTO.Info.class));
+    }
+
+    private void setAddress(CompanyDTO.Create request, Company company) {
+        if (request.getAddress() != null && request.getAddress().getPostalCode() != null) {
+            Address address = addressService.getByPostalCode(request.getAddress().getPostalCode());
+            if (address != null) {
+                request.setAddressId(address.getId());
+                request.getAddress().setId(address.getId());
+                modelMapper.map(request.getAddress(), address);
+                company.setAddress(address);
+                request.setAddress(modelMapper.map(address, AddressDTO.CompanyAddress.class));
+            }
+        }
+    }
+
+    private void setManager(CompanyDTO.Create request, Company company) {
+        if (request.getManager() != null && request.getManager().getId() != null) {
+            PersonalInfo manager = personalInfoService.getPersonalInfo(request.getManager().getId());
+            request.setManagerId(manager.getId());
+            modelMapper.map(request.getManager(), manager);
+            company.setManager(manager);
+            request.setManager(modelMapper.map(manager, PersonalInfoDTO.CompanyManager.class));
+        }
     }
 
 

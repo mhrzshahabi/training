@@ -36,24 +36,16 @@ public class TeacherDTO {
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
+        private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
         private Integer version;
     }
-
-//    @Getter
-//    @Setter
-//    @ApiModel("TeacherInfoTuple")
-//    static class TeacherInfoTuple {
-//        private Long id;
-//        private PersonalInfoDTO.Create personality;
-//        private Set<CategoryDTO.CategoryInfoTuple> categories;
-//    }
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TeacherCreateRq")
     public static class Create extends TeacherDTO {
-        private PersonalInfoDTO.Create personality;
+        private PersonalInfoDTO.CreateOrUpdate personality;
     }
 
     @Getter
@@ -61,7 +53,7 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherUpdateRq")
     public static class Update extends TeacherDTO {
-        private PersonalInfoDTO.Update personality;
+        private PersonalInfoDTO.CreateOrUpdate personality;
     }
 
     @Getter

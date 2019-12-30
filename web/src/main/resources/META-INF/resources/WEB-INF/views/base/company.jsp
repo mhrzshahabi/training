@@ -1,8 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-
-// script
+// <script>
 
     //************************************************************************************
     // RestDataSource & ListGrid
@@ -16,7 +15,7 @@
             {name: "id"},
             {name: "name"}
         ],
-        fetchDataURL: cityUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: cityUrl + "iscList"
     });
 
     RestDataSource_Work_State_Company = isc.TrDS.create({
@@ -24,7 +23,7 @@
             {name: "id"},
             {name: "name"}
         ],
-        fetchDataURL: stateUrl + "spec-list?_startRow=0&_endRow=55"
+        fetchDataURL: stateUrl + "iscList"
     });
 
     RestDataSource_company = isc.TrDS.create({
@@ -33,6 +32,13 @@
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+            {name: "companyId", title: "<spring:message code="company.id"/>", filterOperator: "iContains"},
+            {name: "economicalId", title: "<spring:message code="company.economical.id"/>", filterOperator: "iContains"},
+            {name: "registerId", title: "<spring:message code="company.register.id"/>", filterOperator: "iContains"},
+            {name: "manager.id"},
+            {name: "manager.contactInfo.id"},
+            {name: "accountInfo.id"},
+            {name: "address.id"}
         ],
         fetchDataURL: companyUrl + "spec-list"
     });
@@ -99,6 +105,7 @@
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "co",
+        numCols: 4,
         fields: [
             {name: "id", hidden: true},
             {
@@ -112,6 +119,30 @@
                 name: "workDomain",
                 title: "<spring:message code="workDomain"/>",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+            {
+                name: "companyId",
+                title: "<spring:message code="company.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "economicalId",
+                title: "<spring:message code="company.economical.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "registerId",
+                title: "<spring:message code="company.register.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
             },
             {
                 name: "email",
@@ -136,42 +167,42 @@
         margin: 20,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "accountInfo.id", hidden: true},
             {
                 name: "accountInfo.bank",
                 title: "<spring:message code='bank'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]",
                 length: "16"
             },
             {
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
-                // required: "true",
+                required: "true",
                 length: "30"
             },
 
@@ -193,35 +224,31 @@
         newPadding: 5,
         fields: [
             {name: "manager.id", hidden: true},
+            {name: "manager.contactInfo.id", hidden: true},
             {
                 name: "manager.nationalCode",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='national.code'/>",
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
                 length: "10",
+                validators: [TrValidators.NationalCodeValidate],
                 changed: function (form, item, value) {
-                    let codeCheck = checkNationalCode(value);
-                    nationalCodeCheck = codeCheck;
-                    if (codeCheck === false)
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.nationalCode", "<spring:message
-                                                                        code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.nationalCode", true);
-                        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
-                            "callback: personalInfo_findOne_result_company(rpcResponse)"));
-                    }
+                    if (value == null || !this.validate())
+                        return;
+                    isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
+                        "callback: personalInfo_findOne_result_company(rpcResponse)"));
                 }
             },
             {
                 name: "manager.firstNameFa",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='firstName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
             },
             {
                 name: "manager.lastNameFa",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='lastName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
             },
@@ -262,12 +289,18 @@
         margin: 20,
         newPadding: 5,
         fields: [
-            {name: "id", hidden: true},
+            {name: "address.id", hidden: true},
             {
                 name: "address.postalCode",
                 title: "<spring:message code='postal.code'/>",
                 keyPressFilter: "[0-9]",
                 length: "10",
+                validators: [TrValidators.PostalCodeValidate],
+                changed: function (form, item, value) {
+                    if (value == null || !this.validate())
+                        return;
+                    fillAddressFields(value);
+                }
             },
             {
                 name: "address.restAddr",
@@ -299,7 +332,7 @@
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
-                // required: true,
+                required: true,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -320,7 +353,7 @@
                 optionDataSource: RestDataSource_Work_City_Company,
                 textAlign: "center",
                 destroyed: true,
-                // required: true,
+                required: true,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -413,7 +446,12 @@
         contextMenu: Menu_ListGrid_Company,
         sortField: 1,
         autoFetchData: true,
-        doubleClick: function () {
+        fields: [
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
+            {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+        ],
+        rowDoubleClick: function () {
             show_Company_EditForm();
         },
         selectionChanged: function (record) {
@@ -579,7 +617,6 @@
             co.clearValues();
             co.clearErrors(true);
             company_method = "PUT";
-            // console.log(record.address);
             if (record.address !== undefined && record.address.stateId !== undefined)
                 RestDataSource_Work_City_Company.fetchDataURL = stateUrl + "spec-list-by-stateId/" + record.address.stateId;
             co.editRecord(record);
@@ -599,7 +636,6 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-                        Wait_Company = createDialog("wait");
                         isc.RPCManager.sendRequest(TrDSRequest(companyUrl + record.id, "DELETE", null, "callback: show_CompanyActionResult(rpcResponse)"));
                     }
                 }
@@ -629,10 +665,32 @@
             DynamicForm_ManagerInfo_Company.setValue("manager.firstNameFa", personal.firstNameFa);
             DynamicForm_ManagerInfo_Company.setValue("manager.lastNameFa", personal.lastNameFa);
             if (personal.contactInfo !== null && personal.contactInfo !== undefined) {
+                DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.id", personal.contactInfo.id);
                 DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.mobile", personal.contactInfo.mobile);
                 DynamicForm_ManagerInfo_Company.setValue("manager.contactInfo.email", personal.contactInfo.email);
             }
         }
+    }
+
+    function fillAddressFields(postalCode) {
+        if (postalCode !== undefined)
+            isc.RPCManager.sendRequest(TrDSRequest(addressUrl + "getOneByPostalCode/" + postalCode, "GET", null,
+                "callback: address_findOne_result(rpcResponse)"));
+    }
+
+    function address_findOne_result(resp) {
+        if (resp === null || resp === undefined || resp.data === "") {
+            return;
+        }
+        let data = JSON.parse(resp.data);
+        DynamicForm_Address_Company.setValue("address.id", data.id);
+        DynamicForm_Address_Company.setValue("address.postalCode", data.postalCode);
+        DynamicForm_Address_Company.setValue("address.restAddr", data.restAddr);
+        DynamicForm_Address_Company.setValue("address.phone", data.phone);
+        DynamicForm_Address_Company.setValue("address.fax", data.fax);
+        DynamicForm_Address_Company.setValue("address.webSite", data.webSite);
+        DynamicForm_Address_Company.setValue("address.stateId", data.stateId);
+        DynamicForm_Address_Company.setValue("address.cityId", data.cityId);
     }
 
     // </script>

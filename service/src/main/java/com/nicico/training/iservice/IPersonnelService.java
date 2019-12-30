@@ -14,4 +14,5 @@ public interface IPersonnelService {
     SearchDTO.SearchRs<PersonnelDTO.Info> search(SearchDTO.SearchRq rq);
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
+
 }

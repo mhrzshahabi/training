@@ -95,10 +95,10 @@ public class PersonalInfo extends Auditable {
     @JoinColumn(name = "f_contact_info")
     private ContactInfo contactInfo;
 
-    @Column(name = "f_contact_info",insertable = false, updatable = false)
+    @Column(name = "f_contact_info", insertable = false, updatable = false)
     private Long contactInfoId;
 
-    @OneToOne(fetch = FetchType.LAZY , cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JoinColumn(name = "f_account_info")
     private AccountInfo accountInfo;
 

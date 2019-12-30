@@ -98,7 +98,7 @@ public class ContactInfoService implements IContactInfoService {
 
     @Transactional
     @Override
-    public void modify(ContactInfoDTO.Create request, ContactInfo contactInfo) {
+    public void modify(ContactInfoDTO.CreateOrUpdate request, ContactInfo contactInfo) {
         if (request.getHomeAddress() != null && request.getHomeAddress().getPostalCode() != null) {
             Address address = addressService.getByPostalCode(request.getHomeAddress().getPostalCode());
             if (address != null) {
@@ -108,7 +108,7 @@ public class ContactInfoService implements IContactInfoService {
                     contactInfo.setHomeAddress(address);
                 else {
                     modelMapper.map(request.getHomeAddress(), address);
-                    request.setHomeAddress(modelMapper.map(address, AddressDTO.Create.class));
+                    request.setHomeAddress(modelMapper.map(address, AddressDTO.CreateOrUpdate.class));
                 }
             }
         }
@@ -121,7 +121,7 @@ public class ContactInfoService implements IContactInfoService {
                     contactInfo.setWorkAddress(address);
                 else {
                     modelMapper.map(request.getWorkAddress(), address);
-                    request.setWorkAddress(modelMapper.map(address, AddressDTO.Create.class));
+                    request.setWorkAddress(modelMapper.map(address, AddressDTO.CreateOrUpdate.class));
                 }
             }
         }

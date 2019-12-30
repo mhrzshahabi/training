@@ -166,4 +166,10 @@
     <changeSet author="ghazanfari_f (generated)" id="1576922961786-55">
         <createSequence sequenceName="seq_training_place_id"/>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1577516246169-185">
+        <createSequence sequenceName="seq_behavioral_goal_id"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577600948782-191">
+        <createSequence sequenceName="seq_foreign_lang_knowledge_id"/>
+    </changeSet>
 </databaseChangeLog>
