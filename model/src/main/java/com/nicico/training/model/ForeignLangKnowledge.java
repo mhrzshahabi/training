@@ -29,29 +29,23 @@ public class ForeignLangKnowledge extends Auditable {
     @Column(name = "c_description", length = 500)
     private String description;
 
-    @Column(name = "e_reading" ,insertable = false, updatable = false)
-    private ELangLevel langLevelReading;
+    @Column(name = "e_level" ,insertable = false, updatable = false)
+    private ELangLevel langLevel;
 
-    @Column(name = "e_writing" , insertable = false, updatable = false)
-    private ELangLevel langLevelWriting;
+    @Column(name = "e_level")
+    private Integer langLevelId;
 
-    @Column(name = "e_speaking",  insertable = false, updatable = false)
-    private ELangLevel langLevelSpeaking;
+    @Column(name = "d_start_date")
+    private Date startDate;
 
-    @Column(name = "e_translation",  insertable = false, updatable = false)
-    private ELangLevel langLevelTranslation;
+    @Column(name = "d_end_date")
+    private Date endDate;
 
-    @Column(name = "e_reading")
-    private Integer langLevelReadingId;
+    @Column(name = "c_institute_name")
+    private String instituteName;
 
-    @Column(name = "e_writing")
-    private Integer langLevelWritingId;
-
-    @Column(name = "e_speaking")
-    private Integer langLevelSpeakingId;
-
-    @Column(name = "e_translation")
-    private Integer langLevelTranslationId;
+    @Column(name = "c_duration")
+    private String duration;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)

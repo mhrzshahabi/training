@@ -28,10 +28,41 @@ public class ForeignLangKnowledgeDTO {
 
     private String description;
     private Long teacherId;
-    private Integer langLevelReadingId;
-    private Integer langLevelWritingId;
-    private Integer langLevelSpeakingId;
-    private Integer langLevelTranslationId;
+    private Integer langLevelId;
+    private String instituteName;
+    private String duration;
+    private Date startDate;
+    private Date endDate;
+
+    public String getPersianStartDate() {
+        if (startDate == null)
+            return null;
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        return DateUtil.convertMiToKh(ft.format(startDate));
+    }
+
+    public void setPersianStartDate(String persianStartDate) {
+        try {
+            this.startDate = new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(persianStartDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public String getPersianEndDate() {
+        if (endDate == null)
+            return null;
+        SimpleDateFormat ft = new SimpleDateFormat("yyyy-MM-dd");
+        return DateUtil.convertMiToKh(ft.format(endDate));
+    }
+
+    public void setPersianEndDate(String persianEndDate) {
+        try {
+            this.endDate = new SimpleDateFormat("yyyy-MM-dd").parse(DateUtil.convertKhToMi1(persianEndDate));
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     @Getter
@@ -41,10 +72,7 @@ public class ForeignLangKnowledgeDTO {
     public static class Info extends ForeignLangKnowledgeDTO {
         private Long id;
         private Integer version;
-        private ELangLevelDTO.ELangLevelInfoTuple langLevelReading;
-        private ELangLevelDTO.ELangLevelInfoTuple langLevelWriting;
-        private ELangLevelDTO.ELangLevelInfoTuple langLevelSpeaking;
-        private ELangLevelDTO.ELangLevelInfoTuple langLevelTranslation;
+        private ELangLevelDTO.ELangLevelInfoTuple langLevel;
     }
 
     @Getter

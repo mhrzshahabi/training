@@ -62,4 +62,42 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1577693200411-193">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="c_duration" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-194">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="c_institute_name" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-195">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="d_end_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-196">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="d_start_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-197">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="e_level" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-249">
+        <dropColumn columnName="E_READING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-250">
+        <dropColumn columnName="E_SPEAKING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-251">
+        <dropColumn columnName="E_TRANSLATION" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-252">
+        <dropColumn columnName="E_WRITING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+
 </databaseChangeLog>

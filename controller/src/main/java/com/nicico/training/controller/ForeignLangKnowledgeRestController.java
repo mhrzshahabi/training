@@ -79,4 +79,17 @@ public class ForeignLangKnowledgeRestController {
         }
     }
 
+    @Loggable
+    @DeleteMapping(value = "/{teacherId},{id}")
+//    @PreAuthorize("hasAuthority('d_teacher')")
+    public ResponseEntity deleteForeignLangKnowledge(@PathVariable Long teacherId, @PathVariable Long id) {
+        try {
+            foreignLangKnowledgeService.deleteForeignLangKnowledge(teacherId, id);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException | DataIntegrityViolationException e) {
+            return new ResponseEntity<>(
+                    new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
+    }
+
 }

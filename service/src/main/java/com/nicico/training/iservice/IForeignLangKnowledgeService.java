@@ -16,4 +16,6 @@ public interface IForeignLangKnowledgeService {
 
     void addForeignLangKnowledge(ForeignLangKnowledgeDTO.Create request, Long teacherId);
 
+    void deleteForeignLangKnowledge(Long teacherId, Long foreignLangKnowledgeId);
+
 }

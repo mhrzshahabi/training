@@ -1267,7 +1267,7 @@
             },
             {
                 ID: "foreingLang",
-                title: "<spring:message code="foreign.languages"/>",
+                title: "<spring:message code="foreign.languages.knowledge"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
             }
         ],
@@ -1508,7 +1508,6 @@
 
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
         showCategories();
-        teacherIdForeignLangKnowledge = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 

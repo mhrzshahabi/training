@@ -11,10 +11,9 @@ import lombok.ToString;
 @JsonFormat(shape = JsonFormat.Shape.OBJECT)
 public enum ELangLevel {
 
-    Perfect(0, "عالی", "P"),
-    Good(1, "خوب", "G"),
-    Average(2, "متوسط", "A"),
-    Week(3, "ضعیف", "W");
+    Perfect(0, "تسلط کامل", "E"),
+    Good(1, "مکالمه و خواندن و نوشتن", "M"),
+    Average(2, "مختصر", "B");
 
     private final Integer id;
     private final String titleFa;
