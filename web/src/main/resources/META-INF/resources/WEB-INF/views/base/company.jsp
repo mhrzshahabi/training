@@ -1,7 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 
-
 // <script>
 
     //************************************************************************************
@@ -33,6 +32,9 @@
             {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
+            {name: "companyId", title: "<spring:message code="company.id"/>", filterOperator: "iContains"},
+            {name: "economicalId", title: "<spring:message code="company.economical.id"/>", filterOperator: "iContains"},
+            {name: "registerId", title: "<spring:message code="company.register.id"/>", filterOperator: "iContains"},
             {name: "manager.id"},
             {name: "manager.contactInfo.id"},
             {name: "accountInfo.id"},
@@ -103,6 +105,7 @@
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "co",
+        numCols: 4,
         fields: [
             {name: "id", hidden: true},
             {
@@ -116,6 +119,30 @@
                 name: "workDomain",
                 title: "<spring:message code="workDomain"/>",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+            {
+                name: "companyId",
+                title: "<spring:message code="company.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "economicalId",
+                title: "<spring:message code="company.economical.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
+            },
+            {
+                name: "registerId",
+                title: "<spring:message code="company.register.id"/>",
+                filterOperator: "iContains",
+                length: 12,
+                required: true,
+                keyPressFilter: "[0-9]"
             },
             {
                 name: "email",
@@ -144,38 +171,38 @@
             {
                 name: "accountInfo.bank",
                 title: "<spring:message code='bank'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranch",
                 title: "<spring:message code='bank.branch'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]"
             },
             {
                 name: "accountInfo.bankBranchCode",
                 title: "<spring:message code='bank.branch.code'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.accountNumber",
                 title: "<spring:message code='account.number'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]"
             },
             {
                 name: "accountInfo.cartNumber",
                 title: "<spring:message code='cart.number'/>",
-                // required: "true",
+                required: "true",
                 keyPressFilter: "[0-9]",
                 length: "16"
             },
             {
                 name: "accountInfo.shabaNumber",
                 title: "<spring:message code='shaba.number'/>",
-                // required: "true",
+                required: "true",
                 length: "30"
             },
 
@@ -200,33 +227,28 @@
             {name: "manager.contactInfo.id", hidden: true},
             {
                 name: "manager.nationalCode",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='national.code'/>",
                 keyPressFilter: "[0-9]",
                 textAlign: "left",
                 length: "10",
+                validators: [TrValidators.NationalCodeValidate],
                 changed: function (form, item, value) {
-                    let codeCheck = checkNationalCode(value);
-                    nationalCodeCheck = codeCheck;
-                    if (codeCheck === false)
-                        DynamicForm_ManagerInfo_Company.addFieldErrors("manager.nationalCode", "<spring:message
-                                                                        code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
-                        DynamicForm_ManagerInfo_Company.clearFieldErrors("manager.nationalCode", true);
-                        isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
-                            "callback: personalInfo_findOne_result_company(rpcResponse)"));
-                    }
+                    if (value == null || !this.validate())
+                        return;
+                    isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + value, "GET", null,
+                        "callback: personalInfo_findOne_result_company(rpcResponse)"));
                 }
             },
             {
                 name: "manager.firstNameFa",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='firstName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
             },
             {
                 name: "manager.lastNameFa",
-                // required: "true",
+                required: "true",
                 title: "<spring:message code='lastName'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
             },
@@ -275,7 +297,7 @@
                 length: "10",
                 validators: [TrValidators.PostalCodeValidate],
                 changed: function (form, item, value) {
-                    if (!this.validate())
+                    if (value == null || !this.validate())
                         return;
                     fillAddressFields(value);
                 }
@@ -310,7 +332,7 @@
                 title: "<spring:message code='state'/>",
                 textAlign: "center",
                 optionDataSource: RestDataSource_Work_State_Company,
-                // required: true,
+                required: true,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -331,7 +353,7 @@
                 optionDataSource: RestDataSource_Work_City_Company,
                 textAlign: "center",
                 destroyed: true,
-                // required: true,
+                required: true,
                 changeOnKeypress: true,
                 filterOnKeypress: true,
                 displayField: "name",
@@ -429,7 +451,7 @@
             {name: "workDomain", title: "<spring:message code="workDomain"/>", filterOperator: "iContains"},
             {name: "email", title: "<spring:message code="email"/>", filterOperator: "iContains"},
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             show_Company_EditForm();
         },
         selectionChanged: function (record) {
@@ -623,7 +645,7 @@
 
     function show_CompanyActionResult(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();

@@ -43,8 +43,8 @@
     <spring:eval var="contextPath" expression="pageContext.servletContext.contextPath" />
     const userFullName = '<%= SecurityUtil.getFullName()%>';
     const rootUrl = "${contextPath}/api";
-    const oauthUserUrl =  rootUrl +"/oauth/users";
-    const oauthRoleUrl = rootUrl +"/oauth/app-roles";
+    const oauthUserUrl = rootUrl + "/oauth/users";
+    const oauthRoleUrl = rootUrl + "/oauth/app-roles";
     const workflowUrl = rootUrl + "/workflow";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
@@ -88,24 +88,41 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
+        width: "100%",
+        errorOrientation: "right",
+        showErrorStyle: false,
+        wrapItemTitles: false,
+        titleAlign: "right",
+        titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
+        requiredTitleSuffix: "",
         readOnlyDisplay: "static",
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
+    isc.ComboBoxItem.addProperties({
+        pickListProperties: {showFilterEditor: true},
+        addUnknownValues: false,
+        useClientFiltering: false,
+        changeOnKeypress: false,
+    });
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"}, contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true, showPrompt: false, willHandleError: true, actionURL: actionURLParam, httpMethod: httpMethodParam,
-            data: dataParam, callback: callbackParam,
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+            contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true,
+            showPrompt: false,
+            willHandleError: true,
+            actionURL: actionURLParam,
+            httpMethod: httpMethodParam,
+            data: dataParam,
+            callback: callbackParam,
         }
     };
 
@@ -189,6 +206,28 @@
                 return value >= 1e9 && value < 1e10;
             }
         },
+        NationalCodeValidate: {
+            type: "custom",
+            errorMessage: "<spring:message code='msg.national.code.validation'/>",
+            condition: function (item, validator, value) {
+                let code = value;
+                if (code === undefined || code === null || code === "")
+                    return true;
+                let L = code.length;
+                if (L < 8 || parseFloat(code, 10) === 0)
+                    return false;
+                code = ('0000' + code).substr(L + 4 - 10);
+                if (parseFloat(code.substr(3, 6), 10) === 0)
+                    return false;
+                let c = parseFloat(code.substr(9, 1), 10);
+                let s = 0;
+                for (let i = 0; i < 9; i++) {
+                    s += parseFloat(code.substr(i, 1), 10) * (10 - i);
+                }
+                s = s % 11;
+                return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
+            }
+        },
         Trimmer: {
             type: "custom",
             condition: function (item, validator, value) {
@@ -214,7 +253,11 @@
     isc.TrHLayoutButtons.addProperties({align: "center", height: 40, defaultLayoutAlign: "center", membersMargin: 10,});
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
-    isc.TrComboAutoRefresh.addProperties({click: function (form, item) { item.fetchData(); }});
+    isc.TrComboAutoRefresh.addProperties({
+        click: function (form, item) {
+            item.fetchData();
+        }
+    });
 
     isc.ToolStripButtonRefresh.addProperties({title: "<spring:message code="refresh"/>",});
     isc.ToolStripButtonCreate.addProperties({title: "<spring:message code="create"/>",});
@@ -705,7 +748,11 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({viewURL: url, handleError(rpcRequest, rpcResponse) {createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")}}),
+                pane: isc.ViewLoader.create({
+                    viewURL: url, handleError(rpcRequest, rpcResponse) {
+                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")
+                    }
+                }),
                 canClose: true,
             });
             createTab(title, url);
@@ -842,7 +889,7 @@
         defaultTimeout: 90000,
         willHandleError: true,
         handleError: function (response, request) {
-            createDialog("info","<spring:message code="msg.error.connecting.to.server"/>");
+            createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>");
         },
     });
 
@@ -894,41 +941,41 @@
         }
         s = s % 11;
         return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
-
-        isc.defineClass("TrRefreshBtn", ToolStripButton);
-        isc.TrRefreshBtn.addProperties({
-            icon: "<spring:url value="refresh.png"/>",
-            title: "<spring:message code="refresh"/>",
-        });
-
-        isc.defineClass("TrCreateBtn", ToolStripButton);
-        isc.TrCreateBtn.addProperties({
-            icon: "<spring:url value="create.png"/>",
-            title: "<spring:message code="create"/>",
-        });
-
-        isc.defineClass("TrAddBtn", TrCreateBtn);
-        isc.TrAddBtn.addProperties({
-            title: "<spring:message code="add"/>",
-        });
-
-        isc.defineClass("TrEditBtn", ToolStripButton);
-        isc.TrEditBtn.addProperties({
-            icon: "<spring:url value="edit.png"/>",
-            title: "<spring:message code="edit"/>",
-        });
-
-        isc.defineClass("TrRemoveBtn", ToolStripButton);
-        isc.TrRemoveBtn.addProperties({
-            icon: "<spring:url value="remove.png"/>",
-            title: "<spring:message code="remove"/>",
-        });
-
-        isc.defineClass("TrPrintBtn", ToolStripMenuButton);
-        isc.TrPrintBtn.addProperties({
-            title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
-        });
     }
+
+    isc.defineClass("TrRefreshBtn", ToolStripButton);
+    isc.TrRefreshBtn.addProperties({
+        icon: "<spring:url value="refresh.png"/>",
+        title: "<spring:message code="refresh"/>",
+    });
+
+    isc.defineClass("TrCreateBtn", ToolStripButton);
+    isc.TrCreateBtn.addProperties({
+        icon: "<spring:url value="create.png"/>",
+        title: "<spring:message code="create"/>",
+    });
+
+    isc.defineClass("TrAddBtn", TrCreateBtn);
+    isc.TrAddBtn.addProperties({
+        title: "<spring:message code="add"/>",
+    });
+
+    isc.defineClass("TrEditBtn", ToolStripButton);
+    isc.TrEditBtn.addProperties({
+        icon: "<spring:url value="edit.png"/>",
+        title: "<spring:message code="edit"/>",
+    });
+
+    isc.defineClass("TrRemoveBtn", ToolStripButton);
+    isc.TrRemoveBtn.addProperties({
+        icon: "<spring:url value="remove.png"/>",
+        title: "<spring:message code="remove"/>",
+    });
+
+    isc.defineClass("TrPrintBtn", ToolStripMenuButton);
+    isc.TrPrintBtn.addProperties({
+        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
+    });
 
     isc.defineClass("TrSaveBtn", Button);
     isc.TrSaveBtn.addProperties({
