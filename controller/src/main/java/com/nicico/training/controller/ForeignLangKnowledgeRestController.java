@@ -10,6 +10,9 @@ import com.nicico.training.dto.SubCategoryDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.IForeignLangKnowledgeService;
 import com.nicico.training.iservice.ISubCategoryService;
+import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.ForeignLangKnowledge;
+import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -24,6 +27,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -32,8 +36,6 @@ import java.util.List;
 public class ForeignLangKnowledgeRestController {
 
     private final IForeignLangKnowledgeService foreignLangKnowledgeService;
-    private final ISubCategoryService subCategoryService;
-    private final ICategoryService categoryService;
     private final ModelMapper modelMapper;
 
     @Loggable
@@ -52,7 +54,6 @@ public class ForeignLangKnowledgeRestController {
     }
 
 
-
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_educationLevel')")
@@ -65,29 +66,17 @@ public class ForeignLangKnowledgeRestController {
         }
     }
 
-    private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
-        SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("categories"));
-        categoriesRequest.setCriteria(criteriaRq);
-        List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
-        request.remove("categories");
-        return categories;
-
-    }
-
-    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
-        SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
-        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        criteriaRq.setOperator(EOperator.inSet);
-        criteriaRq.setFieldName("id");
-        criteriaRq.setValue(request.get("subCategories"));
-        subCategoriesRequest.setCriteria(criteriaRq);
-        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
-        request.remove("subCategories");
-        return subCategories;
+    @Loggable
+    @PostMapping(value = "/{teacherId}")
+    public ResponseEntity addForeignLangKnowledge(@Validated @RequestBody LinkedHashMap request, @PathVariable Long teacherId) {
+        ForeignLangKnowledgeDTO.Create create = modelMapper.map(request, ForeignLangKnowledgeDTO.Create.class);
+        create.setTeacherId(teacherId);
+        try {
+            foreignLangKnowledgeService.addForeignLangKnowledge(create, teacherId);
+            return new ResponseEntity(HttpStatus.OK);
+        } catch (TrainingException ex) {
+            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
+        }
     }
 
 }

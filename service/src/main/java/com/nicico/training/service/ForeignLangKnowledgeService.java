@@ -89,4 +89,19 @@ public class ForeignLangKnowledgeService implements IForeignLangKnowledgeService
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
+
+    @Transactional
+    @Override
+    public void addForeignLangKnowledge(ForeignLangKnowledgeDTO.Create request, Long teacherId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        ForeignLangKnowledge foreignLangKnowledge = new ForeignLangKnowledge();
+        modelMapper.map(request, foreignLangKnowledge);
+        try {
+            teacher.getForeignLangKnowledges().add(foreignLangKnowledge);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+    }
+
+
 }

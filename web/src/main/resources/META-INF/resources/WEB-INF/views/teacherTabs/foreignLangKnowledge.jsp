@@ -8,7 +8,6 @@
     var saveActionUrlForeignLangKnowledge;
     var waitForeignLangKnowledge;
     var teacherIdForeignLangKnowledge = null;
-    var isCategoriesChanged = false;
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*RestDataSource*/
@@ -43,7 +42,7 @@
             {name: "id", hidden: true},
             {
                 name: "langName",
-                title: "نام زبان خارجی",
+                title: "زبان خارجی",
                 required: true,
                 validators: [TrValidators.NotEmpty]
             },
@@ -220,7 +219,6 @@
     ListGrid_JspForeignLangKnowledge = isc.TrLG.create({
         dataSource: RestDataSource_JspForeignLangKnowledge,
         contextMenu: Menu_JspForeignLangKnowledge,
-        sortField: 1,
         sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
@@ -311,8 +309,11 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_ForeignLangKnowledge_refresh() {
-        ListGrid_JspForeignLangKnowledge.invalidateCache();
-        ListGrid_JspForeignLangKnowledge.filterByEditor();
+        // ListGrid_JspForeignLangKnowledge.invalidateCache();
+        // ListGrid_JspForeignLangKnowledge.filterByEditor();
+        RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
+        ListGrid_JspForeignLangKnowledge.fetchData();
+        ListGrid_Teacher_JspTeacher.invalidateCache();
     }
 
     function ListGrid_ForeignLangKnowledge_Add() {
@@ -373,7 +374,7 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
-            ListGrid_ForeignLangKnowledge_refresh();
+            ListGrid_JspForeignLangKnowledge.invalidateCache();
             Window_JspForeignLangKnowledge.close();
             setTimeout(function () {
                 OK.close();
@@ -411,9 +412,9 @@
     function loadPage_ForeignLangKnowledge(id) {
         if (teacherIdForeignLangKnowledge !== id) {
             teacherIdForeignLangKnowledge = id;
-            RestDataSource_JspForeignLangKnowledge.fetchDataURL = ForeignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
+            RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
             ListGrid_JspForeignLangKnowledge.fetchData();
-            ListGrid_ForeignLangKnowledge_refresh();
+            ListGrid_Teacher_JspTeacher.invalidateCache();
         }
     }
 

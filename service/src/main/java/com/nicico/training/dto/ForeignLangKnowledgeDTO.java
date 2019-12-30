@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.enums.ELangLevelDTO;
 import com.nicico.training.model.enums.ELangLevel;
@@ -51,7 +52,6 @@ public class ForeignLangKnowledgeDTO {
     @Accessors(chain = true)
     @ApiModel("ForeignLangKnowledge - Create")
     public static class Create extends ForeignLangKnowledgeDTO {
-        private Long id;
     }
 
     @Getter
@@ -70,5 +70,26 @@ public class ForeignLangKnowledgeDTO {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    @ApiModel("ForeignLangKnowledge-SpecRs")
+    public static class ForeignLangKnowledgeSpecRs {
+        private SpecRs response;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
     }
 }

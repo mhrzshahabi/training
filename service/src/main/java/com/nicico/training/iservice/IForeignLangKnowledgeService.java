@@ -14,4 +14,6 @@ public interface IForeignLangKnowledgeService {
 
     SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> search(SearchDTO.SearchRq request, Long teacherId);
 
+    void addForeignLangKnowledge(ForeignLangKnowledgeDTO.Create request, Long teacherId);
+
 }

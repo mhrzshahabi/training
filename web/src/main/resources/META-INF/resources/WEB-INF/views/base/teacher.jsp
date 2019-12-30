@@ -1508,6 +1508,7 @@
 
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
         showCategories();
+        teacherIdForeignLangKnowledge = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
@@ -1881,6 +1882,9 @@
             if (typeof loadPage_TeacherCertification !== "undefined")
                 loadPage_TeacherCertification(teacherId);
 
+            if (typeof loadPage_ForeignLangKnowledge !== "undefined")
+                loadPage_ForeignLangKnowledge(teacherId);
+
         }
     }
 
@@ -1896,6 +1900,9 @@
 
         if (typeof clear_TeacherCertification !== "undefined")
             clear_TeacherCertification();
+
+        if (typeof clear_ForeignLangKnowledge !== "undefined")
+            clear_ForeignLangKnowledge();
     }
 
     // </script>
