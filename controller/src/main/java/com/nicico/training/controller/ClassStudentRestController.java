@@ -133,10 +133,10 @@ public class ClassStudentRestController {
     }
 
            @GetMapping(value = "/iscList/{classId}")
-    public ResponseEntity<ISC<ClassStudentDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
-       int startRow = 0;
+       public ResponseEntity<ISC<ClassStudentDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
-            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<ClassStudentDTO.Info> searchRs =classStudentService.search1(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);

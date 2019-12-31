@@ -6,14 +6,13 @@ import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.BehavioralGoalDTO;
-import com.nicico.training.dto.CheckListItemDTO;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.IBehavioralGoalService;
 import com.nicico.training.model.BehavioralGoal;
 import com.nicico.training.model.ClassStudent;
+import com.nicico.training.model.Goal;
 import com.nicico.training.repository.BehavioralGoalsDAO;
+import com.nicico.training.repository.GoalDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -28,13 +27,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class BehavioralGoalService implements IBehavioralGoalService {
 private final BehavioralGoalsDAO behavioralGoalsDAO;
+private final GoalDAO goalDAO;
  private final ModelMapper mapper;
 
   @Transactional(readOnly = true)
     @Override
     public BehavioralGoalDTO.Info get(Long id) {
         final Optional<BehavioralGoal> optionalBehavioralGoal = behavioralGoalsDAO.findById(id);
-        final BehavioralGoal behavioralGoal = optionalBehavioralGoal.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListNotFound));
+        final BehavioralGoal behavioralGoal = optionalBehavioralGoal.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.BehavioralGoalNotFound));
         return mapper.map(behavioralGoal, BehavioralGoalDTO.Info.class);
     }
 
@@ -53,11 +53,14 @@ private final BehavioralGoalsDAO behavioralGoalsDAO;
         return mapper.map(behavioralGoalsDAO.saveAndFlush(behavioralGoal), BehavioralGoalDTO.Info.class);
     }
 
+
+
+
     @Transactional
     @Override
     public BehavioralGoalDTO.Info update(Long id, BehavioralGoalDTO.Update request) {
         Optional<BehavioralGoal> optionalBehavioralGoal = behavioralGoalsDAO.findById(id);
-        BehavioralGoal currentCheckList = optionalBehavioralGoal.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CheckListNotFound));
+        BehavioralGoal currentCheckList = optionalBehavioralGoal.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.BehavioralGoalNotFound));
         BehavioralGoal behavioralGoal = new BehavioralGoal();
         mapper.map(currentCheckList, behavioralGoal);
         mapper.map(request, behavioralGoal);
@@ -77,6 +80,15 @@ private final BehavioralGoalsDAO behavioralGoalsDAO;
         behavioralGoalsDAO.deleteAll(behavioralGoalList);
     }
 
+    @Transactional
+    @Override
+    public List<BehavioralGoalDTO.Info> getBehavioralGoal(Long goalId) {
+        final List<BehavioralGoal> optionalBehavioralGoal= behavioralGoalsDAO.findBehavioralGoalByGoalId(goalId);
+        return mapper.map(optionalBehavioralGoal, new TypeToken<List<BehavioralGoalDTO.Info>>() {
+        }.getType());
+    }
+
+
     @Transactional(readOnly = true)
     @Override
     public TotalResponse<BehavioralGoalDTO.Info> search(NICICOCriteria request) {
@@ -87,7 +99,7 @@ private final BehavioralGoalsDAO behavioralGoalsDAO;
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<BehavioralGoalDTO.Info> search(SearchDTO.SearchRq request, Long goalId) {
+    public SearchDTO.SearchRs<GoalDTO.Info> search(SearchDTO.SearchRq request, Long goalId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (goalId != null) {
@@ -101,7 +113,7 @@ private final BehavioralGoalsDAO behavioralGoalsDAO;
             } else
                 request.setCriteria(criteriaRq);
         }
-        return SearchUtil.search(behavioralGoalsDAO, request, classStudent -> mapper.map(classStudent, BehavioralGoalDTO.Info.class));
+        return SearchUtil.search(behavioralGoalsDAO, request,behavioralGoal-> mapper.map(behavioralGoal,GoalDTO.Info.class));
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
