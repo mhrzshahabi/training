@@ -23,14 +23,24 @@ public class MainFormController {
         return "basic/parameter";
     }
 
-    @RequestMapping("/user")
+    @RequestMapping("/oaUser")
     public String showOaUserForm() {
         return "security/user";
     }
 
-    @RequestMapping("/role")
+    @RequestMapping("/oaRole")
     public String showOaRoleForm() {
         return "security/role";
+    }
+
+    @RequestMapping("/oaGroup")
+    public String showOaGroupForm() {
+        return "security/group";
+    }
+
+    @RequestMapping("/oaPermission")
+    public String showOaPermissionForm() {
+        return "security/permission";
     }
 
     @RequestMapping("/job")

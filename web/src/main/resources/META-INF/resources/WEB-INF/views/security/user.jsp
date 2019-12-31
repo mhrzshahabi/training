@@ -7,7 +7,8 @@
     isc.Menu.create({
         ID: "UserMenu_user",
         data: [
-            {title: "<spring:message code="refresh"/>", click: function () { refreshUserLG_user(); }},
+            {title: "<spring:message code="refresh"/>", click: function () { refreshListGrid(UserLG_user); }},
+            {title: "<spring:message code="user.roles"/>", click: function () { editUser_user()}},
         ]
     });
 
@@ -18,7 +19,8 @@
         membersMargin: 5,
         border: "0px solid",
         members: [
-            isc.ToolStripButtonRefresh.create({click: function () { refreshUserLG_user(); }}),
+            isc.ToolStripButtonRefresh.create({click: function () { refreshListGrid(UserLG_user); }}),
+            isc.ToolStripButton.create({title: "<spring:message code="user.roles"/>", click: function () { editUser_user()}}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CountUserLG_user"}),
         ]
@@ -41,6 +43,7 @@
     UserLG_user = isc.TrLG.create({
         ID: "UserLG_user",
         dataSource: UserDS_user,
+        autoFetchData: true,
         fields: [
             {name: "firstName",},
             {name: "lastName",},
@@ -48,7 +51,6 @@
             {name: "nationalCode",},
         ],
         sortField: 0,
-        autoFetchData: true,
         showResizeBar: true,
         gridComponents: [
             UserTS_user, "filterEditor", "header", "body"
@@ -63,7 +65,8 @@
                 CountUserLG_user.setContents("&nbsp;");
         },
         doubleClick: function () { editUser_user(); },
-        selectionUpdated: function (record) { }
+        selectionUpdated: function () {
+        },
     });
 
     // ------------------------------------------- TabSet -------------------------------------------
@@ -72,24 +75,46 @@
         tabs: [
             {
                 ID: "RoleTab_user",
-                title: "<spring:message code=roles"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/role"})
+                title: "<spring:message code="roles"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/oaRole"}),
+                // tabSelected: function (tabSet, tabNum, tabPane, ID, tab) {
+                //     if (checkRecordAsSelected(UserLG_user.getSelectedRecord())) {
+                //         RoleDS_role.fetchDataURL
+                //     }
+                //     // isc.Log.logWarn("zero" + tabPane + " null:" + (tabPane == null));
+                //     //
+                //     // if (tabPane == null) {
+                //     //     isc.DynamicForm.create({
+                //     //         ID: "preferencesPane",
+                //     //         fields: [{
+                //     //             name: "useISCTabs",
+                //     //             title: "Use SmartClient tabs",
+                //     //             type: "checkbox",
+                //     //             defaultValue: false,
+                //     //             required: true
+                //     //         }]
+                //     //     });
+                //     //     tabSet.updateTab(ID, preferencesPane);
+                //     // }
+                // },
+                // tabDeselected: function (tabSet, tabNum, tabPane, ID, tab, newTab) {
+                //     alert('tab deselected');
+                //     // if (!tabPane.getValue("useISCTabs")) {
+                //     //     return false;
+                //     // }
+                // }
             },
             {
                 ID: "PermissionGroupTab_user",
                 title: "<spring:message code="permission.groups"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/oaGroup"})
             },
             {
                 ID: "PermissionTab_user",
                 title: "<spring:message code="permissions"/>",
-                pane: isc.TrVLayout.create({
-                    members: []
-                }),
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "web/oaPermission"})
             },
-        ]
+        ],
     });
 
     // ------------------------------------------- Page UI -------------------------------------------
@@ -98,7 +123,8 @@
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-    function refreshUserLG_user(selectedState) {
-        UserLG_user.invalidateCache();
-        UserLG_user.filterByEditor();
+    function editUser_user() {
+        userRecord = UserLG_user.getSelectedRecord();
+        if (checkRecordAsSelected(userRecord, true)) {
+        }
     }
