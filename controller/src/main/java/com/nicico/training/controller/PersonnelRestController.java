@@ -71,4 +71,27 @@ public class PersonnelRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
+
+    @Loggable
+    @GetMapping(value = "/byJobNo/{jobNo}")
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByJobNo(@PathVariable String jobNo) {
+
+
+        List<PersonnelDTO.Info> list = new ArrayList<>();
+        list = personnelService.getByJobNo(jobNo);
+
+        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
+        final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }

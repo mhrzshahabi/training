@@ -32,9 +32,10 @@
             }),
 
             isc.ToolStripButton.create({
+                top: 260,
+                align: "center",
+                title: "<spring:message code='post.person.assign'/>",
                 click: function () {
-                    // alert('hey');
-                    // setDetailViewer_Personnel(PostLG_post.getSelectedRecord().code);
                     if (!(PostLG_post.getSelectedRecord() == undefined || PostLG_post.getSelectedRecord() == null)) {
                         setDetailViewer_Personnel(PostLG_post.getSelectedRecord().id);
                         DetailViewer_Personnel.show();
@@ -216,8 +217,8 @@
                 autoFitWidth: true
             },
             {
-                name: "companyName",
-                title: "<spring:message code="company.name"/>",
+                name: "workPlace",
+                title: "<spring:message code="work.place"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true,
                 width: "*"
@@ -264,14 +265,42 @@
                 detail: true,
                 autoFitWidth: true
             },
+            {
+                name: "workYears",
+                title: "<spring:message code="work.years"/>",
+                filterOperator: "iContains",
+                detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "educationLevelTitle",
+                title: "<spring:message code="education.degree"/>",
+                filterOperator: "iContains",
+                detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "educationMajorTitle",
+                title: "<spring:message code="education.major"/>",
+                filterOperator: "iContains",
+                detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitle",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                detail: true,
+                autoFitWidth: true
+            },
 
         ]
         // fetchDataURL: personnelUrl + "/byPostCode"
     });
 
-    // var DetailViewer_Personnel = isc.DetailViewer.create({
+    var DetailViewer_Personnel = isc.DetailViewer.create({
 
-    var DetailViewer_Personnel = isc.TrLG.create({
+    // var DetailViewer_Personnel = isc.TrLG.create({
         width: 430,
         height: "90%",
         autoDraw: false,
@@ -281,19 +310,22 @@
         dataSource: PersonnelDS_personnel,
         fields: [
 
-            {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
+            // {name: "id", title: "id", primaryKey: true, canEdit: false, hidden: true},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
             {name: "personnelNo"},
             {name: "personnelNo2"},
-            {name: "companyName"},
+            {name: "jobTitle"},
             {name: "employmentStatus"},
             {name: "complexTitle"},
             {name: "workPlaceTitle"},
             {name: "workTurnTitle"},
             {name: "postTitle"},
-            {name: "postCode"}
+            {name: "postCode"},
+            {name: "educationLevelTitle"},
+            {name: "educationMajorTitle"},
+            {name: "workYears"}
         ]
     });
 
@@ -336,7 +368,7 @@
         members: [
             isc.IButton.create({
                 title: "<spring:message code='close'/>",
-                icon: "pieces/16/icon_delete.png",
+                icon: "[SKIN]/actions/cancel.png",
                 width: "70",
                 align: "center",
                 click: function () {
@@ -353,7 +385,7 @@
 
     var Window_DetailViewer_Personnel = isc.Window.create({
         title: "<spring:message code='personal'/>",
-        width: 922,
+        width: 460,
         height: 515,
         autoSize: false,
         autoCenter: true,
