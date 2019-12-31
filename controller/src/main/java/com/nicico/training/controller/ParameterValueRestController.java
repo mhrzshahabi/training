@@ -11,6 +11,7 @@ import org.modelmapper.ModelMapper;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -62,5 +63,13 @@ public class ParameterValueRestController {
     @DeleteMapping("/{id}")
     public ResponseEntity<ParameterValueDTO.Info> delete(@PathVariable Long id) {
         return new ResponseEntity<>(parameterValueService.delete(id), null, HttpStatus.OK);
+    }
+
+    //////////////////////////////////////////config//////////////////////////////////////////
+
+    @Loggable
+    @PutMapping(value = "/edit-config-list")
+    public ResponseEntity<List<ParameterValueDTO.Info>> editConfigList(@Validated @RequestBody ParameterValueDTO.ConfigUpdate[] rq) {
+        return new ResponseEntity<>(parameterValueService.editConfigList(rq), HttpStatus.OK);
     }
 }
