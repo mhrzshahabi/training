@@ -3,6 +3,7 @@ package com.nicico.training.controller;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterDTO;
 import com.nicico.training.service.ParameterService;
 import lombok.RequiredArgsConstructor;
@@ -57,5 +58,14 @@ public class ParameterRestController {
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.CONFLICT);
         }
+    }
+
+
+    //////////////////////////////////////////config//////////////////////////////////////////
+
+    @Loggable
+    @GetMapping("/config-types-list")
+    public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configTypesList() {
+        return new ResponseEntity<>(parameterService.allConfig(new SearchDTO.SearchRq()), HttpStatus.OK);
     }
 }

@@ -125,7 +125,11 @@
                 {name: "skill.code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
                 {name: "skill.titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
                 {name: "skill.id"},
-                {name: "eneedAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals"}
+                {
+                    name: "eneedAssessmentPriorityId",
+                    title: "<spring:message code='priority'/>",
+                    filterOperator: "equals"
+                }
             ]
     });
 
@@ -656,6 +660,7 @@
         } else {
             restData_For_This_Object_Skills_NASB_JPA.fetchDataURL = needAssessmentSkillBasedUrl + "iscFullList/" + objectType_NASB + ":" + objectId_NASB;
             ListGrid_For_This_Object_Skills_Refresh_NASB();
+            // restData_For_This_Object_Skills_NASB_JPA.findAll("objectType", objectType_NASB).setProperty("enabled", false);
         }
         DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").redraw();
     }

@@ -116,7 +116,7 @@
                     src: "<spring:url value="calendar.png"/>",
                     click: function () {
                         closeCalendarWindow();
-                        displayDatePicker('foreignLangKnowledge_startDate_JspForeignLangKnowledge', this, 'ymd', '/');
+                        displayDatePicker('foreignLangKnowledge_endDate_JspForeignLangKnowledge', this, 'ymd', '/');
                     }
                 }],
                 validators: [{
@@ -303,9 +303,8 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function ListGrid_ForeignLangKnowledge_refresh() {
-        RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
-        ListGrid_JspForeignLangKnowledge.fetchData();
         ListGrid_JspForeignLangKnowledge.invalidateCache();
+        ListGrid_JspForeignLangKnowledge.filterByEditor();
     }
 
     function ListGrid_ForeignLangKnowledge_Add() {
@@ -401,7 +400,7 @@
             teacherIdForeignLangKnowledge = id;
             RestDataSource_JspForeignLangKnowledge.fetchDataURL = foreignLangKnowledgeUrl + "/iscList/" + teacherIdForeignLangKnowledge;
             ListGrid_JspForeignLangKnowledge.fetchData();
-            ListGrid_Teacher_JspTeacher.invalidateCache();
+            ListGrid_ForeignLangKnowledge_refresh();
         }
     }
 
