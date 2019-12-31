@@ -471,4 +471,16 @@
     <changeSet author="razmnoosh (generated)" id="1577792079376-199">
         <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_subcategory" constraintName="FKmeik0lfitjbgkjowja7t4p9w2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577795609482-202">
+        <addForeignKeyConstraint baseColumnNames="f_subcategory" baseTableName="tbl_teacher_subcategory" constraintName="FK5emqn15haydrfow2ifk1xy27k" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_sub_category" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577795609482-203">
+        <addForeignKeyConstraint baseColumnNames="f_evaluation_question" baseTableName="tbl_evaluation_question_evaluation_index" constraintName="FKk5ftbrm9uvbuq0328yolv5w2i" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_evaluation_question" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577795609482-204">
+        <addForeignKeyConstraint baseColumnNames="f_evaluation_index" baseTableName="tbl_evaluation_question_evaluation_index" constraintName="FKo6lmoh5cencfteumatakb19eo" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_evaluation_index" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577795609482-205">
+        <addForeignKeyConstraint baseColumnNames="f_domain_id" baseTableName="tbl_evaluation_question" constraintName="FKolislh8e37nj1plo7ps963jlw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -67,6 +67,7 @@
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
     const publicationUrl = rootUrl + "/publication";
+    const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -538,6 +539,12 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/evaluationIndex/showForm"/>");
                     }
+                },
+                {
+                    title: "<spring:message code="questionnaire"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
+                    },
                 },
             ]
         }),
