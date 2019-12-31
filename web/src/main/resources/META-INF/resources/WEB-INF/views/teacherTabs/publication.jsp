@@ -37,6 +37,12 @@
         fetchDataURL: subCategoryUrl + "iscList"
     });
 
+    var RestDataSource_EPublicationSubjectType_JspTeacher = isc.TrDS.create({
+        fields: [{name: "id"}, {name: "titleFa"}],
+        fetchDataURL: enumUrl + "ePublicationSubjectType/spec-list"
+    });
+
+
     //--------------------------------------------------------------------------------------------------------------------//
     /*window*/
     //--------------------------------------------------------------------------------------------------------------------//
@@ -50,6 +56,7 @@
             {
                 name: "subjectTitle",
                 title: "<spring:message code='subject.title'/>",
+                required: true
             },
             {
                 name: "publicationLocation",
@@ -58,10 +65,6 @@
             {
                 name: "publisher",
                 title: "<spring:message code='publisher'/>"
-            },
-            {
-                name: "publicationSubjectType.titleFa",
-                title:"<spring:message code='publication.subject.type'/>"
             },
             {
                 name: "persianPublicationDate",
@@ -84,6 +87,32 @@
                         return checkBirthDate(value);
                     }
                 }]
+            },
+            {
+                name: "publicationSubjectTypeId",
+                type: "IntegerItem",
+                title: "<spring:message code="publication.subject.type"/>",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultToFirstOption: true,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource:  RestDataSource_EPublicationSubjectType_JspTeacher ,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}]
             },
             {
                 name: "categories",
@@ -162,6 +191,7 @@
     IButton_Save_JspPublication = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspPublication.validate();
             if (!DynamicForm_JspPublication.valuesHaveChanged() || !DynamicForm_JspPublication.validate())
                 return;
             waitPublication = createDialog("wait");
