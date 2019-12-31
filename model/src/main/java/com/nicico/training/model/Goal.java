@@ -38,6 +38,4 @@ public class Goal extends Auditable {
     @ManyToMany(cascade = {CascadeType.DETACH, CascadeType.MERGE, CascadeType.PERSIST, CascadeType.REFRESH}, mappedBy = "goalSet")
     private List<Course> courseSet;
 
-    @OneToMany(mappedBy = "goal", cascade = CascadeType.REMOVE)
-    private Set<BehavioralGoal> behavioralGoals;
 }
