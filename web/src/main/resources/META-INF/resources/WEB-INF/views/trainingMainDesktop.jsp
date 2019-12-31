@@ -532,7 +532,14 @@
     evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
-            data: []
+            data: [
+                {
+                    title: "<spring:message code="evaluation.index.title"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluationIndex/showForm"/>");
+                    }
+                },
+            ]
         }),
     });
 
