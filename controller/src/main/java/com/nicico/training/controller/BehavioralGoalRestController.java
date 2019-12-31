@@ -4,9 +4,7 @@ import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.BehavioralGoalDTO;
-import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.JobDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.service.BehavioralGoalService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +47,10 @@ private final BehavioralGoalService behavioralGoalService;
         return new ResponseEntity<>(behavioralGoalService.create(create), HttpStatus.CREATED);
     }
 
+
+
+
+
     @Loggable
     @PutMapping(value = "/{id}")
     public ResponseEntity<BehavioralGoalDTO.Info> update(@PathVariable Long id, @RequestBody BehavioralGoalDTO.Update request) {
@@ -71,12 +73,31 @@ private final BehavioralGoalService behavioralGoalService;
     }
 
      @GetMapping(value = "/iscList/{goalId}")
-    public ResponseEntity<ISC<BehavioralGoalDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+    public ResponseEntity<ISC<GoalDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long goalId) throws IOException {
        int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<BehavioralGoalDTO.Info> searchRs =behavioralGoalService.search(searchRq, classId);
-        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+        SearchDTO.SearchRs<GoalDTO.Info> searchRs =behavioralGoalService.search(searchRq, goalId);
+        return new ResponseEntity(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+        @Loggable
+    @GetMapping(value = "/{goalId}/getBehavioralGoal")
+    public ResponseEntity<BehavioralGoalDTO.BehavioralGoalSpecRs> getCheckListItem(@PathVariable Long goalId) {
+
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        List<BehavioralGoalDTO.Info> list = behavioralGoalService.getBehavioralGoal(goalId);
+
+        final BehavioralGoalDTO.SpecRs specResponse = new BehavioralGoalDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final BehavioralGoalDTO.BehavioralGoalSpecRs specRs = new BehavioralGoalDTO.BehavioralGoalSpecRs();
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 }

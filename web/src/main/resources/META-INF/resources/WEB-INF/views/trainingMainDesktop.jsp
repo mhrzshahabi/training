@@ -757,6 +757,7 @@
     const classStudent = rootUrl + "/classStudent/";
     const classAlarm = rootUrl + "/classAlarm/";
     const personnelRegByNationalCodeUrl = rootUrl + "/personnelRegistered/";
+    const BehavioralGoalUrl=rootUrl + "/behavioralgoal/";
 
 
     function TrnXmlHttpRequest(formData1, url, method, cFunction) {

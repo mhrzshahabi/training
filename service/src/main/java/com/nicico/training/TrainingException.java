@@ -74,6 +74,7 @@ public class TrainingException extends NICICOException {
         CommitteeNotFound(404),
         TermNotFound(404),
         CheckListNotFound(404),
+        BehavioralGoalNotFound(404),
         ClassCheckListNotFound(404),
         CheckListItemNotFound(404),
         CompanyNotFound(404),
