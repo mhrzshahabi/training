@@ -11,7 +11,7 @@ import javax.persistence.*;
 @AllArgsConstructor
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
-@Entity
+//@Entity
 @Table(name = "tbl_behavioral_goal", uniqueConstraints = {@UniqueConstraint(columnNames = {"c_title_fa"})})
 public class BehavioralGoal extends Auditable {
 
