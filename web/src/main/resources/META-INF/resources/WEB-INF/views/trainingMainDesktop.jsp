@@ -403,7 +403,6 @@
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="job.group"/>",
                     click: function () {
@@ -417,7 +416,6 @@
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade.group"/>",
                     click: function () {
@@ -431,26 +429,26 @@
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="post.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="skill"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="skill.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>",
                     click: function () {
@@ -627,6 +625,13 @@
                     title: "<spring:message code="operational.unit"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
+                    }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="configurations"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/config/"/>");
                     }
                 }
             ]

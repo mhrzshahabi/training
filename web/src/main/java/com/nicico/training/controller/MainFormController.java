@@ -78,10 +78,14 @@ public class MainFormController {
         return "base/postGradeGroup";
     }
 
-
     @RequestMapping("/needAssessmentSkillBased")
     public String showNeedAssessmentSkillBasedForm() {
         return "base/needAssessmentSkillBased";
+    }
+
+    @RequestMapping("/config")
+    public String showConfigForm() {
+        return "basic/config";
     }
 
     @PostMapping("/post_print_list/{type}")

@@ -26,6 +26,12 @@ public class ParameterValue extends Auditable {
     @Column(name = "c_code")
     private String code;
 
+    @Column(name = "c_type")
+    private String type;
+
+    @Column(name = "c_value")
+    private String value;
+
     @Column(name = "c_description")
     private String description;
 

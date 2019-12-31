@@ -105,4 +105,20 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="ghazanfari_f (generated)" id="1577779895298-190">
+        <addColumn tableName="tbl_parameter">
+            <column name="c_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1577780376822-191">
+        <addColumn tableName="tbl_parameter_value">
+            <column name="c_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1577780376822-192">
+        <addColumn tableName="tbl_parameter_value">
+            <column name="c_value" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
