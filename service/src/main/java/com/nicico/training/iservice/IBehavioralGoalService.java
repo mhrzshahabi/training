@@ -4,6 +4,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.BehavioralGoalDTO;
+import com.nicico.training.dto.GoalDTO;
 import com.nicico.training.dto.JobDTO;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,7 +30,10 @@ public interface IBehavioralGoalService {
     void delete(BehavioralGoalDTO.Delete request);
 
 
+
+    List<BehavioralGoalDTO.Info> getBehavioralGoal(Long CheckListId);
+
     TotalResponse<BehavioralGoalDTO.Info> search(NICICOCriteria request);
 
-    SearchDTO.SearchRs<BehavioralGoalDTO.Info> search(SearchDTO.SearchRq request, Long classId);
+    SearchDTO.SearchRs<GoalDTO.Info> search(SearchDTO.SearchRq request, Long classId);
 }

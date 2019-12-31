@@ -1,4 +1,103 @@
 <?xml version="1.1" encoding="UTF-8" standalone="no"?>
 <databaseChangeLog xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.6.xsd">
+
+    <changeSet author="poursalehi_mos (generated)" id="1577604077166-193">
+        <addColumn tableName="tbl_company">
+            <column name="c_company_id" type="varchar2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577604077166-194">
+        <addColumn tableName="tbl_company">
+            <column name="c_economical_id" type="varchar2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577604077166-195">
+        <addColumn tableName="tbl_company">
+            <column name="c_register_id" type="varchar2(12 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+
+
+
+    <changeSet author="lotfi (generated)" id="1577595584066-191">
+        <addColumn tableName="tbl_post">
+            <column name="c_affairs" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-192">
+        <addColumn tableName="tbl_post">
+            <column name="c_area" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-193">
+        <addColumn tableName="tbl_post">
+            <column name="c_assistance" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-194">
+        <addColumn tableName="tbl_post">
+            <column name="c_cost_center_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-195">
+        <addColumn tableName="tbl_post">
+            <column name="c_cost_center_title_fa" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-196">
+        <addColumn tableName="tbl_post">
+            <column name="c_section" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="lotfi (generated)" id="1577595584066-197">
+        <addColumn tableName="tbl_post">
+            <column name="c_unit" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1577693200411-193">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="c_duration" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-194">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="c_institute_name" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-195">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="d_end_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-196">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="d_start_date" type="timestamp"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-197">
+        <addColumn tableName="tbl_foreign_lang_knowledge">
+            <column name="e_level" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-249">
+        <dropColumn columnName="E_READING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-250">
+        <dropColumn columnName="E_SPEAKING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-251">
+        <dropColumn columnName="E_TRANSLATION" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577693200411-252">
+        <dropColumn columnName="E_WRITING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
+    </changeSet>
+
 </databaseChangeLog>

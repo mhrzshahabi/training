@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -46,4 +47,29 @@ public class PersonnelDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<String> ids;
     }
+
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("PersonnelSpecRs")
+    public static class PersonnelSpecRs {
+        private PersonnelDTO.SpecRs response;
+    }
+
+    //*********************************
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class SpecRs {
+        private List<Info> data;
+        private Integer status;
+        private Integer startRow;
+        private Integer endRow;
+        private Integer totalRows;
+    }
+
 }

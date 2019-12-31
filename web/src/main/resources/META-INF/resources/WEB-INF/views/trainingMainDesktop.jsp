@@ -65,6 +65,7 @@
     const employmentHistoryUrl = rootUrl + "/employmentHistory";
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
+    const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -180,6 +181,37 @@
             type: "regexp",
             errorMessage: "<spring:message code="msg.invalid.phone.number"/>",
             expression: /^[(0)[1-9][0-9]\d{8}|(\+9)[0-9][1-9]\d{9}]$/,
+        },
+        PostalCodeValidate: {
+            type: "custom",
+            errorMessage: "<spring:message code='msg.postal.code.validation'/>",
+            condition: function (item, validator, value) {
+                if (value == null)
+                    return true;
+                return value >= 1e9 && value < 1e10;
+            }
+        },
+        NationalCodeValidate: {
+            type: "custom",
+            errorMessage: "<spring:message code='msg.national.code.validation'/>",
+            condition: function (item, validator, value) {
+                let code = value;
+                if (code === undefined || code === null || code === "")
+                    return true;
+                let L = code.length;
+                if (L < 8 || parseFloat(code, 10) === 0)
+                    return false;
+                code = ('0000' + code).substr(L + 4 - 10);
+                if (parseFloat(code.substr(3, 6), 10) === 0)
+                    return false;
+                let c = parseFloat(code.substr(9, 1), 10);
+                let s = 0;
+                for (let i = 0; i < 9; i++) {
+                    s += parseFloat(code.substr(i, 1), 10) * (10 - i);
+                }
+                s = s % 11;
+                return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
+            }
         },
         Trimmer: {
             type: "custom",
@@ -952,41 +984,41 @@
         }
         s = s % 11;
         return (s < 2 && c === s) || (s >= 2 && c === (11 - s));
-
-        isc.defineClass("TrRefreshBtn", ToolStripButton);
-        isc.TrRefreshBtn.addProperties({
-            icon: "<spring:url value="refresh.png"/>",
-            title: "<spring:message code="refresh"/>",
-        });
-
-        isc.defineClass("TrCreateBtn", ToolStripButton);
-        isc.TrCreateBtn.addProperties({
-            icon: "<spring:url value="create.png"/>",
-            title: "<spring:message code="create"/>",
-        });
-
-        isc.defineClass("TrAddBtn", TrCreateBtn);
-        isc.TrAddBtn.addProperties({
-            title: "<spring:message code="add"/>",
-        });
-
-        isc.defineClass("TrEditBtn", ToolStripButton);
-        isc.TrEditBtn.addProperties({
-            icon: "<spring:url value="edit.png"/>",
-            title: "<spring:message code="edit"/>",
-        });
-
-        isc.defineClass("TrRemoveBtn", ToolStripButton);
-        isc.TrRemoveBtn.addProperties({
-            icon: "<spring:url value="remove.png"/>",
-            title: "<spring:message code="remove"/>",
-        });
-
-        isc.defineClass("TrPrintBtn", ToolStripMenuButton);
-        isc.TrPrintBtn.addProperties({
-            title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
-        });
     }
+
+    isc.defineClass("TrRefreshBtn", ToolStripButton);
+    isc.TrRefreshBtn.addProperties({
+        icon: "<spring:url value="refresh.png"/>",
+        title: "<spring:message code="refresh"/>",
+    });
+
+    isc.defineClass("TrCreateBtn", ToolStripButton);
+    isc.TrCreateBtn.addProperties({
+        icon: "<spring:url value="create.png"/>",
+        title: "<spring:message code="create"/>",
+    });
+
+    isc.defineClass("TrAddBtn", TrCreateBtn);
+    isc.TrAddBtn.addProperties({
+        title: "<spring:message code="add"/>",
+    });
+
+    isc.defineClass("TrEditBtn", ToolStripButton);
+    isc.TrEditBtn.addProperties({
+        icon: "<spring:url value="edit.png"/>",
+        title: "<spring:message code="edit"/>",
+    });
+
+    isc.defineClass("TrRemoveBtn", ToolStripButton);
+    isc.TrRemoveBtn.addProperties({
+        icon: "<spring:url value="remove.png"/>",
+        title: "<spring:message code="remove"/>",
+    });
+
+    isc.defineClass("TrPrintBtn", ToolStripMenuButton);
+    isc.TrPrintBtn.addProperties({
+        title: Canvas.imgHTML("<spring:url value="print.png"/>", 16, 16) + "&nbsp; <spring:message code="print"/>",
+    });
 
     isc.defineClass("TrSaveBtn", Button);
     isc.TrSaveBtn.addProperties({

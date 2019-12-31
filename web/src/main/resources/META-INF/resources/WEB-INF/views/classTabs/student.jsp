@@ -1,7 +1,12 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
 // <script>
+
+    <%
+    final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
+%>
 
     var studentRemoveWait;
 
@@ -96,6 +101,12 @@
     });
 
     StudentsDS_student = isc.TrDS.create({
+        <%--transformRequest: function (dsRequest) {--%>
+        <%--    dsRequest.httpHeaders = {--%>
+        <%--        "Authorization": "Bearer <%= accessToken1 %>"--%>
+        <%--    };--%>
+        <%--    return this.Super("transformRequest", arguments);--%>
+        <%--},--%>
         fields: [
             {name: "id", hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -181,6 +192,10 @@
 
     SelectedPersonnelsLG_student = isc.TrLG.create({
         ID: "SelectedPersonnelsLG_student",
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        filterOnKeypress: true,
         selectionType: "single",
         fields: [
             {name: "id", hidden: true},
@@ -635,7 +650,12 @@
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         // console.log(classRecord);
         if (!(classRecord == undefined || classRecord == null)) {
+            StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData({"classID": classRecord.id});
+
+            // StudentsDS_student.fetchDataURL = classUrl + "student" + classRecord.id;
+            // StudentsLG_student.invalidateCache();
+            // StudentsLG_student.fetchData();
         }
     };
 
