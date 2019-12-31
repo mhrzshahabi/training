@@ -169,4 +169,7 @@
      <changeSet author="razmnoosh (generated)" id="1577600948782-191">
         <createSequence sequenceName="seq_foreign_lang_knowledge_id"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577769180308-193">
+        <createSequence sequenceName="seq_publication_id"/>
+    </changeSet>
 </databaseChangeLog>

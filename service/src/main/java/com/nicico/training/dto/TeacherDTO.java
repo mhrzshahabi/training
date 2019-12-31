@@ -31,12 +31,12 @@ public class TeacherDTO {
     @Accessors(chain = true)
     @ApiModel("TeacherInfo")
     public static class Info extends TeacherDTO {
-
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
         private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
+        private Set<PublicationDTO.Info> publications;
         private Integer version;
     }
 

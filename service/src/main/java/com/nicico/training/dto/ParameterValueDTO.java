@@ -56,4 +56,15 @@ public class ParameterValueDTO implements Serializable {
         @ApiModelProperty(required = true)
         List<Long> ids;
     }
+
+    //////////////////////////////////////////config//////////////////////////////////////////
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Parameter - Config - Update")
+    public static class ConfigUpdate {
+        private Long id;
+        private String code;
+    }
 }

@@ -1266,9 +1266,14 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             },
             {
-                ID: "foreingLang",
+                ID: "foreignLangKnowledge",
                 title: "<spring:message code="foreign.languages.knowledge"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLangKnowledge-tab"})
+            },
+            {
+                ID: "publication",
+                title: "<spring:message code="publication"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1884,6 +1889,9 @@
             if (typeof loadPage_ForeignLangKnowledge !== "undefined")
                 loadPage_ForeignLangKnowledge(teacherId);
 
+            if (typeof loadPage_Publication !== "undefined")
+                loadPage_Publication(teacherId);
+
         }
     }
 
@@ -1902,6 +1910,9 @@
 
         if (typeof clear_ForeignLangKnowledge !== "undefined")
             clear_ForeignLangKnowledge();
+
+        if (typeof clear_Publication !== "undefined")
+            clear_Publication();
     }
 
     // </script>
