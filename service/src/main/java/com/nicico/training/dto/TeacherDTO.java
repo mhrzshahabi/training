@@ -24,6 +24,7 @@ public class TeacherDTO {
     private Boolean enableStatus;
     private String economicalCode;
     private String economicalRecordNumber;
+    private String otherActivities;
     private Long personalityId;
 
     @Getter

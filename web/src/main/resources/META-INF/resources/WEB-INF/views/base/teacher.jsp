@@ -1274,6 +1274,11 @@
                 ID: "publication",
                 title: "<spring:message code="publication"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
+            },
+            {
+                ID: "otherActivities",
+                title: "<spring:message code="otherActivities"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1892,6 +1897,9 @@
             if (typeof loadPage_Publication !== "undefined")
                 loadPage_Publication(teacherId);
 
+            if (typeof loadPage_OtherActivities !== "undefined")
+                loadPage_OtherActivities(teacherId);
+
         }
     }
 
@@ -1913,6 +1921,9 @@
 
         if (typeof clear_Publication !== "undefined")
             clear_Publication();
+
+        if (typeof clear_OtherActivities !== "undefined")
+            clear_OtherActivities();
     }
 
     // </script>

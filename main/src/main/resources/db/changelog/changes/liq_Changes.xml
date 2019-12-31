@@ -99,5 +99,10 @@
     <changeSet author="razmnoosh (generated)" id="1577693200411-252">
         <dropColumn columnName="E_WRITING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577775434904-196">
+        <addColumn tableName="tbl_teacher">
+            <column name="c_other_activities" type="varchar2(500 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

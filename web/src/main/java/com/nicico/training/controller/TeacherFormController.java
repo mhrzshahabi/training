@@ -49,6 +49,9 @@ public class TeacherFormController {
     @RequestMapping("/publication-tab")
     public String publicationTab() { return "teacherTabs/publication"; }
 
+    @RequestMapping("/otherActivities-tab")
+    public String otherActivitiesTab() { return "teacherTabs/otherActivities"; }
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");
