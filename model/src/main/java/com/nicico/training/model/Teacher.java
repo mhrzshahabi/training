@@ -42,6 +42,12 @@ public class Teacher extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
     private Set<Category> categories;
 
+    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @JoinTable(name = "tbl_teacher_sub_category",
+            joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
+            inverseJoinColumns = {@JoinColumn(name = "f_sub_category", referencedColumnName = "id")})
+    private Set<SubCategory> subCategories;
+
     @Column(name = "c_economical_code")
     private String economicalCode;
 

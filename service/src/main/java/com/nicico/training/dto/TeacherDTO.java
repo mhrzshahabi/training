@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.SubCategory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -34,6 +35,7 @@ public class TeacherDTO {
     public static class Info extends TeacherDTO {
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
         private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;

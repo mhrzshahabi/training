@@ -16,7 +16,7 @@
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
-
+var dummy;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -252,7 +252,7 @@
         overflow: "scroll",
         height: "133px",
         width: "130px",
-        border: "1px solid red",
+        border: "1px solid orange",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
@@ -1663,9 +1663,8 @@
                     OK.close();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                 }, 1000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
-                    addAttach(JSON.parse(resp.data).personalityId);
-                }
+                addAttach(JSON.parse(resp.data).personality.id);
+                showAttach(JSON.parse(resp.data).personality.id);
                 setTimeout(function () {
                     if (categoryList !== undefined)
                         addCategories(responseID, categoryList);
@@ -1697,10 +1696,8 @@
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                     OK.close();
                 }, 1000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
-                    addAttach(JSON.parse(resp.data).personality.id);
-                    showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personality.id);
-                }
+                addAttach(JSON.parse(resp.data).personality.id);
+                showAttach(JSON.parse(resp.data).personality.id);
                 setTimeout(function () {
                     if (categoryList !== undefined)
                         addCategories(responseID, categoryList);
