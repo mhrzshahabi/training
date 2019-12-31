@@ -276,9 +276,7 @@
 
         },
 
-        selectionUpdated:function(record){
-            refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
-        },
+
         //working
         dataArrived: function () {
             selectWorkflowRecord();
@@ -2006,16 +2004,8 @@
                 pane: ListGrid_CourseCompetence
             },
 
-            {
-             title: "اهداف رفتاری دوره",
-             ID:"behavioralGoalTab",
-             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "behavioral_goals/show-form"})
-            }
-        ],
-         tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (isc.Page.isLoaded())
-                refreshSelectedTab_Course(tab);
-        }
+                ],
+
     });
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
@@ -2464,17 +2454,3 @@
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
-     function refreshSelectedTab_Course(tab) {
-         courseRecord = ListGrid_Course.getSelectedRecord();
-
-        if (!(courseRecord == undefined || courseRecord == null)) {
-            switch (tab.ID) {
-                case "behavioralGoalTab": {
-
-                       if (typeof loadPage_behavioralGoal !== "undefined")
-                        loadPage_behavioralGoal();
-                    break;
-                }
-            }
-        }
-    }
