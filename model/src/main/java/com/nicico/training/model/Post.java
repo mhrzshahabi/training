@@ -43,4 +43,26 @@ public class Post extends Auditable {
     @ManyToMany(mappedBy = "postSet")
     private Set<PostGroup> postGroupSet;
 
+
+    @Column(name = "c_area")
+    private String area;
+
+    @Column(name = "c_assistance")
+    private String assistance;
+
+    @Column(name = "c_affairs")
+    private String affairs;
+
+    @Column(name = "c_section")
+    private String section;
+
+    @Column(name = "c_unit")
+    private String unit;
+
+    @Column(name = "c_cost_center_code")
+    private String costCenterCode;
+
+    @Column(name = "c_cost_center_title_fa")
+    private String costCenterTitleFa;
+
 }

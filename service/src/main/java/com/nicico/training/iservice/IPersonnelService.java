@@ -14,4 +14,7 @@ public interface IPersonnelService {
     SearchDTO.SearchRs<PersonnelDTO.Info> search(SearchDTO.SearchRq rq);
 
     TotalResponse<PersonnelDTO.Info> search(NICICOCriteria request);
+
+    List<PersonnelDTO.Info> getByPostCode(Long postId);
+
 }

@@ -17,9 +17,7 @@
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Rest Data Sources*/
-    // ------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
         fields: [
@@ -102,9 +100,7 @@
     });
 
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Menu*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------Menu-------------------------------------------------------
 
     var Menu_ListGrid_Teacher_JspTeacher = isc.Menu.create({
         width: 150,
@@ -142,9 +138,8 @@
         }]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*ListGrid*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------------ListGrid---------------------------------------------------
+
 
     var ListGrid_Teacher_JspTeacher = isc.TrLG.create({
         width: "100%",
@@ -152,7 +147,7 @@
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
         filterOperator: "iContains",
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_teacher_edit();
         },
         selectionUpdated: function () {
@@ -251,12 +246,7 @@
         freezeFieldText: "<spring:message code='freezeFieldText'/>"
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*DynamicForm Add Or Edit*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
-    var vm = isc.ValuesManager.create({});
-
+    //--------------------------------------------View Loader-----------------------------------------------------
     var showAttachViewLoader = isc.ViewLoader.create({
         viewURL: "",
         overflow: "scroll",
@@ -266,6 +256,9 @@
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
+
+    //--------------------------------------------Dynamic Form-----------------------------------------------------
+    var vm = isc.ValuesManager.create({});
 
     var DynamicForm_BasicInfo_JspTeacher = isc.DynamicForm.create({
         height: "100%",
@@ -1118,6 +1111,9 @@
         }
     });
 
+
+
+    //-----------------------------------------------Save and Close Buttons--------------------------------------------
     IButton_Teacher_Save_And_Close_JspTeacher = isc.IButtonSave.create({
         top: 260,
         title: "<spring:message code="save.and.close"/>",
@@ -1134,8 +1130,6 @@
     });
 
     IButton_Teacher_Exit_JspTeacher = isc.IButtonCancel.create({
-        //icon: "<spring:url value="remove.png"/>",
-        //prompt: "",
         width: 100,
         orientation: "vertical",
         click: function () {
@@ -1145,6 +1139,7 @@
         }
     });
 
+    //-----------------------------------------------LayOuts and Tabsets-Window--------------------------------------------
     var HLayOut_TeacherSaveOrExit_JspTeacher = isc.TrHLayoutButtons.create({
         layoutMargin: 5,
         showEdges: false,
@@ -1184,7 +1179,7 @@
         membersMargin: 10,
         width: "15%",
         align: "center",
-        members: [HLayOut_ViewLoader_JspTeacher,HLayOut_Photo_JspTeacher]
+        members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
 
     var VLayOut_Basic_JspTeacher = isc.TrVLayout.create({
@@ -1204,7 +1199,7 @@
         padding: 10,
         membersMargin: 10,
         width: "100%",
-        members: [VLayOut_Basic_JspTeacher,VLayOut_Photo_JspTeacher]
+        members: [VLayOut_Basic_JspTeacher, VLayOut_Photo_JspTeacher]
     });
 
     var TabSet_BasicInfo_JspTeacher = isc.TabSet.create({
@@ -1235,7 +1230,6 @@
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
-        // tabBarThickness: 100,
         titleEditorTopOffset: 2,
         height: "30%",
         tabs: [
@@ -1270,6 +1264,11 @@
                 ID: "attachmentsTab",
                 title: "<spring:message code="documents"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
+            },
+            {
+                ID: "foreingLang",
+                title: "<spring:message code="foreign.languages.knowledge"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1295,9 +1294,7 @@
         })]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*ToolStrips and Layout*/
-    //--------------------------------------------------------------------------------------------------------------------//
+    //----------------------------------------------ToolStrips and Layout-Grid----------------------------------------
 
     var ToolStripButton_Refresh_JspTeacher = isc.ToolStripButtonRefresh.create({
         click: function () {
@@ -1368,10 +1365,7 @@
         ]
     });
 
-    //--------------------------------------------------------------------------------------------------------------------//
-    /*Functions*/
-    //--------------------------------------------------------------------------------------------------------------------//
-
+    //-------------------------------------------------Functions------------------------------------------------
     function ListGrid_teacher_refresh() {
         refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         ListGrid_Teacher_JspTeacher.invalidateCache();
@@ -1390,10 +1384,10 @@
         if (vm.hasErrors()) {
             return;
         }
-        let nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
+        var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
         DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
-        let data = vm.getValues();
-        let teacherSaveUrl = teacherUrl;
+        var data = vm.getValues();
+        var teacherSaveUrl = teacherUrl;
 
         if (teacherMethod.localeCompare("PUT") === 0) {
             var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
@@ -1407,14 +1401,14 @@
             isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
                 "callback: teacher_action_result(rpcResponse)"));
 
-        if(!isSaveButton)
+        if (!isSaveButton) {
             Window_Teacher_JspTeacher.close();
-
+        }
     }
 
     function ListGrid_teacher_edit() {
 
-        gridState =  ListGrid_Teacher_JspTeacher.getSelectedState();
+        gridState = ListGrid_Teacher_JspTeacher.getSelectedState();
 
         var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
         if (record == null || record.id == null) {
@@ -1577,7 +1571,6 @@
         var JSONObj = {"ids": categoryIds};
         isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
             "callback: teacher_addCategories_result(rpcResponse)"));
-
     }
 
     function addAttach(personalId) {
@@ -1660,9 +1653,6 @@
                     OK.close();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                 }, 1000);
-                setTimeout(function () {
-                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 2000);
                 if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
                     addAttach(JSON.parse(resp.data).personalityId);
                 }
@@ -1672,10 +1662,7 @@
                     ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
-                ListGrid_Teacher_JspTeacher.invalidateCache();
-                ListGrid_Teacher_JspTeacher.fetchData();
                 refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), responseID);
-                // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").enable();
                 TabSet_Bottom_JspTeacher.enable();
                 teacherMethod = "PUT";
             }
@@ -1695,25 +1682,22 @@
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
-                    OK.close();
+                    ListGrid_Teacher_JspTeacher.invalidateCache();
+                    ListGrid_Teacher_JspTeacher.fetchData();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 3000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined)
-                    addAttach(JSON.parse(resp.data).personalityId);
-                showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personalityId);
+                    OK.close();
+                }, 1000);
+                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
+                    addAttach(JSON.parse(resp.data).personality.id);
+                    showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personality.id);
+                }
                 setTimeout(function () {
                     if (categoryList !== undefined)
                         addCategories(responseID, categoryList);
-                    ListGrid_Teacher_JspTeacher.invalidateCache();
-                    ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
                 showAttachViewLoader.hide();
-                ListGrid_Teacher_JspTeacher.invalidateCache();
-                ListGrid_Teacher_JspTeacher.fetchData();
-                // Window_Teacher_JspTeacher.close();
             }
         } else {
-            <%--createDialog("info", "<spring:message code='error'/>");--%>
         }
     }
 
@@ -1838,7 +1822,7 @@
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id",personality.id);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.id", personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);
@@ -1883,10 +1867,10 @@
     }
 
     function refreshSelectedTab_teacher(tab, id) {
-        let teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
+        var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>",RestDataSource_EAttachmentType_JpaTeacher);
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", RestDataSource_EAttachmentType_JpaTeacher);
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);
@@ -1896,6 +1880,9 @@
 
             if (typeof loadPage_TeacherCertification !== "undefined")
                 loadPage_TeacherCertification(teacherId);
+
+            if (typeof loadPage_ForeignLangKnowledge !== "undefined")
+                loadPage_ForeignLangKnowledge(teacherId);
 
         }
     }
@@ -1912,6 +1899,9 @@
 
         if (typeof clear_TeacherCertification !== "undefined")
             clear_TeacherCertification();
+
+        if (typeof clear_ForeignLangKnowledge !== "undefined")
+            clear_ForeignLangKnowledge();
     }
 
     // </script>

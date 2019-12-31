@@ -25,4 +25,4 @@ public interface IAccountInfoService {
 
     void modify(AccountInfoDTO.CreateOrUpdate request, AccountInfo accountInfo);
 
-    }
+}

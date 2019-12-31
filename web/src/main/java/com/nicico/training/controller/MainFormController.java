@@ -23,6 +23,16 @@ public class MainFormController {
         return "basic/parameter";
     }
 
+    @RequestMapping("/user")
+    public String showOaUserForm() {
+        return "security/user";
+    }
+
+    @RequestMapping("/role")
+    public String showOaRoleForm() {
+        return "security/role";
+    }
+
     @RequestMapping("/job")
     public String showJobForm() {
         return "base/job";

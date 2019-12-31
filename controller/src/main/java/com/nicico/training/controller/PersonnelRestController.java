@@ -4,11 +4,14 @@ ghazanfari_f, 8/29/2019, 11:41 AM
 package com.nicico.training.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.PersonnelDTO;
+import com.nicico.training.repository.PersonnelDAO;
+import com.nicico.training.repository.PostDAO;
 import com.nicico.training.service.CourseService;
 import com.nicico.training.service.PersonnelService;
 import lombok.RequiredArgsConstructor;
@@ -16,11 +19,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
@@ -34,6 +35,8 @@ public class PersonnelRestController {
     final DateUtil dateUtil;
     final ReportUtil reportUtil;
     private final PersonnelService personnelService;
+    private final PersonnelDAO personnelDAO;
+    private final PostDAO postDAO;
 
     @GetMapping("list")
     public ResponseEntity<List<PersonnelDTO.Info>> list() {
@@ -45,4 +48,27 @@ public class PersonnelRestController {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(personnelService.search(nicicoCriteria), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping(value = "/byPostCode/{postId}")
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByPostCode(@PathVariable Long postId) {
+
+
+        List<PersonnelDTO.Info> list = new ArrayList<>();
+        list = personnelService.getByPostCode(postId);
+
+        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
+        final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
 }
