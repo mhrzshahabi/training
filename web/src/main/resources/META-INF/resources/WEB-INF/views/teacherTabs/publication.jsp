@@ -48,16 +48,42 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "courseTitle",
-                title: "<spring:message code='course.title'/>",
+                name: "subjectTitle",
+                title: "<spring:message code='subject.title'/>",
             },
             {
-                name: "companyName",
-                title: "<spring:message code='company.name'/>",
+                name: "publicationLocation",
+                title:"<spring:message code='publication.location'/>"
             },
             {
-                name: "companyLocation",
-                title: "<spring:message code='location.name'/>",
+                name: "publisher",
+                title: "<spring:message code='publisher'/>"
+            },
+            {
+                name: "publicationSubjectType.titleFa",
+                title:"<spring:message code='publication.subject.type'/>"
+            },
+            {
+                name: "persianPublicationDate",
+                ID: "publication_publicationDate_JspPublication",
+                title: "<spring:message code='publication.date'/>",
+                hint: todayDate,
+                keyPressFilter: "[0-9/]",
+                showHintInField: true,
+                icons: [{
+                    src: "<spring:url value="calendar.png"/>",
+                    click: function () {
+                        closeCalendarWindow();
+                        displayDatePicker('publication_publicationDate_JspPublication', this, 'ymd', '/');
+                    }
+                }],
+                validators: [{
+                    type: "custom",
+                    errorMessage: "<spring:message code='msg.correct.date'/>",
+                    condition: function (item, validator, value) {
+                        return checkBirthDate(value);
+                    }
+                }]
             },
             {
                 name: "categories",
@@ -129,69 +155,6 @@
                         this.fetchData();
                     }
                 }
-            },
-            {
-                name: "duration",
-                title: "<spring:message code='duration'/>",
-                type: "IntegerItem",
-                keyPressFilter: "[0-9]",
-                hint: "<spring:message code='hour'/>",
-                showHintInField: true,
-                length: 5
-            },
-            {
-                name: "persianStartDate",
-                ID: "teachingHistories_startDate_JspPublication",
-                title: "<spring:message code='start.date'/>",
-                hint: todayDate,
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('teachingHistories_startDate_JspPublication', this, 'ymd', '/');
-                    }
-                }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspPublication.getValue("persianEndDate") === undefined;
-                        return checkBirthDate(value);
-                    }
-                }]
-            },
-            {
-                name: "persianEndDate",
-                ID: "teachingHistories_endDate_JspPublication",
-                title: "<spring:message code='end.date'/>",
-                hint: todayDate,
-                keyPressFilter: "[0-9/]",
-                showHintInField: true,
-                icons: [{
-                    src: "<spring:url value="calendar.png"/>",
-                    click: function () {
-                        closeCalendarWindow();
-                        displayDatePicker('teachingHistories_endDate_JspPublication', this, 'ymd', '/');
-                    }
-                }],
-                validators: [{
-                    type: "custom",
-                    errorMessage: "<spring:message code='msg.correct.date'/>",
-                    condition: function (item, validator, value) {
-                        if (value === undefined)
-                            return DynamicForm_JspPublication.getValue("persianStartDate") === undefined;
-                        if (!checkDate(value))
-                            return false;
-                        if (DynamicForm_JspPublication.hasFieldErrors("persianStartDate"))
-                            return true;
-                        var persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspPublication.getValue("persianStartDate"));
-                        var persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspPublication.getValue("persianEndDate"));
-                        return Date.compareDates(persianStartDate, persianEndDate) === 1;
-                    }
-                }]
             }
         ]
     });
@@ -262,8 +225,6 @@
     ListGrid_JspPublication = isc.TrLG.create({
         dataSource: RestDataSource_JspPublication,
         contextMenu: Menu_JspPublication,
-        sortField: 1,
-        sortDirection: "descending",
         dataPageSize: 50,
         autoFetchData: false,
         allowAdvancedCriteria: true,
@@ -276,11 +237,26 @@
         fields: [
             {
                 name: "subjectTitle",
-                title: "<spring:message code='subjectTitle'/>",
+                title: "<spring:message code='subject.title'/>",
             },
-            {name: "publicationLocation" , title:"محل نشر"},
-            {name: "publisher", title: "ناشر"},
-            {name: "publicationSubjectType.titleFa", title:"موضوع"},
+            {
+                name: "publicationLocation",
+                title:"<spring:message code='publication.location'/>"
+            },
+            {
+                name: "publisher",
+                title: "<spring:message code='publisher'/>"
+            },
+            {
+                name: "publicationSubjectType.titleFa",
+                title:"<spring:message code='publication.subject.type'/>"
+            },
+            {
+                name: "persianPublicationDate",
+                title: "<spring:message code='publication.date'/>",
+                canFilter: false,
+                canSort: false
+            },
             {
                 name: "categories",
                 title: "<spring:message code='category'/>",
@@ -330,15 +306,9 @@
                     }
                     return subCat;
                 }
-            },
-            {
-                name: "persianPublicationDate",
-                title: "<spring:message code='date'/>",
-                canFilter: false,
-                canSort: false
             }
         ],
-        doubleClick: function () {
+        rowDoubleClick: function () {
             ListGrid_Publication_Edit();
         }
     });
