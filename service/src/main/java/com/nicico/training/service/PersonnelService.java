@@ -47,7 +47,6 @@ public class PersonnelService implements IPersonnelService {
         return SearchUtil.search(personnelDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelDTO.Info.class));
     }
 
-
     @Override
     @Transactional
     public List<PersonnelDTO.Info> getByPostCode(Long postId) {
@@ -66,6 +65,20 @@ public class PersonnelService implements IPersonnelService {
 
         }
 
+        return modelMapper.map(personnelDTO, new TypeToken<List<PersonnelDTO.Info>>() {
+        }.getType());
+
+    }
+
+    @Override
+    @Transactional
+    public List<PersonnelDTO.Info> getByJobNo(String jobNo) {
+        List<Personnel> personnelDTO = null;
+        if (((personnelDAO.findOneByJobNo(jobNo)) == null)) {
+            return null;
+        } else {
+            personnelDTO =  personnelDAO.findOneByJobNo(jobNo);
+        }
         return modelMapper.map(personnelDTO, new TypeToken<List<PersonnelDTO.Info>>() {
         }.getType());
 
