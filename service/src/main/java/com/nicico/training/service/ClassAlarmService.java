@@ -124,7 +124,67 @@ public class ClassAlarmService implements IClassAlarm {
                     "    tbl_class.n_max_capacity, " +
                     "    tbl_class.n_min_capacity " +
                     "    HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity OR " +
-                    "           COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) " +
+                    "           COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) ");
+
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل استاد' AS alarmType, " +
+                    "       'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date || ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
+                    "       id1 AS detailRecordId, sortField " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tb1.id, " +
+                    "            tb1.f_class_id AS targetRecordId, " +
+                    "            tb1.c_day_name, " +
+                    "            tb1.c_session_date, " +
+                    "            tb1.c_session_end_hour, " +
+                    "            tb1.c_session_start_hour, " +
+                    "            tb2.id AS id1, " +
+                    "            tb2.f_class_id AS f_class_id1, " +
+                    "            tb2.c_day_name AS c_day_name1, " +
+                    "            tb2.c_session_date AS c_session_date1, " +
+                    "            tb2.c_session_end_hour AS c_session_end_hour1, " +
+                    "            tb2.c_session_start_hour AS c_session_start_hour1, " +
+                    "            ( ( " +
+                    "                CASE " +
+                    "                    WHEN tbl_personal_info.e_gender = 1 THEN 'آقای' " +
+                    "                    ELSE 'خانم' " +
+                    "                END " +
+                    "            ) " +
+                    "            || ' ' " +
+                    "            || tbl_personal_info.c_first_name_fa " +
+                    "            || ' ' " +
+                    "            || tbl_personal_info.c_last_name_fa ) AS teachername, " +
+                    "            tbl_class.c_code, " +
+                    "            tbl_class.c_title_class, " +
+                    "            (' تداخل استاد ' || tb1.c_session_date " +
+                    "            || '_' " +
+                    "            || tb1.c_session_end_hour " +
+                    "            || '_' " +
+                    "            || tb1.c_session_start_hour ) AS sortfield " +
+                    "        FROM " +
+                    "            tbl_session tb1 " +
+                    "            INNER JOIN tbl_session tb2 ON tb2.f_teacher_id = tb1.f_teacher_id " +
+                    "                                          AND tb1.c_session_date = tb2.c_session_date " +
+                    "            INNER JOIN tbl_teacher ON tbl_teacher.id = tb1.f_teacher_id " +
+                    "            INNER JOIN tbl_personal_info ON tbl_personal_info.id = tbl_teacher.f_personality " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tb2.f_class_id " +
+                    "        WHERE " +
+                    "            tb1.id <> tb2.id " +
+                    "            AND   tb1.f_class_id =:class_id " +
+                    "            AND   ( " +
+                    "                ( " +
+                    "                    tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "                    AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "                ) " +
+                    "                OR    ( " +
+                    "                    tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "                    AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "                ) " +
+                    "            ) " +
+                    "    ) " +
                     " ORDER BY sortField ");
             //***order by must be in the last script***
 
@@ -145,9 +205,9 @@ public class ClassAlarmService implements IClassAlarm {
 
         } catch (Exception ex) {
             ex.printStackTrace();
+
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
-
         }
 
         return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
