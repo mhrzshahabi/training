@@ -49,6 +49,8 @@ public class TeacherDTO {
     @ApiModel("TeacherCreateRq")
     public static class Create extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -57,6 +59,8 @@ public class TeacherDTO {
     @ApiModel("TeacherUpdateRq")
     public static class Update extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter

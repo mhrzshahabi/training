@@ -16,7 +16,7 @@
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var teacherCategoriesID = [];
-var dummy;
+    var isTeacherCategoriesChanged = false;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -30,6 +30,7 @@ var dummy;
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
             {name: "categories"},
+            {name: "subCategories" },
             {name: "personality.contactInfo.homeAddress.id"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
@@ -177,28 +178,51 @@ var dummy;
                 }
             },
             {
-                name: "category",
-                title: "<spring:message code='education.categories'/>",
-                align: "center",
-                formatCellValue: function (value, record) {
-                    if (record.categories.length === 0)
+                name: "categories",
+                title: "<spring:message code='category'/>",
+                formatCellValue: function (value) {
+                    if (value.length === 0)
                         return;
-                    record.categories.sort();
-                    var cat = record.categories[0].titleFa.toString();
-                    for (var i = 1; i < record.categories.length; i++) {
-                        cat += "، " + record.categories[i].titleFa;
+                    value.sort();
+                    var cat = value[0].titleFa.toString();
+                    for (var i = 1; i < value.length; i++) {
+                        cat += "، " + value[i].titleFa;
                     }
                     return cat;
                 },
-                sortNormalizer: function (record) {
-                    if (record.categories.length === 0)
+                sortNormalizer: function (value) {
+                    if (value.categories.length === 0)
                         return;
-                    record.categories.sort();
-                    var cat = record.categories[0].titleFa.toString();
-                    for (var i = 1; i < record.categories.length; i++) {
-                        cat += "، " + record.categories[i].titleFa;
+                    value.categories.sort();
+                    var cat = value.categories[0].titleFa.toString();
+                    for (var i = 1; i < value.categories.length; i++) {
+                        cat += "، " + value.categories[i].titleFa;
                     }
                     return cat;
+                }
+            },
+            {
+                name: "subCategories",
+                title: "<spring:message code='subcategory'/>",
+                formatCellValue: function (value) {
+                    if (value.length === 0)
+                        return;
+                    value.sort();
+                    var subCat = value[0].titleFa.toString();
+                    for (var i = 1; i < value.length; i++) {
+                        subCat += "، " + value[i].titleFa;
+                    }
+                    return subCat;
+                },
+                sortNormalizer: function (value) {
+                    if (value.subCategories.length === 0)
+                        return;
+                    value.subCategories.sort();
+                    var subCat = value.subCategories[0].titleFa.toString();
+                    for (var i = 1; i < value.subCategories.length; i++) {
+                        subCat += "، " + value.subCategories[i].titleFa;
+                    }
+                    return subCat;
                 }
             },
             {
@@ -562,18 +586,19 @@ var dummy;
                 ]
             },
             {
-                name: "categoryList",
+                name: "categories",
+                title: "<spring:message code='education.categories'/>",
                 type: "selectItem",
                 textAlign: "center",
-                required: true,
-                title: "<spring:message code='education.categories'/>",
-                autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
+                filterFields: ["titleFa"],
                 multiple: true,
+                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
+                    filterOperator: "iContains",
                     gridComponents: [
                         isc.ToolStrip.create({
                             height: 30,
@@ -584,7 +609,7 @@ var dummy;
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "<spring:message code='select.all'/>",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList"),
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
@@ -601,7 +626,7 @@ var dummy;
                                     icon: "[SKIN]/actions/close.png",
                                     title: "<spring:message code='deselect.all'/>",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList");
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -610,9 +635,99 @@ var dummy;
                         }),
                         "header", "body"
                     ]
+                },
+                changed: function () {
+                    isTeacherCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
+                    if (this.getSelectedRecords() == null) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                    if (subCategoryField.getValue() === undefined)
+                        return;
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
+                        if (categoryIds.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
                 }
             },
+            {
+                name: "subCategories",
+                title: "<spring:message code='sub.education.categories'/>",
+                type: "selectItem",
+                textAlign: "center",
+                autoFetchData: false,
+                disabled: true,
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                    gridComponents: [
+                        isc.ToolStrip.create({
+                            height: 30,
+                            width: "100%",
+                            members: [
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/approve.png",
+                                    title: "<spring:message code='select.all'/>",
+                                    click: function () {
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories"),
+                                            fullData = item.pickList.data,
+                                            cache = fullData.localData,
+                                            values = [];
 
+                                        for (var i = 0; i < cache.length; i++) {
+                                            values[i] = cache[i]["id"];
+                                        }
+                                        item.setValue(values);
+                                        item.pickList.hide();
+                                    }
+                                }),
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/close.png",
+                                    title: "<spring:message code='deselect.all'/>",
+                                    click: function () {
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
+                                        item.setValue([]);
+                                        item.pickList.hide();
+                                    }
+                                })
+                            ]
+                        }),
+                        "header", "body"
+                    ]
+                },
+                focus: function () {
+                    if (isTeacherCategoriesChanged) {
+                        isTeacherCategoriesChanged = false;
+                        var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+                        if (ids === []) {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            },
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
@@ -1517,7 +1632,29 @@ var dummy;
 
 
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-        showCategories();
+
+
+        var categoryIds = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+        var subCategoryIds = DynamicForm_BasicInfo_JspTeacher.getField("subCategories").getValue();
+        if (categoryIds == null || categoryIds.length === 0)
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").disable();
+        else {
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
+            var catIds = [];
+            for (var i = 0; i < categoryIds.length; i++)
+                catIds.add(categoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
+            isTeacherCategoriesChanged = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").focus(null, null);
+        }
+        if (subCategoryIds != null && subCategoryIds.length > 0) {
+            var subCatIds = [];
+            for (var i = 0; i < subCategoryIds.length; i++)
+                subCatIds.add(subCategoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
+        }
+
+
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
@@ -1623,12 +1760,6 @@ var dummy;
         } else {
             createDialog("info", "<spring:message code='error'/>");
         }
-    }
-
-    function showCategories() {
-        teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "getCategories/" + teacherId, "POST", null,
-            "callback: teacher_getCategories_result(rpcResponse)"));
     }
 
     function teacher_delete_result(resp) {

@@ -36,13 +36,13 @@ public class Teacher extends Auditable {
     @Column(name = "f_personality", nullable = false, insertable = false, updatable = false)
     private Long personalityId;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_teacher_category",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
     private Set<Category> categories;
 
-    @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "tbl_teacher_sub_category",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_sub_category", referencedColumnName = "id")})
