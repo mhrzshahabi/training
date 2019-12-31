@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,10 +31,10 @@ public class ClassAlarmRestController {
 
     @Loggable
     @GetMapping(value = "/list/{classId}")
-    public ResponseEntity<ClassAlarmDTO.ClassAlarmSpecRs> list(@PathVariable Long classId) {
+    public ResponseEntity<ClassAlarmDTO.ClassAlarmSpecRs> list(@PathVariable Long classId, HttpServletResponse response) throws IOException {
 
         List<ClassAlarmDTO> list = new ArrayList<>();
-        list = classAlarmService.list(classId);
+        list = classAlarmService.list(classId, response);
 
         final ClassAlarmDTO.SpecRs specResponse = new ClassAlarmDTO.SpecRs();
         final ClassAlarmDTO.ClassAlarmSpecRs specRs = new ClassAlarmDTO.ClassAlarmSpecRs();
