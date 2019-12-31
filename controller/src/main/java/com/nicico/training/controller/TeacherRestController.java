@@ -233,23 +233,6 @@ public class TeacherRestController {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = "/addCategories/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
-        teacherService.addCategories(request, teacherId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/getCategories/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<List<Long>> getCategories(@PathVariable Long teacherId) {
-        List<Long> categorySet = teacherService.getCategories(teacherId);
-        return new ResponseEntity<>(categorySet, HttpStatus.OK);
-    }
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})

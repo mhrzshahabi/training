@@ -6,7 +6,6 @@
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    var categoryList;
     var gridState;
     var attachName;
     var attachNameTemp;
@@ -15,7 +14,6 @@
     var mailCheck = true;
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
-    var teacherCategoriesID = [];
     var isTeacherCategoriesChanged = false;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
@@ -590,6 +588,7 @@
                 title: "<spring:message code='education.categories'/>",
                 type: "selectItem",
                 textAlign: "center",
+                required: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
@@ -1497,10 +1496,6 @@
         ListGrid_Teacher_JspTeacher.filterByEditor();
     }
 
-    function showTeacherCategories(value) {
-        teacherCategoriesID.add(value.id);
-    }
-
     function Teacher_Save_Button_Click_JspTeacher(isSaveButton) {
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
             return;
@@ -1714,12 +1709,6 @@
         }
     }
 
-    function addCategories(teacherId, categoryIds) {
-        var JSONObj = {"ids": categoryIds};
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
-            "callback: teacher_addCategories_result(rpcResponse)"));
-    }
-
     function addAttach(personalId) {
         var formData1 = new FormData();
         var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
@@ -1787,7 +1776,6 @@
                 responseID = JSON.parse(resp.data).id;
                 vm.setValue("id", responseID);
                 gridState = "[{id:" + responseID + "}]";
-                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
@@ -1797,8 +1785,6 @@
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
                 setTimeout(function () {
-                    if (categoryList !== undefined)
-                        addCategories(responseID, categoryList);
                     ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
@@ -1818,7 +1804,6 @@
             } else {
                 responseID = JSON.parse(resp.data).id;
                 gridState = "[{id:" + responseID + "}]";
-                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
@@ -1829,28 +1814,9 @@
                 }, 1000);
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
-                setTimeout(function () {
-                    if (categoryList !== undefined)
-                        addCategories(responseID, categoryList);
-                }, 300);
                 showAttachViewLoader.hide();
             }
         } else {
-        }
-    }
-
-    function teacher_addCategories_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-        } else {
-            createDialog("info", "<spring:message code='error'/>");
-        }
-    }
-
-    function teacher_getCategories_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
-        } else {
-            createDialog("info", "<spring:message code='error'/>");
         }
     }
 

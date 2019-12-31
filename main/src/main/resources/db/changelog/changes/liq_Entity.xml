@@ -2046,4 +2046,14 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577792079376-196">
+        <createTable tableName="tbl_teacher_subcategory">
+            <column name="f_teacher" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_subcategory" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

@@ -5,6 +5,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -40,13 +41,13 @@ public class Teacher extends Auditable {
     @JoinTable(name = "tbl_teacher_category",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_category", referencedColumnName = "id")})
-    private Set<Category> categories;
+    private List<Category> categories;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "tbl_teacher_sub_category",
+    @JoinTable(name = "tbl_teacher_subcategory",
             joinColumns = {@JoinColumn(name = "f_teacher", referencedColumnName = "id")},
-            inverseJoinColumns = {@JoinColumn(name = "f_sub_category", referencedColumnName = "id")})
-    private Set<SubCategory> subCategories;
+            inverseJoinColumns = {@JoinColumn(name = "f_subcategory", referencedColumnName = "id")})
+    private List<SubCategory> subCategories;
 
     @Column(name = "c_economical_code")
     private String economicalCode;

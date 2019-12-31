@@ -89,6 +89,8 @@ public class TeacherService implements ITeacherService {
     @Override
     public TeacherDTO.Info update(Long id, TeacherDTO.Update request) {
         final Teacher teacher = getTeacher(id);
+        teacher.getCategories().clear();
+        teacher.getSubCategories().clear();
         Teacher updating = new Teacher();
         personalInfoService.modify(request.getPersonality(), teacher.getPersonality());
         modelMapper.map(teacher, updating);
@@ -139,38 +141,6 @@ public class TeacherService implements ITeacherService {
     @Override
     public SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request) {
         return SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.TeacherFullNameTuple.class));
-    }
-
-    // ------------------------------
-
-    @Transactional
-    @Override
-    public void addCategories(CategoryDTO.Delete request, Long teacherId) {
-        final Teacher teacher = getTeacher(teacherId);
-
-        Set<Category> currents = teacher.getCategories();
-        if (currents != null) {
-            Object[] currentsArr = currents.toArray();
-            for (Object o : currentsArr) {
-                teacher.getCategories().remove(o);
-            }
-        }
-        List<Category> gAllById = categoryDAO.findAllById(request.getIds());
-        for (Category category : gAllById) {
-            teacher.getCategories().add(category);
-        }
-    }
-
-    @Transactional
-    @Override
-    public List<Long> getCategories(Long teacherId) {
-        final Teacher teacher = getTeacher(teacherId);
-        Set<Category> currents = teacher.getCategories();
-        List<Long> categories = new ArrayList<>();
-        for (Category current : currents) {
-            categories.add(current.getId());
-        }
-        return categories;
     }
 
 }

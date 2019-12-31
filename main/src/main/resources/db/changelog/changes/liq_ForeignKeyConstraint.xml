@@ -468,12 +468,7 @@
     <changeSet author="razmnoosh (generated)" id="1577785543004-199">
         <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_sub_category" constraintName="FKk1bfyvenkbcvmd781w1mg9vqi" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1577789300630-80">
-        <dropForeignKeyConstraint baseTableName="tbl_teacher_sub_category" constraintName="FKk1bfyvenkbcvmd781w1mg9vqi"/>
-        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_sub_category" constraintName="FKk1bfyvenkbcvmd781w1mg9vqi" referencedColumnNames="id" referencedTableName="tbl_teacher"/>
-    </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1577789300630-12">
-        <dropForeignKeyConstraint baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x"/>
-        <addForeignKeyConstraint baseColumnNames="f_category" baseTableName="tbl_teacher_category" constraintName="FK32psxahk7a9ldr1vwydjbuc9x" referencedColumnNames="id" referencedTableName="tbl_category"/>
+    <changeSet author="razmnoosh (generated)" id="1577792079376-199">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_teacher_subcategory" constraintName="FKmeik0lfitjbgkjowja7t4p9w2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
     </changeSet>
 </databaseChangeLog>
