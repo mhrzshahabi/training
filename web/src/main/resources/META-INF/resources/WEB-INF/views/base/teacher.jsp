@@ -34,12 +34,12 @@
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-    var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
-    });
+    // var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id"},
+    //         {name: "titleFa"}],
+    //     fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
+    // });
 
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -1683,7 +1683,6 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").disable();
         TabSet_Bottom_JspTeacher.selectTab(0);
         clearTabs();
         TabSet_Bottom_JspTeacher.disable();
@@ -1974,7 +1973,7 @@
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", RestDataSource_EAttachmentType_JpaTeacher);
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"});
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);
