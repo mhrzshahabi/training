@@ -120,5 +120,15 @@
             <column name="c_value" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577861747784-203">
+        <addColumn tableName="tbl_teacher">
+            <column name="b_personnel" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577862169614-203">
+        <addColumn tableName="tbl_teacher">
+            <column name="c_personnel_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

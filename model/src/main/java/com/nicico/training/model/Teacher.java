@@ -30,6 +30,12 @@ public class Teacher extends Auditable {
     @Column(name = "b_enabled")
     private Boolean enableStatus;
 
+    @Column(name = "b_personnel")
+    private Boolean personnelStatus;
+
+    @Column(name = "c_personnel_code")
+    private String personnelCode;
+
     @OneToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST, CascadeType.REFRESH, CascadeType.MERGE})
     @JoinColumn(name = "f_personality")
     private PersonalInfo personality;

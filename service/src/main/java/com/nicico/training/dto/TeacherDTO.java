@@ -22,7 +22,9 @@ public class TeacherDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String teacherCode;
+    private String personnelCode;
     private Boolean enableStatus;
+    private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;
     private String otherActivities;
