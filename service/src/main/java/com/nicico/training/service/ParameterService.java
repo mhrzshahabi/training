@@ -4,12 +4,15 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ParameterDTO;
+import com.nicico.training.dto.ParameterValueDTO;
 import com.nicico.training.model.Parameter;
 import com.nicico.training.repository.ParameterDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Comparator;
 
 @RequiredArgsConstructor
 @Service
@@ -26,10 +29,12 @@ public class ParameterService extends BaseService<Parameter, Long, ParameterDTO.
     public SearchDTO.SearchRs<ParameterDTO.Config> allConfig(SearchDTO.SearchRq rq) {
         SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         criteriaRq.setOperator(EOperator.equals);
-        criteriaRq.setFieldName("description");
+        criteriaRq.setFieldName("type");
         criteriaRq.setValue("config");
         rq.setCriteria(criteriaRq);
-
-        return SearchUtil.search(dao, rq, e -> modelMapper.map(e, ParameterDTO.Config.class));
+        SearchDTO.SearchRs<ParameterDTO.Config> configSearchRs = SearchUtil.search(dao, rq, e -> modelMapper.map(e, ParameterDTO.Config.class));
+        for (ParameterDTO.Config config : configSearchRs.getList())
+            config.getParameterValueList().sort(Comparator.comparing(ParameterValueDTO::getType));
+        return configSearchRs;
     }
 }
