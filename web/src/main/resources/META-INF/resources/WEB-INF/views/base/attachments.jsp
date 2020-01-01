@@ -186,9 +186,7 @@
                 name: "fileTypeId",
                 title: "<spring:message code='attach.file.format'/>",
                 filterOnKeypress: true,
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id"
+                editorType: "SelectItem"
             },
             {
                 name: "description"
@@ -369,7 +367,9 @@
         downloadForm.submitForm();
     }
 
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, RestDataSource_EAttachmentType) {
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, criteria) {
+        // criteria = {"fileTypeId": [1,2]};
+        // valueMap_EAttachmentType = {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"};
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
         RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
@@ -378,12 +378,11 @@
         RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
         if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
-
-        ListGrid_JspAttachment.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
-        DynamicForm_JspAttachments.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
-
+        ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
+        DynamicForm_JspAttachments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
         Window_JspAttachments.title = inputTitleAttachment;
-        ListGrid_JspAttachment.fetchData();
+        ListGrid_JspAttachment.setImplicitCriteria(criteria);
+        ListGrid_JspAttachment.fetchData(criteria);
         ListGrid_Attachments_refresh();
     }
 
