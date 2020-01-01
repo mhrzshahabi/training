@@ -19,18 +19,18 @@
             {name: "id", primaryKey: true, hidden: true},
             {name: "question", filterOperator: "iContains"},
             {name: "domainId", filterOperator: "equals"},
-            {name: "indicatorId", filterOperator: "equals"}
-        ]
+            {name: "evaluationIndices", filterOperator: "equals"}
+        ],
+        fetchDataURL: configQuestionnaireUrl + "/iscList"
     });
 
     RestDataSource_QuestionDomain_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            <%--{name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},--%>
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
         ],
-        fetchDataURL: parameterValueUrl + "/iscList/41"
+        fetchDataURL: parameterValueUrl + "/iscList/49"
     });
 
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
@@ -74,10 +74,24 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
-                }
+                },
+                pickListFields: [
+                    {
+                        name: "title",
+                        title: "<spring:message code='question.domain'/>",
+                        filterOperator: "iContains",
+                        width: "30%"
+                    },
+                    {
+                        name: "code",
+                        title: "<spring:message code="code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
+                ]
             },
             {
-                name: "indicatorId",
+                name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
                 type: "selectItem",
                 textAlign: "center",
@@ -127,7 +141,7 @@
         width: "500",
         align: "center",
         border: "1px solid gray",
-        title: "سوالات واکنشی",
+        title: "سوال واکنشی",
         <%--title: "<spring:message code='configQuestionnaire'/>",--%>
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspConfigQuestionnaire, HLayout_SaveOrExit_JspConfigQuestionnaire]
@@ -189,7 +203,7 @@
                 filterOnKeypress: true
             },
             {
-                name: "indicatorId",
+                name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
                 type: "selectItem",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
@@ -197,6 +211,7 @@
                 displayField: "title",
                 filterLocally: true,
                 filterOnKeypress: true,
+                multiple: true,
                 // formatCellValue: function (value) {
                 //     if (value.length === 0)
                 //         return;
