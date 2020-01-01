@@ -15,6 +15,7 @@
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var isTeacherCategoriesChanged = false;
+
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -834,7 +835,8 @@
     }
 
     function fillPersonalInfoByPersonnelNumber(personnelCode){
-        // TO DO //
+        isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
+            "callback: personnel_findOne_result(rpcResponse)"));
     }
 
     function fillWorkAddressFields(postalCode) {
@@ -927,10 +929,67 @@
             DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
     }
 
+    function personnel_findOne_result(resp){
+        if (resp !== null && resp !== undefined && resp.data !== "") {
+            var personnel = JSON.parse(resp.data);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personnel.lastName);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personnel.nationalCode);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personnel.fatherName);
+            DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personnel.nationalCode);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personnelCode", personnel.personnelNo);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr",
+                personnel.ccpAffairs+","+personnel.ccpSection+","+personnel.ccpUnit);
+
+
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personality.birthCertificate);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificateLocation", personality.birthCertificateLocation);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationality", personality.nationality);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.description", personality.description);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", personality.genderId);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", personality.marriedId);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", personality.militaryId);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
+            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
+            // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
+            // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
+            //
+            //
+            // if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
+            //     DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
+            //     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
+            //     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
+            //
+            //     if (personality.contactInfo.workAddress !== null && personality.contactInfo.workAddress !== undefined) {
+            //         setWorkAddressFields(personality.contactInfo.workAddress);
+            //     }
+            //     if (personality.contactInfo.homeAddress !== null && personality.contactInfo.homeAddress !== undefined) {
+            //         setHomeAddressFields(personality.contactInfo.homeAddress);
+            //     }
+            // }
+            // if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
+            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
+            // }
+
+        }
+    }
+
     function personalInfo_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personality = JSON.parse(resp.data);
             showAttach(personality.id);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personality.nationalCode);
+            DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personality.nationalCode);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.id", personality.id);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personality.lastNameFa);
@@ -951,6 +1010,7 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
             DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
             DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
+
 
             if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);

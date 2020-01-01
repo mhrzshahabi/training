@@ -49,7 +49,8 @@
         code='msg.national.code.validation'/>", true);
                     if (codeCheck === true) {
                         DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        fillPersonalInfoFields(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
+                        fillPersonalInfoFields(nationalCodeTemp);
                     }
                 }
             },
@@ -65,7 +66,8 @@
                 title: "<spring:message code='personnel.no'/>",
                 disabled: true,
                 blur: function () {
-                        fillPersonalInfoByPersonnelNumber(DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode"));
+                        var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
+                        fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
                 }
             },
 
@@ -87,14 +89,19 @@
                 vertical: false,
                 defaultValue: "false",
                 changed: function () {
-                    if (DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").getValue() == "true") {
+                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
+                    vm.clearValues();
+                    if (personnelStatusTemp == "true") {
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                     }
-                    else  if( DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").getValue() == "false"){
+                    else  if(personnelStatusTemp == "false"){
                         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
                     }
+
                 }
             },
 
