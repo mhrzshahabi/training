@@ -40,7 +40,7 @@
                 length: "10",
                 hint: "<spring:message code='msg.national.code.hint'/>",
                 showHintInField: true,
-                changed: function () {
+                blur: function () {
                     var codeCheck;
                     codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
                     nationalCodeCheck = codeCheck;
@@ -57,12 +57,16 @@
             {
                 name: "teacherCode",
                 title: "<spring:message code='teacher.code'/>",
-                disabled: true
+                // disabled: true,
+                canEdit: false,
             },
             {
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
-                disabled: true
+                disabled: true,
+                blur: function () {
+                        fillPersonalInfoByPersonnelNumber(DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode"));
+                }
             },
 
             {
@@ -81,7 +85,17 @@
                 width: "*",
                 valueMap: {"true": "<spring:message code='company.staff'/>", "false": "<spring:message code='external.teacher'/>"},
                 vertical: false,
-                defaultValue: "true"
+                defaultValue: "false",
+                changed: function () {
+                    if (DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").getValue() == "true") {
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                    }
+                    else  if( DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").getValue() == "false"){
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
+                    }
+                }
             },
 
             {

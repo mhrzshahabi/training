@@ -624,6 +624,8 @@
 
 
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = true;
 
 
         var categoryIds = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
@@ -677,6 +679,8 @@
         vm.clearValues();
         DynamicForm_BasicInfo_JspTeacher.clearValue("personality.educationOrientationId");
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = false;
+        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
@@ -827,6 +831,10 @@
     function fillPersonalInfoFields(nationalCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personalInfoUrl + "getOneByNationalCode/" + nationalCode, "GET", null,
             "callback: personalInfo_findOne_result(rpcResponse)"));
+    }
+
+    function fillPersonalInfoByPersonnelNumber(personnelCode){
+        // TO DO //
     }
 
     function fillWorkAddressFields(postalCode) {
