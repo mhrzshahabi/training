@@ -78,7 +78,7 @@
     });
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
-    })
+    });
     var Window_Attach = isc.Window.create({
             ID:"attachWindow",
             title: "علت غیبت",
@@ -93,6 +93,7 @@
                     HLayout_Actions_JspAttachment,
                     HLayout_Grid_JspAttachment
                 ]);
+                ListGrid_JspAttachment.setShowFilterEditor(true);
                 this.Super("hide",arguments);
             },
             show(){
@@ -100,6 +101,7 @@
                     HLayout_Actions_JspAttachment,
                     HLayout_Grid_JspAttachment
                 ]);
+                // ListGrid_JspAttachment.invalidateCache();
                 // VLayout_Attachment_JspAttendance.redraw();
                 this.Super("show",arguments);
 
@@ -345,11 +347,16 @@
                                                                             //         viewURL: "tclass/attendance-tab"
                                                                             //     });
                                                                             // }
-                                                                            loadPage_attachment("Tclass", classGridRecordInAttendanceJsp.id, "<spring:message code="attachment"/>",RestDataSource_EAttachmentType_JspClass);
+                                                                            loadPage_attachment("Tclass", classGridRecordInAttendanceJsp.id, "<spring:message code="attachment"/>",{1:"جزوه"});
                                                                             // Window_Attach.addItem(VLayout_Body_JspAttachment);
                                                                             // ListGrid_Attendance_AttendanceJSP.setFilterEditorCriteria({"fileTypeId":1});
                                                                             // VLayout_Body_JspAttachment.redraw();
                                                                             Window_Attach.show();
+                                                                            ListGrid_JspAttachment.fetchData({"fileTypeId":1});
+                                                                            ListGrid_JspAttachment.filterByEditor();
+                                                                            ListGrid_JspAttachment.setShowFilterEditor(false);
+
+
 
                                                                             // attachWindow.show();
                                                                             // isc.Window.create({

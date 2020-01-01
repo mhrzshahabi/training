@@ -15,7 +15,7 @@
     let saveActionUrlAttachment;
     let attachmentWait;
 
-    RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
+    var RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "fileName", title: "<spring:message code='attach.file.name'/>", filterOperator: "iContains"},
@@ -167,7 +167,7 @@
         ]
     });
 
-    ListGrid_JspAttachment = isc.TrLG.create({
+    var ListGrid_JspAttachment = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Attachments_JspAttachments,
