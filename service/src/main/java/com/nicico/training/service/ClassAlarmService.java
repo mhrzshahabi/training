@@ -43,7 +43,8 @@ public class ClassAlarmService implements IClassAlarm {
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
 
-        List<Object> AlarmList = null;
+        ////*** Wildcard ***
+        List<?> AlarmList = null;
         List<ClassAlarmDTO> classAlarmDTO = null;
         try {
 
@@ -184,12 +185,115 @@ public class ClassAlarmService implements IClassAlarm {
                     "                    AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
                     "                ) " +
                     "            ) " +
+                    "    ) ");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append("SELECT tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل فراگیر' AS alarmType, " +
+                    "    ' جلسه ' " +
+                    "    || tb1.c_session_start_hour " +
+                    "    || ' تا ' " +
+                    "    || tb1.c_session_end_hour " +
+                    "    || ' ' " +
+                    "    || tb1.c_day_name " +
+                    "    || ' ' " +
+                    "    || tb1.c_session_date " +
+                    "    || ' ' " +
+                    "    || tb1.studentName " +
+                    "    || ' با جلسه ' " +
+                    "    || tb2.c_session_start_hour " +
+                    "    || ' تا ' " +
+                    "    || tb2.c_session_end_hour " +
+                    "    || ' ' " +
+                    "    || tb2.c_day_name " +
+                    "    || ' ' " +
+                    "    || tb2.c_session_date " +
+                    "    || ' ' " +
+                    "    || tb2.classname " +
+                    "    || ' تداخل دارد' AS alarm, " +
+                    "    tb2.id AS detailRecordId, " +
+                    "    (tb1.studentName || ' تداخل فراگیر ' || tb1.c_session_date || tb1.c_session_start_hour || tb1.c_session_end_hour ) AS sortField " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.f_student, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no, " +
+                    "            ( " +
+                    "                CASE " +
+                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                    ELSE ' خانم ' " +
+                    "                END " +
+                    "            || tbl_student.first_name " +
+                    "            || ' ' " +
+                    "            || tbl_student.last_name " +
+                    "            || ' با شماره پرسنلی ' " +
+                    "            || tbl_student.personnel_no ) AS studentName " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
+                    "    ) tb1 " +
+                    "    INNER JOIN ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.f_student, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no, " +
+                    "            ( " +
+                    "                CASE " +
+                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                    ELSE ' خانم ' " +
+                    "                END " +
+                    "            || tbl_student.first_name " +
+                    "            || ' ' " +
+                    "            || tbl_student.last_name " +
+                    "            || ' با شماره پرسنلی ' " +
+                    "            || tbl_student.personnel_no ) AS studentName, " +
+                    "            ( ' کلاس ' " +
+                    "            || tbl_class.c_title_class " +
+                    "            || ' با کد ' " +
+                    "            || tbl_class.c_code ) AS classname " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "             AND tb2.national_code = tb1.national_code " +
+                    " WHERE " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND   ( " +
+                    "        ( " +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        ) " +
+                    "        OR    ( " +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        ) " +
                     "    ) " +
+                    "    AND   tb1.f_class_id =:class_id " +
                     " ORDER BY sortField ");
             //***order by must be in the last script***
 
 
-            AlarmList = (List<Object>) entityManager.createNativeQuery(alarmScript.toString())
+            AlarmList = (List<?>) entityManager.createNativeQuery(alarmScript.toString())
                     .setParameter("class_id", class_id)
                     .setParameter("todaydat", todayDate).getResultList();
 
