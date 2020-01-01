@@ -2,6 +2,7 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
+var dummy;
 // <script>
     var teacherMethod = "POST";
     var teacherWait;
@@ -938,28 +939,35 @@
             DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personnel.fatherName);
             DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personnel.nationalCode);
             DynamicForm_BasicInfo_JspTeacher.setValue("personnelCode", personnel.personnelNo);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr",
-                personnel.ccpAffairs+","+personnel.ccpSection+","+personnel.ccpUnit);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate",personnel.birthDate);
+            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate",personnel.birthCertificateNo);
+            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle",personnel.jobTitle);
+            if(personnel.gender == "زن")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 2);
+            if(personnel.gender == "مرد")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 1);
+            if(personnel.militaryStatus == "معاف")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
+            if(personnel.militaryStatus == "معافیت مازاد")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
+             if(personnel.militaryStatus == "پایان خدمت")
+                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 1);
+            if(personnel.maritalStatusTitle == "متاهل")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 1);
+            if(personnel.maritalStatusTitle == "مجرد")
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 2);
 
-
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.fullNameEn", personality.fullNameEn);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personality.firstNameFa);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personality.birthCertificate);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificateLocation", personality.birthCertificateLocation);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationality", personality.nationality);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.description", personality.description);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", personality.genderId);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", personality.marriedId);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", personality.militaryId);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
             // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
             // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
             // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
-            //
-            //
             // if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
             //     DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
             //     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
