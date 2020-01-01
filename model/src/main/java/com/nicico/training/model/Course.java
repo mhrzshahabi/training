@@ -55,6 +55,9 @@ public class Course extends Auditable {
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
 
+    @Column(name="c_evaluation")
+     private String evaluation;
+
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
     private Category category;
