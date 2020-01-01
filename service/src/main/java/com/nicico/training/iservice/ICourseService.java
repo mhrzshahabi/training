@@ -70,4 +70,10 @@ public interface ICourseService {
     List<TeacherDTO.TeacherFullNameTuple> getTeachers(Long courseId);
 
     int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
+
+    //---------------------heydari---------------------------
+
+   CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
+
+  List<CourseDTO.Info> getEvaluation(Long courseId);
 }

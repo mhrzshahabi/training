@@ -299,6 +299,7 @@
         groupTitle: "اطلاعات پایه کلاس",
         groupBorderCSS: "1px solid lightBlue",
         borderRadius: "6px",
+        titleAlign:"left",
         numCols: 10,
         itemHoverWidth:"20%",
         colWidths: ["5%", "24%", "5%", "12%", "5%", "6%", "6%", "5%", "7%", "12%"],
@@ -336,7 +337,16 @@
                 textAlign: "center",
                 hint: "حداقل نفر",
                 showHintInField: true,
-                keyPressFilter: "[0-9]"
+                keyPressFilter: "[0-9]",
+                <%--validators:[{--%>
+                    <%--type: "custom",--%>
+                    <%--errorMessage: "<spring:message code='msg.min.capacity'/>",--%>
+                    <%--condition: function (item, validator, value) {--%>
+                        <%--if (value == null || this.form.getValue("maxCapacity") == null)--%>
+                            <%--return true;--%>
+                        <%--return value <= this.form.getValue("maxCapacity");--%>
+                    <%--}--%>
+                <%--}]--%>
             },
             {
                 name: "maxCapacity",
@@ -351,7 +361,7 @@
                 name: "code",
                 title: "<spring:message code='class.code'/>:",
                 colSpan: 3,
-                textAlign: "center",
+                // textAlign: "center",
                 readOnlyHover :"به منظور تولید اتوماتیک کد کلاس، باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit:false,
                 // type: "staticText", textBoxStyle: "textItemLite"
@@ -573,7 +583,7 @@
                 colSpan: 1,
                 readOnlyHover :"به منظور تولید اتوماتیک گروه باید حتماً اطلاعات فیلدهای دوره و ترم تکمیل شده باشند.",
                 canEdit:false,
-                textAlign: "center",
+                // textAlign: "center",
                 // type: "staticText",
                 // textBoxStyle: "textItemLite"
             },
@@ -659,6 +669,7 @@
         height: "100%",
 // validateOnExit:true,
         isGroup: true,
+        titleAlign:"left",
         wrapItemTitles: true,
         groupTitle: "<spring:message code="class.meeting.time"/>",
         groupBorderCSS: "1px solid lightBlue",
