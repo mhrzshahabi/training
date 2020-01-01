@@ -23,14 +23,24 @@ public class MainFormController {
         return "basic/parameter";
     }
 
-    @RequestMapping("/user")
+    @RequestMapping("/oaUser")
     public String showOaUserForm() {
         return "security/user";
     }
 
-    @RequestMapping("/role")
+    @RequestMapping("/oaRole")
     public String showOaRoleForm() {
         return "security/role";
+    }
+
+    @RequestMapping("/oaGroup")
+    public String showOaGroupForm() {
+        return "security/group";
+    }
+
+    @RequestMapping("/oaPermission")
+    public String showOaPermissionForm() {
+        return "security/permission";
     }
 
     @RequestMapping("/job")
@@ -68,10 +78,19 @@ public class MainFormController {
         return "base/postGradeGroup";
     }
 
-
     @RequestMapping("/needAssessmentSkillBased")
     public String showNeedAssessmentSkillBasedForm() {
         return "base/needAssessmentSkillBased";
+    }
+
+    @RequestMapping("/config")
+    public String showConfigForm() {
+        return "basic/config";
+    }
+
+    @RequestMapping("/config-questionnaire")
+    public String showConfigQuestionnaireForm() {
+        return "base/configQuestionnaire";
     }
 
     @PostMapping("/post_print_list/{type}")

@@ -45,6 +45,8 @@
     const rootUrl = "${contextPath}/api";
     const oauthUserUrl = rootUrl + "/oauth/users";
     const oauthRoleUrl = rootUrl + "/oauth/app-roles";
+    const oauthGroupUrl = rootUrl + "/oauth/groups";
+    const oauthPermissionUrl = rootUrl + "/oauth/permissions";
     const workflowUrl = rootUrl + "/workflow";
     const jobUrl = rootUrl + "/job";
     const postGroupUrl = rootUrl + "/post-group";
@@ -64,6 +66,8 @@
     const teachingHistoryUrl = rootUrl + "/teachingHistory";
     const teacherCertificationUrl = rootUrl + "/teacherCertification";
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
+    const publicationUrl = rootUrl + "/publication";
+    const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -88,41 +92,24 @@
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
     isc.Dialog.addProperties({isModal: true, askIcon: "info.png", autoDraw: true, iconSize: 24});
     isc.DynamicForm.addProperties({
-        width: "100%",
-        errorOrientation: "right",
-        showErrorStyle: false,
-        wrapItemTitles: false,
-        titleAlign: "right",
-        titleSuffix: "",
-        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>",
-        requiredTitleSuffix: "",
-        readOnlyDisplay: "static",
+        width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
+        requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
+        readOnlyDisplay: "static", padding: 10
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
         canDragResize: true, showHeaderIcon: false, animateMinimize: true, showMaximizeButton: true,
     });
-    isc.ComboBoxItem.addProperties({
-        pickListProperties: {showFilterEditor: true},
-        addUnknownValues: false,
-        useClientFiltering: false,
-        changeOnKeypress: false,
-    });
+    isc.ComboBoxItem.addProperties({pickListProperties: {showFilterEditor: true}, addUnknownValues: false, useClientFiltering: false, changeOnKeypress: false,});
     isc.defineClass("TrHLayout", HLayout);
     isc.TrHLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     isc.defineClass("TrVLayout", VLayout);
     isc.TrVLayout.addProperties({width: "100%", height: "100%", defaultLayoutAlign: "center",});
     TrDSRequest = function (actionURLParam, httpMethodParam, dataParam, callbackParam) {
         return {
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            contentType: "application/json; charset=utf-8",
-            useSimpleHttp: true,
-            showPrompt: false,
-            willHandleError: true,
-            actionURL: actionURLParam,
-            httpMethod: httpMethodParam,
-            data: dataParam,
-            callback: callbackParam,
+            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"}, contentType: "application/json; charset=utf-8",
+            useSimpleHttp: true, showPrompt: false, willHandleError: true, actionURL: actionURLParam, httpMethod: httpMethodParam,
+            data: dataParam, callback: callbackParam,
         }
     };
 
@@ -253,11 +240,7 @@
     isc.TrHLayoutButtons.addProperties({align: "center", height: 40, defaultLayoutAlign: "center", membersMargin: 10,});
 
     isc.defineClass("TrComboAutoRefresh", ComboBoxItem);
-    isc.TrComboAutoRefresh.addProperties({
-        click: function (form, item) {
-            item.fetchData();
-        }
-    });
+    isc.TrComboAutoRefresh.addProperties({click: function (form, item) { item.fetchData(); }});
 
     isc.ToolStripButtonRefresh.addProperties({title: "<spring:message code="refresh"/>",});
     isc.ToolStripButtonCreate.addProperties({title: "<spring:message code="create"/>",});
@@ -364,7 +347,7 @@
 
     // -------------------------------------------  Page UI - Menu  -----------------------------------------------
 
-    basicTSMB = isc.ToolStripMenuButton.create({
+    basicInfoTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
@@ -421,7 +404,6 @@
                         createTab(this.title, "<spring:url value="web/job/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="job.group"/>",
                     click: function () {
@@ -435,7 +417,6 @@
                         createTab(this.title, "<spring:url value="web/postGrade/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="post.grade.group"/>",
                     click: function () {
@@ -449,26 +430,26 @@
                         createTab(this.title, "<spring:url value="web/post/"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="post.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/post-group/"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="skill"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill/show-form"/>");
                     }
                 },
-                {isSeparator: true},
                 {
                     title: "<spring:message code="skill.group"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/skill-group/show-form"/>");
                     }
                 },
+                {isSeparator: true},
                 {
                     title: "<spring:message code="need.assessment.skill.based"/>",
                     click: function () {
@@ -552,7 +533,20 @@
     evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
-            data: []
+            data: [
+                {
+                    title: "<spring:message code="evaluation.index.title"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluationIndex/showForm"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="questionnaire"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
+                    },
+                },
+            ]
         }),
     });
 
@@ -610,7 +604,7 @@
                 {
                     title: "<spring:message code="user.plural"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="web/user"/>");
+                        createTab(this.title, "<spring:url value="web/oaUser"/>");
                     }
                 },
                 {
@@ -646,6 +640,13 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="/operational-unit/show-form"/>");
                     }
+                },
+                {isSeparator: true},
+                {
+                    title: "<spring:message code="configurations"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/config/"/>");
+                    }
                 }
             ]
         }),
@@ -659,7 +660,7 @@
         shadowDepth: 3,
         shadowColor: "#153560",
         members: [
-            basicTSMB,
+            basicInfoTSMB,
             needAssessmentTSMB,
             designingTSMB,
             runTSMB,
@@ -748,11 +749,7 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({
-                    viewURL: url, handleError(rpcRequest, rpcResponse) {
-                        createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")
-                    }
-                }),
+                pane: isc.ViewLoader.create({viewURL: url, handleError(rpcRequest, rpcResponse) {createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")}}),
                 canClose: true,
             });
             createTab(title, url);
@@ -791,6 +788,72 @@
         }
         return dialog;
     }
+
+    function refreshListGrid(ListGridID) {
+        ListGridID.invalidateCache();
+        ListGridID.filterByEditor();
+    }
+
+    function checkRecordAsSelected(record, showDialog, entityName, msg) {
+        if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {
+            return true;
+        }
+        if (showDialog) {
+            let dialog = createDialog("info", msg ? msg : (entityName ? "<spring:message code="from"/>&nbsp;<b>" + entityName + "</b>&nbsp;<spring:message code="msg.no.records.selected"/>" : "<spring:message code="msg.no.records.selected"/>"));
+            Timer.setTimeout(function () {
+                dialog.close();
+            }, dialogShowTime);
+        }
+        return false;
+    }
+
+    function studyResponse(resp, action, entityTypeName, winToClose, gridToRefresh) {
+        console.log('resp:');
+        console.log(resp);
+        console.log('action:');
+        console.log(action);
+        console.log('entityTypeName:');
+        console.log(entityTypeName);
+        console.log('winToClose:');
+        console.log(winToClose);
+        console.log('gridToRefresh:');
+        console.log(gridToRefresh);
+        let msg;
+        let selectedState;
+        if (resp == null) {
+            msg = "<spring:message code="msg.error.connecting.to.server"/>";
+        } else {
+            let respCode = resp.httpResponseCode;
+            console.log('respCode:');
+            console.log(respCode);
+            if (respCode == 200 || respCode == 201) {
+                selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
+                console.log('selectedState:');
+                console.log(selectedState);
+                let entityName = JSON.parse(resp.httpResponseText).title;
+                console.log('entityName:');
+                console.log(entityName);
+                msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+            } else {
+                if (respCode == 409) {
+                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                } else {
+                    msg = "<spring:message code='msg.operation.error'/>";
+                }
+            }
+            var dialog = createDialog("info", msg);
+            Timer.setTimeout(function () {
+                dialog.close();
+            }, dialogShowTime);
+        }
+        if (winToClose !== undefined) {
+            winToClose.close();
+        }
+        if (gridToRefresh !== undefined) {
+            refreshListGrid(gridToRefresh);
+        }
+    }
+
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";

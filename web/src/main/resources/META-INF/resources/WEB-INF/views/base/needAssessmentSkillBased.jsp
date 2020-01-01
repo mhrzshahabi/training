@@ -37,8 +37,62 @@
         fields:
             [
                 {name: "id", primaryKey: true, hidden: true},
-                {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
-                {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"}
+                {
+                    name: "code",
+                    title: "<spring:message code="post.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "titleFa",
+                    title: "<spring:message code="post.title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "job.titleFa",
+                    title: "<spring:message code="job.title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "postGrade.titleFa",
+                    title: "<spring:message code="post.grade.title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+                {
+                    name: "assistance",
+                    title: "<spring:message code="assistance"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "affairs",
+                    title: "<spring:message code="affairs"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "section",
+                    title: "<spring:message code="section"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+                {
+                    name: "costCenterCode",
+                    title: "<spring:message code="reward.cost.center.code"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
+                {
+                    name: "costCenterTitleFa",
+                    title: "<spring:message code="reward.cost.center.title"/>",
+                    filterOperator: "iContains",
+                    autoFitWidth: true
+                },
             ],
         fetchDataURL: postUrl + "/iscList"
     });
@@ -71,7 +125,11 @@
                 {name: "skill.code", title: "<spring:message code="code"/>", filterOperator: "iContains"},
                 {name: "skill.titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
                 {name: "skill.id"},
-                {name: "eneedAssessmentPriorityId", title: "<spring:message code='priority'/>", filterOperator: "equals"}
+                {
+                    name: "eneedAssessmentPriorityId",
+                    title: "<spring:message code='priority'/>",
+                    filterOperator: "equals"
+                }
             ]
     });
 
@@ -308,6 +366,19 @@
         sortField: 1,
         contextMenu: Menu_ListGrid_NASB_JPA,
         selectionType: "single",
+        fields: [
+            {name: "code",},
+            {name: "titleFa",},
+            {name: "job.titleFa",},
+            {name: "postGrade.titleFa",},
+            {name: "area",},
+            {name: "assistance",},
+            {name: "affairs",},
+            {name: "section",},
+            {name: "unit",},
+            {name: "costCenterCode",},
+            {name: "costCenterTitleFa",},
+        ],
         selectionUpdated: function () {
             Set_For_This_Object_Data();
         }
@@ -589,6 +660,7 @@
         } else {
             restData_For_This_Object_Skills_NASB_JPA.fetchDataURL = needAssessmentSkillBasedUrl + "iscFullList/" + objectType_NASB + ":" + objectId_NASB;
             ListGrid_For_This_Object_Skills_Refresh_NASB();
+            // restData_For_This_Object_Skills_NASB_JPA.findAll("objectType", objectType_NASB).setProperty("enabled", false);
         }
         DynamicForm_For_This_Object_NASB_Jsp.getItem("Left_LG_Title_NASB").redraw();
     }

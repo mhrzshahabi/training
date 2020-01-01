@@ -38,10 +38,19 @@ public class TeacherFormController {
         return "teacherTabs/teachingHistory";
     }
 
+    @RequestMapping("/foreignLangKnowledge-tab")
+    public String foreignLangTab() { return "teacherTabs/foreignLangKnowledge"; }
+
     @RequestMapping("/teacherCertification-tab")
     public String teacherCertificationTab() {
         return "teacherTabs/teacherCertification";
     }
+
+    @RequestMapping("/publication-tab")
+    public String publicationTab() { return "teacherTabs/publication"; }
+
+    @RequestMapping("/otherActivities-tab")
+    public String otherActivitiesTab() { return "teacherTabs/otherActivities"; }
 
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {

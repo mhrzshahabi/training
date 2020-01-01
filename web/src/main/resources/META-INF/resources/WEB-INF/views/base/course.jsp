@@ -273,7 +273,10 @@
                 }
             }
             // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
+
         },
+
+
         //working
         dataArrived: function () {
             selectWorkflowRecord();
@@ -1960,6 +1963,7 @@
     //     members: [ListGrid_CourseCompetence]
     // });
     var Detail_Tab_Course = isc.TabSet.create({
+         ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
             {
@@ -2000,12 +2004,8 @@
                 pane: ListGrid_CourseCompetence
             },
 
-            {
-             title: "اهداف رفتاری دوره",
-             ID:"behavioralGoals",
-             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "behavioral_goals/show-form"})
-            }
-        ]
+                ],
+
     });
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",

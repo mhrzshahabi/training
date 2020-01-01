@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -89,4 +90,38 @@ public class ForeignLangKnowledgeService implements IForeignLangKnowledgeService
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
+
+    @Transactional
+    @Override
+    public void addForeignLangKnowledge(ForeignLangKnowledgeDTO.Create request, Long teacherId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        Set<ForeignLangKnowledge> foreignLangKnowledgeSet = teacher.getForeignLangKnowledges();
+        for (ForeignLangKnowledge foreignLangKnowledge : foreignLangKnowledgeSet) {
+            if(foreignLangKnowledge.getLangName().equals(request.getLangName()))
+                throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+        ForeignLangKnowledge foreignLangKnowledge = new ForeignLangKnowledge();
+        modelMapper.map(request, foreignLangKnowledge);
+        try {
+            teacher.getForeignLangKnowledges().add(foreignLangKnowledge);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteForeignLangKnowledge(Long teacherId, Long foreignLangKnowledgeId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        final ForeignLangKnowledgeDTO.Info foreignLangKnowledge = get(foreignLangKnowledgeId);
+        try {
+            teacher.getForeignLangKnowledges().remove(modelMapper.map(foreignLangKnowledge, ForeignLangKnowledge.class));
+            foreignLangKnowledge.setTeacherId(null);
+            foreignLangKnowledgeDAO.delete(modelMapper.map(foreignLangKnowledge, ForeignLangKnowledge.class));
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
+    }
+
+
 }

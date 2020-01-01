@@ -113,8 +113,7 @@ public class TclassRestController {
         try {
             tclassService.delete(id);
             return new ResponseEntity(HttpStatus.OK);
-        }
-        catch (DataIntegrityViolationException e){
+        } catch (DataIntegrityViolationException e) {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(),
                     HttpStatus.NOT_ACCEPTABLE);
@@ -137,7 +136,7 @@ public class TclassRestController {
                                                        @RequestParam(value = "_constructor", required = false) String constructor,
                                                        @RequestParam(value = "operator", required = false) String operator,
                                                        @RequestParam(value = "criteria", required = false) String criteria,
-                                                       @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                       @RequestParam(value = "_sortBy", required = false) String sortBy, HttpServletResponse httpResponse) throws IOException {
 
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
@@ -161,9 +160,8 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
 
-        for(TclassDTO.Info tclassDTO :response.getList())
-        {
-            if(classAlarmService.list(tclassDTO.getId()).size() > 0)
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            if (classAlarmService.list(tclassDTO.getId(), httpResponse).size() > 0)
                 tclassDTO.setHasWarning("alarm");
             else
                 tclassDTO.setHasWarning("");
@@ -286,10 +284,10 @@ public class TclassRestController {
 //    @PreAuthorize("hasAuthority('c_tclass')")
     public ResponseEntity<Long> checkStudentInClass(@PathVariable String nationalCode, @PathVariable Long classId) {
 
-        if (((studentDAO.findOneByNationalCodeInClass(nationalCode , classId)) != null )){
+        if (((studentDAO.findOneByNationalCodeInClass(nationalCode, classId)) != null)) {
             return null;
         }
-        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode , classId));
+        List<Long> classList = (studentDAO.findOneByNationalCodeInClass(nationalCode, classId));
         return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
 
     }

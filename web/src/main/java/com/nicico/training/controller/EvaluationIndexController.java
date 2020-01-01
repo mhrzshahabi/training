@@ -4,12 +4,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 
-@RequiredArgsConstructor
 @Controller
-@RequestMapping("/behavioral_goals")
-public class BehavioralGoalFormController {
-    @RequestMapping("/show-form")
+@RequiredArgsConstructor
+@RequestMapping("/evaluationIndex")
+public class EvaluationIndexController {
+
+    @RequestMapping(value = "/showForm")
     public String showForm() {
-        return "base/behavioralGoals";
+        return "base/evaluationIndex";
     }
 }

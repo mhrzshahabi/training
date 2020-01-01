@@ -29,12 +29,12 @@
         fetchDataURL: teacherUrl + "fullName-list"
     });
 
-    var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
-        fields: [
-            {name: "id", primaryKey: true},
-            {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eClassAttachmentType/spec-list"
-    });
+    // var RestDataSource_EAttachmentType_JspClass = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id", primaryKey: true},
+    //         {name: "titleFa"}],
+    //     fetchDataURL: enumUrl + "eClassAttachmentType/spec-list"
+    // });
 
     var RestDataSource_Class_JspClass = isc.TrDS.create({
         fields: [
@@ -1806,7 +1806,7 @@
                 }
                 case "classAttachmentsTab": {
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",RestDataSource_EAttachmentType_JspClass);
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب"});
                     break;
                 }
                 case "classScoresTab": {

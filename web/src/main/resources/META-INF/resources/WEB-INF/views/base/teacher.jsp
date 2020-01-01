@@ -6,7 +6,6 @@
     var teacherMethod = "POST";
     var teacherWait;
     var responseID;
-    var categoryList;
     var gridState;
     var attachName;
     var attachNameTemp;
@@ -15,8 +14,7 @@
     var mailCheck = true;
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
-    var teacherCategoriesID = [];
-
+    var isTeacherCategoriesChanged = false;
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
     var RestDataSource_Teacher_JspTeacher = isc.TrDS.create({
@@ -30,17 +28,18 @@
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
             {name: "categories"},
+            {name: "subCategories" },
             {name: "personality.contactInfo.homeAddress.id"}
         ],
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-    var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
-        fields: [
-            {name: "id"},
-            {name: "titleFa"}],
-        fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
-    });
+    // var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
+    //     fields: [
+    //         {name: "id"},
+    //         {name: "titleFa"}],
+    //     fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
+    // });
 
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
@@ -177,28 +176,51 @@
                 }
             },
             {
-                name: "category",
-                title: "<spring:message code='education.categories'/>",
-                align: "center",
-                formatCellValue: function (value, record) {
-                    if (record.categories.length === 0)
+                name: "categories",
+                title: "<spring:message code='category'/>",
+                formatCellValue: function (value) {
+                    if (value.length === 0)
                         return;
-                    record.categories.sort();
-                    var cat = record.categories[0].titleFa.toString();
-                    for (var i = 1; i < record.categories.length; i++) {
-                        cat += "، " + record.categories[i].titleFa;
+                    value.sort();
+                    var cat = value[0].titleFa.toString();
+                    for (var i = 1; i < value.length; i++) {
+                        cat += "، " + value[i].titleFa;
                     }
                     return cat;
                 },
-                sortNormalizer: function (record) {
-                    if (record.categories.length === 0)
+                sortNormalizer: function (value) {
+                    if (value.categories.length === 0)
                         return;
-                    record.categories.sort();
-                    var cat = record.categories[0].titleFa.toString();
-                    for (var i = 1; i < record.categories.length; i++) {
-                        cat += "، " + record.categories[i].titleFa;
+                    value.categories.sort();
+                    var cat = value.categories[0].titleFa.toString();
+                    for (var i = 1; i < value.categories.length; i++) {
+                        cat += "، " + value.categories[i].titleFa;
                     }
                     return cat;
+                }
+            },
+            {
+                name: "subCategories",
+                title: "<spring:message code='subcategory'/>",
+                formatCellValue: function (value) {
+                    if (value.length === 0)
+                        return;
+                    value.sort();
+                    var subCat = value[0].titleFa.toString();
+                    for (var i = 1; i < value.length; i++) {
+                        subCat += "، " + value[i].titleFa;
+                    }
+                    return subCat;
+                },
+                sortNormalizer: function (value) {
+                    if (value.subCategories.length === 0)
+                        return;
+                    value.subCategories.sort();
+                    var subCat = value.subCategories[0].titleFa.toString();
+                    for (var i = 1; i < value.subCategories.length; i++) {
+                        subCat += "، " + value.subCategories[i].titleFa;
+                    }
+                    return subCat;
                 }
             },
             {
@@ -252,7 +274,7 @@
         overflow: "scroll",
         height: "133px",
         width: "130px",
-        border: "1px solid red",
+        border: "1px solid orange",
         scrollbarSize: 0,
         loadingMessage: "<spring:message code='msg.photo.loading.error'/>"
     });
@@ -562,18 +584,20 @@
                 ]
             },
             {
-                name: "categoryList",
+                name: "categories",
+                title: "<spring:message code='education.categories'/>",
                 type: "selectItem",
                 textAlign: "center",
                 required: true,
-                title: "<spring:message code='education.categories'/>",
-                autoFetchData: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
                 valueField: "id",
                 displayField: "titleFa",
+                filterFields: ["titleFa"],
                 multiple: true,
+                filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
+                    filterOperator: "iContains",
                     gridComponents: [
                         isc.ToolStrip.create({
                             height: 30,
@@ -584,7 +608,7 @@
                                     icon: "[SKIN]/actions/approve.png",
                                     title: "<spring:message code='select.all'/>",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList"),
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories"),
                                             fullData = item.pickList.data,
                                             cache = fullData.localData,
                                             values = [];
@@ -601,7 +625,7 @@
                                     icon: "[SKIN]/actions/close.png",
                                     title: "<spring:message code='deselect.all'/>",
                                     click: function () {
-                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categoryList");
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("categories");
                                         item.setValue([]);
                                         item.pickList.hide();
                                     }
@@ -610,9 +634,99 @@
                         }),
                         "header", "body"
                     ]
+                },
+                changed: function () {
+                    isTeacherCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
+                    if (this.getSelectedRecords() == null) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                    if (subCategoryField.getValue() === undefined)
+                        return;
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
+                        if (categoryIds.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
                 }
             },
+            {
+                name: "subCategories",
+                title: "<spring:message code='sub.education.categories'/>",
+                type: "selectItem",
+                textAlign: "center",
+                autoFetchData: false,
+                disabled: true,
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                valueField: "id",
+                displayField: "titleFa",
+                filterFields: ["titleFa"],
+                multiple: true,
+                filterLocally: true,
+                pickListProperties: {
+                    showFilterEditor: true,
+                    filterOperator: "iContains",
+                    gridComponents: [
+                        isc.ToolStrip.create({
+                            height: 30,
+                            width: "100%",
+                            members: [
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/approve.png",
+                                    title: "<spring:message code='select.all'/>",
+                                    click: function () {
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories"),
+                                            fullData = item.pickList.data,
+                                            cache = fullData.localData,
+                                            values = [];
 
+                                        for (var i = 0; i < cache.length; i++) {
+                                            values[i] = cache[i]["id"];
+                                        }
+                                        item.setValue(values);
+                                        item.pickList.hide();
+                                    }
+                                }),
+                                isc.ToolStripButton.create({
+                                    width: "50%",
+                                    icon: "[SKIN]/actions/close.png",
+                                    title: "<spring:message code='deselect.all'/>",
+                                    click: function () {
+                                        var item = DynamicForm_BasicInfo_JspTeacher.getField("subCategories");
+                                        item.setValue([]);
+                                        item.pickList.hide();
+                                    }
+                                })
+                            ]
+                        }),
+                        "header", "body"
+                    ]
+                },
+                focus: function () {
+                    if (isTeacherCategoriesChanged) {
+                        isTeacherCategoriesChanged = false;
+                        var ids = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+                        if (ids === []) {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            },
             {
                 name: "personality.contactInfo.mobile",
                 title: "<spring:message code='cellPhone'/>",
@@ -1266,9 +1380,19 @@
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             },
             {
-                ID: "foreingLang",
-                title: "<spring:message code="foreign.languages"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLang-tab"})
+                ID: "foreignLangKnowledge",
+                title: "<spring:message code="foreign.languages.knowledge"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLangKnowledge-tab"})
+            },
+            {
+                ID: "publication",
+                title: "<spring:message code="publication"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
+            },
+            {
+                ID: "otherActivities",
+                title: "<spring:message code="otherActivities"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1370,10 +1494,6 @@
         refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
-    }
-
-    function showTeacherCategories(value) {
-        teacherCategoriesID.add(value.id);
     }
 
     function Teacher_Save_Button_Click_JspTeacher(isSaveButton) {
@@ -1507,7 +1627,29 @@
 
 
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = true;
-        showCategories();
+
+
+        var categoryIds = DynamicForm_BasicInfo_JspTeacher.getField("categories").getValue();
+        var subCategoryIds = DynamicForm_BasicInfo_JspTeacher.getField("subCategories").getValue();
+        if (categoryIds == null || categoryIds.length === 0)
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").disable();
+        else {
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").enable();
+            var catIds = [];
+            for (var i = 0; i < categoryIds.length; i++)
+                catIds.add(categoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("categories").setValue(catIds);
+            isTeacherCategoriesChanged = true;
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").focus(null, null);
+        }
+        if (subCategoryIds != null && subCategoryIds.length > 0) {
+            var subCatIds = [];
+            for (var i = 0; i < subCategoryIds.length; i++)
+                subCatIds.add(subCategoryIds[i].id);
+            DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
+        }
+
+
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
@@ -1541,7 +1683,6 @@
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
 
-        // TabSet_Bottom_JspTeacher.getTab("attachmentsTab").disable();
         TabSet_Bottom_JspTeacher.selectTab(0);
         clearTabs();
         TabSet_Bottom_JspTeacher.disable();
@@ -1565,12 +1706,6 @@
                 }
             });
         }
-    }
-
-    function addCategories(teacherId, categoryIds) {
-        var JSONObj = {"ids": categoryIds};
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "addCategories/" + teacherId, "POST", JSON.stringify(JSONObj),
-            "callback: teacher_addCategories_result(rpcResponse)"));
     }
 
     function addAttach(personalId) {
@@ -1615,12 +1750,6 @@
         }
     }
 
-    function showCategories() {
-        teacherId = ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "getCategories/" + teacherId, "POST", null,
-            "callback: teacher_getCategories_result(rpcResponse)"));
-    }
-
     function teacher_delete_result(resp) {
         teacherWait.close();
         if (resp.httpResponseCode === 200) {
@@ -1646,19 +1775,15 @@
                 responseID = JSON.parse(resp.data).id;
                 vm.setValue("id", responseID);
                 gridState = "[{id:" + responseID + "}]";
-                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
                     OK.close();
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                 }, 1000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
-                    addAttach(JSON.parse(resp.data).personalityId);
-                }
+                addAttach(JSON.parse(resp.data).personality.id);
+                showAttach(JSON.parse(resp.data).personality.id);
                 setTimeout(function () {
-                    if (categoryList !== undefined)
-                        addCategories(responseID, categoryList);
                     ListGrid_Teacher_JspTeacher.invalidateCache();
                     ListGrid_Teacher_JspTeacher.fetchData();
                 }, 300);
@@ -1678,7 +1803,6 @@
             } else {
                 responseID = JSON.parse(resp.data).id;
                 gridState = "[{id:" + responseID + "}]";
-                categoryList = DynamicForm_BasicInfo_JspTeacher.getField("categoryList").getValue();
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
                 setTimeout(function () {
@@ -1687,32 +1811,11 @@
                     ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
                     OK.close();
                 }, 1000);
-                if (DynamicForm_Photo_JspTeacher.getField("attachPic").getValue() !== undefined) {
-                    addAttach(JSON.parse(resp.data).personality.id);
-                    showAttach(ListGrid_Teacher_JspTeacher.getSelectedRecord().personality.id);
-                }
-                setTimeout(function () {
-                    if (categoryList !== undefined)
-                        addCategories(responseID, categoryList);
-                }, 300);
+                addAttach(JSON.parse(resp.data).personality.id);
+                showAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }
         } else {
-        }
-    }
-
-    function teacher_addCategories_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-        } else {
-            createDialog("info", "<spring:message code='error'/>");
-        }
-    }
-
-    function teacher_getCategories_result(resp) {
-        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            DynamicForm_BasicInfo_JspTeacher.getField("categoryList").setValue(JSON.parse(resp.data));
-        } else {
-            createDialog("info", "<spring:message code='error'/>");
         }
     }
 
@@ -1870,7 +1973,7 @@
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", RestDataSource_EAttachmentType_JpaTeacher);
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"});
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);
@@ -1880,6 +1983,15 @@
 
             if (typeof loadPage_TeacherCertification !== "undefined")
                 loadPage_TeacherCertification(teacherId);
+
+            if (typeof loadPage_ForeignLangKnowledge !== "undefined")
+                loadPage_ForeignLangKnowledge(teacherId);
+
+            if (typeof loadPage_Publication !== "undefined")
+                loadPage_Publication(teacherId);
+
+            if (typeof loadPage_OtherActivities !== "undefined")
+                loadPage_OtherActivities(teacherId);
 
         }
     }
@@ -1896,6 +2008,15 @@
 
         if (typeof clear_TeacherCertification !== "undefined")
             clear_TeacherCertification();
+
+        if (typeof clear_ForeignLangKnowledge !== "undefined")
+            clear_ForeignLangKnowledge();
+
+        if (typeof clear_Publication !== "undefined")
+            clear_Publication();
+
+        if (typeof clear_OtherActivities !== "undefined")
+            clear_OtherActivities();
     }
 
     // </script>

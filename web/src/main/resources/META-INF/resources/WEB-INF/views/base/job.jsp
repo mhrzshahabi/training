@@ -42,6 +42,24 @@
                     ]
                 })
             }),
+
+
+            isc.ToolStripButton.create({
+                top: 260,
+                align: "center",
+                title: "<spring:message code='all.persons'/>",
+                click: function () {
+                    if (!(JobLG_job.getSelectedRecord() == undefined || JobLG_job.getSelectedRecord() == null)) {
+                        setListGrid_PersonnelJob(JobLG_job.getSelectedRecord().code);
+                        Window_ListGrid_Personnel_Job.show();
+                    }else{
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                    }
+
+                }
+            }),
+
+
             isc.LayoutSpacer.create({
                 width: "*"
             }),
@@ -110,8 +128,15 @@
                     members: []
                 }),
             },
+            <%--{--%>
+            <%--    title: "<spring:message code="all.persons"/>",--%>
+            <%--    pane: isc.TrVLayout.create({--%>
+            <%--        members: []--%>
+            <%--    }),--%>
+            <%--},--%>
         ]
     });
+
 
     // ------------------------------------------- DataSource & ListGrid -------------------------------------------
     JobDS_job = isc.TrDS.create({
@@ -122,6 +147,7 @@
         ],
         fetchDataURL: jobUrl + "/iscList"
     });
+
 
     JobLG_job = isc.TrLG.create({
         dataSource: JobDS_job,
@@ -144,16 +170,227 @@
         },
     });
 
+
+    var PersonnelDS_personnel_Job_JSP = isc.TrDS.create({
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo",
+                title: "<spring:message code="personnel.no"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "personnelNo2",
+                title: "<spring:message code="personnel.no.6.digits"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "workPlace",
+                title: "<spring:message code="work.place"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                width: "*"
+            },
+            {
+                name: "employmentStatus",
+                title: "<spring:message code="employment.status"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                // detail: true
+            },
+            {
+                name: "complexTitle",
+                title: "<spring:message code="complex"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                // detail: true
+            },
+            {
+                name: "workPlaceTitle",
+                title: "<spring:message code="work.place"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                // detail: true
+            },
+            {
+                name: "workTurnTitle",
+                title: "<spring:message code="work.turn"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "postTitle",
+                title: "<spring:message code="post.title"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "postCode",
+                title: "<spring:message code="post.code"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "workYears",
+                title: "<spring:message code="work.years"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "educationLevelTitle",
+                title: "<spring:message code="education.degree"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "educationMajorTitle",
+                title: "<spring:message code="education.major"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+            {
+                name: "jobTitle",
+                title: "<spring:message code="job.title"/>",
+                filterOperator: "iContains",
+                // detail: true,
+                autoFitWidth: true
+            },
+        ],
+    });
+
+    var ListGrid_Personnel_Job_JSP = isc.TrLG.create({
+        width: "90%",
+        height: "90%",
+        autoDraw: false,
+        border: "2px solid black",
+        layoutMargin: 5,
+        autoFetchData: false,
+        dataSource: PersonnelDS_personnel_Job_JSP,
+        fields: [
+
+            {name: "firstName"},
+            {name: "lastName"},
+            {name: "nationalCode"},
+            {name: "personnelNo"},
+            {name: "personnelNo2"},
+            {name: "jobTitle"},
+            {name: "employmentStatus"},
+            // {name: "complexTitle"},
+            {name: "workPlaceTitle"},
+            {name: "workTurnTitle"},
+            {name: "postTitle"},
+            {name: "postCode"},
+            {name: "educationLevelTitle"},
+            {name: "educationMajorTitle"},
+            {name: "workYears"}
+        ]
+    });
+
+    function setListGrid_PersonnelJob(jobNo) {
+        PersonnelDS_personnel_Job_JSP.fetchDataURL = personnelUrl + "/byJobNo/" + jobNo;
+        ListGrid_Personnel_Job_JSP.invalidateCache();
+        ListGrid_Personnel_Job_JSP.fetchData();
+    };
+
+
+    var ListGrid_Personnel_Job_HLayout = isc.HLayout.create({
+        width: "100%",
+        height: "90%",
+        autoDraw: false,
+        border: "0px solid red",
+        align: "center",
+        valign: "center",
+        layoutMargin: 5,
+        membersMargin: 7,
+        members: [
+            ListGrid_Personnel_Job_JSP
+        ]
+    });
+
+
+    var ListGrid_Personnel_Job_closeButton_HLayout = isc.HLayout.create({
+        width: "100%",
+        height: "6%",
+        autoDraw: false,
+        align: "center",
+        members: [
+            isc.IButton.create({
+                title: "<spring:message code='close'/>",
+                icon: "[SKIN]/actions/cancel.png",
+                width: "70",
+                align: "center",
+                click: function () {
+                    try {
+                        Window_ListGrid_Personnel_Job.close();
+
+                    } catch (e) {
+                    }
+                }
+            })
+        ]
+    });
+
+
+    var Window_ListGrid_Personnel_Job = isc.Window.create({
+        title: "<spring:message code='personal'/>",
+        width: 950,
+        height: 600,
+        autoSize: false,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        valign: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        layoutMargin: 5,
+        membersMargin: 7,
+        items: [
+            ListGrid_Personnel_Job_HLayout,
+            ListGrid_Personnel_Job_closeButton_HLayout
+
+        ]
+    });
+
+
     // ------------------------------------------- Page UI -------------------------------------------
-       isc.TrVLayout.create({
+    isc.TrVLayout.create({
         members: [JobLG_job, isc.HLayout.create({members: [JobTabs_job]})],
         // members: [JobLG_job],
     });
 
 
+
     // ------------------------------------------- Functions -------------------------------------------
     function refreshJobLG_job() {
         JobLG_job.filterByEditor();
+        JobLG_job.invalidateCache();
     }
 
     function printJobLG_job(type) {
@@ -193,3 +430,4 @@
     <%--    trCriteriaForm.show();--%>
     <%--    trCriteriaForm.submitForm();--%>
     <%--}--%>
+
