@@ -240,16 +240,16 @@
             ]
     });
 
-    HLayout_Actions_JspAttachment = isc.HLayout.create({
+    var HLayout_Actions_JspAttachment = isc.HLayout.create({
         width: "100%",
         members: [ToolStrip_Actions_JspAttachment]
     });
 
-    HLayout_Grid_JspAttachment = isc.TrHLayout.create({
+    var HLayout_Grid_JspAttachment = isc.TrHLayout.create({
         members: [ListGrid_JspAttachment]
     });
 
-    VLayout_Body_JspAttachment = isc.TrVLayout.create({
+    var VLayout_Body_JspAttachment = isc.TrVLayout.create({
         members: [HLayout_Actions_JspAttachment,
             HLayout_Grid_JspAttachment
         ]
@@ -370,6 +370,7 @@
     }
 
     function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, RestDataSource_EAttachmentType) {
+        VLayout_Body_JspAttachment.redraw();
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
         RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
