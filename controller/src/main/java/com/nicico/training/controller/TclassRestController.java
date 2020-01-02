@@ -161,7 +161,7 @@ public class TclassRestController {
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
 
         for (TclassDTO.Info tclassDTO : response.getList()) {
-            if (classAlarmService.list(tclassDTO.getId(), httpResponse).size() > 0)
+            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
                 tclassDTO.setHasWarning("alarm");
             else
                 tclassDTO.setHasWarning("");

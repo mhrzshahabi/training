@@ -32,6 +32,249 @@ public class ClassAlarmService implements IClassAlarm {
     private final ModelMapper modelMapper;
     private MessageSource messageSource;
 
+    //*********************************
+    /*point : for ended classes do not fetch alarms*/
+    @Transactional
+    @Override
+    public List<String> hasAlarm(Long class_id, HttpServletResponse response) throws IOException {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+
+        ////*** Wildcard ***
+        List<String> AlarmList = null;
+        List<ClassAlarmDTO> classAlarmDTO = null;
+        try {
+
+            StringBuilder alarmScript = new StringBuilder().append(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT" +
+                    "            tbl_session.f_class_id, " +
+                    "            concat(concat(concat(concat('کلاس ',tbl_class.c_title_class),' با کد '),tbl_class.c_code),' : ') AS class_name, " +
+                    "            SUM(round(to_number(TO_DATE(tbl_session.c_session_end_hour,'HH24:MI') - TO_DATE(tbl_session.c_session_start_hour,'HH24:MI') ) * 24 * 60) " +
+                    " ) AS session_time, " +
+                    "            ( tbl_class.n_h_duration * 60 ) AS class_time " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "        WHERE " +
+                    "            tbl_session.f_class_id =:class_id " +
+                    "        GROUP BY " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_class.n_h_duration, " +
+                    "            tbl_class.c_code, " +
+                    "            tbl_class.c_title_class " +
+                    "    ) " +
+                    " WHERE " +
+                    "    floor(abs( (class_time - session_time) / 60) ) > 0 ");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    "    INNER JOIN tbl_session ON tbl_class_student.f_class = tbl_session.f_class_id " +
+                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
+                    " WHERE " +
+                    "    tbl_session.f_class_id =:class_id " +
+                    "    AND   tbl_session.c_session_date <:todaydat " +
+                    "    AND   ( " +
+                    "        tbl_attendance.c_state IS NULL " +
+                    "        OR    tbl_attendance.c_state = 0 " +
+                    "    ) ");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.f_class " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id " +
+                    " GROUP BY " +
+                    "    tbl_class.id, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity " +
+                    " HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity " +
+                    "       OR COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity ");
+
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_session tb1 " +
+                    "    INNER JOIN tbl_session tb2 ON tb2.f_teacher_id = tb1.f_teacher_id " +
+                    "                                  AND tb1.c_session_date = tb2.c_session_date " +
+                    "    INNER JOIN tbl_teacher ON tbl_teacher.id = tb1.f_teacher_id " +
+                    "    INNER JOIN tbl_personal_info ON tbl_personal_info.id = tbl_teacher.f_personality " +
+                    "    INNER JOIN tbl_class ON tbl_class.id = tb2.f_class_id " +
+                    " WHERE " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND   tb1.f_class_id =:class_id " +
+                    "    AND   ( " +
+                    "        ( " +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        ) " +
+                    "        OR    ( " +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        ) " +
+                    "    )");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.f_student, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
+                    "    ) tb1 " +
+                    "    INNER JOIN ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.f_student, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "             AND tb2.national_code = tb1.national_code " +
+                    " WHERE " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND   ( " +
+                    "        ( " +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        ) " +
+                    "        OR    ( " +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        ) " +
+                    "    ) " +
+                    "    AND   tb1.f_class_id =:class_id ");
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_session.f_institute_id, " +
+                    "            tbl_institute.c_title_fa, " +
+                    "            tbl_session.f_training_place_id, " +
+                    "            tbl_training_place.c_title_fa AS c_title_fa1 " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "            INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "    ) tb1 " +
+                    "    INNER JOIN ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_session.f_institute_id, " +
+                    "            tbl_institute.c_title_fa, " +
+                    "            tbl_session.f_training_place_id, " +
+                    "            tbl_training_place.c_title_fa AS c_title_fa1, " +
+                    "            tbl_class.c_code, " +
+                    "            tbl_class.c_title_class " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "            INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "    ) tb2 ON tb1.c_session_date = tb2.c_session_date " +
+                    "             AND tb1.f_institute_id = tb2.f_institute_id " +
+                    "             AND tb1.f_training_place_id = tb2.f_training_place_id " +
+                    " WHERE " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND   tb1.f_class_id =:class_id " +
+                    "    AND   ( " +
+                    "        ( " +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        ) " +
+                    "        OR    ( " +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        ) " +
+                    "    ) ");
+
+
+
+            AlarmList = (List<String>) entityManager.createNativeQuery(alarmScript.toString())
+                    .setParameter("class_id", class_id)
+                    .setParameter("todaydat", todayDate).getResultList();
+
+//            if (AlarmList != null) {
+//                classAlarmDTO = new ArrayList<>(AlarmList.size());
+//
+//                for (int i = 0; i < AlarmList.size(); i++) {
+//                    Object[] alarm = (Object[]) AlarmList.get(i);
+//                    classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
+//
+//                }
+//            }
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
+        }
+
+//        return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
+//        }.getType()) : null);
+
+
+        return AlarmList;
+
+    }
+    //*********************************
 
     //*********************************
     /*point : for ended classes do not fetch alarms*/
@@ -288,8 +531,203 @@ public class ClassAlarmService implements IClassAlarm {
                     "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
                     "        ) " +
                     "    ) " +
-                    "    AND   tb1.f_class_id =:class_id " +
-                    " ORDER BY sortField ");
+                    "    AND   tb1.f_class_id =:class_id ");
+
+
+            alarmScript.append(" UNION ALL ");
+
+            alarmScript.append(" SELECT " +
+                    "    tbalarm.targetrecordid, " +
+                    "    tbalarm.tabname, " +
+                    "    tbalarm.pageaddress, " +
+                    "    tbalarm.alarmtype, " +
+                    "    (tbalarm.alarm || ' _ لیست کلاسهای آزاد : ' || CASE WHEN tbfreeplaces.freeplaces IS NULL THEN 'کلاسی آزاد وجود ندارد' ELSE tbfreeplaces.freeplaces END) AS alarm, " +
+                    "    tbalarm.detailrecordid, " +
+                    "    tbalarm.sortfield " +
+                    "FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tb1.f_class_id AS targetrecordid, " +
+                    "            'classSessionsTab' AS tabname, " +
+                    "            '/tclass/show-form' AS pageaddress, " +
+                    "            'تداخل محل برگزاری' AS alarmtype, " +
+                    "            'محل برگزاری ' " +
+                    "            || tb1.c_title_fa1 " +
+                    "            || ' موسسه ' " +
+                    "            || tb1.c_title_fa " +
+                    "            || ' روز ' " +
+                    "            || tb1.c_day_name " +
+                    "            || ' ' " +
+                    "            || tb1.c_session_date " +
+                    "            || ' از ' " +
+                    "            || tb1.c_session_start_hour " +
+                    "            || ' تا ' " +
+                    "            || tb1.c_session_end_hour " +
+                    "            || ' با کلاس ' " +
+                    "            || tb2.c_title_class " +
+                    "            || ' کد ' " +
+                    "            || tb2.c_code " +
+                    "            || ' تداخل دارد' AS alarm, " +
+                    "            tb1.id AS detailrecordid, " +
+                    "            ( 'تداخل محل برگزاری' " +
+                    "            || tb1.c_title_fa1 " +
+                    "            || tb1.c_title_fa " +
+                    "            || tb1.c_session_date " +
+                    "            || tb1.c_session_start_hour " +
+                    "            || tb1.c_session_end_hour ) AS sortfield, " +
+                    "            tb1.c_session_date, " +
+                    "            tb1.c_session_start_hour, " +
+                    "            tb1.c_session_end_hour, " +
+                    "            tb1.f_institute_id " +
+                    "        FROM " +
+                    "            ( " +
+                    "                SELECT " +
+                    "                    tbl_session.id, " +
+                    "                    tbl_session.f_class_id, " +
+                    "                    tbl_session.c_day_name, " +
+                    "                    tbl_session.c_session_date, " +
+                    "                    tbl_session.c_session_end_hour, " +
+                    "                    tbl_session.c_session_start_hour, " +
+                    "                    tbl_session.f_institute_id, " +
+                    "                    tbl_institute.c_title_fa, " +
+                    "                    tbl_session.f_training_place_id, " +
+                    "                    tbl_training_place.c_title_fa AS c_title_fa1 " +
+                    "                FROM " +
+                    "                    tbl_session " +
+                    "                    INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "                    INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "            ) tb1 " +
+                    "            INNER JOIN ( " +
+                    "                SELECT " +
+                    "                    tbl_session.id, " +
+                    "                    tbl_session.f_class_id, " +
+                    "                    tbl_session.c_day_name, " +
+                    "                    tbl_session.c_session_date, " +
+                    "                    tbl_session.c_session_end_hour, " +
+                    "                    tbl_session.c_session_start_hour, " +
+                    "                    tbl_session.f_institute_id, " +
+                    "                    tbl_institute.c_title_fa, " +
+                    "                    tbl_session.f_training_place_id, " +
+                    "                    tbl_training_place.c_title_fa AS c_title_fa1, " +
+                    "                    tbl_class.c_code, " +
+                    "                    tbl_class.c_title_class " +
+                    "                FROM " +
+                    "                    tbl_session " +
+                    "                    INNER JOIN tbl_institute ON tbl_institute.id = tbl_session.f_institute_id " +
+                    "                    INNER JOIN tbl_training_place ON tbl_training_place.id = tbl_session.f_training_place_id " +
+                    "                    INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "            ) tb2 ON tb1.c_session_date = tb2.c_session_date " +
+                    "                     AND tb1.f_institute_id = tb2.f_institute_id " +
+                    "                     AND tb1.f_training_place_id = tb2.f_training_place_id " +
+                    "        WHERE " +
+                    "            tb1.f_class_id = :class_id AND " +
+                    "            tb1.id <> tb2.id " +
+                    "            AND   ( " +
+                    "                (tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "                AND   tb1.c_session_start_hour < tb2.c_session_end_hour) " +
+                    "                OR    (tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "                AND   tb1.c_session_end_hour > tb2.c_session_start_hour) " +
+                    "            ) " +
+                    "    ) tbalarm " +
+                    "    LEFT JOIN ( " +
+                    "        SELECT " +
+                    "            c_session_date, " +
+                    "            c_session_start_hour, " +
+                    "            c_session_end_hour, " +
+                    "            f_institute_id, " +
+                    "            LISTAGG(c_title_fa, " +
+                    "            ' , ') WITHIN GROUP( " +
+                    "            ORDER BY " +
+                    "                c_title_fa " +
+                    "            ) AS freeplaces " +
+                    "        FROM " +
+                    "            ( " +
+                    "                SELECT DISTINCT " +
+                    "                    tba.c_session_date, " +
+                    "                    tba.c_session_start_hour, " +
+                    "                    tba.c_session_end_hour, " +
+                    "                    tba.f_institute_id, " +
+                    "                    tba.c_title_fa " +
+                    "                FROM " +
+                    "                    ( " +
+                    "                        SELECT " +
+                    "                            tbsession.c_session_date, " +
+                    "                            tbsession.c_session_start_hour, " +
+                    "                            tbsession.c_session_end_hour, " +
+                    "                            tbsession.f_institute_id, " +
+                    "                            tbsession.f_training_place_id, " +
+                    "                            tbl_training_place.id, " +
+                    "                            tbl_training_place.f_institute, " +
+                    "                            tbl_training_place.c_title_fa, " +
+                    "                            CASE " +
+                    "                                    WHEN tbsession.f_training_place_id = tbl_training_place.id THEN 'YES' " +
+                    "                                    ELSE 'NO' " +
+                    "                                END " +
+                    "                            AS status " +
+                    "                        FROM " +
+                    "                            ( " +
+                    "                                SELECT DISTINCT " +
+                    "                                    tbl_session.c_session_date, " +
+                    "                                    tbl_session.c_session_start_hour, " +
+                    "                                    tbl_session.c_session_end_hour, " +
+                    "                                    tbl_session.f_institute_id, " +
+                    "                                    tbl_session.f_training_place_id " +
+                    "                                FROM " +
+                    "                                    tbl_session " +
+                    "                            ) tbsession, " +
+                    "                            tbl_training_place " +
+                    "                        WHERE " +
+                    "                            tbsession.f_institute_id = tbl_training_place.f_institute " +
+                    "                    ) tba " +
+                    "                    LEFT JOIN ( " +
+                    "                        SELECT " +
+                    "                            tbsession.c_session_date, " +
+                    "                            tbsession.c_session_start_hour, " +
+                    "                            tbsession.c_session_end_hour, " +
+                    "                            tbsession.f_institute_id, " +
+                    "                            tbsession.f_training_place_id, " +
+                    "                            tbl_training_place.id, " +
+                    "                            tbl_training_place.f_institute, " +
+                    "                            tbl_training_place.c_title_fa, " +
+                    "                            CASE " +
+                    "                                    WHEN tbsession.f_training_place_id = tbl_training_place.id THEN 'YES' " +
+                    "                                    ELSE 'NO' " +
+                    "                                END " +
+                    "                            AS status " +
+                    "                        FROM " +
+                    "                            ( " +
+                    "                                SELECT DISTINCT " +
+                    "                                    tbl_session.c_session_date, " +
+                    "                                    tbl_session.c_session_start_hour, " +
+                    "                                    tbl_session.c_session_end_hour, " +
+                    "                                    tbl_session.f_institute_id, " +
+                    "                                    tbl_session.f_training_place_id " +
+                    "                                FROM " +
+                    "                                    tbl_session " +
+                    "                            ) tbsession, " +
+                    "                            tbl_training_place " +
+                    "                        WHERE " +
+                    "                            tbsession.f_institute_id = tbl_training_place.f_institute " +
+                    "                            AND   tbsession.f_training_place_id = tbl_training_place.id " +
+                    "                    ) tbb ON tbb.c_session_date = tba.c_session_date " +
+                    "                             AND tbb.c_session_start_hour = tba.c_session_start_hour " +
+                    "                             AND tbb.c_session_end_hour = tba.c_session_end_hour " +
+                    "                             AND tbb.f_institute_id = tba.f_institute_id " +
+                    "                             AND tba.id = tbb.id " +
+                    "                WHERE " +
+                    "                    tbb.status IS NULL " +
+                    "            ) " +
+                    "        GROUP BY " +
+                    "            c_session_date, " +
+                    "            c_session_start_hour, " +
+                    "            c_session_end_hour, " +
+                    "            f_institute_id " +
+                    "    ) tbfreeplaces ON tbfreeplaces.c_session_date = tbalarm.c_session_date " +
+                    "                      AND tbfreeplaces.c_session_start_hour = tbalarm.c_session_start_hour " +
+                    "                      AND tbfreeplaces.c_session_end_hour = tbalarm.c_session_end_hour " +
+                    "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id                     " +
+                    "ORDER BY sortField                       " +
+                    "                      ");
             //***order by must be in the last script***
 
 
