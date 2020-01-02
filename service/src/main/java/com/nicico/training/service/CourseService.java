@@ -599,6 +599,28 @@ public class CourseService implements ICourseService {
         return courseDAO.updateCourseState(courseId, workflowStatus, workflowStatusCode);
     }
 
+
+      //---------------------heydari---------------------------
+      //
+    @Transactional()
+    @Override
+    public CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request)
+    {
+     Optional<Course> optionalCourse = courseDAO.findById(id);
+        Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
+        currentCourse.setEvaluation(request.getEvaluation());
+        return modelMapper.map(courseDAO.save(currentCourse),CourseDTO.Info.class);
+
+    }
+
+     @Transactional
+    @Override
+    public List<CourseDTO.Info> getEvaluation(Long courseId) {
+         List<Course> course=courseDAO.findAllById(courseId);
+         return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
+        }.getType());
+    }
+
 }
 
 

@@ -31,8 +31,4 @@ public interface ITeacherService {
     @Transactional(readOnly = true)
     SearchDTO.SearchRs<TeacherDTO.TeacherFullNameTuple> fullNameSearchFilter(SearchDTO.SearchRq request);
 
-    void addCategories(CategoryDTO.Delete request, Long teacherId);
-
-    List<Long> getCategories(Long teacherId);
-
 }

@@ -49,6 +49,7 @@ public class CourseRestController {
     private final DateUtil dateUtil;
     private final ObjectMapper objectMapper;
     private final CourseDAO courseDAO;
+    private final ModelMapper modelMapper;
 
     // ---------------------------------
     @Loggable
@@ -447,4 +448,28 @@ public class CourseRestController {
         specRs.setResponse(specResponse);
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
+
+    //---------------------heydari---------------------------
+    @Loggable
+    @PutMapping(value = "evaluation/{id}")
+    public ResponseEntity<CourseDTO.Info> updateEvaluation(@PathVariable Long id, @RequestBody Object request) {
+        CourseDTO.Update update = modelMapper.map(request, CourseDTO.Update.class);
+        return new ResponseEntity<>(courseService.updateEvaluation(id, update), HttpStatus.OK);
+    }
+
+   @Loggable
+    @GetMapping(value = "getEvaluation/{id}")
+    public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
+        List<CourseDTO.Info> list = courseService.getEvaluation(id);
+        final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
+        specResponse.setData(list)
+                .setStartRow(0)
+                .setEndRow(list.size())
+                .setTotalRows(list.size());
+        final CourseDTO.CourseSpecRs specRs = new CourseDTO.CourseSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity(specRs, HttpStatus.OK);
+    }
+
+
 }

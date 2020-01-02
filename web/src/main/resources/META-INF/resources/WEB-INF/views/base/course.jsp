@@ -273,7 +273,13 @@
                 }
             }
             // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
+
         },
+
+            selectionUpdated:function(record){
+            refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
+        },
+
         //working
         dataArrived: function () {
             selectWorkflowRecord();
@@ -1960,6 +1966,7 @@
     //     members: [ListGrid_CourseCompetence]
     // });
     var Detail_Tab_Course = isc.TabSet.create({
+         ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
             {
@@ -1999,13 +2006,19 @@
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
             },
-
-            {
-             title: "اهداف رفتاری دوره",
-             ID:"behavioralGoals",
-             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "behavioral_goals/show-form"})
+             {
+             title: "ارزیابی دوره",
+             ID:"courseEvaluationTAB",
+             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
             }
-        ]
+        ],
+         tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_Course(tab);
+        }
+
+
+
     });
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
@@ -2174,7 +2187,6 @@
             });
             // RestDataSource_category.fetchDataURL = categoryUrl + "spec-list";
             DynamicForm_course_GroupTab.getItem("category.id").fetchData();
-
             DynamicForm_course_GroupTab.getItem("category.id").disable();
             DynamicForm_course_GroupTab.getItem("subCategory.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(true);
@@ -2454,3 +2466,19 @@
     }
 
     // ---------------------------------------- Send To Workflow ---------------------------------------->>
+
+         function refreshSelectedTab_Course(tab) {
+
+         courseRecord = ListGrid_Course.getSelectedRecord();
+
+        if (!(courseRecord == undefined || courseRecord == null)) {
+            switch (tab.ID) {
+                case "courseEvaluationTAB": {
+                       if (typeof loadPage_course_evaluation !== "undefined")
+                       loadPage_course_evaluation();
+                    break;
+                }
+            }
+        }
+    }
+

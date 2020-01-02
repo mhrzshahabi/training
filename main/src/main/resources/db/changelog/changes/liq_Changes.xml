@@ -99,5 +99,41 @@
     <changeSet author="razmnoosh (generated)" id="1577693200411-252">
         <dropColumn columnName="E_WRITING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
     </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577775434904-196">
+        <addColumn tableName="tbl_teacher">
+            <column name="c_other_activities" type="varchar2(500 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="ghazanfari_f (generated)" id="1577779895298-190">
+        <addColumn tableName="tbl_parameter">
+            <column name="c_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1577780376822-191">
+        <addColumn tableName="tbl_parameter_value">
+            <column name="c_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1577780376822-192">
+        <addColumn tableName="tbl_parameter_value">
+            <column name="c_value" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577861747784-203">
+        <addColumn tableName="tbl_teacher">
+            <column name="b_personnel" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1577862169614-203">
+        <addColumn tableName="tbl_teacher">
+            <column name="c_personnel_code" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1577861160389-203">
+        <addColumn tableName="tbl_course">
+            <column name="c_evaluation" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

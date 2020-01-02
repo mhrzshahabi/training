@@ -15,7 +15,7 @@
     let saveActionUrlAttachment;
     let attachmentWait;
 
-    RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
+    var RestDataSource_Attachments_JspAttachments = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "fileName", title: "<spring:message code='attach.file.name'/>", filterOperator: "iContains"},
@@ -167,7 +167,7 @@
         ]
     });
 
-    ListGrid_JspAttachment = isc.TrLG.create({
+    var ListGrid_JspAttachment = isc.TrLG.create({
         width: "100%",
         height: "100%",
         dataSource: RestDataSource_Attachments_JspAttachments,
@@ -186,9 +186,7 @@
                 name: "fileTypeId",
                 title: "<spring:message code='attach.file.format'/>",
                 filterOnKeypress: true,
-                editorType: "SelectItem",
-                displayField: "titleFa",
-                valueField: "id"
+                editorType: "SelectItem"
             },
             {
                 name: "description"
@@ -240,16 +238,16 @@
             ]
     });
 
-    HLayout_Actions_JspAttachment = isc.HLayout.create({
+    var HLayout_Actions_JspAttachment = isc.HLayout.create({
         width: "100%",
         members: [ToolStrip_Actions_JspAttachment]
     });
 
-    HLayout_Grid_JspAttachment = isc.TrHLayout.create({
+    var HLayout_Grid_JspAttachment = isc.TrHLayout.create({
         members: [ListGrid_JspAttachment]
     });
 
-    VLayout_Body_JspAttachment = isc.TrVLayout.create({
+    var VLayout_Body_JspAttachment = isc.TrVLayout.create({
         members: [HLayout_Actions_JspAttachment,
             HLayout_Grid_JspAttachment
         ]
@@ -369,7 +367,10 @@
         downloadForm.submitForm();
     }
 
-    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, RestDataSource_EAttachmentType) {
+    function loadPage_attachment(inputObjectType, inputObjectId, inputTitleAttachment, valueMap_EAttachmentType, criteria) {
+        // criteria = {"fileTypeId": [1,2]};
+        // valueMap_EAttachmentType = {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"};
+        VLayout_Body_JspAttachment.redraw();
         objectTypeAttachment = inputObjectType;
         objectIdAttachment = inputObjectId;
         RestDataSource_Attachments_JspAttachments.fetchDataURL = attachmentUrl + "/iscList/";
@@ -378,12 +379,11 @@
         RestDataSource_Attachments_JspAttachments.fetchDataURL += ",";
         if (objectTypeAttachment != null)
             RestDataSource_Attachments_JspAttachments.fetchDataURL += objectIdAttachment;
-
-        ListGrid_JspAttachment.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
-        DynamicForm_JspAttachments.getField("fileTypeId").optionDataSource = RestDataSource_EAttachmentType;
-
+        ListGrid_JspAttachment.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
+        DynamicForm_JspAttachments.getField("fileTypeId").valueMap = valueMap_EAttachmentType;
         Window_JspAttachments.title = inputTitleAttachment;
-        ListGrid_JspAttachment.fetchData();
+        ListGrid_JspAttachment.setImplicitCriteria(criteria);
+        ListGrid_JspAttachment.fetchData(criteria);
         ListGrid_Attachments_refresh();
     }
 

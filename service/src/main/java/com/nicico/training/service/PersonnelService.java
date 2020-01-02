@@ -7,6 +7,8 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.TrainingException;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
@@ -19,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -47,7 +50,6 @@ public class PersonnelService implements IPersonnelService {
         return SearchUtil.search(personnelDAO, request, Personnel -> modelMapper.map(Personnel, PersonnelDTO.Info.class));
     }
 
-
     @Override
     @Transactional
     public List<PersonnelDTO.Info> getByPostCode(Long postId) {
@@ -69,6 +71,28 @@ public class PersonnelService implements IPersonnelService {
         return modelMapper.map(personnelDTO, new TypeToken<List<PersonnelDTO.Info>>() {
         }.getType());
 
+    }
+
+    @Override
+    @Transactional
+    public List<PersonnelDTO.Info> getByJobNo(String jobNo) {
+        List<Personnel> personnelDTO = null;
+        if (((personnelDAO.findOneByJobNo(jobNo)) == null)) {
+            return null;
+        } else {
+            personnelDTO =  personnelDAO.findOneByJobNo(jobNo);
+        }
+        return modelMapper.map(personnelDTO, new TypeToken<List<PersonnelDTO.Info>>() {
+        }.getType());
+
+    }
+
+    @Override
+    @Transactional
+    public PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode) {
+        Optional<Personnel> optPersonnel = personnelDAO.findOneByPersonnelNo(personnelCode);
+        final Personnel personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(personnel, PersonnelDTO.PersonalityInfo.class);
     }
 
 }

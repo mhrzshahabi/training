@@ -7,92 +7,94 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
-import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
 @Getter
 @Setter
 @Accessors(chain = true)
-public class BehavioralGoalDTO  implements Serializable {
+
+public class EvaluationIndexDTO {
+    @NotEmpty
     @ApiModelProperty(required = true)
-    private String titleFa;
-     @ApiModelProperty(required = true)
-    private String kind;
-     @ApiModelProperty(required = true)
-    private Long goalId;
+    private String nameFa;
 
+    private String nameEn;
+    private String description;
+    private String evalStatus;
 
+    //---------------------------
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("BehavioralGoalInfo")
-    public static class Info extends BehavioralGoalDTO  {
+    @ApiModel("EvaluationIndexInfo")
+    public static class Info extends EvaluationIndexDTO {
         private Long id;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
         private String lastModifiedBy;
+        private Integer version;
     }
+    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("BehavioralGoalCreateRq")
-    public static class Create extends BehavioralGoalDTO  {
-
+    @ApiModel("EvaluationIndexCreateRq")
+    public static class Create extends EvaluationIndexDTO {
     }
+
+    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("BehavioralGoalUpdateRq")
-    public static class Update extends BehavioralGoalDTO  {
-
+    @ApiModel("EvaluationIndexUpdateRq")
+    public static class Update extends EvaluationIndexDTO {
+        @NotNull
+        @ApiModelProperty(required = true)
+        private Integer version;
     }
+
+    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("BehavioralGoalDeleteRq")
+    @ApiModel("EvaluationIndexDeleteRq")
     public static class Delete {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("BehavioralGoalIdListRq")
-    public static class BehavioralGoalIdList {
-        @NotNull
-        @ApiModelProperty(required = true)
-        private List<Long> ids;
-    }
+    // ------------------------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @ApiModel("BehavioralGoalSpecRs")
-    public static class BehavioralGoalSpecRs {
-        private BehavioralGoalDTO.SpecRs response;
+    @ApiModel("EvaluationIndexSpecRs")
+    public static class CountrySpecRs {
+        private EvaluationIndexDTO.SpecRs response;
     }
 
+    // ---------------
 
     @Getter
     @Setter
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     public static class SpecRs {
-        private List<BehavioralGoalDTO.Info> data;
+        private List<EvaluationIndexDTO.Info> data;
         private Integer status;
         private Integer startRow;
         private Integer endRow;
         private Integer totalRows;
     }
 
-
 }
+

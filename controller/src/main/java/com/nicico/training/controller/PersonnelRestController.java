@@ -9,6 +9,7 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
+import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.repository.PersonnelDAO;
 import com.nicico.training.repository.PostDAO;
@@ -69,6 +70,36 @@ public class PersonnelRestController {
         }
 
         return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/byJobNo/{jobNo}")
+    public ResponseEntity<PersonnelDTO.PersonnelSpecRs> findPersonnelByJobNo(@PathVariable String jobNo) {
+
+
+        List<PersonnelDTO.Info> list = new ArrayList<>();
+        list = personnelService.getByJobNo(jobNo);
+
+        final PersonnelDTO.SpecRs specResponse = new PersonnelDTO.SpecRs();
+        final PersonnelDTO.PersonnelSpecRs specRs = new PersonnelDTO.PersonnelSpecRs();
+
+        if (list != null) {
+            specResponse.setData(list)
+                    .setStartRow(0)
+                    .setEndRow(list.size())
+                    .setTotalRows(list.size());
+            specRs.setResponse(specResponse);
+        }
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/byPersonnelCode/{personnelCode}")
+    public ResponseEntity<PersonnelDTO.PersonalityInfo> findPersonnelByPersonnelCode(@PathVariable String personnelCode) {
+        PersonnelDTO.PersonalityInfo personalInfoDTO = personnelService.getByPersonnelCode(personnelCode);
+        return new ResponseEntity<>(personalInfoDTO, HttpStatus.OK);
     }
 
 }

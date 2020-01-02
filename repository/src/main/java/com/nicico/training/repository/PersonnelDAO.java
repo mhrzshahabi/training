@@ -17,10 +17,6 @@ public interface PersonnelDAO extends JpaRepository<Personnel, Long>, JpaSpecifi
     Optional<Personnel[]> findOneByNationalCode(String nationalCode);
 
     List<Personnel> findOneByPostCode(String postCode);
-
-
-//    @Query(value = "select * from tbl_personnel   where (tbl_personnel.post_code=:postCode )", nativeQuery = true)
-//    List<Personnel> findPersonnelByPostCode(@Param("postCode")  String postCode);
-
+    List<Personnel> findOneByJobNo(String jobNo);
 
 }

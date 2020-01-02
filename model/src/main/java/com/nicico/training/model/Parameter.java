@@ -27,6 +27,9 @@ public class Parameter extends Auditable {
     @Column(name = "c_description")
     private String description;
 
+    @Column(name = "c_type")
+    private String type;
+
     @OneToMany(mappedBy = "parameter", fetch = FetchType.LAZY)
     private List<ParameterValue> parameterValueList;
 }

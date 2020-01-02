@@ -17,4 +17,8 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> getByPostCode(Long postId);
 
+    List<PersonnelDTO.Info> getByJobNo(String jobNo);
+
+    PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
+
 }

@@ -97,9 +97,11 @@ public class AttendanceService implements IAttendanceService {
             map.put("sessionDate",session.getSessionDate());
             map.put("startHour",session.getSessionStartHour());
             map.put("endHour",session.getSessionEndHour());
+            map.put("state","0");
             for (Attendance a : attendances) {
                 if(Objects.equals(a.getSessionId(), session.getId())){
                     map.put("state",a.getState());
+                    break;
                 }
             }
 //            List<Attendance> list = attendances.stream().filter(a -> a.getSessionId() == session.getId()).collect(Collectors.toList());
