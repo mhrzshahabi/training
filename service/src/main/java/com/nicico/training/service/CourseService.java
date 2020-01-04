@@ -609,6 +609,7 @@ public class CourseService implements ICourseService {
      Optional<Course> optionalCourse = courseDAO.findById(id);
         Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         currentCourse.setEvaluation(request.getEvaluation());
+        currentCourse.setBehavioralLevel(request.getBehavioralLevel());
         return modelMapper.map(courseDAO.save(currentCourse),CourseDTO.Info.class);
 
     }

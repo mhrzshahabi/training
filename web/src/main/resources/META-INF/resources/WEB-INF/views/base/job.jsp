@@ -282,6 +282,24 @@
                 autoFitWidth: true
             },
         ],
+        canAddFormulaFields: false,
+        filterOnKeypress: true,
+        sortField: 1,
+        sortDirection: "descending",
+        dataPageSize: 50,
+        autoFetchData: true,
+        showFilterEditor: true,
+        allowAdvancedCriteria: true,
+        allowFilterExpressions: true,
+        // filterOnKeypress: false,
+        sortFieldAscendingText: "<spring:message code='sort.ascending'/>",
+        sortFieldDescendingText: "<spring:message code='sort.descending'/>",
+        configureSortText: "<spring:message code='configureSortText'/>",
+        autoFitAllText: "<spring:message code='autoFitAllText'/>",
+        autoFitFieldText: "<spring:message code='autoFitFieldText'/>",
+        filterUsingText: "<spring:message code='filterUsingText'/>",
+        groupByText: "<spring:message code='groupByText'/>",
+        freezeFieldText: "<spring:message code='freezeFieldText'/>",
     });
 
     var ListGrid_Personnel_Job_JSP = isc.TrLG.create({
