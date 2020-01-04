@@ -23,8 +23,6 @@ public class ParameterValueDTO implements Serializable {
     private String type;
     private String value;
     private String description;
-    private String type;
-    private String value;
 
     @Getter
     @Setter
