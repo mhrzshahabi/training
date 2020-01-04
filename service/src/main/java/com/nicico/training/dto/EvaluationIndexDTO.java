@@ -78,7 +78,7 @@ public class EvaluationIndexDTO {
     @Accessors(chain = true)
     @JsonInclude(JsonInclude.Include.NON_NULL)
     @ApiModel("EvaluationIndexSpecRs")
-    public static class CountrySpecRs {
+    public static class EvaluationIndexSpecRs {
         private EvaluationIndexDTO.SpecRs response;
     }
 
