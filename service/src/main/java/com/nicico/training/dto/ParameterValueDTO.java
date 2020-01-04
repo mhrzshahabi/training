@@ -23,6 +23,8 @@ public class ParameterValueDTO implements Serializable {
     private String type;
     private String value;
     private String description;
+    private String type;
+    private String value;
 
     @Getter
     @Setter
@@ -69,6 +71,6 @@ public class ParameterValueDTO implements Serializable {
     @ApiModel("Parameter - Config - Update")
     public static class ConfigUpdate {
         private Long id;
-        private String code;
+        private String value;
     }
 }

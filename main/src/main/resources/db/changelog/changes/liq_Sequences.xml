@@ -172,4 +172,10 @@
     <changeSet author="razmnoosh (generated)" id="1577769180308-193">
         <createSequence sequenceName="seq_publication_id"/>
     </changeSet>
+    <changeSet author="lotfi (generated)" id="1577788934275-196">
+        <createSequence sequenceName="seq_evaluation_index_id"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1577795609482-198">
+        <createSequence sequenceName="seq_evaluation_question_id"/>
+    </changeSet>
 </databaseChangeLog>

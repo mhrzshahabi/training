@@ -27,5 +27,7 @@ public interface CourseDAO extends JpaRepository<Course, Long>, JpaSpecification
     @Modifying
     @Query(value = " update TBL_COURSE set C_WORKFLOW_STATUS = :workflowStatus, C_WORKFLOW_STATUS_CODE = :workflowStatusCode  where ID = :courseId ", nativeQuery = true)
     public int updateCourseState(Long courseId, String workflowStatus, Integer workflowStatusCode);
+
+    List<Course> findAllById(Long courseId);
 }
 

@@ -1,6 +1,7 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.SubCategory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -21,9 +22,12 @@ public class TeacherDTO {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String teacherCode;
+    private String personnelCode;
     private Boolean enableStatus;
+    private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;
+    private String otherActivities;
     private Long personalityId;
 
     @Getter
@@ -33,6 +37,7 @@ public class TeacherDTO {
     public static class Info extends TeacherDTO {
         private Long id;
         private Set<CategoryDTO.CategoryInfoTuple> categories;
+        private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
         private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
@@ -46,6 +51,8 @@ public class TeacherDTO {
     @ApiModel("TeacherCreateRq")
     public static class Create extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter
@@ -54,6 +61,8 @@ public class TeacherDTO {
     @ApiModel("TeacherUpdateRq")
     public static class Update extends TeacherDTO {
         private PersonalInfoDTO.CreateOrUpdate personality;
+        private List<CategoryDTO.Info> categories;
+        private List<SubCategoryDTO.Info> subCategories;
     }
 
     @Getter

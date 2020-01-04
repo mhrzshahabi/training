@@ -10,8 +10,13 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.EmploymentHistoryDTO;
+import com.nicico.training.dto.SubCategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.iservice.ICategoryService;
+import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.Teacher;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -43,6 +48,8 @@ public class TeacherRestController {
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
+    private final ICategoryService categoryService;
+    private final ISubCategoryService subCategoryService;
 
     // ------------------------------
 
@@ -63,9 +70,21 @@ public class TeacherRestController {
     @Loggable
     @PostMapping
 //    @PreAuthorize("hasAuthority('c_teacher')")
-    public ResponseEntity create(@RequestBody TeacherDTO.Create request) {
+    public ResponseEntity create(@Validated @RequestBody LinkedHashMap request) {
+        List<CategoryDTO.Info> categories = null;
+        List<SubCategoryDTO.Info> subCategories = null;
+
+        if (request.get("categories") != null)
+            categories = setCats(request);
+        if (request.get("subCategories") != null)
+            subCategories = setSubCats(request);
+        TeacherDTO.Create create = modelMapper.map(request, TeacherDTO.Create.class);
+        if (categories != null && categories.size() > 0)
+            create.setCategories(categories);
+        if (subCategories != null && subCategories.size() > 0)
+            create.setSubCategories(subCategories);
         try {
-            return new ResponseEntity<>(teacherService.create(request), HttpStatus.CREATED);
+            return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
@@ -74,11 +93,22 @@ public class TeacherRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_teacher')")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
+    public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
         ((LinkedHashMap) request).remove("attachPic");
-        ((LinkedHashMap) request).remove("categoryList");
-        ((LinkedHashMap) request).remove("categories");
+
+        List<CategoryDTO.Info> categories = null;
+        List<SubCategoryDTO.Info> subCategories = null;
+
+        if (request.get("categories") != null)
+            categories = setCats(request);
+        if (request.get("subCategories") != null)
+            subCategories = setSubCats(request);
+
         TeacherDTO.Update update = modelMapper.map(request, TeacherDTO.Update.class);
+        if (categories != null && categories.size() > 0)
+            update.setCategories(categories);
+        if (subCategories != null && subCategories.size() > 0)
+            update.setSubCategories(subCategories);
         try {
             return new ResponseEntity<>(teacherService.update(id, update), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -203,23 +233,6 @@ public class TeacherRestController {
         return new ResponseEntity<>(teacherService.search(request), HttpStatus.OK);
     }
 
-    @Loggable
-    @PostMapping(value = "/addCategories/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity addCategories(@Validated @RequestBody CategoryDTO.Delete request, @PathVariable Long teacherId) {
-        teacherService.addCategories(request, teacherId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/getCategories/{teacherId}")
-    @Transactional
-//    @PreAuthorize("hasAuthority('d_tclass')")
-    public ResponseEntity<List<Long>> getCategories(@PathVariable Long teacherId) {
-        List<Long> categorySet = teacherService.getCategories(teacherId);
-        return new ResponseEntity<>(categorySet, HttpStatus.OK);
-    }
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})
@@ -284,5 +297,32 @@ public class TeacherRestController {
                 .setCount(endRow - startRow);
         return request;
     }
+
+
+    private List<CategoryDTO.Info> setCats(LinkedHashMap request) {
+        SearchDTO.SearchRq categoriesRequest = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.inSet);
+        criteriaRq.setFieldName("id");
+        criteriaRq.setValue(request.get("categories"));
+        categoriesRequest.setCriteria(criteriaRq);
+        List<CategoryDTO.Info> categories = categoryService.search(categoriesRequest).getList();
+        request.remove("categories");
+        return categories;
+
+    }
+
+    private List<SubCategoryDTO.Info> setSubCats(LinkedHashMap request) {
+        SearchDTO.SearchRq subCategoriesRequest = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(EOperator.inSet);
+        criteriaRq.setFieldName("id");
+        criteriaRq.setValue(request.get("subCategories"));
+        subCategoriesRequest.setCriteria(criteriaRq);
+        List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
+        request.remove("subCategories");
+        return subCategories;
+    }
+
 
 }

@@ -49,6 +49,21 @@ public class TeacherFormController {
     @RequestMapping("/publication-tab")
     public String publicationTab() { return "teacherTabs/publication"; }
 
+    @RequestMapping("/otherActivities-tab")
+    public String otherActivitiesTab() { return "teacherTabs/otherActivities"; }
+
+    @RequestMapping("/jobInfo-tab")
+    public String jobInfoTab() { return "teacherTabs/jobInfo"; }
+
+    @RequestMapping("/accountInfo-tab")
+    public String accountInfoTab() { return "teacherTabs/accountInfo"; }
+
+    @RequestMapping("/addressInfo-tab")
+    public String addressInfoTab() { return "teacherTabs/addressInfo"; }
+
+    @RequestMapping("/teacherBasicInfo-tab")
+    public String teacherBasicInfoTab() { return "teacherTabs/teacherBasicInfo"; }
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");

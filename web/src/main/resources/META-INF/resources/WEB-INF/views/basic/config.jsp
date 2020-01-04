@@ -97,30 +97,82 @@
             showInlineErrors: true,
             showErrorText: false,
             margin: 20,
-            numCols: 4
+            numCols: 8
         });
         for (var i = 0; i < item.parameterValueList.length; i++) {
+            if (item.parameterValueList[i].value === "false")
+                item.parameterValueList[i].value = false;
+            if (i > 0 && item.parameterValueList[i].type !== item.parameterValueList[i - 1].type)
+                DF.addField({type: "RowSpacerItem"});
             DF.addField({
                 ID: item.parameterValueList[i].id + "_JspConfig",
-                name: item.parameterValueList[i].title,
+                name: item.parameterValueList[i].id + "_JspConfig",
                 title: item.parameterValueList[i].title,
-                value: item.parameterValueList[i].code,
+                value: item.parameterValueList[i].value,
+                type: item.parameterValueList[i].type,
                 prompt: item.parameterValueList[i].description,
-                required: true
+                required: true,
+                keyPressFilter: setKeyPressFilter(item.parameterValueList[i].type),
+                colSpan: setColSpan(item.parameterValueList[i].type),
+                titleOrientation: "top"
             })
         }
         return DF;
+    }
+
+    function setKeyPressFilter(type) {
+        switch (type) {
+            case "text":
+            case "TextItem":
+                return "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]";
+            case "IntegerItem":
+            case "integer":
+                return "[0-9]";
+            // case "float":
+            // case "FloatItem":
+            // case "DoubleItem":
+            //     return "/^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/";
+            case "boolean":
+            case "BooleanItem":
+                return null;
+            default:
+                return null;
+        }
+    }
+
+    function setColSpan(type) {
+        switch (type) {
+            case "text":
+            case "textArea":
+            case "TextItem":
+                return 4;
+            case "IntegerItem":
+            case "integer":
+                return 2;
+            case "float":
+            case "FloatItem":
+            case "DoubleItem":
+                return 2;
+            case "boolean":
+            case "BooleanItem":
+                return 1;
+            default:
+                return 1;
+        }
     }
 
     function DynamicForm_Config_edit() {
         var fields = DynamicForm_JspConfig.getAllFields();
         var toUpdate = [];
         for (var i = 0; i < fields.length; i++) {
+            if (fields[i].getValue() == null)
+                continue;
             toUpdate.add({
                 "id": ((fields[i].getID()).split('_'))[0],
-                "code": fields[i].getValue()
+                "value": fields[i].getValue()
             });
         }
+        // toUpdate.removeList(toUpdate.findAll("id", "isc"));
         if (toUpdate.length > 0) {
             Wait_JspConfig = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/edit-config-list",

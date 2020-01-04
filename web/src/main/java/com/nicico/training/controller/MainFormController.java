@@ -88,6 +88,11 @@ public class MainFormController {
         return "basic/config";
     }
 
+    @RequestMapping("/config-questionnaire")
+    public String showConfigQuestionnaireForm() {
+        return "base/configQuestionnaire";
+    }
+
     @PostMapping("/post_print_list/{type}")
     public ResponseEntity<?> printList(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("myToken");

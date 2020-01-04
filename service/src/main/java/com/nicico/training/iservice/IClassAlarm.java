@@ -8,5 +8,7 @@ import java.util.List;
 
 public interface IClassAlarm {
 
+    List<String> hasAlarm(Long class_id, HttpServletResponse response) throws IOException;
+
     List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException;
 }
