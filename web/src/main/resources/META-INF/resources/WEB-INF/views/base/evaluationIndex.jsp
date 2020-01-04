@@ -5,9 +5,9 @@
 
 // <script>
 
-    <%
-        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-    %>
+<%--    <%--%>
+<%--        final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);--%>
+<%--    %>--%>
 
     var evaluationIndexMethod = "POST";
     var evaluationIndexActionUrl = evaluationIndexHomeUrl;
@@ -285,8 +285,6 @@
                 }
             });
         }
-
-
     };
 
 

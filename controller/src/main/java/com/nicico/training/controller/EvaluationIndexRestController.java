@@ -1,16 +1,21 @@
 package com.nicico.training.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EvaluationIndexDTO;
 import com.nicico.training.iservice.IEvaluationIndexService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.IOException;
 import java.util.List;
 
 @Slf4j
@@ -20,6 +25,7 @@ import java.util.List;
 public class EvaluationIndexRestController {
 
     private final IEvaluationIndexService evaluationIndexService;
+    private final ObjectMapper objectMapper;
 
     // ------------------------------
 
@@ -84,8 +90,27 @@ public class EvaluationIndexRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_evaluationIndex')")
-    public ResponseEntity<EvaluationIndexDTO.EvaluationIndexSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<EvaluationIndexDTO.EvaluationIndexSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                                         @RequestParam("_endRow") Integer endRow,
+                                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);
 
