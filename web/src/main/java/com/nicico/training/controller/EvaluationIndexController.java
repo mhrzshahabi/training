@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @RequestMapping("/evaluationIndex")
 public class EvaluationIndexController {
 
-    @RequestMapping(value = "/showForm")
+    @RequestMapping(value = "/show-form")
     public String showForm() {
         return "base/evaluationIndex";
     }

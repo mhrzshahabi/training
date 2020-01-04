@@ -7,20 +7,34 @@
 var x;
 var update;
 
-     var RestDataSource_course_evaluation = isc.TrDS.create({
+    var RestDataSource_course_evaluation = isc.TrDS.create({
         ID: "courseDS",
         fields: [
-        {name: "id", type: "Integer", primaryKey: true,hidden:true},
-        {name: "code", title: "کد"},
-        {name: "titleFa", title: "عنوان"},
-        {name: "evaluation", title: "سطح ارزیابی"}
+            {name: "id", type: "Integer", primaryKey: true, hidden: true},
+            {name: "code", title: "کد"},
+            {name: "titleFa", title: "عنوان"},
+            {
+                name: "evaluation", valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                }, title: "سطح ارزیابی"
+            },
+             {
+                name: "behavioralLevel", valueMap: {
+                    "مشاهده": "مشاهده",
+                    "مصاحبه": "مصاحبه",
+                    "کار پروژه ای": "کار پروژه ای",
+                }
+            }
 
-                ],
+        ],
 
-       autoFetchData: false,
-     });
+        autoFetchData: false,
+    });
 
-//=========================================ListGrid=========================
+    //=========================================ListGrid=========================
     var ListGrid_CourseEvaluation = isc.TrLG.create({
         filterOperator: "iContains",
         allowAdvancedCriteria: true,
@@ -28,18 +42,26 @@ var update;
         filterOnKeypress: false,
         showFilterEditor: true,
         dataSource: RestDataSource_course_evaluation,
-       // contextMenu: Menu_ListGrid_CheckList,
+// contextMenu: Menu_ListGrid_CheckList,
         fields: [
-             {name: "code", title: "کد"},
-        {name: "titleFa", title: "عنوان"},
-        {name: "evaluation", valueMap: {
-                    "1":"واکنش",
-                    "2":"یادگیری",
-                    "3":"رفتاری",
-                    "4":"نتایج",
-                }, title: "سطح ارزیابی"}
+            {name: "code", title: "کد"},
+            {name: "titleFa", title: "عنوان"},
+            {
+                name: "evaluation", title: "سطح ارزیابی",
 
+                formatCellValue: function (value, record, field) {
+                    if(value ==="رفتاری")
+                   {
+                   return value + " , " + record.behavioralLevel
+                   }
+                   else {
+                   return  value;
+                   }
+
+                }
+            }
         ],
+
         recordDoubleClick: function () {
 
         },
@@ -52,7 +74,7 @@ var update;
 
     });
     //======================================DynamicForm=============================
-      var DynamicForm_CourseEvaluation = isc.DynamicForm.create({
+    var DynamicForm_CourseEvaluation = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         align: "center",
@@ -63,60 +85,66 @@ var update;
         errorOrientation: "right",
         numCols: 6,
         padding: 20,
-        colWidths: ["1%", "30%", "49%", "20%", "30"],
+        colWidths: ["1%", "30%", "20%", "8%"],
         items: [
             {
                 name: "evaluation",
                 title: "سطوح ارزيابي",
                 type: "select",
-               defaultValue: "1",
-               valueMap: {
-                    "1":"واکنش",
-                    "2":"یادگیری",
-                    "3":"رفتاری",
-                    "4":"نتایج",
-
-
+                defaultValue: "1",
+                valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
                 },
+                change: function (form, item, value, oldValue) {
+                    if (value === "3")
+                        DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(false);
+                    else
+                        DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true);
+                }
 
             },
 
             {
                 type: "button",
                 title: "ثبت",
-                fontsize:2,
+                fontsize: 2,
                 width: 160,
-                height:"30",
+                height: "30",
                 showDownIcon: true,
                 startRow: false,
                 endRow: false,
                 click: function () {
-                 var record = ListGrid_Course.getSelectedRecord();
-                record["evaluation"]=DynamicForm_CourseEvaluation.getItem("evaluation").getValue();
+                    var record = ListGrid_Course.getSelectedRecord();
+                    if (DynamicForm_CourseEvaluation.getItem("evaluation").getValue() === "3") {
+                        record["behavioralLevel"] = DynamicForm_CourseEvaluation.getItem("behavioralLevel").getValue()
+                    }
+                    record["evaluation"] = DynamicForm_CourseEvaluation.getItem("evaluation").getValue();
+                    isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "evaluation/" + record.id, "PUT", JSON.stringify(record), "callback:show_ListGrid_CourseEvaluation(rpcResponse)"));
 
-               console.log(record)
-                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "evaluation/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
                 }
             },
             {
-                type: "SpacerItem",
+                name: "behavioralLevel",
+                title: "سطح رفتاری",
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+                defaultValue: "مشاهده",
+                 valueMap: {
+                    "مشاهده": "مشاهده",
+                    "مصاحبه": "مصاحبه",
+                    "کار پروژه ای": "کار پروژه ای",
+                }
             },
-<%--            {--%>
-<%--                type: "button",--%>
-<%--                title: "<spring:message code="checkList.Design"/>",--%>
-<%--                iconOrientation: "right",--%>
-<%--                showDownIcon: true,--%>
-<%--                width: 160,--%>
-<%--                height:"30",--%>
-<%--                startRow: false,--%>
-<%--                endRow: true,--%>
-<%--                click: function () {--%>
-<%--                  --%>
-<%--                }--%>
-<%--            },--%>
+// {
+// // type: "SpacerItem",
+// },
         ]
     })
-//======================================================================
+    //======================================================================
     var HLayout_Body_Top_CourseEvaluation = isc.HLayout.create({
         width: "100%",
         height: "30%",
@@ -124,34 +152,53 @@ var update;
         members: [DynamicForm_CourseEvaluation],
     });
 
-    var HLayout_Body_Down_CourseEvaluation=isc.HLayout.create({
-     width: "100%",
-     height: "70%",
-     members: [ListGrid_CourseEvaluation],
+    var HLayout_Body_Down_CourseEvaluation = isc.HLayout.create({
+        width: "100%",
+        height: "70%",
+        members: [ListGrid_CourseEvaluation],
     });
 
-     var All_Body_CourseEvaluation = isc.VLayout.create({
+    var All_Body_CourseEvaluation = isc.VLayout.create({
         width: "100%",
         showEdges: true,
-        members: [HLayout_Body_Top_CourseEvaluation,HLayout_Body_Down_CourseEvaluation]
+        members: [HLayout_Body_Top_CourseEvaluation, HLayout_Body_Down_CourseEvaluation]
     });
-//========================================================================
 
-     function loadPage_course_evaluation() {
+    //========================================================================
 
-     var record = ListGrid_Course.getSelectedRecord();
-        if(ListGrid_Course.getSelectedRecord().hasGoal)
+   function show_ListGrid_CourseEvaluation(resp)
+   {
+    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
        {
-        DynamicForm_CourseEvaluation.disable()
-        createDialog("info","این دوره دارای هدف نمی باشد","پیغام")
+       ListGrid_CourseEvaluation.fetchData();
+       ListGrid_CourseEvaluation.invalidateCache();
+       }
+       else
+        {
+        simpleDialog("<spring:message code="warning"/>", "<spring:message
+        code="msg.error.connecting.to.server"/>", 3000, "error");
         }
-        else
+
+   };
+
+    function loadPage_course_evaluation() {
+
+        var record = ListGrid_Course.getSelectedRecord();
+
+        if (ListGrid_Course.getSelectedRecord().hasGoal) {
+            createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
+            DynamicForm_CourseEvaluation.disable()
+             DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
+
+        } else
+
         DynamicForm_CourseEvaluation.enable()
-        RestDataSource_course_evaluation.fetchDataURL=courseUrl +"getEvaluation/"+ record.id
+        RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
+        DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
         ListGrid_CourseEvaluation.fetchData();
         ListGrid_CourseEvaluation.invalidateCache();
-        }
+    }
 
 
-
+    DynamicForm_CourseEvaluation.disable()
 

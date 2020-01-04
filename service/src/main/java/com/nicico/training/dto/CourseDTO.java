@@ -94,6 +94,7 @@ public class CourseDTO implements Serializable {
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
         private String evaluation;
+        private String behavioralLevel;
 
 //        private Long knowledge;
 //        private Long skill;
@@ -185,6 +186,8 @@ public class CourseDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<String> equalCourseListId;
         private String evaluation;
+
+        private String behavioralLevel;
 
     }
 
