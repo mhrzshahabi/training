@@ -17,7 +17,6 @@ import java.util.Set;
 @Entity
 @Table(name = "tbl_teacher")
 public class Teacher extends Auditable {
-
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teacher_seq")
     @SequenceGenerator(name = "teacher_seq", sequenceName = "seq_teacher_id", allocationSize = 1)
@@ -75,6 +74,9 @@ public class Teacher extends Auditable {
 
     @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
     private Set<Publication> publications;
+
+    @OneToMany(mappedBy = "teacher", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<AcademicBK> academicBKs;
 
     @Column(name = "c_other_activities", length = 500)
     private String otherActivities;

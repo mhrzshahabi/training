@@ -137,8 +137,20 @@ var dummy;
             title: "<spring:message code='print.html'/>", icon: "<spring:url value="html.png"/>", click: function () {
                 trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "html",
                     ListGrid_Teacher_JspTeacher.getCriteria());
+            },
+
+        },
+            {
+                title: "<spring:message code='print.Detail'/>", icon: "<spring:url value="print.png"/>", click: function () {
+                    var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+                    if (record == null || record.id == null) {
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        return;
+                    }
+                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id,null);
+                }
             }
-        }]
+        ]
     });
 
     //----------------------------------------------------ListGrid---------------------------------------------------
@@ -930,65 +942,61 @@ var dummy;
             DynamicForm_AddressInfo_JspTeacher.clearValue("personality.contactInfo.homeAddress.cityId");
     }
 
-    function personnel_findOne_result(resp){
+    function personnel_findOne_result(resp) {
         if (resp !== null && resp !== undefined && resp.data !== "") {
             var personnel = JSON.parse(resp.data);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personnel.lastName);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personnel.nationalCode);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personnel.fatherName);
-            DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personnel.nationalCode);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personnelCode", personnel.personnelNo);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate",personnel.birthDate);
-            DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate",personnel.birthCertificateNo);
-            DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle",personnel.jobTitle);
-            if(personnel.gender == "زن")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 2);
-            if(personnel.gender == "مرد")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 1);
-            if(personnel.militaryStatus == "معاف")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
-            if(personnel.militaryStatus == "معافیت مازاد")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
-             if(personnel.militaryStatus == "پایان خدمت")
-                 DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 1);
-            if(personnel.maritalStatusTitle == "متاهل")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 1);
-            if(personnel.maritalStatusTitle == "مجرد")
-                DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 2);
-
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personality.birthDate);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthLocation", personality.birthLocation);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personality.birthCertificate);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificateLocation", personality.birthCertificateLocation);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationality", personality.nationality);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.description", personality.description);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationLevelId", personality.educationLevelId);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationMajorId", personality.educationMajorId);
-            // DynamicForm_BasicInfo_JspTeacher.setValue("personality.educationOrientationId", personality.educationOrientationId);
-            // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personality.jobTitle);
-            // DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personality.jobLocation);
-            // if (personality.contactInfo !== null && personality.contactInfo !== undefined) {
-            //     DynamicForm_BasicInfo_JspTeacher.setValue("personality.contactInfo.mobile", personality.contactInfo.mobile);
-            //     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.email", personality.contactInfo.email);
-            //     DynamicForm_AddressInfo_JspTeacher.setValue("personality.contactInfo.personalWebSite", personality.contactInfo.personalWebSite);
-            //
-            //     if (personality.contactInfo.workAddress !== null && personality.contactInfo.workAddress !== undefined) {
-            //         setWorkAddressFields(personality.contactInfo.workAddress);
-            //     }
-            //     if (personality.contactInfo.homeAddress !== null && personality.contactInfo.homeAddress !== undefined) {
-            //         setHomeAddressFields(personality.contactInfo.homeAddress);
-            //     }
-            // }
-            // if (personality.accountInfo !== null && personality.accountInfo !== undefined) {
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.accountNumber", personality.accountInfo.accountNumber);
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bank", personality.accountInfo.bank);
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranch", personality.accountInfo.bankBranch);
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.bankBranchCode", personality.accountInfo.bankBranchCode);
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.cartNumber", personality.accountInfo.cartNumber);
-            //     DynamicForm_AccountInfo_JspTeacher.setValue("personality.accountInfo.shabaNumber", personality.accountInfo.shabaNumber);
-            // }
-
+            if (personnel.firstName != undefined && personnel.firstName != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.firstNameFa", personnel.firstName);
+            if (personnel.lastName != undefined && personnel.lastName != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.lastNameFa", personnel.lastName);
+            if (personnel.nationalCode != undefined && personnel.nationalCode != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.nationalCode", personnel.nationalCode);
+            if (personnel.fatherName != undefined && personnel.fatherName != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.fatherName", personnel.fatherName);
+            if (personnel.nationalCode != undefined && personnel.nationalCode != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("teacherCode", personnel.nationalCode);
+            if (personnel.personnelNo != undefined && personnel.personnelNo != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personnelCode", personnel.personnelNo);
+            if (personnel.birthDate != undefined && personnel.birthDate != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthDate", personnel.birthDate);
+            if (personnel.birthCertificateNo != undefined && personnel.birthCertificateNo != null)
+                DynamicForm_BasicInfo_JspTeacher.setValue("personality.birthCertificate", personnel.birthCertificateNo);
+            if (personnel.jobTitle != undefined && personnel.jobTitle != null)
+                DynamicForm_JobInfo_JspTeacher.setValue("personality.jobTitle", personnel.jobTitle);
+            if (personnel.gender != undefined && personnel.gender != null) {
+                if (personnel.gender == "زن")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 2);
+                if (personnel.gender == "مرد")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.genderId", 1);
+            }
+            if (personnel.militaryStatus != undefined && personnel.militaryStatus != null) {
+                if (personnel.militaryStatus == "معاف")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
+                if (personnel.militaryStatus == "معافیت مازاد")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 2);
+                if (personnel.militaryStatus == "پایان خدمت")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.militaryId", 1);
+            }
+            if (personnel.maritalStatusTitle != undefined && personnel.maritalStatusTitle != null) {
+                if (personnel.maritalStatusTitle == "متاهل")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 1);
+                if (personnel.maritalStatusTitle == "مجرد")
+                    DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 2);
+            }
+            if(personnel.companyName != undefined && personnel.companyName != null)
+                DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personnel.companyName);
+            var ccp_affairs = "";
+            var ccp_section = "";
+            var ccp_unit = "";
+            if(personnel.ccpAffairs != undefined && personnel.ccpAffairs != null)
+                ccp_affairs = personnel.ccpAffairs;
+            if(personnel.ccpSection != undefined && personnel.ccpSection != null)
+                ccp_section = personnel.ccpSection;
+            if(personnel.ccpUnit != undefined && personnel.ccpUnit != null)
+                ccp_unit = personnel.ccpUnit;
+            var restAddress = ccp_affairs+","+ccp_section+","+ccp_unit;
+            if(restAddress != "")
+                DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr",restAddress);
         }
     }
 

@@ -95,4 +95,24 @@ public class TeacherFormController {
         }
     }
 
+    @PostMapping("/printWithDetail/{id}")
+    public ResponseEntity<?> printWithDetail(final HttpServletRequest request,@PathVariable String id) {
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/teacher/printWithDetail/"+id, HttpMethod.POST, entity, byte[].class);
+    }
+
 }

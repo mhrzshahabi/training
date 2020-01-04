@@ -92,7 +92,7 @@
                     var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
                     vm.clearValues();
                     if (personnelStatusTemp == "true") {
-                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
+                        // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
                         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
                     }
