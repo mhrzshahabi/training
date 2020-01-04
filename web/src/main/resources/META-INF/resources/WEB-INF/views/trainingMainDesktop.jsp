@@ -86,6 +86,7 @@
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
+    isc.ToolStrip.addProperties({membersMargin: 5,});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
@@ -775,9 +776,23 @@
         return dialog;
     }
 
-    function refreshListGrid(ListGridID) {
-        ListGridID.invalidateCache();
-        ListGridID.filterByEditor();
+    function refreshListGrid(listGridID, nextFunction) {
+        listGridID.filterByEditor();
+        if (!nextFunction === undefined) {
+            nextFunction();
+        }
+    }
+
+    function cleanListGrid(listGridID) {
+        listGridID.setData([]);
+    }
+
+    function refreshListGridSource(listGridID, dataSourceID, fetchDataUrl) {
+        if (!(dataSourceID === undefined)) {
+            dataSourceID.fetchDataURL = fetchDataUrl;
+        }
+        listGridID.filterByEditor();
+        listGridID.invalidateCache();
     }
 
     function checkRecordAsSelected(record, showDialog, entityName, msg) {

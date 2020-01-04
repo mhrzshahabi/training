@@ -10,7 +10,7 @@
     isc.Menu.create({
         ID: "ParameterMenu_parameter",
         data: [
-            {title: "<spring:message code="refresh"/>", click: function () { refreshParameterLG_parameter(); }},
+            {title: "<spring:message code="refresh"/>", click: function () { refreshListGrid(ParameterLG_parameter, cleanListGrid(ParameterValueLG_parameter)); }},
             {title: "<spring:message code="create"/>", click: function () { createParameter_parameter(); }},
             {title: "<spring:message code="edit"/>", click: function () { editParameter_parameter(); }},
             {title: "<spring:message code="remove"/>", click: function () { removeParameter_parameter(); }},
@@ -30,16 +30,14 @@
     // ------------------------------------------- ToolStrip -------------------------------------------
     isc.ToolStrip.create({
         ID: "ParameterTS_parameter",
-        width: "100%",
-        membersMargin: 5,
         border: "0px solid",
         members: [
+            isc.ToolStripButtonRefresh.create({click: function () { refreshListGrid(ParameterLG_parameter, cleanListGrid(ParameterValueLG_parameter)); }}),
             isc.ToolStripButtonCreate.create({click: function () { createParameter_parameter(); }}),
             isc.ToolStripButtonEdit.create({click: function () { editParameter_parameter(); }}),
             isc.ToolStripButtonRemove.create({click: function () { removeParameter_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CountParameterLG_parameter"}),
-            isc.ToolStripButtonRefresh.create({click: function () { refreshParameterLG_parameter(); }}),
         ]
     });
 
@@ -49,12 +47,12 @@
         membersMargin: 5,
         border: "0px solid",
         members: [
+            isc.ToolStripButtonRefresh.create({click: function () { refreshParameterValueLG_parameter(); }}),
             isc.ToolStripButtonCreate.create({click: function () { createParameterValue_parameter(); }}),
             isc.ToolStripButtonEdit.create({click: function () { editParameterValue_parameter(); }}),
             isc.ToolStripButtonRemove.create({click: function () { removeParameterValue_parameter(); }}),
             isc.LayoutSpacer.create({width: "*"}),
             isc.Label.create({ID: "CountParameterValueLG_parameter"}),
-            isc.ToolStripButtonRefresh.create({click: function () { refreshParameterValueLG_parameter(); }}),
         ]
     });
 
@@ -64,6 +62,8 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
         fetchDataURL: parameterUrl + "/iscList"
@@ -72,14 +72,18 @@
     ParameterLG_parameter = isc.TrLG.create({
         ID: "ParameterLG_parameter",
         dataSource: ParameterDS_parameter,
+        autoFetchData: true,
         fields: [
             {name: "title",},
+            {name: "code",},
+            {name: "type",},
             {name: "description",},
         ],
         sortField: 0,
-        autoFetchData: true,
         gridComponents: [
-            isc.Label.create({contents: "<span><b>" + "<spring:message code="parameter.type"/>" + "</b></span>", width: "100%", height: "30", align: "center", showEdges: true,}),
+            isc.Label.create({
+                contents: "<span><b>" + "<spring:message code="type"/>" + "</b></span>", height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2
+            }),
             ParameterTS_parameter, "filterEditor", "header", "body"
         ],
         contextMenu: ParameterMenu_parameter,
@@ -99,32 +103,32 @@
         ID: "ParameterValueDS_parameter",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "parameter.id", hidden: true},
-            {name: "parameter.title", title: "<spring:message code="parameter.type"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "value", title: "<spring:message code="value"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
+            {name: "parameter.id", hidden: true},
+            {name: "parameter.title", hidden: true},
         ],
-        fetchDataURL: parameterValueUrl + "/iscList"
     });
 
     ParameterValueLG_parameter = isc.TrLG.create({
         ID: "ParameterValueLG_parameter",
         dataSource: ParameterValueDS_parameter,
         fields: [
-            {name: "parameter.title"},
             {name: "title",},
             {name: "code",},
+            {name: "type",},
+            {name: "value",},
             {name: "description",},
         ],
-        autoFetchData: true,
         sortField: 0,
-        // initialSort: [
-        //     {property: "parameter.title", direction: "ascending"},
-        //     {property: "title", direction: "ascending"},
-        // ],
         gridComponents: [
-            isc.Label.create({contents: "<span><b>" + "<spring:message code="parameter.value"/>" + "</b></span>", width: "100%", height: "30", align: "center", showEdges: true,}),
+            isc.Label.create({
+                ID: "ParameterValueLGHeader_parameter",
+                contents: "<span><b>" + "<spring:message code="values"/>" + "</b></span>", height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2
+            }),
             ParameterValueTS_parameter, "filterEditor", "header", "body"
         ],
         contextMenu: ParameterValueMenu_parameter,
@@ -147,6 +151,8 @@
         fields: [
             {name: "id", hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
+            {name: "code", title: "<spring:message code="code"/>", required: true, validators: [TrValidators.NotEmpty],},
+            {name: "type", title: "<spring:message code="type"/>"},
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
         ]
     });
@@ -170,6 +176,8 @@
             {name: "parameter.title", title: "<spring:message code="parameter.type"/>", canEdit: false},
             {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
             {name: "code", title: "<spring:message code="code"/>",},
+            {name: "value", title: "<spring:message code="value"/>",},
+            {name: "type", title: "<spring:message code="type"/>",},
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
         ]
     });
@@ -191,23 +199,15 @@
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-    function refreshParameterLG_parameter(selectedState) {
-        ParameterLG_parameter.invalidateCache();
-        ParameterLG_parameter.filterByEditor();
-        setTimeout(function () {
-            ParameterLG_parameter.setSelectedState(selectedState);
-        }, 1000);
-        refreshParameterValueLG_parameter();
-    }
 
     function refreshParameterValueLG_parameter() {
+       ParameterValueLGHeader_parameter.set
+            contents: "<span><b>" + "<spring:message code="values"/>" + "</b></span>"
+
         var record = ParameterLG_parameter.getSelectedRecord();
         if (checkRecordAsSelected(record, false)) {
-            ParameterValueDS_parameter.fetchDataURL = parameterValueUrl + "/iscList/" + record.id;
-        } else {
-            ParameterValueDS_parameter.fetchDataURL = parameterValueUrl + "/iscList";
+            refreshListGridSource(ParameterValueLG_parameter, ParameterValueDS_parameter, parameterValueUrl + "/iscList/" + record.id)
         }
-        ParameterValueLG_parameter.invalidateCache();
     }
 
     function createParameter_parameter() {
@@ -230,9 +230,12 @@
         }
         let data = ParameterDF_parameter.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.type"/>" + "')")
+            TrDSRequest(parameterSaveUrl, parameterMethod_parameter, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="parameter.type"/>" +
+                "', ParameterWin_parameter, ParameterLG_parameter)")
         );
     }
+
+
 
     function createParameterValue_parameter() {
         let record = ParameterLG_parameter.getSelectedRecord();
@@ -321,39 +324,39 @@
         }
     }
 
-    function studyResponse(resp, action, entityTypeName, entityName) {
-        let msg;
-        let selectedState;
-        if (resp == null) {
-            msg = "<spring:message code="msg.error.connecting.to.server"/>";
-        } else {
-            let respCode = resp.httpResponseCode;
-            if (respCode == 200) {
-                selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
-                console.log('selectedState:');
-                console.log(selectedState);
-                let entityName = JSON.parse(resp.httpResponseText).title;
-                if ((action == null || action == undefined) || (entityTypeName == null || entityTypeName == undefined) || (entityName == null || entityName == undefined)) {
-                    msg = "<spring:message code="msg.operation.successful"/>";
-                } else {
-                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
-                }
-            } else {
-                if (respCode == 409) {
-                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
-                } else {
-                    msg = "<spring:message code='msg.operation.error'/>";
-                }
-            }
-            var dialog = createDialog("info", msg);
-            Timer.setTimeout(function () {
-                dialog.close();
-            }, dialogShowTime * 1.5);
-            ParameterWin_parameter.close();
-            ParameterValueWin_parameter.close();
-            refreshParameterLG_parameter(selectedState);
-        }
-    }
+    <%--function studyResponse(resp, action, entityTypeName, entityName) {--%>
+    <%--    let msg;--%>
+    <%--    let selectedState;--%>
+    <%--    if (resp == null) {--%>
+    <%--        msg = "<spring:message code="msg.error.connecting.to.server"/>";--%>
+    <%--    } else {--%>
+    <%--        let respCode = resp.httpResponseCode;--%>
+    <%--        if (respCode == 200) {--%>
+    <%--            selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";--%>
+    <%--            console.log('selectedState:');--%>
+    <%--            console.log(selectedState);--%>
+    <%--            let entityName = JSON.parse(resp.httpResponseText).title;--%>
+    <%--            if ((action == null || action == undefined) || (entityTypeName == null || entityTypeName == undefined) || (entityName == null || entityName == undefined)) {--%>
+    <%--                msg = "<spring:message code="msg.operation.successful"/>";--%>
+    <%--            } else {--%>
+    <%--                msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";--%>
+    <%--            }--%>
+    <%--        } else {--%>
+    <%--            if (respCode == 409) {--%>
+    <%--                msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";--%>
+    <%--            } else {--%>
+    <%--                msg = "<spring:message code='msg.operation.error'/>";--%>
+    <%--            }--%>
+    <%--        }--%>
+    <%--        var dialog = createDialog("info", msg);--%>
+    <%--        Timer.setTimeout(function () {--%>
+    <%--            dialog.close();--%>
+    <%--        }, dialogShowTime * 1.5);--%>
+    <%--        ParameterWin_parameter.close();--%>
+    <%--        ParameterValueWin_parameter.close();--%>
+    <%--        refreshParameterLG_parameter(selectedState);--%>
+    <%--    }--%>
+    <%--}--%>
 
     function checkRecordAsSelected(record, showDialog, entityName, msg) {
         if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {

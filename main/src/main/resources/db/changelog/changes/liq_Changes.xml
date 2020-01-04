@@ -99,7 +99,6 @@
     <changeSet author="razmnoosh (generated)" id="1577693200411-252">
         <dropColumn columnName="E_WRITING" tableName="TBL_FOREIGN_LANG_KNOWLEDGE"/>
     </changeSet>
-
     <changeSet author="ghazanfari_f (generated)" id="1577779895298-190">
         <addColumn tableName="tbl_parameter">
             <column name="c_type" type="varchar2(255 CHAR)"/>
@@ -113,6 +112,11 @@
     <changeSet author="ghazanfari_f (generated)" id="1577780376822-192">
         <addColumn tableName="tbl_parameter_value">
             <column name="c_value" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1577787152963-196">
+        <addColumn tableName="tbl_parameter">
+            <column name="c_code" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
 
