@@ -68,6 +68,7 @@
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
     const publicationUrl = rootUrl + "/publication";
     const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
+    const evaluationIndexHomeUrl = rootUrl + "/evaluationIndex";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -87,6 +88,7 @@
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
     isc.Label.addProperties({wrap: false});
+    isc.ToolStrip.addProperties({membersMargin: 5,});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
@@ -537,7 +539,7 @@
                 {
                     title: "<spring:message code="evaluation.index.title"/>",
                     click: function () {
-                        createTab(this.title, "<spring:url value="/evaluationIndex/showForm"/>");
+                        createTab(this.title, "<spring:url value="/evaluationIndex/show-form"/>");
                     }
                 },
                 {
@@ -789,9 +791,23 @@
         return dialog;
     }
 
-    function refreshListGrid(ListGridID) {
-        ListGridID.invalidateCache();
-        ListGridID.filterByEditor();
+    function refreshListGrid(listGridID, nextFunction) {
+        listGridID.filterByEditor();
+        if (!nextFunction === undefined) {
+            nextFunction();
+        }
+    }
+
+    function cleanListGrid(listGridID) {
+        listGridID.setData([]);
+    }
+
+    function refreshListGridSource(listGridID, dataSourceID, fetchDataUrl) {
+        if (!(dataSourceID === undefined)) {
+            dataSourceID.fetchDataURL = fetchDataUrl;
+        }
+        listGridID.filterByEditor();
+        listGridID.invalidateCache();
     }
 
     function checkRecordAsSelected(record, showDialog, entityName, msg) {
