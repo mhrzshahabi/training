@@ -63,7 +63,7 @@ var update;
         errorOrientation: "right",
         numCols: 6,
         padding: 20,
-        colWidths: ["1%", "30%", "49%", "20%", "30"],
+        colWidths: ["1%", "30%", "20%", "8%"],
         items: [
             {
                 name: "evaluation",
@@ -75,9 +75,13 @@ var update;
                     "2":"یادگیری",
                     "3":"رفتاری",
                     "4":"نتایج",
-
-
                 },
+                change:function(form, item, value, oldValue) {
+                if(value === "3")
+                 DynamicForm_CourseEvaluation.getItem("behavioral_level").setDisabled(false);
+                 else
+                   DynamicForm_CourseEvaluation.getItem("behavioral_level").setDisabled(true);
+                }
 
             },
 
@@ -93,27 +97,26 @@ var update;
                 click: function () {
                  var record = ListGrid_Course.getSelectedRecord();
                 record["evaluation"]=DynamicForm_CourseEvaluation.getItem("evaluation").getValue();
-
-               console.log(record)
-                 isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "evaluation/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
+                isc.RPCManager.sendRequest(TrDSRequest(courseUrl + "evaluation/" + record.id, "PUT", JSON.stringify(record), "callback:show_CheckListItem_is_Delete(rpcResponse)"));
                 }
             },
-            {
-                type: "SpacerItem",
+             {
+                name: "behavioral_level",
+                title: "سطح رفتاری",
+                type: "radioGroup",
+                vertical:false,
+                fillHorizontalSpace: true,
+                defaultValue: "1",
+                valueMap: {
+                    "1": "مشاهده",
+                    "2": "مصاحبه",
+                    "3": "کار پروژه ای",
+                    }
+
             },
-<%--            {--%>
-<%--                type: "button",--%>
-<%--                title: "<spring:message code="checkList.Design"/>",--%>
-<%--                iconOrientation: "right",--%>
-<%--                showDownIcon: true,--%>
-<%--                width: 160,--%>
-<%--                height:"30",--%>
-<%--                startRow: false,--%>
-<%--                endRow: true,--%>
-<%--                click: function () {--%>
-<%--                  --%>
-<%--                }--%>
-<%--            },--%>
+            // {
+            //  //   type: "SpacerItem",
+            // },
         ]
     })
 //======================================================================
@@ -139,19 +142,24 @@ var update;
 
      function loadPage_course_evaluation() {
 
-     var record = ListGrid_Course.getSelectedRecord();
+         var record = ListGrid_Course.getSelectedRecord();
+
         if(ListGrid_Course.getSelectedRecord().hasGoal)
        {
-        DynamicForm_CourseEvaluation.disable()
-        createDialog("info","این دوره دارای هدف نمی باشد","پیغام")
+         createDialog("info","این دوره دارای هدف نمی باشد","پیغام")
+         DynamicForm_CourseEvaluation.disable()
+
+
         }
         else
+
         DynamicForm_CourseEvaluation.enable()
         RestDataSource_course_evaluation.fetchDataURL=courseUrl +"getEvaluation/"+ record.id
+        DynamicForm_CourseEvaluation.getItem("behavioral_level").setDisabled(true)
         ListGrid_CourseEvaluation.fetchData();
         ListGrid_CourseEvaluation.invalidateCache();
         }
 
 
-
+        DynamicForm_CourseEvaluation.disable()
 
