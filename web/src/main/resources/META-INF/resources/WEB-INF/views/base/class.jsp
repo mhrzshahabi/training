@@ -281,6 +281,7 @@
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
         ],
+
         getCellCSSText:function (record, rowNum, colNum) {
 
             if (record.classStatus === "1")
@@ -566,6 +567,7 @@
                 }
             },
             {
+                ID :"test",
                 name: "classStatus",
                 colSpan: 1,
                 rowSpan: 1,
@@ -1457,6 +1459,15 @@
         }
     });
 
+
+    var ToolStripButton_test=isc.ToolStripButton.create({
+
+        title: "test",
+        click: function () {
+            checkEndingClass();
+        }
+    });
+
     var ToolStrip_Actions_JspClass = isc.ToolStrip.create({
         width: "100%",
         membersMargin: 5,
@@ -1466,6 +1477,7 @@
             ToolStripButton_Remove_JspClass,
             ToolStripButton_Print_JspClass,
             ToolStripButton_copy_of_class,
+            ToolStripButton_test,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -1884,3 +1896,20 @@
         else
             TabSet_Class.disable();
     }
+
+    //*****check class is ready to end or no*****
+    function checkEndingClass() {
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record !== null)
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id, "GET", null, function (resp) {
+
+                if(resp.data !== "")
+                {
+                    TabSet_Class.selectTab("classAlarmsTab");
+                    isc.say(resp.data);
+                }
+
+            }));
+    }
+
+

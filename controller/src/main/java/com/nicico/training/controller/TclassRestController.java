@@ -293,4 +293,13 @@ public class TclassRestController {
     }
 
 
+    @Loggable
+    @GetMapping(value = "/checkEndingClass/{classId}")
+    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException{
+
+        return classAlarmService.checkAlarmsForEndingClass(classId, response);
+
+    }
+
+
 }
