@@ -38,13 +38,6 @@ var dummy;
         fetchDataURL: teacherUrl + "spec-list"
     });
 
-    // var RestDataSource_EAttachmentType_JpaTeacher = isc.TrDS.create({
-    //     fields: [
-    //         {name: "id"},
-    //         {name: "titleFa"}],
-    //     fetchDataURL: enumUrl + "eTeacherAttachmentType/spec-list"
-    // });
-
     var RestDataSource_Egender_JspTeacher = isc.TrDS.create({
         fields: [{name: "id"}, {name: "titleFa"}],
         fetchDataURL: enumUrl + "eGender/spec-list"

@@ -637,6 +637,12 @@
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
                 },
+                {
+                    title: "لیست سیاه",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/black-list/show-form"/>");
+                    }
+                },
                 {isSeparator: true},
                 {
                     title: "<spring:message code="operational.unit"/>",
