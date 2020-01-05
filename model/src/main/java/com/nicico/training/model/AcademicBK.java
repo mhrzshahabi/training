@@ -13,33 +13,33 @@ import java.util.Date;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_teaching_history")
+@Table(name = "tbl_academic_bk")
 public class AcademicBK extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teaching_history_seq")
-    @SequenceGenerator(name = "teaching_history_seq", sequenceName = "seq_teaching_history_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "academic_bk_seq")
+    @SequenceGenerator(name = "academic_bk_seq", sequenceName = "seq_academic_bk_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_education_level")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_education_level", insertable = false, updatable = false, nullable = false)
     private EducationLevel educationLevel;
 
-    @Column(name = "f_personality", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_education_level")
     private Long educationLevelId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_education_major")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_education_major", insertable = false, updatable = false, nullable = false)
     private EducationMajor educationMajor;
 
-    @Column(name = "f_education_major", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_education_major")
     private Long educationMajorId;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_education_orienation")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_education_orienation", insertable = false, updatable = false)
     private EducationOrientation educationOrientation;
 
-    @Column(name = "f_education_orientation", nullable = false, insertable = false, updatable = false)
+    @Column(name = "f_education_orienation")
     private Long educationOrientationId;
 
     @Column(name = "d_date")
@@ -55,10 +55,10 @@ public class AcademicBK extends Auditable {
     private String collageName;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_teacher_id", insertable = false, updatable = false)
+    @JoinColumn(name = "f_teacher", insertable = false, updatable = false)
     private Teacher teacher;
 
-    @Column(name = "f_teacher_id")
+    @Column(name = "f_teacher")
     private Long teacherId;
 
 }

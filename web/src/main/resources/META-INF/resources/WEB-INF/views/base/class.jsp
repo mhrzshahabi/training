@@ -209,7 +209,6 @@
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
-
         doubleClick: function () {
             ListGrid_class_edit();
 
@@ -1813,7 +1812,7 @@
                 }
                 case "classAttachmentsTab": {
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب"});
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"});
                     break;
                 }
                 case "classScoresTab": {
