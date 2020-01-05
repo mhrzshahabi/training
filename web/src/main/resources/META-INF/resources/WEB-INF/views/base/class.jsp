@@ -281,7 +281,14 @@
             {name: "createdDate", hidden: true},
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
-        ]
+        ],
+        getCellCSSText:function (record, rowNum, colNum) {
+
+            if (record.classStatus === "1")
+                return "background-color: #EDEDED;";
+            else if (record.classStatus === "3")
+                return "background-color: #C7E1FF;";
+        }
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
