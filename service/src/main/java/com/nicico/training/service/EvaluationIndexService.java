@@ -83,4 +83,10 @@ public class EvaluationIndexService implements IEvaluationIndexService {
         final EvaluationIndex saved = evaluationIndexDAO.saveAndFlush(country);
         return modelMapper.map(saved, EvaluationIndexDTO.Info.class);
     }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<EvaluationIndex> getListByIds(List<Long> ids) {
+        return evaluationIndexDAO.findAllById(ids);
+    }
 }

@@ -1,29 +1,49 @@
 package com.nicico.training.service;
 
 import com.nicico.training.dto.EvaluationQuestionDTO;
+import com.nicico.training.model.EvaluationIndex;
 import com.nicico.training.model.EvaluationQuestion;
 import com.nicico.training.repository.EvaluationQuestionDAO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @RequiredArgsConstructor
 @Service
 public class EvaluationQuestionService extends BaseService<EvaluationQuestion, Long, EvaluationQuestionDTO.Info, EvaluationQuestionDTO.Create, EvaluationQuestionDTO.Update, EvaluationQuestionDTO.Delete, EvaluationQuestionDAO> {
 
+    private EvaluationIndexService evaluationIndexService;
+
     @Autowired
-    EvaluationQuestionService(EvaluationQuestionDAO evaluationQuestionDAO) {
+    EvaluationQuestionService(EvaluationQuestionDAO evaluationQuestionDAO, EvaluationIndexService evaluationIndexService) {
         super(new EvaluationQuestion(), evaluationQuestionDAO);
+        this.evaluationIndexService = evaluationIndexService;
     }
 
-//    @Transactional(readOnly = true)
-//    public SearchDTO.SearchRs<ParameterDTO.Config> allConfig(SearchDTO.SearchRq rq) {
-//        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-//        criteriaRq.setOperator(EOperator.equals);
-//        criteriaRq.setFieldName("description");
-//        criteriaRq.setValue("config");
-//        rq.setCriteria(criteriaRq);
-//
-//        return SearchUtil.search(dao, rq, e -> modelMapper.map(e, ParameterDTO.Config.class));
-//    }
+    @Transactional
+    public EvaluationQuestionDTO.Info create(EvaluationQuestionDTO.Create rq, List<Long> indexIds) {
+        final EvaluationQuestion entity = modelMapper.map(rq, EvaluationQuestion.class);
+        entity.setEvaluationIndices(setIndices(indexIds));
+        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+    }
+
+    @Transactional
+    public EvaluationQuestionDTO.Info update(Long id, EvaluationQuestionDTO.Update rq, List<Long> indexIds) {
+        final EvaluationQuestion currentEntity = get(id);
+        modelMapper.map(currentEntity, entity);
+        modelMapper.map(rq, entity);
+        entity.setEvaluationIndices(setIndices(indexIds));
+        return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
+    }
+
+    private List<EvaluationIndex> setIndices(List<Long> indexIds) {
+        if (indexIds == null || indexIds.size() == 0)
+            return null;
+        return evaluationIndexService.getListByIds(indexIds);
+    }
+
+
 }
