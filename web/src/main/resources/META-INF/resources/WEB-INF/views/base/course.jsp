@@ -555,25 +555,71 @@
     var Window_AddSkill = isc.Window.create({
         title: "افزودن مهارت",
         width: "90%",
-        height: "90%",
-        canDragReposition: false,
-        showShadow: true,
-        shadowSoftness: 10,
-        shadowOffset: 20,
-        autoCenter: true,
-        isModal: true,
-        showModalMask: true,
-        align: "center",
+        height: "70%",
+        keepInParentRect: true,
         autoSize: false,
-        animateMinimize: false,
         items: [
+            isc.TrHLayout.create({
+                members:[
+                    isc.TrLG.create({
+                        ID:"ListGridAllSkill_JspCourse",
+                        dataSource:"",
+                        selectionType: "multiple",
+                        filterOnKeypress: true,
+                        canDragRecordsOut: true,
+                        dragDataAction: "none",
+                        canAcceptDroppedRecords: true,
+                        fields:[],
+                        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                        },
+                        gridComponents : [isc.Label.create({contents:"لیست گرید", align:"center", height:30}) ,"filterEditor", "header", "body"],
 
+                    }),
+                    isc.ToolStrip.create({
+                        width:"4%",
+                        height:"100%",
+                        align: "center",
+                        vertical: "center",
+                        membersMargin: 5,
+                        members:[
+                            isc.IconButton.create({
+                                icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+                                showButtonTitle:false,
+                                prompt: "افزودن",
+                                click: function () {
+                                }
+                            }),
+                            isc.IconButton.create({
+                                icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+                                showButtonTitle:false,
+                                prompt: "حذف",
+                                click: function () {
+                                }
+                            })
+                        ]
+                    }),
+                    isc.TrLG.create({
+                        ID:"ListGridOwnSkill_JspCourse",
+                        dataSource:"",
+                        selectionType: "multiple",
+                        filterOnKeypress: true,
+                        canDragRecordsOut: true,
+                        dragDataAction: "none",
+                        canAcceptDroppedRecords: true,
+                        fields:[],
+                        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                        },
+                        gridComponents : [isc.Label.create({contents:"لیست گرید", align:"center", height:30}) ,"filterEditor", "header", "body"]
+                    })
+                ]
+            })
         ]
     });
     var ToolStripButton_addSkill = isc.ToolStripButton.create({
         // icon: "[SKIN]/actions/column_preferences.png",
         title: "<spring:message code='add.skill'/>",
         click: function () {
+            Window_AddSkill.show();
         }
     });
 
@@ -2032,18 +2078,17 @@
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
             },
-            {
-             title: "ارزیابی دوره",
-             ID:"courseEvaluationTAB",
-             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
-            }
-        ],
-        tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (isc.Page.isLoaded())
-                refreshSelectedTab_Course(tab);
-        }
-
-
+            ],
+        //     {
+        //      title: "ارزیابی دوره",
+        //      ID:"courseEvaluationTAB",
+        //      pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
+        //     }
+        // ],
+        // tabSelected: function (tabNum, tabPane, ID, tab, name) {
+        //     if (isc.Page.isLoaded())
+        //         refreshSelectedTab_Course(tab);
+        // },
 
     });
     var HLayout_Tab_Course = isc.HLayout.create({

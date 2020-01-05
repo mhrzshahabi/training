@@ -75,7 +75,7 @@ public class Course extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @ManyToMany(mappedBy = "courseSet")
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Skill> skillSet;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
