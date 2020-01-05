@@ -13,11 +13,11 @@ import java.util.Date;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_teaching_history")
+@Table(name = "tbl_academic_bk")
 public class AcademicBK extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "teaching_history_seq")
-    @SequenceGenerator(name = "teaching_history_seq", sequenceName = "seq_teaching_history_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "academic_bk_seq")
+    @SequenceGenerator(name = "academic_bk_seq", sequenceName = "seq_academic_bk_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 
