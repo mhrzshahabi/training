@@ -19,13 +19,13 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "personality.jobLocation",
+                name: "personality.jobTitle",
                 title: "<spring:message code='job'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"
             },
             {
-                name: "personality.jobTitle",
+                name: "personality.jobLocation",
                 title: "<spring:message code='work.place'/>",
                 keyPressFilter: "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]",
                 length: "30"

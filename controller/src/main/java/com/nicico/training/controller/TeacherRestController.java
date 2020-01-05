@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -33,10 +34,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -258,6 +256,33 @@ public class TeacherRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, type);
         reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @PostMapping(value = {"/printWithDetail/{id}"})
+    public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+        criteriaRq1.setFieldName("id");
+        criteriaRq1.setOperator(EOperator.equals);
+        criteriaRq1.setValue(id);
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        criteriaRqList.add(criteriaRq1);
+        criteriaRq.setOperator(EOperator.and);
+        criteriaRq.setCriteria(criteriaRqList);
+        final SearchDTO.SearchRq searchRq;
+        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+        reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
