@@ -19,4 +19,6 @@ public interface IPersonnelService {
 
     List<PersonnelDTO.Info> getByJobNo(String jobNo);
 
+    PersonnelDTO.PersonalityInfo getByPersonnelCode(String personnelCode);
+
 }

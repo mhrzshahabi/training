@@ -20,6 +20,8 @@ public class ParameterValueDTO implements Serializable {
     @ApiModelProperty(required = true)
     private String title;
     private String code;
+    private String type;
+    private String value;
     private String description;
 
     @Getter
@@ -28,6 +30,7 @@ public class ParameterValueDTO implements Serializable {
     @ApiModel("ParameterValue - Info")
     public static class Info extends ParameterValueDTO {
         private Long id;
+        private Integer version;
         private ParameterDTO.Info parameter;
     }
 
@@ -45,6 +48,7 @@ public class ParameterValueDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("ParameterValue - Update")
     public static class Update extends Create {
+        private Integer version;
     }
 
     @Getter
@@ -65,6 +69,6 @@ public class ParameterValueDTO implements Serializable {
     @ApiModel("Parameter - Config - Update")
     public static class ConfigUpdate {
         private Long id;
-        private String code;
+        private String value;
     }
 }

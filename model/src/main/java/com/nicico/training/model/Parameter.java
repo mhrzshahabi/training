@@ -24,11 +24,14 @@ public class Parameter extends Auditable {
     @Column(name = "c_title", nullable = false)
     private String title;
 
-    @Column(name = "c_description")
-    private String description;
+    @Column(name = "c_code", unique = true)
+    private String code;
 
     @Column(name = "c_type")
     private String type;
+
+    @Column(name = "c_description")
+    private String description;
 
     @OneToMany(mappedBy = "parameter", fetch = FetchType.LAZY)
     private List<ParameterValue> parameterValueList;

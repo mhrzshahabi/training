@@ -2,9 +2,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%
-    final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
 
 // <script>
 
@@ -18,18 +15,12 @@
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
         var RestDataSource_alarm = isc.TrDS.create({
-            transformRequest: function (dsRequest) {
-                dsRequest.httpHeaders = {
-                    "Authorization": "Bearer <%= accessToken %>"
-                };
-                return this.Super("transformRequest", arguments);
-            },
             fields:
                 [
                     {name: "targetRecordId", autoFitWidth: true},
                     {name: "tabName", autoFitWidth: true},
                     {name: "pageAddress", autoFitWidth: true},
-                    {name: "alarmType", autoFitWidth: true},
+                    {name: "alarmType", width: 140},
                     {name: "alarm"}
                 ]
         });
@@ -163,6 +154,7 @@
                 RestDataSource_alarm.fetchDataURL = classAlarm + "list" + "/" + ListGrid_Class_JspClass.getSelectedRecord().id;
                 ListGrid_alarm.invalidateCache();
                 ListGrid_alarm.fetchData();
+
             }
         }
 
