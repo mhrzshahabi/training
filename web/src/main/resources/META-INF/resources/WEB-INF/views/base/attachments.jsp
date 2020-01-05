@@ -24,7 +24,7 @@
         ]
     });
 
-    DynamicForm_JspAttachments = isc.DynamicForm.create({
+    var DynamicForm_JspAttachments = isc.DynamicForm.create({
         width: "100%",
         height: "100%",
         fields: [
