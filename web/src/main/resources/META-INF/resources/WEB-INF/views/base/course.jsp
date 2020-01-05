@@ -2038,7 +2038,7 @@
     //     members: [ListGrid_CourseCompetence]
     // });
     var Detail_Tab_Course = isc.TabSet.create({
-        ID: "tabSetCourse",
+         ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
             {
@@ -2078,22 +2078,24 @@
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
             },
-            ],
-        //     {
-        //      title: "ارزیابی دوره",
-        //      ID:"courseEvaluationTAB",
-        //      pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
-        //     }
-        // ],
-        // tabSelected: function (tabNum, tabPane, ID, tab, name) {
-        //     if (isc.Page.isLoaded())
-        //         refreshSelectedTab_Course(tab);
-        // },
+             {
+             title: "ارزیابی دوره",
+             ID:"courseEvaluationTAB",
+             pane: isc.ViewLoader.create({viewURL: "course_evaluation/show-form"})
+            }
+        ],
+         tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            if (isc.Page.isLoaded())
+                refreshSelectedTab_Course(tab);
+        }
+
+
 
     });
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
         height: "50%",
+
         members: [Detail_Tab_Course]
     });
     var VLayout_Body_Course = isc.VLayout.create({

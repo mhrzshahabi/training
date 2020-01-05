@@ -1,12 +1,15 @@
 package com.nicico.training.dto;
 
 import com.nicico.copper.common.util.date.DateUtil;
+import com.nicico.training.model.EducationMajor;
+import com.nicico.training.model.EducationOrientation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -18,7 +21,11 @@ import java.util.List;
 @Accessors(chain = true)
 public class AcademicBKDTO {
 
+    @NotEmpty
+    @ApiModelProperty(required = true)
     private Long educationLevelId;
+    @NotEmpty
+    @ApiModelProperty(required = true)
     private Long educationMajorId;
     private Long educationOrientationId;
     private Date date;
@@ -49,6 +56,9 @@ public class AcademicBKDTO {
     public static class Info extends AcademicBKDTO {
         private Long id;
         private Integer version;
+        private EducationLevelDTO.Info educationLevel;
+        private EducationMajorDTO.Info educationMajor;
+        private EducationOrientationDTO.Info educationOrientation;
     }
 
     @Getter

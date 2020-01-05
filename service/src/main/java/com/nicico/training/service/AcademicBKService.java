@@ -5,10 +5,10 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AcademicBKDTO;
-import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.iservice.IAcademicBKService;
-import com.nicico.training.model.Teacher;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.AcademicBK;
+import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.AcademicBKDAO;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.exception.ConstraintViolationException;
@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -42,31 +43,6 @@ public class AcademicBKService implements IAcademicBKService {
         return optionalAcademicBK.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
-    @Transactional
-    @Override
-    public void deleteAcademicBK(Long teacherId, Long academicBKId) {
-        final Teacher teacher = teacherService.getTeacher(teacherId);
-        final AcademicBKDTO.Info academicBK = get(academicBKId);
-        try {
-            teacher.getTeachingHistories().remove(modelMapper.map(academicBK, AcademicBK.class));
-            academicBK.setTeacherId(null);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
-        }
-    }
-
-    @Transactional
-    @Override
-    public void addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
-        final Teacher teacher = teacherService.getTeacher(teacherId);
-        AcademicBK academicBK = new AcademicBK();
-        modelMapper.map(request, academicBK);
-        try {
-//            teacher.getTeachingHistories().add(academicBK);
-        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
-            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
-        }
-    }
 
     @Transactional
     @Override
@@ -81,7 +57,6 @@ public class AcademicBKService implements IAcademicBKService {
             throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
     }
-
 
     @Transactional(readOnly = true)
     @Override
@@ -115,4 +90,33 @@ public class AcademicBKService implements IAcademicBKService {
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
     }
+
+    @Transactional
+    @Override
+    public void addAcademicBK(AcademicBKDTO.Create request, Long teacherId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        AcademicBK academicBK = new AcademicBK();
+        modelMapper.map(request, academicBK);
+        try {
+            teacher.getAcademicBKs().add(academicBK);
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deleteAcademicBK(Long teacherId, Long academicBKId) {
+        final Teacher teacher = teacherService.getTeacher(teacherId);
+        final AcademicBKDTO.Info academicBK = get(academicBKId);
+        try {
+            teacher.getAcademicBKs().remove(modelMapper.map(academicBK, AcademicBK.class));
+            academicBK.setTeacherId(null);
+            academicBKDAO.delete(modelMapper.map(academicBK, AcademicBK.class));
+        } catch (ConstraintViolationException | DataIntegrityViolationException e) {
+            throw new TrainingException(TrainingException.ErrorType.NotDeletable);
+        }
+    }
+
+
 }

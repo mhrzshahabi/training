@@ -404,6 +404,11 @@ var dummy;
                 ID: "otherActivities",
                 title: "<spring:message code="otherActivities"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
+            },
+            {
+                ID: "academicBK",
+                title: "<spring:message code="academicBK"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
@@ -1072,6 +1077,10 @@ var dummy;
             if (typeof loadPage_Publication !== "undefined")
                 loadPage_Publication(teacherId);
 
+
+            if (typeof loadPage_AcademicBK !== "undefined")
+                loadPage_AcademicBK(teacherId);
+
         }
     }
 
@@ -1090,6 +1099,9 @@ var dummy;
 
         if (typeof clear_ForeignLangKnowledge !== "undefined")
             clear_ForeignLangKnowledge();
+
+        if (typeof clear_AcademicBK() !== "undefined")
+            clear_AcademicBK();
     }
 
     // </script>

@@ -4,13 +4,11 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="Spring" uri="http://java.sun.com/jsp/jstl/fmt" %>
 
-var x;
-var update;
+// <script>
 
     var RestDataSource_course_evaluation = isc.TrDS.create({
-        ID: "courseDS",
         fields: [
-            {name: "id", type: "Integer", primaryKey: true, hidden: true},
+            {name: "id", primaryKey: true, hidden: true},
             {name: "code", title: "کد"},
             {name: "titleFa", title: "عنوان"},
             {
@@ -21,7 +19,7 @@ var update;
                     "4": "نتایج",
                 }, title: "سطح ارزیابی"
             },
-             {
+            {
                 name: "behavioralLevel", valueMap: {
                     "مشاهده": "مشاهده",
                     "مصاحبه": "مصاحبه",
@@ -33,7 +31,6 @@ var update;
 
         autoFetchData: false,
     });
-
     //=========================================ListGrid=========================
     var ListGrid_CourseEvaluation = isc.TrLG.create({
         filterOperator: "iContains",
@@ -42,7 +39,6 @@ var update;
         filterOnKeypress: false,
         showFilterEditor: true,
         dataSource: RestDataSource_course_evaluation,
-// contextMenu: Menu_ListGrid_CheckList,
         fields: [
             {name: "code", title: "کد"},
             {name: "titleFa", title: "عنوان"},
@@ -50,13 +46,11 @@ var update;
                 name: "evaluation", title: "سطح ارزیابی",
 
                 formatCellValue: function (value, record, field) {
-                    if(value ==="رفتاری")
-                   {
-                   return value + " , " + record.behavioralLevel
-                   }
-                   else {
-                   return  value;
-                   }
+                    if (value === "رفتاری") {
+                        return value + " , " + record.behavioralLevel
+                    } else {
+                        return value;
+                    }
 
                 }
             }
@@ -133,7 +127,7 @@ var update;
                 vertical: false,
                 fillHorizontalSpace: true,
                 defaultValue: "مشاهده",
-                 valueMap: {
+                valueMap: {
                     "مشاهده": "مشاهده",
                     "مصاحبه": "مصاحبه",
                     "کار پروژه ای": "کار پروژه ای",
@@ -166,20 +160,16 @@ var update;
 
     //========================================================================
 
-   function show_ListGrid_CourseEvaluation(resp)
-   {
-    if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
-       {
-       ListGrid_CourseEvaluation.fetchData();
-       ListGrid_CourseEvaluation.invalidateCache();
-       }
-       else
-        {
-        simpleDialog("<spring:message code="warning"/>", "<spring:message
+    function show_ListGrid_CourseEvaluation(resp) {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+            ListGrid_CourseEvaluation.fetchData();
+            ListGrid_CourseEvaluation.invalidateCache();
+        } else {
+            simpleDialog("<spring:message code="warning"/>", "<spring:message
         code="msg.error.connecting.to.server"/>", 3000, "error");
         }
 
-   };
+    };
 
     function loadPage_course_evaluation() {
 
@@ -188,11 +178,11 @@ var update;
         if (ListGrid_Course.getSelectedRecord().hasGoal) {
             createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
             DynamicForm_CourseEvaluation.disable()
-             DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
+            DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
 
         } else
 
-        DynamicForm_CourseEvaluation.enable()
+            DynamicForm_CourseEvaluation.enable()
         RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
         DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
         ListGrid_CourseEvaluation.fetchData();
@@ -200,5 +190,5 @@ var update;
     }
 
 
-    DynamicForm_CourseEvaluation.disable()
+    // DynamicForm_CourseEvaluation.disable()
 
