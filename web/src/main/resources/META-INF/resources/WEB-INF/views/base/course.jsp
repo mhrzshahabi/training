@@ -2009,7 +2009,7 @@
              {
              title: "ارزیابی دوره",
              ID:"courseEvaluationTAB",
-             pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
+             pane: isc.ViewLoader.create({viewURL: "course_evaluation/show-form"})
             }
         ],
          tabSelected: function (tabNum, tabPane, ID, tab, name) {
