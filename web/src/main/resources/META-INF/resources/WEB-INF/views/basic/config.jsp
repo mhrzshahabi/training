@@ -68,7 +68,7 @@
         for (var i = TabSet_JspConfig.tabs.length - 1; i > -1; i--) {
             TabSet_JspConfig.removeTab(i);
         }
-        isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/config-types-list", "GET", null, setConfigTypes));
+        isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/config-list", "GET", null, setConfigTypes));
     }
 
     function setConfigTypes(resp) {
@@ -172,7 +172,6 @@
                 "value": fields[i].getValue()
             });
         }
-        // toUpdate.removeList(toUpdate.findAll("id", "isc"));
         if (toUpdate.length > 0) {
             Wait_JspConfig = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(parameterValueUrl + "/edit-config-list",
