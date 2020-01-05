@@ -215,7 +215,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
@@ -225,7 +225,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",

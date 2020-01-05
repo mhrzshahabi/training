@@ -9,7 +9,7 @@
     var Wait_JspConfig;
     var temp;
 
-    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/config-types-list", "GET", null, setConfigTypes));
+    isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/config-list", "GET", null, setConfigTypes));
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*Form*/
