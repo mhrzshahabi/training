@@ -495,4 +495,7 @@
     <changeSet author="razmnoosh (generated)" id="1578204110518-210">
         <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_academic_bk" constraintName="FKkq3hp70bmsd277nhx0cyc5uba" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1578211745269-209">
+        <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_skill" constraintName="FKpa50atgxgnp21b0tiunwlifuk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

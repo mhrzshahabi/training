@@ -69,7 +69,7 @@ public class Skill extends Auditable {
 
     //-------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
-    @JoinColumn(name = "f_course", nullable = false)
+    @JoinColumn(name = "f_course")
     private Course course;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillSet")

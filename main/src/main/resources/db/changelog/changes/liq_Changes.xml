@@ -145,5 +145,13 @@
             <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1578211745269-206">
+        <addColumn tableName="tbl_skill">
+            <column name="f_course" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1578211745269-260">
+        <dropTable tableName="TBL_SKILL_COURSE"/>
+    </changeSet>
 
 </databaseChangeLog>
