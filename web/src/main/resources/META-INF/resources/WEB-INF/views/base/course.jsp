@@ -552,6 +552,77 @@
         }
     });
 
+    var Window_AddSkill = isc.Window.create({
+        title: "افزودن مهارت",
+        width: "90%",
+        height: "70%",
+        keepInParentRect: true,
+        autoSize: false,
+        items: [
+            isc.TrHLayout.create({
+                members:[
+                    isc.TrLG.create({
+                        ID:"ListGridAllSkill_JspCourse",
+                        dataSource:"",
+                        selectionType: "multiple",
+                        filterOnKeypress: true,
+                        canDragRecordsOut: true,
+                        dragDataAction: "none",
+                        canAcceptDroppedRecords: true,
+                        fields:[],
+                        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                        },
+                        gridComponents : [isc.Label.create({contents:"لیست گرید", align:"center", height:30}) ,"filterEditor", "header", "body"],
+
+                    }),
+                    isc.ToolStrip.create({
+                        width:"4%",
+                        height:"100%",
+                        align: "center",
+                        vertical: "center",
+                        membersMargin: 5,
+                        members:[
+                            isc.IconButton.create({
+                                icon: "[SKIN]/TransferIcons/double-arrow-left.png",
+                                showButtonTitle:false,
+                                prompt: "افزودن",
+                                click: function () {
+                                }
+                            }),
+                            isc.IconButton.create({
+                                icon: "[SKIN]/TransferIcons/double-arrow-right.png",
+                                showButtonTitle:false,
+                                prompt: "حذف",
+                                click: function () {
+                                }
+                            })
+                        ]
+                    }),
+                    isc.TrLG.create({
+                        ID:"ListGridOwnSkill_JspCourse",
+                        dataSource:"",
+                        selectionType: "multiple",
+                        filterOnKeypress: true,
+                        canDragRecordsOut: true,
+                        dragDataAction: "none",
+                        canAcceptDroppedRecords: true,
+                        fields:[],
+                        recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
+                        },
+                        gridComponents : [isc.Label.create({contents:"لیست گرید", align:"center", height:30}) ,"filterEditor", "header", "body"]
+                    })
+                ]
+            })
+        ]
+    });
+    var ToolStripButton_addSkill = isc.ToolStripButton.create({
+        // icon: "[SKIN]/actions/column_preferences.png",
+        title: "<spring:message code='add.skill'/>",
+        click: function () {
+            Window_AddSkill.show();
+        }
+    });
+
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -561,6 +632,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
+            ToolStripButton_addSkill,
             ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",

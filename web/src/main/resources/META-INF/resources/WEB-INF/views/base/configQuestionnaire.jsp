@@ -28,8 +28,8 @@
     RestDataSource_QuestionDomain_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true}
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
         ],
         fetchDataURL: parameterValueUrl + "/iscList/49"
     });
@@ -62,7 +62,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "selectItem",
+                type: "TrComboAutoRefresh",
                 required: true,
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
@@ -93,7 +93,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "selectItem",
+                type: "TrComboAutoRefresh",
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
@@ -115,8 +115,7 @@
                     {
                         name: "evalStatus",
                         title: "<spring:message code="evaluation.index.evalStatus"/>",
-                        filterOperator: "iContains",
-                        // autoFitWidth: true
+                        filterOperator: "iContains"
                     }
                 ]
             }
@@ -216,7 +215,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "selectItem",
+                type: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
@@ -226,7 +225,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "selectItem",
+                type: "TrComboAutoRefresh",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
