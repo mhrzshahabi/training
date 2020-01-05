@@ -84,7 +84,10 @@
                     type: "custom",
                     errorMessage: "<spring:message code='msg.correct.date'/>",
                     condition: function (item, validator, value) {
-                        return checkBirthDate(value);
+                        if(value != null && value != undefined)
+                            return checkBirthDate(value);
+                        else
+                            return true;
                     }
                 }]
             },

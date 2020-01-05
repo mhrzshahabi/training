@@ -2117,7 +2117,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578139965908-204">
+    <changeSet author="razmnoosh (generated)" id="1578204110518-204">
         <createTable tableName="tbl_academic_bk">
             <column name="id" type="NUMBER(19, 0)">
                 <constraints primaryKey="true" primaryKeyName="tbl_academic_bkPK"/>
@@ -2139,18 +2139,10 @@
             <column name="c_collage_name" type="VARCHAR2(255 CHAR)"/>
             <column name="d_date" type="TIMESTAMP"/>
             <column name="c_duration" type="VARCHAR2(255 CHAR)"/>
-            <column name="f_personality" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_education_major" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_education_orientation" type="NUMBER(19, 0)">
-                <constraints nullable="false"/>
-            </column>
-            <column name="f_teacher_id" type="NUMBER(19, 0)"/>
             <column name="f_education_level" type="NUMBER(19, 0)"/>
+            <column name="f_education_major" type="NUMBER(19, 0)"/>
             <column name="f_education_orienation" type="NUMBER(19, 0)"/>
+            <column name="f_teacher" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
 </databaseChangeLog>

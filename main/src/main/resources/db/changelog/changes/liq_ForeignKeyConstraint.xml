@@ -483,16 +483,16 @@
     <changeSet author="poursalehi_mos (generated)" id="1577795609482-205">
         <addForeignKeyConstraint baseColumnNames="f_domain_id" baseTableName="tbl_evaluation_question" constraintName="FKolislh8e37nj1plo7ps963jlw" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578139965908-207">
+    <changeSet author="razmnoosh (generated)" id="1578204110518-207">
         <addForeignKeyConstraint baseColumnNames="f_education_orienation" baseTableName="tbl_academic_bk" constraintName="FK92t2e3w23vroqv9ga8w34iskl" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_orientation" validate="true"/>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578139965908-208">
-        <addForeignKeyConstraint baseColumnNames="f_teacher_id" baseTableName="tbl_academic_bk" constraintName="FKari6qi0rhfmfisq1gbyjf01qr" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
-    </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578139965908-209">
+    <changeSet author="razmnoosh (generated)" id="1578204110518-208">
         <addForeignKeyConstraint baseColumnNames="f_education_level" baseTableName="tbl_academic_bk" constraintName="FKcjmp86yo8qdvp1cvqowk5em62" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_level" validate="true"/>
     </changeSet>
-    <changeSet author="razmnoosh (generated)" id="1578139965908-210">
+    <changeSet author="razmnoosh (generated)" id="1578204110518-209">
         <addForeignKeyConstraint baseColumnNames="f_education_major" baseTableName="tbl_academic_bk" constraintName="FKd1s9yuyruheyn3yofws0g1u99" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_education_major" validate="true"/>
+    </changeSet>
+    <changeSet author="razmnoosh (generated)" id="1578204110518-210">
+        <addForeignKeyConstraint baseColumnNames="f_teacher" baseTableName="tbl_academic_bk" constraintName="FKkq3hp70bmsd277nhx0cyc5uba" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_teacher" validate="true"/>
     </changeSet>
 </databaseChangeLog>
