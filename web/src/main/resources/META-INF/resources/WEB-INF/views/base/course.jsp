@@ -552,6 +552,31 @@
         }
     });
 
+    var Window_AddSkill = isc.Window.create({
+        title: "افزودن مهارت",
+        width: "90%",
+        height: "90%",
+        canDragReposition: false,
+        showShadow: true,
+        shadowSoftness: 10,
+        shadowOffset: 20,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoSize: false,
+        animateMinimize: false,
+        items: [
+
+        ]
+    });
+    var ToolStripButton_addSkill = isc.ToolStripButton.create({
+        // icon: "[SKIN]/actions/column_preferences.png",
+        title: "<spring:message code='add.skill'/>",
+        click: function () {
+        }
+    });
+
 
     var ToolStrip_Actions = isc.ToolStrip.create({
         width: "100%",
@@ -561,6 +586,7 @@
             ToolStripButton_Edit,
             ToolStripButton_Remove,
             ToolStripButton_Print,
+            ToolStripButton_addSkill,
             ToolStripButton_SendToWorkflow,
             isc.ToolStrip.create({
                 width: "100%",
@@ -1966,7 +1992,7 @@
     //     members: [ListGrid_CourseCompetence]
     // });
     var Detail_Tab_Course = isc.TabSet.create({
-         ID: "tabSetCourse",
+        ID: "tabSetCourse",
         tabBarPosition: "top",
         tabs: [
             {
@@ -2006,13 +2032,13 @@
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
             },
-             {
+            {
              title: "ارزیابی دوره",
              ID:"courseEvaluationTAB",
              pane: isc.ViewLoader.create({autoDraw: true, viewURL: "course_evaluation/show-form"})
             }
         ],
-         tabSelected: function (tabNum, tabPane, ID, tab, name) {
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
                 refreshSelectedTab_Course(tab);
         }
@@ -2023,7 +2049,6 @@
     var HLayout_Tab_Course = isc.HLayout.create({
         width: "100%",
         height: "50%",
-
         members: [Detail_Tab_Course]
     });
     var VLayout_Body_Course = isc.VLayout.create({
