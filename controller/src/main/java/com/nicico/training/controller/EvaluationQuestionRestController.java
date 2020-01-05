@@ -7,11 +7,13 @@ import com.nicico.training.dto.EvaluationQuestionDTO;
 import com.nicico.training.service.EvaluationQuestionService;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.modelmapper.TypeToken;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.LinkedHashMap;
 import java.util.List;
 
 @RestController
@@ -37,16 +39,18 @@ public class EvaluationQuestionRestController {
 
     @Loggable
     @PostMapping
-    public ResponseEntity<EvaluationQuestionDTO.Info> create(@RequestBody Object rq) {
+    public ResponseEntity<EvaluationQuestionDTO.Info> create(@RequestBody LinkedHashMap rq) {
+        List<Long> indexIds = setIndexIds(rq);
         EvaluationQuestionDTO.Create create = modelMapper.map(rq, EvaluationQuestionDTO.Create.class);
-        return new ResponseEntity<>(evaluationQuestionService.create(create), HttpStatus.OK);
+        return new ResponseEntity<>(evaluationQuestionService.create(create, indexIds), HttpStatus.OK);
     }
 
     @Loggable
     @PutMapping("/{id}")
-    public ResponseEntity<EvaluationQuestionDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
+    public ResponseEntity<EvaluationQuestionDTO.Info> update(@PathVariable Long id, @RequestBody LinkedHashMap rq) {
+        List<Long> indexIds = setIndexIds(rq);
         EvaluationQuestionDTO.Update update = modelMapper.map(rq, EvaluationQuestionDTO.Update.class);
-        return new ResponseEntity<>(evaluationQuestionService.update(id, update), HttpStatus.OK);
+        return new ResponseEntity<>(evaluationQuestionService.update(id, update, indexIds), HttpStatus.OK);
     }
 
     @Loggable
@@ -57,6 +61,15 @@ public class EvaluationQuestionRestController {
         } catch (Exception ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+    private List<Long> setIndexIds(LinkedHashMap rq) {
+        if (rq.get("evaluationIndices") == null)
+            return null;
+        List<Long> indexIds = modelMapper.map(rq.get("evaluationIndices"), new TypeToken<List<Long>>() {
+        }.getType());
+        rq.remove("evaluationIndices");
+        return indexIds;
     }
 
 }

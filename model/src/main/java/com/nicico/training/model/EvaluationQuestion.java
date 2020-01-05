@@ -25,10 +25,10 @@ public class EvaluationQuestion extends Auditable {
     private String question;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "f_domain_id", nullable = false)
+    @JoinColumn(name = "f_domain_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue domain;
 
-    @Column(name = "f_domain_id", insertable = false, updatable = false)
+    @Column(name = "f_domain_id")
     private Long domainId;
 
     @ManyToMany(fetch = FetchType.LAZY)
