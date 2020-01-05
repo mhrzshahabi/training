@@ -9,13 +9,13 @@ import lombok.experimental.Accessors;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class EvaluationQuestionDTO implements Serializable {
 
-    private Long id;
     private String question;
     private Long domainId;
 
@@ -27,6 +27,12 @@ public class EvaluationQuestionDTO implements Serializable {
         private Long id;
         private ParameterValueDTO.Info domain;
         private List<EvaluationIndexDTO.Info> evaluationIndices;
+
+        public List<Long> getEvaluationIndices() {
+            if (evaluationIndices == null)
+                return null;
+            return evaluationIndices.stream().map(EvaluationIndexDTO.Info::getId).collect(Collectors.toList());
+        }
     }
 
     @Getter
@@ -34,8 +40,6 @@ public class EvaluationQuestionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("EvaluationQuestion - Create")
     public static class Create extends EvaluationQuestionDTO {
-        private Long id;
-        private ParameterValueDTO.Info domain;
         private List<EvaluationIndexDTO.Info> evaluationIndices;
     }
 
@@ -45,7 +49,6 @@ public class EvaluationQuestionDTO implements Serializable {
     @ApiModel("EvaluationQuestion - Update")
     public static class Update extends EvaluationQuestionDTO {
         private Long id;
-        private ParameterValueDTO.Info domain;
         private List<EvaluationIndexDTO.Info> evaluationIndices;
     }
 

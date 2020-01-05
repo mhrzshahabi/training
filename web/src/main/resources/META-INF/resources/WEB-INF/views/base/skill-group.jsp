@@ -720,7 +720,6 @@
         border: "0px solid yellow",
         layoutMargin: 5,
         align: "center",
-
         members: [
             DynamicForm_thisSkillGroupHeader_Jsp
         ]

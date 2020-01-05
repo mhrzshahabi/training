@@ -826,7 +826,6 @@
             VLayout_Grid_Goal_JspGoal
         ]
     });
-
     var Window_AddGoal = isc.Window.create({
         title: "افزودن هدف",
         width: "90%",

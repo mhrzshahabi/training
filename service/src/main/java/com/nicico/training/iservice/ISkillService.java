@@ -30,7 +30,7 @@ public interface ISkillService {
     // ---------------
     String getMaxSkillCode(String skillCodeStart);
 
-    List<CourseDTO.Info> getCourses(Long skillID);
+    CourseDTO.Info getCourses(Long skillID);
 
     List<CourseDTO.Info> getUnAttachedCourses(Long skillID, Pageable pageable);
 
