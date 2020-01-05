@@ -107,7 +107,8 @@ var flag1=null
                    this.grid.startEditing(this.rowNum, this.colNum + 2)
                    ListGrid_Class_Student.refreshFields();
                 }
-                }
+                },
+
             },
             {
                 name: "failurereason",
@@ -127,7 +128,16 @@ var flag1=null
                 this.grid.startEditing(this.rowNum, this.colNum + 1)
                 }
                  ListGrid_Class_Student.refreshFields();
-                }
+                },
+                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
+                    if (newValue == null && record.scoresState === "مردود")
+                        {
+                            ListGrid_Cell_scoresState_Update(record,null)
+                            ListGrid_Class_Student.refreshFields();
+                        }
+                        ListGrid_Class_Student.refreshFields();
+                 }
+
             },
 
             {
@@ -173,17 +183,17 @@ var flag1=null
 
                     else if (newValue === null && record.scoresState === undefined || record.scoresState==null || record.scoresState==="undefined" && record.failurereason === null)
                     {
-                       setTimeout(function(){},900)
                        ListGrid_Class_Student.invalidateCache();
                        ListGrid_Class_Student.refreshFields();
                     }
-                    else if (newValue === null && (record.scoresState === "مردود" || record.scoresState === "قبول با نمره"))
+                    else if (newValue == null && (record.scoresState === "مردود" || record.scoresState === "قبول با نمره"))
                      {
+                     console.log()
                      flag1=1
                       Row_Numbers=rowNum;
                       ListGrid_Cell_score_Update(record, null);
                      }
-                    ListGrid_Class_Student.refreshFields();
+                     ListGrid_Class_Student.refreshFields();
                 },
                 validators: {
                     type: "regexp",
@@ -288,12 +298,7 @@ var flag1=null
                       ListGrid_Class_Student.refreshFields();
                     }
                 }
-
-
-
-
-
-        }
+          }
 
 
     };
@@ -305,7 +310,7 @@ var flag1=null
           var score= JSON.parse(resp.data).score;
            var scoreState=JSON.parse(resp.data).scoresState
 
-       if( flag1==1)
+       if( flag1===1)
                 {
                 flag1=0
                 let record1=ListGrid_Class_Student.getRecord(Row_Numbers)
@@ -336,7 +341,7 @@ var flag1=null
             var record = ListGrid_Class_Student.getSelectedRecord();
 
 
-             if(flag1 == 1)
+             if(flag1 === 1)
                     {
                      let record1=ListGrid_Class_Student.getRecord(Row_Numbers)
                      ListGrid_Cell_failurereason_Update(record1,null)
