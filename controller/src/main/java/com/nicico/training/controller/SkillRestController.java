@@ -32,6 +32,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -579,10 +580,11 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "{skillId}/courses")
 //    @PreAuthorize("hasAnyAuthority('r_course')")
-    public ResponseEntity<CourseDTO.CourseSpecRs> getCourses(@PathVariable Long skillId) {
+    public ResponseEntity<CourseDTO.CourseSpecRs> getCourse(@PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
-        List<CourseDTO.Info> courses = skillService.getCourses(skillId);
+        List<CourseDTO.Info> courses = new ArrayList<>();
+        courses.add(skillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
@@ -633,7 +635,8 @@ public class SkillRestController {
     public ResponseEntity<CourseDTO.CourseSpecRs> getAttachedCourses(@RequestParam("skillId") String skillID) {
         Long skillId = Long.parseLong(skillID);
 
-        List<CourseDTO.Info> courses = skillService.getCourses(skillId);
+        List<CourseDTO.Info> courses = new ArrayList<>();
+        courses.add(skillService.getCourses(skillId));
 
         final CourseDTO.SpecRs specResponse = new CourseDTO.SpecRs();
         specResponse.setData(courses)
