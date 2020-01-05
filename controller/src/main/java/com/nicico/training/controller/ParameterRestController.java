@@ -64,8 +64,8 @@ public class ParameterRestController {
     //////////////////////////////////////////config//////////////////////////////////////////
 
     @Loggable
-    @GetMapping("/config-types-list")
-    public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configTypesList() {
+    @GetMapping("/config-list")
+    public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configList() {
         return new ResponseEntity<>(parameterService.allConfig(new SearchDTO.SearchRq()), HttpStatus.OK);
     }
 }
