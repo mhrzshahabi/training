@@ -37,7 +37,8 @@
     RestDataSource_QuestionIndicator_JspConfigQuestionnaire = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"}
+            {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
+            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>",type: "boolean"}
         ],
         fetchDataURL: evaluationIndexHomeUrl + "/iscList"
     });
@@ -103,7 +104,21 @@
                 pickListProperties: {
                     showFilterEditor: true,
                     filterOperator: "iContains"
-                }
+                },
+                pickListFields: [
+                    {
+                        name: "nameFa",
+                        title: "<spring:message code='question.indicator'/>",
+                        filterOperator: "iContains",
+                        width: "30%"
+                    },
+                    {
+                        name: "evalStatus",
+                        title: "<spring:message code="evaluation.index.evalStatus"/>",
+                        filterOperator: "iContains",
+                        // autoFitWidth: true
+                    }
+                ]
             }
         ]
     });
