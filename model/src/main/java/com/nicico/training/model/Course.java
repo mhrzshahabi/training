@@ -137,7 +137,12 @@ public class Course extends Auditable {
     @Setter(AccessLevel.NONE)
     private Boolean hasGoal;
 
-    //    @ManyToOne(cascade={CascadeType.ALL})
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Boolean hasSkill;
+
+//    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
 //
@@ -157,5 +162,10 @@ public class Course extends Auditable {
     public Boolean getHasGoal() {
         if (goalSet == null) return true;
         else return goalSet.isEmpty();
+    }
+
+    @Transient
+    public Boolean getHasSkill() {
+        return this.getSkillSet().isEmpty();
     }
 }

@@ -5,7 +5,9 @@ com.nicico.training.service
 @Time :9:15 AM
     */
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
@@ -51,6 +53,14 @@ public class SkillService implements ISkillService {
     @Override
     public List<SkillDTO.Info> list() {
         final List<Skill> ssAll = skillDAO.findAll();
+        return modelMapper.map(ssAll, new TypeToken<List<SkillDTO.Info>>() {
+        }.getType());
+    }
+
+    @Transactional
+    @Override
+    public List<SkillDTO.Info> listCourseIsNull() {
+        final List<Skill> ssAll = skillDAO.findByCourseIsNull();
         return modelMapper.map(ssAll, new TypeToken<List<SkillDTO.Info>>() {
         }.getType());
     }
@@ -405,9 +415,8 @@ public class SkillService implements ISkillService {
     public void removeCourse(Long courseId, Long skillId) {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        final Optional<Course> optionalCourse = courseDAO.findById(courseId);
-        final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        course.getSkillSet().remove(skill);
+        skill.setCourseId(null);
+        skillDAO.save(skill);
     }
 
     @Transactional
@@ -431,9 +440,8 @@ public class SkillService implements ISkillService {
     public void addCourse(Long courseId, Long skillId) {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
-        final Optional<Course> optionalCourse = courseDAO.findById(courseId);
-        final Course course = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
-        skill.setCourse(course);
+        skill.setCourseId(courseId);
+        skillDAO.save(skill);
     }
 
 

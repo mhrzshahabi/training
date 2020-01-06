@@ -170,7 +170,7 @@ public class CourseService implements ICourseService {
                     Optional<Course> pById = courseDAO.findById(j);
                     if (pById.isPresent()) {
                         Course equalCourse = pById.get();
-                        nameEQ1.append(" و ").append("'").append(equalCourse.getTitleFa()).append("'");
+                        nameEQ1.append(" و ").append("'").append(equalCourse.getTitleFa()).append("(").append(equalCourse.getCode()).append(")").append("'");
                     }
                 }
                 nameEQ1 = new StringBuilder(nameEQ1.substring(3));

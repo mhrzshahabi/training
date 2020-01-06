@@ -69,8 +69,11 @@ public class Skill extends Auditable {
 
     //-------------------------------------------------
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.REMOVE})
-    @JoinColumn(name = "f_course")
+    @JoinColumn(name = "f_course", insertable = false, updatable = false)
     private Course course;
+
+    @Column(name = "f_course")
+    private Long courseId;
 
     @ManyToMany(fetch = FetchType.LAZY, mappedBy = "skillSet")
     private Set<SkillGroup> skillGroupSet;
