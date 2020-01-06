@@ -169,4 +169,13 @@ public class Student extends Auditable {
 
     @Column(name = "ccp_title")
     private String ccpTitle;
+
+     @Column(name = "scores_state")
+    private String scoresState;
+
+    @Column(name = "failure_reason")
+    private String failurereason;
+
+    @Column(name = "score")
+    private Float score;
 }
