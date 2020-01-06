@@ -395,8 +395,14 @@ public class TeacherRestController {
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-        Long evaluationGrade = Long.valueOf(2);
+        Long evaluationGrade = null;
+        Long CatId = null;
+        Long SubCatId = null;
+        CatId = Long.parseLong(catId);
+        if(!subCatId.equalsIgnoreCase("undefined"))
+            SubCatId = Long.parseLong(subCatId);
         TeacherDTO.Info teacherDTO = teacherService.get(id);
+
         return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 

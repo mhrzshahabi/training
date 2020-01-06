@@ -32,6 +32,30 @@
             {name: "id", hidden: true},
             {name: "personality.id", hidden: true},
             {
+                name: "personnelStatus",
+                title: "<spring:message code='teacher.type'/>",
+                type: "radioGroup",
+                width: "*",
+                valueMap: {"true": "<spring:message code='company.staff'/>", "false": "<spring:message code='external.teacher'/>"},
+                vertical: false,
+                defaultValue: "false",
+                changed: function () {
+                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
+                    vm.clearValues();
+                    if (personnelStatusTemp == "true") {
+                        // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
+                    }
+                    else  if(personnelStatusTemp == "false"){
+                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
+                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
+                    }
+
+                }
+            },
+            {
                 name: "personality.nationalCode",
                 title: "<spring:message code='national.code'/>",
                 required: true,
@@ -79,30 +103,6 @@
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
-            },
-            {
-                name: "personnelStatus",
-                title: "<spring:message code='teacher.type'/>",
-                type: "radioGroup",
-                width: "*",
-                valueMap: {"true": "<spring:message code='company.staff'/>", "false": "<spring:message code='external.teacher'/>"},
-                vertical: false,
-                defaultValue: "false",
-                changed: function () {
-                    var personnelStatusTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelStatus");
-                    vm.clearValues();
-                    if (personnelStatusTemp == "true") {
-                        // DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").enable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("true");
-                    }
-                    else  if(personnelStatusTemp == "false"){
-                        DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").enable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disable();
-                        DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").setValue("false");
-                    }
-
-                }
             },
 
             {
@@ -608,11 +608,8 @@
     });
 
     var HLayOut_Photo_JspTeacher = isc.TrHLayout.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        padding: 10,
-        membersMargin: 10,
         members: [DynamicForm_Photo_JspTeacher]
     });
 
@@ -622,7 +619,8 @@
         edgeImage: "",
         padding: 10,
         membersMargin: 10,
-        width: "15%",
+        // width: "15%",
+        width: "5%",
         align: "center",
         members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
@@ -633,7 +631,7 @@
         edgeImage: "",
         padding: 10,
         membersMargin: 10,
-        width: "75%",
+        width: "85%",
         members: DynamicForm_BasicInfo_JspTeacher
     });
 

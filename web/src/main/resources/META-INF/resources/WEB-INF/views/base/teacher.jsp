@@ -340,19 +340,9 @@ var dummy;
         height: "30%",
         tabs: [
             {
-                ID: "accountInfo",
-                title: "<spring:message code='account.information'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/accountInfo-tab"})
-            },
-            {
-                ID: "addressInfo",
-                title: "<spring:message code='address'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/addressInfo-tab"})
-            },
-            {
-                ID: "jobInfo",
-                title: "<spring:message code='work.place'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/jobInfo-tab"})
+                ID: "academicBK",
+                title: "<spring:message code="academicBK"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -370,9 +360,9 @@ var dummy;
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherCertification-tab"})
             },
             {
-                ID: "attachmentsTab",
-                title: "<spring:message code="documents"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
+                ID: "publication",
+                title: "<spring:message code="publication"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
             },
             {
                 ID: "foreignLangKnowledge",
@@ -380,20 +370,30 @@ var dummy;
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLangKnowledge-tab"})
             },
             {
-                ID: "publication",
-                title: "<spring:message code="publication"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
+                ID: "accountInfo",
+                title: "<spring:message code='account.information'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/accountInfo-tab"})
+            },
+            {
+                ID: "addressInfo",
+                title: "<spring:message code='address'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/addressInfo-tab"})
+            },
+            {
+                ID: "jobInfo",
+                title: "<spring:message code='work.place'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/jobInfo-tab"})
+            },
+            {
+                ID: "attachmentsTab",
+                title: "<spring:message code="documents"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             },
             {
                 ID: "otherActivities",
                 title: "<spring:message code="otherActivities"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             },
-            {
-                ID: "academicBK",
-                title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
-            }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
             if (isc.Page.isLoaded())
