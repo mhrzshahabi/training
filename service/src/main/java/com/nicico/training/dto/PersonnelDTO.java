@@ -118,7 +118,6 @@ public class PersonnelDTO implements Serializable {
     }
 
 
-
     @Getter
     @Setter
     @Accessors(chain = true)

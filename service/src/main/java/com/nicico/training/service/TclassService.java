@@ -55,7 +55,7 @@ public class TclassService implements ITclassService {
 
             });
         }
-        
+
         for (String personnelId : personsIds) {
             Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByPersonnelNo(personnelId);
             optionalPersonnelReg.ifPresent(personnel -> {

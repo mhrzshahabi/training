@@ -77,7 +77,7 @@
     const numFilter = "[0-9]";
 
     // -------------------------------------------  Constant Variables  -----------------------------------------------
-    const dialogShowTime = 2500;
+    const dialogShowTime = 2000;
 
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
@@ -87,9 +87,9 @@
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({height: 27, width: "*"});
     isc.Button.addProperties({height: 27});
-    isc.TextAreaItem.addProperties({height: 50, length: 400, width: "*"});
+    isc.TextAreaItem.addProperties({height: 27, length: 500, width: "*"});
     isc.Label.addProperties({wrap: false});
-    isc.ToolStrip.addProperties({membersMargin: 5,});
+    isc.ToolStrip.addProperties({membersMargin: 5, border: "0px solid",});
     isc.ToolStripMenuButton.addProperties({showMenuOnRollOver: true});
     isc.TabSet.addProperties({width: "100%", height: "100%",});
     isc.ViewLoader.addProperties({width: "100%", height: "100%", border: "0px",});
@@ -115,7 +115,6 @@
             data: dataParam, callback: callbackParam,
         }
     };
-
     isc.defineClass("TrDS", RestDataSource);
     isc.TrDS.addProperties({
         dataFormat: "json",
@@ -129,6 +128,9 @@
             return this.Super("transformResponse", arguments);
         }
     });
+
+    isc.defineClass("LgLabel", Label);
+    isc.LgLabel.addProperties({height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
@@ -144,8 +146,8 @@
             width: 50,
             align: "center"
         },
+        sortField: 0,
     });
-
     TrValidators = {
         NotEmpty: {
             type: "regexp",
@@ -224,7 +226,6 @@
                 if (value !== undefined) {
                     trimmed = trTrim(value);
                     validator.resultingValue = trimmed;
-                    // item.setValue(trimmed); #TODO
                 }
                 return true;
             }
@@ -798,31 +799,35 @@
         return dialog;
     }
 
-    function refreshListGrid(listGridID, nextFunction) {
-        listGridID.filterByEditor();
+    function refreshLG(listGridID, nextFunction) {
+        if (listGridID.getFilterEditorCriteria() !== null) {
+            listGridID.filterByEditor();
+        } else {
+            listGridID.clearCriteria();
+            listGridID.invalidateCache();
+        }
         if (!nextFunction === undefined) {
             nextFunction();
         }
     }
 
-    function cleanListGrid(listGridID) {
-        listGridID.setData([]);
-    }
-
-    function refreshListGridSource(listGridID, dataSourceID, fetchDataUrl) {
+    function refreshLgDs(listGridID, dataSourceID, fetchDataUrl) {
         if (!(dataSourceID === undefined)) {
             dataSourceID.fetchDataURL = fetchDataUrl;
         }
-        listGridID.filterByEditor();
-        listGridID.invalidateCache();
+        refreshLG(listGridID);
     }
 
-    function checkRecordAsSelected(record, showDialog, entityName, msg) {
+    function cleanLG(listGridID) {
+        listGridID.setData([]);
+    }
+
+    function checkRecordAsSelected(record, showDialog, entityType, msg) {
         if (record ? (record.constructor === Array ? ((record.length > 0) ? true : false) : true) : false) {
             return true;
         }
         if (showDialog) {
-            let dialog = createDialog("info", msg ? msg : (entityName ? "<spring:message code="from"/>&nbsp;<b>" + entityName + "</b>&nbsp;<spring:message code="msg.no.records.selected"/>" : "<spring:message code="msg.no.records.selected"/>"));
+            let dialog = createDialog("info", msg ? msg : (entityType ? "<spring:message code="from"/>&nbsp;<b>" + entityType + "</b>&nbsp;<spring:message code="msg.no.records.selected"/>" : "<spring:message code="msg.no.records.selected"/>"));
             Timer.setTimeout(function () {
                 dialog.close();
             }, dialogShowTime);
@@ -830,17 +835,19 @@
         return false;
     }
 
-    function studyResponse(resp, action, entityTypeName, winToClose, gridToRefresh) {
+    function studyResponse(resp, action, entityType, winToClose, gridToRefresh, entityTitle) {
         console.log('resp:');
         console.log(resp);
         console.log('action:');
         console.log(action);
-        console.log('entityTypeName:');
-        console.log(entityTypeName);
+        console.log('entityType:');
+        console.log(entityType);
         console.log('winToClose:');
         console.log(winToClose);
         console.log('gridToRefresh:');
         console.log(gridToRefresh);
+        console.log('entityTitle:');
+        console.log(entityTitle);
         let msg;
         let selectedState;
         if (resp == null) {
@@ -853,13 +860,13 @@
                 selectedState = "[{id:" + JSON.parse(resp.data).id + "}]";
                 console.log('selectedState:');
                 console.log(selectedState);
-                let entityName = JSON.parse(resp.httpResponseText).title;
-                console.log('entityName:');
-                console.log(entityName);
-                msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
+                let entityTitle = JSON.parse(resp.httpResponseText).title;
+                console.log('entityTitle:');
+                console.log(entityTitle);
+                msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.successfully.done"/>";
             } else {
                 if (respCode == 409) {
-                    msg = action + '&nbsp;' + entityTypeName + '&nbsp;\'<b>' + entityName + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
+                    msg = action + '&nbsp;' + entityType + '&nbsp;\'<b>' + entityTitle + '</b>\'&nbsp;' + "<spring:message code="msg.is.not.possible"/>";
                 } else {
                     msg = "<spring:message code='msg.operation.error'/>";
                 }
@@ -873,10 +880,35 @@
             winToClose.close();
         }
         if (gridToRefresh !== undefined) {
-            refreshListGrid(gridToRefresh);
+            refreshLG(gridToRefresh);
         }
     }
 
+    function updateCountLabel(listGridID, LabelID) {
+        listGridID.Super("dataChanged", arguments);
+        let data = listGridID.data;
+        let totalRows = data.getLength();
+        if (totalRows >= 0 && data.lengthIsKnown())
+            LabelID.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");
+        else
+            LabelID.setContents("&nbsp;");
+    }
+
+    function removeRecord(actionURL, entityType, entityTitle, gridToRefresh) {
+        var callback = "callback: studyResponse(rpcResponse, '" + "<spring:message code="remove"/>" + "', '" + entityType +
+            "'," + undefined + "," + gridToRefresh + ",'" + entityTitle + "')";
+        let dialog = createDialog('ask', "<spring:message code="msg.record.remove.ask"/>");
+        dialog.addProperties({
+            buttonClick: function (button, index) {
+                this.close();
+                if (index == 0) {
+                    isc.RPCManager.sendRequest(
+                        TrDSRequest(actionURL, "DELETE", null, callback)
+                    );
+                }
+            }
+        })
+    }
 
     // ---------------------------------------- Not Ok - Start ----------------------------------------
     const enumUrl = rootUrl + "/enum/";

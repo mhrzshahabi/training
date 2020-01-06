@@ -30,9 +30,6 @@ public interface IClassStudentService {
     SearchDTO.SearchRs<ClassStudentDTO.Info> search(SearchDTO.SearchRq request);
 
 
-
-
-
     List<ClassStudentDTO.Info> fillTable(Long id);
 
 

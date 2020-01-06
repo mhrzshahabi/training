@@ -39,6 +39,7 @@ public class DepartmentRestController {
     public ResponseEntity<List<DepartmentDTO.Info>> list() {
         return new ResponseEntity<>(departmentService.list(), HttpStatus.OK);
     }
+
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_evaluationResult')")

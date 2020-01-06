@@ -8,7 +8,6 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.iservice.IPersonnelService;
 import com.nicico.training.model.Personnel;
@@ -64,7 +63,7 @@ public class PersonnelService implements IPersonnelService {
                 return null;
             }
 
-            personnelDTO =  personnelDAO.findOneByPostCode(postCode);
+            personnelDTO = personnelDAO.findOneByPostCode(postCode);
 
         }
 
@@ -80,7 +79,7 @@ public class PersonnelService implements IPersonnelService {
         if (((personnelDAO.findOneByJobNo(jobNo)) == null)) {
             return null;
         } else {
-            personnelDTO =  personnelDAO.findOneByJobNo(jobNo);
+            personnelDTO = personnelDAO.findOneByJobNo(jobNo);
         }
         return modelMapper.map(personnelDTO, new TypeToken<List<PersonnelDTO.Info>>() {
         }.getType());
