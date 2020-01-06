@@ -84,7 +84,10 @@ public class SkillLevelRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_skillLevel')")
-    public ResponseEntity<SkillLevelDTO.SkillLevelSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow, @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+    public ResponseEntity<SkillLevelDTO.SkillLevelSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                               @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
+                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                               @RequestParam(value = "criteria", required = false) String criteria) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
         request.setStartIndex(startRow)
                 .setCount(endRow - startRow);

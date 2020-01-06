@@ -75,7 +75,7 @@ public class SkillRestController {
         SkillDTO.Create create = (new ModelMapper()).map(request, SkillDTO.Create.class);
         try {
             maxSkillCode = skillService.getMaxSkillCode(create.getCode());
-            if (maxSkillCode == null || maxSkillCode.equals("0"))
+            if (maxSkillCode == null)
                 throw new Exception("Skill with this Code wrong");
             maxId = maxSkillCode.equals("0") ? 0 : Integer.parseInt(maxSkillCode.substring(4));
             maxId++;
@@ -609,7 +609,6 @@ public class SkillRestController {
                                                                        @RequestParam(value = "_sortBy", required = false) String sortBy,
                                                                        @PathVariable Long skillId) {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-
 
         Integer pageSize = endRow - startRow;
         Integer pageNumber = (endRow - 1) / pageSize;
