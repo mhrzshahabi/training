@@ -178,4 +178,14 @@ public class Student extends Auditable {
 
     @Column(name = "score")
     private Float score;
+
+    @Column(name = "applicant_company_name")
+    private String applicantCompanyName;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "presence_type_id", nullable = false, insertable = false, updatable = false)
+    private ParameterValue presenceType;
+
+    @Column(name = "presence_type_id")
+    private Long presenceTypeId;
 }

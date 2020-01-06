@@ -115,7 +115,8 @@ var flag1=null
                  ListGrid_Class_Student.refreshFields();
                 },
                  editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue == null && record.scoresState === "مردود")
+
+                    if (newValue == null && record.scoresState === "مردود" && record.failurereason.length === 0)
                         {
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
@@ -195,8 +196,12 @@ var flag1=null
             if (fieldName === "failurereason") {
                 return !((record.scoresState === "قبول با نمره" && record.score >= 10) || record.scoresState=== "قبول بدون نمره"  ||  record.scoresState === "قبول با نمره" );
             }
-           if(fieldName==="score")
-            {return !((record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
+
+            if(fieldName==="score")
+            {
+
+            return !((record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
+
             if (fieldName === "score") {
                 return record.scoresState !== "قبول بدون نمره";
             }
@@ -307,7 +312,7 @@ var flag1=null
             if(failurereason=== "غیبت در جلسه امتحان" || failurereason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
                 {
 
-                  ListGrid_Cell_scoresState_Update(record,"مردود")
+                   ListGrid_Cell_scoresState_Update(record,"مردود")
                    ListGrid_Class_Student.refreshFields();
 
                 }
