@@ -25,7 +25,6 @@
     </changeSet>
 
 
-
     <changeSet author="lotfi (generated)" id="1577595584066-191">
         <addColumn tableName="tbl_post">
             <column name="c_affairs" type="varchar2(255 CHAR)"/>
@@ -140,7 +139,7 @@
             <column name="c_evaluation" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-     <changeSet author="heydaripoor (generated)" id="1578117401246-203">
+    <changeSet author="heydaripoor (generated)" id="1578117401246-203">
         <addColumn tableName="tbl_course">
             <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
         </addColumn>

@@ -83,7 +83,7 @@ public class AttendanceService implements IAttendanceService {
         List<Attendance> attendances = new ArrayList<>();
         for (ClassSessionDTO.Info s : sessions) {
             Attendance attendance = attendanceDAO.findBySessionIdAndStudentId(s.getId(), studentId);
-            if(attendance == null)continue;
+            if (attendance == null) continue;
             attendances.add(attendance);
         }
 //        sessions.forEach(s -> attendances.add(attendanceDAO.findBySessionIdAndStudentId(s.getId(),studentId)));
@@ -94,13 +94,13 @@ public class AttendanceService implements IAttendanceService {
             map.put("studentId", studentId.toString());
             map.put("sessionId", session.getId().toString());
             map.put("sessionType", session.getSessionType());
-            map.put("sessionDate",session.getSessionDate());
-            map.put("startHour",session.getSessionStartHour());
-            map.put("endHour",session.getSessionEndHour());
-            map.put("state","0");
+            map.put("sessionDate", session.getSessionDate());
+            map.put("startHour", session.getSessionStartHour());
+            map.put("endHour", session.getSessionEndHour());
+            map.put("state", "0");
             for (Attendance a : attendances) {
-                if(Objects.equals(a.getSessionId(), session.getId())){
-                    map.put("state",a.getState());
+                if (Objects.equals(a.getSessionId(), session.getId())) {
+                    map.put("state", a.getState());
                     break;
                 }
             }
@@ -346,9 +346,10 @@ public class AttendanceService implements IAttendanceService {
     @Transactional(readOnly = true)
     @Override
     public Double acceptAbsentHoursForClass(Long classId, Double x) {
-        return tclassService.sessionsHourSum(classId) * x ;
+        return tclassService.sessionsHourSum(classId) * x;
     }
-//    @Transactional(readOnly = true)
+
+    //    @Transactional(readOnly = true)
 //    @Override
 //    public Integer acceptAbsent(Long classId, Long studentId) {
 //        Integer acceptAbsentHours = this.acceptAbsentHoursForClass(classId, 5);
@@ -361,7 +362,7 @@ public class AttendanceService implements IAttendanceService {
         List<Long> sessionIds = sessions.stream().map(ClassSessionDTO.Info::getId).collect(Collectors.toList());
         List<Attendance> absentList = attendanceDAO.findBySessionIdInAndStudentIdAndState(sessionIds, studentId, "3");
         List<ClassSessionDTO.Info> absentSessionList = new ArrayList<>();
-        absentList.forEach(a->absentSessionList.add(modelMapper.map(a.getSession(),ClassSessionDTO.Info.class)));
+        absentList.forEach(a -> absentSessionList.add(modelMapper.map(a.getSession(), ClassSessionDTO.Info.class)));
         return absentSessionList;
 //        return modelMapper.map(absentSessionList, new TypeToken<List<ClassSessionDTO.Info>>() {
 //		}.getType());

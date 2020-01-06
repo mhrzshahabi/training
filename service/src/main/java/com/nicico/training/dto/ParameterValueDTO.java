@@ -31,7 +31,6 @@ public class ParameterValueDTO implements Serializable {
     public static class Info extends ParameterValueDTO {
         private Long id;
         private Integer version;
-        private ParameterDTO.Info parameter;
     }
 
     @Getter

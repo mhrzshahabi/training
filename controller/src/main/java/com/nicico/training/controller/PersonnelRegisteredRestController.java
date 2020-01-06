@@ -8,7 +8,6 @@ import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
-import com.nicico.training.dto.PersonalInfoDTO;
 import com.nicico.training.dto.PersonnelDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
 import com.nicico.training.iservice.IPersonnelRegisteredService;
@@ -80,11 +79,11 @@ public class PersonnelRegisteredRestController {
         Optional<PersonnelRegistered[]> optionalPersonnelReg = personnelRegisteredDAO.findOneByNationalCode(nationalCode);
         Optional<Personnel[]> optionalPersonnel = personnelDAO.findOneByNationalCode(nationalCode);
 
-        if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null  )
-                || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)){
+        if (((optionalPersonnel.map(personalInfo -> modelMapper.map(personalInfo, PersonnelDTO.Info.class)).orElse(null)) != null)
+                || ((optionalPersonnelReg.map(personalInfo -> modelMapper.map(personalInfo, PersonnelRegisteredDTO.Info.class)).orElse(null)) != null)) {
             return new ResponseEntity<>(null, HttpStatus.NOT_ACCEPTABLE);
         }
-           return new ResponseEntity<>(null, HttpStatus.OK);
+        return new ResponseEntity<>(null, HttpStatus.OK);
     }
 
     @Loggable

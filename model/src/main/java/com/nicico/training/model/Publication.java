@@ -7,6 +7,7 @@ import lombok.experimental.Accessors;
 import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
+
 @Setter
 @Getter
 @NoArgsConstructor
@@ -34,7 +35,7 @@ public class Publication extends Auditable {
     @Column(name = "c_publisher")
     private String publisher;
 
-    @Column(name = "e_subject_type" ,insertable = false, updatable = false)
+    @Column(name = "e_subject_type", insertable = false, updatable = false)
     private EPublicationSubjectType publicationSubjectType;
 
     @Column(name = "e_subject_type")

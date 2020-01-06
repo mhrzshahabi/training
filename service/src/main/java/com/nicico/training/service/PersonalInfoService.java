@@ -147,11 +147,11 @@ public class PersonalInfoService implements IPersonalInfoService {
     @Transactional
     @Override
     public void modify(PersonalInfoDTO.CreateOrUpdate request, PersonalInfo personalInfo) {
-        if (request.getContactInfo() != null && personalInfo.getContactInfo()!=null) {
+        if (request.getContactInfo() != null && personalInfo.getContactInfo() != null) {
             request.getContactInfo().setId(personalInfo.getContactInfo().getId());
             contactInfoService.modify(request.getContactInfo(), personalInfo.getContactInfo());
         }
-        if (request.getAccountInfo() != null && personalInfo.getAccountInfo()!=null) {
+        if (request.getAccountInfo() != null && personalInfo.getAccountInfo() != null) {
             request.getAccountInfo().setId(personalInfo.getAccountInfo().getId());
         }
 

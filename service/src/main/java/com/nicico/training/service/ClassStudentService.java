@@ -26,7 +26,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ClassStudentService implements IClassStudentService {
 
-  private final ClassStudentDAO classStudentDAO;
+    private final ClassStudentDAO classStudentDAO;
     private final ModelMapper mapper;
     private final TclassDAO tclassDAO;
 
@@ -86,41 +86,40 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional(readOnly = true)
     @Override
     public List<ClassStudentDTO.Info> fillTable(Long id) {
-           int flag=0;
-          List<ClassStudent> classStudentList = new ArrayList<>();
+        int flag = 0;
+        List<ClassStudent> classStudentList = new ArrayList<>();
 
 
-          List <Long> class_student = classStudentDAO.getStudent(id);//لیست ای دی های دانش اموزان کلاس را میگیرد
-          List<Long> listR=classStudentDAO.getstudentIdRegister(id);//لیست ای دی های دانش اموزان موجود برای این کلاس که داخل جدول classStudent  است را می دهد
+        List<Long> class_student = classStudentDAO.getStudent(id);//لیست ای دی های دانش اموزان کلاس را میگیرد
+        List<Long> listR = classStudentDAO.getstudentIdRegister(id);//لیست ای دی های دانش اموزان موجود برای این کلاس که داخل جدول classStudent  است را می دهد
 
-        for (Long x:class_student) {
-                 flag=0;
-            for (Long y:listR) {
-                if(x==y)
-                {
-                flag=1;
+        for (Long x : class_student) {
+            flag = 0;
+            for (Long y : listR) {
+                if (x == y) {
+                    flag = 1;
                 }
             }
-            if(flag ==0)
-            {
-             ClassStudent classStudent=new ClassStudent();
-            classStudent.setTclassId(id);
-            classStudent.setStudentId(x);
+            if (flag == 0) {
+                ClassStudent classStudent = new ClassStudent();
+                classStudent.setTclassId(id);
+                classStudent.setStudentId(x);
 
-         classStudentDAO.saveAndFlush(classStudent);
+                classStudentDAO.saveAndFlush(classStudent);
             }
         }
 
-           List<ClassStudent> save = classStudentDAO.saveAll(classStudentList);
-           return mapper.map(save, new TypeToken<List<ClassStudentDTO.Info>>() {}.getType());
+        List<ClassStudent> save = classStudentDAO.saveAll(classStudentList);
+        return mapper.map(save, new TypeToken<List<ClassStudentDTO.Info>>() {
+        }.getType());
 
-         }
+    }
 
     @Transactional
     @Override
     public List<ClassStudentDTO.Info> getStudent(Long classId) {
 
-        List<ClassStudent> classStudentList=classStudentDAO.getAllByTclassId(classId);
+        List<ClassStudent> classStudentList = classStudentDAO.getAllByTclassId(classId);
         return mapper.map(classStudentList, new TypeToken<List<ClassStudentDTO.Info>>() {
         }.getType());
     }
@@ -132,7 +131,7 @@ public class ClassStudentService implements IClassStudentService {
         ClassStudent classStudent = classStudentDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
         Set<String> strings = body.keySet();
 
-            if (strings.contains("scoresState")) {
+        if (strings.contains("scoresState")) {
             String scoresState = body.get("scoresState").get(0);
             classStudent.setScoresState(scoresState);
         }

@@ -21,7 +21,6 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
     List<ClassSession> findByClassIdAndSessionDate(Long classId, String sessionDate);
 
     @Query(value = "SELECT DISTINCT p.C_SESSION_DATE,p.C_DAY_NAME FROM TBL_SESSION p WHERE p.F_CLASS_ID = ?1", nativeQuery = true)
-
     List<IClassSessionDTO> findSessionDate(Long classId);
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHour(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour);

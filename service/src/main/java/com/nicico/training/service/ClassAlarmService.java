@@ -245,7 +245,6 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) ");
 
 
-
             AlarmList = (List<String>) entityManager.createNativeQuery(alarmScript.toString())
                     .setParameter("class_id", class_id)
                     .setParameter("todaydat", todayDate).getResultList();

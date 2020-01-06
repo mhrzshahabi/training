@@ -5,10 +5,10 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
-import com.nicico.training.dto.CategoryDTO;
 import com.nicico.training.dto.TeacherDTO;
-import com.nicico.training.iservice.*;
-import com.nicico.training.model.Category;
+import com.nicico.training.iservice.IAttachmentService;
+import com.nicico.training.iservice.IPersonalInfoService;
+import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.CategoryDAO;
@@ -21,10 +21,8 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 
 @Service
 @RequiredArgsConstructor

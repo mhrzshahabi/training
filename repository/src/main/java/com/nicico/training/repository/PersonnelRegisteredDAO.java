@@ -15,6 +15,7 @@ public interface PersonnelRegisteredDAO extends JpaRepository<PersonnelRegistere
 
 
     Optional<PersonnelRegistered> findOneByPersonnelNo(String personnelNo);
+
     Optional<PersonnelRegistered[]> findOneByNationalCode(String nationalCode);
 }
 

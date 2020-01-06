@@ -168,7 +168,7 @@ public class CourseService implements ICourseService {
                         .collect(Collectors.toList());
                 for (Long j : x) {
                     Optional<Course> pById = courseDAO.findById(j);
-                    if(pById.isPresent()) {
+                    if (pById.isPresent()) {
                         Course equalCourse = pById.get();
                         nameEQ1.append(" و ").append("'").append(equalCourse.getTitleFa()).append("'");
                     }
@@ -600,25 +600,24 @@ public class CourseService implements ICourseService {
     }
 
 
-      //---------------------heydari---------------------------
-      //
+    //---------------------heydari---------------------------
+    //
     @Transactional()
     @Override
-    public CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request)
-    {
-     Optional<Course> optionalCourse = courseDAO.findById(id);
+    public CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request) {
+        Optional<Course> optionalCourse = courseDAO.findById(id);
         Course currentCourse = optionalCourse.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CourseNotFound));
         currentCourse.setEvaluation(request.getEvaluation());
         currentCourse.setBehavioralLevel(request.getBehavioralLevel());
-        return modelMapper.map(courseDAO.save(currentCourse),CourseDTO.Info.class);
+        return modelMapper.map(courseDAO.save(currentCourse), CourseDTO.Info.class);
 
     }
 
-     @Transactional
+    @Transactional
     @Override
     public List<CourseDTO.Info> getEvaluation(Long courseId) {
-         List<Course> course=courseDAO.findAllById(courseId);
-         return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
+        List<Course> course = courseDAO.findAllById(courseId);
+        return modelMapper.map(course, new TypeToken<List<CourseDTO.Info>>() {
         }.getType());
     }
 
