@@ -30,7 +30,7 @@ public class ClassAlarmService implements IClassAlarm {
     private MessageSource messageSource;
 
     //*********************************
-    /*point : for ended classes do not fetch alarms*/
+    /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Transactional
     @Override
     public List<String> hasAlarm(Long class_id, HttpServletResponse response) throws IOException {
@@ -292,7 +292,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //*********************************
-    /*point : for ended classes do not fetch alarms*/
+    /*point : for ended classes do not fetch alarms && only check alarm for current term */
     @Transactional
     @Override
     public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
@@ -808,7 +808,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //*********************************
-    /*point : for ended classes do not fetch alarms*/
+    /*point : for ended classes do not fetch alarms && only check alarm for current term*/
     @Transactional
     @Override
     public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
