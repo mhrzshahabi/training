@@ -16,6 +16,7 @@ var dummy;
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var isTeacherCategoriesChanged = false;
+    var isCategoriesChanged;
 
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
@@ -31,7 +32,7 @@ var dummy;
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
             {name: "categories"},
-            {name: "subCategories" },
+            {name: "subCategories"},
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"}
         ],
@@ -134,13 +135,15 @@ var dummy;
 
         },
             {
-                title: "<spring:message code='print.Detail'/>", icon: "<spring:url value="print.png"/>", click: function () {
+                title: "<spring:message code='print.Detail'/>",
+                icon: "<spring:url value="print.png"/>",
+                click: function () {
                     var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
                     if (record == null || record.id == null) {
                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                         return;
                     }
-                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id,null);
+                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
                 }
             }
         ]
@@ -325,12 +328,12 @@ var dummy;
             {
                 ID: "teacherBasicInfo",
                 title: "<spring:message code='basic.information'/>", canClose: false,
-                // pane: HLayOut_Basic_JspTeacher
+// pane: HLayOut_Basic_JspTeacher
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherBasicInfo-tab"})
             }
         ]
     });
-    
+
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
         titleEditorTopOffset: 2,
@@ -417,37 +420,41 @@ var dummy;
 
     //----------------------------------------- Evaluation -----------------------------------------------------------
     IButton_Evaluation_Show_JspTeacher = isc.IButton.create({
-        top: 260,
-        title: "محاسبه ی نمره ی ارزیابی استاد",
+        title: "محاسبه ی نمره ی ارزیابی",
+        width: 130,
         click: function () {
             DynamicForm_Evaluation_JspTeacher.validate();
-            if(DynamicForm_Evaluation_JspTeacher.hasErrors())
+            if (DynamicForm_Evaluation_JspTeacher.hasErrors())
                 return;
-            IButton_Evaluation_Print_JspTeacher.disabled = false;
+            var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            var catId = DynamicForm_Evaluation_JspTeacher.getValue("category");
+            var subCatId = DynamicForm_Evaluation_JspTeacher.getValue("subCategory");
+            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "evaluateTeacher/" + record.id + "/" + catId + "/" + subCatId, "GET", null,
+                "callback: teacher_evaluate_action_result(rpcResponse)"));
         }
     });
 
     IButton_Evaluation_Print_JspTeacher = isc.IButton.create({
-        top: 260,
-        title: "چاپ فرم ارزیابی استاد",
-        disabled:true,
+        title: "چاپ فرم ارزیابی",
+        width: 130,
         click: function () {
         }
     });
 
     IButton_Evaluation_Exit_JspTeacher = isc.IButtonCancel.create({
-        width: 100,
         orientation: "vertical",
+        width: 130,
         click: function () {
             Window_Evaluation_JspTeacher.close();
         }
     });
 
     var HLayOut_EvaluationPrintOrExit_JspTeacher = isc.TrHLayoutButtons.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
         width: "100%",
+        height: "10%",
+        membersMargin: 15,
         alignLayout: "center",
         padding: 10,
         members: [
@@ -459,7 +466,7 @@ var dummy;
 
     var DynamicForm_Evaluation_JspTeacher = isc.DynamicForm.create({
         width: "100%",
-        height: "100%",
+        height: "80%",
         align: "right",
         titleWidth: 0,
         showInlineErrors: true,
@@ -473,24 +480,40 @@ var dummy;
                 disabled: true,
             },
             {
-                name: "categories",
+                name: "evaluationNumber",
+                title: "نمره ی ارزیابی",
+                disabled: true
+            },
+            {
+                name: "category",
                 title: "<spring:message code='category'/>",
-                type: "selectItem",
                 textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                defaultValue: null,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
                 required: true,
                 optionDataSource: RestDataSource_Category_JspTeacher,
-                valueField: "id",
-                displayField: "titleFa",
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+
                 changed: function () {
                     isCategoriesChanged = true;
-                    var subCategoryField = DynamicForm_Evaluation_JspTeacher.getField("subCategories");
+                    var subCategoryField = DynamicForm_Evaluation_JspTeacher.getField("subCategory");
+                    subCategoryField.clearValue();
                     if (this.getSelectedRecords() == null) {
                         subCategoryField.clearValue();
                         subCategoryField.disable();
@@ -509,28 +532,36 @@ var dummy;
                     subCategoryField.setValue(SubCats);
                     subCategoryField.focus(this.form, subCategoryField);
                 }
+
             },
             {
-                name: "subCategories",
+                name: "subCategory",
                 title: "<spring:message code='subcategory'/>",
-                type: "selectItem",
                 textAlign: "center",
-                autoFetchData: false,
-                disabled: true,
-                optionDataSource: RestDataSource_SubCategory_JspTeacher,
-                valueField: "id",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultValue: null,
                 displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
                 filterFields: ["titleFa"],
-                multiple: true,
-                filterLocally: true,
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
                 pickListProperties: {
-                    showFilterEditor: true,
-                    filterOperator: "iContains",
+                    showFilterEditor: true
                 },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
                 focus: function () {
                     if (isCategoriesChanged) {
                         isCategoriesChanged = false;
-                        var ids = DynamicForm_Evaluation_JspTeacher.getField("categories").getValue();
+                        var ids = DynamicForm_Evaluation_JspTeacher.getField("category").getValue();
                         if (ids === []) {
                             RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
                         } else {
@@ -543,11 +574,7 @@ var dummy;
                         this.fetchData();
                     }
                 }
-            },
-            {name: "evaluationNumber",
-            title: "نمره ی ارزیابی" ,
-            disabled: true}
-            
+            }
         ]
     });
 
@@ -557,6 +584,8 @@ var dummy;
         canDragReposition: true,
         align: "center",
         autoDraw: false,
+        width: 550,
+        height: 150,
         border: "1px solid gray",
         items: [isc.TrVLayout.create({
             members: [
@@ -565,6 +594,10 @@ var dummy;
             ]
         })]
     });
+
+    function teacher_evaluate_action_result(resp) {
+        DynamicForm_Evaluation_JspTeacher.setValue("evaluationNumber", resp.data);
+    }
 
     //----------------------------------------------ToolStrips and Layout-Grid----------------------------------------
 
@@ -593,7 +626,7 @@ var dummy;
     });
 
     var ToolStripButton_Print_JspTeacher = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
+//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
@@ -610,9 +643,8 @@ var dummy;
                 return;
             }
             DynamicForm_Evaluation_JspTeacher.clearValues();
-            DynamicForm_Evaluation_JspTeacher.setValue("teacherCode",record.teacherCode),
-            IButton_Evaluation_Print_JspTeacher.disabled = true;
-            Window_Evaluation_JspTeacher.show();
+            DynamicForm_Evaluation_JspTeacher.setValue("teacherCode", record.teacherCode),
+                Window_Evaluation_JspTeacher.show();
         }
     });
 
@@ -1000,7 +1032,7 @@ var dummy;
             "callback: personalInfo_findOne_result(rpcResponse)"));
     }
 
-    function fillPersonalInfoByPersonnelNumber(personnelCode){
+    function fillPersonalInfoByPersonnelNumber(personnelCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
@@ -1136,20 +1168,20 @@ var dummy;
                 if (personnel.maritalStatusTitle == "مجرد")
                     DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 2);
             }
-            if(personnel.companyName != undefined && personnel.companyName != null)
+            if (personnel.companyName != undefined && personnel.companyName != null)
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personnel.companyName);
             var ccp_affairs = "";
             var ccp_section = "";
             var ccp_unit = "";
-            if(personnel.ccpAffairs != undefined && personnel.ccpAffairs != null)
+            if (personnel.ccpAffairs != undefined && personnel.ccpAffairs != null)
                 ccp_affairs = personnel.ccpAffairs;
-            if(personnel.ccpSection != undefined && personnel.ccpSection != null)
+            if (personnel.ccpSection != undefined && personnel.ccpSection != null)
                 ccp_section = personnel.ccpSection;
-            if(personnel.ccpUnit != undefined && personnel.ccpUnit != null)
+            if (personnel.ccpUnit != undefined && personnel.ccpUnit != null)
                 ccp_unit = personnel.ccpUnit;
-            var restAddress = ccp_affairs+","+ccp_section+","+ccp_unit;
-            if(restAddress != "")
-                DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr",restAddress);
+            var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
+            if (restAddress != "")
+                DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
         }
     }
 
@@ -1208,7 +1240,11 @@ var dummy;
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"});
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {
+                    1: "رزومه",
+                    2: "مدرک تحصیلی",
+                    3: "گواهینامه"
+                });
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);

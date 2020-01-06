@@ -18,6 +18,7 @@ import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.TeacherService;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -389,5 +390,15 @@ public class TeacherRestController {
     public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
         teacherService.changeBlackListStatus(inBlackList,id);
     }
+
+    @Loggable
+    @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+        Long evaluationGrade = Long.valueOf(2);
+        TeacherDTO.Info teacherDTO = teacherService.get(id);
+        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
+    }
+
 
 }
