@@ -2145,4 +2145,33 @@
             <column name="f_teacher" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578315306749-208">
+        <createTable tableName="tbl_tclass_student_new">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_tclass_student_newPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applicant_company_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="failure_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="presence_type_id" type="NUMBER(19, 0)"/>
+            <column name="score" type="FLOAT"/>
+            <column name="scores_state" type="VARCHAR2(255 CHAR)"/>
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

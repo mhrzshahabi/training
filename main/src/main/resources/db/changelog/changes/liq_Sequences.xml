@@ -181,4 +181,7 @@
     <changeSet author="razmnoosh (generated)" id="1578139965908-203">
         <createSequence sequenceName="seq_academic_bk_id"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578315306749-207">
+        <createSequence sequenceName="seq_tclass_student_new_id"/>
+    </changeSet>
 </databaseChangeLog>
