@@ -17,6 +17,7 @@ import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.TeacherDAO;
 import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -50,6 +51,7 @@ public class TeacherRestController {
     private final ModelMapper modelMapper;
     private final ICategoryService categoryService;
     private final ISubCategoryService subCategoryService;
+    private final TeacherDAO teacherDAO;
 
     // ------------------------------
 
@@ -83,6 +85,7 @@ public class TeacherRestController {
             create.setCategories(categories);
         if (subCategories != null && subCategories.size() > 0)
             create.setSubCategories(subCategories);
+        create.setInBlackList(false);
         try {
             return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
         } catch (TrainingException ex) {
@@ -383,9 +386,8 @@ public class TeacherRestController {
     @Loggable
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public void changeBlackList(@PathVariable Boolean inBlackList, @PathVariable Long id) {
-        Teacher teacher = teacherService.getTeacher(id);
-        teacher.setInBlackList(!inBlackList);
+    public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
+        teacherService.changeBlackListStatus(inBlackList,id);
     }
 
 }

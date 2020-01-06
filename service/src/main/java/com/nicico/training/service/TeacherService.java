@@ -82,6 +82,7 @@ public class TeacherService implements ITeacherService {
         final Teacher teacher = modelMapper.map(request, Teacher.class);
         if (personalInfo != null)
             teacher.setPersonality(personalInfo);
+
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -180,5 +181,12 @@ public class TeacherService implements ITeacherService {
         criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
+    }
+
+    @Override
+    public void changeBlackListStatus(Boolean inBlackList, Long id){
+        Teacher teacher = getTeacher(id);
+        teacher.setInBlackList(!inBlackList);
+        teacherDAO.saveAndFlush(teacher);
     }
 }
