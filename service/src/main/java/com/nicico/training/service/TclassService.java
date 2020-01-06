@@ -37,11 +37,9 @@ public class TclassService implements ITclassService {
     private final AttachmentService attachmentService;
     private final PersonnelDAO personnelDAO;
     private final PersonnelRegisteredDAO personnelRegisteredDAO;
-    private  Long x;
-
     @Transactional
     @Override
-    public Long addStudents(Long classId, List<String> personsIds) {
+    public void addStudents(Long classId, List<String> personsIds) {
 
         Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
         optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
@@ -50,7 +48,6 @@ public class TclassService implements ITclassService {
             optionalPersonnel.ifPresent(personnel -> {
                 StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
                 StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
-                x=info.getId();
                 addStudent(info.getId(), classId);
 
             });
@@ -71,7 +68,7 @@ public class TclassService implements ITclassService {
 //        Tclass tclass = tclassDAO.getOne(classId);
 //        Student student = studentDAO.getOne(studentId);
 //        tclass.getStudentSet().add(student);
-        return(x);
+
     }
 
     @Transactional

@@ -36,4 +36,6 @@ public interface ITeacherService {
 
     SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request);
 
+    public void changeBlackListStatus(Boolean inBlackList, Long id);
+
 }

@@ -133,6 +133,37 @@
             createDialog("info", "<spring:message code='msg.no.records.selected'/>");
             return;
         }
-        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id , "GET", null ,null));
-        ListGrid_blackList_refresh();
+
+        if (record.inBlackList) {
+            var Dialog_Remove_Ask = createDialog("ask", "<spring:message code='msg.remove.black.list'/>",
+                "<spring:message code='global.warning'/>");
+            Dialog_Remove_Ask.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id, "GET", null, null));
+                        setTimeout(function () {
+                            ListGrid_blackList_refresh();
+                        }, 300);
+                    }
+                }
+            });
+        }
+
+        if (!record.inBlackList) {
+            var Dialog_Add_Ask = createDialog("ask", "<spring:message code='msg.add.black.list'/>",
+                "<spring:message code='global.warning'/>");
+            Dialog_Add_Ask.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "blackList/" + record.inBlackList + "/" + record.id, "GET", null, null));
+                        setTimeout(function () {
+                            ListGrid_blackList_refresh();
+                        }, 300);
+                    }
+                }
+            });
+        }
+
     }

@@ -211,7 +211,7 @@
                 width: "300",
                 required: true,
                 textAlign: "right",
-                editorType: "ComboBoxItem",
+                // editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 addUnknownValues: false,
                 useClientFiltering: true,
@@ -226,17 +226,17 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        title: "<spring:message code="title"/>",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    }
-                ],
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                <%--pickListFields: [--%>
+                    <%--{--%>
+                        <%--name: "titleFa",--%>
+                        <%--title: "<spring:message code="title"/>",--%>
+                        <%--width: "30%",--%>
+                        <%--filterOperator: "iContains"--%>
+                    <%--}--%>
+                <%--],--%>
                 changed: function (form, item, value) {
                     switch (value) {
                         case 1:
@@ -260,7 +260,7 @@
                 width: "300",
                 required: true,
                 textAlign: "right",
-                editorType: "ComboBoxItem",
+                // editorType: "ComboBoxItem",
                 addUnknownValues: false,
                 useClientFiltering: true,
                 cachePickListResults: true,
@@ -270,20 +270,20 @@
                 valueField: "id",
                 optionDataSource: RestDataSource_Skill_Category,
                 autoFetchData: true,
-                filterFields: ["titleFa"],
+                // filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
+                // textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "titleFa",
-                        width: "30%",
-                        filterOperator: "iContains"
-                    }
-                ],
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                // pickListFields: [
+                //     {
+                //         name: "titleFa",
+                //         width: "30%",
+                //         filterOperator: "iContains"
+                //     }
+                // ],
                 changed: function (form, item, value) {
                     if (value == null || value.length == 0) {
 
@@ -303,37 +303,37 @@
                 width: "300",
                 required: true,
                 textAlign: "right",
-                editorType: "ComboBoxItem",
+                // editorType: "ComboBoxItem",
                 pickListWidth: 300,
                 displayField: "titleFa",
                 valueField: "id",
                 addUnknownValues: false,
-                useClientFiltering: true,
+                // useClientFiltering: true,
                 cachePickListResults: true,
-                changeOnKeypress: false,
-                filterOnKeypress: true,
+                // changeOnKeypress: false,
+                // filterOnKeypress: true,
                 optionDataSource: RestDataSource_Skill_SubCategory,
                 autoFetchData: false,
-                filterFields: ["titleFa"],
+                // filterFields: ["titleFa"],
                 sortField: ["id"],
-                textMatchStyle: "startsWith",
-                generateExactMatchCriteria: true,
-                pickListProperties: {
-                    showFilterEditor: true
-                },
-                pickListFields: [
-                    {
-                        name: "code",
-                        width: "40%",
-                        filterOperator: "iContains"
-                    },
-                    {
-                        name: "titleFa",
-                        title: "<spring:message code="subcategory"/>",
-                        width: "60%",
-                        filterOperator: "iContains"
-                    }
-                ],
+                // textMatchStyle: "startsWith",
+                // generateExactMatchCriteria: true,
+                // pickListProperties: {
+                //     showFilterEditor: true
+                // },
+                // pickListFields: [
+                //     {
+                //         name: "code",
+                //         width: "40%",
+                //         filterOperator: "iContains"
+                //     },
+                //     {
+                //         name: "titleFa",
+                        <%--title: "<spring:message code="subcategory"/>",--%>
+                        // width: "60%",
+                        // filterOperator: "iContains"
+                    // }
+                // ],
             },
             {
                 name: "description",

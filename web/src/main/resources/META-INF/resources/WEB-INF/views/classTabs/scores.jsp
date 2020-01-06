@@ -10,20 +10,17 @@ var flag1=null
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
-            {name: "student.firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains"},
-            {name: "student.lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {
-                name: "student.nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains"
-            },
-            {name: "student.companyName", title: "<spring:message code="company"/>", filterOperator: "iContains"},
-            {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains"},
-            {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
-            {name: "failurereason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
-            {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"}
-        ],
-        autoFetchData:false
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "scoresState",title: "<spring:message code="pass.mode"/>",filterOperator: "iContains"},
+            {name: "failurereason",title: "<spring:message code="faild.reason"/>",filterOperator: "iContains"},
+            {name: "score",title: "<spring:message code="score"/>",filterOperator: "iContains"}
+            ],
+        fetchDataURL: classUrl + "student"
     });
 
     //**********************************************************************************
@@ -64,25 +61,13 @@ var flag1=null
         sortField: 0,
         dataSource: RestDataSource_ClassStudent,
         fields: [
-            {
-                name: "student.firstName",
-                title: "<spring:message code="firstName"/>",
-                filterOperator: "iContains",
-                align: "center"
-            },
-            {name: "student.lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-            {
-                name: "student.nationalCode",
-                title: "<spring:message code="national.code"/>",
-                filterOperator: "iContains", autoFitWidth: true
-            },
-            {
-                name: "student.companyName",
-                title: "<spring:message code="company"/>",
-                filterOperator: "iContains",
-                autoFitWidth: true
-            },
-            {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains"},
+            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+
             {
                 name: "scoresState",
                 title: "<spring:message code="pass.mode"/>",
@@ -130,7 +115,8 @@ var flag1=null
                  ListGrid_Class_Student.refreshFields();
                 },
                  editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
-                    if (newValue == null && record.scoresState === "مردود")
+
+                    if (newValue == null && record.scoresState === "مردود" && record.failurereason.length === 0)
                         {
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
@@ -210,8 +196,12 @@ var flag1=null
             if (fieldName === "failurereason") {
                 return !((record.scoresState === "قبول با نمره" && record.score >= 10) || record.scoresState=== "قبول بدون نمره"  ||  record.scoresState === "قبول با نمره" );
             }
-           if(fieldName==="score")
-            {return !((record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
+
+            if(fieldName==="score")
+            {
+
+            return !((record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
+
             if (fieldName === "score") {
                 return record.scoresState !== "قبول بدون نمره";
             }
@@ -234,18 +224,18 @@ var flag1=null
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
         record.failurereason = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_score_Update(record, newValue) {
 
         record.score = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(classStudent + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
 
 
     }
@@ -322,7 +312,7 @@ var flag1=null
             if(failurereason=== "غیبت در جلسه امتحان" || failurereason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
                 {
 
-                  ListGrid_Cell_scoresState_Update(record,"مردود")
+                   ListGrid_Cell_scoresState_Update(record,"مردود")
                    ListGrid_Class_Student.refreshFields();
 
                 }
@@ -382,10 +372,7 @@ var flag1=null
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-// RestDataSource_ClassStudent.fetchDataURL = classStudent + "getStudent" + "/" + classRecord.id;
-            RestDataSource_ClassStudent.fetchDataURL = classStudent + "iscList/" + classRecord.id;
-            <%--ListGrid_ClassCheckList.setFieldProperties(1, {title: "&nbsp;<b>" + "<spring:message code='class.checkList.forms'/>" + "&nbsp;<b>" + classRecord.course.titleFa + "&nbsp;<b>" + "<spring:message code='class.code'/>" + "&nbsp;<b>" + classRecord.code});--%>
-            ListGrid_Class_Student.fetchData();
+            ListGrid_Class_Student.fetchData({"classID": classRecord.id});
             ListGrid_Class_Student.invalidateCache();
         } else {
             ListGrid_Class_Student.setData([]);

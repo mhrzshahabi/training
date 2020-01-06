@@ -93,6 +93,7 @@ public class CourseDTO implements Serializable {
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
+        private Boolean hasSkill;
         private String evaluation;
         private String behavioralLevel;
 

@@ -48,6 +48,7 @@ public class SkillDTO {
 
     @ApiModelProperty()
     private String description;
+    private Long courseId;
 
     @Getter
     @Setter
