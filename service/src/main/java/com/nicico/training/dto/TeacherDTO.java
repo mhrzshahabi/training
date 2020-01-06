@@ -1,6 +1,8 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.AcademicBK;
+import com.nicico.training.model.SubCategory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -23,6 +25,7 @@ public class TeacherDTO {
     private String teacherCode;
     private String personnelCode;
     private Boolean enableStatus;
+    private Boolean inBlackList;
     private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;
@@ -39,6 +42,7 @@ public class TeacherDTO {
         private Set<SubCategoryDTO.SubCategoryInfoTuple> subCategories;
         private PersonalInfoDTO.Info personality;
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
+        private Set<AcademicBKDTO.Info> academicBKs;
         private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
         private Set<PublicationDTO.Info> publications;
         private Integer version;

@@ -209,7 +209,6 @@
         selectionUpdated: function (record) {
             refreshSelectedTab_class(tabSetClass.getSelectedTab());
         },
-
         doubleClick: function () {
             ListGrid_class_edit();
 
@@ -281,7 +280,14 @@
             {name: "createdDate", hidden: true},
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
-        ]
+        ],
+        getCellCSSText:function (record, rowNum, colNum) {
+
+            if (record.classStatus === "1")
+                return "background-color: #EDEDED;";
+            else if (record.classStatus === "3")
+                return "background-color: #C7E1FF;";
+        }
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -1806,7 +1812,7 @@
                 }
                 case "classAttachmentsTab": {
                     if (typeof loadPage_attachment !== "undefined")
-                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب"});
+                        loadPage_attachment("Tclass", ListGrid_Class_JspClass.getSelectedRecord().id, "<spring:message code="attachment"/>",{1: "جزوه", 2: "لیست نمرات", 3: "لیست حضور و غیاب", 4: "نامه غیبت موجه"});
                     break;
                 }
                 case "classScoresTab": {

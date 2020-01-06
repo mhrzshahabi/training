@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.google.gson.JsonObject;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -172,6 +173,19 @@ public class ClassStudentService implements IClassStudentService {
         criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
+    }
+
+     @Transactional
+     @Override
+    public void add(Long classID, Long studentID) {
+       JsonObject request = new JsonObject();
+        request.addProperty("tclassId", classID);
+        request.addProperty("studentId", studentID);
+         ClassStudent classStudent=new ClassStudent();
+         classStudent.setStudentId(studentID);
+         classStudent.setTclassId(classID);
+        // ClassStudent Student = mapper.map(request, ClassStudent.class);
+           classStudentDAO.save(classStudent);
     }
 
 }

@@ -65,7 +65,7 @@ public class ParameterValueDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("Parameter - Config - Update")
+    @ApiModel("ParameterValue - Config - Update")
     public static class ConfigUpdate {
         private Long id;
         private String value;

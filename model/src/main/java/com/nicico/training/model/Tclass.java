@@ -132,6 +132,11 @@ public class Tclass extends Auditable {
     @Column(name = "c_topology")
     private String topology;
 
+    @Column(name = "c_workflow_ending_status")
+    private String workflowEndingStatus;
+    @Column(name = "c_workflow_ending_status_code")
+    private Integer workflowEndingStatusCode;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_class_student",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},

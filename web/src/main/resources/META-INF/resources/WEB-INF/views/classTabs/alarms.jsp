@@ -20,7 +20,7 @@
                     {name: "targetRecordId", autoFitWidth: true},
                     {name: "tabName", autoFitWidth: true},
                     {name: "pageAddress", autoFitWidth: true},
-                    {name: "alarmType", autoFitWidth: true},
+                    {name: "alarmType", width: 140},
                     {name: "alarm"}
                 ]
         });

@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.EvaluationIndexDTO;
+import com.nicico.training.model.EvaluationIndex;
 
 import java.util.List;
 
@@ -19,6 +20,8 @@ public interface IEvaluationIndexService {
     void delete(EvaluationIndexDTO.Delete request);
 
     SearchDTO.SearchRs<EvaluationIndexDTO.Info> search(SearchDTO.SearchRq request);
+
+    List<EvaluationIndex> getListByIds(List<Long> ids);
 
     //------------------------
 }

@@ -64,6 +64,10 @@ public class TeacherFormController {
     @RequestMapping("/teacherBasicInfo-tab")
     public String teacherBasicInfoTab() { return "teacherTabs/teacherBasicInfo"; }
 
+    @RequestMapping("/academicBK-tab")
+    public String academicBKTab() { return "teacherTabs/academicBK"; }
+
+
     @PostMapping("/printWithCriteria/{type}")
     public ResponseEntity<?> printWithCriteria(final HttpServletRequest request, @PathVariable String type) {
         String token = request.getParameter("token");
@@ -93,6 +97,26 @@ public class TeacherFormController {
             default:
                 return null;
         }
+    }
+
+    @PostMapping("/printWithDetail/{id}")
+    public ResponseEntity<?> printWithDetail(final HttpServletRequest request,@PathVariable String id) {
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/teacher/printWithDetail/"+id, HttpMethod.POST, entity, byte[].class);
     }
 
 }

@@ -18,10 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -42,12 +39,15 @@ public class ClassAlarmService implements IClassAlarm {
         Date date = new Date();
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
 
-        ////*** Wildcard ***
+
         List<String> AlarmList = null;
         List<ClassAlarmDTO> classAlarmDTO = null;
         try {
 
-            StringBuilder alarmScript = new StringBuilder().append(" SELECT " +
+            List<String> alarmScripts = new ArrayList<>();
+
+            //*****time of sessions*****
+            alarmScripts.add(" SELECT " +
                     " 'has alarm' AS hasalarm " +
                     " FROM " +
                     "    ( " +
@@ -69,11 +69,11 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tbl_class.c_title_class " +
                     "    ) " +
                     " WHERE " +
-                    "    floor(abs( (class_time - session_time) / 60) ) > 0 ");
+                    "    floor(abs( (class_time - session_time) / 60) ) > 0 AND :todaydat = :todaydat AND rownum = 1 ");
 
-            alarmScript.append(" UNION ALL ");
 
-            alarmScript.append(" SELECT " +
+            //*****attendance*****
+            alarmScripts.add(" SELECT " +
                     "    'has alarm' AS hasalarm " +
                     " FROM " +
                     "    tbl_class_student " +
@@ -85,11 +85,10 @@ public class ClassAlarmService implements IClassAlarm {
                     "    AND   ( " +
                     "        tbl_attendance.c_state IS NULL " +
                     "        OR    tbl_attendance.c_state = 0 " +
-                    "    ) ");
+                    "    ) AND rownum = 1 ");
 
-            alarmScript.append(" UNION ALL ");
-
-            alarmScript.append(" SELECT " +
+            //*****class capacity*****
+            alarmScripts.add(" SELECT " +
                     " 'has alarm' AS hasalarm " +
                     " FROM " +
                     "    tbl_class " +
@@ -100,13 +99,40 @@ public class ClassAlarmService implements IClassAlarm {
                     "    tbl_class.id, " +
                     "    tbl_class.n_max_capacity, " +
                     "    tbl_class.n_min_capacity " +
-                    " HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity " +
-                    "       OR COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity ");
+                    " HAVING (COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity " +
+                    "       OR COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) AND :todaydat = :todaydat ");
 
+            //*****check list not verify*****
+            alarmScripts.add(" SELECT  " +
+                    "    'has alarm' AS hasalarm  " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_check_list.id, " +
+                    "            tbl_check_list.c_title_fa, " +
+                    "            tbl_check_list_item.id AS iditem, " +
+                    "            tbl_check_list_item.c_group, " +
+                    "            tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+                    "            tbl_check_list_item.b_is_deleted, " +
+                    "            :class_id AS class_id " +
+                    "        FROM " +
+                    "            tbl_check_list " +
+                    "            INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id " +
+                    "        WHERE " +
+                    "            tbl_check_list_item.b_is_deleted IS NULL " +
+                    "    ) tbchecklist " +
+                    "    LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+                    "                                      AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+                    " WHERE " +
+                    "    tbl_class_check_list.c_description IS NULL " +
+                    "    AND   ( " +
+                    "        tbl_class_check_list.b_enabled IS NULL " +
+                    "        OR    tbl_class_check_list.b_enabled = 0 " +
+                    "    ) " +
+                    "    AND rownum=1 AND :todaydat = :todaydat ");
 
-            alarmScript.append(" UNION ALL ");
-
-            alarmScript.append(" SELECT " +
+            //*****teacher conflict*****
+            alarmScripts.add(" SELECT " +
                     " 'has alarm' AS hasalarm " +
                     " FROM " +
                     "    tbl_session tb1 " +
@@ -116,7 +142,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "    INNER JOIN tbl_personal_info ON tbl_personal_info.id = tbl_teacher.f_personality " +
                     "    INNER JOIN tbl_class ON tbl_class.id = tb2.f_class_id " +
                     " WHERE " +
-                    "    tb1.id <> tb2.id " +
+                    "    tb1.id <> tb2.id AND :todaydat = :todaydat " +
                     "    AND   tb1.f_class_id =:class_id " +
                     "    AND   ( " +
                     "        ( " +
@@ -127,12 +153,11 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
                     "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
                     "        ) " +
-                    "    )");
+                    "    ) AND rownum = 1 ");
 
-            alarmScript.append(" UNION ALL ");
-
-            alarmScript.append(" SELECT " +
-                    "    'has alarm' AS hasalarm " +
+            //*****student place conflict*****
+            alarmScripts.add(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
                     " FROM " +
                     "    ( " +
                     "        SELECT " +
@@ -147,11 +172,11 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tbl_student.last_name, " +
                     "            tbl_student.national_code, " +
                     "            tbl_student.personnel_no " +
-                    "        FROM " +
+                    "        FROM" +
                     "            tbl_session " +
                     "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
                     "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
-                    "    ) tb1 " +
+                    "    ) tb1" +
                     "    INNER JOIN ( " +
                     "        SELECT " +
                     "            tbl_session.id, " +
@@ -165,30 +190,29 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tbl_student.last_name, " +
                     "            tbl_student.national_code, " +
                     "            tbl_student.personnel_no " +
-                    "        FROM " +
-                    "            tbl_session " +
+                    "        FROM" +
+                    "            tbl_session" +
                     "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
                     "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
                     "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
                     "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
                     "             AND tb2.national_code = tb1.national_code " +
-                    " WHERE " +
-                    "    tb1.id <> tb2.id " +
-                    "    AND   ( " +
-                    "        ( " +
+                    " WHERE" +
+                    "    tb1.id <> tb2.id  AND :todaydat = :todaydat " +
+                    "    AND   (" +
+                    "        (" +
                     "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
                     "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
-                    "        ) " +
-                    "        OR    ( " +
+                    "        )" +
+                    "        OR    (" +
                     "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
                     "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
-                    "        ) " +
-                    "    ) " +
-                    "    AND   tb1.f_class_id =:class_id ");
+                    "        )" +
+                    "    )" +
+                    "    AND   tb1.f_class_id =:class_id AND rownum = 1 ");
 
-            alarmScript.append(" UNION ALL ");
-
-            alarmScript.append(" SELECT " +
+            //*****training place conflict*****
+            alarmScripts.add(" SELECT " +
                     "    'has alarm' AS hasalarm " +
                     " FROM " +
                     "    ( " +
@@ -231,7 +255,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "             AND tb1.f_institute_id = tb2.f_institute_id " +
                     "             AND tb1.f_training_place_id = tb2.f_training_place_id " +
                     " WHERE " +
-                    "    tb1.id <> tb2.id " +
+                    "    tb1.id <> tb2.id AND :todaydat = :todaydat " +
                     "    AND   tb1.f_class_id =:class_id " +
                     "    AND   ( " +
                     "        ( " +
@@ -242,22 +266,18 @@ public class ClassAlarmService implements IClassAlarm {
                     "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
                     "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
                     "        ) " +
-                    "    ) ");
+                    "    ) AND rownum = 1 ");
 
 
-            AlarmList = (List<String>) entityManager.createNativeQuery(alarmScript.toString())
-                    .setParameter("class_id", class_id)
-                    .setParameter("todaydat", todayDate).getResultList();
+            for (String script : alarmScripts) {
+                AlarmList = (List<String>) entityManager.createNativeQuery(script)
+                        .setParameter("class_id", class_id)
+                        .setParameter("todaydat", todayDate).getResultList();
 
-//            if (AlarmList != null) {
-//                classAlarmDTO = new ArrayList<>(AlarmList.size());
-//
-//                for (int i = 0; i < AlarmList.size(); i++) {
-//                    Object[] alarm = (Object[]) AlarmList.get(i);
-//                    classAlarmDTO.add(new ClassAlarmDTO(Long.parseLong(alarm[0].toString()), alarm[1].toString(), alarm[2].toString(), alarm[3].toString(), alarm[4].toString()));
-//
-//                }
-//            }
+                if (AlarmList.size() > 0)
+                    break;
+            }
+
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -265,10 +285,6 @@ public class ClassAlarmService implements IClassAlarm {
             Locale locale = LocaleContextHolder.getLocale();
             response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
         }
-
-//        return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
-//        }.getType()) : null);
-
 
         return AlarmList;
 
@@ -290,6 +306,7 @@ public class ClassAlarmService implements IClassAlarm {
         List<ClassAlarmDTO> classAlarmDTO = null;
         try {
 
+            //*****time of sessions*****
             StringBuilder alarmScript = new StringBuilder().append(" SELECT " +
                     "    f_class_id AS targetRecordId, " +
                     "    'classSessionsTab' AS tabName, " +
@@ -321,6 +338,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             alarmScript.append(" UNION ALL ");
 
+            //*****attendance*****
             alarmScript.append(" SELECT DISTINCT targetRecordId, tabName, pageAddress, alarmType, alarm, detailRecordId, sortField " +
                     " FROM " +
                     " ( " +
@@ -343,6 +361,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             alarmScript.append(" UNION ALL ");
 
+            //*****class capacity*****
             alarmScript.append(" SELECT targetRecordId, tabName, pageAddress, alarmType,  " +
                     " ('تعداد شرکت کنندگان کلاس از ' ||  CASE WHEN status = 'MAX' THEN 'حداکثر ظرفیت کلاس بیشتر' ELSE 'حداقل ظرفیت کلاس کمتر' END || ' است')  AS alarm, " +
                     " 1 AS detailRecordId, sortField " +
@@ -369,9 +388,38 @@ public class ClassAlarmService implements IClassAlarm {
                     "    HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity OR " +
                     "           COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) ");
 
+            alarmScript.append(" UNION ALL ");
+
+            //*****check list not verify*****
+            alarmScript.append(" SELECT DISTINCT " +
+                    "    class_id AS targetrecordid, 'classCheckListTab' AS tabname, '/tclass/show-form' AS pageaddress, 'عدم تکمیل چک لیست' AS alarmtype, " +
+                    "    'در چک لیست \"' || tbchecklist.c_title_fa || '\" بخش \"' || tbchecklist.c_group || '\" آیتم \"' || tbchecklist.c_title_fa1 " +
+                    "    || '\" تعیین تکلیف نشده است (انتخاب یا درج توضیحات)' AS alarm, " +
+                    "    1 AS detailrecordid, ( 'عدم تکمیل چک لیست' || tbchecklist.id || '-' || tbchecklist.iditem ) AS sortfield " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_check_list.id, " +
+                    "            tbl_check_list.c_title_fa, " +
+                    "            tbl_check_list_item.id AS iditem, " +
+                    "            tbl_check_list_item.c_group, " +
+                    "            tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+                    "            tbl_check_list_item.b_is_deleted, " +
+                    "            :class_id AS class_id " +
+                    "        FROM " +
+                    "            tbl_check_list " +
+                    "            INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id " +
+                    "        WHERE " +
+                    "            ( tbl_check_list_item.b_is_deleted IS NULL ) " +
+                    "    ) tbchecklist " +
+                    "    LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+                    "                                      AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+                    " WHERE  tbl_class_check_list.c_description IS NULL " +
+                    "    AND (tbl_class_check_list.b_enabled IS NULL OR tbl_class_check_list.b_enabled = 0 ) ");
 
             alarmScript.append(" UNION ALL ");
 
+            //*****teacher conflict*****
             alarmScript.append(" SELECT targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل استاد' AS alarmType, " +
                     "       'جلسه ' || c_session_start_hour ||  ' تا ' || c_session_end_hour || ' ' || c_day_name || ' ' || c_session_date || ' '|| teachername ||' با جلسه '|| c_session_start_hour1 ||' تا '|| c_session_end_hour1 ||' '   || c_day_name1  || ' '|| c_session_date1||' کلاس '|| c_title_class ||' با کد '|| c_code ||' تداخل دارد' AS alarm, " +
                     "       id1 AS detailRecordId, sortField " +
@@ -431,6 +479,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             alarmScript.append(" UNION ALL ");
 
+            //*****student place conflict*****
             alarmScript.append("SELECT tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل فراگیر' AS alarmType, " +
                     "    ' جلسه ' " +
                     "    || tb1.c_session_start_hour " +
@@ -535,6 +584,7 @@ public class ClassAlarmService implements IClassAlarm {
 
             alarmScript.append(" UNION ALL ");
 
+            //*****training place conflict*****
             alarmScript.append(" SELECT " +
                     "    tbalarm.targetrecordid, " +
                     "    tbalarm.tabname, " +
@@ -725,10 +775,10 @@ public class ClassAlarmService implements IClassAlarm {
                     "                      AND tbfreeplaces.c_session_start_hour = tbalarm.c_session_start_hour " +
                     "                      AND tbfreeplaces.c_session_end_hour = tbalarm.c_session_end_hour " +
                     "                      AND tbfreeplaces.f_institute_id = tbalarm.f_institute_id                     " +
-                    "ORDER BY sortField                       " +
+                    " ORDER BY sortField                       " +
                     "                      ");
-            //***order by must be in the last script***
 
+            //***order by must be in the last script***
 
             AlarmList = (List<?>) entityManager.createNativeQuery(alarmScript.toString())
                     .setParameter("class_id", class_id)

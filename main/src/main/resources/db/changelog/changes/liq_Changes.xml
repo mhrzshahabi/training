@@ -144,5 +144,30 @@
             <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="jafari-h (generated)" id="1578211745269-206">
+        <addColumn tableName="tbl_skill">
+            <column name="f_course" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1578211745269-260">
+        <dropTable tableName="TBL_SKILL_COURSE"/>
+    </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1578212791726-208">
+        <addColumn tableName="tbl_class">
+            <column name="c_workflow_ending_status" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1578212791726-209">
+        <addColumn tableName="tbl_class">
+            <column name="c_workflow_ending_status_code" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1578207622478-208">
+        <addColumn tableName="tbl_teacher">
+            <column name="b_in_black_list" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

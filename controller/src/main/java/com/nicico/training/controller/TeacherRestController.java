@@ -4,25 +4,31 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.Teacher;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,10 +36,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -90,7 +93,7 @@ public class TeacherRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_teacher')")
-    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
+    public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
         ((LinkedHashMap) request).remove("attachPic");
 
         List<CategoryDTO.Info> categories = null;
@@ -126,6 +129,7 @@ public class TeacherRestController {
         }
     }
 
+
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_teacher')")
@@ -152,7 +156,7 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
-        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
+        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.deepSearch(request);
 
         final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
@@ -257,6 +261,33 @@ public class TeacherRestController {
         reportUtil.export("/reports/TeacherByCriteria.jasper", params, jsonDataSource, response);
     }
 
+    @Loggable
+    @PostMapping(value = {"/printWithDetail/{id}"})
+    public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
+        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+        criteriaRq1.setFieldName("id");
+        criteriaRq1.setOperator(EOperator.equals);
+        criteriaRq1.setValue(id);
+        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+        criteriaRqList.add(criteriaRq1);
+        criteriaRq.setOperator(EOperator.and);
+        criteriaRq.setCriteria(criteriaRqList);
+        final SearchDTO.SearchRq searchRq;
+        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+
+        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+
+        final Map<String, Object> params = new HashMap<>();
+        params.put("todayDate", DateUtil.todayDate());
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+        reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
+    }
+
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                  @RequestParam(value = "_constructor", required = false) String constructor,
@@ -321,5 +352,40 @@ public class TeacherRestController {
         return subCategories;
     }
 
+    @Loggable
+    @GetMapping(value = "/full-spec-list")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "id", required = false) Long id,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/blackList/{inBlackList}/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public void changeBlackList(@PathVariable Boolean inBlackList, @PathVariable Long id) {
+        Teacher teacher = teacherService.getTeacher(id);
+        teacher.setInBlackList(!inBlackList);
+    }
 
 }

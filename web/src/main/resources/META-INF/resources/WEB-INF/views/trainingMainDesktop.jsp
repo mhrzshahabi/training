@@ -69,6 +69,7 @@
     const publicationUrl = rootUrl + "/publication";
     const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
     const evaluationIndexHomeUrl = rootUrl + "/evaluationIndex";
+    const academicBKUrl = rootUrl + "/academicBK";
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -635,6 +636,12 @@
                     title: "تخصیص نقش",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
+                    }
+                },
+                {
+                    title: "لیست سیاه",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/black-list/show-form"/>");
                     }
                 },
                 {isSeparator: true},

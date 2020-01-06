@@ -15,6 +15,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
 
@@ -129,6 +130,16 @@ public class EvaluationIndexRestController {
     }
 
     // ---------------
+
+    @GetMapping(value = "/iscList")
+    public ResponseEntity<ISC<EvaluationIndexDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<EvaluationIndexDTO.Info> searchRs = evaluationIndexService.search(searchRq);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
 
     @Loggable
     @PostMapping(value = "/search")
