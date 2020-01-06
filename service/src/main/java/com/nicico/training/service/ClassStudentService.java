@@ -1,5 +1,6 @@
 package com.nicico.training.service;
 
+import com.google.gson.JsonObject;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
@@ -26,7 +27,7 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class ClassStudentService implements IClassStudentService {
 
-  private final ClassStudentDAO classStudentDAO;
+    private final ClassStudentDAO classStudentDAO;
     private final ModelMapper mapper;
     private final TclassDAO tclassDAO;
 
@@ -86,41 +87,40 @@ public class ClassStudentService implements IClassStudentService {
     @Transactional(readOnly = true)
     @Override
     public List<ClassStudentDTO.Info> fillTable(Long id) {
-           int flag=0;
-          List<ClassStudent> classStudentList = new ArrayList<>();
+        int flag = 0;
+        List<ClassStudent> classStudentList = new ArrayList<>();
 
 
-          List <Long> class_student = classStudentDAO.getStudent(id);//لیست ای دی های دانش اموزان کلاس را میگیرد
-          List<Long> listR=classStudentDAO.getstudentIdRegister(id);//لیست ای دی های دانش اموزان موجود برای این کلاس که داخل جدول classStudent  است را می دهد
+        List<Long> class_student = classStudentDAO.getStudent(id);//لیست ای دی های دانش اموزان کلاس را میگیرد
+        List<Long> listR = classStudentDAO.getstudentIdRegister(id);//لیست ای دی های دانش اموزان موجود برای این کلاس که داخل جدول classStudent  است را می دهد
 
-        for (Long x:class_student) {
-                 flag=0;
-            for (Long y:listR) {
-                if(x==y)
-                {
-                flag=1;
+        for (Long x : class_student) {
+            flag = 0;
+            for (Long y : listR) {
+                if (x == y) {
+                    flag = 1;
                 }
             }
-            if(flag ==0)
-            {
-             ClassStudent classStudent=new ClassStudent();
-            classStudent.setTclassId(id);
-            classStudent.setStudentId(x);
+            if (flag == 0) {
+                ClassStudent classStudent = new ClassStudent();
+                classStudent.setTclassId(id);
+                classStudent.setStudentId(x);
 
-         classStudentDAO.saveAndFlush(classStudent);
+                classStudentDAO.saveAndFlush(classStudent);
             }
         }
 
-           List<ClassStudent> save = classStudentDAO.saveAll(classStudentList);
-           return mapper.map(save, new TypeToken<List<ClassStudentDTO.Info>>() {}.getType());
+        List<ClassStudent> save = classStudentDAO.saveAll(classStudentList);
+        return mapper.map(save, new TypeToken<List<ClassStudentDTO.Info>>() {
+        }.getType());
 
-         }
+    }
 
     @Transactional
     @Override
     public List<ClassStudentDTO.Info> getStudent(Long classId) {
 
-        List<ClassStudent> classStudentList=classStudentDAO.getAllByTclassId(classId);
+        List<ClassStudent> classStudentList = classStudentDAO.getAllByTclassId(classId);
         return mapper.map(classStudentList, new TypeToken<List<ClassStudentDTO.Info>>() {
         }.getType());
     }
@@ -132,7 +132,7 @@ public class ClassStudentService implements IClassStudentService {
         ClassStudent classStudent = classStudentDAO.findById(id).orElseThrow(() -> new TrainingException(TrainingException.ErrorType.ClassCheckListNotFound));
         Set<String> strings = body.keySet();
 
-            if (strings.contains("scoresState")) {
+        if (strings.contains("scoresState")) {
             String scoresState = body.get("scoresState").get(0);
             classStudent.setScoresState(scoresState);
         }
@@ -173,6 +173,19 @@ public class ClassStudentService implements IClassStudentService {
         criteriaRq.setValue(value);
         criteriaRq.setCriteria(criteriaRqList);
         return criteriaRq;
+    }
+
+     @Transactional
+     @Override
+    public void add(Long classID, Long studentID) {
+       JsonObject request = new JsonObject();
+        request.addProperty("tclassId", classID);
+        request.addProperty("studentId", studentID);
+         ClassStudent classStudent=new ClassStudent();
+         classStudent.setStudentId(studentID);
+         classStudent.setTclassId(classID);
+        // ClassStudent Student = mapper.map(request, ClassStudent.class);
+           classStudentDAO.save(classStudent);
     }
 
 }

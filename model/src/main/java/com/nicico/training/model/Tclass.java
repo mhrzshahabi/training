@@ -132,13 +132,18 @@ public class Tclass extends Auditable {
     @Column(name = "c_topology")
     private String topology;
 
+    @Column(name = "c_workflow_ending_status")
+    private String workflowEndingStatus;
+    @Column(name = "c_workflow_ending_status_code")
+    private Integer workflowEndingStatusCode;
+
     @ManyToMany(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinTable(name = "tbl_class_student",
             joinColumns = {@JoinColumn(name = "f_class", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
 
-    @OneToMany(mappedBy = "tclass" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ClassSession> classSessions;
 
     @Transient
@@ -155,7 +160,7 @@ public class Tclass extends Auditable {
 
     @Transient
     public String getHasWarning() {
-         return "";
+        return "";
     }
 
 }

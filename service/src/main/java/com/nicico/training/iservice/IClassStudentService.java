@@ -2,6 +2,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 
 import java.io.IOException;
@@ -29,9 +30,6 @@ public interface IClassStudentService {
     SearchDTO.SearchRs<ClassStudentDTO.Info> search(SearchDTO.SearchRq request);
 
 
-
-
-
     List<ClassStudentDTO.Info> fillTable(Long id);
 
 
@@ -41,4 +39,7 @@ public interface IClassStudentService {
     ClassStudentDTO.Info updateDescriptionCheck(MultiValueMap<String, String> body) throws IOException;
 
     SearchDTO.SearchRs<ClassStudentDTO.Info> search1(SearchDTO.SearchRq request, Long classId);
+
+
+    void add(Long classID, Long studentID);
 }

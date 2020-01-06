@@ -10,10 +10,8 @@ import com.nicico.training.iservice.ITermService;
 import com.nicico.training.model.Term;
 import com.nicico.training.repository.TermDAO;
 import lombok.RequiredArgsConstructor;
-
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -63,8 +61,9 @@ public class TermService implements ITermService {
     @Transactional
     @Override
     public void delete(Long id) {
-     termDAO.deleteById(id);
+        termDAO.deleteById(id);
     }
+
     @Transactional
     @Override
     public void delete(TermDTO.Delete request) {

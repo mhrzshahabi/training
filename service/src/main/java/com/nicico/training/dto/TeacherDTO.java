@@ -25,6 +25,7 @@ public class TeacherDTO {
     private String teacherCode;
     private String personnelCode;
     private Boolean enableStatus;
+    private Boolean inBlackList;
     private Boolean personnelStatus;
     private String economicalCode;
     private String economicalRecordNumber;

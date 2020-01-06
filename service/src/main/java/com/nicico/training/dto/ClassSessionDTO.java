@@ -75,6 +75,7 @@ public class ClassSessionDTO implements Serializable {
         private InstituteDTO.InstituteTitle institute;
         private TrainingPlaceDTO.TrainingPlaceTitle trainingPlace;
         private TeacherDTO.TeacherFullNameTuple teacher;
+
         public String getTeacher() {
             if (teacher != null)
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();

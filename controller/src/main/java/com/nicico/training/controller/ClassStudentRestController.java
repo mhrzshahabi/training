@@ -28,13 +28,13 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/api/classStudent")
 public class ClassStudentRestController {
-   private final ClassStudentService classStudentService;
+    private final ClassStudentService classStudentService;
     private final ObjectMapper objectMapper;
     private final ModelMapper modelMapper;
     private final DateUtil dateUtil;
     private final ReportUtil reportUtil;
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> get(@PathVariable Long id) {
         return new ResponseEntity<>(classStudentService.get(id), HttpStatus.OK);
@@ -57,7 +57,7 @@ public class ClassStudentRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity<ClassStudentDTO.Info> update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
         //ClassStudentDTO.Update update = modelMapper.map(request, ClassStudentDTO.Update.class);
-       return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
+        return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
     }
 
     @Loggable
@@ -71,11 +71,11 @@ public class ClassStudentRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
     public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                             @RequestParam("_endRow") Integer endRow,
-                                                             @RequestParam(value = "_constructor", required = false) String constructor,
-                                                             @RequestParam(value = "operator", required = false) String operator,
-                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                                   @RequestParam("_endRow") Integer endRow,
+                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
+                                                                   @RequestParam(value = "operator", required = false) String operator,
+                                                                   @RequestParam(value = "criteria", required = false) String criteria,
+                                                                   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
         SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 
         SearchDTO.CriteriaRq criteriaRq;
@@ -116,7 +116,7 @@ public class ClassStudentRestController {
     }
 
 
-     @Loggable
+    @Loggable
     @GetMapping(value = "/{getStudent}/{id}")
     public ResponseEntity<ClassStudentDTO.ClassStudentSpecRs> getStudent(@PathVariable Long id) {
 
@@ -132,22 +132,21 @@ public class ClassStudentRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-           @GetMapping(value = "/iscList/{classId}")
-       public ResponseEntity<ISC<ClassStudentDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+    @GetMapping(value = "/iscList/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         int startRow = 0;
         if (iscRq.getParameter("_startRow") != null)
-        startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassStudentDTO.Info> searchRs =classStudentService.search1(searchRq, classId);
+        SearchDTO.SearchRs<ClassStudentDTO.Info> searchRs = classStudentService.search1(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
-     @Loggable
+    @Loggable
     @PostMapping(value = "/edit")
     public ResponseEntity<ClassStudentDTO.Info> updateDescription(@RequestParam MultiValueMap<String, String> body) throws IOException {
         return new ResponseEntity(classStudentService.updateDescriptionCheck(body), HttpStatus.OK);
     }
 
 
-
-    }
+}

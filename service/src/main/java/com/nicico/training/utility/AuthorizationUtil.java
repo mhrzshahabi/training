@@ -49,6 +49,7 @@ public class AuthorizationUtil {
         if (!SecurityUtil.hasAuthority(standardPermissionKey))
             throw new TrainingException(TrainingException.ErrorType.Unauthorized, "", messageSource.getMessage("validator.permission.access-denied", new Object[]{standardPermissionKey}, locale));
     }
+
     public void checkStandardPermission(String permissionKey) {
 
         Locale locale = LocaleContextHolder.getLocale();

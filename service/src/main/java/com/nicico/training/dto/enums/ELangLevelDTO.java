@@ -2,7 +2,6 @@ package com.nicico.training.dto.enums;/* com.nicico.training.dto*/
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.training.model.enums.ELangLevel;
-import com.nicico.training.model.enums.EMarried;
 import io.swagger.annotations.ApiModel;
 import lombok.Getter;
 import lombok.Setter;

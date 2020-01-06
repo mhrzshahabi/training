@@ -62,7 +62,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 required: true,
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
@@ -93,7 +93,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
@@ -215,7 +215,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
@@ -225,7 +225,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
@@ -314,6 +314,8 @@
     function ListGrid_ConfigQuestionnaire_refresh() {
         ListGrid_JspConfigQuestionnaire.invalidateCache();
         ListGrid_JspConfigQuestionnaire.filterByEditor();
+        RestDataSource_QuestionDomain_JspConfigQuestionnaire.fetchData();
+        RestDataSource_QuestionIndicator_JspConfigQuestionnaire.fetchData();
     }
 
     function ListGrid_ConfigQuestionnaire_Add() {

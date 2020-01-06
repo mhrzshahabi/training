@@ -47,7 +47,7 @@
             isc.ToolStripButton.create({
                 top: 260,
                 align: "center",
-                title: "<spring:message code='all.persons'/>",
+                title: "<spring:message code='job.person.assign'/>",
                 click: function () {
                     if (!(JobLG_job.getSelectedRecord() == undefined || JobLG_job.getSelectedRecord() == null)) {
                         setListGrid_PersonnelJob(JobLG_job.getSelectedRecord().code);

@@ -174,21 +174,32 @@
     function loadPage_course_evaluation() {
 
         var record = ListGrid_Course.getSelectedRecord();
+      if ( record == undefined || record == null) {
+                    ListGrid_CourseEvaluation.setData([]);
+                     DynamicForm_CourseEvaluation.disable()
+         }
+        else
+           {
+                  if (
+                            ListGrid_Course.getSelectedRecord().hasGoal) {
+                            ListGrid_CourseEvaluation.setData([]);
+                            createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
+                            DynamicForm_CourseEvaluation.disable()
+                            DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
 
-        if (ListGrid_Course.getSelectedRecord().hasGoal) {
-            createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
-            DynamicForm_CourseEvaluation.disable()
-            DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
+                   }
+                  else
+                        {
+                              DynamicForm_CourseEvaluation.enable()
+                              RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
+                              DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
+                              ListGrid_CourseEvaluation.fetchData();
+                              ListGrid_CourseEvaluation.invalidateCache();
+                        }
+            }
 
-        } else
-
-            DynamicForm_CourseEvaluation.enable()
-        RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
-        DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
-        ListGrid_CourseEvaluation.fetchData();
-        ListGrid_CourseEvaluation.invalidateCache();
     }
 
+    DynamicForm_CourseEvaluation.disable()
 
-    // DynamicForm_CourseEvaluation.disable()
 

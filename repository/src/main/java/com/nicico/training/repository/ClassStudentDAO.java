@@ -14,7 +14,7 @@ public interface ClassStudentDAO extends JpaRepository<ClassStudent, Long>, JpaS
     @Query(value = "SELECT  tbl_class_student_final.f_student_id,tbl_class_student_final.f_tclass_id FROM tbl_class_student_final WHERE tbl_class_student_final.f_tclass_id =:classid", nativeQuery = true)
     List<Long> getstudentIdRegister(@Param("classid") Long classid);
 
-    @Query(value="SELECT tbl_class_student.f_student FROM tbl_class_student WHERE tbl_class_student.f_class =:classid", nativeQuery = true)
+    @Query(value = "SELECT tbl_class_student.f_student FROM tbl_class_student WHERE tbl_class_student.f_class =:classid", nativeQuery = true)
     List<Long> getStudent(@Param("classid") Long classid);
 
     List<ClassStudent> getAllByTclassId(Long id);

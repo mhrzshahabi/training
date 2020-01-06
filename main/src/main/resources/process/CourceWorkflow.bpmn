@@ -2,211 +2,211 @@
 <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:activiti="http://activiti.org/bpmn"
              xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI"
              typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="courseWorkflow" name="بررسی دوره ایجاد شده" isExecutable="true">
-    <startEvent id="courseCheckstart" name="Start" activiti:initiator="${username}">
-      <extensionElements>
-        <activiti:formProperty id="cId" name="کد دوره" type="long" required="true"></activiti:formProperty>
-        <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="titleFa" name="نام فارسی" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="courseCreatorId" name="courseCreatorId" type="string" writable="false" required="true"></activiti:formProperty>
-        <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" writable="false" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECT" name="REJECT" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="target" name="target" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatusCode" name="workflowStatusCode" type="string" expression="${C_WORKFLOW_STATUS_CODE}" required="true"></activiti:formProperty>
-      </extensionElements>
-    </startEvent>
-    <userTask id="courseSupervisorCheck" name="بررسی سرپرست" activiti:assignee="${courseSupervisor}">
-      <documentation>${mainObjective}</documentation>
-      <extensionElements>
-        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" expression="${courseCreator}" writable="false" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
-      </extensionElements>
-    </userTask>
-    <userTask id="courseCorrection" name="بررسی کاربر" activiti:assignee="${courseCreatorId}">
-      <documentation>${REJECTVAL}</documentation>
-      <extensionElements>
-        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECTVAL" name="دلیل عودت" type="string" expression="${REJECTVAL}" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت بررسی" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
-        <activiti:formProperty id="DELETE" name="DELETE" type="string" default="delete" required="true"></activiti:formProperty>
-        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
-      </extensionElements>
-    </userTask>
-    <endEvent id="courseCheckend" name="End"></endEvent>
-    <sequenceFlow id="courseSupervisorConfirm" name="Supervisor Confirm" sourceRef="courseSupervisorCheck" targetRef="servicetaskAssignBoss">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="courseSupervisorReject" name="Supervisor Reject" sourceRef="courseSupervisorCheck" targetRef="servicetaskSetStatus2">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
-    </sequenceFlow>
-    <userTask id="courseBossCheck" name="بررسی رئیس" activiti:assignee="${courseBoss}">
-      <documentation>${mainObjective}</documentation>
-      <extensionElements>
-        <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" expression="${courseCreator}" writable="false" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
-      </extensionElements>
-    </userTask>
-    <sequenceFlow id="courseBossReject" name="Boss Reject" sourceRef="courseBossCheck" targetRef="servicetaskAssignSupervisor">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="flowCorrection" name="Creator Confirm" sourceRef="courseCorrection" targetRef="servicetaskCorrection">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
-    </sequenceFlow>
-    <serviceTask id="servicetaskAssignSupervisor" name="تعیین سرپرست" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="flowAssignSupervisor" sourceRef="courseCheckstart" targetRef="servicetaskAssignSupervisor"></sequenceFlow>
-    <sequenceFlow id="flowSupervisorCheck" sourceRef="servicetaskAssignSupervisor" targetRef="courseSupervisorCheck"></sequenceFlow>
-    <serviceTask id="servicetaskAssignBoss" name="تعیین رئیس" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="flowBossCheck" sourceRef="servicetaskAssignBoss" targetRef="courseBossCheck"></sequenceFlow>
-    <sequenceFlow id="courseBossConfirm" name="Boss Confirm" sourceRef="courseBossCheck" targetRef="servicetaskSetStatus1">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
-    </sequenceFlow>
-    <serviceTask id="servicetaskCorrection" name="اصلاح دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="serviceCorrectionflow" name="Correction" sourceRef="servicetaskCorrection" targetRef="servicetaskAssignSupervisor"></sequenceFlow>
-    <serviceTask id="servicetaskDeleteWorkflow" name="حذف گردش کار" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="CreatorReject" name="Creator Reject" sourceRef="courseCorrection" targetRef="servicetaskDeleteWorkflow">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
-    </sequenceFlow>
-    <sequenceFlow id="flowEndWithReject" sourceRef="servicetaskDeleteWorkflow" targetRef="courseCheckend"></sequenceFlow>
-    <serviceTask id="servicetaskSetStatus1" name="اصلاح وضعیت دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="flowEndWithConfirm" sourceRef="servicetaskSetStatus1" targetRef="courseCheckend"></sequenceFlow>
-    <serviceTask id="servicetaskSetStatus2" name="اصلاح وضعیت دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
-    <sequenceFlow id="flowSendToCreator" sourceRef="servicetaskSetStatus2" targetRef="courseCorrection"></sequenceFlow>
-  </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_courseWorkflow">
-    <bpmndi:BPMNPlane bpmnElement="courseWorkflow" id="BPMNPlane_courseWorkflow">
-      <bpmndi:BPMNShape bpmnElement="courseCheckstart" id="BPMNShape_courseCheckstart">
-        <omgdc:Bounds height="35.0" width="35.0" x="81.0" y="121.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="courseSupervisorCheck" id="BPMNShape_courseSupervisorCheck">
-        <omgdc:Bounds height="71.0" width="131.0" x="400.0" y="105.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="courseCorrection" id="BPMNShape_courseCorrection">
-        <omgdc:Bounds height="81.0" width="131.0" x="400.0" y="335.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="courseCheckend" id="BPMNShape_courseCheckend">
-        <omgdc:Bounds height="35.0" width="35.0" x="1240.0" y="121.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="courseBossCheck" id="BPMNShape_courseBossCheck">
-        <omgdc:Bounds height="75.0" width="131.0" x="840.0" y="101.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskAssignSupervisor" id="BPMNShape_servicetaskAssignSupervisor">
-        <omgdc:Bounds height="71.0" width="131.0" x="170.0" y="103.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskAssignBoss" id="BPMNShape_servicetaskAssignBoss">
-        <omgdc:Bounds height="73.0" width="133.0" x="650.0" y="102.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskCorrection" id="BPMNShape_servicetaskCorrection">
-        <omgdc:Bounds height="71.0" width="131.0" x="170.0" y="340.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskDeleteWorkflow" id="BPMNShape_servicetaskDeleteWorkflow">
-        <omgdc:Bounds height="71.0" width="135.0" x="649.0" y="340.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskSetStatus1" id="BPMNShape_servicetaskSetStatus1">
-        <omgdc:Bounds height="76.0" width="131.0" x="1060.0" y="101.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetaskSetStatus2" id="BPMNShape_servicetaskSetStatus2">
-        <omgdc:Bounds height="76.0" width="126.0" x="403.0" y="220.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="courseSupervisorConfirm" id="BPMNEdge_courseSupervisorConfirm">
-        <omgdi:waypoint x="531.0" y="140.0"></omgdi:waypoint>
-        <omgdi:waypoint x="650.0" y="138.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="93.0" x="539.0" y="141.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="courseSupervisorReject" id="BPMNEdge_courseSupervisorReject">
-        <omgdi:waypoint x="465.0" y="176.0"></omgdi:waypoint>
-        <omgdi:waypoint x="466.0" y="220.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="86.0" x="470.0" y="189.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="courseBossReject" id="BPMNEdge_courseBossReject">
-        <omgdi:waypoint x="905.0" y="101.0"></omgdi:waypoint>
-        <omgdi:waypoint x="905.0" y="35.0"></omgdi:waypoint>
-        <omgdi:waypoint x="235.0" y="35.0"></omgdi:waypoint>
-        <omgdi:waypoint x="235.0" y="103.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="58.0" x="830.0" y="41.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowCorrection" id="BPMNEdge_flowCorrection">
-        <omgdi:waypoint x="400.0" y="375.0"></omgdi:waypoint>
-        <omgdi:waypoint x="301.0" y="375.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="76.0" x="316.0" y="375.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowAssignSupervisor" id="BPMNEdge_flowAssignSupervisor">
-        <omgdi:waypoint x="116.0" y="138.0"></omgdi:waypoint>
-        <omgdi:waypoint x="170.0" y="138.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowSupervisorCheck" id="BPMNEdge_flowSupervisorCheck">
-        <omgdi:waypoint x="301.0" y="138.0"></omgdi:waypoint>
-        <omgdi:waypoint x="400.0" y="140.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowBossCheck" id="BPMNEdge_flowBossCheck">
-        <omgdi:waypoint x="783.0" y="138.0"></omgdi:waypoint>
-        <omgdi:waypoint x="840.0" y="138.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="courseBossConfirm" id="BPMNEdge_courseBossConfirm">
-        <omgdi:waypoint x="971.0" y="138.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1060.0" y="139.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="65.0" x="979.0" y="140.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="serviceCorrectionflow" id="BPMNEdge_serviceCorrectionflow">
-        <omgdi:waypoint x="235.0" y="340.0"></omgdi:waypoint>
-        <omgdi:waypoint x="235.0" y="174.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="50.0" x="243.0" y="291.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="CreatorReject" id="BPMNEdge_CreatorReject">
-        <omgdi:waypoint x="531.0" y="375.0"></omgdi:waypoint>
-        <omgdi:waypoint x="649.0" y="375.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="14.0" width="69.0" x="543.0" y="375.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowEndWithReject" id="BPMNEdge_flowEndWithReject">
-        <omgdi:waypoint x="784.0" y="375.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1257.0" y="375.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1257.0" y="156.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowEndWithConfirm" id="BPMNEdge_flowEndWithConfirm">
-        <omgdi:waypoint x="1191.0" y="139.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1240.0" y="138.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flowSendToCreator" id="BPMNEdge_flowSendToCreator">
-        <omgdi:waypoint x="466.0" y="296.0"></omgdi:waypoint>
-        <omgdi:waypoint x="465.0" y="335.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-    </bpmndi:BPMNPlane>
-  </bpmndi:BPMNDiagram>
+    <process id="courseWorkflow" name="بررسی دوره ایجاد شده" isExecutable="true">
+        <startEvent id="courseCheckstart" name="Start" activiti:initiator="${username}">
+            <extensionElements>
+                <activiti:formProperty id="cId" name="کد دوره" type="long" required="true"></activiti:formProperty>
+                <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="titleFa" name="نام فارسی" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="courseCreatorId" name="courseCreatorId" type="string" writable="false" required="true"></activiti:formProperty>
+                <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" writable="false" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECT" name="REJECT" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="target" name="target" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" required="true"></activiti:formProperty>
+                <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="workflowStatusCode" name="workflowStatusCode" type="string" expression="${C_WORKFLOW_STATUS_CODE}" required="true"></activiti:formProperty>
+            </extensionElements>
+        </startEvent>
+        <userTask id="courseSupervisorCheck" name="بررسی سرپرست" activiti:assignee="${courseSupervisor}">
+            <documentation>${mainObjective}</documentation>
+            <extensionElements>
+                <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" expression="${courseCreator}" writable="false" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <userTask id="courseCorrection" name="بررسی کاربر" activiti:assignee="${courseCreatorId}">
+            <documentation>${REJECTVAL}</documentation>
+            <extensionElements>
+                <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECTVAL" name="دلیل عودت" type="string" expression="${REJECTVAL}" writable="false"></activiti:formProperty>
+                <activiti:formProperty id="workflowStatus" name="وضعیت بررسی" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
+                <activiti:formProperty id="DELETE" name="DELETE" type="string" default="delete" required="true"></activiti:formProperty>
+                <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <endEvent id="courseCheckend" name="End"></endEvent>
+        <sequenceFlow id="courseSupervisorConfirm" name="Supervisor Confirm" sourceRef="courseSupervisorCheck" targetRef="servicetaskAssignBoss">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="courseSupervisorReject" name="Supervisor Reject" sourceRef="courseSupervisorCheck" targetRef="servicetaskSetStatus2">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
+        </sequenceFlow>
+        <userTask id="courseBossCheck" name="بررسی رئیس" activiti:assignee="${courseBoss}">
+            <documentation>${mainObjective}</documentation>
+            <extensionElements>
+                <activiti:formProperty id="mainObjective" name="هدف کلی" type="string" expression="${mainObjective}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="titleFa" name="نام فارسی" type="string" expression="${titleFa}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="theoryDuration" name="طول دوره" type="string" expression="${theoryDuration}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="courseCreator" name="ایجاد کننده" type="string" expression="${courseCreator}" writable="false" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECTVAL" name="REJECTVAL" type="string" expression="${REJECTVAL}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="REJECT" name="REJECT" type="string" expression="${REJECT}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="cId" name="کد دوره" type="long" expression="${cId}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="target" name="target" type="string" expression="${target}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="targetTitleFa" name="targetTitleFa" type="string" expression="${targetTitleFa}" required="true"></activiti:formProperty>
+                <activiti:formProperty id="workflowStatus" name="وضعیت" type="string" expression="${C_WORKFLOW_STATUS}" writable="false" required="true"></activiti:formProperty>
+            </extensionElements>
+        </userTask>
+        <sequenceFlow id="courseBossReject" name="Boss Reject" sourceRef="courseBossCheck" targetRef="servicetaskAssignSupervisor">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flowCorrection" name="Creator Confirm" sourceRef="courseCorrection" targetRef="servicetaskCorrection">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="servicetaskAssignSupervisor" name="تعیین سرپرست" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="flowAssignSupervisor" sourceRef="courseCheckstart" targetRef="servicetaskAssignSupervisor"></sequenceFlow>
+        <sequenceFlow id="flowSupervisorCheck" sourceRef="servicetaskAssignSupervisor" targetRef="courseSupervisorCheck"></sequenceFlow>
+        <serviceTask id="servicetaskAssignBoss" name="تعیین رئیس" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="flowBossCheck" sourceRef="servicetaskAssignBoss" targetRef="courseBossCheck"></sequenceFlow>
+        <sequenceFlow id="courseBossConfirm" name="Boss Confirm" sourceRef="courseBossCheck" targetRef="servicetaskSetStatus1">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "N"}]]></conditionExpression>
+        </sequenceFlow>
+        <serviceTask id="servicetaskCorrection" name="اصلاح دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="serviceCorrectionflow" name="Correction" sourceRef="servicetaskCorrection" targetRef="servicetaskAssignSupervisor"></sequenceFlow>
+        <serviceTask id="servicetaskDeleteWorkflow" name="حذف گردش کار" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="CreatorReject" name="Creator Reject" sourceRef="courseCorrection" targetRef="servicetaskDeleteWorkflow">
+            <conditionExpression xsi:type="tFormalExpression"><![CDATA[${REJECT == "Y"}]]></conditionExpression>
+        </sequenceFlow>
+        <sequenceFlow id="flowEndWithReject" sourceRef="servicetaskDeleteWorkflow" targetRef="courseCheckend"></sequenceFlow>
+        <serviceTask id="servicetaskSetStatus1" name="اصلاح وضعیت دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="flowEndWithConfirm" sourceRef="servicetaskSetStatus1" targetRef="courseCheckend"></sequenceFlow>
+        <serviceTask id="servicetaskSetStatus2" name="اصلاح وضعیت دوره" activiti:delegateExpression="${serviceTaskCourse}"></serviceTask>
+        <sequenceFlow id="flowSendToCreator" sourceRef="servicetaskSetStatus2" targetRef="courseCorrection"></sequenceFlow>
+    </process>
+    <bpmndi:BPMNDiagram id="BPMNDiagram_courseWorkflow">
+        <bpmndi:BPMNPlane bpmnElement="courseWorkflow" id="BPMNPlane_courseWorkflow">
+            <bpmndi:BPMNShape bpmnElement="courseCheckstart" id="BPMNShape_courseCheckstart">
+                <omgdc:Bounds height="35.0" width="35.0" x="81.0" y="121.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="courseSupervisorCheck" id="BPMNShape_courseSupervisorCheck">
+                <omgdc:Bounds height="71.0" width="131.0" x="400.0" y="105.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="courseCorrection" id="BPMNShape_courseCorrection">
+                <omgdc:Bounds height="81.0" width="131.0" x="400.0" y="335.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="courseCheckend" id="BPMNShape_courseCheckend">
+                <omgdc:Bounds height="35.0" width="35.0" x="1240.0" y="121.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="courseBossCheck" id="BPMNShape_courseBossCheck">
+                <omgdc:Bounds height="75.0" width="131.0" x="840.0" y="101.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskAssignSupervisor" id="BPMNShape_servicetaskAssignSupervisor">
+                <omgdc:Bounds height="71.0" width="131.0" x="170.0" y="103.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskAssignBoss" id="BPMNShape_servicetaskAssignBoss">
+                <omgdc:Bounds height="73.0" width="133.0" x="650.0" y="102.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskCorrection" id="BPMNShape_servicetaskCorrection">
+                <omgdc:Bounds height="71.0" width="131.0" x="170.0" y="340.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskDeleteWorkflow" id="BPMNShape_servicetaskDeleteWorkflow">
+                <omgdc:Bounds height="71.0" width="135.0" x="649.0" y="340.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskSetStatus1" id="BPMNShape_servicetaskSetStatus1">
+                <omgdc:Bounds height="76.0" width="131.0" x="1060.0" y="101.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape bpmnElement="servicetaskSetStatus2" id="BPMNShape_servicetaskSetStatus2">
+                <omgdc:Bounds height="76.0" width="126.0" x="403.0" y="220.0"></omgdc:Bounds>
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge bpmnElement="courseSupervisorConfirm" id="BPMNEdge_courseSupervisorConfirm">
+                <omgdi:waypoint x="531.0" y="140.0"></omgdi:waypoint>
+                <omgdi:waypoint x="650.0" y="138.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="93.0" x="539.0" y="141.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="courseSupervisorReject" id="BPMNEdge_courseSupervisorReject">
+                <omgdi:waypoint x="465.0" y="176.0"></omgdi:waypoint>
+                <omgdi:waypoint x="466.0" y="220.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="86.0" x="470.0" y="189.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="courseBossReject" id="BPMNEdge_courseBossReject">
+                <omgdi:waypoint x="905.0" y="101.0"></omgdi:waypoint>
+                <omgdi:waypoint x="905.0" y="35.0"></omgdi:waypoint>
+                <omgdi:waypoint x="235.0" y="35.0"></omgdi:waypoint>
+                <omgdi:waypoint x="235.0" y="103.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="58.0" x="830.0" y="41.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowCorrection" id="BPMNEdge_flowCorrection">
+                <omgdi:waypoint x="400.0" y="375.0"></omgdi:waypoint>
+                <omgdi:waypoint x="301.0" y="375.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="76.0" x="316.0" y="375.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowAssignSupervisor" id="BPMNEdge_flowAssignSupervisor">
+                <omgdi:waypoint x="116.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="170.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowSupervisorCheck" id="BPMNEdge_flowSupervisorCheck">
+                <omgdi:waypoint x="301.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="400.0" y="140.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowBossCheck" id="BPMNEdge_flowBossCheck">
+                <omgdi:waypoint x="783.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="840.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="courseBossConfirm" id="BPMNEdge_courseBossConfirm">
+                <omgdi:waypoint x="971.0" y="138.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1060.0" y="139.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="65.0" x="979.0" y="140.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="serviceCorrectionflow" id="BPMNEdge_serviceCorrectionflow">
+                <omgdi:waypoint x="235.0" y="340.0"></omgdi:waypoint>
+                <omgdi:waypoint x="235.0" y="174.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="50.0" x="243.0" y="291.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="CreatorReject" id="BPMNEdge_CreatorReject">
+                <omgdi:waypoint x="531.0" y="375.0"></omgdi:waypoint>
+                <omgdi:waypoint x="649.0" y="375.0"></omgdi:waypoint>
+                <bpmndi:BPMNLabel>
+                    <omgdc:Bounds height="14.0" width="69.0" x="543.0" y="375.0"></omgdc:Bounds>
+                </bpmndi:BPMNLabel>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowEndWithReject" id="BPMNEdge_flowEndWithReject">
+                <omgdi:waypoint x="784.0" y="375.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1257.0" y="375.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1257.0" y="156.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowEndWithConfirm" id="BPMNEdge_flowEndWithConfirm">
+                <omgdi:waypoint x="1191.0" y="139.0"></omgdi:waypoint>
+                <omgdi:waypoint x="1240.0" y="138.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+            <bpmndi:BPMNEdge bpmnElement="flowSendToCreator" id="BPMNEdge_flowSendToCreator">
+                <omgdi:waypoint x="466.0" y="296.0"></omgdi:waypoint>
+                <omgdi:waypoint x="465.0" y="335.0"></omgdi:waypoint>
+            </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+    </bpmndi:BPMNDiagram>
 </definitions>

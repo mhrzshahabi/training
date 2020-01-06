@@ -5,6 +5,7 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.StudentDTO;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -23,4 +24,5 @@ public interface IStudentService {
     void delete(StudentDTO.Delete request);
 
     SearchDTO.SearchRs<StudentDTO.Info> search(SearchDTO.SearchRq request);
+
 }

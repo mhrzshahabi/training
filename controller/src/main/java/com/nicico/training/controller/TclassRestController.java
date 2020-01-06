@@ -15,6 +15,7 @@ import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
 import com.nicico.training.service.ClassAlarmService;
+import com.nicico.training.service.ClassStudentService;
 import com.nicico.training.service.StudentService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -49,13 +50,14 @@ public class TclassRestController {
     private final ModelMapper modelMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
-
+    private final ClassStudentService classStudentService;
+    private Long x;
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
     public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
         PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
-        tclassService.addStudents(classId, personsIds.getIds());
-        return new ResponseEntity(HttpStatus.OK);
+       tclassService.addStudents(classId, personsIds.getIds());
+       return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
@@ -291,6 +293,4 @@ public class TclassRestController {
         return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
 
     }
-
-
 }

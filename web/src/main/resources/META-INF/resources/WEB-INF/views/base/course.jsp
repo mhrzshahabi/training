@@ -162,6 +162,7 @@
                 ListGrid_CourseJob.setData([]);
                 ListGrid_CourseSkill.setData([]);
                 ListGrid_CourseSyllabus.setData([]);
+                 refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
                 // ListGrid_CourseGoal.setData([]);
                 // ListGrid_CourseCompetence.setData([]);
             }
@@ -521,6 +522,8 @@
 
         click: function () {
             ListGrid_Course_refresh();
+            refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
+
 
         }
     });
@@ -2564,9 +2567,9 @@
 
     function refreshSelectedTab_Course(tab) {
 
-         courseRecord = ListGrid_Course.getSelectedRecord();
+       //  courseRecord = ListGrid_Course.getSelectedRecord();
 
-        if (!(courseRecord == undefined || courseRecord == null)) {
+      //  if (!(courseRecord == undefined || courseRecord == null)) {
             switch (tab.ID) {
                 case "courseEvaluationTAB": {
                        if (typeof loadPage_course_evaluation !== "undefined")
@@ -2574,6 +2577,6 @@
                     break;
                 }
             }
-        }
+        //}
     }
 
