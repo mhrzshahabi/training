@@ -56,9 +56,8 @@ public class TclassRestController {
     @PostMapping(value = "/addStudents/{classId}")
     public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
         PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
-        x=tclassService.addStudents(classId, personsIds.getIds());
-        classStudentService.add(classId,x);
-        return new ResponseEntity(HttpStatus.OK);
+       tclassService.addStudents(classId, personsIds.getIds());
+       return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable
@@ -294,6 +293,4 @@ public class TclassRestController {
         return new ResponseEntity<Long>((MultiValueMap<String, String>) classList, HttpStatus.OK);
 
     }
-
-
 }
