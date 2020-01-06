@@ -165,4 +165,10 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="razmnoosh (generated)" id="1578207622478-208">
+        <addColumn tableName="tbl_teacher">
+            <column name="b_in_black_list" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
