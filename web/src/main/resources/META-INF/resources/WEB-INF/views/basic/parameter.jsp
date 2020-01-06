@@ -161,19 +161,22 @@
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-
-    function refreshParameterValueLG_parameter() {
-        var record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, false)) {
-            refreshLgDs(ParameterValueLG_parameter, ParameterValueDS_parameter, parameterValueUrl + "/iscList/" + record.id)
-        }
-    }
-
     function createParameter_parameter() {
         parameterMethod_parameter = "POST";
         ParameterDF_parameter.clearValues();
         ParameterWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.type"/>");
         ParameterWin_parameter.show();
+    }
+
+    function editParameter_parameter() {
+        let record = ParameterLG_parameter.getSelectedRecord();
+        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
+            parameterMethod_parameter = "PUT";
+            ParameterDF_parameter.clearValues();
+            ParameterDF_parameter.editRecord(record);
+            ParameterWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.type"/>");
+            ParameterWin_parameter.show();
+        }
     }
 
     function saveParameter_parameter() {
@@ -193,6 +196,23 @@
         );
     }
 
+    function removeParameter_parameter() {
+        let record = ParameterLG_parameter.getSelectedRecord();
+        var entityType = '<spring:message code="parameter.type"/>';
+        if (checkRecordAsSelected(record, true, entityType)) {
+            removeRecord(parameterUrl + "/" + record.id, entityType, record.title, 'ParameterLG_parameter');
+        }
+    }
+
+    // ---------------------------------------------------------------------------------------------------
+
+    function refreshParameterValueLG_parameter() {
+        var record = ParameterLG_parameter.getSelectedRecord();
+        if (checkRecordAsSelected(record, false)) {
+            refreshLgDs(ParameterValueLG_parameter, ParameterValueDS_parameter, parameterValueUrl + "/iscList/" + record.id)
+        }
+    }
+
     function createParameterValue_parameter() {
         let record = ParameterLG_parameter.getSelectedRecord();
         if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
@@ -201,6 +221,20 @@
             ParameterValueDF_parameter.getItem("parameter.id").setValue(record.id);
             ParameterValueDF_parameter.getItem("parameter.title").setValue(record.title);
             ParameterValueWin_parameter.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="parameter.value"/>");
+            ParameterValueWin_parameter.show();
+        }
+    }
+
+    function editParameterValue_parameter() {
+        let parameterRecord = ParameterLG_parameter.getSelectedRecord();
+        let record = ParameterValueLG_parameter.getSelectedRecord();
+        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.value"/>")) {
+            parameterValueMethod_parameter = "PUT";
+            ParameterValueDF_parameter.clearValues();
+            ParameterValueDF_parameter.editRecord(record);
+            ParameterValueDF_parameter.getItem("parameter.id").setValue(parameterRecord.id);
+            ParameterValueDF_parameter.getItem("parameter.title").setValue(parameterRecord.title);
+            ParameterValueWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.value"/>");
             ParameterValueWin_parameter.show();
         }
     }
@@ -223,50 +257,11 @@
         );
     }
 
-    function editParameter_parameter() {
-        let record = ParameterLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.type"/>")) {
-            parameterMethod_parameter = "PUT";
-            ParameterDF_parameter.clearValues();
-            ParameterDF_parameter.editRecord(record);
-            ParameterWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.type"/>");
-            ParameterWin_parameter.show();
-        }
-    }
-
-    function editParameterValue_parameter() {
-        let parameterRecord = ParameterLG_parameter.getSelectedRecord();
-        let record = ParameterValueLG_parameter.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="parameter.value"/>")) {
-            parameterValueMethod_parameter = "PUT";
-            ParameterValueDF_parameter.clearValues();
-            ParameterValueDF_parameter.editRecord(record);
-            ParameterValueDF_parameter.getItem("parameter.id").setValue(parameterRecord.id);
-            ParameterValueDF_parameter.getItem("parameter.title").setValue(parameterRecord.title);
-            ParameterValueWin_parameter.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="parameter.value"/>");
-            ParameterValueWin_parameter.show();
-        }
-    }
-
-    function removeParameter_parameter() {
-        let record = ParameterLG_parameter.getSelectedRecord();
-        var entityType = '<spring:message code="parameter.type"/>';
-        if (checkRecordAsSelected(record, true, entityType)) {
-            var url = parameterUrl + "/" + record.id;
-            var entityTitle = record.title;
-            removeRecord(url, entityType, entityTitle, 'ParameterLG_parameter');
-        }
-    }
 
     function removeParameterValue_parameter() {
         let record = ParameterValueLG_parameter.getSelectedRecord();
         var entityType = '<spring:message code="parameter.value"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
-            var url = parameterValueUrl + "/" + record.id;
-            var entityTitle = record.title;
-            removeRecord(url, entityType, entityTitle, 'ParameterValueLG_parameter');
+            removeRecord(parameterValueUrl + "/" + record.id, entityType, record.title, 'ParameterValueLG_parameter');
         }
     }
-
-
-
