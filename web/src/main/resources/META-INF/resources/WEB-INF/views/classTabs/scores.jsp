@@ -116,8 +116,14 @@ var flag1=null
                 },
                  editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
 
-                    if (newValue == null && record.scoresState === "مردود" && record.failurereason.length === 0)
+                   if(newValue == null && record.scoresState  === "مردود")
+                    {
+                      ListGrid_Cell_scoresState_Update(record,null)
+                      ListGrid_Class_Student.refreshFields();
+                    }
+                   else if (newValue == null && record.scoresState === "مردود" && record.failurereason.length === 0)
                         {
+                        alert("2")
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
                         }
