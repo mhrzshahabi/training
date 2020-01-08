@@ -2,7 +2,6 @@
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 
-var dummy;
 // <script>
     var teacherMethod = "POST";
     var teacherWait;
@@ -328,7 +327,6 @@ var dummy;
             {
                 ID: "teacherBasicInfo",
                 title: "<spring:message code='basic.information'/>", canClose: false,
-// pane: HLayOut_Basic_JspTeacher
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherBasicInfo-tab"})
             }
         ]
@@ -420,7 +418,7 @@ var dummy;
 
     //----------------------------------------- Evaluation -----------------------------------------------------------
     IButton_Evaluation_Show_JspTeacher = isc.IButton.create({
-        title: "محاسبه ی نمره ی ارزیابی",
+        title: "<spring:message code='cal.eval.grade'/>",
         width: 130,
         click: function () {
             DynamicForm_Evaluation_JspTeacher.validate();
@@ -435,7 +433,7 @@ var dummy;
     });
 
     IButton_Evaluation_Print_JspTeacher = isc.IButton.create({
-        title: "چاپ فرم ارزیابی",
+        title: "<spring:message code='print.eval.form'/>",
         width: 130,
         click: function () {
         }
@@ -476,12 +474,12 @@ var dummy;
             {name: "id", hidden: true},
             {
                 name: "teacherCode",
-                title: "کد استاد",
+                title: "<spring:message code='teacher.code'/>",
                 disabled: true,
             },
             {
                 name: "evaluationNumber",
-                title: "نمره ی ارزیابی",
+                title: "<spring:message code='eval.grade'/>",
                 disabled: true
             },
             {
@@ -846,7 +844,6 @@ var dummy;
                 subCatIds.add(subCategoryIds[i].id);
             DynamicForm_BasicInfo_JspTeacher.getField("subCategories").setValue(subCatIds);
         }
-
 
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
