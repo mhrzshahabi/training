@@ -9,8 +9,8 @@
     var RestDataSource_course_evaluation = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد"},
-            {name: "titleFa", title: "عنوان"},
+            {name: "code", title: "<spring:message code="code"/>"},
+            {name: "titleFa", title: "<spring:message code="title"/>"},
             {
                 name: "evaluation", valueMap: {
                     "1": "واکنش",
@@ -40,10 +40,10 @@
         showFilterEditor: true,
         dataSource: RestDataSource_course_evaluation,
         fields: [
-            {name: "code", title: "کد"},
-            {name: "titleFa", title: "عنوان"},
+            {name: "code", title: "<spring:message code="code"/>"},
+            {name: "titleFa", title: "<spring:message code="title"/>"},
             {
-                name: "evaluation", title: "سطح ارزیابی",
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
 
                 formatCellValue: function (value, record, field) {
                     if (value === "رفتاری") {
@@ -83,7 +83,7 @@
         items: [
             {
                 name: "evaluation",
-                title: "سطوح ارزيابي",
+                title: "<spring:message code="evaluation.level"/>",
                 type: "select",
                 defaultValue: "1",
                 valueMap: {
@@ -103,7 +103,7 @@
 
             {
                 type: "button",
-                title: "ثبت",
+                title: "<spring:message code="register"/>",
                 fontsize: 2,
                 width: 160,
                 height: "30",
@@ -122,7 +122,7 @@
             },
             {
                 name: "behavioralLevel",
-                title: "سطح رفتاری",
+                title: "<spring:message code="behavioral.Level"/>",
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,

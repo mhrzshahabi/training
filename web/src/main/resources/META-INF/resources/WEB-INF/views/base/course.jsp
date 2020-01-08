@@ -2082,7 +2082,7 @@
                 pane: ListGrid_CourseCompetence
             },
              {
-             title: "ارزیابی دوره",
+             title: "<spring:message code="course.evaluation"/>",
              ID:"courseEvaluationTAB",
              pane: isc.ViewLoader.create({viewURL: "course_evaluation/show-form"})
             }
