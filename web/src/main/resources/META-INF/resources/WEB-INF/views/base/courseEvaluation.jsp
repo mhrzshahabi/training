@@ -33,11 +33,11 @@
     });
     //=========================================ListGrid=========================
     var ListGrid_CourseEvaluation = isc.TrLG.create({
-        filterOperator: "iContains",
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
+        // filterOperator: "iContains",
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
         filterOnKeypress: false,
-        showFilterEditor: true,
+        showFilterEditor: false,
         dataSource: RestDataSource_course_evaluation,
         fields: [
             {name: "code", title: "<spring:message code="code"/>"},
