@@ -48,4 +48,7 @@ public interface ITclassService {
 
     @Transactional
     Long getEndGroup(Long courseId, Long termId);
+
+    @Transactional(readOnly = true)
+    int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode);
 }

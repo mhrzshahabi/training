@@ -252,4 +252,11 @@ public class TclassService implements ITclassService {
         return max + 1;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode )
+    {
+      return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+    }
+
 }
