@@ -186,4 +186,17 @@
         </addColumn>
     </changeSet>
 
+    <changeSet author="heydaripoor (generated)" id="1578480115733-226">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT_FINAL" constraintName="FK_STUDENT_TO_SCORES"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-229">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT_FINAL" constraintName="FK_TCLASS_TO_STUDENT"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-261">
+        <dropTable tableName="TBL_CLASS_STUDENT_FINAL"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-269">
+        <dropSequence sequenceName="SEQ_SCORES_ID"/>
+    </changeSet>
+
     </databaseChangeLog>
