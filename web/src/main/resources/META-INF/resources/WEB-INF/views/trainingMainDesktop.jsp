@@ -2,6 +2,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
+<%@ taglib prefix="s" uri="http://www.springframework.org/security/tags" %>
 <%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 <%@ page import="com.nicico.copper.core.SecurityUtil" %>
 <% final String accessToken = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);%>
@@ -355,12 +356,14 @@
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
+<%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
+<%--                </sec:authorize>--%>
                 {
                     title: "<spring:message code="skill.categorize"/>",
                     click: function () {
