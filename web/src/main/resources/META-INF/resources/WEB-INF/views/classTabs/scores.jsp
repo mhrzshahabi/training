@@ -178,13 +178,14 @@ var flag1=null
                        ListGrid_Class_Student.invalidateCache();
                        ListGrid_Class_Student.refreshFields();
                     }
-                    else if (newValue == null && (record.scoresState === "مردود" || record.scoresState === "قبول با نمره"))
+                    else if (newValue == null && (record.scoresState === "مردود" || record.scoresState.length>0 ))
                      {
                      console.log()
                      flag1=1
                       Row_Numbers=rowNum;
                       ListGrid_Cell_score_Update(record, null);
                      }
+
                      ListGrid_Class_Student.refreshFields();
                 },
                 validators: {
