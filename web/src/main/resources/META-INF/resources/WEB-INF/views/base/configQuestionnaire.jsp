@@ -301,7 +301,11 @@
         tabBarThickness: 125,
         tabs: [
             {
-                title: "<spring:message code="evaluation.question.repository"/>",
+                title: "<spring:message code="question.bank"/>",
+                pane: VLayout_Body_JspConfigQuestionnaire
+            },
+            {
+                title: "<spring:message code="questionnaire"/>",
                 pane: VLayout_Body_JspConfigQuestionnaire
             }
         ]
