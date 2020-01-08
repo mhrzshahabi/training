@@ -185,16 +185,4 @@
         </addColumn>
     </changeSet>
 
-    <changeSet author="poursalehi_mos (generated)" id="1578293448818-207">
-        <addColumn tableName="tbl_student">
-            <column name="applicant_company_name" type="varchar2(255 CHAR)">
-            </column>
-        </addColumn>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578293448818-208">
-        <addColumn tableName="tbl_student">
-            <column name="presence_type_id" type="number(19, 0)"/>
-        </addColumn>
-    </changeSet>
-
 </databaseChangeLog>

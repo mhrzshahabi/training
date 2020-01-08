@@ -16,6 +16,7 @@ var dummy;
     var persianDateCheck = true;
     var selectedRecordPersonalID = null;
     var isTeacherCategoriesChanged = false;
+    var isCategoriesChanged;
 
     //----------------------------------------------------Rest Data Sources-------------------------------------------
 
@@ -31,7 +32,7 @@ var dummy;
             {name: "personality.educationMajor.titleFa"},
             {name: "personality.contactInfo.mobile"},
             {name: "categories"},
-            {name: "subCategories" },
+            {name: "subCategories"},
             {name: "personality.contactInfo.homeAddress.id"},
             {name: "personality.contactInfo.workAddress.id"}
         ],
@@ -134,13 +135,15 @@ var dummy;
 
         },
             {
-                title: "<spring:message code='print.Detail'/>", icon: "<spring:url value="print.png"/>", click: function () {
+                title: "<spring:message code='print.Detail'/>",
+                icon: "<spring:url value="print.png"/>",
+                click: function () {
                     var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
                     if (record == null || record.id == null) {
                         createDialog("info", "<spring:message code='msg.no.records.selected'/>");
                         return;
                     }
-                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id,null);
+                    trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
                 }
             }
         ]
@@ -325,23 +328,11 @@ var dummy;
             {
                 ID: "teacherBasicInfo",
                 title: "<spring:message code='basic.information'/>", canClose: false,
-                // pane: HLayOut_Basic_JspTeacher
+// pane: HLayOut_Basic_JspTeacher
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherBasicInfo-tab"})
             }
         ]
     });
-    // var HLayOut_Temp_JspTeacher = isc.TrHLayout.create({
-    //     layoutMargin: 5,
-    //     showEdges: false,
-    //     edgeImage: "",
-    //     alignLayout: "center",
-    //     align: "center",
-    //     padding: 10,
-    //     height: "60%",
-    //     membersMargin: 10,
-    //     showResizeBar: true,
-    //     members: [TabSet_BasicInfo_JspTeacher]
-    // });
 
     var TabSet_Bottom_JspTeacher = isc.TabSet.create({
         tabBarPosition: "top",
@@ -349,19 +340,9 @@ var dummy;
         height: "30%",
         tabs: [
             {
-                ID: "accountInfo",
-                title: "<spring:message code='account.information'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/accountInfo-tab"})
-            },
-            {
-                ID: "addressInfo",
-                title: "<spring:message code='address'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/addressInfo-tab"})
-            },
-            {
-                ID: "jobInfo",
-                title: "<spring:message code='work.place'/>", canClose: false,
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/jobInfo-tab"})
+                ID: "academicBK",
+                title: "<spring:message code="academicBK"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
             },
             {
                 ID: "employmentHistory",
@@ -379,9 +360,9 @@ var dummy;
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/teacherCertification-tab"})
             },
             {
-                ID: "attachmentsTab",
-                title: "<spring:message code="documents"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
+                ID: "publication",
+                title: "<spring:message code="publication"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
             },
             {
                 ID: "foreignLangKnowledge",
@@ -389,20 +370,30 @@ var dummy;
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/foreignLangKnowledge-tab"})
             },
             {
-                ID: "publication",
-                title: "<spring:message code="publication"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/publication-tab"})
+                ID: "accountInfo",
+                title: "<spring:message code='account.information'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/accountInfo-tab"})
+            },
+            {
+                ID: "addressInfo",
+                title: "<spring:message code='address'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/addressInfo-tab"})
+            },
+            {
+                ID: "jobInfo",
+                title: "<spring:message code='work.place'/>", canClose: false,
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/jobInfo-tab"})
+            },
+            {
+                ID: "attachmentsTab",
+                title: "<spring:message code="documents"/>",
+                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/attachments-tab"})
             },
             {
                 ID: "otherActivities",
                 title: "<spring:message code="otherActivities"/>",
                 pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/otherActivities-tab"})
             },
-            {
-                ID: "academicBK",
-                title: "<spring:message code="academicBK"/>",
-                pane: isc.ViewLoader.create({autoDraw: true, viewURL: "teacher/academicBK-tab"})
-            }
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
             if (isc.Page.isLoaded())
@@ -426,6 +417,187 @@ var dummy;
             ]
         })]
     });
+
+    //----------------------------------------- Evaluation -----------------------------------------------------------
+    IButton_Evaluation_Show_JspTeacher = isc.IButton.create({
+        title: "محاسبه ی نمره ی ارزیابی",
+        width: 130,
+        click: function () {
+            DynamicForm_Evaluation_JspTeacher.validate();
+            if (DynamicForm_Evaluation_JspTeacher.hasErrors())
+                return;
+            var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            var catId = DynamicForm_Evaluation_JspTeacher.getValue("category");
+            var subCatId = DynamicForm_Evaluation_JspTeacher.getValue("subCategory");
+            isc.RPCManager.sendRequest(TrDSRequest(teacherUrl + "evaluateTeacher/" + record.id + "/" + catId + "/" + subCatId, "GET", null,
+                "callback: teacher_evaluate_action_result(rpcResponse)"));
+        }
+    });
+
+    IButton_Evaluation_Print_JspTeacher = isc.IButton.create({
+        title: "چاپ فرم ارزیابی",
+        width: 130,
+        click: function () {
+        }
+    });
+
+    IButton_Evaluation_Exit_JspTeacher = isc.IButtonCancel.create({
+        orientation: "vertical",
+        width: 130,
+        click: function () {
+            Window_Evaluation_JspTeacher.close();
+        }
+    });
+
+    var HLayOut_EvaluationPrintOrExit_JspTeacher = isc.TrHLayoutButtons.create({
+        showEdges: false,
+        edgeImage: "",
+        width: "100%",
+        height: "10%",
+        membersMargin: 15,
+        alignLayout: "center",
+        padding: 10,
+        members: [
+            IButton_Evaluation_Show_JspTeacher,
+            IButton_Evaluation_Print_JspTeacher,
+            IButton_Evaluation_Exit_JspTeacher
+        ]
+    });
+
+    var DynamicForm_Evaluation_JspTeacher = isc.DynamicForm.create({
+        width: "100%",
+        height: "80%",
+        align: "right",
+        titleWidth: 0,
+        showInlineErrors: true,
+        showErrorText: false,
+        numCols: 4,
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "teacherCode",
+                title: "کد استاد",
+                disabled: true,
+            },
+            {
+                name: "evaluationNumber",
+                title: "نمره ی ارزیابی",
+                disabled: true
+            },
+            {
+                name: "category",
+                title: "<spring:message code='category'/>",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                defaultValue: null,
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "id",
+                required: true,
+                optionDataSource: RestDataSource_Category_JspTeacher,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+
+                changed: function () {
+                    isCategoriesChanged = true;
+                    var subCategoryField = DynamicForm_Evaluation_JspTeacher.getField("subCategory");
+                    subCategoryField.clearValue();
+                    if (this.getSelectedRecords() == null) {
+                        subCategoryField.clearValue();
+                        subCategoryField.disable();
+                        return;
+                    }
+                    subCategoryField.enable();
+                    if (subCategoryField.getValue() === undefined)
+                        return;
+                    var subCategories = subCategoryField.getSelectedRecords();
+                    var categoryIds = this.getValue();
+                    var SubCats = [];
+                    for (var i = 0; i < subCategories.length; i++) {
+                        if (categoryIds.contains(subCategories[i].categoryId))
+                            SubCats.add(subCategories[i].id);
+                    }
+                    subCategoryField.setValue(SubCats);
+                    subCategoryField.focus(this.form, subCategoryField);
+                }
+
+            },
+            {
+                name: "subCategory",
+                title: "<spring:message code='subcategory'/>",
+                textAlign: "center",
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                defaultValue: null,
+                displayField: "titleFa",
+                valueField: "id",
+                optionDataSource: RestDataSource_SubCategory_JspTeacher,
+                autoFetchData: false,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "titleFa", width: "30%", filterOperator: "iContains"}],
+                focus: function () {
+                    if (isCategoriesChanged) {
+                        isCategoriesChanged = false;
+                        var ids = DynamicForm_Evaluation_JspTeacher.getField("category").getValue();
+                        if (ids === []) {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = null;
+                        } else {
+                            RestDataSource_SubCategory_JspTeacher.implicitCriteria = {
+                                _constructor: "AdvancedCriteria",
+                                operator: "and",
+                                criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]
+                            };
+                        }
+                        this.fetchData();
+                    }
+                }
+            }
+        ]
+    });
+
+    var Window_Evaluation_JspTeacher = isc.Window.create({
+        placement: "center",
+        title: "<spring:message code='teacher.evaluation'/>",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        width: 550,
+        height: 150,
+        border: "1px solid gray",
+        items: [isc.TrVLayout.create({
+            members: [
+                DynamicForm_Evaluation_JspTeacher,
+                HLayOut_EvaluationPrintOrExit_JspTeacher,
+            ]
+        })]
+    });
+
+    function teacher_evaluate_action_result(resp) {
+        DynamicForm_Evaluation_JspTeacher.setValue("evaluationNumber", resp.data);
+    }
 
     //----------------------------------------------ToolStrips and Layout-Grid----------------------------------------
 
@@ -454,11 +626,25 @@ var dummy;
     });
 
     var ToolStripButton_Print_JspTeacher = isc.ToolStripButtonPrint.create({
-        //icon: "[SKIN]/RichTextEditor/print.png",
+//icon: "[SKIN]/RichTextEditor/print.png",
         title: "<spring:message code='print'/>",
         click: function () {
             trPrintWithCriteria("<spring:url value="/teacher/printWithCriteria/"/>" + "pdf",
                 ListGrid_Teacher_JspTeacher.getCriteria());
+        }
+    });
+
+    var ToolStripButton_Evaluation_JspTeacher = isc.ToolStripButton.create({
+        title: "<spring:message code='teacher.evaluation'/>",
+        click: function () {
+            var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            if (record == null || record.id == null) {
+                createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                return;
+            }
+            DynamicForm_Evaluation_JspTeacher.clearValues();
+            DynamicForm_Evaluation_JspTeacher.setValue("teacherCode", record.teacherCode),
+                Window_Evaluation_JspTeacher.show();
         }
     });
 
@@ -470,6 +656,7 @@ var dummy;
             ToolStripButton_Edit_JspTeacher,
             ToolStripButton_Remove_JspTeacher,
             ToolStripButton_Print_JspTeacher,
+            ToolStripButton_Evaluation_JspTeacher,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",
@@ -845,7 +1032,7 @@ var dummy;
             "callback: personalInfo_findOne_result(rpcResponse)"));
     }
 
-    function fillPersonalInfoByPersonnelNumber(personnelCode){
+    function fillPersonalInfoByPersonnelNumber(personnelCode) {
         isc.RPCManager.sendRequest(TrDSRequest(personnelUrl + "/byPersonnelCode/" + personnelCode, "GET", null,
             "callback: personnel_findOne_result(rpcResponse)"));
     }
@@ -981,20 +1168,20 @@ var dummy;
                 if (personnel.maritalStatusTitle == "مجرد")
                     DynamicForm_BasicInfo_JspTeacher.setValue("personality.marriedId", 2);
             }
-            if(personnel.companyName != undefined && personnel.companyName != null)
+            if (personnel.companyName != undefined && personnel.companyName != null)
                 DynamicForm_JobInfo_JspTeacher.setValue("personality.jobLocation", personnel.companyName);
             var ccp_affairs = "";
             var ccp_section = "";
             var ccp_unit = "";
-            if(personnel.ccpAffairs != undefined && personnel.ccpAffairs != null)
+            if (personnel.ccpAffairs != undefined && personnel.ccpAffairs != null)
                 ccp_affairs = personnel.ccpAffairs;
-            if(personnel.ccpSection != undefined && personnel.ccpSection != null)
+            if (personnel.ccpSection != undefined && personnel.ccpSection != null)
                 ccp_section = personnel.ccpSection;
-            if(personnel.ccpUnit != undefined && personnel.ccpUnit != null)
+            if (personnel.ccpUnit != undefined && personnel.ccpUnit != null)
                 ccp_unit = personnel.ccpUnit;
-            var restAddress = ccp_affairs+","+ccp_section+","+ccp_unit;
-            if(restAddress != "")
-                DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr",restAddress);
+            var restAddress = ccp_affairs + "," + ccp_section + "," + ccp_unit;
+            if (restAddress != "")
+                DynamicForm_JobInfo_JspTeacher.setValue("personality.contactInfo.workAddress.restAddr", restAddress);
         }
     }
 
@@ -1053,7 +1240,11 @@ var dummy;
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
-                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {1: "رزومه", 2: "مدرک تحصیلی", 3: "گواهینامه"});
+                loadPage_attachment("Teacher", teacherId, "<spring:message code="document"/>", {
+                    1: "رزومه",
+                    2: "مدرک تحصیلی",
+                    3: "گواهینامه"
+                });
 
             if (typeof loadPage_EmploymentHistory !== "undefined")
                 loadPage_EmploymentHistory(teacherId);

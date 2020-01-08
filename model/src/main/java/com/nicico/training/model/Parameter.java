@@ -21,7 +21,7 @@ public class Parameter extends Auditable {
     @SequenceGenerator(name = "seq_parameter_id", sequenceName = "seq_parameter_id", allocationSize = 1)
     private Long id;
 
-    @Column(name = "c_title", nullable = false)
+    @Column(name = "c_title", nullable = false, unique = true)
     private String title;
 
     @Column(name = "c_code", unique = true)

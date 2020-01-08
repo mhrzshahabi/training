@@ -169,23 +169,4 @@ public class Student extends Auditable {
 
     @Column(name = "ccp_title")
     private String ccpTitle;
-
-     @Column(name = "scores_state")
-    private String scoresState;
-
-    @Column(name = "failure_reason")
-    private String failurereason;
-
-    @Column(name = "score")
-    private Float score;
-
-    @Column(name = "applicant_company_name")
-    private String applicantCompanyName;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "presence_type_id", nullable = false, insertable = false, updatable = false)
-    private ParameterValue presenceType;
-
-    @Column(name = "presence_type_id")
-    private Long presenceTypeId;
 }
