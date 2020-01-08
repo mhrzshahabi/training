@@ -38,7 +38,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>",type: "boolean"}
+            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", type: "boolean"}
         ],
         fetchDataURL: evaluationIndexHomeUrl + "/iscList"
     });
@@ -300,14 +300,8 @@
         tabBarPosition: "right",
         tabBarThickness: 125,
         tabs: [
-            {
-                title: "<spring:message code="question.bank"/>",
-                pane: VLayout_Body_JspConfigQuestionnaire
-            },
-            {
-                title: "<spring:message code="questionnaire"/>",
-                pane: VLayout_Body_JspConfigQuestionnaire
-            }
+            {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
+            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})}
         ]
     });
 
