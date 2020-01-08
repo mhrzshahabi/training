@@ -169,20 +169,21 @@
             <column name="b_in_black_list" type="number(1, 0)"/>
         </addColumn>
     </changeSet>
-     <changeSet author="heydaripoor (generated)" id="1578287346959-207">
+
+    <changeSet author="heydaripoor (generated)" id="1578479333742-212">
         <addColumn tableName="tbl_student">
             <column name="failure_reason" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1578287346959-208">
+    <changeSet author="heydaripoor (generated)" id="1578479333742-213">
         <addColumn tableName="tbl_student">
             <column name="score" type="float"/>
         </addColumn>
     </changeSet>
-    <changeSet author="heydaripoor (generated)" id="1578287346959-209">
+    <changeSet author="heydaripoor (generated)" id="1578479333742-214">
         <addColumn tableName="tbl_student">
             <column name="scores_state" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
 
-</databaseChangeLog>
+    </databaseChangeLog>
