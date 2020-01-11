@@ -78,21 +78,20 @@
                     }
                 }
             },
-
-            {
-                name: "teacherCode",
-                title: "<spring:message code='teacher.code'/>",
-                // disabled: true,
-                canEdit: false,
-            },
             {
                 name: "personnelCode",
                 title: "<spring:message code='personnel.no'/>",
                 disabled: true,
                 blur: function () {
-                        var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
-                        fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
+                    var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
+                    fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
                 }
+            },
+            {
+                name: "teacherCode",
+                title: "<spring:message code='teacher.code'/>",
+                // disabled: true,
+                canEdit: false,
             },
 
             {
@@ -100,6 +99,7 @@
                 title: "<spring:message code='status'/>",
                 type: "radioGroup",
                 width: "*",
+                colSpan: 2,
                 valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
                 vertical: false,
                 defaultValue: "true"
