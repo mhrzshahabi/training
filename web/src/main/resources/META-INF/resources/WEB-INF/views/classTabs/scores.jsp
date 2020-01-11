@@ -162,6 +162,7 @@ var flag1=null
                         else
                         {
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
+                              ListGrid_Cell_scoresState_Update(record,null)
                               ListGrid_Class_Student.invalidateCache();
                         }
 
