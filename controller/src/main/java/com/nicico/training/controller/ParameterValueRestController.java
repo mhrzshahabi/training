@@ -31,7 +31,7 @@ public class ParameterValueRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/iscList")
+    @GetMapping("/iscList")
     public ResponseEntity<TotalResponse<ParameterValueDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(parameterValueService.search(nicicoCriteria), HttpStatus.OK);
@@ -46,7 +46,6 @@ public class ParameterValueRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<ParameterValueDTO.Info> create(@RequestBody Object rq) {
-        ModelMapper modelMapper = new ModelMapper();
         ParameterValueDTO.Create create = modelMapper.map(rq, ParameterValueDTO.Create.class);
         return new ResponseEntity<>(parameterValueService.checkAndCreate(create), HttpStatus.OK);
     }
@@ -54,7 +53,6 @@ public class ParameterValueRestController {
     @Loggable
     @PutMapping("/{id}")
     public ResponseEntity<ParameterValueDTO.Info> update(@PathVariable Long id, @RequestBody Object rq) {
-        ModelMapper modelMapper = new ModelMapper();
         ParameterValueDTO.Update update = modelMapper.map(rq, ParameterValueDTO.Update.class);
         return new ResponseEntity<>(parameterValueService.update(id, update), HttpStatus.OK);
     }

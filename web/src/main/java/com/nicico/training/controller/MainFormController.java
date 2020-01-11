@@ -85,7 +85,7 @@ public class MainFormController {
 
     @RequestMapping("/config")
     public String showConfigForm() {
-        return "basic/config";
+        return "security/config";
     }
 
     @RequestMapping("/config-questionnaire")
@@ -120,6 +120,11 @@ public class MainFormController {
             return restTemplate.exchange(restApiUrl + "/api/post/print_list/HTML", HttpMethod.POST, entity, byte[].class);
         else
             return null;
+    }
+
+    @RequestMapping("/questionnaire")
+    public String showQuestionnaireForm() {
+        return "evaluation/questionnaire";
     }
 
 }

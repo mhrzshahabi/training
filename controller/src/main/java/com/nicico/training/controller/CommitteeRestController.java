@@ -58,7 +58,7 @@ public class CommitteeRestController {
     @Loggable
     @PostMapping
     public ResponseEntity<CommitteeDTO.Info> create(@RequestBody CommitteeDTO.Create req) {
-        CommitteeDTO.Create create =modelMapper.map(req, CommitteeDTO.Create.class);
+        CommitteeDTO.Create create = modelMapper.map(req, CommitteeDTO.Create.class);
         return new ResponseEntity<>(committeeService.create(create), HttpStatus.CREATED);
     }
 

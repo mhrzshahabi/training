@@ -143,7 +143,10 @@ public class Tclass extends Auditable {
             inverseJoinColumns = {@JoinColumn(name = "f_student", referencedColumnName = "id")})
     private List<Student> studentSet;
 
-    @OneToMany(mappedBy = "tclass" ,fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<TClassStudent> tClassStudents;
+
+    @OneToMany(mappedBy = "tclass", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     private Set<ClassSession> classSessions;
 
     @Transient
@@ -160,7 +163,7 @@ public class Tclass extends Auditable {
 
     @Transient
     public String getHasWarning() {
-         return "";
+        return "";
     }
 
 }

@@ -32,6 +32,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     private Class<CREATE> createType;
     private Class<UPDATE> updateType;
     private Class<DELETE> deleteType;
+
     {
         entityType = (Class<E>)
                 ((ParameterizedType) getClass().getGenericSuperclass())

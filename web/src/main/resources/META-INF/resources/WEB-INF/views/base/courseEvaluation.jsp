@@ -9,8 +9,8 @@
     var RestDataSource_course_evaluation = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "code", title: "کد"},
-            {name: "titleFa", title: "عنوان"},
+            {name: "code", title: "<spring:message code="code"/>"},
+            {name: "titleFa", title: "<spring:message code="title"/>"},
             {
                 name: "evaluation", valueMap: {
                     "1": "واکنش",
@@ -21,9 +21,9 @@
             },
             {
                 name: "behavioralLevel", valueMap: {
-                    "مشاهده": "مشاهده",
-                    "مصاحبه": "مصاحبه",
-                    "کار پروژه ای": "کار پروژه ای",
+                    "1": "مشاهده",
+                    "2": "مصاحبه",
+                    "3": "کار پروژه ای",
                 }
             }
 
@@ -33,17 +33,17 @@
     });
     //=========================================ListGrid=========================
     var ListGrid_CourseEvaluation = isc.TrLG.create({
-        filterOperator: "iContains",
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
+        // filterOperator: "iContains",
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
         filterOnKeypress: false,
-        showFilterEditor: true,
+        showFilterEditor: false,
         dataSource: RestDataSource_course_evaluation,
         fields: [
-            {name: "code", title: "کد"},
-            {name: "titleFa", title: "عنوان"},
+            {name: "code", title: "<spring:message code="code"/>"},
+            {name: "titleFa", title: "<spring:message code="title"/>"},
             {
-                name: "evaluation", title: "سطح ارزیابی",
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
 
                 formatCellValue: function (value, record, field) {
                     if (value === "رفتاری") {
@@ -83,7 +83,7 @@
         items: [
             {
                 name: "evaluation",
-                title: "سطوح ارزيابي",
+                title: "<spring:message code="evaluation.level"/>",
                 type: "select",
                 defaultValue: "1",
                 valueMap: {
@@ -103,7 +103,7 @@
 
             {
                 type: "button",
-                title: "ثبت",
+                title: "<spring:message code="register"/>",
                 fontsize: 2,
                 width: 160,
                 height: "30",
@@ -122,7 +122,7 @@
             },
             {
                 name: "behavioralLevel",
-                title: "سطح رفتاری",
+                title: "<spring:message code="behavioral.Level"/>",
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
@@ -174,21 +174,32 @@
     function loadPage_course_evaluation() {
 
         var record = ListGrid_Course.getSelectedRecord();
+      if ( record == undefined || record == null) {
+                    ListGrid_CourseEvaluation.setData([]);
+                     DynamicForm_CourseEvaluation.disable()
+         }
+        else
+           {
+                  if (
+                            ListGrid_Course.getSelectedRecord().hasGoal) {
+                            ListGrid_CourseEvaluation.setData([]);
+                            createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
+                            DynamicForm_CourseEvaluation.disable()
+                            DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
 
-        if (ListGrid_Course.getSelectedRecord().hasGoal) {
-            createDialog("info", "این دوره دارای هدف نمی باشد", "پیغام")
-            DynamicForm_CourseEvaluation.disable()
-            DynamicForm_CourseEvaluation.getItem("evaluation").setValue("1")
+                   }
+                  else
+                        {
+                              DynamicForm_CourseEvaluation.enable()
+                              RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
+                              DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
+                              ListGrid_CourseEvaluation.fetchData();
+                              ListGrid_CourseEvaluation.invalidateCache();
+                        }
+            }
 
-        } else
-
-            DynamicForm_CourseEvaluation.enable()
-        RestDataSource_course_evaluation.fetchDataURL = courseUrl + "getEvaluation/" + record.id
-        DynamicForm_CourseEvaluation.getItem("behavioralLevel").setDisabled(true)
-        ListGrid_CourseEvaluation.fetchData();
-        ListGrid_CourseEvaluation.invalidateCache();
     }
 
+    DynamicForm_CourseEvaluation.disable()
 
-    // DynamicForm_CourseEvaluation.disable()
 

@@ -73,7 +73,7 @@ public interface ICourseService {
 
     //---------------------heydari---------------------------
 
-   CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
+    CourseDTO.Info updateEvaluation(Long id, CourseDTO.Update request);
 
-  List<CourseDTO.Info> getEvaluation(Long courseId);
+    List<CourseDTO.Info> getEvaluation(Long courseId);
 }

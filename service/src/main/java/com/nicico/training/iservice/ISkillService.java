@@ -9,6 +9,7 @@ com.nicico.training.iservice
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
 import org.springframework.data.domain.Pageable;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +17,9 @@ public interface ISkillService {
     SkillDTO.Info get(Long id);
 
     List<SkillDTO.Info> list();
+
+    @Transactional
+    List<SkillDTO.Info> listCourseIsNull();
 
     SkillDTO.Info create(SkillDTO.Create request);
 

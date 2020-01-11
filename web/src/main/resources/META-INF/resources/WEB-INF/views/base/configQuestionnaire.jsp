@@ -38,7 +38,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "nameFa", title: "<spring:message code="evaluation.index.nameFa"/>", filterOperator: "iContains"},
-            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>",type: "boolean"}
+            {name: "evalStatus", title: "<spring:message code="evaluation.index.evalStatus"/>", type: "boolean"}
         ],
         fetchDataURL: evaluationIndexHomeUrl + "/iscList"
     });
@@ -62,7 +62,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 required: true,
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
@@ -93,7 +93,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 textAlign: "center",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
@@ -215,7 +215,7 @@
             {
                 name: "domainId",
                 title: "<spring:message code='question.domain'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionDomain_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "title",
@@ -225,7 +225,7 @@
             {
                 name: "evaluationIndices",
                 title: "<spring:message code='question.indicator'/>",
-                type: "TrComboAutoRefresh",
+                type: "selectItem",
                 optionDataSource: RestDataSource_QuestionIndicator_JspConfigQuestionnaire,
                 valueField: "id",
                 displayField: "nameFa",
@@ -300,10 +300,8 @@
         tabBarPosition: "right",
         tabBarThickness: 125,
         tabs: [
-            {
-                title: "<spring:message code="evaluation.question.repository"/>",
-                pane: VLayout_Body_JspConfigQuestionnaire
-            }
+            {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
+            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})}
         ]
     });
 
@@ -314,6 +312,8 @@
     function ListGrid_ConfigQuestionnaire_refresh() {
         ListGrid_JspConfigQuestionnaire.invalidateCache();
         ListGrid_JspConfigQuestionnaire.filterByEditor();
+        RestDataSource_QuestionDomain_JspConfigQuestionnaire.fetchData();
+        RestDataSource_QuestionIndicator_JspConfigQuestionnaire.fetchData();
     }
 
     function ListGrid_ConfigQuestionnaire_Add() {

@@ -65,6 +65,10 @@ public class CourseDTO implements Serializable {
 
     @ApiModelProperty(required = true)
     private String workflowStatusCode;
+
+    private String evaluation;
+
+    private String behavioralLevel;
 //    @ApiModelProperty(required = true)
 //    private List<Long> preCourse;
 
@@ -93,8 +97,8 @@ public class CourseDTO implements Serializable {
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
         private Boolean hasGoal;
-        private String evaluation;
-        private String behavioralLevel;
+        private Boolean hasSkill;
+
 
 //        private Long knowledge;
 //        private Long skill;

@@ -30,7 +30,7 @@ public class ParameterRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/iscList")
+    @GetMapping("/iscList")
     public ResponseEntity<TotalResponse<ParameterDTO.Info>> iscList(@RequestParam MultiValueMap<String, String> criteria) {
         final NICICOCriteria nicicoCriteria = NICICOCriteria.of(criteria);
         return new ResponseEntity<>(parameterService.search(nicicoCriteria), HttpStatus.OK);
@@ -64,8 +64,8 @@ public class ParameterRestController {
     //////////////////////////////////////////config//////////////////////////////////////////
 
     @Loggable
-    @GetMapping("/config-types-list")
-    public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configTypesList() {
+    @GetMapping("/config-list")
+    public ResponseEntity<SearchDTO.SearchRs<ParameterDTO.Config>> configList() {
         return new ResponseEntity<>(parameterService.allConfig(new SearchDTO.SearchRq()), HttpStatus.OK);
     }
 }

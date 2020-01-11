@@ -3,7 +3,6 @@ package com.nicico.training.dto;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.training.dto.enums.ELangLevelDTO;
-import com.nicico.training.model.enums.ELangLevel;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

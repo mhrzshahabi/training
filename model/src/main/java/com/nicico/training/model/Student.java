@@ -5,6 +5,7 @@ import lombok.experimental.Accessors;
 import org.hibernate.annotations.DynamicUpdate;
 
 import javax.persistence.*;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -169,4 +170,7 @@ public class Student extends Auditable {
 
     @Column(name = "ccp_title")
     private String ccpTitle;
+
+    @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    private Set<TClassStudent> tClassStudents;
 }

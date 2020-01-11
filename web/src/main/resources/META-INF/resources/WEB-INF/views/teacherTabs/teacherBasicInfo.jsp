@@ -32,55 +32,6 @@
             {name: "id", hidden: true},
             {name: "personality.id", hidden: true},
             {
-                name: "personality.nationalCode",
-                title: "<spring:message code='national.code'/>",
-                required: true,
-                wrapTitle: false,
-                keyPressFilter: "[0-9]",
-                length: "10",
-                hint: "<spring:message code='msg.national.code.hint'/>",
-                showHintInField: true,
-                blur: function () {
-                    var codeCheck;
-                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
-                    nationalCodeCheck = codeCheck;
-                    if (codeCheck === false)
-                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
-        code='msg.national.code.validation'/>", true);
-                    if (codeCheck === true) {
-                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
-                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
-                        fillPersonalInfoFields(nationalCodeTemp);
-                    }
-                }
-            },
-
-            {
-                name: "teacherCode",
-                title: "<spring:message code='teacher.code'/>",
-                // disabled: true,
-                canEdit: false,
-            },
-            {
-                name: "personnelCode",
-                title: "<spring:message code='personnel.no'/>",
-                disabled: true,
-                blur: function () {
-                        var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
-                        fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
-                }
-            },
-
-            {
-                name: "enableStatus",
-                title: "<spring:message code='status'/>",
-                type: "radioGroup",
-                width: "*",
-                valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
-                vertical: false,
-                defaultValue: "true"
-            },
-            {
                 name: "personnelStatus",
                 title: "<spring:message code='teacher.type'/>",
                 type: "radioGroup",
@@ -103,6 +54,55 @@
                     }
 
                 }
+            },
+            {
+                name: "personality.nationalCode",
+                title: "<spring:message code='national.code'/>",
+                required: true,
+                wrapTitle: false,
+                keyPressFilter: "[0-9]",
+                length: "10",
+                hint: "<spring:message code='msg.national.code.hint'/>",
+                showHintInField: true,
+                blur: function () {
+                    var codeCheck;
+                    codeCheck = checkNationalCode(DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode"));
+                    nationalCodeCheck = codeCheck;
+                    if (codeCheck === false)
+                        DynamicForm_BasicInfo_JspTeacher.addFieldErrors("personality.nationalCode", "<spring:message
+        code='msg.national.code.validation'/>", true);
+                    if (codeCheck === true) {
+                        DynamicForm_BasicInfo_JspTeacher.clearFieldErrors("personality.nationalCode", true);
+                        var nationalCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personality.nationalCode");
+                        fillPersonalInfoFields(nationalCodeTemp);
+                    }
+                }
+            },
+            {
+                name: "personnelCode",
+                title: "<spring:message code='personnel.no'/>",
+                disabled: true,
+                blur: function () {
+                    var personnelCodeTemp = DynamicForm_BasicInfo_JspTeacher.getValue("personnelCode");
+                    fillPersonalInfoByPersonnelNumber(personnelCodeTemp);
+                }
+            },
+            {
+                name: "teacherCode",
+                title: "<spring:message code='teacher.code'/>",
+                // disabled: true,
+                canEdit: false,
+            },
+
+            {
+                name: "enableStatus",
+                title: "<spring:message code='status'/>",
+                type: "radioGroup",
+                width: "*",
+                colSpan: 2,
+                valueMap: {"true": "<spring:message code='enabled'/>", "false": "<spring:message code='disabled'/>"},
+                vertical: false,
+                defaultValue: "true"
             },
 
             {
@@ -608,11 +608,8 @@
     });
 
     var HLayOut_Photo_JspTeacher = isc.TrHLayout.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        padding: 10,
-        membersMargin: 10,
         members: [DynamicForm_Photo_JspTeacher]
     });
 
@@ -622,7 +619,8 @@
         edgeImage: "",
         padding: 10,
         membersMargin: 10,
-        width: "15%",
+        // width: "15%",
+        width: "5%",
         align: "center",
         members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
@@ -633,7 +631,7 @@
         edgeImage: "",
         padding: 10,
         membersMargin: 10,
-        width: "75%",
+        width: "85%",
         members: DynamicForm_BasicInfo_JspTeacher
     });
 

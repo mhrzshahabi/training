@@ -4,19 +4,22 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.EmploymentHistoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.TeacherService;
+import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -27,6 +30,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -48,6 +52,7 @@ public class TeacherRestController {
     private final ModelMapper modelMapper;
     private final ICategoryService categoryService;
     private final ISubCategoryService subCategoryService;
+    private final TeacherDAO teacherDAO;
 
     // ------------------------------
 
@@ -81,6 +86,7 @@ public class TeacherRestController {
             create.setCategories(categories);
         if (subCategories != null && subCategories.size() > 0)
             create.setSubCategories(subCategories);
+        create.setInBlackList(false);
         try {
             return new ResponseEntity<>(teacherService.create(create), HttpStatus.CREATED);
         } catch (TrainingException ex) {
@@ -127,6 +133,7 @@ public class TeacherRestController {
         }
     }
 
+
     @Loggable
     @DeleteMapping(value = "/list")
 //    @PreAuthorize("hasAuthority('d_teacher')")
@@ -153,7 +160,7 @@ public class TeacherRestController {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
-        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
+        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.deepSearch(request);
 
         final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
         final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
@@ -347,6 +354,56 @@ public class TeacherRestController {
         List<SubCategoryDTO.Info> subCategories = subCategoryService.search(subCategoriesRequest).getList();
         request.remove("subCategories");
         return subCategories;
+    }
+
+    @Loggable
+    @GetMapping(value = "/full-spec-list")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
+                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "id", required = false) Long id,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+
+        SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
+
+        SearchDTO.SearchRs<TeacherDTO.Info> response = teacherService.search(request);
+
+        final TeacherDTO.SpecRs specResponse = new TeacherDTO.SpecRs();
+        final TeacherDTO.TeacherSpecRs specRs = new TeacherDTO.TeacherSpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
+
+        specRs.setResponse(specResponse);
+
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+
+
+    @Loggable
+    @GetMapping(value = "/blackList/{inBlackList}/{id}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
+        teacherService.changeBlackListStatus(inBlackList,id);
+    }
+
+    @Loggable
+    @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
+//    @PreAuthorize("hasAuthority('r_teacher')")
+    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+        Long evaluationGrade = null;
+        Long CatId = null;
+        Long SubCatId = null;
+        CatId = Long.parseLong(catId);
+        if(!subCatId.equalsIgnoreCase("undefined"))
+            SubCatId = Long.parseLong(subCatId);
+        TeacherDTO.Info teacherDTO = teacherService.get(id);
+
+        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 
 

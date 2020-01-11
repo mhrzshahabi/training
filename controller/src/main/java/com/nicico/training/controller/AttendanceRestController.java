@@ -37,98 +37,98 @@ import java.util.*;
 @RequestMapping(value = "/api/attendance")
 public class AttendanceRestController {
 
-	private final IAttendanceService attendanceService;
-	private final ClassSessionService classSessionService;
-	private final TclassService tclassService;
-	private final ReportUtil reportUtil;
-	private final ObjectMapper objectMapper;
-	private final DateUtil dateUtil;
+    private final IAttendanceService attendanceService;
+    private final ClassSessionService classSessionService;
+    private final TclassService tclassService;
+    private final ReportUtil reportUtil;
+    private final ObjectMapper objectMapper;
+    private final DateUtil dateUtil;
 
-	// ------------------------------
+    // ------------------------------
 
-	@Loggable
-	@GetMapping(value = "/{id}")
+    @Loggable
+    @GetMapping(value = "/{id}")
 //	@PreAuthorize("hasAuthority('r_attendance')")
-	public ResponseEntity<AttendanceDTO.Info> get(@PathVariable Long id) {
-		return new ResponseEntity<>(attendanceService.get(id), HttpStatus.OK);
-	}
+    public ResponseEntity<AttendanceDTO.Info> get(@PathVariable Long id) {
+        return new ResponseEntity<>(attendanceService.get(id), HttpStatus.OK);
+    }
 
-	@Loggable
-	@GetMapping(value = "/list")
+    @Loggable
+    @GetMapping(value = "/list")
 //	@PreAuthorize("hasAuthority('r_attendance')")
-	public ResponseEntity<List<AttendanceDTO.Info>> list() {
-		return new ResponseEntity<>(attendanceService.list(), HttpStatus.OK);
-	}
+    public ResponseEntity<List<AttendanceDTO.Info>> list() {
+        return new ResponseEntity<>(attendanceService.list(), HttpStatus.OK);
+    }
 
-	@Loggable
-	@PostMapping
+    @Loggable
+    @PostMapping
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<AttendanceDTO.Info> create(@RequestBody Object req) {
-		AttendanceDTO.Create create = (new ModelMapper()).map(req, AttendanceDTO.Create.class);
-		return new ResponseEntity<>(attendanceService.create(create), HttpStatus.CREATED);
-	}
+    public ResponseEntity<AttendanceDTO.Info> create(@RequestBody Object req) {
+        AttendanceDTO.Create create = (new ModelMapper()).map(req, AttendanceDTO.Create.class);
+        return new ResponseEntity<>(attendanceService.create(create), HttpStatus.CREATED);
+    }
 
-	@Loggable
-	@GetMapping(value = "/auto-create")
+    @Loggable
+    @GetMapping(value = "/auto-create")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<List<List<Map>>> autoCreate(@RequestParam("classId") Long classId,@RequestParam("date") String date) {
-		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
-		return new ResponseEntity<>(maps, HttpStatus.CREATED);
-	}
-	@Loggable
-	@GetMapping(value = "/student")
+    public ResponseEntity<List<List<Map>>> autoCreate(@RequestParam("classId") Long classId, @RequestParam("date") String date) {
+        List<List<Map>> maps = attendanceService.autoCreate(classId, date);
+        return new ResponseEntity<>(maps, HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @GetMapping(value = "/student")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<List<List<Map>>> attendanceForStudent(@RequestParam("classId") Long classId,@RequestParam("studentId") Long studentId) {
-		List<List<Map>> maps = attendanceService.getAttendanceByStudent(classId, studentId);
-		return new ResponseEntity<>(maps, HttpStatus.CREATED);
-	}
-	@Loggable
-	@GetMapping(value = "/accept-absent-student")
+    public ResponseEntity<List<List<Map>>> attendanceForStudent(@RequestParam("classId") Long classId, @RequestParam("studentId") Long studentId) {
+        List<List<Map>> maps = attendanceService.getAttendanceByStudent(classId, studentId);
+        return new ResponseEntity<>(maps, HttpStatus.CREATED);
+    }
+
+    @Loggable
+    @GetMapping(value = "/accept-absent-student")
 //	@PreAuthorize("hasAuthority('c_attendance')")
-	public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
-												@RequestParam("studentId") Long studentId,
-												@RequestParam("sessionId") List<Long> sessionId) throws ParseException {
+    public ResponseEntity<Boolean> acceptAbsent(@RequestParam("classId") Long classId,
+                                                @RequestParam("studentId") Long studentId,
+                                                @RequestParam("sessionId") List<Long> sessionId) throws ParseException {
 //		List<List<Map>> maps = attendanceService.autoCreate(classId, date);
 //		ClassSessionDTO.Info sessionInfo = ;
 //		List<ClassSessionDTO.Info> classSessions = attendanceService.studentAbsentSessionsInClass(classId, studentId);
-		Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId,studentId));
-		for (Long aLong : sessionId) {
-			classSessions.add(classSessionService.get(aLong));
-		}
-		Long sum = 0L;
-		SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
-		for (ClassSessionDTO.Info classSession : classSessions) {
-			sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
-		}
-		Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId,0.2);
-		return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
-	}
+        Set<ClassSessionDTO.Info> classSessions = new HashSet<>(attendanceService.studentAbsentSessionsInClass(classId, studentId));
+        for (Long aLong : sessionId) {
+            classSessions.add(classSessionService.get(aLong));
+        }
+        Long sum = 0L;
+        SimpleDateFormat sdf = new SimpleDateFormat("HH:mm");
+        for (ClassSessionDTO.Info classSession : classSessions) {
+            sum += sdf.parse(classSession.getSessionEndHour()).getTime() - sdf.parse(classSession.getSessionStartHour()).getTime();
+        }
+        Double acceptAbsentHoursForClass = attendanceService.acceptAbsentHoursForClass(classId, 0.2);
+        return new ResponseEntity<>(acceptAbsentHoursForClass >= sum, HttpStatus.CREATED);
+    }
 
     @Loggable
     @PostMapping(value = "/save-attendance")
-    public ResponseEntity createAndSave(@RequestBody List<List<Map<String,String>>> req,
+    public ResponseEntity createAndSave(@RequestBody List<List<Map<String, String>>> req,
                                         @RequestParam("classId") Long classId,
-                                        @RequestParam("date") String date)
-    {
+                                        @RequestParam("date") String date) {
         attendanceService.convertToModelAndSave(req, classId, date);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
     @Loggable
     @PostMapping(value = "/student-attendance-save")
-    public ResponseEntity studentAttendanceSave(@RequestBody List<List<Map<String,String>>> req)
-    {
+    public ResponseEntity studentAttendanceSave(@RequestBody List<List<Map<String, String>>> req) {
         attendanceService.studentAttendanceSave(req);
         return new ResponseEntity(HttpStatus.CREATED);
     }
 
 
-	@Loggable
+    @Loggable
     @GetMapping(value = "/session-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getDateForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
-	    if(classId == null || classId == 0){
-	        return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(),HttpStatus.OK);
+        if (classId == null || classId == 0) {
+            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
         }
         List<ClassSessionDTO.ClassSessionsDateForOneClass> list = classSessionService.getDateForOneClass(classId);
         final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
@@ -142,15 +142,15 @@ public class AttendanceRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-	@Loggable
+    @Loggable
     @GetMapping(value = "/students")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
-	    if(classId == null || classId == 0){
-	        return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(),HttpStatus.OK);
+        if (classId == null || classId == 0) {
+            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
         }
-		List<StudentDTO.Info> students = tclassService.getStudents(classId);
-		final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+        List<StudentDTO.Info> students = tclassService.getStudents(classId);
+        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
         specResponse.setData(students)
                 .setStartRow(0)
                 .setEndRow(students.size())
@@ -162,7 +162,7 @@ public class AttendanceRestController {
     }
 
 
-	@Loggable
+    @Loggable
     @GetMapping(value = "/session-in-date")
 //	@PreAuthorize("hasAuthority('c_attendance')")
     public ResponseEntity<List<ClassSessionDTO.Info>> getSessionsForDate(@RequestParam("classId") Long classId, @RequestParam("date") String date) {
@@ -178,93 +178,92 @@ public class AttendanceRestController {
         return new ResponseEntity<>(list, HttpStatus.CREATED);
     }
 
-	@Loggable
-	@PutMapping(value = "/{id}")
+    @Loggable
+    @PutMapping(value = "/{id}")
 //	@PreAuthorize("hasAuthority('u_attendance')")
-	public ResponseEntity<AttendanceDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
-		AttendanceDTO.Update update = (new ModelMapper()).map(request, AttendanceDTO.Update.class);
-		return new ResponseEntity<>(attendanceService.update(id, update), HttpStatus.OK);
-	}
+    public ResponseEntity<AttendanceDTO.Info> update(@PathVariable Long id, @RequestBody Object request) {
+        AttendanceDTO.Update update = (new ModelMapper()).map(request, AttendanceDTO.Update.class);
+        return new ResponseEntity<>(attendanceService.update(id, update), HttpStatus.OK);
+    }
 
-	@Loggable
-	@DeleteMapping(value = "/{id}")
+    @Loggable
+    @DeleteMapping(value = "/{id}")
 //	@PreAuthorize("hasAuthority('d_attendance')")
-	public ResponseEntity delete(@PathVariable Long id) {
-		attendanceService.delete(id);
-		return new ResponseEntity(HttpStatus.OK);
-	}
+    public ResponseEntity delete(@PathVariable Long id) {
+        attendanceService.delete(id);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
-	@Loggable
-	@DeleteMapping(value = "/list")
+    @Loggable
+    @DeleteMapping(value = "/list")
 //	@PreAuthorize("hasAuthority('d_attendance')")
-	public ResponseEntity delete(@Validated @RequestBody AttendanceDTO.Delete request) {
-		attendanceService.delete(request);
-		return new ResponseEntity(HttpStatus.OK);
-	}
+    public ResponseEntity delete(@Validated @RequestBody AttendanceDTO.Delete request) {
+        attendanceService.delete(request);
+        return new ResponseEntity(HttpStatus.OK);
+    }
 
-	@Loggable
-	@GetMapping(value = "/spec-list")
+    @Loggable
+    @GetMapping(value = "/spec-list")
 //	@PreAuthorize("hasAuthority('r_attendance')")
-	public ResponseEntity<AttendanceDTO.AttendanceSpecRs> list(@RequestParam("_startRow") Integer startRow,
-															   @RequestParam("_endRow") Integer endRow,
-															   @RequestParam(value = "_constructor", required = false) String constructor,
-															   @RequestParam(value = "operator", required = false) String operator,
-															   @RequestParam(value = "criteria", required = false) String criteria,
-															   @RequestParam(value = "id", required = false) Long id,
-															   @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException
-	{
-		SearchDTO.SearchRq request = new SearchDTO.SearchRq();
-		SearchDTO.CriteriaRq criteriaRq;
-		if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
-			criteria = "[" + criteria + "]";
-			criteriaRq = new SearchDTO.CriteriaRq();
-			criteriaRq.setOperator(EOperator.valueOf(operator))
-					.setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
-					}));
-			request.setCriteria(criteriaRq);
-		}
-		if (StringUtils.isNotEmpty(sortBy)) {
-			request.setSortBy(sortBy);
-		}
-		if(id != null){
-			criteriaRq = new SearchDTO.CriteriaRq();
-			criteriaRq.setOperator(EOperator.equals)
-					.setFieldName("id")
-					.setValue(id);
-			request.setCriteria(criteriaRq);
-			startRow=0;
-			endRow=1;
-		}
-		request.setStartIndex(startRow)
-				.setCount(endRow - startRow);
-		SearchDTO.SearchRs<AttendanceDTO.Info> response = attendanceService.search(request);
-		final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-		specResponse.setData(response.getList())
-				.setStartRow(startRow)
-				.setEndRow(startRow + response.getTotalCount().intValue())
-				.setTotalRows(response.getTotalCount().intValue());
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> list(@RequestParam("_startRow") Integer startRow,
+                                                               @RequestParam("_endRow") Integer endRow,
+                                                               @RequestParam(value = "_constructor", required = false) String constructor,
+                                                               @RequestParam(value = "operator", required = false) String operator,
+                                                               @RequestParam(value = "criteria", required = false) String criteria,
+                                                               @RequestParam(value = "id", required = false) Long id,
+                                                               @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
+        SearchDTO.CriteriaRq criteriaRq;
+        if (StringUtils.isNotEmpty(constructor) && constructor.equals("AdvancedCriteria")) {
+            criteria = "[" + criteria + "]";
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.valueOf(operator))
+                    .setCriteria(objectMapper.readValue(criteria, new TypeReference<List<SearchDTO.CriteriaRq>>() {
+                    }));
+            request.setCriteria(criteriaRq);
+        }
+        if (StringUtils.isNotEmpty(sortBy)) {
+            request.setSortBy(sortBy);
+        }
+        if (id != null) {
+            criteriaRq = new SearchDTO.CriteriaRq();
+            criteriaRq.setOperator(EOperator.equals)
+                    .setFieldName("id")
+                    .setValue(id);
+            request.setCriteria(criteriaRq);
+            startRow = 0;
+            endRow = 1;
+        }
+        request.setStartIndex(startRow)
+                .setCount(endRow - startRow);
+        SearchDTO.SearchRs<AttendanceDTO.Info> response = attendanceService.search(request);
+        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+        specResponse.setData(response.getList())
+                .setStartRow(startRow)
+                .setEndRow(startRow + response.getTotalCount().intValue())
+                .setTotalRows(response.getTotalCount().intValue());
 
-		final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-		specRs.setResponse(specResponse);
+        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+        specRs.setResponse(specResponse);
 
-		return new ResponseEntity<>(specRs, HttpStatus.OK);
-	}
-	// ---------------
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
+    // ---------------
 
-	@Loggable
-	@PostMapping(value = "/search")
+    @Loggable
+    @PostMapping(value = "/search")
 //	@PreAuthorize("hasAuthority('r_attendance')")
-	public ResponseEntity<SearchDTO.SearchRs<AttendanceDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
-		return new ResponseEntity<>(attendanceService.search(request), HttpStatus.OK);
-	}
+    public ResponseEntity<SearchDTO.SearchRs<AttendanceDTO.Info>> search(@RequestBody SearchDTO.SearchRq request) {
+        return new ResponseEntity<>(attendanceService.search(request), HttpStatus.OK);
+    }
 
-	// -----------------
+    // -----------------
 
-	@Loggable
-	@GetMapping(value = {"/print/{type}"})
-	public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
-		Map<String, Object> params = new HashMap<>();
-		params.put(ConstantVARs.REPORT_TYPE, type);
-		reportUtil.export("/reports/Attendance.jasper", params, response);
-	}
+    @Loggable
+    @GetMapping(value = {"/print/{type}"})
+    public void print(HttpServletResponse response, @PathVariable String type) throws SQLException, IOException, JRException {
+        Map<String, Object> params = new HashMap<>();
+        params.put(ConstantVARs.REPORT_TYPE, type);
+        reportUtil.export("/reports/Attendance.jasper", params, response);
+    }
 }

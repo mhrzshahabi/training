@@ -1,11 +1,15 @@
 package com.nicico.training.service;
 
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
+import com.nicico.copper.common.dto.grid.TotalResponse;
+import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.CustomModelMapper;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.AttachmentDTO;
 import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.Category;
@@ -78,6 +82,7 @@ public class TeacherService implements ITeacherService {
         final Teacher teacher = modelMapper.map(request, Teacher.class);
         if (personalInfo != null)
             teacher.setPersonality(personalInfo);
+
         try {
             return modelMapper.map(teacherDAO.saveAndFlush(teacher), TeacherDTO.Info.class);
         } catch (ConstraintViolationException | DataIntegrityViolationException e) {
@@ -143,4 +148,45 @@ public class TeacherService implements ITeacherService {
         return SearchUtil.search(teacherDAO, request, teacher -> modelMapper.map(teacher, TeacherDTO.TeacherFullNameTuple.class));
     }
 
+
+    @Transactional(readOnly = true)
+    @Override
+    public SearchDTO.SearchRs<TeacherDTO.Info> deepSearch(SearchDTO.SearchRq request) {
+
+            SearchDTO.CriteriaRq criteriaRq = makeNewCriteria("inBlackList", false, EOperator.equals, null);
+
+            List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+            if (request.getCriteria() != null) {
+                if (request.getCriteria().getCriteria() != null)
+                    request.getCriteria().getCriteria().add(criteriaRq);
+                else {
+                    criteriaRqList.add(criteriaRq);
+                    request.getCriteria().setCriteria(criteriaRqList);
+                }
+            } else
+                request.setCriteria(criteriaRq);
+
+
+        SearchDTO.SearchRs<TeacherDTO.Info> searchRs = SearchUtil.search(teacherDAO, request, needAssessment -> modelMapper.map(needAssessment,
+                TeacherDTO.Info.class));
+
+        return searchRs;
+    }
+
+
+    private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {
+        SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+        criteriaRq.setOperator(operator);
+        criteriaRq.setFieldName(fieldName);
+        criteriaRq.setValue(value);
+        criteriaRq.setCriteria(criteriaRqList);
+        return criteriaRq;
+    }
+
+    @Override
+    public void changeBlackListStatus(Boolean inBlackList, Long id){
+        Teacher teacher = getTeacher(id);
+        teacher.setInBlackList(!inBlackList);
+        teacherDAO.saveAndFlush(teacher);
+    }
 }

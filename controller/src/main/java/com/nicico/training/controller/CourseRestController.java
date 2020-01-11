@@ -125,7 +125,7 @@ public class CourseRestController {
         boolean check = courseService.checkForDelete(id);
         if (check) {
             List<GoalDTO.Info> goals = courseService.getgoal(id);
-            goals.forEach(g->goalService.delete(g.getId()));
+            goals.forEach(g -> goalService.delete(g.getId()));
             courseService.deletGoal(id);
             courseService.delete(id);
         }
@@ -457,7 +457,7 @@ public class CourseRestController {
         return new ResponseEntity<>(courseService.updateEvaluation(id, update), HttpStatus.OK);
     }
 
-   @Loggable
+    @Loggable
     @GetMapping(value = "getEvaluation/{id}")
     public ResponseEntity<CourseDTO.SpecRs> getEvaluation(@PathVariable Long id) {
         List<CourseDTO.Info> list = courseService.getEvaluation(id);

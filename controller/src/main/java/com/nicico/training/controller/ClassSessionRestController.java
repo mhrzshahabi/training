@@ -80,7 +80,7 @@ public class ClassSessionRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request,HttpServletResponse response) {
+    public ResponseEntity<ClassSessionDTO.Info> update(@PathVariable Long id, @RequestBody ClassSessionDTO.Update request, HttpServletResponse response) {
         ClassSessionDTO.Update update = modelMapper.map(request, ClassSessionDTO.Update.class);
         return new ResponseEntity<>(classSessionService.update(id, update, response), HttpStatus.OK);
     }
@@ -203,7 +203,7 @@ public class ClassSessionRestController {
     public ResponseEntity<ISC<ClassSessionDTO.Info>> list(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
         Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs =classSessionService.searchWithCriteria(searchRq, classId);
+        SearchDTO.SearchRs<ClassSessionDTO.Info> searchRs = classSessionService.searchWithCriteria(searchRq, classId);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 }

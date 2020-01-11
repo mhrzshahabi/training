@@ -55,11 +55,11 @@ public class Course extends Auditable {
     @Column(name = "n_min_teacher_degree")
     private String minTeacherDegree;
 
-    @Column(name="c_evaluation")
-     private String evaluation;
+    @Column(name = "c_evaluation")
+    private String evaluation;
 
-     @Column(name="c_behavioral_level")
-     private String behavioralLevel;
+    @Column(name = "c_behavioral_level")
+    private String behavioralLevel;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = {CascadeType.PERSIST})
     @JoinColumn(name = "category_id", insertable = false, updatable = false)
@@ -137,6 +137,11 @@ public class Course extends Auditable {
     @Setter(AccessLevel.NONE)
     private Boolean hasGoal;
 
+    @Transient
+    @Getter(AccessLevel.NONE)
+    @Setter(AccessLevel.NONE)
+    private Boolean hasSkill;
+
 //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
@@ -157,5 +162,11 @@ public class Course extends Auditable {
     public Boolean getHasGoal() {
         if (goalSet == null) return true;
         else return goalSet.isEmpty();
+    }
+
+    @Transient
+    public Boolean getHasSkill() {
+        if (skillSet == null) return true;
+        else return skillSet.isEmpty();
     }
 }

@@ -49,13 +49,12 @@ public class TclassRestController {
     private final ModelMapper modelMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
-
     @Loggable
     @PostMapping(value = "/addStudents/{classId}")
     public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
         PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
-        tclassService.addStudents(classId, personsIds.getIds());
-        return new ResponseEntity(HttpStatus.OK);
+       tclassService.addStudents(classId, personsIds.getIds());
+       return new ResponseEntity(HttpStatus.OK);
     }
 
     @Loggable

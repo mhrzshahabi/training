@@ -97,7 +97,7 @@ public class ForeignLangKnowledgeService implements IForeignLangKnowledgeService
         final Teacher teacher = teacherService.getTeacher(teacherId);
         Set<ForeignLangKnowledge> foreignLangKnowledgeSet = teacher.getForeignLangKnowledges();
         for (ForeignLangKnowledge foreignLangKnowledge : foreignLangKnowledgeSet) {
-            if(foreignLangKnowledge.getLangName().equals(request.getLangName()))
+            if (foreignLangKnowledge.getLangName().equals(request.getLangName()))
                 throw new TrainingException(TrainingException.ErrorType.DuplicateRecord);
         }
         ForeignLangKnowledge foreignLangKnowledge = new ForeignLangKnowledge();

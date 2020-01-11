@@ -25,7 +25,6 @@
     </changeSet>
 
 
-
     <changeSet author="lotfi (generated)" id="1577595584066-191">
         <addColumn tableName="tbl_post">
             <column name="c_affairs" type="varchar2(255 CHAR)"/>
@@ -140,7 +139,7 @@
             <column name="c_evaluation" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-     <changeSet author="heydaripoor (generated)" id="1578117401246-203">
+    <changeSet author="heydaripoor (generated)" id="1578117401246-203">
         <addColumn tableName="tbl_course">
             <column name="c_behavioral_level" type="varchar2(255 CHAR)"/>
         </addColumn>
@@ -163,6 +162,41 @@
         <addColumn tableName="tbl_class">
             <column name="c_workflow_ending_status_code" type="number(10, 0)"/>
         </addColumn>
+    </changeSet>
+
+    <changeSet author="razmnoosh (generated)" id="1578207622478-208">
+        <addColumn tableName="tbl_teacher">
+            <column name="b_in_black_list" type="number(1, 0)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1578479333742-212">
+        <addColumn tableName="tbl_student">
+            <column name="failure_reason" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578479333742-213">
+        <addColumn tableName="tbl_student">
+            <column name="score" type="float"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578479333742-214">
+        <addColumn tableName="tbl_student">
+            <column name="scores_state" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
+    <changeSet author="heydaripoor (generated)" id="1578480115733-226">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT_FINAL" constraintName="FK_STUDENT_TO_SCORES"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-229">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT_FINAL" constraintName="FK_TCLASS_TO_STUDENT"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-261">
+        <dropTable tableName="TBL_CLASS_STUDENT_FINAL"/>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578480115733-269">
+        <dropSequence sequenceName="SEQ_SCORES_ID"/>
     </changeSet>
 
 </databaseChangeLog>
