@@ -39,7 +39,7 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchClassStudents(SearchDTO.SearchRq request, Long classId) {
+    public <D> SearchDTO.SearchRs<D> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<D> infoType) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (classId != null) {
@@ -53,7 +53,7 @@ public class ClassStudentService implements IClassStudentService {
             } else
                 request.setCriteria(criteriaRq);
         }
-        return SearchUtil.search(classStudentDAO, request, classStudent -> mapper.map(classStudent, ClassStudentDTO.ClassStudentInfo.class));
+        return SearchUtil.search(classStudentDAO, request, e -> mapper.map(e, infoType));
     }
 
     @Transactional

@@ -30,7 +30,20 @@ public class ClassStudentRestController {
         if (iscRq.getParameter("_startRow") != null)
             startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
-        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs = classStudentService.searchClassStudents(searchRq, classId);
+        SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchRs =
+                classStudentService.searchClassStudents(searchRq, classId, ClassStudentDTO.ClassStudentInfo.class);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
+    @GetMapping(value = "/attendance-iscList/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.AttendanceInfo>> attendanceList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.AttendanceInfo> searchRs =
+                classStudentService.searchClassStudents(searchRq, classId, ClassStudentDTO.AttendanceInfo.class);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
     }
 
