@@ -11,14 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -30,8 +32,8 @@ public class ClassAlarmService implements IClassAlarm {
     private MessageSource messageSource;
 
     //*********************************
-    /*point : for ended classes do not fetch alarms*/
-    @Transactional
+    /*point : for ended classes do not fetch alarms && only check alarm for current term*/
+
     @Override
     public List<String> hasAlarm(Long class_id, HttpServletResponse response) throws IOException {
 
@@ -292,8 +294,7 @@ public class ClassAlarmService implements IClassAlarm {
     //*********************************
 
     //*********************************
-    /*point : for ended classes do not fetch alarms*/
-    @Transactional
+    /*point : for ended classes do not fetch alarms && only check alarm for current term */
     @Override
     public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
 
@@ -803,6 +804,89 @@ public class ClassAlarmService implements IClassAlarm {
 
         return (classAlarmDTO != null ? modelMapper.map(classAlarmDTO, new TypeToken<List<ClassAlarmDTO>>() {
         }.getType()) : null);
+
+    }
+    //*********************************
+
+    //*********************************
+    /*point : for ended classes do not fetch alarms && only check alarm for current term*/
+    @Override
+    public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        Date date = new Date();
+        String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
+
+        StringBuilder AlarmList = new StringBuilder();
+
+        try {
+
+            List<String> alarmScripts = new ArrayList<>();
+
+            //*****attendance*****
+            alarmScripts.add(" SELECT " +
+                    "    'حضور و غیاب' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    "    INNER JOIN tbl_session ON tbl_class_student.f_class = tbl_session.f_class_id " +
+                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
+                    " WHERE " +
+                    "    tbl_session.f_class_id =:class_id " +
+                    "    AND   tbl_session.c_session_date <:todaydat " +
+                    "    AND   ( " +
+                    "        tbl_attendance.c_state IS NULL " +
+                    "        OR    tbl_attendance.c_state = 0 " +
+                    "    ) AND rownum = 1 ");
+
+
+            //*****check list not verify*****
+            alarmScripts.add(" SELECT  " +
+                    "    'چک لیست ها' AS hasalarm  " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_check_list.id, " +
+                    "            tbl_check_list.c_title_fa, " +
+                    "            tbl_check_list_item.id AS iditem, " +
+                    "            tbl_check_list_item.c_group, " +
+                    "            tbl_check_list_item.c_title_fa AS c_title_fa1, " +
+                    "            tbl_check_list_item.b_is_deleted, " +
+                    "            :class_id AS class_id " +
+                    "        FROM " +
+                    "            tbl_check_list " +
+                    "            INNER JOIN tbl_check_list_item ON tbl_check_list.id = tbl_check_list_item.f_check_list_id " +
+                    "        WHERE " +
+                    "            tbl_check_list_item.b_is_deleted IS NULL " +
+                    "    ) tbchecklist " +
+                    "    LEFT JOIN tbl_class_check_list ON tbchecklist.iditem = tbl_class_check_list.f_check_list_item_id " +
+                    "                                      AND tbchecklist.class_id = tbl_class_check_list.f_tclass_id " +
+                    " WHERE " +
+                    "    tbl_class_check_list.c_description IS NULL " +
+                    "    AND   ( " +
+                    "        tbl_class_check_list.b_enabled IS NULL " +
+                    "        OR    tbl_class_check_list.b_enabled = 0 " +
+                    "    ) " +
+                    "    AND rownum=1 AND :todaydat = :todaydat ");
+
+            for (String script : alarmScripts) {
+
+                List<?> Alarm = (List<?>) entityManager.createNativeQuery(script)
+                        .setParameter("class_id", class_id)
+                        .setParameter("todaydat", todayDate).getResultList();
+
+                if(!Alarm.isEmpty())
+                AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
+            }
+
+
+        } catch (Exception ex) {
+            ex.printStackTrace();
+
+            Locale locale = LocaleContextHolder.getLocale();
+            response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
+        }
+
+        return (AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
 
     }
     //*********************************

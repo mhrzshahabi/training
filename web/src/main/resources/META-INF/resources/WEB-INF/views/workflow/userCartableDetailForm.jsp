@@ -86,7 +86,10 @@ abaspour 9803
             workflowRecordId = data.cId;
             trainingTabSet.removeTab(targetTitleFa)
             createTab(targetTitleFa, "${addDocumentUrl}");
-            taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+            // taskConfirmationWindow.resizeTo(taskConfirmationWindow.widht, 70);
+            // taskConfirmationWindow.maximize();
+            taskConfirmationWindow.top= "0";
+            taskConfirmationWindow.minimize();
 
             workflowParameters = {"taskId": "${id}", "usr": "${username}", "workflowdata" : taskStartConfirmForm.getValues()};
         }
@@ -434,7 +437,7 @@ abaspour 9803
                                             serverOutputAsString: false,
                                             callback: function (RpcResponse_o) {
                                                 if (RpcResponse_o.data == 'success') {
-                                                    isc.say("تعریف " + targetTitleFa + " عودت داده شد.");
+                                                    isc.say( targetTitleFa + " عودت داده شد.");
                                                     taskConfirmationWindow.hide();
                                                     ListGrid_UserTaskList.invalidateCache();
                                                     <%--userCartableButton.setTitle("شخصی (" + ${cartableCount} +"   )");--%>

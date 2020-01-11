@@ -30,61 +30,21 @@ public class TclassService implements ITclassService {
     private final ModelMapper modelMapper;
     private final TclassDAO tclassDAO;
     private final StudentDAO studentDAO;
-    private final TeacherDAO teacherDAO;
     private final ClassSessionService classSessionService;
     private final TrainingPlaceDAO trainingPlaceDAO;
-    private final StudentService studentService;
     private final AttachmentService attachmentService;
-    private final PersonnelDAO personnelDAO;
-    private final PersonnelRegisteredDAO personnelRegisteredDAO;
-    @Transactional
-    @Override
-    public void addStudents(Long classId, List<String> personsIds) {
-
-        Optional<Tclass> optionalTclass = tclassDAO.findById(classId);
-        optionalTclass.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-        for (String personnelId : personsIds) {
-            Optional<Personnel> optionalPersonnel = personnelDAO.findOneByPersonnelNo(personnelId);
-            optionalPersonnel.ifPresent(personnel -> {
-                StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
-                StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
-                addStudent(info.getId(), classId);
-
-            });
-        }
-
-        for (String personnelId : personsIds) {
-            Optional<PersonnelRegistered> optionalPersonnelReg = personnelRegisteredDAO.findOneByPersonnelNo(personnelId);
-            optionalPersonnelReg.ifPresent(personnel -> {
-                StudentDTO.Create create = modelMapper.map(personnel, StudentDTO.Create.class);
-                StudentDTO.Info info = studentService.create(modelMapper.map(personnel, StudentDTO.Create.class));
-                addStudent(info.getId(), classId);
-            });
-        }
-//        List<Student> gAllById = studentDAO.findAllById(request.getIds());
-////        for (Student student : gAllById) {
-////            tclass.getStudentSet().add(student);
-////        }
-//        Tclass tclass = tclassDAO.getOne(classId);
-//        Student student = studentDAO.getOne(studentId);
-//        tclass.getStudentSet().add(student);
-
-    }
-
-    @Transactional
-    @Override
-    public void removeStudent(Long studentId, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        Student student = studentDAO.getOne(studentId);
-        tclass.getStudentSet().remove(student);
-    }
 
     @Transactional(readOnly = true)
     @Override
     public TclassDTO.Info get(Long id) {
+        return modelMapper.map(getTClass(id), TclassDTO.Info.class);
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public Tclass getTClass(Long id) {
         final Optional<Tclass> gById = tclassDAO.findById(id);
-        final Tclass tclass = gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-        return modelMapper.map(tclass, TclassDTO.Info.class);
+        return gById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
     }
 
     @Transactional(readOnly = true)
@@ -194,14 +154,14 @@ public class TclassService implements ITclassService {
     }
 
 
-    @Transactional
-    @Override
-    public void addStudent(Long studentId, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        Student student = studentDAO.getOne(studentId);
-
-        tclass.getStudentSet().add(student);
-    }
+//    @Transactional
+//    @Override
+//    public void addStudent(Long studentId, Long classId) {
+//        Tclass tclass = tclassDAO.getOne(classId);
+//        Student student = studentDAO.getOne(studentId);
+//
+//        tclass.getStudentSet().add(student);
+//    }
 
 
     @Transactional
@@ -253,5 +213,17 @@ public class TclassService implements ITclassService {
         return max + 1;
     }
 
+    @Transactional(readOnly = true)
+    @Override
+    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode )
+    {
+      return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+    }
+
+    @Override
+    public Integer getWorkflowEndingStatusCode(Long classId)
+    {
+        return tclassDAO.getWorkflowEndingStatusCode(classId);
+    }
 
 }

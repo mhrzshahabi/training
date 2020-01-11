@@ -59,6 +59,8 @@ public class TclassDTO {
     private Boolean fifth;
     private String topology;//چیدمان
     private List<Long> trainingPlaceIds;
+    private String workflowEndingStatus;
+    private Integer workflowEndingStatusCode;
 
 
     @Getter

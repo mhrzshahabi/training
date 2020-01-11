@@ -43,9 +43,11 @@
 // {name: "lastModifiedDate",hidden:true},
 // {name: "createdBy",hidden:true},
 // {name: "createdDate",hidden:true,type:d},
+            {name:"titleClass"},
             {name: "startDate"},
             {name: "endDate"},
             {name: "code"},
+            {name:"term.titleFa"},
 // {name: "teacher.personality.lastNameFa"},
 // {name: "course.code"},
             {name: "course.titleFa"},
@@ -56,7 +58,9 @@
             {name: "classStatus"},
             {name: "topology"},
             {name: "trainingPlaceIds"},
-            {name: "instituteId"}
+            {name: "instituteId"},
+            {name:"workflowEndingStatusCode"},
+            {name:"workflowEndingStatus"}
         ],
         fetchDataURL: classUrl + "spec-list"
     });
@@ -223,6 +227,14 @@
                 autoFitWidth: true
             },
             {
+                name: "titleClass",
+                title: "titleClass",
+                align: "center",
+                filterOperator: "iContains",
+                autoFitWidth: true,
+                hidden: true
+            },
+            {
                 name: "course.titleFa",
                 title: "<spring:message code='course.title'/>",
                 align: "center",
@@ -231,6 +243,13 @@
                 sortNormalizer: function (record) {
                     return record.course.titleFa;
                 }
+            },
+            {
+                name: "term.titleFa",
+                title: "term",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: true
             },
             {
                 name: "startDate",
@@ -278,15 +297,32 @@
 // },
             {name: "createdBy", hidden: true},
             {name: "createdDate", hidden: true},
+            {
+                name:"workflowEndingStatusCode",
+                title:"workflowCode",
+                align: "center",
+                filterOperator: "iContains",
+                hidden: true
+            },
+            {
+                name:"workflowEndingStatus",
+                title:"<spring:message code="ending.class.status"/>",
+                align: "center",
+                filterOperator: "iContains"
+            },
             {name:"hasWarning", title:" ", width:40, type:"image", imageURLPrefix:"", imageURLSuffix:".gif"}
 
         ],
+
         getCellCSSText:function (record, rowNum, colNum) {
 
             if (record.classStatus === "1")
                 return "background-color: #EDEDED;";
             else if (record.classStatus === "3")
                 return "background-color: #C7E1FF;";
+        },
+        dataArrived:function () {
+            selectWorkflowRecord();
         }
     });
 
@@ -566,6 +602,7 @@
                 }
             },
             {
+                ID :"classTypeStatus",
                 name: "classStatus",
                 colSpan: 1,
                 rowSpan: 1,
@@ -581,6 +618,15 @@
                     "2": "در حال اجرا",
                     "3": "پایان یافته",
                 },
+                change: function (form, item, value, oldValue) {
+
+
+                    if (classMethod.localeCompare("PUT") === 0 && value === "3")
+                        checkEndingClass(oldValue);
+                     else if (classMethod.localeCompare("POST") === 0 && value === "3")
+                        return false;
+
+                }
             },
             {
                 name: "group",
@@ -1085,6 +1131,14 @@
                 serverOutputAsString: false,
                 callback: function (resp) {
                     if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+
+
+                        if(classMethod.localeCompare("PUT") === 0)
+                        {
+                            sendEndingClassToWorkflow();
+                            sendToWorkflowAfterUpdate(JSON.parse(resp.data));
+                        }
+
                         ListGrid_Class_refresh();
                         var responseID = JSON.parse(resp.data).id;
                         var gridState = "[{id:" + responseID + "}]";
@@ -1589,6 +1643,7 @@
             VM_JspClass.clearValues();
             VM_JspClass.editRecord(record);
             if(a===0) {
+                saveButtonStatus();
                 classMethod = "PUT";
                 url = classUrl + record.id;
                 Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
@@ -1883,4 +1938,189 @@
             TabSet_Class.enable();
         else
             TabSet_Class.disable();
+    }
+
+    //*****check class is ready to end or no*****
+    function checkEndingClass(oldValue) {
+        let record = ListGrid_Class_JspClass.getSelectedRecord();
+        if (record !== null)
+
+            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkEndingClass/" + record.id, "GET", null, function (resp) {
+
+                if (resp.data !== "") {
+                    TabSet_Class.selectTab("classAlarmsTab");
+                    isc.say(resp.data);
+                    classTypeStatus.setValue(oldValue);
+                }
+
+            }));
+    }
+
+
+
+    // <<---------------------------------------- Send To Workflow ----------------------------------------
+    function sendEndingClassToWorkflow() {
+
+        let sRecord = VM_JspClass.getValues();
+
+
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
+
+          let  workflowStatusCode =  resp.data;
+
+            if(classMethod.localeCompare("PUT") === 0 && sRecord.classStatus === "3" && (workflowStatusCode === "" || workflowStatusCode === "-3"))
+            {
+                    let varParams = [{
+                        "processKey": "endingClassWorkflow",
+                        "cId": parseInt(sRecord.id),
+                        "classCode": sRecord.code,
+                        "titleClass": sRecord.titleClass,
+                        "teacher": sRecord.teacher,
+                        "term": sRecord.term.titleFa,
+                        "classCreatorId": "${username}",
+                        "classCreator" :userFullName,
+                        "REJECTVAL": "",
+                        "REJECT": "",
+                        "target": "/tclass/show-form",
+                        "targetTitleFa": "کلاس",
+                        "workflowStatus": "درخواست پایان کلاس",
+                        "workflowStatusCode": "0"
+                    }];
+
+                    isc.RPCManager.sendRequest(TrDSRequest(workflowUrl + "/startProcess", "POST", JSON.stringify(varParams), startProcess_callback));
+            }
+
+        }));
+
+    }
+
+    function startProcess_callback(resp) {
+
+        if (resp.httpResponseCode == 200) {
+            isc.say("<spring:message code='course.set.on.workflow.engine'/>");
+            ListGrid_Class_refresh()
+        } else {
+            isc.say("<spring:message code='workflow.bpmn.not.uploaded'/>");
+        }
+    }
+
+    var class_workflowParameters = null;
+
+    function selectWorkflowRecord() {
+
+        if (workflowRecordId !== null) {
+
+            class_workflowParameters = workflowParameters;
+
+            let gridState = "[{id:" + workflowRecordId + "}]";
+
+            ListGrid_Class_JspClass.setSelectedState(gridState);
+
+            ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+
+            workflowRecordId = null;
+            workflowParameters = null;
+
+            ListGrid_class_edit();
+            taskConfirmationWindow.maximize();
+        }
+
+    }
+
+    function sendToWorkflowAfterUpdate(selectedRecord) {
+
+        var sRecord = selectedRecord;
+
+        console.log(sRecord);
+
+        if (sRecord !== null && sRecord.id !== null && class_workflowParameters !== null) {
+
+            if (sRecord.workflowEndingStatusCode === -1 || sRecord.workflowEndingStatusCode === -2) {
+
+                class_workflowParameters.workflowdata["REJECT"] = "N";
+                class_workflowParameters.workflowdata["REJECTVAL"] = " ";
+                class_workflowParameters.workflowdata["classCode"] = sRecord.code;
+                class_workflowParameters.workflowdata["titleClass"] = sRecord.titleClass;
+                class_workflowParameters.workflowdata["teacher"] = sRecord.teacher;
+                class_workflowParameters.workflowdata["term"] = sRecord.term.titleFa;
+                class_workflowParameters.workflowdata["classCreatorId"] = "${username}";
+                class_workflowParameters.workflowdata["classCreator"] = userFullName;
+                class_workflowParameters.workflowdata["workflowStatus"] = "اصلاح پایان کلاس";
+                class_workflowParameters.workflowdata["workflowEndingStatusCode"] = "20";
+
+                var ndat = class_workflowParameters.workflowdata;
+
+                isc.RPCManager.sendRequest({
+                    actionURL: workflowUrl + "/doUserTask",
+                    httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                    httpMethod: "POST",
+                    useSimpleHttp: true,
+                    contentType: "application/json; charset=utf-8",
+                    showPrompt: false,
+                    data: JSON.stringify(ndat),
+                    params: {"taskId": class_workflowParameters.taskId, "usr": class_workflowParameters.usr},
+                    serverOutputAsString: false,
+                    callback: function (RpcResponse_o) {
+                        console.log(RpcResponse_o);
+                        if (RpcResponse_o.data === 'success') {
+
+                            ListGrid_Class_refresh();
+
+                            let responseID = sRecord.id;
+
+                            let gridState = "[{id:" + responseID + "}]";
+
+                            ListGrid_Class_JspClass.setSelectedState(gridState);
+
+                            ListGrid_Class_JspClass.scrollToRow(ListGrid_Class_JspClass.getRecordIndex(ListGrid_Class_JspClass.getSelectedRecord()), 0);
+
+                            isc.say("پایان کلاس ویرایش و به گردش کار ارسال شد");
+                            taskConfirmationWindow.hide();
+                            taskConfirmationWindow.maximize();
+                            ListGrid_UserTaskList.invalidateCache();
+                        }
+                    }
+                });
+
+            }
+        }
+
+
+    }
+
+    // ---------------------------------------- Send To Workflow ---------------------------------------->>
+
+
+    //*****set save button status*****
+    function saveButtonStatus() {
+
+        if("${username}" === "ahmadi_z") {
+
+            IButton_Class_Save_JspClass.enable();
+            IButton_Class_Save_JspClass.setOpacity(100);
+
+            return;
+        }
+
+        let sRecord = VM_JspClass.getValues();
+
+        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "getWorkflowEndingStatusCode/" + sRecord.id, "GET", null, function (resp) {
+
+            let workflowStatusCode = resp.data;
+
+            if (sRecord.classStatus === "3") {
+                if (workflowStatusCode === "-1" || workflowStatusCode === "-2" || workflowStatusCode === "-3" || workflowStatusCode === "") {
+                    IButton_Class_Save_JspClass.enable();
+                    IButton_Class_Save_JspClass.setOpacity(100);
+                } else {
+                    IButton_Class_Save_JspClass.disable();
+                    IButton_Class_Save_JspClass.setOpacity(30);
+                }
+            } else {
+                IButton_Class_Save_JspClass.enable();
+                IButton_Class_Save_JspClass.setOpacity(100);
+            }
+
+        }));
+
     }

@@ -7,7 +7,6 @@ import com.nicico.copper.common.domain.criteria.NICICOCriteria;
 import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.PersonnelRegisteredDTO;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -27,9 +26,9 @@ public interface IPersonnelRegisteredService {
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
 
-    @Transactional(readOnly = true)
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 
-
     PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode);
+
+    PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode);
 }

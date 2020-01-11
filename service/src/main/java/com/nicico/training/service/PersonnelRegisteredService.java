@@ -99,4 +99,12 @@ public class PersonnelRegisteredService implements IPersonnelRegisteredService {
         return modelMapper.map(saved, PersonnelRegisteredDTO.Info.class);
     }
 
+    @Override
+    @Transactional
+    public PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode) {
+        Optional<PersonnelRegistered> optPersonnel = personnelRegisteredDAO.findOneByPersonnelNo(personnelCode);
+        final PersonnelRegistered personnel = optPersonnel.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        return modelMapper.map(personnel, PersonnelRegisteredDTO.Info.class);
+    }
+
 }
