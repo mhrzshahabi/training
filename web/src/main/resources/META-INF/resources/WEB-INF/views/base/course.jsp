@@ -71,20 +71,10 @@
             {name: "hasGoal"},
             {name: "hasSkill"},
              {
-                name: "evaluation", valueMap: {
-                    "1": "واکنش",
-                    "2": "یادگیری",
-                    "3": "رفتاری",
-                    "4": "نتایج",
-                },
+                name: "evaluation",
             },
             {
                 name: "behavioralLevel",
-              valueMap: {
-                   "1":"مشاهده",
-                   "2":"مصاحبه",
-                   "3":"کار پروژای"
-                }
             }
             // {name: "version"},
         ],
@@ -418,17 +408,22 @@
                 autoFitWidth: true,
                 filterOperator: "iContains"
             },
-             {
-                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
-
-                formatCellValue: function (value, record, field) {
-                    if (value === "رفتاری") {
-                        return value + " , " + record.behavioralLevel
-                    } else {
-                        return value;
-                    }
-
+            {name:"behavioralLevel", title:"سطح رفتاری",
+                // hidden:true,
+                valueMap: {
+                    "1":"مشاهده",
+                    "2":"مصاحبه",
+                    "3":"کار پروژه ای"
                 }
+            },
+            {
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+                valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
             },
             {
                 name: "workflowStatusCode",
@@ -1061,15 +1056,16 @@
               {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
+                  colSpan:2,
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
               //  defaultValue: "مشاهده",
-                valueMap: {
-                   "1":"مشاهده",
-                   "2":"مصاحبه",
-                   "3":"کار پروژای"
-                }
+                  valueMap: {
+                      "1":"مشاهده",
+                      "2":"مصاحبه",
+                      "3":"کار پروژه ای"
+                  }
             },
 
 
