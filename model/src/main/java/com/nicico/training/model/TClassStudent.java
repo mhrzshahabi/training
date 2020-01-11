@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Set;
 
 @Setter
 @Getter
@@ -13,7 +12,8 @@ import java.util.Set;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_tclass_student_new")
+@Table(name = "tbl_tclass_student_new",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "class_id"})})
 public class TClassStudent extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tclass_student_new_seq")
@@ -41,16 +41,16 @@ public class TClassStudent extends Auditable {
     private Long presenceTypeId;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "student_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "student_id", nullable = false)
     private Student student;
 
-    @Column(name = "student_id")
+    @Column(name = "student_id", insertable = false, updatable = false)
     private Long studentId;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "class_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "class_id", nullable = false)
     private Tclass tclass;
 
-    @Column(name = "class_id")
+    @Column(name = "class_id", insertable = false, updatable = false)
     private Long tclassId;
 }

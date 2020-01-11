@@ -49,33 +49,33 @@ public class TclassRestController {
     private final ModelMapper modelMapper;
     private final ClassAlarmService classAlarmService;
     private final StudentDAO studentDAO;
-    @Loggable
-    @PostMapping(value = "/addStudents/{classId}")
-    public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
-        PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
-       tclassService.addStudents(classId, personsIds.getIds());
-       return new ResponseEntity(HttpStatus.OK);
-    }
+//    @Loggable
+//    @PostMapping(value = "/addStudents/{classId}")
+//    public ResponseEntity addStudents(@RequestBody Object request, @PathVariable Long classId) {
+//        PersonnelDTO.Ids personsIds = modelMapper.map(request, PersonnelDTO.Ids.class);
+//       tclassService.addStudents(classId, personsIds.getIds());
+//       return new ResponseEntity(HttpStatus.OK);
+//    }
 
-    @Loggable
-    @GetMapping(value = "/student")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> getStudents(@RequestParam("classID") String classID) {
-        Long classId = Long.parseLong(classID);
-
-        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
-
-        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-        specResponse.setData(studentList)
-                .setStartRow(0)
-                .setEndRow(studentList.size())
-                .setTotalRows(studentList.size());
-
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/student")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<StudentDTO.StudentSpecRs> getStudents(@RequestParam("classID") String classID) {
+//        Long classId = Long.parseLong(classID);
+//
+//        List<StudentDTO.Info> studentList = tclassService.getStudents(classId);
+//
+//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+//        specResponse.setData(studentList)
+//                .setStartRow(0)
+//                .setEndRow(studentList.size())
+//                .setTotalRows(studentList.size());
+//
+//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @GetMapping(value = "/{id}")
@@ -206,21 +206,21 @@ public class TclassRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
-    @DeleteMapping(value = "/removeStudent/{studentId}/{classId}")
-    //    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity removeStudent(@PathVariable Long studentId, @PathVariable Long classId) {
-        tclassService.removeStudent(studentId, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
-
-    @Loggable
-    @PostMapping(value = "/addStudent/{studentId}/{classId}")
-//    @PreAuthorize("hasAuthority('c_tclass')")
-    public ResponseEntity addStudent(@PathVariable Long studentId, @PathVariable Long classId) {
-        tclassService.addStudent(studentId, classId);
-        return new ResponseEntity(HttpStatus.OK);
-    }
+//    @Loggable
+//    @DeleteMapping(value = "/removeStudent/{studentId}/{classId}")
+//    //    @PreAuthorize("hasAuthority('c_tclass')")
+//    public ResponseEntity removeStudent(@PathVariable Long studentId, @PathVariable Long classId) {
+//        tclassService.removeStudent(studentId, classId);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
+//
+//    @Loggable
+//    @PostMapping(value = "/addStudent/{studentId}/{classId}")
+////    @PreAuthorize("hasAuthority('c_tclass')")
+//    public ResponseEntity addStudent(@PathVariable Long studentId, @PathVariable Long classId) {
+//        tclassService.addStudent(studentId, classId);
+//        return new ResponseEntity(HttpStatus.OK);
+//    }
 
 
 //

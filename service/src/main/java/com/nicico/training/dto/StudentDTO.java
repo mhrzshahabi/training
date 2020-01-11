@@ -141,4 +141,27 @@ public class StudentDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - TclassStudentInfo")
+    public static class TClassStudentInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+        private String personnelNo2;
+        private String postTitle;
+        private String ccpArea;
+        private String ccpAssistant;
+        private String ccpAffairs;
+        private String ccpSection;
+        private String ccpUnit;
+    }
 }

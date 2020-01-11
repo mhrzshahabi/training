@@ -27,9 +27,9 @@ public interface IPersonnelRegisteredService {
 
     SearchDTO.SearchRs<PersonnelRegisteredDTO.Info> search(SearchDTO.SearchRq request);
 
-    @Transactional(readOnly = true)
     TotalResponse<PersonnelRegisteredDTO.Info> search(NICICOCriteria request);
 
-
     PersonnelRegisteredDTO.Info getOneByNationalCode(String nationalCode);
+
+    PersonnelRegisteredDTO.Info getByPersonnelCode(String personnelCode);
 }

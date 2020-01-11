@@ -1,14 +1,10 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ page import="com.nicico.copper.common.domain.ConstantVARs" %>
 
 // <script>
 
-    <%
-    final String accessToken1 = (String) session.getAttribute(ConstantVARs.ACCESS_TOKEN);
-%>
-
     var studentRemoveWait;
+    var studentDefaultPresenceId = 103;
 
     // ------------------------------------------- Menu -------------------------------------------
     StudentMenu_student = isc.Menu.create({
@@ -108,37 +104,45 @@
         <%--    return this.Super("transformRequest", arguments);--%>
         <%--},--%>
         fields: [
-            {name: "id", hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
-
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "student.id", hidden: true},
+            {name: "student.firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "applicantCompanyName", title: "<spring:message code="company.applicant"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "presenceTypeId", title: "<spring:message code="class.presence.type"/>", filterOperator: "equals", autoFitWidth: true},
+            {name: "student.companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "student.postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "student.ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
+            {name: "student.ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
+            {name: "student.ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
+            {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
+            {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
         ],
-        fetchDataURL: classUrl + "student"
+        fetchDataURL: tclassStudentUrl + "/students-iscList/"
+    });
+
+    StudentsDS_PresenceType = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains"}
+        ],
+        fetchDataURL: parameterValueUrl + "/iscList/98"
     });
 
     StudentsLG_student = isc.TrLG.create({
         dataSource: StudentsDS_student,
         selectionType: "single",
         fields: [
-            {name: "firstName"},
-            {name: "lastName"},
-            {name: "nationalCode"},
-            // {name: "companyName"},
+            {name: "student.firstName"},
+            {name: "student.lastName"},
+            {name: "student.nationalCode"},
             {
-                name: "companyName",
-                title: "<spring:message code='company'/>",
+                name: "applicantCompanyName",
                 textAlign: "center",
-                canEdit: true,
                 width: "*",
                 editorType: "ComboBoxItem",
                 changeOnKeypress: true,
@@ -153,6 +157,8 @@
                 sortField: ["id"],
                 textMatchStyle: "startsWith",
                 generateExactMatchCriteria: true,
+                canEdit: true,
+                // filterEditorType: "TextItem",
                 pickListFields: [
                     {
                         name: "titleFa",
@@ -161,21 +167,30 @@
                     }
                 ],
                 changed: function (form, item, value) {
-                    ListGrid_Cell_CompanyName_Update(this.grid.getRecord(this.rowNum), value);
-                    // this.grid.startEditing(this.rowNum,this.colNum+2);
-                    // StudentsLG_student.refreshFields();
-
-                },
+                    ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
+                }
             },
-
-            {name: "personnelNo"},
-            {name: "personnelNo2"},
-            {name: "postTitle"},
-            {name: "ccpArea"},
-            {name: "ccpAssistant"},
-            {name: "ccpAffairs"},
-            {name: "ccpSection"},
-            {name: "ccpUnit"},
+            {
+                name: "presenceTypeId",
+                type: "selectItem",
+                optionDataSource: StudentsDS_PresenceType,
+                valueField: "id",
+                displayField: "title",
+                filterLocally: true,
+                filterOnKeypress: true,
+                canEdit: true,
+                changed: function (form, item, value) {
+                    ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);
+                }
+            },
+            {name: "student.personnelNo"},
+            {name: "student.personnelNo2"},
+            {name: "student.postTitle"},
+            {name: "student.ccpArea"},
+            {name: "student.ccpAssistant"},
+            {name: "student.ccpAffairs"},
+            {name: "student.ccpSection"},
+            {name: "student.ccpUnit"}
         ],
         gridComponents: [StudentTS_student, "filterEditor", "header", "body"],
         contextMenu: StudentMenu_student,
@@ -203,15 +218,54 @@
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
-            {name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},
-            {name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},
-            {name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},
-            {name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},
-            {name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},
+            {
+                name: "applicantCompanyName",
+                title: "<spring:message code="company.applicant"/>",
+                textAlign: "center",
+                canEdit: true,
+                width: "*",
+                editorType: "ComboBoxItem",
+                changeOnKeypress: true,
+                displayField: "titleFa",
+                valueField: "titleFa",
+                optionDataSource: RestDataSource_company_Student,
+                autoFetchData: true,
+                addUnknownValues: false,
+                cachePickListResults: false,
+                useClientFiltering: true,
+                filterFields: ["titleFa"],
+                sortField: ["id"],
+                textMatchStyle: "startsWith",
+                generateExactMatchCriteria: true,
+                // filterEditorType: "TextItem",
+                pickListFields: [
+                    {
+                        name: "titleFa",
+                        width: "70%",
+                        filterOperator: "iContains"
+                    }
+                ]
+            },
+            {
+                name: "presenceTypeId",
+                title: "<spring:message code="class.presence.type"/>",
+                type: "selectItem",
+                optionDataSource: StudentsDS_PresenceType,
+                canEdit: true,
+                valueField: "id",
+                displayField: "title",
+                filterLocally: true,
+                filterOnKeypress: true,
+            },
+            <%--{name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
+            <%--{name: "postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            <%--{name: "ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},--%>
+            <%--{name: "ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},--%>
+            <%--{name: "ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},--%>
+            <%--{name: "ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},--%>
+            <%--{name: "ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},--%>
         ],
         gridComponents: ["filterEditor", "header", "body"],
         canRemoveRecords: true,
@@ -219,7 +273,7 @@
 
     PersonnelDS_student = isc.TrDS.create({
         fields: [
-            {name: "id", hidden: true},
+            {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -269,23 +323,25 @@
 
             SelectedPersonnelsLG_student.setData(this.getSelection().concat(SelectedPersonnelsLG_student.data).reduce(function (accumulator, current) {
 
-
                 if(!nationalCodeExists(current.nationalCode))
                 {
                     if (checkIfAlreadyExist(current)) {
                         return accumulator
                     } else {
+                        current.applicantCompanyName = current.companyName;
+                        current.presenceTypeId = studentDefaultPresenceId;
+                        current.registerTypeId = 1;
                         return accumulator.concat([current]);
                     }
 
                     function checkIfAlreadyExist(currentVal) {
                         return accumulator.some(function (item) {
+                            console.log(item);
                             return (item.nationalCode === currentVal.nationalCode);
                         });
                     }
                 }
                 else {
-
                     isc.Dialog.create({
                         message: "<spring:message code="student.is.duplicate"/>",
                         icon: "[SKIN]stop.png",
@@ -307,6 +363,8 @@
         }
     });
 
+    var temp;
+
     function nationalCodeExists(nationalCode) {
         return StudentsLG_student.data.localData.some(function(el) {
             return el.nationalCode === nationalCode;
@@ -315,7 +373,7 @@
 
     PersonnelRegDS_student = isc.TrDS.create({
         fields: [
-            {name: "id", hidden: true},
+            {name: "id", primaryKey: true, hidden: true},
             {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
@@ -369,6 +427,9 @@
                 if (checkIfAlreadyExist(current)) {
                     return accumulator
                 } else {
+                    current.applicantCompanyName = current.companyName;
+                    current.presenceTypeId = studentDefaultPresenceId;
+                    current.registerTypeId = 2;
                     return accumulator.concat([current]);
                 }
 
@@ -379,10 +440,8 @@
                 }
 
 
-                SelectedPersonnelsLG_student.invalidateCache();
                 }
                 else {
-
                     isc.Dialog.create({
                         message: "<spring:message code="student.is.duplicate"/>",
                         icon: "[SKIN]stop.png",
@@ -486,11 +545,20 @@
                                     icon: "[SKIN]/actions/save.png",
                                     click: function () {
                                         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-                                        var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
+                                        var students = [];
+                                        for (var i = 0; i < SelectedPersonnelsLG_student.data.length; i++) {
+                                            students.add({
+                                                "personnelNo": SelectedPersonnelsLG_student.data[i].personnelNo,
+                                                "applicantCompanyName": SelectedPersonnelsLG_student.data[i].applicantCompanyName,
+                                                "presenceTypeId": SelectedPersonnelsLG_student.data[i].presenceTypeId,
+                                                "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
+                                            });
+                                        }
+                                        // var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
 
-                                        var data = {"classId": classId, "personnelsIds": personnelsIds};
-                                        if (personnelsIds.getLength() > 0)
-                                            isc.RPCManager.sendRequest(TrDSRequest(classUrl + "addStudents/" + classId, "POST", JSON.stringify({"ids": personnelsIds}), "callback: class_add_students_result(rpcResponse)"));
+                                        // var data = {"classId": classId, "personnelsIds": personnelsIds};
+                                        if (students.getLength() > 0)
+                                            isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students),class_add_students_result));
 
                                         SelectedPersonnelsLG_student.data.clearAll();
                                     }
@@ -547,8 +615,9 @@
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             ClassStudentWin_student.close();
-            StudentsLG_student.invalidateCache();
-            StudentsLG_student.fetchData({"classID": classId});
+            refreshLG(StudentsLG_student);
+            // StudentsLG_student.invalidateCache();
+            // StudentsLG_student.fetchData({"classID": classId});
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
 
                 "<spring:message code="msg.command.done"/>");
@@ -587,7 +656,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(TrDSRequest(classUrl + "removeStudent/" + studentRecord.id + "/" + classId, "DELETE", null, "callback: class_remove_student_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + studentRecord.id, "DELETE", null, class_remove_student_result));
                     }
                 }
             });
@@ -598,8 +667,9 @@
         studentRemoveWait.close();
         if (resp.httpResponseCode == 200) {
             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
-            StudentsLG_student.invalidateCache();
-            StudentsLG_student.fetchData({"classID": classId});
+            refreshLG(StudentsLG_student);
+            // StudentsLG_student.invalidateCache();
+            // StudentsLG_student.fetchData({"classID": classId});
         }
         else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
@@ -623,41 +693,46 @@
         }
     };
 
-    function ListGrid_Cell_CompanyName_Update(record, newValue) {
-        record.companyName = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: class_student_updateCompanyName_result(rpcResponse)"));
-    };
+    function ListGrid_Cell_Update_Student(record, newValue, item) {
+        var updating = {};
+        if(item.name === "applicantCompanyName"){
+            updating.applicantCompanyName = newValue;
+            updating.presenceTypeId = record.presenceTypeId;
+        } else if (item.name === "presenceTypeId"){
+            updating.applicantCompanyName = record.applicantCompanyName;
+            updating.presenceTypeId = newValue;
+        }
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(updating), class_student_update_student_result));
+    }
 
-    function class_student_updateCompanyName_result(resp) {
+    function class_student_update_student_result(resp) {
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
-        if (resp.httpResponseCode == 200) {
-            StudentsLG_student.invalidateCache();
-            StudentsLG_student.fetchData({"classID": classId});
+        if (resp.httpResponseCode === 200) {
+            refreshLG(StudentsLG_student);
+            // StudentsLG_student.invalidateCache();
+            // StudentsLG_student.fetchData({"classID": classId});
         }
         else {
-            var ERROR = isc.Dialog.create({
+            isc.Dialog.create({
                 message: "<spring:message code='msg.operation.error'/>",
                 icon: "[SKIN]stop.png",
                 title: "<spring:message code='message'/>"
             });
-            setTimeout(function () {
-                ERROR.close();
-            }, 3000);
         }
-    };
+    }
 
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         // console.log(classRecord);
-        if (!(classRecord == undefined || classRecord == null)) {
-            StudentsLG_student.invalidateCache();
-            StudentsLG_student.fetchData({"classID": classRecord.id});
-
-            // StudentsDS_student.fetchDataURL = classUrl + "student" + classRecord.id;
+        if (!(classRecord === undefined || classRecord == null)) {
             // StudentsLG_student.invalidateCache();
-            // StudentsLG_student.fetchData();
+            // StudentsLG_student.fetchData({"classID": classRecord.id});
+
+            StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+            StudentsLG_student.invalidateCache();
+            StudentsLG_student.fetchData();
         }
-    };
+    }
 
     // ------------------------------------------- Duplicate Student
 
@@ -666,7 +741,7 @@
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
         isc.RPCManager.sendRequest(TrDSRequest(classUrl + "checkStudentInClass/" + nationalCode + "/" + classId, "GET",
             null, "callback: student_national_code_findOne_result(rpcResponse)"));
-    };
+    }
 
 
     function student_national_code_findOne_result(resp) {
@@ -681,4 +756,6 @@
                 ERROR.close();
             }, 3000);
         }
-    };
+    }
+
+    // </script>
