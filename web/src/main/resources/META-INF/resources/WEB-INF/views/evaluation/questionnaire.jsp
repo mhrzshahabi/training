@@ -81,10 +81,6 @@
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
         ID: "QuestionnaireQuestionDS_questionnaire",
         fields: [
-            <%--{name: "id", primaryKey: true, hidden: true},--%>
-            <%--{name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
-            <%--{name: "type", title: "<spring:message code="type"/>", filterOperator: "iContains", autoFitWidth: true},--%>
             {name: "weight", title: "<spring:message code="weight"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "order", title: "<spring:message code="order"/>", filterOperator: "iContains"},
         ],
@@ -103,6 +99,15 @@
         contextMenu: QuestionnaireQuestionMenu_questionnaire,
         dataChanged: function () { updateCountLabel(this, QuestionnaireQuestionLGCount_questionnaire)},
         recordDoubleClick: function () { editQuestionnaireQuestion_questionnaire(); }
+    });
+
+    EvaluationQuestionDS_questionnaire = isc.TrDS.create({
+        ID: "EvaluationQuestionDS_questionnaire",
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "question", title: "<spring:message code="question"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: configQuestionnaireUrl + "/iscList",
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -131,12 +136,23 @@
         fields: [
             {name: "id", hidden: true},
             {name: "questionnaire.id", dataPath: "questionnaireId", hidden: true,},
-            {name: "questionnaire.title", title: "<spring:message code="questionnaire.type"/>", canEdit: false},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
-            {name: "code", title: "<spring:message code="code"/>",},
-            {name: "value", title: "<spring:message code="value"/>",},
-            {name: "type", title: "<spring:message code="type"/>",},
-            {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
+            {name: "questionnaire.title", title: "<spring:message code="questionnaire"/>", canEdit: false},
+            {
+                name: "evaluationQuestionId",
+                title: "<spring:message code='question'/>",
+                required: true,
+                type: "select",
+                optionDataSource: EvaluationQuestionDS_questionnaire,
+                multiple: true,
+                valueField: "id",
+                displayField: "question",
+                filterFields: ["question"],
+                pickListProperties: {
+                    showFilterEditor: true,
+                },
+            },
+            {name: "weight", title: "<spring:message code="weight"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
+            {name: "order", title: "<spring:message code="order"/>"},
         ]
     });
 
@@ -205,18 +221,18 @@
     function refreshQuestionnaireQuestionLG_questionnaire() {
         var record = QuestionnaireLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, false)) {
-            refreshLgDs(QuestionnaireQuestionLG_questionnaire, QuestionnaireQuestionDS_questionnaire, questionnaireQuestionUrl + "/iscList/" + record.id)
+            // refreshLgDs(QuestionnaireQuestionLG_questionnaire, QuestionnaireQuestionDS_questionnaire, questionnaireQuestionUrl + "/iscList/" + record.id)
         }
     }
 
     function createQuestionnaireQuestion_questionnaire() {
         let record = QuestionnaireLG_questionnaire.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="questionnaire.type"/>")) {
+        if (checkRecordAsSelected(record, true, "<spring:message code="questionnaire"/>")) {
             questionnaireQuestionMethod_questionnaire = "POST";
             QuestionnaireQuestionDF_questionnaire.clearValues();
             QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(record.id);
             QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(record.title);
-            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="questionnaire.value"/>");
+            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="add"/>&nbsp;" + "<spring:message code="question"/>");
             QuestionnaireQuestionWin_questionnaire.show();
         }
     }

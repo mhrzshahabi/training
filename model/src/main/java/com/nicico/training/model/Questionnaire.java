@@ -32,8 +32,5 @@ public class Questionnaire extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-//    @OneToMany(mappedBy = "questionnaire", fetch = FetchType.LAZY)
-//    private List<QuestionnaireQuestion> questionnaireQuestionSet;
-
 }
 

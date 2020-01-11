@@ -10,7 +10,7 @@
 <%--    %>--%>
 
     var evaluationIndexMethod = "POST";
-    var evaluationIndexActionUrl = evaluationIndexHomeUrl;
+    var evaluationIndexActionUrl = evaluationIndexUrl;
     var evaluationIndexWait;
 
     var Menu_ListGrid_Evaluation_Index = isc.Menu.create({
@@ -62,7 +62,7 @@
         groupByText: "<spring:message code='groupByText'/>",
         freezeFieldText: "<spring:message code='freezeFieldText'/>",
 
-        fetchDataURL: evaluationIndexHomeUrl + "/spec-list"
+        fetchDataURL: evaluationIndexUrl + "/spec-list"
     });
     var ListGrid_Evaluation_Index = isc.TrLG.create({
         width: "100%",
@@ -193,7 +193,7 @@
             }
             else{
                 var data = DynamicForm_Evaluation_Index.getValues();
-                var evaluationIndexSaveUrl = evaluationIndexHomeUrl;
+                var evaluationIndexSaveUrl = evaluationIndexUrl;
                 if (evaluationIndexMethod.localeCompare("PUT") == 0) {
                     var evaluationIndexRecord = ListGrid_Evaluation_Index.getSelectedRecord();
                     evaluationIndexSaveUrl += "/" + evaluationIndexRecord.id;
@@ -280,7 +280,7 @@
                             icon: "[SKIN]say.png",
                             title: "<spring:message code='message'/>"
                         });
-                        isc.RPCManager.sendRequest(TrDSRequest(evaluationIndexHomeUrl + "/" + record.id, "DELETE", null, "callback: evaluationIndex_delete_result(rpcResponse)"));
+                        isc.RPCManager.sendRequest(TrDSRequest(evaluationIndexUrl + "/" + record.id, "DELETE", null, "callback: evaluationIndex_delete_result(rpcResponse)"));
                     }
                 }
             });
@@ -290,7 +290,7 @@
 
     function ListGrid_Evaluation_Index_Add() {
         evaluationIndexMethod = "POST";
-        evaluationIndexActionUrl = evaluationIndexHomeUrl;
+        evaluationIndexActionUrl = evaluationIndexUrl;
         DynamicForm_Evaluation_Index.clearValues();
         Window_Evaluation_Index.setTitle("<spring:message code='evaluation.index.title'/>");
         Window_Evaluation_Index.show();
@@ -313,7 +313,7 @@
             DynamicForm_Evaluation_Index.clearFieldErrors("nameFa", true);
             DynamicForm_Evaluation_Index.clearValues();
             evaluationIndexMethod = "PUT";
-            evaluationIndexActionUrl = evaluationIndexHomeUrl + "/" + record.id;
+            evaluationIndexActionUrl = evaluationIndexUrl + "/" + record.id;
             DynamicForm_Evaluation_Index.editRecord(record);
             Window_Evaluation_Index.setTitle("<spring:message code='evaluation.index.title'/>");
             Window_Evaluation_Index.show();

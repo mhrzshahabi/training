@@ -2174,4 +2174,56 @@
             <column name="class_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578736120553-211">
+        <createTable tableName="tbl_questionnaire">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnairePK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578736120553-212">
+        <createTable tableName="tbl_questionnaire_question">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_questionnaire_questionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_evaluation_question" type="NUMBER(19, 0)"/>
+            <column name="n_order" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="f_questionnaire" type="NUMBER(19, 0)"/>
+            <column name="f_weight" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>

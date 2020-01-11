@@ -25,7 +25,7 @@ public class QuestionnaireQuestionDTO implements Serializable {
     public static class Info extends QuestionnaireQuestionDTO {
         private Long id;
         private Integer version;
-        EvaluationQuestionDTO.Info evaluationQuestion;
+        private EvaluationQuestionDTO.Info evaluationQuestion;
     }
 
     @Getter
@@ -33,8 +33,12 @@ public class QuestionnaireQuestionDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("QuestionnaireQuestion - Create")
     public static class Create extends QuestionnaireQuestionDTO {
-        Long questionnaireId;
-        Long evaluationQuestionId;
+
+        @ApiModelProperty(required = true)
+        private Long questionnaireId;
+
+        @ApiModelProperty(required = true)
+        private Long evaluationQuestionId;
     }
 
     @Getter

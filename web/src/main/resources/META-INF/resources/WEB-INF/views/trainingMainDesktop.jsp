@@ -69,7 +69,7 @@
     const foreignLangKnowledgeUrl = rootUrl + "/foreignLangKnowledge";
     const publicationUrl = rootUrl + "/publication";
     const configQuestionnaireUrl = rootUrl + "/config-questionnaire";
-    const evaluationIndexHomeUrl = rootUrl + "/evaluationIndex";
+    const evaluationIndexUrl = rootUrl + "/evaluationIndex";
     const academicBKUrl = rootUrl + "/academicBK";
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
@@ -89,7 +89,8 @@
     isc.FileLoader.loadLocale("fa");
     isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
-    isc.SelectItem.addProperties({height: 27, width: "*"});
+    isc.SelectItem.addProperties({height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false});
+    isc.SpinnerItem.addProperties({height: 27, length: 255, width: "*"});
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 27, length: 500, width: "*"});
     isc.Label.addProperties({wrap: false});
@@ -152,6 +153,7 @@
         },
         sortField: 0,
     });
+
     TrValidators = {
         NotEmpty: {
             type: "regexp",
