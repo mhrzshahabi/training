@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -74,63 +75,63 @@ public class ClassStudentDTO implements Serializable {
         private List<Long> ids;
     }
 
-    @Getter
-    @Setter
-    @Accessors(chain = true)
-    @ApiModel("ClassStudent - Attendance")
-    public static class AttendanceInfo {
-        private Long id;
-        private StudentDTO.AttendanceInfo student;
-        private String applicantCompanyName;
-        private Long presenceTypeId;
-    }
-
 //    @Getter
 //    @Setter
 //    @Accessors(chain = true)
-//    @ApiModel("ClassStudent - AttendanceInfo")
-//    public static class AttendanceInfo{
-//
-//        @Getter(AccessLevel.NONE)
+//    @ApiModel("ClassStudent - Attendance")
+//    public static class AttendanceInfo {
 //        private Long id;
-//        public Long getId(){
-//            return this.student.getId();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String firstName;
-//        public String getFirstName(){
-//            return this.student.getFirstName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String lastName;
-//        public String getLastName(){
-//            return this.student.getLastName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String nationalCode;
-//        public String getNationalCode(){
-//            return this.student.getFirstName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String companyName;
-//        public String getCompanyName(){
-//            return this.student.getFirstName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String personnelNo;
-//        public String getPersonnelNo(){
-//            return this.student.getFirstName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        private String personnelNo2;
-//        public String getPersonnelNo2(){
-//            return this.student.getFirstName();
-//        }
-//        @Getter(AccessLevel.NONE)
-//        @Setter(AccessLevel.NONE)
 //        private StudentDTO.AttendanceInfo student;
+//        private String applicantCompanyName;
 //        private Long presenceTypeId;
 //    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - AttendanceInfo")
+    public static class AttendanceInfo{
+
+        @Getter(AccessLevel.NONE)
+        private Long id;
+        public Long getId(){
+            return this.student.getId();
+        }
+        @Getter(AccessLevel.NONE)
+        private String firstName;
+        public String getFirstName(){
+            return this.student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String lastName;
+        public String getLastName(){
+            return this.student.getLastName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String nationalCode;
+        public String getNationalCode(){
+            return this.student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String companyName;
+        public String getCompanyName(){
+            return this.student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String personnelNo;
+        public String getPersonnelNo(){
+            return this.student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String personnelNo2;
+        public String getPersonnelNo2(){
+            return this.student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        @Setter(AccessLevel.NONE)
+        private StudentDTO.AttendanceInfo student;
+        private Long presenceTypeId;
+    }
 
 
 }

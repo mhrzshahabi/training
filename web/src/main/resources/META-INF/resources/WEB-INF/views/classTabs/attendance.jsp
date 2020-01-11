@@ -74,7 +74,7 @@
             {name: "personnelNo2"},
         ],
         autoFetchData: false,
-        fetchDataURL: attendanceUrl + "/students?id=0"
+        fetchDataURL: tclassStudentUrl + "/attendance-iscList/"
     });
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
@@ -236,7 +236,7 @@
                     attendanceGrid.endEditing();
                     if (attendanceGrid.getAllEditRows().isEmpty()) {
                         RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id;
-                        RestData_Student_AttendanceJSP.fetchDataURL = attendanceUrl + "/students?classId=" + classGridRecordInAttendanceJsp.id;
+                        RestData_Student_AttendanceJSP.fetchDataURL = tclassStudentUrl + "/attendance-iscList/" + classGridRecordInAttendanceJsp.id;
                         item.fetchData();
                     } else {
                         isc.MyYesNoDialog.create({
