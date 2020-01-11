@@ -162,14 +162,22 @@ public class AttendanceService implements IAttendanceService {
         sessions.forEach(s -> attendances.addAll(attendanceDAO.findBySessionId(s.getId())));
 //        List<Attendance> attendances = attendanceDAO.findBySessionId(sessionIds);
         List<Map> maps = new ArrayList<>();
-        for (Student student : students) {
+//        for (Student student : students) {
+//            Map<String, String> map = new HashMap<>();
+//            map.put("studentId", String.valueOf(student.getId()));
+//            map.put("studentName", student.getFirstName());
+//            map.put("studentFamily", student.getLastName());
+//            map.put("nationalCode", student.getNationalCode());
+//            map.put("company", student.getCompanyName());
+        for (ClassStudent classStudent : tclass.getClassStudents()) {
             Map<String, String> map = new HashMap<>();
-            map.put("studentId", String.valueOf(student.getId()));
-            map.put("studentName", student.getFirstName());
-            map.put("studentFamily", student.getLastName());
-            map.put("nationalCode", student.getNationalCode());
-            map.put("company", student.getCompanyName());
-            List<Attendance> filterAttendance = attendances.stream().filter(a -> a.getStudentId().equals(student.getId())).collect(Collectors.toList());
+            map.put("studentId", String.valueOf(classStudent.getStudent().getId()));
+            map.put("studentName", classStudent.getStudent().getFirstName());
+            map.put("studentFamily", classStudent.getStudent().getLastName());
+            map.put("nationalCode", classStudent.getStudent().getNationalCode());
+            map.put("company", classStudent.getStudent().getCompanyName());
+            map.put("studentState", classStudent.getPresenceTypeId().toString());
+            List<Attendance> filterAttendance = attendances.stream().filter(a -> a.getStudentId().equals(classStudent.getStudent().getId())).collect(Collectors.toList());
             List<Long> sessionIdsSaved = filterAttendance.stream().map(c -> c.getSessionId()).collect(Collectors.toList());
 //            for (ClassSessionDTO.Info session : sessions)
             for (Long sessionId : sessionIds) {

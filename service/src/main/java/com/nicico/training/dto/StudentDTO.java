@@ -164,4 +164,24 @@ public class StudentDTO {
         private String ccpSection;
         private String ccpUnit;
     }
+//
+//    @Getter
+//    @Setter
+//    @Accessors
+//    @ApiModel("Student - AttendanceInfo")
+//    public static class AttendanceInfo {
+//        private Long id;
+//        @ApiModelProperty(required = true)
+//        private String firstName;
+//        @ApiModelProperty(required = true)
+//        private String lastName;
+//        @ApiModelProperty(required = true)
+//        private String nationalCode;
+//        @ApiModelProperty(required = true)
+//        private String personnelNo;
+//        @ApiModelProperty(required = true)
+//        private String companyName;
+//    }
+
+
 }

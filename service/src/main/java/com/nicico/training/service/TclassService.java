@@ -121,9 +121,9 @@ public class TclassService implements ITclassService {
 //        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
 //
 //        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-//        Optional.ofNullable(tclass.getStudentSet())
-//                .ifPresent(students ->
-//                        students.forEach(student ->
+//        Optional.ofNullable(tclass.getClassStudents())
+//                .ifPresent(classStudents ->
+//                        classStudents.forEach(student ->
 //                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
 //                        ));
 //        return studentInfoSet;
