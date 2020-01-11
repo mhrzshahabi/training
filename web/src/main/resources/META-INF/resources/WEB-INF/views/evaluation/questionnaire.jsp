@@ -81,6 +81,7 @@
     QuestionnaireQuestionDS_questionnaire = isc.TrDS.create({
         ID: "QuestionnaireQuestionDS_questionnaire",
         fields: [
+            {name: "evaluationQuestion.question", title: "<spring:message code="question"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "weight", title: "<spring:message code="weight"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "order", title: "<spring:message code="order"/>", filterOperator: "iContains"},
         ],
@@ -89,7 +90,7 @@
     QuestionnaireQuestionLG_questionnaire = isc.TrLG.create({
         ID: "QuestionnaireQuestionLG_questionnaire",
         dataSource: QuestionnaireQuestionDS_questionnaire,
-        fields: [{name: "weight"}, {name: "order"}],
+        fields: [{name: "evaluationQuestion.question"}, {name: "weight"}, {name: "order"}],
         gridComponents: [
             isc.LgLabel.create({
                 contents: "<span><b>" + "<spring:message code="questions"/>" + "</b></span>"
@@ -143,7 +144,6 @@
                 required: true,
                 type: "select",
                 optionDataSource: EvaluationQuestionDS_questionnaire,
-                multiple: true,
                 valueField: "id",
                 displayField: "question",
                 filterFields: ["question"],
@@ -152,7 +152,7 @@
                 },
             },
             {name: "weight", title: "<spring:message code="weight"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
-            {name: "order", title: "<spring:message code="order"/>"},
+            {name: "order", title: "<spring:message code="order"/>", required: true, editorType: "SpinnerItem", defaultValue: 1, min: 1},
         ]
     });
 
@@ -221,7 +221,7 @@
     function refreshQuestionnaireQuestionLG_questionnaire() {
         var record = QuestionnaireLG_questionnaire.getSelectedRecord();
         if (checkRecordAsSelected(record, false)) {
-            // refreshLgDs(QuestionnaireQuestionLG_questionnaire, QuestionnaireQuestionDS_questionnaire, questionnaireQuestionUrl + "/iscList/" + record.id)
+            refreshLgDs(QuestionnaireQuestionLG_questionnaire, QuestionnaireQuestionDS_questionnaire, questionnaireQuestionUrl + "/iscList/" + record.id)
         }
     }
 
@@ -240,13 +240,13 @@
     function editQuestionnaireQuestion_questionnaire() {
         let questionnaireRecord = QuestionnaireLG_questionnaire.getSelectedRecord();
         let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="questionnaire.value"/>")) {
+        if (checkRecordAsSelected(record, true, "<spring:message code="questions"/>")) {
             questionnaireQuestionMethod_questionnaire = "PUT";
             QuestionnaireQuestionDF_questionnaire.clearValues();
             QuestionnaireQuestionDF_questionnaire.editRecord(record);
             QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.id").setValue(questionnaireRecord.id);
             QuestionnaireQuestionDF_questionnaire.getItem("questionnaire.title").setValue(questionnaireRecord.title);
-            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="questionnaire.value"/>");
+            QuestionnaireQuestionWin_questionnaire.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="question"/>");
             QuestionnaireQuestionWin_questionnaire.show();
         }
     }
@@ -264,7 +264,7 @@
         }
         let data = QuestionnaireQuestionDF_questionnaire.getValues();
         isc.RPCManager.sendRequest(
-            TrDSRequest(questionnaireQuestionSaveUrl, questionnaireQuestionMethod_questionnaire, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="questionnaire.value"/>" +
+            TrDSRequest(questionnaireQuestionSaveUrl, questionnaireQuestionMethod_questionnaire, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','" + "<spring:message code="question"/>" +
                 "', QuestionnaireQuestionWin_questionnaire, QuestionnaireQuestionLG_questionnaire)")
         );
     }
@@ -272,7 +272,7 @@
 
     function removeQuestionnaireQuestion_questionnaire() {
         let record = QuestionnaireQuestionLG_questionnaire.getSelectedRecord();
-        var entityType = '<spring:message code="questionnaire.value"/>';
+        var entityType = '<spring:message code="questions"/>';
         if (checkRecordAsSelected(record, true, entityType)) {
             removeRecord(questionnaireQuestionUrl + "/" + record.id, entityType, record.title, 'QuestionnaireQuestionLG_questionnaire');
         }

@@ -15,7 +15,13 @@ import java.util.List;
 @Accessors(chain = true)
 public class QuestionnaireQuestionDTO implements Serializable {
 
+    @ApiModelProperty(required = true)
+    private Long questionnaireId;
+    @ApiModelProperty(required = true)
+    private Long evaluationQuestionId;
+    @ApiModelProperty(required = true)
     private Float weight;
+    @ApiModelProperty(required = true)
     private Integer order;
 
     @Getter
@@ -34,11 +40,7 @@ public class QuestionnaireQuestionDTO implements Serializable {
     @ApiModel("QuestionnaireQuestion - Create")
     public static class Create extends QuestionnaireQuestionDTO {
 
-        @ApiModelProperty(required = true)
-        private Long questionnaireId;
 
-        @ApiModelProperty(required = true)
-        private Long evaluationQuestionId;
     }
 
     @Getter

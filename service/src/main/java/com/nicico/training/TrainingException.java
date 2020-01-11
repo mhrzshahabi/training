@@ -94,7 +94,7 @@ public class TrainingException extends NICICOException {
         ScoresNotFound(404),
         AttendanceNotFound(404),
         ParameterNotFound(404),
-
+        QuestionnaireNotFound(404),
         Unknown(500),
         Unauthorized(401),
         Forbidden(403),
