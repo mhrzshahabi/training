@@ -232,18 +232,18 @@ var flag1=null
 
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +"/"+ record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
         record.failureReason = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +"/"+ record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_score_Update(record, newValue) {
 
         record.score = newValue
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +"/update-score/"+ record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl +"/"+ record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
 
 
     }
@@ -380,7 +380,7 @@ var flag1=null
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         if (!(classRecord == undefined || classRecord == null)) {
-           RestDataSource_ClassStudent.fetchDataURL=tclassStudentUrl+"/student-iscList/"+classRecord.id
+           RestDataSource_ClassStudent.fetchDataURL=tclassStudentUrl+"/scores-iscList/"+classRecord.id
             ListGrid_Class_Student.invalidateCache();
             ListGrid_Class_Student.fetchData();
 
