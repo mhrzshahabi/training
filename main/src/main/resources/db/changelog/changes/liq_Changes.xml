@@ -199,4 +199,4 @@
         <dropSequence sequenceName="SEQ_SCORES_ID"/>
     </changeSet>
 
-    </databaseChangeLog>
+</databaseChangeLog>

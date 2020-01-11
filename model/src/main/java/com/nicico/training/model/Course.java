@@ -166,7 +166,7 @@ public class Course extends Auditable {
 
     @Transient
     public Boolean getHasSkill() {
-        if(skillSet == null) return true;
+        if (skillSet == null) return true;
         else return skillSet.isEmpty();
     }
 }

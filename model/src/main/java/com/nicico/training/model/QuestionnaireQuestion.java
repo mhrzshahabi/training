@@ -25,21 +25,24 @@ public class QuestionnaireQuestion extends Auditable {
     @SequenceGenerator(name = "seq_questionnaire_question_id", sequenceName = "seq_questionnaire_question_id", allocationSize = 1)
     private Long id;
 
+    @Column(name = "f_weight", nullable = false)
+    private Integer weight;
+
+    @Column(name = "n_order", nullable = false)
+    private Integer order;
+
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "evaluation_question_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "f_evaluation_question", nullable = false, insertable = false, updatable = false)
     private EvaluationQuestion evaluationQuestion;
 
-    @Column(name = "evaluation_question_id")
+    @Column(name = "f_evaluation_question")
     private Long evaluationQuestionId;
-
-    private float weight;
-
-    private Integer order;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_questionnaire", nullable = false, insertable = false, updatable = false)
     private Questionnaire questionnaire;
 
-
+    @Column(name = "f_questionnaire")
+    private Long questionnaireId;
 }
 

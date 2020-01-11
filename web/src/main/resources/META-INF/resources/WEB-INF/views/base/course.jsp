@@ -69,7 +69,23 @@
             {name: "workflowStatus"},
             {name: "workflowStatusCode"},
             {name: "hasGoal"},
-            {name: "hasSkill"}
+            {name: "hasSkill"},
+             {
+                name: "evaluation", valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
+            },
+            {
+                name: "behavioralLevel",
+              valueMap: {
+                   "1":"مشاهده",
+                   "2":"مصاحبه",
+                   "3":"کار پروژای"
+                }
+            }
             // {name: "version"},
         ],
         fetchDataURL: courseUrl + "spec-list",
@@ -401,6 +417,18 @@
                 align: "center",
                 autoFitWidth: true,
                 filterOperator: "iContains"
+            },
+             {
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+
+                formatCellValue: function (value, record, field) {
+                    if (value === "رفتاری") {
+                        return value + " , " + record.behavioralLevel
+                    } else {
+                        return value;
+                    }
+
+                }
             },
             {
                 name: "workflowStatusCode",
@@ -1009,6 +1037,39 @@
                 // height: "30",
                 width: "*",
                 validators: [TrValidators.NotEmpty, TrValidators.NotStartWithSpecialChar, TrValidators.NotStartWithNumber]
+            },
+             {
+                name: "evaluation",
+                title: "<spring:message code="evaluation.level"/>",
+                colSpan:3,
+                textAlign: "center",
+                type: "select",
+           //     defaultValue: "1",
+                valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
+                 change: function (form, item, value, oldValue) {
+                    if (value === "3")
+                        DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(false);
+                    else
+                        DynamicForm_course_MainTab.getItem("behavioralLevel").setDisabled(true);
+                }
+             },
+              {
+                name: "behavioralLevel",
+                title: "<spring:message code="behavioral.Level"/>",
+                type: "radioGroup",
+                vertical: false,
+                fillHorizontalSpace: true,
+              //  defaultValue: "مشاهده",
+                valueMap: {
+                   "1":"مشاهده",
+                   "2":"مصاحبه",
+                   "3":"کار پروژای"
+                }
             },
 
 
@@ -2110,11 +2171,11 @@
                 title: "گروه مهارت",
                 pane: ListGrid_CourseCompetence
             },
-             {
-             title: "<spring:message code="course.evaluation"/>",
-             ID:"courseEvaluationTAB",
-             pane: isc.ViewLoader.create({viewURL: "course_evaluation/show-form"})
-            }
+            <%-- {--%>
+            <%-- title: "<spring:message code="course.evaluation"/>",--%>
+            <%-- ID:"courseEvaluationTAB",--%>
+            <%-- pane: isc.ViewLoader.create({viewURL: "course_evaluation/show-form"})--%>
+            <%--}--%>
         ],
          tabSelected: function (tabNum, tabPane, ID, tab, name) {
             if (isc.Page.isLoaded())
@@ -2162,6 +2223,7 @@
         vm_JspCourse.clearValues();
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
+        DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
         Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
@@ -2296,6 +2358,9 @@
             DynamicForm_course_GroupTab.getItem("erunType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("elevelType.id").setDisabled(true);
             DynamicForm_course_GroupTab.getItem("etheoType.id").setDisabled(true);
+
+
+
             course_method = "PUT";
             course_url = courseUrl + sRecord.id;
             // DynamicForm_course.getItem("epSection").enable();
@@ -2303,6 +2368,22 @@
             DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
             // sRecord.domainPercent = "دانشی: " + sRecord.knowledge + "%" + "، مهارتی: " + sRecord.skill + "%" + "، نگرشی: " + sRecord.attitude + "%";
             vm_JspCourse.editRecord(sRecord);
+//======================================================
+            if(ListGrid_Course.getSelectedRecord().hasGoal && DynamicForm_course_MainTab.getValue("evaluation") != null)
+            {
+            Window_course.show();
+              }
+            if (DynamicForm_course_MainTab.getValue("evaluation") === "3")
+             {
+               DynamicForm_course_MainTab.getItem("behavioralLevel").enable();
+             }
+             else
+             {
+             DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+             }
+
+//=======================================================
+
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
