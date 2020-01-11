@@ -60,8 +60,8 @@ public class ServiceTaskEndingClass implements JavaDelegate {
         if (taskName.equalsIgnoreCase("servicetaskSetStatus1")) {
 
             if (exe.getVariable("REJECT").toString().equals("N")) {
-                tclassService.updateClassState(Long.parseLong(exe.getVariable("cId").toString()), "تایید نهایی", 2);
-                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "تایید نهایی");
+                tclassService.updateClassState(Long.parseLong(exe.getVariable("cId").toString()), "تایید نهایی پایان کلاس", 2);
+                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "تایید نهایی پایان کلاس");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "2");
             }
         }
@@ -84,8 +84,8 @@ public class ServiceTaskEndingClass implements JavaDelegate {
         if (taskName.equalsIgnoreCase("servicetaskCorrection")) {
 
             if (exe.getVariable("REJECT").toString().equals("N")) {
-                tclassService.updateClassState(Long.parseLong(exe.getVariable("cId").toString()), "اصلاح دوره", 20);
-                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "اصلاح دوره");
+                tclassService.updateClassState(Long.parseLong(exe.getVariable("cId").toString()), "اصلاح پایان کلاس", 20);
+                exe.setVariable("C_WORKFLOW_ENDING_STATUS", "اصلاح پایان کلاس");
                 exe.setVariable("C_WORKFLOW_ENDING_STATUS_CODE", "20");
             }
         }

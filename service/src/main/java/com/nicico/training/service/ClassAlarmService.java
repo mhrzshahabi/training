@@ -11,14 +11,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
 import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +33,7 @@ public class ClassAlarmService implements IClassAlarm {
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
-    @Transactional
+
     @Override
     public List<String> hasAlarm(Long class_id, HttpServletResponse response) throws IOException {
 
@@ -293,7 +295,6 @@ public class ClassAlarmService implements IClassAlarm {
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term */
-    @Transactional
     @Override
     public List<ClassAlarmDTO> list(Long class_id, HttpServletResponse response) throws IOException {
 
@@ -809,7 +810,6 @@ public class ClassAlarmService implements IClassAlarm {
 
     //*********************************
     /*point : for ended classes do not fetch alarms && only check alarm for current term*/
-    @Transactional
     @Override
     public String checkAlarmsForEndingClass(Long class_id, HttpServletResponse response) throws IOException {
 

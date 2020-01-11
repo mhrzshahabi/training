@@ -259,4 +259,10 @@ public class TclassService implements ITclassService {
       return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
     }
 
+    @Override
+    public Integer getWorkflowEndingStatusCode(Long classId)
+    {
+        return tclassDAO.getWorkflowEndingStatusCode(classId);
+    }
+
 }

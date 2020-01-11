@@ -2474,7 +2474,7 @@
             workflowParameters = null;
 
             ListGrid_Course_Edit();
-            taskConfirmationWindow.setHeight("90%");
+            taskConfirmationWindow.maximize();
         }
 
     }
@@ -2525,7 +2525,7 @@
 
                             isc.say("دوره ویرایش و به گردش کار ارسال شد");
                             taskConfirmationWindow.hide();
-                            taskConfirmationWindow.setHeight("90%");
+                            taskConfirmationWindow.maximize();
                             ListGrid_UserTaskList.invalidateCache();
                         }
                     }

@@ -20,4 +20,7 @@ public interface TclassDAO extends JpaRepository<Tclass, Long>, JpaSpecification
     @Modifying
     @Query(value = "update TBL_CLASS set C_WORKFLOW_ENDING_STATUS = :workflowEndingStatus, C_WORKFLOW_ENDING_STATUS_CODE = :workflowEndingStatusCode where ID = :classId", nativeQuery = true)
     public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode);
+
+    @Query(value = "select MAX(C_WORKFLOW_ENDING_STATUS_CODE) from TBL_CLASS where ID = :classId", nativeQuery = true)
+    public Integer getWorkflowEndingStatusCode(Long classId);
 }

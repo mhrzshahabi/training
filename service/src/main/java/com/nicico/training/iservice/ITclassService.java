@@ -51,4 +51,6 @@ public interface ITclassService {
 
     @Transactional(readOnly = true)
     int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode);
+
+    Integer getWorkflowEndingStatusCode (Long classId);
 }
