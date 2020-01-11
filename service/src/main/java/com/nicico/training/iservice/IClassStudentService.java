@@ -8,15 +8,13 @@ import java.util.List;
 
 public interface IClassStudentService {
 
-    ClassStudent getTClassStudent(Long id);
+    ClassStudent getClassStudent(Long id);
 
     <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType);
 
     void registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
-    ClassStudentDTO.ClassStudentInfo update(Long id, ClassStudentDTO.Update request);
-
-    ClassStudentDTO.ClassStudentInfo updateScore(Long id, ClassStudentDTO.Update_Score request);
+    <E> ClassStudentDTO.ClassStudentInfo update(Long id, E request);
 
     void delete(Long id);
 

@@ -32,7 +32,7 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public ClassStudent getTClassStudent(Long id) {
+    public ClassStudent getClassStudent(Long id) {
         Optional<ClassStudent> optionalStudent = classStudentDAO.findById(id);
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
@@ -86,8 +86,8 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public ClassStudentDTO.ClassStudentInfo update(Long id, ClassStudentDTO.Update request) {
-        ClassStudent classStudent = getTClassStudent(id);
+    public <E> ClassStudentDTO.ClassStudentInfo update(Long id, E request) {
+        ClassStudent classStudent = getClassStudent(id);
         ClassStudent updating = new ClassStudent();
         mapper.map(classStudent, updating);
         mapper.map(request, updating);

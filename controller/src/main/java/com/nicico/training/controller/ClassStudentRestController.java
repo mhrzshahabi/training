@@ -72,19 +72,9 @@ public class ClassStudentRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
         try {
             return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
-        } catch (TrainingException ex) {
-            return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
-        }
-    }
-
-    @Loggable
-    @PutMapping(value = "update-score/{id}")
-    public ResponseEntity update_score(@PathVariable Long id, @RequestBody ClassStudentDTO.Update_Score request) {
-        try {
-            return new ResponseEntity<>(classStudentService.updateScore(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
