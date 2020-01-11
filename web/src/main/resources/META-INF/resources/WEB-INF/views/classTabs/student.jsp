@@ -336,7 +336,6 @@
 
                     function checkIfAlreadyExist(currentVal) {
                         return accumulator.some(function (item) {
-                            console.log(item);
                             return (item.nationalCode === currentVal.nationalCode);
                         });
                     }
@@ -362,8 +361,6 @@
             //  checkStudentDuplicateNationalCode();
         }
     });
-
-    var temp;
 
     function nationalCodeExists(nationalCode) {
         return StudentsLG_student.data.localData.some(function(el) {
@@ -554,9 +551,6 @@
                                                 "registerTypeId": SelectedPersonnelsLG_student.data[i].registerTypeId
                                             });
                                         }
-                                        // var personnelsIds = SelectedPersonnelsLG_student.data.map(r => r.personnelNo);
-
-                                        // var data = {"classId": classId, "personnelsIds": personnelsIds};
                                         if (students.getLength() > 0)
                                             isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/register-students/" + classId, "POST", JSON.stringify(students),class_add_students_result));
 
@@ -616,8 +610,6 @@
             var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
             ClassStudentWin_student.close();
             refreshLG(StudentsLG_student);
-            // StudentsLG_student.invalidateCache();
-            // StudentsLG_student.fetchData({"classID": classId});
             var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
 
                 "<spring:message code="msg.command.done"/>");
@@ -668,8 +660,6 @@
         if (resp.httpResponseCode == 200) {
             simpleDialog("<spring:message code="create"/>", "<spring:message code="msg.operation.successful"/>", 2000, "say");
             refreshLG(StudentsLG_student);
-            // StudentsLG_student.invalidateCache();
-            // StudentsLG_student.fetchData({"classID": classId});
         }
         else if (resp.data == false) {
             var ERROR = isc.Dialog.create({
@@ -709,8 +699,6 @@
         var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
         if (resp.httpResponseCode === 200) {
             refreshLG(StudentsLG_student);
-            // StudentsLG_student.invalidateCache();
-            // StudentsLG_student.fetchData({"classID": classId});
         }
         else {
             isc.Dialog.create({
@@ -723,11 +711,7 @@
 
     function loadPage_student() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
-        // console.log(classRecord);
         if (!(classRecord === undefined || classRecord == null)) {
-            // StudentsLG_student.invalidateCache();
-            // StudentsLG_student.fetchData({"classID": classRecord.id});
-
             StudentsDS_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
             StudentsLG_student.invalidateCache();
             StudentsLG_student.fetchData();

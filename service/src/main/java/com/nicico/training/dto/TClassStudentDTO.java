@@ -1,6 +1,5 @@
 package com.nicico.training.dto;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -9,7 +8,6 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
-import java.util.Date;
 import java.util.List;
 
 @Getter
@@ -75,38 +73,5 @@ public class TClassStudentDTO implements Serializable {
         @ApiModelProperty(required = true)
         private List<Long> ids;
     }
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("ClassStudentInfo")
-//    public static class Info extends TClassStudentDTO {
-//        private Long id;
-//        private Date createdDate;
-//        private String createdBy;
-//        private Date lastModifiedDate;
-//        private String lastModifiedBy;
-//        private TclassDTO.Info tclass;
-//        private StudentDTO.Info student;
-//    }
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("ClassStudentCreateRq")
-//    public static class Create extends TClassStudentDTO {
-//
-//    }
-
-//    @Getter
-//    @Setter
-//    @Accessors(chain = true)
-//    @ApiModel("ClassStudentIdListRq")
-//    public static class ScoresIdList {
-//        @NotNull
-//        @ApiModelProperty(required = true)
-//        private List<Long> ids;
-//    }
-
 
 }

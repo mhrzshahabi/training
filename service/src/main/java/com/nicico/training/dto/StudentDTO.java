@@ -68,7 +68,7 @@ public class StudentDTO {
     private String ccpUnit;
     private String ccpTitle;
     private String scoresState;
-    private String failurereason;
+    private String failureReason;
     private Float score;
 
     @Getter
