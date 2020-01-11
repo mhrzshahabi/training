@@ -114,44 +114,44 @@ public class TclassService implements ITclassService {
         return modelMapper.map(saved, TclassDTO.Info.class);
     }
 
-    @Transactional(readOnly = true)
-    @Override
-    public List<StudentDTO.Info> getStudents(Long classID) {
-        final Optional<Tclass> ssById = tclassDAO.findById(classID);
-        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<StudentDTO.Info> getStudents(Long classID) {
+//        final Optional<Tclass> ssById = tclassDAO.findById(classID);
+//        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+//
+//        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
+//        Optional.ofNullable(tclass.getStudentSet())
+//                .ifPresent(students ->
+//                        students.forEach(student ->
+//                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
+//                        ));
+//        return studentInfoSet;
+//    }
 
-        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-        Optional.ofNullable(tclass.getStudentSet())
-                .ifPresent(students ->
-                        students.forEach(student ->
-                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
-                        ));
-        return studentInfoSet;
-    }
-
-    @Transactional(readOnly = true)
-    @Override
-    public List<StudentDTO.Info> getOtherStudents(Long classID) {
-        final Optional<Tclass> ssById = tclassDAO.findById(classID);
-        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-
-        List<Student> currentStudent = tclass.getStudentSet();
-        List<Student> allStudent = studentDAO.findAll();
-        List<Student> otherStudent = new ArrayList<>();
-
-        for (Student student : allStudent) {
-            if (!currentStudent.contains(student))
-                otherStudent.add(student);
-        }
-
-        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-        Optional.of(otherStudent)
-                .ifPresent(students ->
-                        students.forEach(student ->
-                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
-                        ));
-        return studentInfoSet;
-    }
+//    @Transactional(readOnly = true)
+//    @Override
+//    public List<StudentDTO.Info> getOtherStudents(Long classID) {
+//        final Optional<Tclass> ssById = tclassDAO.findById(classID);
+//        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+//
+//        List<Student> currentStudent = tclass.getStudentSet();
+//        List<Student> allStudent = studentDAO.findAll();
+//        List<Student> otherStudent = new ArrayList<>();
+//
+//        for (Student student : allStudent) {
+//            if (!currentStudent.contains(student))
+//                otherStudent.add(student);
+//        }
+//
+//        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
+//        Optional.of(otherStudent)
+//                .ifPresent(students ->
+//                        students.forEach(student ->
+//                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
+//                        ));
+//        return studentInfoSet;
+//    }
 
 
 //    @Transactional
@@ -173,15 +173,15 @@ public class TclassService implements ITclassService {
         }
     }
 
-    @Transactional
-    @Override
-    public void addStudents(StudentDTO.Delete request, Long classId) {
-        Tclass tclass = tclassDAO.getOne(classId);
-        List<Student> gAllById = studentDAO.findAllById(request.getIds());
-        for (Student student : gAllById) {
-            tclass.getStudentSet().add(student);
-        }
-    }
+//    @Transactional
+//    @Override
+//    public void addStudents(StudentDTO.Delete request, Long classId) {
+//        Tclass tclass = tclassDAO.getOne(classId);
+//        List<Student> gAllById = studentDAO.findAllById(request.getIds());
+//        for (Student student : gAllById) {
+//            tclass.getStudentSet().add(student);
+//        }
+//    }
 
     @Transactional(readOnly = true)
     @Override

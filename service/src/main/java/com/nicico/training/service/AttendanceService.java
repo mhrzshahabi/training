@@ -7,6 +7,7 @@ import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
 import com.nicico.training.iservice.IAttendanceService;
 import com.nicico.training.model.Attendance;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
 import com.nicico.training.model.Tclass;
 import com.nicico.training.repository.AttendanceDAO;
@@ -154,7 +155,7 @@ public class AttendanceService implements IAttendanceService {
         List<ClassSessionDTO.Info> sessions = classSessionService.getSessionsForDate(classId, date);
         List<Long> sessionIds = sessions.stream().map(s -> s.getId()).collect(Collectors.toList());
         Tclass tclass = tclassService.getEntity(classId);
-        List<Student> students = tclass.getStudentSet();
+        List<Student> students = tclass.getClassStudents().stream().map(ClassStudent::getStudent).collect(Collectors.toList());
 //        if(attendanceDAO.existsBySessionId(sessions.get(0).getId())){
 //        ArrayList<Long> sessionIds = new ArrayList<>();
         List<Attendance> attendances = new ArrayList<>();

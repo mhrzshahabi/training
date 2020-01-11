@@ -62,4 +62,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1578315306749-210">
         <addUniqueConstraint columnNames="c_code" constraintName="UC_TBL_PARAMETERC_CODE_COL" tableName="tbl_parameter"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-207">
+        <addUniqueConstraint columnNames="student_id, class_id" constraintName="UKfy8smett519jvh2g2n4y8lwhj" tableName="tbl_class_student"/>
+    </changeSet>
 </databaseChangeLog>

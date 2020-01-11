@@ -181,8 +181,8 @@
     <changeSet author="razmnoosh (generated)" id="1578139965908-203">
         <createSequence sequenceName="seq_academic_bk_id"/>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578315306749-207">
-        <createSequence sequenceName="seq_tclass_student_new_id"/>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-203">
+        <createSequence sequenceName="seq_class_student_id"/>
     </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1578736120553-209">
         <createSequence sequenceName="seq_questionnaire_id"/>

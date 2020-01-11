@@ -199,4 +199,72 @@
         <dropSequence sequenceName="SEQ_SCORES_ID"/>
     </changeSet>
 
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-229">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT" constraintName="FK7FRUSFAMQ259OFI2QKP3F4LN7"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-230">
+        <dropForeignKeyConstraint baseTableName="TBL_CLASS_STUDENT" constraintName="FKJEPICVMO2VNEWWDPRSMS6BHR1"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-264">
+        <dropTable tableName="TBL_CLASS_STUDENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-268">
+        <dropColumn columnName="FAILURE_REASON" tableName="TBL_STUDENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-269">
+        <dropColumn columnName="SCORE" tableName="TBL_STUDENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-270">
+        <dropColumn columnName="SCORES_STATE" tableName="TBL_STUDENT"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-188">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_account_info_id" tableName="tbl_company"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-189">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_address_id" tableName="tbl_company"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-190">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_personal_info_id" tableName="tbl_company"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578744676865-191">
+        <addNotNullConstraint columnDataType="number(19,0)" columnName="f_personality" tableName="tbl_teacher"/>
+    </changeSet>
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-204">
+        <createTable tableName="tbl_class_student">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_class_studentPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="applicant_company_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="failure_reason" type="VARCHAR2(255 CHAR)"/>
+            <column name="presence_type_id" type="NUMBER(19, 0)"/>
+            <column name="score" type="FLOAT"/>
+            <column name="scores_state" type="VARCHAR2(255 CHAR)"/>
+            <column name="student_id" type="NUMBER(19, 0)"/>
+            <column name="class_id" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-264">
+        <dropTable tableName="TBL_TCLASS_STUDENT_NEW"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-270">
+        <dropSequence sequenceName="SEQ_TCLASS_STUDENT_NEW_ID"/>
+    </changeSet>
+
 </databaseChangeLog>

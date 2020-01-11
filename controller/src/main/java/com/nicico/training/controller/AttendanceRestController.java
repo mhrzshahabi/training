@@ -142,24 +142,24 @@ public class AttendanceRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-    @Loggable
-    @GetMapping(value = "/students")
-//	@PreAuthorize("hasAuthority('c_attendance')")
-    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
-        if (classId == null || classId == 0) {
-            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
-        }
-        List<StudentDTO.Info> students = tclassService.getStudents(classId);
-        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-        specResponse.setData(students)
-                .setStartRow(0)
-                .setEndRow(students.size())
-                .setTotalRows(students.size());
-
-        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-        specRs.setResponse(specResponse);
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/students")
+////	@PreAuthorize("hasAuthority('c_attendance')")
+//    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
+//        if (classId == null || classId == 0) {
+//            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
+//        }
+//        List<StudentDTO.Info> students = tclassService.getStudents(classId);
+//        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+//        specResponse.setData(students)
+//                .setStartRow(0)
+//                .setEndRow(students.size())
+//                .setTotalRows(students.size());
+//
+//        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+//        specRs.setResponse(specResponse);
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
 
     @Loggable

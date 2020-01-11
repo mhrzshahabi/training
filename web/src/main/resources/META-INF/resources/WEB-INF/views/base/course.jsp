@@ -71,20 +71,10 @@
             {name: "hasGoal"},
             {name: "hasSkill"},
              {
-                name: "evaluation", valueMap: {
-                    "1": "واکنش",
-                    "2": "یادگیری",
-                    "3": "رفتاری",
-                    "4": "نتایج",
-                },
+                name: "evaluation",
             },
             {
                 name: "behavioralLevel",
-              valueMap: {
-                   "1":"مشاهده",
-                   "2":"مصاحبه",
-                   "3":"کار پروژای"
-                }
             }
             // {name: "version"},
         ],
@@ -269,19 +259,15 @@
         <%--return this.rowHoverComponent;--%>
         <%--},--%>
 
-        doubleClick: function () {
+        rowDoubleClick: function () {
             // DynamicForm_course.clearValues();
             ListGrid_Course_Edit()
         },
-        selectionChanged: function (record, state) {
+        selectionUpdated: function (record) {
             courseId = record;
             RestDataSource_Syllabus.fetchDataURL = syllabusUrl + "course/" + courseId.id;
             ListGrid_CourseSyllabus.fetchData();
             ListGrid_CourseSyllabus.invalidateCache();
-            // RestDataSource_CourseGoal.fetchDataURL = courseUrl + courseId.id + "/goal";
-            // ListGrid_Goal.fetchData();
-            // ListGrid_Goal.invalidateCache();
-            // ListGrid_Syllabus_Goal_refresh();
             RestDataSource_CourseSkill.fetchDataURL = courseUrl + "skill/" + courseId.id;
             ListGrid_CourseSkill.fetchData();
             ListGrid_CourseSkill.invalidateCache();
@@ -291,18 +277,18 @@
             RestDataSource_CourseCompetence.fetchDataURL = courseUrl + "skill-group/" + courseId.id;
             ListGrid_CourseCompetence.fetchData();
             ListGrid_CourseCompetence.invalidateCache();
-            RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseId.id;
-            ListGrid_Post_JspCourse.fetchData();
-            ListGrid_Post_JspCourse.invalidateCache();
-            for (var i = 0; i < trainingTabSet.tabs.length; i++) {
-                if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
-                    trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
-                }
-            }
+            // RestData_Post_JspCourse.fetchDataURL = courseUrl + "post/" + courseId.id;
+            // ListGrid_Post_JspCourse.fetchData();
+            // ListGrid_Post_JspCourse.invalidateCache();
+            // for (let i = 0; i < trainingTabSet.tabs.length; i++) {
+            //     if ("اهداف" == (trainingTabSet.getTab(i).title).substr(0, 5)) {
+            //         trainingTabSet.getTab(i).setTitle("اهداف دوره " + record.titleFa);
+            //     }
+            // }
             // sumCourseTime = ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration;
 
-        },
-        selectionUpdated:function(record){
+        // },
+        // selectionUpdated:function(record){
             refreshSelectedTab_Course(tabSetCourse.getSelectedTab())
         },
 
@@ -422,17 +408,22 @@
                 autoFitWidth: true,
                 filterOperator: "iContains"
             },
-             {
-                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
-
-                formatCellValue: function (value, record, field) {
-                    if (value === "رفتاری") {
-                        return value + " , " + record.behavioralLevel
-                    } else {
-                        return value;
-                    }
-
+            {name:"behavioralLevel", title:"سطح رفتاری",
+                // hidden:true,
+                valueMap: {
+                    "1":"مشاهده",
+                    "2":"مصاحبه",
+                    "3":"کار پروژه ای"
                 }
+            },
+            {
+                name: "evaluation", title: "<spring:message code="evaluation.level"/>",
+                valueMap: {
+                    "1": "واکنش",
+                    "2": "یادگیری",
+                    "3": "رفتاری",
+                    "4": "نتایج",
+                },
             },
             {
                 name: "workflowStatusCode",
@@ -1065,15 +1056,16 @@
               {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
+                  colSpan:2,
                 type: "radioGroup",
                 vertical: false,
                 fillHorizontalSpace: true,
               //  defaultValue: "مشاهده",
-                valueMap: {
-                   "1":"مشاهده",
-                   "2":"مصاحبه",
-                   "3":"کار پروژای"
-                }
+                  valueMap: {
+                      "1":"مشاهده",
+                      "2":"مصاحبه",
+                      "3":"کار پروژه ای"
+                  }
             },
 
 

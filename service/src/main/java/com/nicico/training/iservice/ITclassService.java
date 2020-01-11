@@ -32,11 +32,11 @@ public interface ITclassService {
 
     SearchDTO.SearchRs<TclassDTO.Info> search(SearchDTO.SearchRq request);
 
-    List<StudentDTO.Info> getStudents(Long classID);
+//    List<StudentDTO.Info> getStudents(Long classID);
+//
+//    List<StudentDTO.Info> getOtherStudents(Long classID);
 
-    List<StudentDTO.Info> getOtherStudents(Long classID);
-
-    void addStudents(StudentDTO.Delete request, Long classId);
+//    void addStudents(StudentDTO.Delete request, Long classId);
 
     @Transactional(readOnly = true)
     Long sessionsHourSum(Long classId);
