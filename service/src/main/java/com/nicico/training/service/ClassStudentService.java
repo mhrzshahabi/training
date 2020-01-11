@@ -39,7 +39,7 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public <D> SearchDTO.SearchRs<D> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<D> infoType) {
+    public <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (classId != null) {

@@ -10,11 +10,13 @@ public interface IClassStudentService {
 
     ClassStudent getTClassStudent(Long id);
 
-    <D> SearchDTO.SearchRs<D> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<D> infoType);
+    <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType);
 
     void registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
     ClassStudentDTO.ClassStudentInfo update(Long id, ClassStudentDTO.Update request);
+
+    ClassStudentDTO.ClassStudentInfo updateScore(Long id, ClassStudentDTO.Update_Score request);
 
     void delete(Long id);
 
