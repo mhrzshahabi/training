@@ -183,4 +183,20 @@ public class StudentDTO {
         @ApiModelProperty(required = true)
         private String companyName;
     }
+
+    @Getter
+    @Setter
+    @Accessors
+    @ApiModel("Student - Scores")
+    public static class ScoresInfo {
+        private Long id;
+        @ApiModelProperty(required = true)
+        private String firstName;
+        @ApiModelProperty(required = true)
+        private String lastName;
+        @ApiModelProperty(required = true)
+        private String nationalCode;
+        @ApiModelProperty(required = true)
+        private String personnelNo;
+    }
 }

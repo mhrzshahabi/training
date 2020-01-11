@@ -48,6 +48,18 @@ public class ClassStudentRestController {
     }
 
     @Loggable
+    @GetMapping(value = "/scores-iscList/{classId}")
+    public ResponseEntity<ISC<ClassStudentDTO.ScoresInfo>> scoresList(HttpServletRequest iscRq, @PathVariable Long classId) throws IOException {
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
+        SearchDTO.SearchRs<ClassStudentDTO.ScoresInfo> searchRs =
+                classStudentService.searchClassStudents(searchRq, classId, ClassStudentDTO.ScoresInfo.class);
+        return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);
+    }
+
+    @Loggable
     @PostMapping(value = "/register-students/{classId}")
     public ResponseEntity registerStudents(@RequestBody List<ClassStudentDTO.Create> request, @PathVariable Long classId) {
         try {
@@ -60,7 +72,7 @@ public class ClassStudentRestController {
 
     @Loggable
     @PutMapping(value = "/{id}")
-    public ResponseEntity update(@PathVariable Long id, @RequestBody ClassStudentDTO.Update request) {
+    public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
         try {
             return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
         } catch (TrainingException ex) {
@@ -93,5 +105,4 @@ public class ClassStudentRestController {
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
     }
-
 }

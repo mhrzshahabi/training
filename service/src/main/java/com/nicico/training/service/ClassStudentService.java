@@ -32,14 +32,14 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public ClassStudent getTClassStudent(Long id) {
+    public ClassStudent getClassStudent(Long id) {
         Optional<ClassStudent> optionalStudent = classStudentDAO.findById(id);
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public <D> SearchDTO.SearchRs<D> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<D> infoType) {
+    public <T> SearchDTO.SearchRs<T> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<T> infoType) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (classId != null) {
@@ -86,8 +86,8 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public ClassStudentDTO.ClassStudentInfo update(Long id, ClassStudentDTO.Update request) {
-        ClassStudent classStudent = getTClassStudent(id);
+    public <E> ClassStudentDTO.ClassStudentInfo update(Long id, E request) {
+        ClassStudent classStudent = getClassStudent(id);
         ClassStudent updating = new ClassStudent();
         mapper.map(classStudent, updating);
         mapper.map(request, updating);

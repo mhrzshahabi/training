@@ -68,6 +68,17 @@ public class ClassStudentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
+    @ApiModel("TClassStudent - Update_Score")
+    public static class Update_Score {
+        private String scoresState;
+        private String failureReason;
+        private Float score;
+    }
+
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
     @ApiModel("ClassStudent - Delete")
     public static class Delete {
         @NotNull
@@ -133,5 +144,16 @@ public class ClassStudentDTO implements Serializable {
         private Long presenceTypeId;
     }
 
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - Scores")
+    public static class ScoresInfo {
+        private Long id;
+        private StudentDTO.ScoresInfo student;
+        private String scoresState;
+        private String failureReason;
+        private Float score;
+    }
 
 }
