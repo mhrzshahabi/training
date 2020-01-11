@@ -4,12 +4,12 @@ import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.TClassStudentDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.iservice.*;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.model.Student;
-import com.nicico.training.model.TClassStudent;
 import com.nicico.training.model.Tclass;
-import com.nicico.training.repository.TClassStudentDAO;
+import com.nicico.training.repository.ClassStudentDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
@@ -21,9 +21,9 @@ import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
-public class TClassStudentService implements ITClassStudentService {
+public class ClassStudentService implements IClassStudentService {
 
-    private final TClassStudentDAO TClassStudentDAO;
+    private final ClassStudentDAO classStudentDAO;
     private final ITclassService tclassService;
     private final IStudentService studentService;
     private final IPersonnelService personnelService;
@@ -32,14 +32,14 @@ public class TClassStudentService implements ITClassStudentService {
 
     @Transactional(readOnly = true)
     @Override
-    public TClassStudent getTClassStudent(Long id) {
-        Optional<TClassStudent> optionalStudent = TClassStudentDAO.findById(id);
+    public ClassStudent getTClassStudent(Long id) {
+        Optional<ClassStudent> optionalStudent = classStudentDAO.findById(id);
         return optionalStudent.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
     }
 
     @Transactional(readOnly = true)
     @Override
-    public SearchDTO.SearchRs<TClassStudentDTO.TClassStudentInfo> searchClassStudents(SearchDTO.SearchRq request, Long classId) {
+    public SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchClassStudents(SearchDTO.SearchRq request, Long classId) {
         request = (request != null) ? request : new SearchDTO.SearchRq();
         List<SearchDTO.CriteriaRq> list = new ArrayList<>();
         if (classId != null) {
@@ -53,16 +53,16 @@ public class TClassStudentService implements ITClassStudentService {
             } else
                 request.setCriteria(criteriaRq);
         }
-        return SearchUtil.search(TClassStudentDAO, request, classStudent -> mapper.map(classStudent, TClassStudentDTO.TClassStudentInfo.class));
+        return SearchUtil.search(classStudentDAO, request, classStudent -> mapper.map(classStudent, ClassStudentDTO.ClassStudentInfo.class));
     }
 
     @Transactional
     @Override
-    public void registerStudents(List<TClassStudentDTO.Create> request, Long classId) {
+    public void registerStudents(List<ClassStudentDTO.Create> request, Long classId) {
 
         Tclass tclass = tclassService.getTClass(classId);
 
-        for (TClassStudentDTO.Create create : request) {
+        for (ClassStudentDTO.Create create : request) {
 
             Student student = studentService.getStudentByPersonnelNo(create.getPersonnelNo());
             if (student == null) {
@@ -74,37 +74,37 @@ public class TClassStudentService implements ITClassStudentService {
                 }
             }
 
-            TClassStudent tClassStudent = new TClassStudent();
-            tClassStudent.setApplicantCompanyName(create.getApplicantCompanyName());
-            tClassStudent.setPresenceTypeId(create.getPresenceTypeId());
-            tClassStudent.setTclass(tclass);
-            tClassStudent.setStudent(student);
+            ClassStudent classStudent = new ClassStudent();
+            classStudent.setApplicantCompanyName(create.getApplicantCompanyName());
+            classStudent.setPresenceTypeId(create.getPresenceTypeId());
+            classStudent.setTclass(tclass);
+            classStudent.setStudent(student);
 
-            TClassStudentDAO.saveAndFlush(tClassStudent);
+            classStudentDAO.saveAndFlush(classStudent);
         }
     }
 
     @Transactional
     @Override
-    public TClassStudentDTO.TClassStudentInfo update(Long id, TClassStudentDTO.Update request) {
-        TClassStudent tClassStudent = getTClassStudent(id);
-        TClassStudent updating = new TClassStudent();
-        mapper.map(tClassStudent, updating);
+    public ClassStudentDTO.ClassStudentInfo update(Long id, ClassStudentDTO.Update request) {
+        ClassStudent classStudent = getTClassStudent(id);
+        ClassStudent updating = new ClassStudent();
+        mapper.map(classStudent, updating);
         mapper.map(request, updating);
-        return mapper.map(TClassStudentDAO.saveAndFlush(updating), TClassStudentDTO.TClassStudentInfo.class);
+        return mapper.map(classStudentDAO.saveAndFlush(updating), ClassStudentDTO.ClassStudentInfo.class);
     }
 
     @Transactional
     @Override
     public void delete(Long id) {
-        TClassStudentDAO.deleteById(id);
+        classStudentDAO.deleteById(id);
     }
 
     @Transactional
     @Override
-    public void delete(TClassStudentDTO.Delete request) {
-        final List<TClassStudent> studentList = TClassStudentDAO.findAllById(request.getIds());
-        TClassStudentDAO.deleteAll(studentList);
+    public void delete(ClassStudentDTO.Delete request) {
+        final List<ClassStudent> studentList = classStudentDAO.findAllById(request.getIds());
+        classStudentDAO.deleteAll(studentList);
     }
 
     private SearchDTO.CriteriaRq makeNewCriteria(String fieldName, Object value, EOperator operator, List<SearchDTO.CriteriaRq> criteriaRqList) {

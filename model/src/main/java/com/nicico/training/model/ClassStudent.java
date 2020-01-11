@@ -12,12 +12,12 @@ import javax.persistence.*;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_tclass_student_new",
+@Table(name = "tbl_class_student",
         uniqueConstraints = {@UniqueConstraint(columnNames = {"student_id", "class_id"})})
-public class TClassStudent extends Auditable {
+public class ClassStudent extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "tclass_student_new_seq")
-    @SequenceGenerator(name = "tclass_student_new_seq", sequenceName = "seq_tclass_student_new_id", allocationSize = 1)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "class_student_seq")
+    @SequenceGenerator(name = "class_student_seq", sequenceName = "seq_class_student_id", allocationSize = 1)
     @Column(name = "id", precision = 10)
     private Long id;
 

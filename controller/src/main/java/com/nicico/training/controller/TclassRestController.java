@@ -154,25 +154,25 @@ public class TclassRestController {
     }
 
 
-    @Loggable
-    @GetMapping(value = "/otherStudent")
-//    @PreAuthorize("hasAuthority('r_tclass')")
-    public ResponseEntity<StudentDTO.StudentSpecRs> getOtherStudents(@RequestParam("classID") String classID) {
-        Long classId = Long.parseLong(classID);
-
-        List<StudentDTO.Info> studentList = tclassService.getOtherStudents(classId);
-
-        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
-        specResponse.setData(studentList)
-                .setStartRow(0)
-                .setEndRow(studentList.size())
-                .setTotalRows(studentList.size());
-
-        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
-        specRs.setResponse(specResponse);
-
-        return new ResponseEntity<>(specRs, HttpStatus.OK);
-    }
+//    @Loggable
+//    @GetMapping(value = "/otherStudent")
+////    @PreAuthorize("hasAuthority('r_tclass')")
+//    public ResponseEntity<StudentDTO.StudentSpecRs> getOtherStudents(@RequestParam("classID") String classID) {
+//        Long classId = Long.parseLong(classID);
+//
+//        List<StudentDTO.Info> studentList = tclassService.getOtherStudents(classId);
+//
+//        final StudentDTO.SpecRs specResponse = new StudentDTO.SpecRs();
+//        specResponse.setData(studentList)
+//                .setStartRow(0)
+//                .setEndRow(studentList.size())
+//                .setTotalRows(studentList.size());
+//
+//        final StudentDTO.StudentSpecRs specRs = new StudentDTO.StudentSpecRs();
+//        specRs.setResponse(specResponse);
+//
+//        return new ResponseEntity<>(specRs, HttpStatus.OK);
+//    }
 
     @Loggable
     @PostMapping(value = {"/printWithCriteria/{type}"})

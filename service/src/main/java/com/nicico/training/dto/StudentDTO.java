@@ -145,8 +145,8 @@ public class StudentDTO {
     @Getter
     @Setter
     @Accessors
-    @ApiModel("Student - TclassStudentInfo")
-    public static class TClassStudentInfo {
+    @ApiModel("Student - ClassStudentInfo")
+    public static class ClassStudentInfo {
         private Long id;
         @ApiModelProperty(required = true)
         private String firstName;

@@ -520,4 +520,15 @@
     <changeSet author="poursalehi_mos (generated)" id="1578315306749-213">
         <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="tbl_tclass_student_new" constraintName="FKprv1dy3h044sxlfvysiutphro" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
     </changeSet>
+
+
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-208">
+        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="tbl_class_student" constraintName="FK1g5qiwalad8w824oprgdqngv8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_student" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-209">
+        <addForeignKeyConstraint baseColumnNames="presence_type_id" baseTableName="tbl_class_student" constraintName="FK9a4v6coh0f20sgq3x3kl1hict" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1578745091553-210">
+        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="tbl_class_student" constraintName="FKhxomupby6pwb9anq7vv34in0x" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

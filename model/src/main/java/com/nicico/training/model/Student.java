@@ -172,5 +172,5 @@ public class Student extends Auditable {
     private String ccpTitle;
 
     @OneToMany(mappedBy = "student", fetch = FetchType.LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    private Set<TClassStudent> tClassStudents;
+    private Set<ClassStudent> classStudents;
 }

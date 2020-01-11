@@ -14,7 +14,7 @@ import java.util.List;
 @Setter
 @Accessors(chain = true)
 
-public class TClassStudentDTO implements Serializable {
+public class ClassStudentDTO implements Serializable {
 
     private String scoresState;
 
@@ -35,10 +35,10 @@ public class TClassStudentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TClassStudent - Info")
-    public static class TClassStudentInfo extends TClassStudentDTO {
+    @ApiModel("ClassStudent - Info")
+    public static class ClassStudentInfo extends ClassStudentDTO {
         private Long id;
-        private StudentDTO.TClassStudentInfo student;
+        private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
     }
@@ -58,7 +58,7 @@ public class TClassStudentDTO implements Serializable {
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("TClassStudent - Update")
+    @ApiModel("ClassStudent - Update")
     public static class Update {
         private String applicantCompanyName;
         private Long presenceTypeId;
