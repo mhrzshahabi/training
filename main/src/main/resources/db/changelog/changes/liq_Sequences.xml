@@ -184,5 +184,11 @@
     <changeSet author="poursalehi_mos (generated)" id="1578745091553-203">
         <createSequence sequenceName="seq_class_student_id"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578736120553-209">
+        <createSequence sequenceName="seq_questionnaire_id"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578736120553-210">
+        <createSequence sequenceName="seq_questionnaire_question_id"/>
+    </changeSet>
 
 </databaseChangeLog>

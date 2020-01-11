@@ -38,17 +38,16 @@ public class QuestionnaireQuestionRestController {
     }
 
     @Loggable
-    @GetMapping("/iscList/{questionnaireQuestionId}")
-    public ResponseEntity<TotalResponse<QuestionnaireQuestionDTO.Info>> getParametersValueList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long questionnaireQuestionId) {
-        return iscList(CriteriaUtil.addCriteria(criteria, "questionnaireQuestionId", "equals", questionnaireQuestionId.toString()));
+    @GetMapping("/iscList/{questionnaireId}")
+    public ResponseEntity<TotalResponse<QuestionnaireQuestionDTO.Info>> getParametersValueList(@RequestParam MultiValueMap<String, String> criteria, @PathVariable Long questionnaireId) {
+        return iscList(CriteriaUtil.addCriteria(criteria, "questionnaireId", "equals", questionnaireId.toString()));
     }
 
     @Loggable
     @PostMapping
     public ResponseEntity<QuestionnaireQuestionDTO.Info> create(@RequestBody Object rq) {
         QuestionnaireQuestionDTO.Create create = modelMapper.map(rq, QuestionnaireQuestionDTO.Create.class);
-//        return new ResponseEntity<>(questionnaireQuestionValueService.checkAndCreate(create), HttpStatus.OK);
-        return new ResponseEntity<>(HttpStatus.OK);
+        return new ResponseEntity<>(questionnaireQuestionValueService.checkAndCreate(create), HttpStatus.OK);
     }
 
     @Loggable

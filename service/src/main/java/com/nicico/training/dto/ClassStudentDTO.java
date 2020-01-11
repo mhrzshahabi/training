@@ -2,7 +2,6 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -37,7 +36,7 @@ public class ClassStudentDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ClassStudent - Info")
-    public static class ClassStudentInfo extends ClassStudentDTO {
+    public static class ClassStudentInfo {
         private Long id;
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
@@ -73,6 +72,17 @@ public class ClassStudentDTO implements Serializable {
         @NotNull
         @ApiModelProperty(required = true)
         private List<Long> ids;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ClassStudent - Attendance")
+    public static class AttendanceInfo {
+        private Long id;
+        private StudentDTO.AttendanceInfo student;
+        private String applicantCompanyName;
+        private Long presenceTypeId;
     }
 
 //    @Getter

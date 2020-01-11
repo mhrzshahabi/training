@@ -25,27 +25,13 @@ public class QuestionnaireQuestionService extends BaseService<QuestionnaireQuest
         super(new QuestionnaireQuestion(), QuestionnaireQuestionDAO);
     }
 
-//    @Transactional
-//    public QuestionnaireQuestionDTO.Info checkAndCreate(QuestionnaireQuestionDTO.Create rq) {
-//        Long parameterId = rq.getParameterId();
-//        if (parameterService.isExist(parameterId)) {
-//            return create(rq);
-//        }
-//        throw new TrainingException(TrainingException.ErrorType.ParameterNotFound);
-//    }
-//
-//    //////////////////////////////////////////config//////////////////////////////////////////
-//
-//    @Transactional
-//    public List<QuestionnaireQuestionDTO.Info> editConfigList(QuestionnaireQuestionDTO.ConfigUpdate[] rq) {
-//        QuestionnaireQuestion QuestionnaireQuestion;
-//        final List<QuestionnaireQuestion> QuestionnaireQuestions = new ArrayList<>();
-//        for (QuestionnaireQuestionDTO.ConfigUpdate config : rq) {
-//            QuestionnaireQuestion = dao.getOne(config.getId());
-//            modelMapper.map(config, QuestionnaireQuestion);
-//            QuestionnaireQuestions.add(QuestionnaireQuestion);
-//        }
-//        return modelMapper.map(dao.saveAll(QuestionnaireQuestions), new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {
-//        }.getType());
-//    }
+    @Transactional
+    public QuestionnaireQuestionDTO.Info checkAndCreate(QuestionnaireQuestionDTO.Create rq) {
+        Long questionnaireId = rq.getQuestionnaireId();
+        if (questionnaireService.isExist(questionnaireId)) {
+            return create(rq);
+        } else {
+            throw new TrainingException(TrainingException.ErrorType.QuestionnaireNotFound);
+        }
+    }
 }

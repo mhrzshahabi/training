@@ -10,7 +10,7 @@ public interface IClassStudentService {
 
     ClassStudent getTClassStudent(Long id);
 
-    SearchDTO.SearchRs<ClassStudentDTO.ClassStudentInfo> searchClassStudents(SearchDTO.SearchRq request, Long classId);
+    <D> SearchDTO.SearchRs<D> searchClassStudents(SearchDTO.SearchRq request, Long classId, Class<D> infoType);
 
     void registerStudents(List<ClassStudentDTO.Create> request, Long classId);
 
