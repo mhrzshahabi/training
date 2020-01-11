@@ -578,12 +578,15 @@
                     isc.TrLG.create({
                         ID:"ListGrid_AllSkill_JspCourse",
                         dataSource: RestDataSource_Skill_JspCourse,
-                        // selectionType: "multiple",
+                        selectionType: "single",
                         filterOnKeypress: true,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
-                        fields:[],
+                        fields:[
+                            {name: "titleFa", title:"عنوان"},
+                            {name: "code", title:"کد"},
+                        ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGridOwnSkill_JspCourse.getSelectedRecord() == null){
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
@@ -637,12 +640,15 @@
                     isc.TrLG.create({
                         ID:"ListGridOwnSkill_JspCourse",
                         dataSource:RestDataSource_Skill_JspCourse,
-                        // selectionType: "multiple",
+                        selectionType: "single",
                         filterOnKeypress: true,
                         canDragRecordsOut: true,
                         dragDataAction: "none",
                         canAcceptDroppedRecords: true,
-                        fields:[],
+                        fields:[
+                            {name: "titleFa", title:"عنوان"},
+                            {name: "code", title:"کد"},
+                        ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null){
                                 createDialog("info", "<spring:message code='msg.no.records.selected'/>");
