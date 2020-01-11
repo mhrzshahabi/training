@@ -40,7 +40,7 @@ public class TClassStudent extends Auditable {
     @Column(name = "presence_type_id")
     private Long presenceTypeId;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     @JoinColumn(name = "student_id", nullable = false, insertable = false, updatable = false)
     private Student student;
 
