@@ -17,7 +17,7 @@ var flag1=null
             {name: "personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
             {name: "scoresState",title: "<spring:message code="pass.mode"/>",filterOperator: "iContains"},
-            {name: "failurereason",title: "<spring:message code="faild.reason"/>",filterOperator: "iContains"},
+            {name: "failureReason",title: "<spring:message code="faild.reason"/>",filterOperator: "iContains"},
             {name: "score",title: "<spring:message code="score"/>",filterOperator: "iContains"}
             ],
         fetchDataURL: classUrl + "student"
@@ -96,7 +96,7 @@ var flag1=null
 
             },
             {
-                name: "failurereason",
+                name: "failureReason",
                 title: "<spring:message code="faild.reason"/>",
                 filterOperator: "iContains",
                 canEdit: true,
@@ -121,7 +121,7 @@ var flag1=null
                       ListGrid_Cell_scoresState_Update(record,null)
                       ListGrid_Class_Student.refreshFields();
                     }
-                   else if (newValue == null && record.scoresState === "مردود" && record.failurereason.length === 0)
+                   else if (newValue == null && record.scoresState === "مردود" && record.failureReason.length === 0)
                         {
                         alert("2")
                             ListGrid_Cell_scoresState_Update(record,null)
@@ -154,7 +154,7 @@ var flag1=null
                         ListGrid_Cell_score_Update(record, newValue);
                     } else if ((newValue >= 0 && newValue < 10) && (editCompletionEvent == "enter") && (newValue !== null || newValue != null)) {
                         {
-                        if(record.scoresState ==  "مردود" && (record.failurereason =="عدم کسب حد نصاب نمره" || record.failurereason == "غیبت بیش از حد مجاز"))
+                        if(record.scoresState ==  "مردود" && (record.failureReason =="عدم کسب حد نصاب نمره" || record.failureReason == "غیبت بیش از حد مجاز"))
                         {
                             ListGrid_Cell_score_Update(record, newValue);
                             ListGrid_Class_Student.refreshFields();
@@ -174,7 +174,7 @@ var flag1=null
                     // ListGrid_Class_Student.refreshFields();
                      }
 
-                    else if (newValue === null && record.scoresState === undefined || record.scoresState==null || record.scoresState==="undefined" && record.failurereason === null)
+                    else if (newValue === null && record.scoresState === undefined || record.scoresState==null || record.scoresState==="undefined" && record.failureReason === null)
                     {
                        ListGrid_Class_Student.invalidateCache();
                        ListGrid_Class_Student.refreshFields();
@@ -201,14 +201,14 @@ var flag1=null
         canEditCell: function (rowNum, colNum) {
             var record = this.getRecord(rowNum),
                 fieldName = this.getFieldName(colNum);
-            if (fieldName === "failurereason") {
+            if (fieldName === "failureReason") {
                 return !((record.scoresState === "قبول با نمره" && record.score >= 10) || record.scoresState=== "قبول بدون نمره"  ||  record.scoresState === "قبول با نمره" );
             }
 
             if(fieldName==="score")
             {
 
-            return !((record.scoresState==="مردود" && record.failurereason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
+            return !((record.scoresState==="مردود" && record.failureReason=== "غیبت در جلسه امتحان") || record.scoresState==="قبول بدون نمره" )}
 
             if (fieldName === "score") {
                 return record.scoresState !== "قبول بدون نمره";
@@ -236,7 +236,7 @@ var flag1=null
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
-        record.failurereason = newValue
+        record.failureReason = newValue
         isc.RPCManager.sendRequest(TrDSRequest(studentUrl + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
     }
 
@@ -253,7 +253,7 @@ var flag1=null
 
             var scoreState=JSON.parse(resp.data).scoresState
             var record=ListGrid_Class_Student.getSelectedRecord();
-            var failurereason=JSON.parse(resp.data).failurereason
+            var failureReason=JSON.parse(resp.data).failureReason
             var score=JSON.parse(resp.data).score
          if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
 
@@ -264,7 +264,7 @@ var flag1=null
 
                     ListGrid_Class_Student.refreshFields();
             }
-            if(failurereason === "غیبت در جلسه امتحان" && scoreState=== "مردود")
+            if(failureReason === "غیبت در جلسه امتحان" && scoreState=== "مردود")
               {
               ListGrid_Cell_score_Update(record,null)
                ListGrid_Class_Student.refreshFields()
@@ -304,7 +304,7 @@ var flag1=null
 
     function Edit_Cell_failurereason_Update(resp) {
        var record = ListGrid_Class_Student.getSelectedRecord();
-         var failurereason= JSON.parse(resp.data).failurereason;
+         var failureReason= JSON.parse(resp.data).failureReason;
           var score= JSON.parse(resp.data).score;
            var scoreState=JSON.parse(resp.data).scoresState
 
@@ -317,7 +317,7 @@ var flag1=null
                 }
        else if ((resp.httpResponseCode == 200 || resp.httpResponseCode == 201))
         {
-            if(failurereason=== "غیبت در جلسه امتحان" || failurereason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
+            if(failureReason=== "غیبت در جلسه امتحان" || failureReason=== "غیبت بیش از حد مجاز" || failurereason=== "عدم کسب حد نصاب نمره" )
                 {
 
                    ListGrid_Cell_scoresState_Update(record,"مردود")
@@ -348,7 +348,7 @@ var flag1=null
             else if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
 
 
-              if(score==null && stateScore !=="قبول بدون نمره" && (failurereason !== "غیبت در جلسه امتحان" && scoreState !== "مردود"))
+              if(score==null && stateScore !=="قبول بدون نمره" && (failureReason !== "غیبت در جلسه امتحان" && scoreState !== "مردود"))
                 {
 
                   ListGrid_Cell_scoresState_Update(record,null)

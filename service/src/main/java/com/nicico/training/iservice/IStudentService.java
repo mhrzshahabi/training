@@ -5,13 +5,17 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.StudentDTO;
-import org.springframework.transaction.annotation.Transactional;
+import com.nicico.training.model.Student;
 
 import java.util.List;
 
 public interface IStudentService {
 
     StudentDTO.Info get(Long id);
+
+    Student getStudent(Long id);
+
+    Student getStudentByPersonnelNo(String personnelNo);
 
     List<StudentDTO.Info> list();
 

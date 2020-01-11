@@ -13,10 +13,9 @@ import java.util.List;
 
 public interface ITclassService {
 
-    @Transactional
-    void addStudents(Long classId, List<String> personsIds);
-
     TclassDTO.Info get(Long id);
+
+    Tclass getTClass(Long id);
 
     @Transactional(readOnly = true)
     Tclass getEntity(Long id);
@@ -36,10 +35,6 @@ public interface ITclassService {
     List<StudentDTO.Info> getStudents(Long classID);
 
     List<StudentDTO.Info> getOtherStudents(Long classID);
-
-    void removeStudent(Long studentId, Long classId);
-
-    void addStudent(Long studentId, Long classId);
 
     void addStudents(StudentDTO.Delete request, Long classId);
 
