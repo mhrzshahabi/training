@@ -9,7 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.Set;
+import java.util.List;
 
 @Getter
 @Setter
@@ -29,8 +29,11 @@ public class Questionnaire extends Auditable {
     @Column(name = "c_title", nullable = false)
     private String title;
 
-    @OneToMany(mappedBy = "questionnaire", fetch = FetchType.LAZY)
-    private Set<QuestionnaireQuestion> questionnaireQuestionSet;
+    @Column(name = "c_description")
+    private String description;
+
+//    @OneToMany(mappedBy = "questionnaire", fetch = FetchType.LAZY)
+//    private List<QuestionnaireQuestion> questionnaireQuestionSet;
 
 }
 
