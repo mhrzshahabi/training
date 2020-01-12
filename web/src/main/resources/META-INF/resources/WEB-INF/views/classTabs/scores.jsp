@@ -6,7 +6,7 @@
 //<script>
 var Row_Numbers=null
 var flag1=null
-
+var value_failurereason=null
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -103,6 +103,7 @@ var flag1=null
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
+                value_failurereason=value
                  if(value === "غیبت در جلسه امتحان" )
                {
                  ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
@@ -116,15 +117,14 @@ var flag1=null
                 },
                  editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
 
-                   if(newValue == null && record.scoresState  === "مردود")
+                   if(value_failurereason == null && record.scoresState  ===     "مردود")
                     {
-                    alert("1")
                       ListGrid_Cell_scoresState_Update(record,null)
                       ListGrid_Class_Student.refreshFields();
                     }
                    else if (newValue == null && record.scoresState === "مردود" && record.failureReason.length === 0)
                         {
-                            alert("2")
+
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
                         }
