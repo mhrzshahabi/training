@@ -75,34 +75,34 @@ public class ClassAlarmService implements IClassAlarm {
 
 
             //*****attendance*****
-//            alarmScripts.add(" SELECT " +
-//                    "    'has alarm' AS hasalarm " +
-//                    " FROM " +
-//                    "    tbl_class_student " +
-//                    "    INNER JOIN tbl_session ON tbl_class_student.f_class = tbl_session.f_class_id " +
-//                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
-//                    " WHERE " +
-//                    "    tbl_session.f_class_id =:class_id " +
-//                    "    AND   tbl_session.c_session_date <:todaydat " +
-//                    "    AND   ( " +
-//                    "        tbl_attendance.c_state IS NULL " +
-//                    "        OR    tbl_attendance.c_state = 0 " +
-//                    "    ) AND rownum = 1 ");
+            alarmScripts.add(" SELECT " +
+                    "    'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    "    INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id " +
+                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
+                    " WHERE " +
+                    "    tbl_session.f_class_id =:class_id " +
+                    "    AND   tbl_session.c_session_date <:todaydat " +
+                    "    AND   ( " +
+                    "        tbl_attendance.c_state IS NULL " +
+                    "        OR    tbl_attendance.c_state = 0 " +
+                    "    ) AND rownum = 1 ");
 
             //*****class capacity*****
-//            alarmScripts.add(" SELECT " +
-//                    " 'has alarm' AS hasalarm " +
-//                    " FROM " +
-//                    "    tbl_class " +
-//                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.f_class " +
-//                    " WHERE " +
-//                    "    tbl_class.id =:class_id " +
-//                    " GROUP BY " +
-//                    "    tbl_class.id, " +
-//                    "    tbl_class.n_max_capacity, " +
-//                    "    tbl_class.n_min_capacity " +
-//                    " HAVING (COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity " +
-//                    "       OR COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) AND :todaydat = :todaydat ");
+            alarmScripts.add(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id " +
+                    " WHERE " +
+                    "    tbl_class.id =:class_id " +
+                    " GROUP BY " +
+                    "    tbl_class.id, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity " +
+                    " HAVING (COUNT(tbl_class_student.student_id) > tbl_class.n_max_capacity " +
+                    "       OR COUNT(tbl_class_student.student_id) < tbl_class.n_min_capacity) AND :todaydat = :todaydat ");
 
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +
@@ -158,60 +158,60 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) AND rownum = 1 ");
 
             //*****student place conflict*****
-//            alarmScripts.add(" SELECT " +
-//                    " 'has alarm' AS hasalarm " +
-//                    " FROM " +
-//                    "    ( " +
-//                    "        SELECT " +
-//                    "            tbl_session.id, " +
-//                    "            tbl_session.f_class_id, " +
-//                    "            tbl_session.c_day_name, " +
-//                    "            tbl_session.c_session_date, " +
-//                    "            tbl_session.c_session_end_hour, " +
-//                    "            tbl_session.c_session_start_hour, " +
-//                    "            tbl_class_student.f_student, " +
-//                    "            tbl_student.first_name, " +
-//                    "            tbl_student.last_name, " +
-//                    "            tbl_student.national_code, " +
-//                    "            tbl_student.personnel_no " +
-//                    "        FROM" +
-//                    "            tbl_session " +
-//                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
-//                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
-//                    "    ) tb1" +
-//                    "    INNER JOIN ( " +
-//                    "        SELECT " +
-//                    "            tbl_session.id, " +
-//                    "            tbl_session.f_class_id, " +
-//                    "            tbl_session.c_day_name, " +
-//                    "            tbl_session.c_session_date, " +
-//                    "            tbl_session.c_session_end_hour, " +
-//                    "            tbl_session.c_session_start_hour, " +
-//                    "            tbl_class_student.f_student, " +
-//                    "            tbl_student.first_name, " +
-//                    "            tbl_student.last_name, " +
-//                    "            tbl_student.national_code, " +
-//                    "            tbl_student.personnel_no " +
-//                    "        FROM" +
-//                    "            tbl_session" +
-//                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
-//                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
-//                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
-//                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
-//                    "             AND tb2.national_code = tb1.national_code " +
-//                    " WHERE" +
-//                    "    tb1.id <> tb2.id  AND :todaydat = :todaydat " +
-//                    "    AND   (" +
-//                    "        (" +
-//                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
-//                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
-//                    "        )" +
-//                    "        OR    (" +
-//                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
-//                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
-//                    "        )" +
-//                    "    )" +
-//                    "    AND   tb1.f_class_id =:class_id AND rownum = 1 ");
+            alarmScripts.add(" SELECT " +
+                    " 'has alarm' AS hasalarm " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.student_id, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no " +
+                    "        FROM" +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "    ) tb1" +
+                    "    INNER JOIN ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.student_id, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no " +
+                    "        FROM" +
+                    "            tbl_session" +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "             AND tb2.national_code = tb1.national_code " +
+                    " WHERE" +
+                    "    tb1.id <> tb2.id  AND :todaydat = :todaydat " +
+                    "    AND   (" +
+                    "        (" +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        )" +
+                    "        OR    (" +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        )" +
+                    "    )" +
+                    "    AND   tb1.f_class_id =:class_id AND rownum = 1 ");
 
             //*****training place conflict*****
             alarmScripts.add(" SELECT " +
@@ -340,56 +340,56 @@ public class ClassAlarmService implements IClassAlarm {
             alarmScript.append(" UNION ALL ");
 
             //*****attendance*****
-//            alarmScript.append(" SELECT DISTINCT targetRecordId, tabName, pageAddress, alarmType, alarm, detailRecordId, sortField " +
-//                    " FROM " +
-//                    " ( " +
-//                    " SELECT tbl_session.f_class_id AS targetRecordId, " +
-//                    "    'classAttendanceTab' AS tabName, " +
-//                    "    '/tclass/show-form' AS pageAddress, " +
-//                    "    'حضور و غیاب' AS alarmType, " +
-//                    " ('حضور و غیاب ' || 'جلسه ' ||  tbl_session.c_session_start_hour || ' تا ' || tbl_session.c_session_end_hour || ' ' || tbl_session.c_day_name || ' تاریخ ' || tbl_session.c_session_date || ' تکمیل نشده است') as alarm, " +
-//                    "    tbl_session.id AS detailRecordId, " +
-//                    "    ('حضور و غیاب' || tbl_session.c_session_date || tbl_session.c_session_start_hour) AS sortField  " +
-//                    " FROM " +
-//                    "    tbl_class_student " +
-//                    "    INNER JOIN tbl_session ON tbl_class_student.f_class = tbl_session.f_class_id " +
-//                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
-//                    " WHERE  " +
-//                    "    tbl_session.f_class_id = :class_id  " +
-//                    "    AND tbl_session.c_session_date <:todaydat " +
-//                    "    AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0) " +
-//                    " ) ");
+            alarmScript.append(" SELECT DISTINCT targetRecordId, tabName, pageAddress, alarmType, alarm, detailRecordId, sortField " +
+                    " FROM " +
+                    " ( " +
+                    " SELECT tbl_session.f_class_id AS targetRecordId, " +
+                    "    'classAttendanceTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'حضور و غیاب' AS alarmType, " +
+                    " ('حضور و غیاب ' || 'جلسه ' ||  tbl_session.c_session_start_hour || ' تا ' || tbl_session.c_session_end_hour || ' ' || tbl_session.c_day_name || ' تاریخ ' || tbl_session.c_session_date || ' تکمیل نشده است') as alarm, " +
+                    "    tbl_session.id AS detailRecordId, " +
+                    "    ('حضور و غیاب' || tbl_session.c_session_date || tbl_session.c_session_start_hour) AS sortField  " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    "    INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id " +
+                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
+                    " WHERE  " +
+                    "    tbl_session.f_class_id = :class_id  " +
+                    "    AND tbl_session.c_session_date <:todaydat " +
+                    "    AND (tbl_attendance.c_state IS NULL OR tbl_attendance.c_state = 0) " +
+                    " ) ");
 
-//            alarmScript.append(" UNION ALL ");
+            alarmScript.append(" UNION ALL ");
 
             //*****class capacity*****
-//            alarmScript.append(" SELECT targetRecordId, tabName, pageAddress, alarmType,  " +
-//                    " ('تعداد شرکت کنندگان کلاس از ' ||  CASE WHEN status = 'MAX' THEN 'حداکثر ظرفیت کلاس بیشتر' ELSE 'حداقل ظرفیت کلاس کمتر' END || ' است')  AS alarm, " +
-//                    " 1 AS detailRecordId, sortField " +
-//                    " FROM " +
-//                    " (SELECT " +
-//                    "    tbl_class.id AS targetRecordId, " +
-//                    "    'classStudentsTab' AS tabName, " +
-//                    "    '/tclass/show-form' AS pageAddress, " +
-//                    "    'ظرفیت کلاس' AS alarmType, " +
-//                    "      ('ظرفیت کلاس'|| ' ' || tbl_class.id) AS sortField, " +
-//                    "      CASE WHEN COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity THEN 'MAX' WHEN " +
-//                    "                COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity THEN 'MIN' END AS status, " +
-//                    "    tbl_class.n_max_capacity, " +
-//                    "    tbl_class.n_min_capacity, " +
-//                    "   COUNT(tbl_class_student.f_student) AS studentCount " +
-//                    " FROM " +
-//                    "    tbl_class " +
-//                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.f_class " +
-//                    " WHERE tbl_class.id = :class_id " +
-//                    "    GROUP BY      " +
-//                    "    tbl_class.id, " +
-//                    "    tbl_class.n_max_capacity, " +
-//                    "    tbl_class.n_min_capacity " +
-//                    "    HAVING COUNT(tbl_class_student.f_student) > tbl_class.n_max_capacity OR " +
-//                    "           COUNT(tbl_class_student.f_student) < tbl_class.n_min_capacity) ");
-//
-//            alarmScript.append(" UNION ALL ");
+            alarmScript.append(" SELECT targetRecordId, tabName, pageAddress, alarmType,  " +
+                    " ('تعداد شرکت کنندگان کلاس از ' ||  CASE WHEN status = 'MAX' THEN 'حداکثر ظرفیت کلاس بیشتر' ELSE 'حداقل ظرفیت کلاس کمتر' END || ' است')  AS alarm, " +
+                    " 1 AS detailRecordId, sortField " +
+                    " FROM " +
+                    " (SELECT " +
+                    "    tbl_class.id AS targetRecordId, " +
+                    "    'classStudentsTab' AS tabName, " +
+                    "    '/tclass/show-form' AS pageAddress, " +
+                    "    'ظرفیت کلاس' AS alarmType, " +
+                    "      ('ظرفیت کلاس'|| ' ' || tbl_class.id) AS sortField, " +
+                    "      CASE WHEN COUNT(tbl_class_student.student_id) > tbl_class.n_max_capacity THEN 'MAX' WHEN " +
+                    "                COUNT(tbl_class_student.student_id) < tbl_class.n_min_capacity THEN 'MIN' END AS status, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity, " +
+                    "   COUNT(tbl_class_student.student_id) AS studentCount " +
+                    " FROM " +
+                    "    tbl_class " +
+                    "    INNER JOIN tbl_class_student ON tbl_class.id = tbl_class_student.class_id " +
+                    " WHERE tbl_class.id = :class_id " +
+                    "    GROUP BY      " +
+                    "    tbl_class.id, " +
+                    "    tbl_class.n_max_capacity, " +
+                    "    tbl_class.n_min_capacity " +
+                    "    HAVING COUNT(tbl_class_student.student_id) > tbl_class.n_max_capacity OR " +
+                    "           COUNT(tbl_class_student.student_id) < tbl_class.n_min_capacity) ");
+
+            alarmScript.append(" UNION ALL ");
 
             //*****check list not verify*****
             alarmScript.append(" SELECT DISTINCT " +
@@ -481,109 +481,109 @@ public class ClassAlarmService implements IClassAlarm {
             alarmScript.append(" UNION ALL ");
 
             //*****student place conflict*****
-//            alarmScript.append("SELECT tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل فراگیر' AS alarmType, " +
-//                    "    ' جلسه ' " +
-//                    "    || tb1.c_session_start_hour " +
-//                    "    || ' تا ' " +
-//                    "    || tb1.c_session_end_hour " +
-//                    "    || ' ' " +
-//                    "    || tb1.c_day_name " +
-//                    "    || ' ' " +
-//                    "    || tb1.c_session_date " +
-//                    "    || ' ' " +
-//                    "    || tb1.studentName " +
-//                    "    || ' با جلسه ' " +
-//                    "    || tb2.c_session_start_hour " +
-//                    "    || ' تا ' " +
-//                    "    || tb2.c_session_end_hour " +
-//                    "    || ' ' " +
-//                    "    || tb2.c_day_name " +
-//                    "    || ' ' " +
-//                    "    || tb2.c_session_date " +
-//                    "    || ' ' " +
-//                    "    || tb2.classname " +
-//                    "    || ' تداخل دارد' AS alarm, " +
-//                    "    tb2.id AS detailRecordId, " +
-//                    "    (tb1.studentName || ' تداخل فراگیر ' || tb1.c_session_date || tb1.c_session_start_hour || tb1.c_session_end_hour ) AS sortField " +
-//                    " FROM " +
-//                    "    ( " +
-//                    "        SELECT " +
-//                    "            tbl_session.id, " +
-//                    "            tbl_session.f_class_id, " +
-//                    "            tbl_session.c_day_name, " +
-//                    "            tbl_session.c_session_date, " +
-//                    "            tbl_session.c_session_end_hour, " +
-//                    "            tbl_session.c_session_start_hour, " +
-//                    "            tbl_class_student.f_student, " +
-//                    "            tbl_student.first_name, " +
-//                    "            tbl_student.last_name, " +
-//                    "            tbl_student.national_code, " +
-//                    "            tbl_student.personnel_no, " +
-//                    "            ( " +
-//                    "                CASE " +
-//                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
-//                    "                    ELSE ' خانم ' " +
-//                    "                END " +
-//                    "            || tbl_student.first_name " +
-//                    "            || ' ' " +
-//                    "            || tbl_student.last_name " +
-//                    "            || ' با شماره پرسنلی ' " +
-//                    "            || tbl_student.personnel_no ) AS studentName " +
-//                    "        FROM " +
-//                    "            tbl_session " +
-//                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
-//                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
-//                    "    ) tb1 " +
-//                    "    INNER JOIN ( " +
-//                    "        SELECT " +
-//                    "            tbl_session.id, " +
-//                    "            tbl_session.f_class_id, " +
-//                    "            tbl_session.c_day_name, " +
-//                    "            tbl_session.c_session_date, " +
-//                    "            tbl_session.c_session_end_hour, " +
-//                    "            tbl_session.c_session_start_hour, " +
-//                    "            tbl_class_student.f_student, " +
-//                    "            tbl_student.first_name, " +
-//                    "            tbl_student.last_name, " +
-//                    "            tbl_student.national_code, " +
-//                    "            tbl_student.personnel_no, " +
-//                    "            ( " +
-//                    "                CASE " +
-//                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
-//                    "                    ELSE ' خانم ' " +
-//                    "                END " +
-//                    "            || tbl_student.first_name " +
-//                    "            || ' ' " +
-//                    "            || tbl_student.last_name " +
-//                    "            || ' با شماره پرسنلی ' " +
-//                    "            || tbl_student.personnel_no ) AS studentName, " +
-//                    "            ( ' کلاس ' " +
-//                    "            || tbl_class.c_title_class " +
-//                    "            || ' با کد ' " +
-//                    "            || tbl_class.c_code ) AS classname " +
-//                    "        FROM " +
-//                    "            tbl_session " +
-//                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.f_class " +
-//                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.f_student " +
-//                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
-//                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
-//                    "             AND tb2.national_code = tb1.national_code " +
-//                    " WHERE " +
-//                    "    tb1.id <> tb2.id " +
-//                    "    AND   ( " +
-//                    "        ( " +
-//                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
-//                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
-//                    "        ) " +
-//                    "        OR    ( " +
-//                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
-//                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
-//                    "        ) " +
-//                    "    ) " +
-//                    "    AND   tb1.f_class_id =:class_id ");
-//
-//
-//            alarmScript.append(" UNION ALL ");
+            alarmScript.append("SELECT tb1.f_class_id AS targetRecordId,'classSessionsTab' AS tabName, '/tclass/show-form' AS pageAddress, 'تداخل فراگیر' AS alarmType, " +
+                    "    ' جلسه ' " +
+                    "    || tb1.c_session_start_hour " +
+                    "    || ' تا ' " +
+                    "    || tb1.c_session_end_hour " +
+                    "    || ' ' " +
+                    "    || tb1.c_day_name " +
+                    "    || ' ' " +
+                    "    || tb1.c_session_date " +
+                    "    || ' ' " +
+                    "    || tb1.studentName " +
+                    "    || ' با جلسه ' " +
+                    "    || tb2.c_session_start_hour " +
+                    "    || ' تا ' " +
+                    "    || tb2.c_session_end_hour " +
+                    "    || ' ' " +
+                    "    || tb2.c_day_name " +
+                    "    || ' ' " +
+                    "    || tb2.c_session_date " +
+                    "    || ' ' " +
+                    "    || tb2.classname " +
+                    "    || ' تداخل دارد' AS alarm, " +
+                    "    tb2.id AS detailRecordId, " +
+                    "    (tb1.studentName || ' تداخل فراگیر ' || tb1.c_session_date || tb1.c_session_start_hour || tb1.c_session_end_hour ) AS sortField " +
+                    " FROM " +
+                    "    ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.student_id, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no, " +
+                    "            ( " +
+                    "                CASE " +
+                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                    ELSE ' خانم ' " +
+                    "                END " +
+                    "            || tbl_student.first_name " +
+                    "            || ' ' " +
+                    "            || tbl_student.last_name " +
+                    "            || ' با شماره پرسنلی ' " +
+                    "            || tbl_student.personnel_no ) AS studentName " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "    ) tb1 " +
+                    "    INNER JOIN ( " +
+                    "        SELECT " +
+                    "            tbl_session.id, " +
+                    "            tbl_session.f_class_id, " +
+                    "            tbl_session.c_day_name, " +
+                    "            tbl_session.c_session_date, " +
+                    "            tbl_session.c_session_end_hour, " +
+                    "            tbl_session.c_session_start_hour, " +
+                    "            tbl_class_student.student_id, " +
+                    "            tbl_student.first_name, " +
+                    "            tbl_student.last_name, " +
+                    "            tbl_student.national_code, " +
+                    "            tbl_student.personnel_no, " +
+                    "            ( " +
+                    "                CASE " +
+                    "                    WHEN tbl_student.gender_title = 'مرد' THEN ' آقای ' " +
+                    "                    ELSE ' خانم ' " +
+                    "                END " +
+                    "            || tbl_student.first_name " +
+                    "            || ' ' " +
+                    "            || tbl_student.last_name " +
+                    "            || ' با شماره پرسنلی ' " +
+                    "            || tbl_student.personnel_no ) AS studentName, " +
+                    "            ( ' کلاس ' " +
+                    "            || tbl_class.c_title_class " +
+                    "            || ' با کد ' " +
+                    "            || tbl_class.c_code ) AS classname " +
+                    "        FROM " +
+                    "            tbl_session " +
+                    "            INNER JOIN tbl_class_student ON tbl_session.f_class_id = tbl_class_student.class_id " +
+                    "            INNER JOIN tbl_student ON tbl_student.id = tbl_class_student.student_id " +
+                    "            INNER JOIN tbl_class ON tbl_class.id = tbl_session.f_class_id " +
+                    "    ) tb2 ON tb2.c_session_date = tb1.c_session_date " +
+                    "             AND tb2.national_code = tb1.national_code " +
+                    " WHERE " +
+                    "    tb1.id <> tb2.id " +
+                    "    AND   ( " +
+                    "        ( " +
+                    "            tb1.c_session_start_hour >= tb2.c_session_start_hour " +
+                    "            AND   tb1.c_session_start_hour < tb2.c_session_end_hour " +
+                    "        ) " +
+                    "        OR    ( " +
+                    "            tb1.c_session_end_hour <= tb2.c_session_end_hour " +
+                    "            AND   tb1.c_session_end_hour > tb2.c_session_start_hour " +
+                    "        ) " +
+                    "    ) " +
+                    "    AND   tb1.f_class_id =:class_id ");
+
+
+            alarmScript.append(" UNION ALL ");
 
             //*****training place conflict*****
             alarmScript.append(" SELECT " +
@@ -824,20 +824,31 @@ public class ClassAlarmService implements IClassAlarm {
             List<String> alarmScripts = new ArrayList<>();
 
             //*****attendance*****
-//            alarmScripts.add(" SELECT " +
-//                    "    'حضور و غیاب' AS hasalarm " +
-//                    " FROM " +
-//                    "    tbl_class_student " +
-//                    "    INNER JOIN tbl_session ON tbl_class_student.f_class = tbl_session.f_class_id " +
-//                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
-//                    " WHERE " +
-//                    "    tbl_session.f_class_id =:class_id " +
-//                    "    AND   tbl_session.c_session_date <:todaydat " +
-//                    "    AND   ( " +
-//                    "        tbl_attendance.c_state IS NULL " +
-//                    "        OR    tbl_attendance.c_state = 0 " +
-//                    "    ) AND rownum = 1 ");
+            alarmScripts.add(" SELECT " +
+                    "    'حضور و غیاب' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    "    INNER JOIN tbl_session ON tbl_class_student.class_id = tbl_session.f_class_id " +
+                    "    LEFT JOIN tbl_attendance ON tbl_session.id = tbl_attendance.f_session " +
+                    " WHERE " +
+                    "    tbl_session.f_class_id =:class_id " +
+                    "    AND   tbl_session.c_session_date <:todaydat " +
+                    "    AND   ( " +
+                    "        tbl_attendance.c_state IS NULL " +
+                    "        OR    tbl_attendance.c_state = 0 " +
+                    "    ) AND rownum = 1 ");
 
+            //*****student score*****
+            alarmScripts.add(" SELECT " +
+                    "    'ثبت نمرات' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    " WHERE " +
+                    "    tbl_class_student.class_id = :class_id " +
+                    "    AND   tbl_class_student.failure_reason IS NULL " +
+                    "    AND   tbl_class_student.score IS NULL " +
+                    "    AND   tbl_class_student.scores_state IS NULL " +
+                    "    AND   rownum = 1 AND :todaydat = :todaydat ");
 
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +

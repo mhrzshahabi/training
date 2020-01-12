@@ -133,7 +133,7 @@
                 return;
             }
             var questionText = DynamicForm_JspConfigQuestionnaire.getValue("question");
-            if (questionText[questionText.length - 1] !== '؟')
+            if (questionText[questionText.length - 1] !== '؟' && questionText[questionText.length - 1] !== '?')
                 DynamicForm_JspConfigQuestionnaire.setValue("question", questionText + '؟');
             waitConfigQuestionnaire = createDialog("wait");
             isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlConfigQuestionnaire,
@@ -300,8 +300,8 @@
         tabBarPosition: "right",
         tabBarThickness: 125,
         tabs: [
-            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
             {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
+            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
         ]
     });
 

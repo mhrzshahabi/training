@@ -6,7 +6,8 @@
 //<script>
 var Row_Numbers=null
 var flag1=null
-
+var value_failurereason=null
+var flag2=0
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -103,6 +104,7 @@ var flag1=null
                 editorType: "SelectItem",
                 valueMap: ["عدم کسب حد نصاب نمره", "غیبت بیش از حد مجاز", "غیبت در جلسه امتحان"],
                 changed: function (form, item, value) {
+                value_failurereason=value
                  if(value === "غیبت در جلسه امتحان" )
                {
                  ListGrid_Cell_failurereason_Update(this.grid.getRecord(this.rowNum), value);
@@ -116,15 +118,14 @@ var flag1=null
                 },
                  editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
 
-                   if(newValue == null && record.scoresState  === "مردود")
+                   if(value_failurereason == null && record.scoresState  ===     "مردود")
                     {
-                    alert("1")
                       ListGrid_Cell_scoresState_Update(record,null)
                       ListGrid_Class_Student.refreshFields();
                     }
                    else if (newValue == null && record.scoresState === "مردود" && record.failureReason.length === 0)
                         {
-                            alert("2")
+
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
                         }
@@ -146,10 +147,7 @@ var flag1=null
                  createDialog("info","<spring:message code="msg.less.score"/>","<spring:message code="message"/>")
                  item.setValue()
                 }
-
-
                 },
-
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
                    if ((newValue >= 10 && newValue <= 20) && (editCompletionEvent === "enter") && (newValue !== null || newValue != null)) {
                         ListGrid_Cell_score_Update(record, newValue);
@@ -163,7 +161,8 @@ var flag1=null
                         else
                         {
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
-                              ListGrid_Cell_scoresState_Update(record,null)
+
+                             ListGrid_Cell_scoresState_Update(record,null)
                               ListGrid_Class_Student.invalidateCache();
                         }
 
@@ -182,7 +181,7 @@ var flag1=null
                     }
                     else if (newValue == null && (record.scoresState === "مردود" || record.scoresState.length>0 ))
                      {
-                     console.log()
+
                      flag1=1
                       Row_Numbers=rowNum;
                       ListGrid_Cell_score_Update(record, null);
@@ -338,13 +337,12 @@ var flag1=null
             var stateScore = JSON.parse(resp.data).scoresState;
             var score=JSON.parse(resp.data).score;
             var record = ListGrid_Class_Student.getSelectedRecord();
-
-
              if(flag1 === 1)
                     {
                      let record1=ListGrid_Class_Student.getRecord(Row_Numbers)
                      ListGrid_Cell_failurereason_Update(record1,null)
                     }
+
 
             else if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
 
@@ -364,17 +362,10 @@ var flag1=null
 
                 if(score>=10)
                    {
+
                   ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-
                    }
-
-
-
-
-
-
-
-       }
+            }
 
     };
 

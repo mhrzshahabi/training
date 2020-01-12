@@ -2,6 +2,7 @@ package com.nicico.training.dto;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
+import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.experimental.Accessors;
@@ -85,14 +86,61 @@ public class ClassStudentDTO implements Serializable {
         private List<Long> ids;
     }
 
+//    @Getter
+//    @Setter
+//    @Accessors(chain = true)
+//    @ApiModel("ClassStudent - Attendance")
+//    public static class AttendanceInfo {
+//        private Long id;
+//        private StudentDTO.AttendanceInfo student;
+//        private String applicantCompanyName;
+//        private Long presenceTypeId;
+//    }
+
     @Getter
     @Setter
     @Accessors(chain = true)
-    @ApiModel("ClassStudent - Attendance")
-    public static class AttendanceInfo {
-        private Long id;
+    @ApiModel("ClassStudent - AttendanceInfo")
+    public static class AttendanceInfo{
+
+        @Getter(AccessLevel.NONE)
         private StudentDTO.AttendanceInfo student;
-        private String applicantCompanyName;
+
+        @Getter(AccessLevel.NONE)
+        private Long id;
+        public Long getId(){
+            return student.getId();
+        }
+        @Getter(AccessLevel.NONE)
+        private String firstName;
+        public String getFirstName(){
+            return student.getFirstName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String lastName;
+        public String getLastName(){
+            return student.getLastName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String nationalCode;
+        public String getNationalCode(){
+            return student.getNationalCode();
+        }
+        @Getter(AccessLevel.NONE)
+        private String companyName;
+        public String getCompanyName(){
+            return student.getCompanyName();
+        }
+        @Getter(AccessLevel.NONE)
+        private String personnelNo;
+        public String getPersonnelNo(){
+            return student.getPersonnelNo();
+        }
+        @Getter(AccessLevel.NONE)
+        private String personnelNo2;
+        public String getPersonnelNo2(){
+            return student.getPersonnelNo2();
+        }
         private Long presenceTypeId;
     }
 
