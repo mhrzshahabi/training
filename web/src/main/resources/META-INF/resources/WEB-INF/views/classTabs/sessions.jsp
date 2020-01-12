@@ -516,7 +516,7 @@
         var create_Buttons = isc.MyHLayoutButtons.create({
             members:
                 [
-                    isc.Button.create
+                    isc.IButtonSave.create
                     ({
                         title: "<spring:message code="save"/> ",
                         icon: "[SKIN]/actions/save.png",
@@ -528,7 +528,7 @@
                             }
                         }
                     }),
-                    isc.Button.create
+                    isc.IButtonCancel.create
                     ({
                         title: "<spring:message code="cancel"/>",
                         icon: "[SKIN]/actions/cancel.png",
