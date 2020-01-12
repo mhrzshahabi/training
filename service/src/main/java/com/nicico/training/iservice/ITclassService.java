@@ -4,6 +4,7 @@ package com.nicico.training.iservice;
 */
 
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Tclass;
@@ -27,6 +28,9 @@ public interface ITclassService {
     TclassDTO.Info update(Long id, TclassDTO.Update request);
 
     void delete(Long id);
+
+    @Transactional(readOnly = true)
+    List<ClassStudentDTO.AttendanceInfo> getStudents(Long classID);
 
     void delete(TclassDTO.Delete request);
 

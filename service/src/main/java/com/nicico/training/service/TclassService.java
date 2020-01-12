@@ -6,10 +6,7 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.AttachmentDTO;
-import com.nicico.training.dto.ClassSessionDTO;
-import com.nicico.training.dto.StudentDTO;
-import com.nicico.training.dto.TclassDTO;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.*;
 import com.nicico.training.repository.*;
@@ -114,20 +111,23 @@ public class TclassService implements ITclassService {
         return modelMapper.map(saved, TclassDTO.Info.class);
     }
 
-//    @Transactional(readOnly = true)
-//    @Override
-//    public List<StudentDTO.Info> getStudents(Long classID) {
-//        final Optional<Tclass> ssById = tclassDAO.findById(classID);
-//        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
-//
-//        List<StudentDTO.Info> studentInfoSet = new ArrayList<>();
-//        Optional.ofNullable(tclass.getClassStudents())
-//                .ifPresent(classStudents ->
-//                        classStudents.forEach(student ->
-//                                studentInfoSet.add(modelMapper.map(student, StudentDTO.Info.class))
-//                        ));
-//        return studentInfoSet;
-//    }
+    @Transactional()
+    @Override
+    public List<ClassStudentDTO.AttendanceInfo> getStudents(Long classID) {
+        final Optional<Tclass> ssById = tclassDAO.findById(classID);
+        final Tclass tclass = ssById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.TclassNotFound));
+
+        List<ClassStudentDTO.AttendanceInfo> studentInfoSet = new ArrayList<>();
+        Optional.ofNullable(tclass.getClassStudents())
+                .ifPresent(classStudents ->
+                        classStudents.forEach(cs ->
+                                {
+                                    if(cs.getPresenceTypeId() != 104)
+                                        studentInfoSet.add(modelMapper.map(cs, ClassStudentDTO.AttendanceInfo.class));
+                                }
+                        ));
+        return studentInfoSet;
+    }
 
 //    @Transactional(readOnly = true)
 //    @Override

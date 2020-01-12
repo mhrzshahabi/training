@@ -104,43 +104,43 @@ public class ClassStudentDTO implements Serializable {
     public static class AttendanceInfo{
 
         @Getter(AccessLevel.NONE)
+        private StudentDTO.AttendanceInfo student;
+
+        @Getter(AccessLevel.NONE)
         private Long id;
         public Long getId(){
-            return this.student.getId();
+            return student.getId();
         }
         @Getter(AccessLevel.NONE)
         private String firstName;
         public String getFirstName(){
-            return this.student.getFirstName();
+            return student.getFirstName();
         }
         @Getter(AccessLevel.NONE)
         private String lastName;
         public String getLastName(){
-            return this.student.getLastName();
+            return student.getLastName();
         }
         @Getter(AccessLevel.NONE)
         private String nationalCode;
         public String getNationalCode(){
-            return this.student.getFirstName();
+            return student.getNationalCode();
         }
         @Getter(AccessLevel.NONE)
         private String companyName;
         public String getCompanyName(){
-            return this.student.getFirstName();
+            return student.getCompanyName();
         }
         @Getter(AccessLevel.NONE)
         private String personnelNo;
         public String getPersonnelNo(){
-            return this.student.getFirstName();
+            return student.getPersonnelNo();
         }
         @Getter(AccessLevel.NONE)
         private String personnelNo2;
         public String getPersonnelNo2(){
-            return this.student.getFirstName();
+            return student.getPersonnelNo2();
         }
-        @Getter(AccessLevel.NONE)
-        @Setter(AccessLevel.NONE)
-        private StudentDTO.AttendanceInfo student;
         private Long presenceTypeId;
     }
 

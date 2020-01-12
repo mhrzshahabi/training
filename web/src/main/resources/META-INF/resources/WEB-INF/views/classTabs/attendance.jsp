@@ -74,7 +74,7 @@
             {name: "personnelNo2"},
         ],
         autoFetchData: false,
-        fetchDataURL: tclassStudentUrl + "/attendance-iscList/"
+        fetchDataURL: attendanceUrl + "/students?id=0"
     });
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
@@ -236,7 +236,7 @@
                     attendanceGrid.endEditing();
                     if (attendanceGrid.getAllEditRows().isEmpty()) {
                         RestData_SessionDate_AttendanceJSP.fetchDataURL = attendanceUrl + "/session-date?classId=" + classGridRecordInAttendanceJsp.id;
-                        RestData_Student_AttendanceJSP.fetchDataURL = tclassStudentUrl + "/attendance-iscList/" + classGridRecordInAttendanceJsp.id;
+                        RestData_Student_AttendanceJSP.fetchDataURL = attendanceUrl + "/students?classId=" + classGridRecordInAttendanceJsp.id;
                         item.fetchData();
                     } else {
                         isc.MyYesNoDialog.create({
@@ -470,6 +470,20 @@
                                                                         attendanceGrid.updateData(record1);
                                                                         // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
+                                                                        var data = {
+                                                                            "presenceTypeId":104
+                                                                        };
+                                                                        isc.RPCManager.sendRequest({
+                                                                            actionURL: tclassStudentUrl + "/" + record1.classStudentId,
+                                                                            httpMethod: "PUT",
+                                                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                            useSimpleHttp: true,
+                                                                            contentType: "application/json; charset=utf-8",
+                                                                            showPrompt: false,
+                                                                            serverOutputAsString: false,
+                                                                            data: JSON.stringify(data),
+                                                                            callback: function (resp) {}
+                                                                        });
                                                                         return;
                                                                     }
                                                                     item.setValue(oldValue);
