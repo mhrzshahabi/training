@@ -146,10 +146,7 @@ var value_failurereason=null
                  createDialog("info","<spring:message code="msg.less.score"/>","<spring:message code="message"/>")
                  item.setValue()
                 }
-
-
                 },
-
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
                    if ((newValue >= 10 && newValue <= 20) && (editCompletionEvent === "enter") && (newValue !== null || newValue != null)) {
                         ListGrid_Cell_score_Update(record, newValue);
@@ -163,7 +160,8 @@ var value_failurereason=null
                         else
                         {
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
-                              ListGrid_Cell_scoresState_Update(record,null)
+                              ListGrid_Cell_score_Update(record,null)
+                             // ListGrid_Cell_scoresState_Update(record,null)
                               ListGrid_Class_Student.invalidateCache();
                         }
 
