@@ -74,7 +74,7 @@ public class ClassStudentRestController {
     @PutMapping(value = "/{id}")
     public ResponseEntity update(@PathVariable Long id, @RequestBody Object request) {
         try {
-            return new ResponseEntity<>(classStudentService.update(id, request), HttpStatus.OK);
+            return new ResponseEntity<>(classStudentService.update(id, request, ClassStudentDTO.ScoresInfo.class), HttpStatus.OK);
         } catch (TrainingException ex) {
             return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
