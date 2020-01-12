@@ -925,9 +925,182 @@ $window_header_bgColor: #fe9d2a !default;
 .toolStripButtonRefreshDisabled,
 .toolStripButtonRefreshSelectedDisabled {
   background-color: #f3f3f3;
-  border: solid 1px $primary_grey_dark;
+  border: solid 1px $primary_grey_dark ;
 
   td {
-    color: #8e8e8e;
+    color: #8e8e8e ;
   }
+}
+
+
+
+
+
+.expandList .cellSelectedOverAltCol,
+.expandList .cellSelectedOverDarkAltCol,
+.expandList .cellPendingSelectedOverAltCol,
+.expandList .cellPendingSelectedOverDarkAltCol {
+  background-color: #CDCDCD;
+}
+
+
+.expandList .cellSelectedAltCol,
+.expandList .cellSelectedDarkAltCol,
+.expandList .cellSelectedOverAltCol,
+.expandList .cellSelectedOverDarkAltCol,
+.expandList .cellPendingSelectedAltCol,
+.expandList .cellPendingSelectedDarkAltCol,
+.expandList .cellPendingSelectedOverAltCol,
+.expandList .cellPendingSelectedOverDarkAltCol {
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList  .cellSelected,
+.expandList  .cellSelectedDark,
+.expandList  .cellPendingSelected,
+.expandList  .cellPendingSelectedDark,
+.expandList  .specialColSelected,
+.expandList  .recordSummaryCellSelected,
+.expandList  .recordSummaryCellSelectedDark {
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList  .cellSelected,
+.expandList  .cellSelectedDark,
+.expandList  .cellSelectedOver,
+.expandList  .cellSelectedOverDark{
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList-ButtonAdd td{
+  width: 150px;
+}
+
+.selectItemLiteControl,
+.selectItemLiteControlRTL,
+.selectItemLiteControlOver,
+.selectItemLiteControlOverRTL,
+.selectItemLiteControlFocused,
+.selectItemLiteControlFocusedRTL,
+.selectItemLiteControlFocusedOver,
+.selectItemLiteControlFocusedOverRTL,
+.selectItemLiteControlDisabled,
+.selectItemLiteControlDisabledRTL,
+.selectItemLiteControlError,
+.selectItemLiteControlErrorRTL,
+.selectItemLiteControlErrorOver,
+.selectItemLiteControlErrorOverRTL,
+.selectItemLiteControlErrorFocused,
+.selectItemLiteControlErrorFocusedRTL,
+.selectItemLiteControlErrorFocusedOver,
+.selectItemLiteControlErrorFocusedOverRTL,
+.selectItemLiteControlPending,
+.selectItemLiteControlPendingRTL,
+.selectItemLiteControlPendingOver,
+.selectItemLiteControlPendingOverRTL,
+.selectItemLiteControlPendingFocused,
+.selectItemLiteControlPendingFocusedRTL,
+.selectItemLiteControlPendingFocusedOver,
+.selectItemLiteControlPendingFocusedOverRTL,
+.selectItemLiteControlPendingDisabled,
+.selectItemLiteControlPendingDisabledRTL,
+.selectItemLiteControlPendingError,
+.selectItemLiteControlPendingErrorRTL,
+.selectItemLiteControlHint,
+.selectItemLiteControlHintRTL,
+.selectItemLiteControlDisabledHint,
+.selectItemLiteControlDisabledHintRTL{
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  background-color: #fff;
+}
+.textAreaItemLite,
+.textAreaItemLiteRTL,
+.textAreaItemLiteOver,
+.textAreaItemLiteOverRTL,
+.textAreaItemLiteFocused,
+.textAreaItemLiteFocusedRTL,
+.textAreaItemLiteFocusedOver,
+.textAreaItemLiteFocusedOverRTL,
+.textAreaItemLiteDisabled,
+.textAreaItemLiteDisabledRTL,
+.textAreaItemLiteError,
+.textAreaItemLiteErrorRTL,
+.textAreaItemLitePending,
+.textAreaItemLitePendingRTL,
+.textAreaItemLitePendingOver,
+.textAreaItemLitePendingOverRTL,
+.textAreaItemLitePendingFocused,
+.textAreaItemLitePendingFocusedRTL,
+.textAreaItemLitePendingFocusedOver,
+.textAreaItemLitePendingFocusedOverRTL,
+.textAreaItemLitePendingDisabled,
+.textAreaItemLitePendingDisabledRTL,
+.textAreaItemLitePendingError,
+.textAreaItemLitePendingErrorRTL,
+.textAreaItemLiteHint,
+.textAreaItemLiteHintRTL,
+.textAreaItemLiteDisabledHint,
+.textAreaItemLiteDisabledHintRTL {
+  border: 1px solid #ced4da;
+  border-radius: .25rem;
+  background-color: #fff;
+}
+
+
+.expandList-tabBar .cellSelectedAltCol,
+.expandList-tabBar.cellSelectedDarkAltCol,
+.expandList-tabBar.cellSelectedOverAltCol,
+.expandList-tabBar.cellSelectedOverDarkAltCol,
+.expandList-tabBar.cellPendingSelectedAltCol,
+.expandList-tabBar.cellPendingSelectedDarkAltCol,
+.expandList-tabBar.cellPendingSelectedOverAltCol,
+.expandList-tabBar.cellPendingSelectedOverDarkAltCol {
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList-tabBar .cellSelected,
+.expandList-tabBar .cellSelectedDark,
+.expandList-tabBar .cellPendingSelected,
+.expandList-tabBar .cellPendingSelectedDark,
+.expandList-tabBar .specialColSelected,
+.expandList-tabBar .recordSummaryCellSelected,
+.expandList-tabBar .recordSummaryCellSelectedDark {
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList-tabBar .cellSelected,
+.expandList-tabBar .cellSelectedDark,
+.expandList-tabBar .cellSelectedOver,
+.expandList-tabBar .cellSelectedOverDark{
+  background-color: #CDCDCD;
+  color: #153560;
+}
+
+.expandList-tabBar .tabBarTop {
+  background: none;
+}
+.expandList-ButtonAdd td{
+  width: 150px;
+}
+
+.expand-layout {
+  width: 99% !important;
+  position: absolute !important;
+  right: 0 !important;
+  left: 0 !important;
+}
+
+.expand-layout .tabBarTop {
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
+}
+.expand-layout .tabSetContainer{
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }

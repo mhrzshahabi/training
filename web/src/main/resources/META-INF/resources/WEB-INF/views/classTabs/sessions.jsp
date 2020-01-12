@@ -585,7 +585,7 @@
                     message: "<spring:message code="msg.record.select.class.ask"/>",
                     icon: "[SKIN]ask.png",
                     title: "<spring:message code="course_Warning"/>",
-                    buttons: [isc.Button.create({title: "<spring:message code="ok"/>"})],
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
                     buttonClick: function (button, index) {
                         this.close();
                     }
