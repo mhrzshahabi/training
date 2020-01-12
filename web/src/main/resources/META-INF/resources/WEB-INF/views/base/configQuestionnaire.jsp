@@ -300,8 +300,8 @@
         tabBarPosition: "right",
         tabBarThickness: 125,
         tabs: [
-            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
             {title: "<spring:message code="question.bank"/>", pane: VLayout_Body_JspConfigQuestionnaire},
+            {title: "<spring:message code="questionnaire"/>", pane: isc.ViewLoader.create({viewURL: "web/questionnaire"})},
         ]
     });
 
