@@ -838,6 +838,17 @@ public class ClassAlarmService implements IClassAlarm {
                     "        OR    tbl_attendance.c_state = 0 " +
                     "    ) AND rownum = 1 ");
 
+            //*****student score*****
+            alarmScripts.add(" SELECT " +
+                    "    'ثبت نمرات' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    " WHERE " +
+                    "    tbl_class_student.class_id = :class_id " +
+                    "    AND   tbl_class_student.failure_reason IS NULL " +
+                    "    AND   tbl_class_student.score IS NULL " +
+                    "    AND   tbl_class_student.scores_state IS NULL " +
+                    "    AND   rownum = 1 AND :todaydat = :todaydat ");
 
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +
