@@ -470,6 +470,20 @@
                                                                         attendanceGrid.updateData(record1);
                                                                         // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
+                                                                        var data = {
+                                                                            "presenceTypeId":104
+                                                                        };
+                                                                        isc.RPCManager.sendRequest({
+                                                                            actionURL: tclassStudentUrl + "/" + record1.classStudentId,
+                                                                            httpMethod: "PUT",
+                                                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                            useSimpleHttp: true,
+                                                                            contentType: "application/json; charset=utf-8",
+                                                                            showPrompt: false,
+                                                                            serverOutputAsString: false,
+                                                                            data: JSON.stringify(data),
+                                                                            callback: function (resp) {}
+                                                                        });
                                                                         return;
                                                                     }
                                                                     item.setValue(oldValue);

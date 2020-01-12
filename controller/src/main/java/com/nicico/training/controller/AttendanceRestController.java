@@ -10,8 +10,10 @@ import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.AttendanceDTO;
 import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.iservice.IAttendanceService;
+import com.nicico.training.model.ClassStudent;
 import com.nicico.training.service.ClassSessionService;
 import com.nicico.training.service.TclassService;
 import lombok.RequiredArgsConstructor;
@@ -40,6 +42,7 @@ public class AttendanceRestController {
     private final IAttendanceService attendanceService;
     private final ClassSessionService classSessionService;
     private final TclassService tclassService;
+//    private final ClassStudent classStudent;
     private final ReportUtil reportUtil;
     private final ObjectMapper objectMapper;
     private final DateUtil dateUtil;
@@ -142,24 +145,24 @@ public class AttendanceRestController {
         return new ResponseEntity<>(specRs, HttpStatus.OK);
     }
 
-//    @Loggable
-//    @GetMapping(value = "/students")
-////	@PreAuthorize("hasAuthority('c_attendance')")
-//    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
-//        if (classId == null || classId == 0) {
-//            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
-//        }
-//        List<StudentDTO.Info> students = tclassService.getStudents(classId);
-//        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
-//        specResponse.setData(students)
-//                .setStartRow(0)
-//                .setEndRow(students.size())
-//                .setTotalRows(students.size());
-//
-//        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
-//        specRs.setResponse(specResponse);
-//        return new ResponseEntity<>(specRs, HttpStatus.OK);
-//    }
+    @Loggable
+    @GetMapping(value = "/students")
+//	@PreAuthorize("hasAuthority('c_attendance')")
+    public ResponseEntity<AttendanceDTO.AttendanceSpecRs> getStudentForOneClass(@RequestParam(value = "classId", required = false) Long classId) {
+        if (classId == null || classId == 0) {
+            return new ResponseEntity<>(new AttendanceDTO.AttendanceSpecRs(), HttpStatus.OK);
+        }
+        List<ClassStudentDTO.AttendanceInfo> students = tclassService.getStudents(classId);
+        final AttendanceDTO.SpecRs specResponse = new AttendanceDTO.SpecRs();
+        specResponse.setData(students)
+                .setStartRow(0)
+                .setEndRow(students.size())
+                .setTotalRows(students.size());
+
+        final AttendanceDTO.AttendanceSpecRs specRs = new AttendanceDTO.AttendanceSpecRs();
+        specRs.setResponse(specResponse);
+        return new ResponseEntity<>(specRs, HttpStatus.OK);
+    }
 
 
     @Loggable
