@@ -86,12 +86,12 @@ public class ClassStudentService implements IClassStudentService {
 
     @Transactional
     @Override
-    public <E> ClassStudentDTO.ClassStudentInfo update(Long id, E request) {
+    public <E, T> T update(Long id, E request, Class<T> infoType) {
         ClassStudent classStudent = getClassStudent(id);
         ClassStudent updating = new ClassStudent();
         mapper.map(classStudent, updating);
         mapper.map(request, updating);
-        return mapper.map(classStudentDAO.saveAndFlush(updating), ClassStudentDTO.ClassStudentInfo.class);
+        return mapper.map(classStudentDAO.saveAndFlush(updating), infoType);
     }
 
     @Transactional
