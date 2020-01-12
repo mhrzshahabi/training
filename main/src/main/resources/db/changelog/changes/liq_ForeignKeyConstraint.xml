@@ -511,15 +511,6 @@
     <changeSet author="jafari-h (generated)" id="1578211745269-209">
         <addForeignKeyConstraint baseColumnNames="f_course" baseTableName="tbl_skill" constraintName="FKpa50atgxgnp21b0tiunwlifuk" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578315306749-211">
-        <addForeignKeyConstraint baseColumnNames="presence_type_id" baseTableName="tbl_tclass_student_new" constraintName="FK6tj4suij1tu82ctatqmdy1tsb" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578315306749-212">
-        <addForeignKeyConstraint baseColumnNames="student_id" baseTableName="tbl_tclass_student_new" constraintName="FKcdoab7vkl76l02fju99imqr71" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_student" validate="true"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578315306749-213">
-        <addForeignKeyConstraint baseColumnNames="class_id" baseTableName="tbl_tclass_student_new" constraintName="FKprv1dy3h044sxlfvysiutphro" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_class" validate="true"/>
-    </changeSet>
     <changeSet author="ghazanfari_f (generated)" id="1578736120553-215">
         <addForeignKeyConstraint baseColumnNames="f_questionnaire" baseTableName="tbl_questionnaire_question" constraintName="FKdsds4ossjaxjfbrdp0y0o8gn3" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_questionnaire" validate="true"/>
     </changeSet>
