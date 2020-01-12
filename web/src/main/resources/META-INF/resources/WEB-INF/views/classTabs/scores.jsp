@@ -124,7 +124,7 @@ var value_failurereason=null
                     }
                    else if (newValue == null && record.scoresState === "مردود" && record.failureReason.length === 0)
                         {
-                            alert("2")
+
                             ListGrid_Cell_scoresState_Update(record,null)
                             ListGrid_Class_Student.refreshFields();
                         }
