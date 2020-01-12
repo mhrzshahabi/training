@@ -7,6 +7,7 @@
 var Row_Numbers=null
 var flag1=null
 var value_failurereason=null
+var flag2=0
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -160,8 +161,8 @@ var value_failurereason=null
                         else
                         {
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
-                              ListGrid_Cell_score_Update(record,null)
-                             // ListGrid_Cell_scoresState_Update(record,null)
+
+                             ListGrid_Cell_scoresState_Update(record,null)
                               ListGrid_Class_Student.invalidateCache();
                         }
 
@@ -180,7 +181,7 @@ var value_failurereason=null
                     }
                     else if (newValue == null && (record.scoresState === "مردود" || record.scoresState.length>0 ))
                      {
-                     console.log()
+
                      flag1=1
                       Row_Numbers=rowNum;
                       ListGrid_Cell_score_Update(record, null);
@@ -336,13 +337,12 @@ var value_failurereason=null
             var stateScore = JSON.parse(resp.data).scoresState;
             var score=JSON.parse(resp.data).score;
             var record = ListGrid_Class_Student.getSelectedRecord();
-
-
              if(flag1 === 1)
                     {
                      let record1=ListGrid_Class_Student.getRecord(Row_Numbers)
                      ListGrid_Cell_failurereason_Update(record1,null)
                     }
+
 
             else if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201 ) {
 
@@ -362,17 +362,10 @@ var value_failurereason=null
 
                 if(score>=10)
                    {
+
                   ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-
                    }
-
-
-
-
-
-
-
-       }
+            }
 
     };
 

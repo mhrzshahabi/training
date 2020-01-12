@@ -260,11 +260,4 @@
             <column name="class_id" type="NUMBER(19, 0)"/>
         </createTable>
     </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578745091553-264">
-        <dropTable tableName="TBL_TCLASS_STUDENT_NEW"/>
-    </changeSet>
-    <changeSet author="poursalehi_mos (generated)" id="1578745091553-270">
-        <dropSequence sequenceName="SEQ_TCLASS_STUDENT_NEW_ID"/>
-    </changeSet>
-
 </databaseChangeLog>
