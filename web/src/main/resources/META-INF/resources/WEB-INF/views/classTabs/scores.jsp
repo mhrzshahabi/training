@@ -160,8 +160,8 @@ var value_failurereason=null
                         else
                         {
                               createDialog("info","لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید","<spring:message code="msg.less.score"/>")
-                              ListGrid_Cell_score_Update(record,null)
-                             // ListGrid_Cell_scoresState_Update(record,null)
+                            //  ListGrid_Cell_score_Update(record,null)
+                              ListGrid_Cell_scoresState_Update(record,null)
                               ListGrid_Class_Student.invalidateCache();
                         }
 
@@ -336,8 +336,6 @@ var value_failurereason=null
             var stateScore = JSON.parse(resp.data).scoresState;
             var score=JSON.parse(resp.data).score;
             var record = ListGrid_Class_Student.getSelectedRecord();
-
-
              if(flag1 === 1)
                     {
                      let record1=ListGrid_Class_Student.getRecord(Row_Numbers)
@@ -362,17 +360,10 @@ var value_failurereason=null
 
                 if(score>=10)
                    {
+
                   ListGrid_Cell_scoresState_Update(record, "قبول با نمره");
-
                    }
-
-
-
-
-
-
-
-       }
+            }
 
     };
 
