@@ -613,14 +613,14 @@
         title: "<spring:message code="security"/>",
         menu: isc.Menu.create({
             data: [
+                <%--{--%>
+                <%--    title: "<spring:message code="user.plural"/>",--%>
+                <%--    click: function () {--%>
+                <%--        createTab(this.title, "<spring:url value="web/oaUser"/>");--%>
+                <%--    }--%>
+                <%--},--%>
                 {
-                    title: "<spring:message code="user.plural"/>",
-                    click: function () {
-                        createTab(this.title, "<spring:url value="web/oaUser"/>");
-                    }
-                },
-                {
-                    title: "کاربران قبلی",
+                    title: "کاربران",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/users/show-form"/>");
                     }
