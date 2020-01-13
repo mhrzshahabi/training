@@ -535,7 +535,7 @@
                         SelectedPersonnelsLG_student,
                         isc.TrHLayoutButtons.create({
                             members: [
-                                isc.IButton.create({
+                                isc.IButtonSave.create({
                                     top: 260,
                                     title: "<spring:message code='save'/>",
                                     align: "center",
@@ -556,7 +556,7 @@
 
                                         SelectedPersonnelsLG_student.data.clearAll();
                                     }
-                                }), isc.IButton.create({
+                                }), isc.IButtonCancel.create({
                                     top: 260,
                                     title: "<spring:message code='cancel'/>",
                                     align: "center",

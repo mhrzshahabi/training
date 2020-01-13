@@ -19,7 +19,6 @@ import com.nicico.training.iservice.ITeacherService;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.service.TeacherService;
-import com.sun.org.apache.xpath.internal.operations.Bool;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
