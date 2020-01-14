@@ -1067,6 +1067,20 @@
                       "3":"کار پروژه ای"
                   }
             },
+            {
+            name:"scoringMethod",
+            title:"روش نمره دهی",
+            colSpan:3,
+            fillHorizontalSpace: true,
+            vertical:false,
+             textAlign: "center",
+            valueMap: {
+                    "1": "بدون نمره",
+                    "2": "نمره از بیست",
+                    "3": "نمره از صد",
+                    "4": "ارزشی",
+                },
+            },
 
 
             // {

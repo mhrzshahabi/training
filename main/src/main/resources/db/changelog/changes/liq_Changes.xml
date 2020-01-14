@@ -229,8 +229,6 @@
     <changeSet author="poursalehi_mos (generated)" id="1578744676865-191">
         <addNotNullConstraint columnDataType="number(19,0)" columnName="f_personality" tableName="tbl_teacher"/>
     </changeSet>
-
-
     <changeSet author="poursalehi_mos (generated)" id="1578745091553-204">
         <createTable tableName="tbl_class_student">
             <column name="id" type="NUMBER(19, 0)">
@@ -259,5 +257,10 @@
             <column name="student_id" type="NUMBER(19, 0)"/>
             <column name="class_id" type="NUMBER(19, 0)"/>
         </createTable>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1578980055702-208">
+        <addColumn tableName="tbl_course">
+            <column name="scoring_method" type="varchar2(255 CHAR)"/>
+        </addColumn>
     </changeSet>
 </databaseChangeLog>
