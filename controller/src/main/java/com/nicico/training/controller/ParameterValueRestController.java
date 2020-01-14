@@ -70,4 +70,10 @@ public class ParameterValueRestController {
     public ResponseEntity<List<ParameterValueDTO.Info>> editConfigList(@Validated @RequestBody ParameterValueDTO.ConfigUpdate[] rq) {
         return new ResponseEntity<>(parameterValueService.editConfigList(rq), HttpStatus.OK);
     }
+
+    @Loggable
+    @GetMapping("/get-id")
+    public ResponseEntity<Long> getParametersValueList(@RequestParam String code) {
+        return new ResponseEntity<>(parameterValueService.getId(code), HttpStatus.OK);
+    }
 }

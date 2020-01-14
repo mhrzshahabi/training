@@ -66,6 +66,7 @@
     var RestData_Student_AttendanceJSP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "studentId"},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -74,7 +75,7 @@
             {name: "personnelNo2"},
         ],
         autoFetchData: false,
-        fetchDataURL: attendanceUrl + "/students?id=0"
+        fetchDataURL: attendanceUrl + "/students?classId=0"
     });
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
@@ -466,25 +467,37 @@
                                                                     this.close();
                                                                     if (index === 0) {
                                                                         let record1 = attendanceGrid.getSelectedRecord();
-                                                                        record1.studentState = "1";
+                                                                        record1.studentState = "kh";
                                                                         attendanceGrid.updateData(record1);
-                                                                        // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
-                                                                        var data = {
-                                                                            "presenceTypeId":104
-                                                                        };
                                                                         isc.RPCManager.sendRequest({
-                                                                            actionURL: tclassStudentUrl + "/" + record1.classStudentId,
-                                                                            httpMethod: "PUT",
+                                                                            actionURL: parameterValueUrl + "/get-id/?code=kh",
+                                                                            httpMethod: "GET",
                                                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                                                             useSimpleHttp: true,
                                                                             contentType: "application/json; charset=utf-8",
                                                                             showPrompt: false,
                                                                             serverOutputAsString: false,
-                                                                            data: JSON.stringify(data),
-                                                                            callback: function (resp) {}
+                                                                            callback: function (resp) {
+                                                                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                                    let data = {
+                                                                                        "presenceTypeId": JSON.parse(resp.data)
+                                                                                    };
+                                                                                    isc.RPCManager.sendRequest({
+                                                                                        actionURL: tclassStudentUrl + "/" + record1.classStudentId,
+                                                                                        httpMethod: "PUT",
+                                                                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                                        useSimpleHttp: true,
+                                                                                        contentType: "application/json; charset=utf-8",
+                                                                                        showPrompt: false,
+                                                                                        serverOutputAsString: false,
+                                                                                        data: JSON.stringify(data),
+                                                                                        callback: function (resp) {}
+                                                                                    });
+                                                                                    return;
+                                                                                }
+                                                                            }
                                                                         });
-                                                                        return;
                                                                     }
                                                                     item.setValue(oldValue);
                                                                 },
@@ -522,7 +535,7 @@
                     }
                     if (form.getValue("filterType") == 2) {
                         isc.RPCManager.sendRequest({
-                            actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().id,
+                            actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().studentId,
                             httpMethod: "GET",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -722,12 +735,40 @@
                                                                     if (index === 0) {
                                                                         for (let i = 0; i <attendanceGrid.getData().allRows.length ; i++) {
                                                                             let record1 = attendanceGrid.getRecord(i);
-                                                                            record1.studentState = "1";
+                                                                            record1.studentState = "kh";
                                                                             attendanceGrid.updateData(record1);
                                                                         }
                                                                         // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
-                                                                        return;
+                                                                        isc.RPCManager.sendRequest({
+                                                                            actionURL: parameterValueUrl + "/get-id/?code=kh",
+                                                                            httpMethod: "GET",
+                                                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                            useSimpleHttp: true,
+                                                                            contentType: "application/json; charset=utf-8",
+                                                                            showPrompt: false,
+                                                                            serverOutputAsString: false,
+                                                                            callback: function (resp) {
+                                                                                if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
+                                                                                    let data = {
+                                                                                        "presenceTypeId": JSON.parse(resp.data)
+                                                                                    };
+                                                                                    isc.RPCManager.sendRequest({
+                                                                                        actionURL: tclassStudentUrl + "/" + attendanceForm.getValue("sessionDate"),
+                                                                                        httpMethod: "PUT",
+                                                                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                                        useSimpleHttp: true,
+                                                                                        contentType: "application/json; charset=utf-8",
+                                                                                        showPrompt: false,
+                                                                                        serverOutputAsString: false,
+                                                                                        data: JSON.stringify(data),
+                                                                                        callback: function (resp) {
+                                                                                        }
+                                                                                    });
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        });
                                                                     }
                                                                     item.setValue(oldValue);
                                                                 },
@@ -778,7 +819,9 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                attendanceGrid.setEditValue(i,j,"1");
+                                // if(attendanceGrid.canEditCell(i,j)) {
+                                    attendanceGrid.setEditValue(i, j, "1");
+                                // }
                             }
                         }
                 }
@@ -793,7 +836,9 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                attendanceGrid.setEditValue(i,j,"2");
+                                // if(attendanceGrid.canEditCell(i,j)) {
+                                    attendanceGrid.setEditValue(i, j, "2");
+                                // }
                             }
                         }
 
@@ -845,7 +890,7 @@
         })],
         canHover:true,
         canEditCell(rowNum, colNum){
-            return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "1";
+            return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
         },
         saveAllEdits(){
             this.Super("saveAllEdits",arguments);
