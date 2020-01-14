@@ -558,6 +558,12 @@
                         createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
                     },
                 },
+                {
+                    title: "<spring:message code="evaluation"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
+                    }
+                }
             ]
         }),
     });

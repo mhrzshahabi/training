@@ -41,7 +41,6 @@
         width: "100%",
         height: "100%",
         autoDraw: false,
-// border: "1px solid blue",
         viewURL: "",
         loadingMessage: "<spring:message code="there.is.no.process.form.to.display"/>"
     });
@@ -77,6 +76,7 @@
 
     <spring:url value="static/img/pieces/16/icon_add_files.png" var="icon_add_files"/>
     var uploadForm = isc.DynamicForm.create({
+        width:100,
         fields: [
             {
                 id: "uploadFileFieldSample1",
@@ -237,18 +237,18 @@
     var ToolStrip_ProcessDefinitionActions = isc.ToolStrip.create({
         width: "100%",
         members: [
-            ToolStripButton_showProcessDefinitionForm,
-            ToolStripButton_showProcessDefinitionImage,
-            ToolStripButton_deleteProcessDefinitionForm,
-            ToolStripButton_uploadProcessDefinitionForm,
-            uploadForm
+             ToolStripButton_showProcessDefinitionForm,
+             ToolStripButton_showProcessDefinitionImage,
+             ToolStripButton_deleteProcessDefinitionForm,
+             ToolStripButton_uploadProcessDefinitionForm,
+             uploadForm
         ]
     });
 
     var HLayout_ProcessDefinitionActions = isc.HLayout.create({
         width: "100%",
         members: [
-            ToolStrip_ProcessDefinitionActions
+             ToolStrip_ProcessDefinitionActions
         ]
     });
 
@@ -311,7 +311,6 @@
     var HLayout_ProcessDefinitionGrid = isc.HLayout.create({
         width: "100%",
         height: "100%",
-// border: "10px solid green",
 
         members: [
             ListGrid_ProcessDefinitionList
@@ -321,10 +320,9 @@
     var VLayout_ProcessDefinitionBody = isc.VLayout.create({
         width: "100%",
         height: "100%",
-        <%--border: "10px solid red",--%>
         members: [
-            HLayout_ProcessDefinitionActions,
-            HLayout_ProcessDefinitionGrid,
-            workflowProcessDefinitionViewLoader
+             HLayout_ProcessDefinitionActions,
+             HLayout_ProcessDefinitionGrid,
+             workflowProcessDefinitionViewLoader
         ]
     });
