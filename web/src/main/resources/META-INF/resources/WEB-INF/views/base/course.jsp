@@ -922,21 +922,22 @@
     });
     var DynamicForm_course_MainTab = isc.DynamicForm.create({
         // sectionVisibilityMode: "mutex",
-        colWidths: ["10%", "40%", "9%", "10%"],
+        colWidths: ["10%", "20%", "9%", "10%","10%"],
         titleAlign: "left",
         validateOnExit: true,
         showInlineErrors: true,
-        numCols: 4,
+        numCols: 5,
         fields: [
             {
                 name: "mainObjective",
                 title: "<spring:message code="course_mainObjective"/>",
-                colSpan: 1,
+                colSpan: 2,
                 rowSpan: 2,
                 readonly: true,
-                type: "textArea",
+                type: "TextAreaItem",
                 width: "*",
-                length: "*",
+                height:"*",
+                // length: "*",
                 required: true,
                 endRow: false
             },
@@ -981,7 +982,7 @@
                 // titleOrientation: "top",
                 // title: "شرح\u200cمشکل /نیاز /درخواست",
                 title: "درخواست",
-                colSpan: 4,
+                colSpan: 5,
                 rowSpan: 1,
                 readonly: true,
                 type: "textArea",
@@ -996,7 +997,7 @@
             },
             {name: "id", hidden: true},
             {
-                colSpan: 4,
+                colSpan: 5,
                 name: "titleFa",
                 title: "<spring:message code="course_fa_name"/>",
                 // length: "250",
@@ -1024,7 +1025,7 @@
             {
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
-                colSpan: 4,
+                colSpan: 5,
                 // length: "250",
                 // type: 'text',
                 // titleOrientation: "top",
@@ -1036,9 +1037,10 @@
              {
                 name: "evaluation",
                 title: "<spring:message code="evaluation.level"/>",
-                colSpan:3,
+                colSpan:2,
                 textAlign: "center",
                 type: "select",
+                endRow:true,
            //     defaultValue: "1",
                 valueMap: {
                     "1": "واکنش",
@@ -1056,31 +1058,62 @@
               {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
-                  colSpan:2,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-              //  defaultValue: "مشاهده",
+                  colSpan: 3,
+                  type: "radioGroup",
+                  vertical: false,
+                  endRow:true,
+                  fillHorizontalSpace: true,
+                  //  defaultValue: "مشاهده",
                   valueMap: {
-                      "1":"مشاهده",
-                      "2":"مصاحبه",
-                      "3":"کار پروژه ای"
+                      "1": "مشاهده",
+                      "2": "مصاحبه",
+                      "3": "کار پروژه ای"
                   }
+              },
+            {
+                name: "scoringMethod",
+                title: "روش نمره دهی",
+                colSpan: 1,
+                // fillHorizontalSpace: true,
+                // vertical: false,
+                defaultValue: "3",
+                textAlign: "center",
+                valueMap: {
+                    "1": "ارزشی",
+                    "2": "نمره از صد",
+                    "3": "نمره از بیست",
+                    "4": "بدون نمره",
+                },
+                change: function (form, item, value) {
+                    if (value == "1") {
+                        form.getItem("score").hide();
+                        form.getItem("score1").show();
+                    }
+                    else{
+                        form.getItem("score").show();
+                        form.getItem("score1").hide();
+                    }
+                }
             },
             {
-            name:"scoringMethod",
-            title:"روش نمره دهی",
-            colSpan:3,
-            fillHorizontalSpace: true,
-            vertical:false,
-             textAlign: "center",
-            valueMap: {
-                    "1": "بدون نمره",
-                    "2": "نمره از بیست",
-                    "3": "نمره از صد",
-                    "4": "ارزشی",
-                },
+                name: "score",
+                // colSpan:2,
+                title: "حد نمره قبولی",
             },
+
+            {
+                name: "score1",
+                colSpan:2,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap:{
+                    "1": "ضعیف",
+                    "2": "متوسط",
+                    "3": "خوب",
+                    "4": "خيلي خوب",
+                },
+            }
 
 
             // {
@@ -1142,23 +1175,23 @@
         ],
         valuesManager: "vm_JspCourse"
     });
-    var DynamicForm_course_GroupTab = isc.DynamicForm.create({
-        colWidths: ["6%", "11%", "6%", "11%"],
-        numCols: 4,
-        validateOnExit: true,
+ var DynamicForm_course_GroupTab = isc.DynamicForm.create({
+     colWidths: ["6%", "11%", "6%", "11%"],
+     numCols: 4,
+     validateOnExit: true,
 // cellBorder:1,
 // titleAlign:"right",
 
 // isGroup:true,
-        // groupTitle:"اطلاعات پایه",
-        // groupLabelBackgroundColor:"lightGray",
-        // groupBorderCSS:"1px solid Gray",
-        // border:"1px solid blue",
-        fields: [
-            {
-                name: "category.id",
-                colSpan: 1,
-                title: "<spring:message code="course_category"/>",
+     // groupTitle:"اطلاعات پایه",
+     // groupLabelBackgroundColor:"lightGray",
+     // groupBorderCSS:"1px solid Gray",
+     // border:"1px solid blue",
+     fields: [
+         {
+             name: "category.id",
+             colSpan: 1,
+             title: "<spring:message code="course_category"/>",
                 textAlign: "center",
                 // autoFetchData: true,
                 required: true,

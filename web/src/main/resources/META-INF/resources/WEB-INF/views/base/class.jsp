@@ -68,6 +68,7 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name:"scoringMethod",primaryKey:true},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -397,6 +398,7 @@
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
+                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod)
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -660,6 +662,7 @@
 
                 }
             },
+
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -744,6 +747,18 @@
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
                 }
+            },
+              {
+            name:"scoringMethod",
+            colSpan: 1,
+            title:"روش نمره دهی",
+            textAlign: "center",
+            valueMap: {
+                    "1": "بدون نمره",
+                    "2": "نمره از بیست",
+                    "3": "نمره از صد",
+                    "4": "ارزشی",
+                },
             },
         ],
     });
