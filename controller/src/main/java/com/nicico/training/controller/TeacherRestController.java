@@ -16,7 +16,9 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TeacherDAO;
 import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +27,8 @@ import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
 import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,9 +36,16 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.jsf.FacesContextUtils;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageInputStreamImpl;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -51,7 +62,9 @@ public class TeacherRestController {
     private final ModelMapper modelMapper;
     private final ICategoryService categoryService;
     private final ISubCategoryService subCategoryService;
-    private final TeacherDAO teacherDAO;
+    @Value("${nicico.dirs.upload-person-img}")
+    private String personUploadDir;
+    private final PersonalInfoDAO personalInfoDAO;
 
     // ------------------------------
 
@@ -284,11 +297,16 @@ public class TeacherRestController {
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+        Long Id = Long.valueOf(id);
+        final Teacher teacher = teacherService.getTeacher(Id);
+        final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
+        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        String fileName = personUploadDir + "/" + personalInfo.getPhoto();
+        File file = new File(fileName);
+        params.put("personal_img",  ImageIO.read(file));
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
-        reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
+        reportUtil.export("/reports/TeacherWithDetail.jasper", params, null, response);
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
@@ -404,6 +422,7 @@ public class TeacherRestController {
 
         return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
+
 
 
 }
