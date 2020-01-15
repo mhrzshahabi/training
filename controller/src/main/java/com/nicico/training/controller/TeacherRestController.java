@@ -16,10 +16,13 @@ import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.AcademicBK;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.AcademicBKService;
+import com.nicico.training.service.JobService;
 import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -65,6 +68,7 @@ public class TeacherRestController {
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
     private final PersonalInfoDAO personalInfoDAO;
+    private final AcademicBKService academicBKService;
 
     // ------------------------------
 
@@ -280,19 +284,33 @@ public class TeacherRestController {
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
     public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
-        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
-        criteriaRq1.setFieldName("id");
-        criteriaRq1.setOperator(EOperator.equals);
-        criteriaRq1.setValue(id);
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        criteriaRqList.add(criteriaRq1);
-        criteriaRq.setOperator(EOperator.and);
-        criteriaRq.setCriteria(criteriaRqList);
-        final SearchDTO.SearchRq searchRq;
-        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+//        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+//        criteriaRq1.setFieldName("id");
+//        criteriaRq1.setOperator(EOperator.equals);
+//        criteriaRq1.setValue(id);
+//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//        criteriaRqList.add(criteriaRq1);
+//        criteriaRq.setOperator(EOperator.and);
+//        criteriaRq.setCriteria(criteriaRqList);
+//        final SearchDTO.SearchRq searchRq;
+//        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+//        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+        /////////////////////////////////////
+        final SearchDTO.CriteriaRq criteriaRq_bk = new SearchDTO.CriteriaRq();
+        final SearchDTO.CriteriaRq criteriaRq1_bk = new SearchDTO.CriteriaRq();
+        criteriaRq1_bk.setFieldName("teacherId");
+        criteriaRq1_bk.setOperator(EOperator.equals);
+        criteriaRq1_bk.setValue(id);
+        List<SearchDTO.CriteriaRq> criteriaRqList_bk = new ArrayList<>();
+        criteriaRqList_bk.add(criteriaRq1_bk);
+        criteriaRq_bk.setOperator(EOperator.and);
+        criteriaRq_bk.setCriteria(criteriaRqList_bk);
+        final SearchDTO.SearchRq searchRq_bk;
+        searchRq_bk = new SearchDTO.SearchRq().setCriteria(criteriaRq_bk);
+        final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_bk = academicBKService.search(searchRq_bk, Long.valueOf(id));
+        ////////////////////////////////////
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -303,10 +321,29 @@ public class TeacherRestController {
         final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
         String fileName = personUploadDir + "/" + personalInfo.getPhoto();
         File file = new File(fileName);
-        params.put("personal_img",  ImageIO.read(file));
+        params.put("personalImg",  ImageIO.read(file));
+
+        params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
+        params.put("personalNum",teacher.getPersonnelCode());
+        params.put("certificateNum", personalInfo.getBirthCertificate());
+        params.put("nationalCode", personalInfo.getNationalCode());
+        params.put("certificateLocation", personalInfo.getBirthCertificateLocation());
+        params.put("birthDate", personalInfo.getBirthDate());
+        params.put("birthLocation", personalInfo.getBirthLocation());
+        params.put("gender", personalInfo.getGender().getTitleFa());
+        params.put("military", personalInfo.getMilitary().getTitleFa());
+        params.put("address", "");
+        params.put("connectionInfo", "");
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs_bk.getList()) + "," +
+                objectMapper.writeValueAsString(searchRs_bk.getList()) + "}";
+
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
-        reportUtil.export("/reports/TeacherWithDetail.jasper", params, null, response);
+        reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
+
+
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
