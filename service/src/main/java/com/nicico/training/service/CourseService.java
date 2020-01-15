@@ -31,7 +31,7 @@ public class CourseService implements ICourseService {
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
     private final CourseDAO courseDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
     private final EnumsConverter.ELevelTypeConverter eLevelTypeConverter = new EnumsConverter.ELevelTypeConverter();
     private final EnumsConverter.ERunTypeConverter eRunTypeConverter = new EnumsConverter.ERunTypeConverter();
@@ -397,7 +397,7 @@ public class CourseService implements ICourseService {
 
 
     //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//                for (Competence competence : competenceSet) {
+//                for (CompetenceOld competence : competenceSet) {
 //                    Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
 //                    for (JobCompetence jobCompetence : jobCompetenceSet) {
 //                        JobOld job = jobCompetence.getJob();
@@ -407,8 +407,8 @@ public class CourseService implements ICourseService {
     //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
 
 //            }
-//            Set<Competence> competenceSet = skill.getCompetenceSet();
-//            for (Competence competence : competenceSet) {
+//            Set<CompetenceOld> competenceSet = skill.getCompetenceSet();
+//            for (CompetenceOld competence : competenceSet) {
 //                Set<JobCompetence> jobCompetenceSet = competence.getJobCompetenceSet();
 //                for (JobCompetence jobCompetence : jobCompetenceSet) {
 //                    Job job = jobCompetence.getJob();
@@ -442,14 +442,14 @@ public class CourseService implements ICourseService {
 
     @Transactional
     @Override
-    public List<CompetenceDTO.Info> getCompetenceQuery(Long courseId) {
-        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
+    public List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId) {
+        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
         //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        List<Competence> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
+//        List<CompetenceOld> competenceList = competenceDAO.findCompetenceByCourseId(courseId);
 //        Optional.ofNullable(competenceList)
 //                .ifPresent(competence ->
 //                        competence.forEach(comp ->
-//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+//                                compeInfoList.add(modelMapper.map(comp, CompetenceDTOOld.Info.class))
 //                        ));
 //      --------------------------------------- By f.ghazanfari - end ---------------------------------------
         return compeInfoList;
@@ -458,16 +458,16 @@ public class CourseService implements ICourseService {
     //-------------------------------
     @Transactional
     @Override
-    public List<CompetenceDTO.Info> getCompetence(Long courseId) {
-        List<CompetenceDTO.Info> compeInfoList = new ArrayList<>();
-        Set<Competence> competenceSet = new HashSet<>();
+    public List<CompetenceDTOOld.Info> getCompetence(Long courseId) {
+        List<CompetenceDTOOld.Info> compeInfoList = new ArrayList<>();
+        Set<CompetenceOld> competenceSet = new HashSet<>();
         Course one = courseDAO.getOne(courseId);
         Set<Skill> skillSet = one.getSkillSet();
         for (Skill skill : skillSet) {
             Set<SkillGroup> skillGroupSet = skill.getSkillGroupSet();
             for (SkillGroup skillGroup : skillGroupSet) {
-                Set<Competence> competenceSet1 = skillGroup.getCompetenceSet();
-                for (Competence competence : competenceSet1) {
+                Set<CompetenceOld> competenceSet1 = skillGroup.getCompetenceSet();
+                for (CompetenceOld competence : competenceSet1) {
                     competenceSet.add(competence);
                 }
             }
@@ -475,7 +475,7 @@ public class CourseService implements ICourseService {
         Optional.ofNullable(competenceSet)
                 .ifPresent(competence ->
                         competence.forEach(comp ->
-                                compeInfoList.add(modelMapper.map(comp, CompetenceDTO.Info.class))
+                                compeInfoList.add(modelMapper.map(comp, CompetenceDTOOld.Info.class))
                         ));
         return compeInfoList;
     }

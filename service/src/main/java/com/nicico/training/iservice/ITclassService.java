@@ -5,7 +5,6 @@ package com.nicico.training.iservice;
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.model.Tclass;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,5 +50,5 @@ public interface ITclassService {
     @Transactional(readOnly = true)
     int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode);
 
-    Integer getWorkflowEndingStatusCode (Long classId);
+    Integer getWorkflowEndingStatusCode(Long classId);
 }

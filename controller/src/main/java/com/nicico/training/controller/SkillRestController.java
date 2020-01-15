@@ -392,23 +392,23 @@ public class SkillRestController {
         return new ResponseEntity<SkillGroupDTO.SkillGroupSpecRs>(new SkillGroupDTO.SkillGroupSpecRs(), HttpStatus.OK);
     }
 
-    // Competence methods ------------------------------------------------------------------------------------------------
+    // CompetenceOld methods ------------------------------------------------------------------------------------------------
 
 //    @Loggable
 //    @GetMapping(value = "{skillId}/competences")
 ////    @PreAuthorize("hasAnyAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long skillId) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long skillId) {
 ////        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 //
-//        List<CompetenceDTO.Info> competences = skillService.getCompetences(skillId);
+//        List<CompetenceDTOOld.Info> competences = skillService.getCompetences(skillId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(competences)
 //                .setStartRow(0)
 //                .setEndRow(competences.size())
 //                .setTotalRows(competences.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -418,7 +418,7 @@ public class SkillRestController {
 //    @Loggable
 //    @GetMapping(value = "{skillId}/unattached-competences")
 ////    @PreAuthorize("hasAnyAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getUnAttachedCompetences(@RequestParam("_startRow") Integer startRow,
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getUnAttachedCompetences(@RequestParam("_startRow") Integer startRow,
 //                                                                                   @RequestParam("_endRow") Integer endRow,
 //                                                                                   @RequestParam(value = "_constructor", required = false) String constructor,
 //                                                                                   @RequestParam(value = "operator", required = false) String operator,
@@ -435,15 +435,15 @@ public class SkillRestController {
 //
 //
 //
-//        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
+//        List<CompetenceDTOOld.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(competences)
 //                .setStartRow(startRow)
 //                .setEndRow(endRow)
 //                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -452,18 +452,18 @@ public class SkillRestController {
 //    @Loggable
 //    @GetMapping(value = "/competences")
 ////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getAttachedCompetences(@RequestParam("skillId") String skillID) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getAttachedCompetences(@RequestParam("skillId") String skillID) {
 //        Long skillId = Long.parseLong(skillID);
 //
-//        List<CompetenceDTO.Info> competences = skillService.getCompetences(skillId);
+//        List<CompetenceDTOOld.Info> competences = skillService.getCompetences(skillId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(competences)
 //                .setStartRow(0)
 //                .setEndRow(competences.size())
 //                .setTotalRows(competences.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -472,7 +472,7 @@ public class SkillRestController {
 //    @Loggable
 //    @GetMapping(value = "/unattached-competences")
 ////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getOtherCompetences(@RequestParam("_startRow") Integer startRow,
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getOtherCompetences(@RequestParam("_startRow") Integer startRow,
 //                                                                              @RequestParam("_endRow") Integer endRow,
 //                                                                              @RequestParam(value = "_constructor", required = false) String constructor,
 //                                                                              @RequestParam(value = "operator", required = false) String operator,
@@ -485,15 +485,15 @@ public class SkillRestController {
 //        Integer pageNumber=(endRow-1)/pageSize;
 //        Pageable pageable= PageRequest.of(pageNumber,pageSize);
 //
-//        List<CompetenceDTO.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
+//        List<CompetenceDTOOld.Info> competences = skillService.getUnAttachedCompetences(skillId,pageable);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(competences)
 //                .setStartRow(startRow)
 //                .setEndRow(endRow)
 //                .setTotalRows(skillService.getUnAttachedCompetencesCount(skillId));
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs, HttpStatus.OK);
@@ -551,7 +551,7 @@ public class SkillRestController {
 
 //    @Loggable
 //    @PostMapping(value = "/add-competence-list/{skillId}")
-//    public ResponseEntity<Boolean> addCompetences(@Validated @RequestBody CompetenceDTO.CompetenceIdList request, @PathVariable Long skillId) {
+//    public ResponseEntity<Boolean> addCompetences(@Validated @RequestBody CompetenceDTOOld.CompetenceIdList request, @PathVariable Long skillId) {
 //        boolean flag=false;
 //        HttpStatus httpStatus=HttpStatus.OK;
 //
@@ -569,8 +569,8 @@ public class SkillRestController {
 //    @Loggable
 //    @GetMapping(value = "/competence-dummy")
 ////    @PreAuthorize("hasAuthority('r_competence')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> competenceDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
-//        return new ResponseEntity<CompetenceDTO.CompetenceSpecRs>(new CompetenceDTO.CompetenceSpecRs(), HttpStatus.OK);
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> competenceDummy(@RequestParam("_startRow") Integer startRow, @RequestParam("_endRow") Integer endRow, @RequestParam(value = "operator", required = false) String operator, @RequestParam(value = "criteria", required = false) String criteria) {
+//        return new ResponseEntity<CompetenceDTOOld.CompetenceSpecRs>(new CompetenceDTOOld.CompetenceSpecRs(), HttpStatus.OK);
 //    }
 //
 

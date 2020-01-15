@@ -155,18 +155,18 @@ public class PostGroupRestController {
 //    @Loggable
 //    @GetMapping(value = "/{postGroupId}/getCompetences")
 ////    @PreAuthorize("hasAnyAuthority('r_post_group')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long postGroupId) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long postGroupId) {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 //
-//        List<CompetenceDTO.Info> list = postGroupService.getCompetence(postGroupId);
+//        List<CompetenceDTOOld.Info> list = postGroupService.getCompetence(postGroupId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(list)
 //                .setStartRow(0)
 //                .setEndRow( list.size())
 //                .setTotalRows(list.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs,HttpStatus.OK);

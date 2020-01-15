@@ -40,8 +40,8 @@ public interface ISkillService {
 
     Integer getUnAttachedCoursesCount(Long skillID);
 
-    //    List<CompetenceDTO.Info> getCompetences(Long skillID);
-//    List<CompetenceDTO.Info> getUnAttachedCompetences(Long skillID, Pageable pageable);
+    //    List<CompetenceDTOOld.Info> getCompetences(Long skillID);
+//    List<CompetenceDTOOld.Info> getUnAttachedCompetences(Long skillID, Pageable pageable);
 //    Integer getUnAttachedCompetencesCount(Long skillID);
     List<SkillGroupDTO.Info> getSkillGroups(Long skillID);
 

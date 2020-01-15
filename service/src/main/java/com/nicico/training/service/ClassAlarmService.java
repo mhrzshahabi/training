@@ -885,8 +885,8 @@ public class ClassAlarmService implements IClassAlarm {
                         .setParameter("class_id", class_id)
                         .setParameter("todaydat", todayDate).getResultList();
 
-                if(!Alarm.isEmpty())
-                AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
+                if (!Alarm.isEmpty())
+                    AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
 
