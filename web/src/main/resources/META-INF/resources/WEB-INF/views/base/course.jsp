@@ -1084,8 +1084,6 @@
                 name: "scoringMethod",
                 title: "روش نمره دهی",
                 colSpan: 1,
-                // fillHorizontalSpace: true,
-                // vertical: false,
                 defaultValue: "3",
                 textAlign: "center",
                 valueMap: {
@@ -1097,26 +1095,36 @@
                 change: function (form, item, value) {
                     if (value == "1") {
                         form.getItem("acceptancelimit").hide();
-                        form.getItem("acceptancelimit").disable();
+                        form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit_a").show();
-                        form.getItem("acceptancelimit_a").enable();
+                        form.getItem("acceptancelimit_a").setRequired(true);
                     } else {
                         form.getItem("acceptancelimit").show();
-                        form.getItem("acceptancelimit").enable();
+                        form.getItem("acceptancelimit").setRequired(true);
                         form.getItem("acceptancelimit_a").hide();
-                        form.getItem("acceptancelimit_a").disable();
+                        form.getItem("acceptancelimit_a").setRequired(false);
                     }
                 }
             },
             {
                 name: "acceptancelimit",
-                // colSpan:2,
+
+                required:true,
                 title: "حد نمره قبولی",
+                 validators: [{
+                    type: "regexp",
+                    errorMessage: "<spring:message code="msg.validate.score"/>",
+                    expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
+                }],
+                <%-- validators: [{--%>
+                <%--            type: "floatRange", min: 1, max: 20,--%>
+                <%--            errorMessage: "لطفا یک عدد بین 1 تا 20 وارد کنید",--%>
+                <%--        }],--%>
             },
 
             {
                 name: "acceptancelimit_a",
-
+                required:true,
                 colSpan: 2,
                 hidden: true,
                 textAlign: "center",
@@ -2453,6 +2461,11 @@
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
+            if(sRecord.scoringMethod === "1")
+            {
+                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)
+            }
+
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
                 ListGrid_Goal_refresh();
