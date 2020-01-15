@@ -74,6 +74,8 @@
     const questionnaireUrl = rootUrl + "/questionnaire";
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
+    const needsAssessmentUrl = rootUrl + "/needsAssessment";
+
 
     // -------------------------------------------  Filters  -----------------------------------------------
     const enFaNumSpcFilter = "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F]|[a-zA-Z0-9 ]";
@@ -406,7 +408,7 @@
         }),
     });
 
-    needAssessmentTSMB = isc.ToolStripMenuButton.create({
+    needsAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
             data: [
@@ -414,6 +416,12 @@
                     title: "<spring:message code="competence"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/competence/"/>");
+                    }
+                },
+                {
+                    title: "<spring:message code="needs.assessment"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/needsAssessment/"/>");
                     }
                 },
                 {
@@ -685,7 +693,7 @@
         shadowColor: "#153560",
         members: [
             basicInfoTSMB,
-            needAssessmentTSMB,
+            needsAssessmentTSMB,
             designingTSMB,
             runTSMB,
             evaluationTSMB,
@@ -1245,6 +1253,8 @@
     <%--autoFitFieldText: "<spring:message code="auto.fit"/>",--%>
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
+
+        createTab("<spring:message code="needs.assessment"/>", "<spring:url value="web/needsAssessment/"/>");
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 

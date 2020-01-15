@@ -24,8 +24,10 @@ public class CompetenceDTO implements Serializable {
     @NotEmpty
     @ApiModelProperty(required = true)
     private String title;
-    private String description;
+    @NotNull
+    @ApiModelProperty(required = true)
     private Long competenceTypeId;
+    private String description;
 
     @Getter
     @Setter
@@ -42,9 +44,6 @@ public class CompetenceDTO implements Serializable {
     @Accessors(chain = true)
     @ApiModel("CompetenceDTO - Create")
     public static class Create extends CompetenceDTO {
-
-        @ApiModelProperty(required = true)
-        private Long competenceTypeId;
     }
 
     @Getter

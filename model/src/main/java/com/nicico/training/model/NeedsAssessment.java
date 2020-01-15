@@ -52,6 +52,13 @@ public class NeedsAssessment extends Auditable {
     private Long competenceId;
 
     @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "f_skill", nullable = false, insertable = false, updatable = false)
+    private Skill skill;
+
+    @Column(name = "f_skill")
+    private Long skillId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_value_needs_assessment_domain", nullable = false, insertable = false, updatable = false)
     private ParameterValue needsAssessmentDomain;
 
