@@ -61,23 +61,49 @@
         selectionUpdated: function (record) { refreshNeedsAssessmentValueLG_needsAssessment(); }
     });
 
-    NeedsAssessmentTypeDS_needsAssessment = isc.TrDS.create({
-        ID: "NeedsAssessmentTypeDS_needsAssessment",
-        fields: [
-            {name: "id", primaryKey: true, hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
-        ],
-        fetchDataURL: parameterValueUrl + "/iscList/100",
-    });
+    <%--CompetenceDS_needsAssessment = isc.TrDS.create({--%>
+    <%--    ID: "CompetenceDS_needsAssessment",--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--    ],--%>
+    <%--    fetchDataURL: competenceUrl + "/iscList",--%>
+    <%--});--%>
+
+    <%--SkillDS_needsAssessment = isc.TrDS.create({--%>
+    <%--    ID: "SkillDS_needsAssessment",--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--    ],--%>
+    <%--    fetchDataURL: skillUrl + "/spec-list"--%>
+    <%--});--%>
+
+    <%--NeedsAssessmentDomainDS_competence = isc.TrDS.create({--%>
+    <%--    ID: "NeedsAssessmentDomainDS_competence",--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--    ],--%>
+    <%--    fetchDataURL: parameterValueUrl + "/iscList/101",--%>
+    <%--});--%>
+
+    <%--NeedsAssessmentPriorityDS_competence = isc.TrDS.create({--%>
+    <%--    ID: "NeedsAssessmentPriorityDS_competence",--%>
+    <%--    fields: [--%>
+    <%--        {name: "id", primaryKey: true, hidden: true},--%>
+    <%--        {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},--%>
+    <%--    ],--%>
+    <%--    fetchDataURL: parameterValueUrl + "/iscList/102",--%>
+    <%--});--%>
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
     NeedsAssessmentDF_needsAssessment = isc.DynamicForm.create({
         ID: "NeedsAssessmentDF_needsAssessment",
         fields: [
             {name: "id", hidden: true},
-            {name: "title", title: "<spring:message code="title"/>", required: true, validators: [TrValidators.NotEmpty],},
             {
-                name: "needsAssessmentTypeId", title: "<spring:message code='type'/>", required: true, type: "select", optionDataSource: NeedsAssessmentTypeDS_needsAssessment,
+                name: "competenceId", title: "<spring:message code='competence'/>", required: true, type: "select", optionDataSource: NeedsAssessmentTypeDS_needsAssessment,
                 valueField: "id", displayField: "title", filterFields: ["title"], pickListProperties: {showFilterEditor: true,},
             },
             {name: "description", title: "<spring:message code="description"/>", type: "TextAreaItem",},
@@ -101,45 +127,45 @@
     });
 
     // ------------------------------------------- Functions -------------------------------------------
-    function createNeedsAssessment_needsAssessment() {
-        needsAssessmentMethod_needsAssessment = "POST";
-        NeedsAssessmentDF_needsAssessment.clearValues();
-        NeedsAssessmentWin_needsAssessment.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="needsAssessment"/>");
-        NeedsAssessmentWin_needsAssessment.show();
-    }
+    <%--function createNeedsAssessment_needsAssessment() {--%>
+    <%--    needsAssessmentMethod_needsAssessment = "POST";--%>
+    <%--    NeedsAssessmentDF_needsAssessment.clearValues();--%>
+    <%--    NeedsAssessmentWin_needsAssessment.setTitle("<spring:message code="create"/>&nbsp;" + "<spring:message code="needs.assessment"/>");--%>
+    <%--    NeedsAssessmentWin_needsAssessment.show();--%>
+    <%--}--%>
 
-    function editNeedsAssessment_needsAssessment() {
-        let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();
-        if (checkRecordAsSelected(record, true, "<spring:message code="needsAssessment"/>")) {
-            needsAssessmentMethod_needsAssessment = "PUT";
-            NeedsAssessmentDF_needsAssessment.clearValues();
-            NeedsAssessmentDF_needsAssessment.editRecord(record);
-            NeedsAssessmentWin_needsAssessment.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="needsAssessment"/>");
-            NeedsAssessmentWin_needsAssessment.show();
-        }
-    }
+    <%--function editNeedsAssessment_needsAssessment() {--%>
+    <%--    let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();--%>
+    <%--    if (checkRecordAsSelected(record, true, "<spring:message code="needs.assessment"/>")) {--%>
+    <%--        needsAssessmentMethod_needsAssessment = "PUT";--%>
+    <%--        NeedsAssessmentDF_needsAssessment.clearValues();--%>
+    <%--        NeedsAssessmentDF_needsAssessment.editRecord(record);--%>
+    <%--        NeedsAssessmentWin_needsAssessment.setTitle("<spring:message code="edit"/>&nbsp;" + "<spring:message code="needs.assessment"/>");--%>
+    <%--        NeedsAssessmentWin_needsAssessment.show();--%>
+    <%--    }--%>
+    <%--}--%>
 
-    function saveNeedsAssessment_needsAssessment() {
-        if (!NeedsAssessmentDF_needsAssessment.validate()) {
-            return;
-        }
-        let needsAssessmentSaveUrl = needsAssessmentUrl;
-        action = '<spring:message code="create"/>';
-        if (needsAssessmentMethod_needsAssessment.localeCompare("PUT") == 0) {
-            let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();
-            needsAssessmentSaveUrl += "/" + record.id;
-            action = '<spring:message code="edit"/>';
-        }
-        let data = NeedsAssessmentDF_needsAssessment.getValues();
-        isc.RPCManager.sendRequest(
-            TrDSRequest(needsAssessmentSaveUrl, needsAssessmentMethod_needsAssessment, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="needsAssessment"/>', NeedsAssessmentWin_needsAssessment, NeedsAssessmentLG_needsAssessment)")
-        );
-    }
+    <%--function saveNeedsAssessment_needsAssessment() {--%>
+    <%--    if (!NeedsAssessmentDF_needsAssessment.validate()) {--%>
+    <%--        return;--%>
+    <%--    }--%>
+    <%--    let needsAssessmentSaveUrl = needsAssessmentUrl;--%>
+    <%--    action = '<spring:message code="create"/>';--%>
+    <%--    if (needsAssessmentMethod_needsAssessment.localeCompare("PUT") == 0) {--%>
+    <%--        let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();--%>
+    <%--        needsAssessmentSaveUrl += "/" + record.id;--%>
+    <%--        action = '<spring:message code="edit"/>';--%>
+    <%--    }--%>
+    <%--    let data = NeedsAssessmentDF_needsAssessment.getValues();--%>
+    <%--    isc.RPCManager.sendRequest(--%>
+    <%--        TrDSRequest(needsAssessmentSaveUrl, needsAssessmentMethod_needsAssessment, JSON.stringify(data), "callback: studyResponse(rpcResponse, '" + action + "','<spring:message code="needs.assessment"/>', NeedsAssessmentWin_needsAssessment, NeedsAssessmentLG_needsAssessment)")--%>
+    <%--    );--%>
+    <%--}--%>
 
-    function removeNeedsAssessment_needsAssessment() {
-        let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();
-        var entityType = '<spring:message code="needsAssessment"/>';
-        if (checkRecordAsSelected(record, true, entityType)) {
-            removeRecord(needsAssessmentUrl + "/" + record.id, entityType, record.title, 'NeedsAssessmentLG_needsAssessment');
-        }
-    }
+    <%--function removeNeedsAssessment_needsAssessment() {--%>
+    <%--    let record = NeedsAssessmentLG_needsAssessment.getSelectedRecord();--%>
+    <%--    var entityType = '<spring:message code="needs.assessment"/>';--%>
+    <%--    if (checkRecordAsSelected(record, true, entityType)) {--%>
+    <%--        removeRecord(needsAssessmentUrl + "/" + record.id, entityType, record.title, 'NeedsAssessmentLG_needsAssessment');--%>
+    <%--    }--%>
+    <%--}--%>
