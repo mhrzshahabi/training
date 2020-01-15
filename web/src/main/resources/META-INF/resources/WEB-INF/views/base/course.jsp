@@ -1086,32 +1086,33 @@
                 },
                 change: function (form, item, value) {
                     if (value == "1") {
-                        form.getItem("score").hide();
-                        form.getItem("score1").show();
+                        form.getItem("acceptancelimit").hide();
+                        form.getItem("acceptancelimit_a").show();
                     }
                     else{
-                        form.getItem("score").show();
-                        form.getItem("score1").hide();
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit_a").hide();
                     }
                 }
             },
             {
-                name: "score",
+                name: "acceptancelimit",
                 // colSpan:2,
                 title: "حد نمره قبولی",
             },
 
             {
-                name: "score1",
+                name: "acceptancelimit_a",
+
                 colSpan:2,
                 hidden: true,
                 textAlign: "center",
                 title: "حد نمره قبولی",
                 valueMap:{
-                    "1": "ضعیف",
-                    "2": "متوسط",
-                    "3": "خوب",
-                    "4": "خيلي خوب",
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
                 },
             }
 
@@ -1423,6 +1424,12 @@
                         data2.equalCourseListId = equalCourseIdList;
                         data2.preCourseListId = preCourseIdList;
 
+                         if(data2.scoringMethod == "1"){
+
+                         data2.acceptancelimit = data2.acceptancelimit_a
+                         }
+
+
                         data2["workflowStatus"] = "ثبت اولیه";
                         data2["workflowStatusCode"] = "0";
 
@@ -1476,6 +1483,12 @@
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
                 var data1 = vm_JspCourse.getValues();
+                console.log(data1)
+
+                   if(data1.scoringMethod == "1"){
+                    data1.acceptancelimit = data1.acceptancelimit_a
+                   }
+
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
@@ -2267,6 +2280,7 @@
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
         DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+        DynamicForm_course_MainTab.getItem("acceptancelimit_a").disable();
         Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
@@ -2424,6 +2438,7 @@
              {
              DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
              }
+
 
 //=======================================================
 
