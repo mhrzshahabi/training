@@ -1106,7 +1106,7 @@
                         form.getItem("acceptancelimit_a").hide();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
-                    else {
+                    else if(value =="4") {
                      form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(true);
@@ -1116,26 +1116,35 @@
                     }
 
 
+                },
+                changed:function (form, item, value) {
+                        if(value ==="3")
+                        {
+                          form.getItem("acceptancelimit").validators={
+                                                         type: "regexp",
+                                                         errorMessage: "<spring:message code="msg.validate.score"/>",
+                                                         expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
+                          }
+
+                        }
+                        else if(value === "2")
+                        {
+                          form.getItem("acceptancelimit").validators={
+                          type: "integerRange", min: 0, max: 100,
+                          errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+
+                          }
+                        }
+
                 }
             },
             {
                 name: "acceptancelimit",
-
                 title: "حد نمره قبولی",
-                 validators: [{
-                    type: "regexp",
-                    errorMessage: "<spring:message code="msg.validate.score"/>",
-                    expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/
-                }],
-                <%-- validators: [{--%>
-                <%--            type: "floatRange", min: 1, max: 20,--%>
-                <%--            errorMessage: "لطفا یک عدد بین 1 تا 20 وارد کنید",--%>
-                <%--        }],--%>
             },
 
             {
                 name: "acceptancelimit_a",
-
                 colSpan: 2,
                 hidden: true,
                 textAlign: "center",
