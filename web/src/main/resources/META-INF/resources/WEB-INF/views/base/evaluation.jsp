@@ -83,7 +83,6 @@
         var RestDataSource_operational = isc.TrDS.create({
             fields: [
                 {name: "id", primaryKey: true},
-                {name: "group"},
                 {name: "titleClass"},
                 {name: "startDate"},
                 {name: "endDate"},
@@ -91,11 +90,11 @@
                 {name: "term.titleFa"},
                 {name: "course.titleFa"},
                 {name: "course.id"},
-                {name: "teacherId"},
-                {name: "teacher"},
-                {name: "reason"},
+                {name: "course.code"},
+                {name: "course.evaluation"},
+                {name: "institute.titleFa"},
+                {name: "studentCount"},
                 {name: "classStatus"},
-                {name: "topology"},
                 {name: "trainingPlaceIds"},
                 {name: "instituteId"},
                 {name: "workflowEndingStatusCode"},
@@ -134,6 +133,13 @@
                     hidden: true
                 },
                 {
+                    name: "course.code",
+                    title: "<spring:message code='course.code'/>",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFithWidth: true
+                },
+                {
                     name: "course.titleFa",
                     title: "<spring:message code='course.title'/>",
                     align: "center",
@@ -163,25 +169,30 @@
                     filterOperator: "iContains"
                 },
                 {
-                    name: "group",
-                    title: "<spring:message code='group'/>",
-                    align: "center",
-                    filterOperator: "equals",
+                    name: "studentCount",
+                    title: "<spring:message code='student.count'/>",
+                    filterOperator: "iContains",
                     autoFitWidth: true
                 },
                 {
-                    name: "teacher",
-                    title: "<spring:message code='teacher'/>",
+                    name: "institute.titleFa",
+                    title: "<spring:message code='presenter'/>",
                     align: "center",
-                    filterOperator: "iContains"
+                    filterOperator: "iContains",
+                    autoFitWidth: true
                 },
                 {
-                    name: "reason", title: "<spring:message code='training.request'/>", align: "center",
+                    name: "course.evaluation",
+                    title: "نوع ارزیابی",
+                    align: "center",
+                    filterOperator: "iContains",
+                    autoFitWidth: true,
                     valueMap: {
-                        "1": "نیازسنجی",
-                        "2": "درخواست واحد",
-                        "3": "نیاز موردی",
-                    },
+                        "1": "واکنش",
+                        "2": "یادگیری",
+                        "3": "رفتاری",
+                        "4": "نتایج"
+                    }
                 },
                 {
                     name: "classStatus", title: "<spring:message code='class.status'/>", align: "center",
@@ -190,14 +201,6 @@
                         "2": "در حال اجرا",
                         "3": "پایان یافته",
                     },
-                },
-                {
-                    name: "topology", title: "<spring:message code='place.shape'/>", align: "center", valueMap: {
-                        "1": "U شکل",
-                        "2": "عادی",
-                        "3": "مدور",
-                        "4": "سالن"
-                    }
                 },
                 {name: "createdBy", hidden: true},
                 {name: "createdDate", hidden: true},
@@ -221,6 +224,115 @@
                 show_OperationalUnitEditForm();
             }
         });
+
+
+
+
+
+        //*****VAKONESH*****
+       <%--var StudentsDS_student = isc.TrDS.create({--%>
+       <%--     &lt;%&ndash;transformRequest: function (dsRequest) {&ndash;%&gt;--%>
+       <%--     &lt;%&ndash;    dsRequest.httpHeaders = {&ndash;%&gt;--%>
+       <%--     &lt;%&ndash;        "Authorization": "Bearer <%= accessToken1 %>"&ndash;%&gt;--%>
+       <%--     &lt;%&ndash;    };&ndash;%&gt;--%>
+       <%--     &lt;%&ndash;    return this.Super("transformRequest", arguments);&ndash;%&gt;--%>
+       <%--     &lt;%&ndash;},&ndash;%&gt;--%>
+       <%--     fields: [--%>
+       <%--         {name: "id", primaryKey: true, hidden: true},--%>
+       <%--         {name: "student.id", hidden: true},--%>
+       <%--         {name: "student.firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "student.lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "student.nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "applicantCompanyName", title: "<spring:message code="company.applicant"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "presenceTypeId", title: "<spring:message code="class.presence.type"/>", filterOperator: "equals", autoFitWidth: true},--%>
+       <%--         {name: "student.companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "student.personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},--%>
+       <%--         {name: "student.postTitle", title: "<spring:message code="post"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+       <%--         {name: "student.ccpArea", title: "<spring:message code="reward.cost.center.area"/>", filterOperator: "iContains"},--%>
+       <%--         {name: "student.ccpAssistant", title: "<spring:message code="reward.cost.center.assistant"/>", filterOperator: "iContains"},--%>
+       <%--         {name: "student.ccpAffairs", title: "<spring:message code="reward.cost.center.affairs"/>", filterOperator: "iContains"},--%>
+       <%--         {name: "student.ccpSection", title: "<spring:message code="reward.cost.center.section"/>", filterOperator: "iContains"},--%>
+       <%--         {name: "student.ccpUnit", title: "<spring:message code="reward.cost.center.unit"/>", filterOperator: "iContains"},--%>
+       <%--     ]--%>
+       <%--    ,--%>
+       <%--     fetchDataURL: tclassStudentUrl + "/students-iscList/"--%>
+       <%-- });--%>
+
+
+       <%--var StudentsLG_student = isc.TrLG.create({--%>
+       <%--     dataSource: StudentsDS_student,--%>
+       <%--     selectionType: "single",--%>
+       <%--     fields: [--%>
+       <%--         {name: "student.firstName"},--%>
+       <%--         {name: "student.lastName"},--%>
+       <%--         {name: "student.nationalCode"},--%>
+       <%--         {--%>
+       <%--             name: "applicantCompanyName",--%>
+       <%--             textAlign: "center",--%>
+       <%--             width: "*",--%>
+       <%--             editorType: "ComboBoxItem",--%>
+       <%--             changeOnKeypress: true,--%>
+       <%--             displayField: "titleFa",--%>
+       <%--             valueField: "titleFa",--%>
+       <%--             optionDataSource: RestDataSource_company_Student,--%>
+       <%--             autoFetchData: true,--%>
+       <%--             addUnknownValues: false,--%>
+       <%--             cachePickListResults: false,--%>
+       <%--             useClientFiltering: true,--%>
+       <%--             filterFields: ["titleFa"],--%>
+       <%--             sortField: ["id"],--%>
+       <%--             textMatchStyle: "startsWith",--%>
+       <%--             generateExactMatchCriteria: true,--%>
+       <%--             canEdit: true,--%>
+       <%--             // filterEditorType: "TextItem",--%>
+       <%--             pickListFields: [--%>
+       <%--                 {--%>
+       <%--                     name: "titleFa",--%>
+       <%--                     width: "70%",--%>
+       <%--                     filterOperator: "iContains"--%>
+       <%--                 }--%>
+       <%--             ],--%>
+       <%--             changed: function (form, item, value) {--%>
+       <%--                 ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);--%>
+       <%--             }--%>
+       <%--         },--%>
+       <%--         {--%>
+       <%--             name: "presenceTypeId",--%>
+       <%--             type: "selectItem",--%>
+       <%--             optionDataSource: StudentsDS_PresenceType,--%>
+       <%--             valueField: "id",--%>
+       <%--             displayField: "title",--%>
+       <%--             filterLocally: true,--%>
+       <%--             filterOnKeypress: true,--%>
+       <%--             canEdit: true,--%>
+       <%--             changed: function (form, item, value) {--%>
+       <%--                 ListGrid_Cell_Update_Student(this.grid.getRecord(this.rowNum), value, item);--%>
+       <%--             }--%>
+       <%--         },--%>
+       <%--         {name: "student.personnelNo"},--%>
+       <%--         {name: "student.personnelNo2"},--%>
+       <%--         {name: "student.postTitle"},--%>
+       <%--         {name: "student.ccpArea"},--%>
+       <%--         {name: "student.ccpAssistant"},--%>
+       <%--         {name: "student.ccpAffairs"},--%>
+       <%--         {name: "student.ccpSection"},--%>
+       <%--         {name: "student.ccpUnit"}--%>
+       <%--     ],--%>
+       <%--     gridComponents: [StudentTS_student, "filterEditor", "header", "body"],--%>
+       <%--     contextMenu: StudentMenu_student,--%>
+       <%--     dataChanged: function () {--%>
+       <%--         this.Super("dataChanged", arguments);--%>
+       <%--         totalRows = this.data.getLength();--%>
+       <%--         if (totalRows >= 0 && this.data.lengthIsKnown()) {--%>
+       <%--             StudentsCount_student.setContents("<spring:message code="records.count"/>" + ":&nbsp;<b>" + totalRows + "</b>");--%>
+       <%--         } else {--%>
+       <%--             StudentsCount_student.setContents("&nbsp;");--%>
+       <%--         }--%>
+       <%--     }--%>
+       <%-- });--%>
+
+
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
@@ -235,46 +347,11 @@
             }
         });
 
-        var ToolStripButton_Add = isc.ToolStripButtonAdd.create({
-
-            title: "<spring:message code="create"/>",
-            click: function () {
-                create_OperationalUnit();
-            }
-        });
-
-        var ToolStripButton_Edit = isc.ToolStripButtonEdit.create({
-
-            title: "<spring:message code="edit"/>",
-            click: function () {
-                show_OperationalUnitEditForm();
-            }
-        });
-
-        var ToolStripButton_Remove = isc.ToolStripButtonRemove.create({
-
-            title: "<spring:message code="remove"/>",
-            click: function () {
-                remove_OperationalUnit();
-            }
-        });
-
-        var ToolStripButton_Print = isc.ToolStripButtonPrint.create({
-//icon: "[SKIN]/RichTextEditor/print.png",
-            title: "<spring:message code="print"/>",
-            click: function () {
-                print_OperationalUnitListGrid("pdf");
-            }
-        });
 
         var ToolStrip_operational = isc.ToolStrip.create({
             width: "100%",
             membersMargin: 5,
             members: [
-                ToolStripButton_Add,
-                ToolStripButton_Edit,
-                ToolStripButton_Remove,
-                ToolStripButton_Print,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -360,6 +437,8 @@
             {
                 // id: "TabPane_Goal_Syllabus",
                 title: "واکنش"
+                // ,
+                // pane:StudentsLG_student
             },
             {
                 // id: "TabPane_Job",
@@ -383,7 +462,7 @@
     {
         var HLayout_Actions_operational = isc.HLayout.create({
             width: "100%",
-            height:"1%",
+            height: "1%",
             members: [ToolStrip_operational]
         });
 
