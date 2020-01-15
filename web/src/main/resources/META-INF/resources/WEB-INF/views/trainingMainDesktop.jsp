@@ -1254,7 +1254,7 @@
     <%--emptyMessage: "",--%>
     <%--loadingDataMessage: "<spring:message code="loading"/>"--%>
 
-        createTab("<spring:message code="needs.assessment"/>", "<spring:url value="web/needsAssessment/"/>");
+
 
     // ---------------------------------------- Not Ok - End ----------------------------------------
 
