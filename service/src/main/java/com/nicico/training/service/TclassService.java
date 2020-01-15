@@ -6,10 +6,16 @@ package com.nicico.training.service;
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.AttachmentDTO;
+import com.nicico.training.dto.ClassSessionDTO;
+import com.nicico.training.dto.ClassStudentDTO;
+import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
-import com.nicico.training.model.*;
-import com.nicico.training.repository.*;
+import com.nicico.training.model.Tclass;
+import com.nicico.training.model.TrainingPlace;
+import com.nicico.training.repository.StudentDAO;
+import com.nicico.training.repository.TclassDAO;
+import com.nicico.training.repository.TrainingPlaceDAO;
 import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.TypeToken;
@@ -122,7 +128,7 @@ public class TclassService implements ITclassService {
                 .ifPresent(classStudents ->
                         classStudents.forEach(cs ->
                                 {
-                                    if(cs.getPresenceTypeId() != 104)
+                                    if (cs.getPresenceTypeId() != 104)
                                         studentInfoSet.add(modelMapper.map(cs, ClassStudentDTO.AttendanceInfo.class));
                                 }
                         ));
@@ -215,14 +221,12 @@ public class TclassService implements ITclassService {
 
     @Transactional(readOnly = true)
     @Override
-    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode )
-    {
-      return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
+    public int updateClassState(Long classId, String workflowEndingStatus, Integer workflowEndingStatusCode) {
+        return tclassDAO.updateClassState(classId, workflowEndingStatus, workflowEndingStatusCode);
     }
 
     @Override
-    public Integer getWorkflowEndingStatusCode(Long classId)
-    {
+    public Integer getWorkflowEndingStatusCode(Long classId) {
         return tclassDAO.getWorkflowEndingStatusCode(classId);
     }
 

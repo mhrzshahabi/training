@@ -114,10 +114,10 @@ public class Course extends Auditable {
     @Column(name = "c_pre_course")
     private String preCourse;
 
-    @Column(name="scoring_method")
+    @Column(name = "scoring_method")
     private String scoringMethod;
 
-    @Column(name="c_acceptance_limit")
+    @Column(name = "c_acceptance_limit")
     private String acceptancelimit;
 
     //    @Transient
@@ -148,7 +148,7 @@ public class Course extends Auditable {
     @Setter(AccessLevel.NONE)
     private Boolean hasSkill;
 
-//    @ManyToOne(cascade={CascadeType.ALL})
+    //    @ManyToOne(cascade={CascadeType.ALL})
 //    @JoinColumn(name="pre_course_id")
 //    private Course preCourse;
 //

@@ -3,7 +3,6 @@ package com.nicico.training.iservice;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.ClassStudent;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 

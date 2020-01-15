@@ -8,12 +8,12 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.NeedAssessmentDTO;
 import com.nicico.training.iservice.INeedAssessmentService;
-import com.nicico.training.model.Competence;
+import com.nicico.training.model.CompetenceOld;
 import com.nicico.training.model.NeedAssessment;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.enums.EnumsConverter;
-import com.nicico.training.repository.CompetenceDAO;
+import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.NeedAssessmentDAO;
 import com.nicico.training.repository.PostDAO;
 import com.nicico.training.repository.SkillDAO;
@@ -32,7 +32,7 @@ public class NeedAssessmentService implements INeedAssessmentService {
 
     private final NeedAssessmentDAO needAssessmentDAO;
     private final PostDAO postDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
     private final SkillDAO skillDAO;
     private final ModelMapper modelMapper;
     private final EnumsConverter.EDomainTypeConverter eDomainTypeConverter = new EnumsConverter.EDomainTypeConverter();
@@ -52,8 +52,8 @@ public class NeedAssessmentService implements INeedAssessmentService {
         final Optional<Post> optionalPost = postDAO.findById(request.getPostId());
         final Post post = optionalPost.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.PostNotFound));
 
-        final Optional<Competence> optionalCompetence = competenceDAO.findById(request.getCompetenceId());
-        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+        final Optional<CompetenceOld> optionalCompetence = competenceDAO.findById(request.getCompetenceId());
+        final CompetenceOld competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
 
         final Optional<Skill> optionalSkill = skillDAO.findById(request.getSkillId());
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));

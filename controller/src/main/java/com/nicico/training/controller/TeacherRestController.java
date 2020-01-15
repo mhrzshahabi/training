@@ -4,32 +4,26 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.util.CriteriaUtil;
-import com.nicico.training.dto.*;
+import com.nicico.training.dto.CategoryDTO;
+import com.nicico.training.dto.SubCategoryDTO;
+import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.Teacher;
 import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -96,7 +90,7 @@ public class TeacherRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_teacher')")
-    public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
+    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
         ((LinkedHashMap) request).remove("attachPic");
 
         List<CategoryDTO.Info> categories = null;
@@ -266,7 +260,7 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
-    public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
+    public void printWithDetail(HttpServletResponse response, @PathVariable String id) throws Exception {
         final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
         final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
         criteriaRq1.setFieldName("id");
@@ -359,12 +353,12 @@ public class TeacherRestController {
     @GetMapping(value = "/full-spec-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                         @RequestParam(value = "_constructor", required = false) String constructor,
-                                                         @RequestParam(value = "operator", required = false) String operator,
-                                                         @RequestParam(value = "criteria", required = false) String criteria,
-                                                         @RequestParam(value = "id", required = false) Long id,
-                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                             @RequestParam(value = "_constructor", required = false) String constructor,
+                                                             @RequestParam(value = "operator", required = false) String operator,
+                                                             @RequestParam(value = "criteria", required = false) String criteria,
+                                                             @RequestParam(value = "id", required = false) Long id,
+                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
@@ -387,22 +381,22 @@ public class TeacherRestController {
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
-        teacherService.changeBlackListStatus(inBlackList,id);
+        teacherService.changeBlackListStatus(inBlackList, id);
     }
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id, @PathVariable String catId, @PathVariable String subCatId) throws IOException {
         Long evaluationGrade = null;
         Long CatId = null;
         Long SubCatId = null;
         CatId = Long.parseLong(catId);
-        if(!subCatId.equalsIgnoreCase("undefined"))
+        if (!subCatId.equalsIgnoreCase("undefined"))
             SubCatId = Long.parseLong(subCatId);
         TeacherDTO.Info teacherDTO = teacherService.get(id);
 
-        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
+        return new ResponseEntity<>(evaluationGrade, HttpStatus.OK);
     }
 
 
