@@ -68,6 +68,7 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name:"scoringMethod"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -195,24 +196,40 @@
         height: "100%",
         dataSource: RestDataSource_Class_JspClass,
         contextMenu: Menu_ListGrid_Class_JspClass,
-        dataPageSize: 50,
-        autoFetchData: true,
-        allowAdvancedCriteria: true,
-        allowFilterExpressions: true,
-        filterOnKeypress: true,
+        // dataPageSize: 50,
+        // allowAdvancedCriteria: true,
+        // allowFilterExpressions: true,
+        // filterOnKeypress: true,
+        // selectionType: "single",
+
 // showRecordComponents: true,
 // showRecordComponentsByCell: true,
         selectionType: "single",
         <%--filterUsingText: "<spring:message code='filterUsingText'/>",--%>
         <%--groupByText: "<spring:message code='groupByText'/>",--%>
         <%--freezeFieldText: "<spring:message code='freezeFieldText'/>",--%>
+        styleName: 'expandList-tapBar',
+        cellHeight:43,
+        autoFetchData: true,
+        alternateRecordStyles: true,
+        canExpandRecords: true,
+        canExpandMultipleRecords: false,
+        wrapCells: true,
+        showRollOver: false,
+        showRecordComponents: true,
+        showRecordComponentsByCell: true,
+        expansionMode:"related",
+        autoFitExpandField: true,
+        virtualScrolling: true,
+        loadOnExpand: true,
+        loaded: false,
         initialSort: [
 // {property: "createdBy", direction: "ascending"},
             {property: "code", direction: "descending", primarySort: true}
         ],
-        selectionUpdated: function (record) {
-            refreshSelectedTab_class(tabSetClass.getSelectedTab());
-        },
+        // selectionUpdated: function (record) {
+        //     refreshSelectedTab_class(tabSetClass.getSelectedTab());
+        // },
         doubleClick: function () {
             ListGrid_class_edit();
 
@@ -315,15 +332,31 @@
         ],
 
         getCellCSSText:function (record, rowNum, colNum) {
-
-            if (record.classStatus === "1")
-                return "background-color: #EDEDED;";
-            else if (record.classStatus === "3")
-                return "background-color: #C7E1FF;";
+            if (this.isSelected(record)){
+                return "background-color: #fe9d2a;";
+            }else{
+                if (record.classStatus === "1")
+                    return "background-color: #a5a5a5;";
+                else if (record.classStatus === "3")
+                   return "background-color: #C7E1FF;";
+            }
         },
         dataArrived:function () {
             selectWorkflowRecord();
-        }
+        },
+        getExpansionComponent : function (record) {
+             ListGrid_Class_JspClass.selectSingleRecord (record)
+            refreshSelectedTab_class(tabSetClass.getSelectedTab());
+            var layout = isc.VLayout.create({
+                styleName: "expand-layout",
+                height: 300,
+                padding: 0,
+                membersMargin: 0,
+                members: [HLayout_Tab_Class]
+            });
+
+            return layout;
+        },
     });
 
     var VM_JspClass = isc.ValuesManager.create({});
@@ -365,6 +398,7 @@
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
+                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod)
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -628,6 +662,7 @@
 
                 }
             },
+
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -712,6 +747,18 @@
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
                 }
+            },
+              {
+            name:"scoringMethod",
+            colSpan: 1,
+            title:"روش نمره دهی",
+            textAlign: "center",
+            valueMap: {
+                    "1": "بدون نمره",
+                    "2": "نمره از بیست",
+                    "3": "نمره از صد",
+                    "4": "ارزشی",
+                },
             },
         ],
     });
@@ -1596,7 +1643,7 @@
 
     var HLayout_Tab_Class = isc.HLayout.create({
         width: "100%",
-        height: "40%",
+        height: "100%",
         members: [TabSet_Class]
     });
 
@@ -1604,7 +1651,7 @@
         members: [
             HLayout_Actions_Class_JspClass,
             HLayout_Grid_Class_JspClass,
-            HLayout_Tab_Class
+           // HLayout_Tab_Class
         ]
     });
 

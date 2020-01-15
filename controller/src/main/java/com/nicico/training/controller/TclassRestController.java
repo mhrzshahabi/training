@@ -127,12 +127,12 @@ public class TclassRestController {
 
         SearchDTO.SearchRs<TclassDTO.Info> response = tclassService.search(request);
 
-//        for (TclassDTO.Info tclassDTO : response.getList()) {
-//            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
-//                tclassDTO.setHasWarning("alarm");
-//            else
-//                tclassDTO.setHasWarning("");
-//        }
+        for (TclassDTO.Info tclassDTO : response.getList()) {
+            if (classAlarmService.hasAlarm(tclassDTO.getId(), httpResponse).size() > 0)
+                tclassDTO.setHasWarning("alarm");
+            else
+                tclassDTO.setHasWarning("");
+        }
 
         final TclassDTO.SpecRs specResponse = new TclassDTO.SpecRs();
         final TclassDTO.TclassSpecRs specRs = new TclassDTO.TclassSpecRs();

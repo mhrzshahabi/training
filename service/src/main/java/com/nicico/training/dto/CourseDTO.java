@@ -69,6 +69,8 @@ public class CourseDTO implements Serializable {
     private String evaluation;
 
     private String behavioralLevel;
+
+    private String scoringMethod;
 //    @ApiModelProperty(required = true)
 //    private List<Long> preCourse;
 
@@ -113,6 +115,7 @@ public class CourseDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+
     }
 
     // ------------------------------

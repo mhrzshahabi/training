@@ -922,21 +922,22 @@
     });
     var DynamicForm_course_MainTab = isc.DynamicForm.create({
         // sectionVisibilityMode: "mutex",
-        colWidths: ["10%", "40%", "9%", "10%"],
+        colWidths: ["10%", "20%", "9%", "10%","10%"],
         titleAlign: "left",
         validateOnExit: true,
         showInlineErrors: true,
-        numCols: 4,
+        numCols: 5,
         fields: [
             {
                 name: "mainObjective",
                 title: "<spring:message code="course_mainObjective"/>",
-                colSpan: 1,
+                colSpan: 2,
                 rowSpan: 2,
                 readonly: true,
-                type: "textArea",
+                type: "TextAreaItem",
                 width: "*",
-                length: "*",
+                height:"*",
+                // length: "*",
                 required: true,
                 endRow: false
             },
@@ -981,7 +982,7 @@
                 // titleOrientation: "top",
                 // title: "شرح\u200cمشکل /نیاز /درخواست",
                 title: "درخواست",
-                colSpan: 4,
+                colSpan: 5,
                 rowSpan: 1,
                 readonly: true,
                 type: "textArea",
@@ -996,7 +997,7 @@
             },
             {name: "id", hidden: true},
             {
-                colSpan: 4,
+                colSpan: 5,
                 name: "titleFa",
                 title: "<spring:message code="course_fa_name"/>",
                 // length: "250",
@@ -1024,7 +1025,7 @@
             {
                 name: "titleEn",
                 title: "<spring:message code="course_en_name"/>",
-                colSpan: 4,
+                colSpan: 5,
                 // length: "250",
                 // type: 'text',
                 // titleOrientation: "top",
@@ -1036,9 +1037,10 @@
              {
                 name: "evaluation",
                 title: "<spring:message code="evaluation.level"/>",
-                colSpan:3,
+                colSpan:2,
                 textAlign: "center",
                 type: "select",
+                endRow:true,
            //     defaultValue: "1",
                 valueMap: {
                     "1": "واکنش",
@@ -1056,17 +1058,63 @@
               {
                 name: "behavioralLevel",
                 title: "<spring:message code="behavioral.Level"/>",
-                  colSpan:2,
-                type: "radioGroup",
-                vertical: false,
-                fillHorizontalSpace: true,
-              //  defaultValue: "مشاهده",
+                  colSpan: 3,
+                  type: "radioGroup",
+                  vertical: false,
+                  endRow:true,
+                  fillHorizontalSpace: true,
+                  //  defaultValue: "مشاهده",
                   valueMap: {
-                      "1":"مشاهده",
-                      "2":"مصاحبه",
-                      "3":"کار پروژه ای"
+                      "1": "مشاهده",
+                      "2": "مصاحبه",
+                      "3": "کار پروژه ای"
                   }
+              },
+            {
+                name: "scoringMethod",
+                title: "روش نمره دهی",
+                colSpan: 1,
+                // fillHorizontalSpace: true,
+                // vertical: false,
+                defaultValue: "3",
+                textAlign: "center",
+                valueMap: {
+                    "1": "ارزشی",
+                    "2": "نمره از صد",
+                    "3": "نمره از بیست",
+                    "4": "بدون نمره",
+                },
+                change: function (form, item, value) {
+                    if (value == "1") {
+                        form.getItem("acceptancelimit").hide();
+                        form.getItem("acceptancelimit_a").show();
+                    }
+                    else{
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit_a").hide();
+                    }
+                }
             },
+            {
+                name: "acceptancelimit",
+                // colSpan:2,
+                title: "حد نمره قبولی",
+            },
+
+            {
+                name: "acceptancelimit_a",
+
+                colSpan:2,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap:{
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
+                },
+            }
 
 
             // {
@@ -1128,23 +1176,23 @@
         ],
         valuesManager: "vm_JspCourse"
     });
-    var DynamicForm_course_GroupTab = isc.DynamicForm.create({
-        colWidths: ["6%", "11%", "6%", "11%"],
-        numCols: 4,
-        validateOnExit: true,
+ var DynamicForm_course_GroupTab = isc.DynamicForm.create({
+     colWidths: ["6%", "11%", "6%", "11%"],
+     numCols: 4,
+     validateOnExit: true,
 // cellBorder:1,
 // titleAlign:"right",
 
 // isGroup:true,
-        // groupTitle:"اطلاعات پایه",
-        // groupLabelBackgroundColor:"lightGray",
-        // groupBorderCSS:"1px solid Gray",
-        // border:"1px solid blue",
-        fields: [
-            {
-                name: "category.id",
-                colSpan: 1,
-                title: "<spring:message code="course_category"/>",
+     // groupTitle:"اطلاعات پایه",
+     // groupLabelBackgroundColor:"lightGray",
+     // groupBorderCSS:"1px solid Gray",
+     // border:"1px solid blue",
+     fields: [
+         {
+             name: "category.id",
+             colSpan: 1,
+             title: "<spring:message code="course_category"/>",
                 textAlign: "center",
                 // autoFetchData: true,
                 required: true,
@@ -1376,6 +1424,12 @@
                         data2.equalCourseListId = equalCourseIdList;
                         data2.preCourseListId = preCourseIdList;
 
+                         if(data2.scoringMethod == "1"){
+
+                         data2.acceptancelimit = data2.acceptancelimit_a
+                         }
+
+
                         data2["workflowStatus"] = "ثبت اولیه";
                         data2["workflowStatusCode"] = "0";
 
@@ -1429,6 +1483,12 @@
             // else if ((course_method == "PUT" && DynamicForm_course.valuesHaveChanged()) || (course_method == "PUT" || ChangeEtechnicalType == true)) {
             else if (course_method == "PUT") {
                 var data1 = vm_JspCourse.getValues();
+                console.log(data1)
+
+                   if(data1.scoringMethod == "1"){
+                    data1.acceptancelimit = data1.acceptancelimit_a
+                   }
+
                 ChangeEtechnicalType = false;
                 preCourseIdList = [];
                 equalCourseIdList = [];
@@ -2220,6 +2280,7 @@
         vm_JspCourse.clearErrors();
         DynamicForm_course_GroupTab.getItem("subCategory.id").disable();
         DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
+        DynamicForm_course_MainTab.getItem("acceptancelimit_a").disable();
         Window_course.setTitle("<spring:message code="create"/>" + " " + "<spring:message code="course"/>");
         equalCourse.length = 0;
         testData.length = 0;
@@ -2377,6 +2438,7 @@
              {
              DynamicForm_course_MainTab.getItem("behavioralLevel").disable();
              }
+
 
 //=======================================================
 

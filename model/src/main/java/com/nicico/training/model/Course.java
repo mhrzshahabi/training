@@ -114,6 +114,12 @@ public class Course extends Auditable {
     @Column(name = "c_pre_course")
     private String preCourse;
 
+    @Column(name="scoring_method")
+    private String scoringMethod;
+
+    @Column(name="c_acceptance_limit")
+    private String acceptancelimit;
+
     //    @Transient
 //    private Long knowledge = Long.valueOf(0);
 //
