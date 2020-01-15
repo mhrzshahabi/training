@@ -68,7 +68,7 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
-            {name:"scoringMethod",primaryKey:true},
+            {name:"scoringMethod"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
