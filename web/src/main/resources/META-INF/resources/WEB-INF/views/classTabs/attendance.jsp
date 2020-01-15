@@ -819,9 +819,9 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                // if(attendanceGrid.canEditCell(i,j)) {
+                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
                                     attendanceGrid.setEditValue(i, j, "1");
-                                // }
+                                }
                             }
                         }
                 }
@@ -836,9 +836,9 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                // if(attendanceGrid.canEditCell(i,j)) {
+                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
                                     attendanceGrid.setEditValue(i, j, "2");
-                                // }
+                                }
                             }
                         }
 
