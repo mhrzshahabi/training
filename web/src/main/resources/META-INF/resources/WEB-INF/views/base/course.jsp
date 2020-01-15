@@ -1098,18 +1098,29 @@
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").setRequired(true);
-                    } else {
+                         form.getItem("acceptancelimit_a").setDisabled(false);
+                    } else if(value =="2" || value == "3"){
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(true);
+                        form.getItem("acceptancelimit").setDisabled(false);
                         form.getItem("acceptancelimit_a").hide();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
+                    else {
+                     form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setRequired(false);
+                        form.getItem("acceptancelimit").setDisabled(true);
+                        form.getItem("acceptancelimit").setValue("")
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                    }
+
+
                 }
             },
             {
                 name: "acceptancelimit",
 
-                required:true,
                 title: "حد نمره قبولی",
                  validators: [{
                     type: "regexp",
@@ -1124,7 +1135,7 @@
 
             {
                 name: "acceptancelimit_a",
-                required:true,
+
                 colSpan: 2,
                 hidden: true,
                 textAlign: "center",
