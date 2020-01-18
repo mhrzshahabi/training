@@ -540,4 +540,16 @@
         <addForeignKeyConstraint baseColumnNames="f_parameter_value" baseTableName="tbl_competence" constraintName="FKn73vcno23hj19oet8cy3if8jl" deferrable="false" initiallyDeferred="false"
                                  referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-215">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_needs_assessment_priority" baseTableName="tbl_needs_assessment" constraintName="FK1018rrerid5s4555v446a9nqj" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-216">
+        <addForeignKeyConstraint baseColumnNames="f_parameter_value_needs_assessment_domain" baseTableName="tbl_needs_assessment" constraintName="FK1cj51ic356vn622o7pafqs0ia" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_parameter_value" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-217">
+        <addForeignKeyConstraint baseColumnNames="f_competence" baseTableName="tbl_needs_assessment" constraintName="FKj7gy95gqe833x959qjkh9r35y" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_competence" validate="true"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579094435217-219">
+        <addForeignKeyConstraint baseColumnNames="f_skill" baseTableName="tbl_needs_assessment" constraintName="FKlg12v7vt7veqtjlrl5dop48od" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_skill" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

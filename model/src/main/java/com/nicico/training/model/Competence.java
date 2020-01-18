@@ -31,7 +31,7 @@ public class Competence extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_parameter_value", nullable = false, insertable = false, updatable = false)
     private ParameterValue competenceType;
 
