@@ -98,10 +98,13 @@ public class TclassDTO {
                 return " ";
         }
 
-
         private Set<ClassStudentDTO.ClassStudentCountId> classStudents;
+
         public Integer getStudentCount() {
-            return classStudents.size();
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
         }
     }
 
@@ -149,7 +152,7 @@ public class TclassDTO {
         private SpecRs response;
     }
 
-    // ---------------
+    // ------------------------------
 
     @Getter
     @Setter
@@ -162,4 +165,7 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    // ------------------------------
+
 }
