@@ -331,8 +331,7 @@ public class TeacherRestController {
         params.put("otherActivity", "");
 
         String data = "{" +
-                    "\"content\": " + objectMapper.writeValueAsString(searchRs_teachingHistory.getList()) + "," +
-                    "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
+                "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
                 "\"empHistory\": " + objectMapper.writeValueAsString(searchRs_employmentHistory.getList()) + "," +
                 "\"teachingHistory\": " + objectMapper.writeValueAsString(searchRs_teachingHistory.getList()) + "," +
                 "\"teacherCertification\": " + objectMapper.writeValueAsString(searchRs_teacherCertification.getList()) + "," +
