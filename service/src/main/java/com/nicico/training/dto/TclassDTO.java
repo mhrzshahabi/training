@@ -4,6 +4,7 @@ package com.nicico.training.dto;
 */
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.ClassStudent;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.AccessLevel;
@@ -13,6 +14,7 @@ import lombok.experimental.Accessors;
 
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
@@ -68,6 +70,8 @@ public class TclassDTO {
     @Accessors(chain = true)
     @ApiModel("TclassInfo")
     public static class Info extends TclassDTO {
+
+        private InstituteDTO.InstituteInfoTuple institute;
         //        private Date createdDate;
 //        private String createdBy;
 //        @Getter(AccessLevel.NONE)
@@ -92,6 +96,12 @@ public class TclassDTO {
                 return teacher.getPersonality().getFirstNameFa() + " " + teacher.getPersonality().getLastNameFa();
             else
                 return " ";
+        }
+
+
+        private Set<ClassStudentDTO.ClassStudentCountId> classStudents;
+        public Integer getStudentCount() {
+            return classStudents.size();
         }
     }
 

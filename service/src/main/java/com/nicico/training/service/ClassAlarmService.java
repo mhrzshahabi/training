@@ -818,6 +818,7 @@ public class ClassAlarmService implements IClassAlarm {
         String todayDate = DateUtil.convertMiToKh(dateFormat.format(date));
 
         StringBuilder AlarmList = new StringBuilder();
+        StringBuilder endingClassAlarm = new StringBuilder();
 
         try {
 
@@ -837,18 +838,6 @@ public class ClassAlarmService implements IClassAlarm {
                     "        tbl_attendance.c_state IS NULL " +
                     "        OR    tbl_attendance.c_state = 0 " +
                     "    ) AND rownum = 1 ");
-
-            //*****student score*****
-            alarmScripts.add(" SELECT " +
-                    "    'ثبت نمرات' AS hasalarm " +
-                    " FROM " +
-                    "    tbl_class_student " +
-                    " WHERE " +
-                    "    tbl_class_student.class_id = :class_id " +
-                    "    AND   tbl_class_student.failure_reason IS NULL " +
-                    "    AND   tbl_class_student.score IS NULL " +
-                    "    AND   tbl_class_student.scores_state IS NULL " +
-                    "    AND   rownum = 1 AND :todaydat = :todaydat ");
 
             //*****check list not verify*****
             alarmScripts.add(" SELECT  " +
@@ -879,6 +868,7 @@ public class ClassAlarmService implements IClassAlarm {
                     "    ) " +
                     "    AND rownum=1 AND :todaydat = :todaydat ");
 
+
             for (String script : alarmScripts) {
 
                 List<?> Alarm = (List<?>) entityManager.createNativeQuery(script)
@@ -889,6 +879,31 @@ public class ClassAlarmService implements IClassAlarm {
                     AlarmList.append(AlarmList.length() > 0 ? " و " + Alarm.get(0) : Alarm.get(0));
             }
 
+            endingClassAlarm.append(AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+
+
+            //*****score alarm*****
+
+            String alarmLastScripts;
+
+            //*****student score*****
+            alarmLastScripts = " SELECT " +
+                    "    'ثبت نمرات کلاس تکمیل نشده است.' AS hasalarm " +
+                    " FROM " +
+                    "    tbl_class_student " +
+                    " WHERE " +
+                    "    tbl_class_student.class_id = :class_id " +
+                    "    AND   tbl_class_student.failure_reason IS NULL " +
+                    "    AND   tbl_class_student.score IS NULL " +
+                    "    AND   tbl_class_student.scores_state IS NULL " +
+                    "    AND   rownum = 1 AND :todaydat = :todaydat ";
+
+            List<?> Alarm = (List<?>) entityManager.createNativeQuery(alarmLastScripts)
+                    .setParameter("class_id", class_id)
+                    .setParameter("todaydat", todayDate).getResultList();
+
+            if (!Alarm.isEmpty())
+            endingClassAlarm.append(endingClassAlarm.length() > 0 ? " <br />و همچنین "+ Alarm.get(0) : Alarm.get(0));
 
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -897,7 +912,7 @@ public class ClassAlarmService implements IClassAlarm {
             response.sendError(503, messageSource.getMessage("database.not.accessible", null, locale));
         }
 
-        return (AlarmList.length() > 0 ? "قبل از پایان کلاس هشدارهای " + AlarmList.toString() + " را بررسی و مرتفع نمایید." : "");
+        return endingClassAlarm.toString();
 
     }
     //*********************************

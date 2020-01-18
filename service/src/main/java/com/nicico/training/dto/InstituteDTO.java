@@ -101,6 +101,17 @@ public class InstituteDTO {
 
     @Getter
     @Setter
+    @ApiModel("InstituteInfoTuple")
+    public static class InstituteInfoTuple {
+        private Long id;
+        private String titleFa;
+        private String titleEn;
+    }
+
+    // ------------------------------
+
+    @Getter
+    @Setter
     @Accessors(chain = true)
     @ApiModel("InstituteCreateRq")
     public static class Create extends InstituteDTO {

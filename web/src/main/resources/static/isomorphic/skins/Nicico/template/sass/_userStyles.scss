@@ -123,7 +123,7 @@
 .cellDark, .cellOverDark, .cellSelectedDark, .cellSelectedOverDark {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
+ // font-weight: bold;
   position: relative;
 
   &:after {
@@ -137,17 +137,23 @@
     background: #d9d9d9;
   }
 }
+.cellSelectedDark,cellSelectedOverDark {
+   font-weight: bold;
+}
 
 .specialCol, .specialColOver, .specialColSelected, .specialColSelectedOver {
   border-bottom: 3px solid #e6e6e6;
-  font-weight: bold;
+  //font-weight: bold;
   position: relative;
+}
+.specialColSelected, .specialColSelectedOver {
+  font-weight: bold;
 }
 
 .cell, .cellOver, .cellSelected, .cellSelectedOver {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
+ // font-weight: bold;
   position: relative;
 
   &:after {
@@ -160,12 +166,15 @@
     height: 18px;
     background: #d9d9d9;
   }
+}
+.cellSelected, .cellSelectedOver{
+   font-weight: bold;
 }
 
 .cellDarkAltCol, .cellOverDarkAltCol, .cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
+ // font-weight: bold;
   position: relative;
 
   &:after {
@@ -179,11 +188,13 @@
     background: #d9d9d9;
   }
 }
-
+.cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol{
+  font-weight: bold;
+}
 .cellAltCol, .cellOverAltCol, .cellSelectedAltCol, .cellSelectedOverAltCol {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
+ // font-weight: bold;
   position: relative;
 
   &:after {
@@ -197,7 +208,9 @@
     background: #d9d9d9;
   }
 }
-
+.cellSelectedAltCol, .cellSelectedOverAltCol{
+  font-weight: bold;
+}
 .listTable tbody tr td:first-child {
   border-top-right-radius: 4px;
   border-bottom-right-radius: 6px;
@@ -293,21 +306,24 @@ hr {
 .toolStripButtonSelectedOpened,
 .toolStripButtonSelectedDownOpened,
 .toolStripButtonSelectedOverOpened {
-  border-radius: 3px;
-  background-color: #f3f3f3;
-  border: solid 1px #3f3f3f;
-  color: $standard_black;
-}
-
-.menuTable td {
-  font-weight: bold;
-}
-
-.toolStripButtonDisabled,
-.toolStripButtonSelectedDisabled {
-  background-color: #f3f3f3;
-  border: solid 1px $primary_grey_dark;
+  border: $standard_border_width solid transparent;
+  @include border-radius(0px);
   color: #3f3f3f;
+  font-size: $button_font_size;
+  padding: 3px 4px 3px 4px;
+  border-radius: 3px;
+  background-color: #e6e6e6;
+  border: solid 1px #3f3f3f;
+  font-weight: bold;
+
+  &:hover {
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+  }
+
+  td {
+    color: #3f3f3f;
+    font-weight: bold;
+  }
 }
 
 $standard_border_width: 1px !default;
@@ -472,8 +488,6 @@ $window_header_bgColor: #fe9d2a !default;
 .toolStripButtonAddSelectedFocusedDown,
 .toolStripButtonAddSelectedOver,
 .toolStripButtonAddSelectedFocusedOver,
-.toolStripButtonAddDisabled,
-.toolStripButtonAddSelectedDisabled,
 .toolStripButtonAddOpened,
 .toolStripButtonAddOverOpened,
 .toolStripButtonAddDownOpened,
@@ -924,13 +938,26 @@ $window_header_bgColor: #fe9d2a !default;
 .toolStripButtonPrintSelectedDisabled,
 .toolStripButtonRefreshDisabled,
 .toolStripButtonRefreshSelectedDisabled {
-  background-color: #f3f3f3;
   border: solid 1px $primary_grey_dark ;
+  @include border-radius(0px);
+  color: #8e8e8e ;
+  font-size: $button_font_size;
+  padding: 3px 4px 3px 4px;
+  border-radius: 3px;
+  background-color: #e8f0e6;
+  border: solid 1px #8e8e8e;
 
-  td {
-    color: #8e8e8e ;
+  &:hover {
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
   }
+
+td {
+  color: #8e8e8e;
+  font-weight: bold;
 }
+}
+
+
 
 
 
@@ -1103,4 +1130,31 @@ $window_header_bgColor: #fe9d2a !default;
 .expand-layout .tabSetContainer{
   border-bottom-right-radius: 10px;
   border-bottom-left-radius: 10px;
+}
+
+
+input[type="text"].selectItemLiteText,
+input[type="text"].selectItemLiteTextRTL,
+input[type="text"].selectItemLiteTextFocused,
+input[type="text"].selectItemLiteTextFocusedRTL,
+input[type="text"].selectItemLiteTextDisabled,
+input[type="text"].selectItemLiteTextDisabledRTL,
+input[type="text"].selectItemLiteTextError,
+input[type="text"].selectItemLiteTextErrorRTL,
+input[type="text"].selectItemLiteTextErrorFocused,
+input[type="text"].selectItemLiteTextErrorFocusedRTL,
+input[type="text"].selectItemLiteTextPending,
+input[type="text"].selectItemLiteTextPendingRTL,
+input[type="text"].selectItemLiteTextPendingFocused,
+input[type="text"].selectItemLiteTextPendingFocusedRTL,
+input[type="text"].selectItemLiteTextPendingDisabled,
+input[type="text"].selectItemLiteTextPendingDisabledRTL,
+input[type="text"].selectItemLiteTextPendingError,
+input[type="text"].selectItemLiteTextPendingErrorRTL,
+input[type="text"].selectItemLiteTextHint,
+input[type="text"].selectItemLiteTextHintRTL,
+input[type="text"].selectItemLiteTextDisabledHint,
+input[type="text"].selectItemLiteTextDisabledHintRTL {
+
+  padding: 13px 0px;
 }

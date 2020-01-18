@@ -157,4 +157,11 @@ public class ClassStudentDTO implements Serializable {
         private Float score;
     }
 
+    @Getter
+    @Setter
+    @ApiModel("ClassStudentCountId")
+    public static class ClassStudentCountId {
+        private Long id;
+    }
+
 }
