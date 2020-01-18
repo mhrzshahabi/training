@@ -91,7 +91,13 @@
     isc.FileLoader.loadLocale("fa");
     isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
-    isc.SelectItem.addProperties({height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false});
+    isc.SelectItem.addProperties({
+        height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false, pickListProperties: {
+            showFilterEditor: true,
+            alternateRecordStyles: true,
+            autoFitWidthApproach: "both",
+        },
+    });
     isc.SpinnerItem.addProperties({height: 27, length: 255, width: "*"});
     isc.Button.addProperties({height: 27});
     isc.TextAreaItem.addProperties({height: 27, length: 500, width: "*"});
@@ -104,7 +110,7 @@
     isc.DynamicForm.addProperties({
         width: "100%", errorOrientation: "right", showErrorStyle: false, wrapItemTitles: false, titleAlign: "right", titleSuffix: "",
         requiredTitlePrefix: "<span style='color:#ff0842;font-size:22px; padding-left: 2px;'>*</span>", requiredTitleSuffix: "",
-        readOnlyDisplay: "static", padding: 10
+        readOnlyDisplay: "static", padding: 10, canTabToIcons: false,
     });
     isc.Window.addProperties({
         autoSize: true, autoCenter: true, isModal: true, showModalMask: true, canFocus: true, dismissOnEscape: true,
@@ -148,6 +154,7 @@
         hoverMoveWithMouse: true,
         showRowNumbers: true,
         canAutoFitFields: false,
+        filterOnKeypress: false,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
@@ -363,14 +370,14 @@
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
             data: [
-<%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
+                <%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
                 {
                     title: "<spring:message code="parameter"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/parameter/"/>");
                     }
                 },
-<%--                </sec:authorize>--%>
+                <%--                </sec:authorize>--%>
                 {
                     title: "<spring:message code="skill.categorize"/>",
                     click: function () {
