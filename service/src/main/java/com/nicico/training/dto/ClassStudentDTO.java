@@ -157,6 +157,7 @@ public class ClassStudentDTO implements Serializable {
     public static class ScoresInfo {
         private Long id;
         private StudentDTO.ScoresInfo student;
+        private TclassDTO.ScoreInfo tclass;
         private String scoresState;
         private String failureReason;
         private Float score;

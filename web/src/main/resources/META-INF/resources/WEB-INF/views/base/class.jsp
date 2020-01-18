@@ -69,6 +69,7 @@
         fields: [
             {name: "id", primaryKey: true},
             {name:"scoringMethod"},
+            {name:"acceptancelimit"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -398,7 +399,18 @@
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
-                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod)
+                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod);
+                    //==============
+                    DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"), DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                   if(item.getSelectedRecord().scoringMethod == "1")
+                   {
+                     form.setValue("acceptancelimit_a",item.getSelectedRecord().acceptancelimit);
+                   }
+                   else
+                   {
+                    form.setValue("acceptancelimit",item.getSelectedRecord().acceptancelimit);
+                   }
+                    //==================
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -742,6 +754,7 @@
               {
             name:"scoringMethod",
             colSpan: 1,
+            required:true,
             title:"روش نمره دهی",
             textAlign: "center",
             valueMap: {
@@ -750,6 +763,72 @@
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
                 },
+                   change: function (form, item, value) {
+                    if (value == "1") {
+                      form.getItem("acceptancelimit").validators = [{}];
+                        form.getItem("acceptancelimit").hide();
+                        form.getItem("acceptancelimit_a").show();
+                        form.getItem("acceptancelimit_a").enable();
+                        form.getItem("acceptancelimit_a").setRequired(true);
+                        form.getItem("acceptancelimit_a").setDisabled(false);
+                    }
+                    else if(value =="2")
+                    {
+                         form.getItem("acceptancelimit").validators=[{
+                            type: "integerRange", min: 0, max: 100,
+                            errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+                          },{type : "required", errorMessage:"نمره را وارد کنید",
+                          }]
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").enable();
+                        form.getItem("acceptancelimit").setRequired(true);
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                     form.getItem("acceptancelimit").setDisabled(false);
+                    }
+                    else if(value == "3")
+                    {
+                           form.getItem("acceptancelimit").validators = [{
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.validate.score"/>",
+                                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                            },{type : "required"}];
+                     form.getItem("acceptancelimit").show();
+                     form.getItem("acceptancelimit").enable();
+                     form.getItem("acceptancelimit").setRequired(true);
+                     form.getItem("acceptancelimit_a").hide();
+                     form.getItem("acceptancelimit_a").setRequired(false);
+                     form.getItem("acceptancelimit").setDisabled(false);
+
+                    }
+                    else if(value =="4") {
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setRequired(false);
+                        form.getItem("acceptancelimit").setDisabled(true);
+                        form.getItem("acceptancelimit").setValue("")
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                    }
+                },
+            },
+          {
+                name: "acceptancelimit",
+                title: "حد نمره قبولی",
+              required:true,
+          },
+            {
+                name: "acceptancelimit_a",
+                colSpan: 2,
+              required:true,
+                hidden: true,
+                textAlign: "center",
+                title: "حد نمره قبولی",
+                valueMap: {
+                    "1001": "ضعیف",
+                    "1002": "متوسط",
+                    "1003": "خوب",
+                    "1004": "خيلي خوب",
+                }
             },
         ],
     });
@@ -1153,6 +1232,10 @@
             data.courseId = data.course.id;
             delete data.course;
             delete data.term;
+              if (data.scoringMethod == "1") {
+
+                  data.acceptancelimit = data.acceptancelimit_a
+              }
             var classSaveUrl = classUrl;
             if (classMethod.localeCompare("PUT") === 0) {
                 var classRecord = ListGrid_Class_JspClass.getSelectedRecord();
@@ -1686,6 +1769,18 @@
                 url = classUrl + record.id;
                 Window_Class_JspClass.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="class"/>");
                 Window_Class_JspClass.show();
+                 //=========================
+                 DynamicForm_Class_JspClass.getItem("scoringMethod").change(DynamicForm_Class_JspClass, DynamicForm_Class_JspClass.getItem("scoringMethod"),DynamicForm_Class_JspClass.getValue("scoringMethod"));
+                 if(ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "1")
+                   {
+
+                     DynamicForm_Class_JspClass.setValue("acceptancelimit_a",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                   }
+                   else
+                   {
+                    DynamicForm_Class_JspClass.setValue("acceptancelimit",ListGrid_Class_JspClass.getSelectedRecord().acceptancelimit);
+                   }
+                   //================
                 DynamicForm1_Class_JspClass.setValue("autoValid", false);
                 getDaysOfClass(ListGrid_Class_JspClass.getSelectedRecord().id);
             }
