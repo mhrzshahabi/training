@@ -43,9 +43,6 @@ public class Course extends Auditable {
     @Column(name = "c_description")
     private String description;
 
-    @Column(name = "c_main_objective")
-    private String mainObjective;
-
     @Column(name = "n_min_teacher_eval_score")
     private String minTeacherEvalScore;
 
@@ -77,6 +74,9 @@ public class Course extends Auditable {
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Skill> skillSet;
+
+    @OneToMany(mappedBy = "courseMainObjective", fetch = FetchType.LAZY)
+    private Set<Skill> skillMainObjectiveSet;
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;

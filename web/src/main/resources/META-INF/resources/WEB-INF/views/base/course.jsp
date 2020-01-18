@@ -722,7 +722,7 @@
             var advancedCriteriaJspCourse = {
                 _constructor: "AdvancedCriteria",
                 operator: "and",
-                criteria: [{fieldName: "courseId", operator: "isNull"}]
+                criteria: [{fieldName: "courseId", operator: "isNull"},{fieldName: "courseMainObjectiveId", operator: "isNull"}]
             };
             ListGrid_AllSkill_JspCourse.setImplicitCriteria(advancedCriteriaJspCourse);
             ListGrid_AllSkill_JspCourse.fetchData(advancedCriteriaJspCourse);
