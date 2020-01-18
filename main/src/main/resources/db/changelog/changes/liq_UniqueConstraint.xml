@@ -65,4 +65,10 @@
     <changeSet author="poursalehi_mos (generated)" id="1578745091553-207">
         <addUniqueConstraint columnNames="student_id, class_id" constraintName="UKfy8smett519jvh2g2n4y8lwhj" tableName="tbl_class_student"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1578999572650-210">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="tbl_competence"/>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-213">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_PARAMETERC_TITLE_COL" tableName="tbl_parameter"/>
+    </changeSet>
 </databaseChangeLog>

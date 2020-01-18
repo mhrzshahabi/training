@@ -309,28 +309,28 @@ public class CourseRestController {
 
 //    @Loggable
 //    @GetMapping(value = "/getcompetence/{courseId}")
-//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetence(@PathVariable Long courseId) {
-//        List<CompetenceDTO.Info> comList = courseService.getCompetence(courseId);
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetence(@PathVariable Long courseId) {
+//        List<CompetenceDTOOld.Info> comList = courseService.getCompetence(courseId);
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(comList)
 //                .setStartRow(0)
 //                .setEndRow(comList.size())
 //                .setTotalRows(comList.size());
-//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        competenceSpecRs.setResponse(specResponse);
 //        return new ResponseEntity(competenceSpecRs, HttpStatus.OK);
 //    }
 
 //    @Loggable
 //    @GetMapping(value = "/getcompetencequery/{courseId}")
-//    public ResponseEntity<CompetenceDTO.SpecRs> getCompetencequery(@PathVariable Long courseId) {
-//        List<CompetenceDTO.Info> comList = courseService.getCompetenceQuery(courseId);
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//    public ResponseEntity<CompetenceDTOOld.SpecRs> getCompetencequery(@PathVariable Long courseId) {
+//        List<CompetenceDTOOld.Info> comList = courseService.getCompetenceQuery(courseId);
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(comList)
 //                .setStartRow(0)
 //                .setEndRow(comList.size())
 //                .setTotalRows(comList.size());
-//        final CompetenceDTO.CompetenceSpecRs competenceSpecRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs competenceSpecRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        competenceSpecRs.setResponse(specResponse);
 //        return new ResponseEntity(comList, HttpStatus.OK);
 //    }

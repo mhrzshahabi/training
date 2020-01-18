@@ -1,10 +1,6 @@
 package com.nicico.training.iservice;
 
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.SearchDTO;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.TeacherDTO;
 import com.nicico.training.model.Teacher;
 import org.springframework.transaction.annotation.Transactional;

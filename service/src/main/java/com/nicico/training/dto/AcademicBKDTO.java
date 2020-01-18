@@ -1,8 +1,6 @@
 package com.nicico.training.dto;
 
 import com.nicico.copper.common.util.date.DateUtil;
-import com.nicico.training.model.EducationMajor;
-import com.nicico.training.model.EducationOrientation;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;

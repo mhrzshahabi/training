@@ -16,6 +16,7 @@
     var filterValuesUnique1 = [];
     var filterValues = [];
     var filterValues1 = [];
+    var sessionDateData;
     var attendanceState = {
         "0": "نامشخص",
         "1": "حاضر",
@@ -66,6 +67,7 @@
     var RestData_Student_AttendanceJSP = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name: "studentId"},
             {name: "firstName"},
             {name: "lastName"},
             {name: "nationalCode"},
@@ -74,7 +76,7 @@
             {name: "personnelNo2"},
         ],
         autoFetchData: false,
-        fetchDataURL: attendanceUrl + "/students?id=0"
+        fetchDataURL: attendanceUrl + "/students?classId=0"
     });
     var VLayout_Attachment_JspAttendance = isc.TrVLayout.create({
         members:[],
@@ -131,10 +133,10 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 5,
+        numCols: 6,
         padding: 10,
         // cellBorder:2,
-        colWidths:[300,200,200,100,100],
+        colWidths:[250,200,200,100,100,50],
         fields: [
             {
                 name: "attendanceTitle",
@@ -175,7 +177,7 @@
                         <%--});--%>
                     <%--}--%>
                 <%--},--%>
-                changed: function (form, item, value, oldValue) {
+                changed: function (form, item, value) {
                   if(attendanceGrid.getAllEditRows().length>0){
                       // loadPage_Attendance();
                         if(value==1){
@@ -466,25 +468,37 @@
                                                                     this.close();
                                                                     if (index === 0) {
                                                                         let record1 = attendanceGrid.getSelectedRecord();
-                                                                        record1.studentState = "1";
+                                                                        record1.studentState = "kh";
                                                                         attendanceGrid.updateData(record1);
-                                                                        // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
-                                                                        var data = {
-                                                                            "presenceTypeId":104
-                                                                        };
                                                                         isc.RPCManager.sendRequest({
-                                                                            actionURL: tclassStudentUrl + "/" + record1.classStudentId,
-                                                                            httpMethod: "PUT",
+                                                                            actionURL: parameterValueUrl + "/get-id/?code=kh",
+                                                                            httpMethod: "GET",
                                                                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                                                                             useSimpleHttp: true,
                                                                             contentType: "application/json; charset=utf-8",
                                                                             showPrompt: false,
                                                                             serverOutputAsString: false,
-                                                                            data: JSON.stringify(data),
-                                                                            callback: function (resp) {}
+                                                                            callback: function (resp) {
+                                                                                if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
+                                                                                    let data = {
+                                                                                        "presenceTypeId": JSON.parse(resp.data)
+                                                                                    };
+                                                                                    isc.RPCManager.sendRequest({
+                                                                                        actionURL: tclassStudentUrl + "/" + record1.classStudentId,
+                                                                                        httpMethod: "PUT",
+                                                                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                                        useSimpleHttp: true,
+                                                                                        contentType: "application/json; charset=utf-8",
+                                                                                        showPrompt: false,
+                                                                                        serverOutputAsString: false,
+                                                                                        data: JSON.stringify(data),
+                                                                                        callback: function (resp) {}
+                                                                                    });
+                                                                                    return;
+                                                                                }
+                                                                            }
                                                                         });
-                                                                        return;
                                                                     }
                                                                     item.setValue(oldValue);
                                                                 },
@@ -522,7 +536,7 @@
                     }
                     if (form.getValue("filterType") == 2) {
                         isc.RPCManager.sendRequest({
-                            actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().id,
+                            actionURL: attendanceUrl + "/student?classId=" + classGridRecordInAttendanceJsp.id + "&studentId=" + item.getSelectedRecord().studentId,
                             httpMethod: "GET",
                             httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
                             useSimpleHttp: true,
@@ -722,12 +736,40 @@
                                                                     if (index === 0) {
                                                                         for (let i = 0; i <attendanceGrid.getData().allRows.length ; i++) {
                                                                             let record1 = attendanceGrid.getRecord(i);
-                                                                            record1.studentState = "1";
+                                                                            record1.studentState = "kh";
                                                                             attendanceGrid.updateData(record1);
                                                                         }
                                                                         // attendanceGrid.saveEdits(null,null,this.rowNum);
                                                                         attendanceGrid.focusInFilterEditor();
-                                                                        return;
+                                                                        isc.RPCManager.sendRequest({
+                                                                            actionURL: parameterValueUrl + "/get-id/?code=kh",
+                                                                            httpMethod: "GET",
+                                                                            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                            useSimpleHttp: true,
+                                                                            contentType: "application/json; charset=utf-8",
+                                                                            showPrompt: false,
+                                                                            serverOutputAsString: false,
+                                                                            callback: function (resp) {
+                                                                                if(resp.httpResponseCode == 200 || resp.httpResponseCode == 201){
+                                                                                    let data = {
+                                                                                        "presenceTypeId": JSON.parse(resp.data)
+                                                                                    };
+                                                                                    isc.RPCManager.sendRequest({
+                                                                                        actionURL: tclassStudentUrl + "/" + attendanceForm.getValue("sessionDate"),
+                                                                                        httpMethod: "PUT",
+                                                                                        httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                                                                                        useSimpleHttp: true,
+                                                                                        contentType: "application/json; charset=utf-8",
+                                                                                        showPrompt: false,
+                                                                                        serverOutputAsString: false,
+                                                                                        data: JSON.stringify(data),
+                                                                                        callback: function (resp) {
+                                                                                        }
+                                                                                    });
+                                                                                    return;
+                                                                                }
+                                                                            }
+                                                                        });
                                                                     }
                                                                     item.setValue(oldValue);
                                                                 },
@@ -763,7 +805,11 @@
                             }
                         })
                     }
-                }
+                },
+                dataArrived: function (startRow, endRow, data) {
+                    this.Super("dataArrived", arguments);
+                    sessionDateData = data;
+                },
             },
             // {
             //     type: "SpacerItem"
@@ -778,7 +824,9 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                attendanceGrid.setEditValue(i,j,"1");
+                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                    attendanceGrid.setEditValue(i, j, "1");
+                                }
                             }
                         }
                 }
@@ -793,10 +841,26 @@
                 click (form, item) {
                         for (let i = 0; i < ListGrid_Attendance_AttendanceJSP.getData().localData.length ; i++) {
                             for (let j = 5; j < attendanceGrid.getAllFields().length; j++) {
-                                attendanceGrid.setEditValue(i,j,"2");
+                                if(attendanceGrid.getCellRecord(i).studentState != "kh") {
+                                    attendanceGrid.setEditValue(i, j, "2");
+                                }
                             }
                         }
 
+                }
+            },
+            {
+                name: "refreshBtn",
+                ID: "refreshBtnAttendanceJsp",
+                // showTitle: false,
+                title: "",
+                prompt:"<spring:message code="refresh"/>",
+                startRow:false,
+                type: "ButtonItem",
+                icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    loadPage_Attendance()
                 }
             },
         ],
@@ -845,7 +909,7 @@
         })],
         canHover:true,
         canEditCell(rowNum, colNum){
-            return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "1";
+            return colNum >= 5 && attendanceGrid.getSelectedRecord().studentState !== "kh";
         },
         saveAllEdits(){
             this.Super("saveAllEdits",arguments);
@@ -930,6 +994,7 @@
             return;
         }
         if(classGridRecordInAttendanceJsp == ListGrid_Class_JspClass.getSelectedRecord()){
+            ListGrid_Attendance_Refresh();
             return;
         }
         classGridRecordInAttendanceJsp = ListGrid_Class_JspClass.getSelectedRecord();
@@ -948,6 +1013,34 @@
             sessionInOneDate.length = 0;
             sessionsForStudent.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
+        }
+    }
+
+    function ListGrid_Attendance_Refresh(form = attendanceForm) {
+        let oldValue = form.getValue("sessionDate");
+        form.getItem("filterType").changed(form, form.getItem("filterType"), form.getValue("filterType"));
+        form.getItem("sessionDate").click(form, form.getItem("sessionDate"));
+        if(form.getValue("filterType") == 2) {
+            setTimeout(function () {
+                for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                    if (sessionDateData.allRows[i].id == oldValue) {
+                        form.setValue("sessionDate", oldValue);
+                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                        return;
+                    }
+                }
+            }, 500)
+        }
+        else{
+            setTimeout(function () {
+                for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                    if (sessionDateData.allRows[i].sessionDate == oldValue) {
+                        form.setValue("sessionDate", oldValue);
+                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                        return;
+                    }
+                }
+            }, 500)
         }
     }
 

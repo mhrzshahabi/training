@@ -107,8 +107,8 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.AttendanceInfo student;
 
         @Getter(AccessLevel.NONE)
-        private Long id;
-        public Long getId(){
+        private Long studentId;
+        public Long getStudentId(){
             return student.getId();
         }
         @Getter(AccessLevel.NONE)
@@ -142,6 +142,7 @@ public class ClassStudentDTO implements Serializable {
             return student.getPersonnelNo2();
         }
         private Long presenceTypeId;
+        private Long id;
     }
 
     @Getter
