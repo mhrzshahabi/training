@@ -268,4 +268,14 @@
             <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579091120231-216">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_object_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579094435217-216">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="f_skill" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

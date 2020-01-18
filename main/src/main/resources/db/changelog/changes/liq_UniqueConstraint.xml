@@ -68,4 +68,7 @@
     <changeSet author="ghazanfari_f (generated)" id="1578999572650-210">
         <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_COMPETENCEC_TITLE_COL" tableName="tbl_competence"/>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579090320851-213">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_PARAMETERC_TITLE_COL" tableName="tbl_parameter"/>
+    </changeSet>
 </databaseChangeLog>

@@ -35,7 +35,7 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
-            {name: "competenceTypeId", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "competenceTypeId", hidden: true},
             {name: "competenceType.title", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains"},
         ],
