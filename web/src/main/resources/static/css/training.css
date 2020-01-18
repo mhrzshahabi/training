@@ -4,11 +4,11 @@ html, body {
     width: 100% !important;
     margin: 0px !important;
     padding: 0px !important;
-    overflow: hidden;
+   // overflow: scroll;
 }
 
 body {
-    overflow: auto !important;;
+ //   overflow: auto !important;;
 }
 
 .relativePosition {

@@ -24,6 +24,7 @@
         showInlineErrors: true,
         showErrorText: false,
         valuesManager: "vm",
+        styleName: "teacher-form",
         numCols: 6,
         margin: 10,
         newPadding: 5,
@@ -92,6 +93,7 @@
                 title: "<spring:message code='teacher.code'/>",
                 // disabled: true,
                 canEdit: false,
+                baseStyle: "teacher-code"
             },
 
             {
@@ -564,6 +566,9 @@
         }
     });
 
+   DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').setCellStyle('teacher-code-label')
+   DynamicForm_BasicInfo_JspTeacher.getItem('teacherCode').titleStyle = 'teacher-code-title';
+
     var DynamicForm_Photo_JspTeacher = isc.DynamicForm.create({
         align: "center",
         canSubmit: true,
@@ -584,10 +589,13 @@
                 type: "imageFile",
                 showFileInline: "true",
                 accept: ".png,.gif,.jpg, .jpeg",
-                multiple: ""
+                multiple: "",
+               // hidden: true,
             }
         ],
         itemChanged: function (item) {
+            console.log('dsdsdsd')
+            console.log(item)
             if (item.name === "attachPic") {
                 showTempAttach();
                 setTimeout(function () {
@@ -603,25 +611,52 @@
         layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        align: "center",
+        styleName: "upload-hlayout",
+        align: "top",
+        height: "100",
         members: [showAttachViewLoader]
     });
+    function upload(){
+        var upload = document.getElementById('file-upload');
+        var image = upload.files[0];
+        console.log(image)
+        showTempAttach();
+        setTimeout(function () {
+            if (attachNameTemp === null || attachNameTemp === "") {
+                upload.value = "";
+                showAttachViewLoader.setView();
+            }
+        }, 300);
+    }
+
+    var upload_btn =  isc.HTMLFlow.create({
+        align: "center",
+        contents:"<form class=\"uploadButton\" method=\"POST\" id=\"form\" action=\"\" enctype=\"multipart/form-data\"><label for=\"file-upload\" class=\"custom-file-upload\"><i class=\"fa fa-cloud-upload\"></i>آپلود تصویر</label><input id=\"file-upload\" type=\"file\" name=\"file[]\" name=\"attachPic\" onchange=\"upload()\" accept=\".png,.gif,.jpg, .jpeg\"/></form>"
+    })
+
+
+    // document.getElementById("files").onchange = function () {
+    //     upload()
+    // }
+
 
     var HLayOut_Photo_JspTeacher = isc.TrHLayout.create({
         showEdges: false,
         edgeImage: "",
-        members: [DynamicForm_Photo_JspTeacher]
+        align: "top",
+        layoutMargin: 5,
+        members: [
+           // DynamicForm_Photo_JspTeacher,
+            upload_btn]
     });
 
     var VLayOut_Photo_JspTeacher = isc.TrVLayout.create({
-        layoutMargin: 5,
         showEdges: false,
         edgeImage: "",
-        padding: 10,
-        membersMargin: 10,
+        height: "100%",
         // width: "15%",
         width: "5%",
-        align: "center",
+        align: "top",
         members: [HLayOut_ViewLoader_JspTeacher, HLayOut_Photo_JspTeacher]
     });
 
@@ -644,5 +679,6 @@
         width: "100%",
         members: [VLayOut_Basic_JspTeacher, VLayOut_Photo_JspTeacher]
     });
+
 
     <%--</script>--%>

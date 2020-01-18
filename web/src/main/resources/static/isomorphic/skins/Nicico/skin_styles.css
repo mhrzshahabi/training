@@ -8925,7 +8925,6 @@ a.calMonthEventLink:active {
 .cellDark, .cellOverDark, .cellSelectedDark, .cellSelectedOverDark {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
   position: relative;
 }
 .cellDark:after, .cellOverDark:after, .cellSelectedDark:after, .cellSelectedOverDark:after {
@@ -8939,16 +8938,22 @@ a.calMonthEventLink:active {
   background: #d9d9d9;
 }
 
+.cellSelectedDark, cellSelectedOverDark {
+  font-weight: bold;
+}
+
 .specialCol, .specialColOver, .specialColSelected, .specialColSelectedOver {
   border-bottom: 3px solid #e6e6e6;
-  font-weight: bold;
   position: relative;
+}
+
+.specialColSelected, .specialColSelectedOver {
+  font-weight: bold;
 }
 
 .cell, .cellOver, .cellSelected, .cellSelectedOver {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
   position: relative;
 }
 .cell:after, .cellOver:after, .cellSelected:after, .cellSelectedOver:after {
@@ -8962,10 +8967,13 @@ a.calMonthEventLink:active {
   background: #d9d9d9;
 }
 
+.cellSelected, .cellSelectedOver {
+  font-weight: bold;
+}
+
 .cellDarkAltCol, .cellOverDarkAltCol, .cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
   position: relative;
 }
 .cellDarkAltCol:after, .cellOverDarkAltCol:after, .cellSelectedDarkAltCol:after, .cellSelectedOverDarkAltCol:after {
@@ -8979,10 +8987,13 @@ a.calMonthEventLink:active {
   background: #d9d9d9;
 }
 
+.cellSelectedDarkAltCol, .cellSelectedOverDarkAltCol {
+  font-weight: bold;
+}
+
 .cellAltCol, .cellOverAltCol, .cellSelectedAltCol, .cellSelectedOverAltCol {
   border-bottom: 3px solid #e6e6e6;
   padding: 5px !important;
-  font-weight: bold;
   position: relative;
 }
 .cellAltCol:after, .cellOverAltCol:after, .cellSelectedAltCol:after, .cellSelectedOverAltCol:after {
@@ -8994,6 +9005,10 @@ a.calMonthEventLink:active {
   width: 1px;
   height: 18px;
   background: #d9d9d9;
+}
+
+.cellSelectedAltCol, .cellSelectedOverAltCol {
+  font-weight: bold;
 }
 
 .listTable tbody tr td:first-child {
@@ -9088,21 +9103,68 @@ hr {
 .toolStripButtonSelectedOpened,
 .toolStripButtonSelectedDownOpened,
 .toolStripButtonSelectedOverOpened {
+  border: 1px solid transparent;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  color: #3f3f3f;
+  font-size: 12px;
+  padding: 3px 4px 3px 4px;
   border-radius: 3px;
-  background-color: #f3f3f3;
+  background-color: #e6e6e6;
   border: solid 1px #3f3f3f;
-  color: #000000;
-}
-
-.menuTable td {
   font-weight: bold;
 }
-
-.toolStripButtonDisabled,
-.toolStripButtonSelectedDisabled {
-  background-color: #f3f3f3;
-  border: solid 1px #929292;
+.toolStripButton:hover,
+.toolStripButtonOver:hover,
+.toolStripButtonFocused:hover,
+.toolStripButtonFocusedOver:hover,
+.toolStripButtonDown:hover,
+.toolStripButtonFocusedDown:hover,
+.toolStripButtonSelected:hover,
+.toolStripButtonSelectedFocused:hover,
+.toolStripButtonSelectedDown:hover,
+.toolStripButtonSelectedFocusedDown:hover,
+.toolStripButtonSelectedOver:hover,
+.toolStripButtonSelectedFocusedOver:hover,
+.toolStripButtonDisabled:hover,
+.toolStripButtonSelectedDisabled:hover,
+.toolStripButtonOpened:hover,
+.toolStripButtonOverOpened:hover,
+.toolStripButtonDownOpened:hover,
+.toolStripButtonFocusedOpened:hover,
+.toolStripButtonFocusedDownOpened:hover,
+.toolStripButtonFocusedOverOpened:hover,
+.toolStripButtonSelectedOpened:hover,
+.toolStripButtonSelectedDownOpened:hover,
+.toolStripButtonSelectedOverOpened:hover {
+  box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.toolStripButton td,
+.toolStripButtonOver td,
+.toolStripButtonFocused td,
+.toolStripButtonFocusedOver td,
+.toolStripButtonDown td,
+.toolStripButtonFocusedDown td,
+.toolStripButtonSelected td,
+.toolStripButtonSelectedFocused td,
+.toolStripButtonSelectedDown td,
+.toolStripButtonSelectedFocusedDown td,
+.toolStripButtonSelectedOver td,
+.toolStripButtonSelectedFocusedOver td,
+.toolStripButtonDisabled td,
+.toolStripButtonSelectedDisabled td,
+.toolStripButtonOpened td,
+.toolStripButtonOverOpened td,
+.toolStripButtonDownOpened td,
+.toolStripButtonFocusedOpened td,
+.toolStripButtonFocusedDownOpened td,
+.toolStripButtonFocusedOverOpened td,
+.toolStripButtonSelectedOpened td,
+.toolStripButtonSelectedDownOpened td,
+.toolStripButtonSelectedOverOpened td {
   color: #3f3f3f;
+  font-weight: bold;
 }
 
 .buttonSave,
@@ -9406,8 +9468,6 @@ hr {
 .toolStripButtonAddSelectedFocusedDown,
 .toolStripButtonAddSelectedOver,
 .toolStripButtonAddSelectedFocusedOver,
-.toolStripButtonAddDisabled,
-.toolStripButtonAddSelectedDisabled,
 .toolStripButtonAddOpened,
 .toolStripButtonAddOverOpened,
 .toolStripButtonAddDownOpened,
@@ -9440,8 +9500,6 @@ hr {
 .toolStripButtonAddSelectedFocusedDown:hover,
 .toolStripButtonAddSelectedOver:hover,
 .toolStripButtonAddSelectedFocusedOver:hover,
-.toolStripButtonAddDisabled:hover,
-.toolStripButtonAddSelectedDisabled:hover,
 .toolStripButtonAddOpened:hover,
 .toolStripButtonAddOverOpened:hover,
 .toolStripButtonAddDownOpened:hover,
@@ -9465,8 +9523,6 @@ hr {
 .toolStripButtonAddSelectedFocusedDown td,
 .toolStripButtonAddSelectedOver td,
 .toolStripButtonAddSelectedFocusedOver td,
-.toolStripButtonAddDisabled td,
-.toolStripButtonAddSelectedDisabled td,
 .toolStripButtonAddOpened td,
 .toolStripButtonAddOverOpened td,
 .toolStripButtonAddDownOpened td,
@@ -10064,8 +10120,30 @@ hr {
 .toolStripButtonPrintSelectedDisabled,
 .toolStripButtonRefreshDisabled,
 .toolStripButtonRefreshSelectedDisabled {
-  background-color: #f3f3f3;
   border: solid 1px #929292;
+  -moz-border-radius: 0px;
+  -webkit-border-radius: 0px;
+  border-radius: 0px;
+  color: #8e8e8e;
+  font-size: 12px;
+  padding: 3px 4px 3px 4px;
+  border-radius: 3px;
+  background-color: #e8f0e6;
+  border: solid 1px #8e8e8e;
+}
+.toolStripButtonAddDisabled:hover,
+.toolStripButtonAddSelectedDisabled:hover,
+.toolStripButtonRefreshDisabled:hover,
+.toolStripButtonRefreshSelectedDisabled:hover,
+.toolStripButtonEditDisabled:hover,
+.toolStripButtonEditSelectedDisabled:hover,
+.toolStripButtonRemoveDisabled:hover,
+.toolStripButtonRemoveSelectedDisabled:hover,
+.toolStripButtonPrintDisabled:hover,
+.toolStripButtonPrintSelectedDisabled:hover,
+.toolStripButtonRefreshDisabled:hover,
+.toolStripButtonRefreshSelectedDisabled:hover {
+  box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
 }
 .toolStripButtonAddDisabled td,
 .toolStripButtonAddSelectedDisabled td,
@@ -10080,6 +10158,7 @@ hr {
 .toolStripButtonRefreshDisabled td,
 .toolStripButtonRefreshSelectedDisabled td {
   color: #8e8e8e;
+  font-weight: bold;
 }
 
 .expandList .cellSelectedOverAltCol,
@@ -10240,15 +10319,40 @@ hr {
   position: absolute !important;
   right: 0 !important;
   left: 0 !important;
-  transition: visibility 0s, opacity 0.5s linear;
 }
 
 .expand-layout .tabBarTop {
-  border-top-right-radius: 5px;
-  border-top-left-radius: 5px;
+  border-top-right-radius: 10px;
+  border-top-left-radius: 10px;
 }
 
 .expand-layout .tabSetContainer {
-  border-bottom-right-radius: 5px;
-  border-bottom-left-radius: 5px;
+  border-bottom-right-radius: 10px;
+  border-bottom-left-radius: 10px;
 }
+
+input[type="text"].selectItemLiteText,
+input[type="text"].selectItemLiteTextRTL,
+input[type="text"].selectItemLiteTextFocused,
+input[type="text"].selectItemLiteTextFocusedRTL,
+input[type="text"].selectItemLiteTextDisabled,
+input[type="text"].selectItemLiteTextDisabledRTL,
+input[type="text"].selectItemLiteTextError,
+input[type="text"].selectItemLiteTextErrorRTL,
+input[type="text"].selectItemLiteTextErrorFocused,
+input[type="text"].selectItemLiteTextErrorFocusedRTL,
+input[type="text"].selectItemLiteTextPending,
+input[type="text"].selectItemLiteTextPendingRTL,
+input[type="text"].selectItemLiteTextPendingFocused,
+input[type="text"].selectItemLiteTextPendingFocusedRTL,
+input[type="text"].selectItemLiteTextPendingDisabled,
+input[type="text"].selectItemLiteTextPendingDisabledRTL,
+input[type="text"].selectItemLiteTextPendingError,
+input[type="text"].selectItemLiteTextPendingErrorRTL,
+input[type="text"].selectItemLiteTextHint,
+input[type="text"].selectItemLiteTextHintRTL,
+input[type="text"].selectItemLiteTextDisabledHint,
+input[type="text"].selectItemLiteTextDisabledHintRTL {
+  padding: 13px 0px;
+}
+

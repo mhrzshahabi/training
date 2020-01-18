@@ -506,3 +506,100 @@
     color: #ff0000;
     font-weight: bold;
 }
+
+
+
+
+.toolStripButtonAddDisabled,
+.toolStripButtonAddSelectedDisabled,
+.toolStripButtonRefreshDisabled,
+.toolStripButtonRefreshSelectedDisabled,
+.toolStripButtonEditDisabled,
+.toolStripButtonEditSelectedDisabled,
+.toolStripButtonRemoveDisabled,
+.toolStripButtonRemoveSelectedDisabled,
+.toolStripButtonPrintDisabled,
+.toolStripButtonPrintSelectedDisabled,
+.toolStripButtonRefreshDisabled,
+.toolStripButtonRefreshSelectedDisabled {
+    border: solid 1px #929292;
+    -moz-border-radius: 0px;
+    -webkit-border-radius: 0px;
+    border-radius: 0px;
+    color: #8e8e8e;
+    font-size: 12px;
+    padding: 3px 4px 3px 4px;
+    border-radius: 3px;
+    background-color: #e8f0e6;
+    border: solid 1px #8e8e8e;
+}
+.toolStripButtonAddDisabled:hover,
+.toolStripButtonAddSelectedDisabled:hover,
+.toolStripButtonRefreshDisabled:hover,
+.toolStripButtonRefreshSelectedDisabled:hover,
+.toolStripButtonEditDisabled:hover,
+.toolStripButtonEditSelectedDisabled:hover,
+.toolStripButtonRemoveDisabled:hover,
+.toolStripButtonRemoveSelectedDisabled:hover,
+.toolStripButtonPrintDisabled:hover,
+.toolStripButtonPrintSelectedDisabled:hover,
+.toolStripButtonRefreshDisabled:hover,
+.toolStripButtonRefreshSelectedDisabled:hover {
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+}
+.toolStripButtonAddDisabled td,
+.toolStripButtonAddSelectedDisabled td,
+.toolStripButtonRefreshDisabled td,
+.toolStripButtonRefreshSelectedDisabled td,
+.toolStripButtonEditDisabled td,
+.toolStripButtonEditSelectedDisabled td,
+.toolStripButtonRemoveDisabled td,
+.toolStripButtonRemoveSelectedDisabled td,
+.toolStripButtonPrintDisabled td,
+.toolStripButtonPrintSelectedDisabled td,
+.toolStripButtonRefreshDisabled td,
+.toolStripButtonRefreshSelectedDisabled td {
+    color: #8e8e8e;
+    font-weight: bold;
+}
+
+
+.teacher-form .labelAnchorOverRTL {
+    font-size: 12px !important;
+}
+
+.uploadButton{
+    text-align: center;
+}
+
+#file-upload  {
+    display: none;
+}
+.custom-file-upload {
+    display: inline-block;
+    cursor: pointer;
+    font-size: 12px;
+    padding: 7px 24px 7px 24px;
+    border-radius: 3px;
+    background-color: #fe9d2a;
+    border: solid 1px #fe9d2a;
+    font-weight: bold;
+    color: white;
+    box-shadow: 1px 2px 2px 1px rgba(0, 0, 0, 0.2);
+
+}
+.upload-hlayout{
+    margin-top:30px;
+}
+.teacher-code-titleRTL{
+    font-weight: bold;
+    font-size: 12px;
+    color: #374b71;
+}
+.teacher-code-labelRTL{
+   background-color: #f3f3f3;
+   font-weight: bold;
+   border-radius: 5px;
+   text-align: center;
+   font-size: 13px;
+}

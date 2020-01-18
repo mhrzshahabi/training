@@ -4,51 +4,34 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
-import com.nicico.copper.common.domain.criteria.NICICOCriteria;
-import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.controller.util.CriteriaUtil;
 import com.nicico.training.dto.*;
-import com.nicico.training.iservice.ICategoryService;
-import com.nicico.training.iservice.ISubCategoryService;
-import com.nicico.training.iservice.ITeacherService;
-import com.nicico.training.model.AcademicBK;
+import com.nicico.training.iservice.*;
 import com.nicico.training.model.PersonalInfo;
 import com.nicico.training.model.Teacher;
+import com.nicico.training.model.TeacherCertification;
 import com.nicico.training.repository.PersonalInfoDAO;
-import com.nicico.training.repository.TeacherDAO;
-import com.nicico.training.service.AcademicBKService;
-import com.nicico.training.service.JobService;
-import com.nicico.training.service.TeacherService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.jsf.FacesContextUtils;
 
 import javax.imageio.ImageIO;
-import javax.imageio.stream.ImageInputStream;
-import javax.imageio.stream.ImageInputStreamImpl;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -68,7 +51,12 @@ public class TeacherRestController {
     @Value("${nicico.dirs.upload-person-img}")
     private String personUploadDir;
     private final PersonalInfoDAO personalInfoDAO;
-    private final AcademicBKService academicBKService;
+    private final IAcademicBKService academicBKService;
+    private final IEmploymentHistoryService employmentHistoryService;
+    private final ITeachingHistoryService teachingHistoryService;
+    private final ITeacherCertificationService teacherCertificationService;
+    private final IPublicationService publicationService;
+    private final IForeignLangKnowledgeService foreignLangService;
 
     // ------------------------------
 
@@ -297,20 +285,25 @@ public class TeacherRestController {
 //        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
 //        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-        /////////////////////////////////////
-        final SearchDTO.CriteriaRq criteriaRq_bk = new SearchDTO.CriteriaRq();
-        final SearchDTO.CriteriaRq criteriaRq1_bk = new SearchDTO.CriteriaRq();
-        criteriaRq1_bk.setFieldName("teacherId");
-        criteriaRq1_bk.setOperator(EOperator.equals);
-        criteriaRq1_bk.setValue(id);
-        List<SearchDTO.CriteriaRq> criteriaRqList_bk = new ArrayList<>();
-        criteriaRqList_bk.add(criteriaRq1_bk);
-        criteriaRq_bk.setOperator(EOperator.and);
-        criteriaRq_bk.setCriteria(criteriaRqList_bk);
-        final SearchDTO.SearchRq searchRq_bk;
-        searchRq_bk = new SearchDTO.SearchRq().setCriteria(criteriaRq_bk);
-        final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_bk = academicBKService.search(searchRq_bk, Long.valueOf(id));
-        ////////////////////////////////////
+
+        final SearchDTO.SearchRq searchRq_academicBk = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_academicBk = academicBKService.search(searchRq_academicBk, Long.valueOf(id));
+
+        final SearchDTO.SearchRq searchRq_employmentHistory = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs_employmentHistory = employmentHistoryService.search(searchRq_employmentHistory, Long.valueOf(id));
+
+        final SearchDTO.SearchRq searchRq_teachingHistory = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<TeachingHistoryDTO.Info> searchRs_teachingHistory = teachingHistoryService.search(searchRq_teachingHistory, Long.valueOf(id));
+
+        final SearchDTO.SearchRq searchRq_teacherCertification = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<TeacherCertificationDTO.Info> searchRs_teacherCertification = teacherCertificationService.search(searchRq_teacherCertification, Long.valueOf(id));
+
+        final SearchDTO.SearchRq searchRq_publication = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<PublicationDTO.Info> searchRs_publication = publicationService.search(searchRq_publication, Long.valueOf(id));
+
+        final SearchDTO.SearchRq searchRq_foreingLang = new SearchDTO.SearchRq();
+        final SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreingLang = foreignLangService.search(searchRq_foreingLang, Long.valueOf(id));
+
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
@@ -337,15 +330,19 @@ public class TeacherRestController {
         params.put("categories", "");
         params.put("otherActivity", "");
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs_bk.getList()) + "," +
-                objectMapper.writeValueAsString(searchRs_bk.getList()) + "}";
+        String data = "{" +
+                "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
+                "\"empHistory\": " + objectMapper.writeValueAsString(searchRs_employmentHistory.getList()) + "," +
+                "\"teachingHistory\": " + objectMapper.writeValueAsString(searchRs_teachingHistory.getList()) + "," +
+                "\"teacherCertification\": " + objectMapper.writeValueAsString(searchRs_teacherCertification.getList()) + "," +
+                "\"publication\": " + objectMapper.writeValueAsString(searchRs_publication.getList()) + "," +
+                "\"languages\": " + objectMapper.writeValueAsString(searchRs_foreingLang.getList())  +
+                 "}";
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
-
-
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
