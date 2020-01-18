@@ -334,6 +334,8 @@ public class TeacherRestController {
         params.put("military", personalInfo.getMilitary().getTitleFa());
         params.put("address", "");
         params.put("connectionInfo", "");
+        params.put("categories", "");
+        params.put("otherActivity", "");
 
         String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs_bk.getList()) + "," +
                 objectMapper.writeValueAsString(searchRs_bk.getList()) + "}";
