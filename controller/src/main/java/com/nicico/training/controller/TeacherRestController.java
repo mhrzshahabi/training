@@ -4,31 +4,51 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nicico.copper.common.Loggable;
 import com.nicico.copper.common.domain.ConstantVARs;
+import com.nicico.copper.common.domain.criteria.NICICOCriteria;
+import com.nicico.copper.common.dto.grid.TotalResponse;
 import com.nicico.copper.common.dto.search.EOperator;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CategoryDTO;
-import com.nicico.training.dto.SubCategoryDTO;
-import com.nicico.training.dto.TeacherDTO;
+import com.nicico.training.controller.util.CriteriaUtil;
+import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ICategoryService;
 import com.nicico.training.iservice.ISubCategoryService;
 import com.nicico.training.iservice.ITeacherService;
+import com.nicico.training.model.AcademicBK;
+import com.nicico.training.model.PersonalInfo;
+import com.nicico.training.model.Teacher;
+import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.repository.TeacherDAO;
+import com.nicico.training.service.AcademicBKService;
+import com.nicico.training.service.JobService;
+import com.nicico.training.service.TeacherService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.Criteria;
 import org.modelmapper.ModelMapper;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.util.MultiValueMap;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.jsf.FacesContextUtils;
 
+import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageInputStream;
+import javax.imageio.stream.ImageInputStreamImpl;
 import javax.servlet.http.HttpServletResponse;
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.*;
@@ -45,7 +65,10 @@ public class TeacherRestController {
     private final ModelMapper modelMapper;
     private final ICategoryService categoryService;
     private final ISubCategoryService subCategoryService;
-    private final TeacherDAO teacherDAO;
+    @Value("${nicico.dirs.upload-person-img}")
+    private String personUploadDir;
+    private final PersonalInfoDAO personalInfoDAO;
+    private final AcademicBKService academicBKService;
 
     // ------------------------------
 
@@ -90,7 +113,7 @@ public class TeacherRestController {
     @Loggable
     @PutMapping(value = "/{id}")
 //    @PreAuthorize("hasAuthority('u_teacher')")
-    public ResponseEntity update(@PathVariable Long id, @Validated @RequestBody LinkedHashMap request) {
+    public ResponseEntity update(@PathVariable Long id,@Validated @RequestBody LinkedHashMap request) {
         ((LinkedHashMap) request).remove("attachPic");
 
         List<CategoryDTO.Info> categories = null;
@@ -260,29 +283,69 @@ public class TeacherRestController {
 
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
-    public void printWithDetail(HttpServletResponse response, @PathVariable String id) throws Exception {
-        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
-        criteriaRq1.setFieldName("id");
-        criteriaRq1.setOperator(EOperator.equals);
-        criteriaRq1.setValue(id);
-        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-        criteriaRqList.add(criteriaRq1);
-        criteriaRq.setOperator(EOperator.and);
-        criteriaRq.setCriteria(criteriaRqList);
-        final SearchDTO.SearchRq searchRq;
-        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+    public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
+//        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
+//        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
+//        criteriaRq1.setFieldName("id");
+//        criteriaRq1.setOperator(EOperator.equals);
+//        criteriaRq1.setValue(id);
+//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
+//        criteriaRqList.add(criteriaRq1);
+//        criteriaRq.setOperator(EOperator.and);
+//        criteriaRq.setCriteria(criteriaRqList);
+//        final SearchDTO.SearchRq searchRq;
+//        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
+//        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
 
-        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
+        /////////////////////////////////////
+        final SearchDTO.CriteriaRq criteriaRq_bk = new SearchDTO.CriteriaRq();
+        final SearchDTO.CriteriaRq criteriaRq1_bk = new SearchDTO.CriteriaRq();
+        criteriaRq1_bk.setFieldName("teacherId");
+        criteriaRq1_bk.setOperator(EOperator.equals);
+        criteriaRq1_bk.setValue(id);
+        List<SearchDTO.CriteriaRq> criteriaRqList_bk = new ArrayList<>();
+        criteriaRqList_bk.add(criteriaRq1_bk);
+        criteriaRq_bk.setOperator(EOperator.and);
+        criteriaRq_bk.setCriteria(criteriaRqList_bk);
+        final SearchDTO.SearchRq searchRq_bk;
+        searchRq_bk = new SearchDTO.SearchRq().setCriteria(criteriaRq_bk);
+        final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_bk = academicBKService.search(searchRq_bk, Long.valueOf(id));
+        ////////////////////////////////////
 
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
-        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
+        Long Id = Long.valueOf(id);
+        final Teacher teacher = teacherService.getTeacher(Id);
+        final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
+        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+        String fileName = personUploadDir + "/" + personalInfo.getPhoto();
+        File file = new File(fileName);
+        params.put("personalImg",  ImageIO.read(file));
+
+        params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
+        params.put("personalNum",teacher.getPersonnelCode());
+        params.put("certificateNum", personalInfo.getBirthCertificate());
+        params.put("nationalCode", personalInfo.getNationalCode());
+        params.put("certificateLocation", personalInfo.getBirthCertificateLocation());
+        params.put("birthDate", personalInfo.getBirthDate());
+        params.put("birthLocation", personalInfo.getBirthLocation());
+        params.put("gender", personalInfo.getGender().getTitleFa());
+        params.put("military", personalInfo.getMilitary().getTitleFa());
+        params.put("address", "");
+        params.put("connectionInfo", "");
+        params.put("categories", "");
+        params.put("otherActivity", "");
+
+        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs_bk.getList()) + "," +
+                objectMapper.writeValueAsString(searchRs_bk.getList()) + "}";
+
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
+
+
     }
 
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
@@ -353,12 +416,12 @@ public class TeacherRestController {
     @GetMapping(value = "/full-spec-list")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public ResponseEntity<TeacherDTO.TeacherSpecRs> fullList(@RequestParam(value = "_startRow", required = false) Integer startRow,
-                                                             @RequestParam(value = "_endRow", required = false) Integer endRow,
-                                                             @RequestParam(value = "_constructor", required = false) String constructor,
-                                                             @RequestParam(value = "operator", required = false) String operator,
-                                                             @RequestParam(value = "criteria", required = false) String criteria,
-                                                             @RequestParam(value = "id", required = false) Long id,
-                                                             @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
+                                                         @RequestParam(value = "_endRow", required = false) Integer endRow,
+                                                         @RequestParam(value = "_constructor", required = false) String constructor,
+                                                         @RequestParam(value = "operator", required = false) String operator,
+                                                         @RequestParam(value = "criteria", required = false) String criteria,
+                                                         @RequestParam(value = "id", required = false) Long id,
+                                                         @RequestParam(value = "_sortBy", required = false) String sortBy) throws IOException {
 
         SearchDTO.SearchRq request = setSearchCriteria(startRow, endRow, constructor, operator, criteria, id, sortBy);
 
@@ -381,23 +444,24 @@ public class TeacherRestController {
     @GetMapping(value = "/blackList/{inBlackList}/{id}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
     public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
-        teacherService.changeBlackListStatus(inBlackList, id);
+        teacherService.changeBlackListStatus(inBlackList,id);
     }
 
     @Loggable
     @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
 //    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id, @PathVariable String catId, @PathVariable String subCatId) throws IOException {
+    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
         Long evaluationGrade = null;
         Long CatId = null;
         Long SubCatId = null;
         CatId = Long.parseLong(catId);
-        if (!subCatId.equalsIgnoreCase("undefined"))
+        if(!subCatId.equalsIgnoreCase("undefined"))
             SubCatId = Long.parseLong(subCatId);
         TeacherDTO.Info teacherDTO = teacherService.get(id);
 
-        return new ResponseEntity<>(evaluationGrade, HttpStatus.OK);
+        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
+
 
 
 }
