@@ -411,6 +411,12 @@
         menu: isc.Menu.create({
             data: [
                 {
+                    title: "<spring:message code="competence"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="web/competence/"/>");
+                    }
+                },
+                {
                     title: "<spring:message code="job"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="web/job/"/>");

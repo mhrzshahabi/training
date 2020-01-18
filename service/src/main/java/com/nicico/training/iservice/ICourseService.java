@@ -43,9 +43,9 @@ public interface ICourseService {
     List<SkillDTO.Info> getSkill(Long courseId);
 
 
-    List<CompetenceDTO.Info> getCompetenceQuery(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetenceQuery(Long courseId);
 
-    List<CompetenceDTO.Info> getCompetence(Long courseId);
+    List<CompetenceDTOOld.Info> getCompetence(Long courseId);
 
     List<SkillGroupDTO.Info> getSkillGroup(Long courseId);
 

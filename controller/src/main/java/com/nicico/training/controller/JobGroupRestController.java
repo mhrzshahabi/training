@@ -155,18 +155,18 @@ public class JobGroupRestController {
 //    @Loggable
 //    @GetMapping(value = "/{jobGroupId}/getCompetences")
 ////    @PreAuthorize("hasAnyAuthority('r_job_group')")
-//    public ResponseEntity<CompetenceDTO.CompetenceSpecRs> getCompetences(@PathVariable Long jobGroupId) {
+//    public ResponseEntity<CompetenceDTOOld.CompetenceSpecRs> getCompetences(@PathVariable Long jobGroupId) {
 //        SearchDTO.SearchRq request = new SearchDTO.SearchRq();
 //
-//        List<CompetenceDTO.Info> list = jobGroupService.getCompetence(jobGroupId);
+//        List<CompetenceDTOOld.Info> list = jobGroupService.getCompetence(jobGroupId);
 //
-//        final CompetenceDTO.SpecRs specResponse = new CompetenceDTO.SpecRs();
+//        final CompetenceDTOOld.SpecRs specResponse = new CompetenceDTOOld.SpecRs();
 //        specResponse.setData(list)
 //                .setStartRow(0)
 //                .setEndRow( list.size())
 //                .setTotalRows(list.size());
 //
-//        final CompetenceDTO.CompetenceSpecRs specRs = new CompetenceDTO.CompetenceSpecRs();
+//        final CompetenceDTOOld.CompetenceSpecRs specRs = new CompetenceDTOOld.CompetenceSpecRs();
 //        specRs.setResponse(specResponse);
 //
 //        return new ResponseEntity<>(specRs,HttpStatus.OK);

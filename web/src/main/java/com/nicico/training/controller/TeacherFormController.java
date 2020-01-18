@@ -43,7 +43,9 @@ public class TeacherFormController {
     }
 
     @RequestMapping("/foreignLangKnowledge-tab")
-    public String foreignLangTab() { return "teacherTabs/foreignLangKnowledge"; }
+    public String foreignLangTab() {
+        return "teacherTabs/foreignLangKnowledge";
+    }
 
     @RequestMapping("/teacherCertification-tab")
     public String teacherCertificationTab() {
@@ -51,25 +53,39 @@ public class TeacherFormController {
     }
 
     @RequestMapping("/publication-tab")
-    public String publicationTab() { return "teacherTabs/publication"; }
+    public String publicationTab() {
+        return "teacherTabs/publication";
+    }
 
     @RequestMapping("/otherActivities-tab")
-    public String otherActivitiesTab() { return "teacherTabs/otherActivities"; }
+    public String otherActivitiesTab() {
+        return "teacherTabs/otherActivities";
+    }
 
     @RequestMapping("/jobInfo-tab")
-    public String jobInfoTab() { return "teacherTabs/jobInfo"; }
+    public String jobInfoTab() {
+        return "teacherTabs/jobInfo";
+    }
 
     @RequestMapping("/accountInfo-tab")
-    public String accountInfoTab() { return "teacherTabs/accountInfo"; }
+    public String accountInfoTab() {
+        return "teacherTabs/accountInfo";
+    }
 
     @RequestMapping("/addressInfo-tab")
-    public String addressInfoTab() { return "teacherTabs/addressInfo"; }
+    public String addressInfoTab() {
+        return "teacherTabs/addressInfo";
+    }
 
     @RequestMapping("/teacherBasicInfo-tab")
-    public String teacherBasicInfoTab() { return "teacherTabs/teacherBasicInfo"; }
+    public String teacherBasicInfoTab() {
+        return "teacherTabs/teacherBasicInfo";
+    }
 
     @RequestMapping("/academicBK-tab")
-    public String academicBKTab() { return "teacherTabs/academicBK"; }
+    public String academicBKTab() {
+        return "teacherTabs/academicBK";
+    }
 
 
     @PostMapping("/printWithCriteria/{type}")
@@ -104,7 +120,7 @@ public class TeacherFormController {
     }
 
     @PostMapping("/printWithDetail/{id}")
-    public ResponseEntity<?> printWithDetail(final HttpServletRequest request,@PathVariable String id) {
+    public ResponseEntity<?> printWithDetail(final HttpServletRequest request, @PathVariable String id) {
         String token = request.getParameter("token");
 
         final RestTemplate restTemplate = new RestTemplate();
@@ -120,7 +136,7 @@ public class TeacherFormController {
         HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
-        return restTemplate.exchange(restApiUrl + "/api/teacher/printWithDetail/"+id, HttpMethod.POST, entity, byte[].class);
+        return restTemplate.exchange(restApiUrl + "/api/teacher/printWithDetail/" + id, HttpMethod.POST, entity, byte[].class);
     }
 
 

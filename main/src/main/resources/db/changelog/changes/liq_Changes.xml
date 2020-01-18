@@ -263,7 +263,7 @@
             <column name="scoring_method" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-     <changeSet author="heydaripoor (generated)" id="1578995884850-208">
+    <changeSet author="heydaripoor (generated)" id="1578995884850-208">
         <addColumn tableName="tbl_course">
             <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
         </addColumn>
