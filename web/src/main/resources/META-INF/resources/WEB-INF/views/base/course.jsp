@@ -1124,40 +1124,78 @@
                 name: "scoringMethod",
                 title: "روش نمره دهی",
                 colSpan: 1,
-                // fillHorizontalSpace: true,
-                // vertical: false,
-                defaultValue: "3",
+                required:true,
+              //defaultValue: "3",
                 textAlign: "center",
                 valueMap: {
                     "1": "ارزشی",
                     "2": "نمره از صد",
                     "3": "نمره از بیست",
                     "4": "بدون نمره",
-                },
+             },
                 change: function (form, item, value) {
+
                     if (value == "1") {
                         form.getItem("acceptancelimit").hide();
-                        form.getItem("acceptancelimit").disable();
+                        form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").enable();
-                    } else {
+                        form.getItem("acceptancelimit_a").setRequired(true);
+                        form.getItem("acceptancelimit_a").setDisabled(false);
+
+                    }
+                    else if(value =="2")
+                    {
+                         form.getItem("acceptancelimit").validator={
+                            type: "integerRange", min: 0, max: 100,
+                            errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
+                          }
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").enable();
+                        form.getItem("acceptancelimit").setRequired(true);
                         form.getItem("acceptancelimit_a").hide();
-                        form.getItem("acceptancelimit_a").disable();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                     form.getItem("acceptancelimit").setDisabled(false);
+
                     }
-                }
+                    else if(value == "3")
+                    {
+                           form.getItem("acceptancelimit").validator = {
+                                type: "regexp",
+                                errorMessage: "<spring:message code="msg.validate.score"/>",
+                                expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
+                            };
+                     form.getItem("acceptancelimit").show();
+                //   form.getItem("acceptancelimit").enable();
+                     form.getItem("acceptancelimit").setRequired(true);
+                     form.getItem("acceptancelimit_a").hide();
+                     form.getItem("acceptancelimit_a").setRequired(false);
+
+                    }
+
+                    else if(value =="4") {
+                        form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setRequired(false);
+                        form.getItem("acceptancelimit").setDisabled(true);
+                        form.getItem("acceptancelimit").setValue("")
+                        form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setRequired(false);
+                    }
+
+
+                },
+
             },
             {
                 name: "acceptancelimit",
-                // colSpan:2,
                 title: "حد نمره قبولی",
+                required:true
             },
 
             {
                 name: "acceptancelimit_a",
-
                 colSpan: 2,
+                required:true,
                 hidden: true,
                 textAlign: "center",
                 title: "حد نمره قبولی",
@@ -2343,7 +2381,7 @@
         // DynamicForm_course.getItem("epSection").disable();
         // DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
-        DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
+      //  DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
         setTimeout(function () {
             // ToolStrip_Actions_Goal.disable();
             // ToolStrip_Actions_Syllabus.disable();
@@ -2493,6 +2531,11 @@
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
+            if(sRecord.scoringMethod === "1")
+            {
+                DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)
+            }
+
             DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), DynamicForm_course_MainTab.getValue("scoringMethod"));
             setTimeout(function () {
                 ListGrid_Goal_refresh();

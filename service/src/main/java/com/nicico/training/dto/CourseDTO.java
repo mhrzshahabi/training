@@ -71,6 +71,8 @@ public class CourseDTO implements Serializable {
     private String behavioralLevel;
 
     private String scoringMethod;
+
+    private String acceptancelimit;
 //    @ApiModelProperty(required = true)
 //    private List<Long> preCourse;
 

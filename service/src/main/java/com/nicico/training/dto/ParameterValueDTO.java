@@ -28,6 +28,15 @@ public class ParameterValueDTO implements Serializable {
     @Setter
     @Accessors(chain = true)
     @ApiModel("ParameterValue - Info")
+    public static class MinInfo {
+        private Long id;
+        private String title;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("ParameterValue - Info")
     public static class Info extends ParameterValueDTO {
         private Long id;
         private Integer version;

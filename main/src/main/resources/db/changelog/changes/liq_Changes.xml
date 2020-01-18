@@ -263,9 +263,30 @@
             <column name="scoring_method" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
-     <changeSet author="heydaripoor (generated)" id="1578995884850-208">
+    <changeSet author="heydaripoor (generated)" id="1578995884850-208">
         <addColumn tableName="tbl_course">
             <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579091120231-216">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="c_object_type" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="ghazanfari_f (generated)" id="1579094435217-216">
+        <addColumn tableName="tbl_needs_assessment">
+            <column name="f_skill" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-217">
+        <addColumn tableName="tbl_class">
+            <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-218">
+        <addColumn tableName="tbl_class">
+            <column name="c_scoring_method" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

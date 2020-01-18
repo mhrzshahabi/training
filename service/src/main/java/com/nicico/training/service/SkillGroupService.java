@@ -8,16 +8,16 @@ com.nicico.training.service
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.CompetenceDTO;
+import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillGroupService;
-import com.nicico.training.model.Competence;
+import com.nicico.training.model.CompetenceOld;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.Skill;
 import com.nicico.training.model.SkillGroup;
-import com.nicico.training.repository.CompetenceDAO;
+import com.nicico.training.repository.CompetenceDAOOld;
 import com.nicico.training.repository.SkillDAO;
 import com.nicico.training.repository.SkillGroupDAO;
 import lombok.RequiredArgsConstructor;
@@ -41,7 +41,7 @@ public class SkillGroupService implements ISkillGroupService {
     private final ModelMapper modelMapper;
     private final SkillGroupDAO skillGroupDAO;
     private final SkillDAO skillDAO;
-    private final CompetenceDAO competenceDAO;
+    private final CompetenceDAOOld competenceDAO;
 
     @Transactional(readOnly = true)
     @Override
@@ -138,7 +138,7 @@ public class SkillGroupService implements ISkillGroupService {
 
     private SkillGroupDTO.Info save(SkillGroup skillGroup, Set<Long> competenceIds, Set<Long> skillIds) {
         final Set<Skill> skills = new HashSet<>();
-        final Set<Competence> competences = new HashSet<>();
+        final Set<CompetenceOld> competences = new HashSet<>();
         Optional.ofNullable(skillIds)
                 .ifPresent(skillIdSet -> skillIdSet
                         .forEach(skillIdss ->
@@ -163,11 +163,11 @@ public class SkillGroupService implements ISkillGroupService {
 
     @Override
     @Transactional
-    public List<CompetenceDTO.Info> getCompetence(Long skillGroupId) {
+    public List<CompetenceDTOOld.Info> getCompetence(Long skillGroupId) {
         final Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupId);
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
 
-        return modelMapper.map(skillGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTO.Info>>() {
+        return modelMapper.map(skillGroup.getCompetenceSet(), new TypeToken<List<CompetenceDTOOld.Info>>() {
         }.getType());
     }
 
@@ -176,10 +176,10 @@ public class SkillGroupService implements ISkillGroupService {
     public List<JobDTO.Info> getJobs(Long skillGroupID) {
         final Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupID);
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
-        Set<Competence> competenceSet = skillGroup.getCompetenceSet();
+        Set<CompetenceOld> competenceSet = skillGroup.getCompetenceSet();
         Set<Job> jobs = new HashSet<>();
 //      --------------------------------------- By f.ghazanfari - start ---------------------------------------
-//        for (Competence competence:skillGroup.getCompetenceSet()
+//        for (CompetenceOld competence:skillGroup.getCompetenceSet()
 //             ) {
 //
 //            for (JobCompetence jobCompetence:competence.getJobCompetenceSet()
@@ -196,7 +196,7 @@ public class SkillGroupService implements ISkillGroupService {
     @Override
     @Transactional
     public boolean canDelete(Long skillGroupId) {
-        List<CompetenceDTO.Info> competences = getCompetence(skillGroupId);
+        List<CompetenceDTOOld.Info> competences = getCompetence(skillGroupId);
         if (competences.isEmpty() || competences.size() == 0)
             return true;
         else
@@ -219,8 +219,8 @@ public class SkillGroupService implements ISkillGroupService {
 
         Optional<SkillGroup> optionalSkillGroup = skillGroupDAO.findById(skillGroupId);
         final SkillGroup skillGroup = optionalSkillGroup.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillGroupNotFound));
-        final Optional<Competence> optionalCompetence = competenceDAO.findById(competenceId);
-        final Competence competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
+        final Optional<CompetenceOld> optionalCompetence = competenceDAO.findById(competenceId);
+        final CompetenceOld competence = optionalCompetence.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.CompetenceNotFound));
         skillGroup.getCompetenceSet().remove(competence);
     }
 
