@@ -68,6 +68,7 @@
     var RestDataSource_Course_JspClass = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true},
+            {name:"scoringMethod"},
             {name: "code", title: "<spring:message code="course.code"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "titleFa", title: "<spring:message code="course.title"/>", filterOperator: "iContains"},
             {name:"createdBy",title: "<spring:message code="created.by.user"/>", filterOperator: "iContains"},
@@ -397,6 +398,7 @@
                 ],
                 changed: function (form, item, value) {
                     form.setValue("titleClass", item.getSelectedRecord().titleFa);
+                    form.setValue("scoringMethod",item.getSelectedRecord().scoringMethod)
                     form.clearValue("teacherId");
                     evalGroup();
                     RestDataSource_Teacher_JspClass.fetchDataURL = teacherUrl + "fullName-list/" + VM_JspClass.getField("course.id").getSelectedRecord().category.id;
@@ -660,6 +662,7 @@
 
                 }
             },
+
             {
                 name: "group",
                 title: "<spring:message code="group"/>:",
@@ -711,22 +714,13 @@
                 pickListWidth: 250,
                 colSpan: 1,
                 showTitle: false,
-// width:"250",
-// align: "center",
                 optionDataSource: RestDataSource_TrainingPlace_JspClass,
-// addUnknownValues:false,
                 displayField: "titleFa",
                 valueField: "id",
-// cachePickListResults:false,
-// autoFetchData:false,
-// autoFetchData:false,
                 filterFields: ["titleFa", "capacity"],
                 textMatchStyle: "substring",
-// pickListPlacement: "fillScreen",
-// pickListWidth:300,
                 textAlign: "center",
                 pickListFields: [
-// {name:"instituteTitleFa"},
                     {name: "titleFa"},
                     {name: "capacity"}
                 ],
@@ -744,6 +738,18 @@
 // VM_JspClass.getField("course.id").getSelectedRecord().category.id;
 // return {category:category};
                 }
+            },
+              {
+            name:"scoringMethod",
+            colSpan: 1,
+            title:"روش نمره دهی",
+            textAlign: "center",
+            valueMap: {
+                    "1": "ارزشی",
+                    "2": "نمره از صد",
+                    "3": "نمره از بیست",
+                    "4": "بدون نمره",
+                },
             },
         ],
     });

@@ -9,7 +9,6 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.common.util.date.DateUtil;
 import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
-import com.nicico.training.dto.StudentDTO;
 import com.nicico.training.dto.TclassDTO;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.repository.StudentDAO;
@@ -227,7 +226,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/checkEndingClass/{classId}")
-    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException{
+    public String checkEndingClass(@PathVariable Long classId, HttpServletResponse response) throws IOException {
 
         return classAlarmService.checkAlarmsForEndingClass(classId, response);
 
@@ -235,7 +234,7 @@ public class TclassRestController {
 
     @Loggable
     @GetMapping(value = "/getWorkflowEndingStatusCode/{classId}")
-    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId){
+    public Integer getWorkflowEndingStatusCode(@PathVariable Long classId) {
         return tclassService.getWorkflowEndingStatusCode(classId);
     }
 

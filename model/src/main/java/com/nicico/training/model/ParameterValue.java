@@ -23,7 +23,7 @@ public class ParameterValue extends Auditable {
     @Column(name = "c_title", nullable = false)
     private String title;
 
-    @Column(name = "c_code")
+    @Column(name = "c_code", unique = true)
     private String code;
 
     @Column(name = "c_type")
