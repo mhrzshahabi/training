@@ -132,6 +132,12 @@ public class Tclass extends Auditable {
     @Column(name = "c_topology")
     private String topology;
 
+    @Column(name = "c_scoring_method")
+    private String scoringMethod;
+
+    @Column(name = "c_acceptance_limit")
+    private String acceptancelimit;
+
     @Column(name = "c_workflow_ending_status")
     private String workflowEndingStatus;
     @Column(name = "c_workflow_ending_status_code")

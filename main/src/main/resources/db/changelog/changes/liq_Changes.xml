@@ -278,4 +278,15 @@
             <column name="f_skill" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-217">
+        <addColumn tableName="tbl_class">
+            <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-218">
+        <addColumn tableName="tbl_class">
+            <column name="c_scoring_method" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>
