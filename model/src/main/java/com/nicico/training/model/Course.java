@@ -9,6 +9,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -77,6 +78,13 @@ public class Course extends Auditable {
 
     @OneToMany(mappedBy = "courseMainObjective", fetch = FetchType.LAZY)
     private Set<Skill> skillMainObjectiveSet;
+
+    @Transient
+    public List<Long> getMainObjectiveIds() {
+        List<Long> ids = new ArrayList<>();
+        skillMainObjectiveSet.forEach(c -> ids.add(c.getId()));
+        return ids;
+    }
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;
