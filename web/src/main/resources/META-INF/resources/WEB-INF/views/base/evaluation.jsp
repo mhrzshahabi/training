@@ -76,7 +76,6 @@
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
-
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
 
@@ -325,8 +324,8 @@
 
 
         var ListGrid_evaluation_student = isc.TrLG.create({
-            width:"100%",
-            height:"100%",
+            width: "100%",
+            height: "100%",
             dataSource: RestDataSource_evaluation_student,
             selectionType: "single",
             fields: [
@@ -387,20 +386,24 @@
         });
 
         //*****evaluation toolStrip*****
-        var ToolStripButton_FormIssuance =isc.ToolStripButton.create({
-            title:"صدور فرم",
-            click:function () { alert("صدور فرم"); }
+        var ToolStripButton_FormIssuance = isc.ToolStripButton.create({
+            title: "صدور فرم",
+            click: function () {
+                alert("صدور فرم");
+            }
         });
 
-        var ToolStripButton_FormIssuanceForAll=isc.ToolStripButton.create({
-            title:"صدور فرم برای همه",
-            click:function () { alert("صدور فرم برای همه"); }
+        var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
+            title: "صدور فرم برای همه",
+            click: function () {
+                alert("صدور فرم برای همه");
+            }
         });
 
-        var ToolStrip_evaluation =isc.ToolStrip.create({
-            width:"100%",
-            membersMargin:5,
-            members:[
+        var ToolStrip_evaluation = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
                 ToolStripButton_FormIssuance,
                 ToolStripButton_FormIssuanceForAll
             ]
@@ -494,11 +497,12 @@
         var Detail_Tab_Evaluation = isc.TabSet.create({
             ID: "tabSetEvaluation",
             tabBarPosition: "top",
+            enabled: false,
             tabs: [
                 {
                     id: "TabPane_Reaction",
                     title: "واکنش",
-                      pane: VLayout_Body_evaluation
+                    pane: VLayout_Body_evaluation
                 }
                 ,
                 {
@@ -713,6 +717,8 @@
 
             if (!(classRecord === undefined || classRecord === null)) {
 
+                Detail_Tab_Evaluation.enable();
+
                 switch (tab.id) {
                     case "TabPane_Reaction": {
                         ListGrid_evaluation_student.hideField("evaluationStatusLearning");
@@ -760,6 +766,8 @@
                     }
                 }
 
+            } else {
+                Detail_Tab_Evaluation.disable();
             }
         }
 
