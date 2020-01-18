@@ -848,7 +848,7 @@
 
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
-
+        TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
         TabSet_Bottom_JspTeacher.enable();
         refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), null);
