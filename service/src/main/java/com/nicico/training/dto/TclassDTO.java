@@ -61,6 +61,8 @@ public class TclassDTO {
     private List<Long> trainingPlaceIds;
     private String workflowEndingStatus;
     private Integer workflowEndingStatusCode;
+    private String scoringMethod;
+    private String acceptancelimit;
 
 
     @Getter
