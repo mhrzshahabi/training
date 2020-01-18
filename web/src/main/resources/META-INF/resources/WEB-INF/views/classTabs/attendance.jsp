@@ -16,6 +16,7 @@
     var filterValuesUnique1 = [];
     var filterValues = [];
     var filterValues1 = [];
+    var sessionDateData;
     var attendanceState = {
         "0": "نامشخص",
         "1": "حاضر",
@@ -132,10 +133,10 @@
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({
         ID: "attendanceForm",
-        numCols: 5,
+        numCols: 6,
         padding: 10,
         // cellBorder:2,
-        colWidths:[300,200,200,100,100],
+        colWidths:[250,200,200,100,100,50],
         fields: [
             {
                 name: "attendanceTitle",
@@ -176,7 +177,7 @@
                         <%--});--%>
                     <%--}--%>
                 <%--},--%>
-                changed: function (form, item, value, oldValue) {
+                changed: function (form, item, value) {
                   if(attendanceGrid.getAllEditRows().length>0){
                       // loadPage_Attendance();
                         if(value==1){
@@ -804,7 +805,11 @@
                             }
                         })
                     }
-                }
+                },
+                dataArrived: function (startRow, endRow, data) {
+                    this.Super("dataArrived", arguments);
+                    sessionDateData = data;
+                },
             },
             // {
             //     type: "SpacerItem"
@@ -842,6 +847,20 @@
                             }
                         }
 
+                }
+            },
+            {
+                name: "refreshBtn",
+                ID: "refreshBtnAttendanceJsp",
+                // showTitle: false,
+                title: "",
+                prompt:"<spring:message code="refresh"/>",
+                startRow:false,
+                type: "ButtonItem",
+                icon: "[SKIN]/actions/refresh.png",
+                endRow:false,
+                click () {
+                    loadPage_Attendance()
                 }
             },
         ],
@@ -975,6 +994,7 @@
             return;
         }
         if(classGridRecordInAttendanceJsp == ListGrid_Class_JspClass.getSelectedRecord()){
+            ListGrid_Attendance_Refresh();
             return;
         }
         classGridRecordInAttendanceJsp = ListGrid_Class_JspClass.getSelectedRecord();
@@ -993,6 +1013,34 @@
             sessionInOneDate.length = 0;
             sessionsForStudent.length = 0;
             ListGrid_Attendance_AttendanceJSP.invalidateCache();
+        }
+    }
+
+    function ListGrid_Attendance_Refresh(form = attendanceForm) {
+        let oldValue = form.getValue("sessionDate");
+        form.getItem("filterType").changed(form, form.getItem("filterType"), form.getValue("filterType"));
+        form.getItem("sessionDate").click(form, form.getItem("sessionDate"));
+        if(form.getValue("filterType") == 2) {
+            setTimeout(function () {
+                for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                    if (sessionDateData.allRows[i].id == oldValue) {
+                        form.setValue("sessionDate", oldValue);
+                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                        return;
+                    }
+                }
+            }, 500)
+        }
+        else{
+            setTimeout(function () {
+                for (let i = 0; i < sessionDateData.allRows.length; i++) {
+                    if (sessionDateData.allRows[i].sessionDate == oldValue) {
+                        form.setValue("sessionDate", oldValue);
+                        form.getItem("sessionDate").changed(form, form.getItem("sessionDate"), form.getValue("sessionDate"));
+                        return;
+                    }
+                }
+            }, 500)
         }
     }
 

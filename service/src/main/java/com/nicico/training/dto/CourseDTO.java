@@ -55,7 +55,7 @@ public class CourseDTO implements Serializable {
     private String description;
 
     @ApiModelProperty(required = true)
-    private String mainObjective;
+    private List<Long> mainObjectiveIds;
 
     @ApiModelProperty(required = true)
     private String needText;
@@ -117,6 +117,7 @@ public class CourseDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private String evaluation;
 
     }
 

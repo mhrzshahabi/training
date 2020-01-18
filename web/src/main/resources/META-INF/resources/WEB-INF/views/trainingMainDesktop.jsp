@@ -362,6 +362,7 @@
     basicInfoTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="basic.information"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
 <%--                <sec:authorize access="hasAuthority('parameter_r')">--%>
                 {
@@ -411,6 +412,7 @@
     needsAssessmentTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="need.assessment"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="competence"/>",
@@ -489,6 +491,7 @@
     designingTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="designing.and.planning"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="course"/>",
@@ -524,6 +527,7 @@
     runTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="run"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="class"/>",
@@ -559,6 +563,7 @@
     evaluationTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="evaluation"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="evaluation.index.title"/>",
@@ -572,6 +577,12 @@
                         createTab(this.title, "<spring:url value="/web/config-questionnaire"/>");
                     },
                 },
+                {
+                    title: "<spring:message code="evaluation"/>",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/evaluation/show-form"/>");
+                    }
+                }
             ]
         }),
     });
@@ -579,6 +590,7 @@
     cartableTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="cartable"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 {
                     title: "<spring:message code="personal"/>",
@@ -619,6 +631,7 @@
     reportTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="report"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: []
         }),
     });
@@ -626,6 +639,7 @@
     securityTSMB = isc.ToolStripMenuButton.create({
         title: "<spring:message code="security"/>",
         menu: isc.Menu.create({
+            placement: "none",
             data: [
                 <%--{--%>
                 <%--    title: "<spring:message code="user.plural"/>",--%>
@@ -740,6 +754,7 @@
 
     var headerLayout = isc.HLayout.create({
         width: "100%",
+        minWidth: 1024,
         height: "52",
         styleName: "header",
         members: [headerLogo, headerFlow, headerExitHLayout],
@@ -747,6 +762,7 @@
 
     var MainDesktopMenuH = isc.HLayout.create({
         width: "100%",
+        minWidth: 1024,
         height: "4%",
         styleName: "main-menu",
         align: "center",
@@ -758,6 +774,7 @@
     isc.TrVLayout.create({
         autoDraw: true,
         styleName: "relativePosition",
+        overflow: "auto",
         members: [
             headerLayout,
             MainDesktopMenuH,

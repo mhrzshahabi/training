@@ -278,4 +278,44 @@
             <column name="f_skill" type="number(19, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-217">
+        <addColumn tableName="tbl_class">
+            <column name="c_acceptance_limit" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579326614923-218">
+        <addColumn tableName="tbl_class">
+            <column name="c_scoring_method" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1579330041869-217">
+        <addColumn tableName="tbl_skill">
+            <column name="f_main_objective_course" type="number(19, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="jafari-h (generated)" id="1579330041869-272">
+        <dropColumn columnName="C_MAIN_OBJECTIVE" tableName="TBL_COURSE"/>
+    </changeSet>
+
+    <changeSet author="rastegari_h (generated)" id="1579331887357-218">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_status_behavior" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1579331887357-219">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_status_learning" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1579331887357-220">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_status_reaction" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="rastegari_h (generated)" id="1579331887357-221">
+        <addColumn tableName="tbl_class_student">
+            <column name="evaluation_status_results" type="number(10, 0)"/>
+        </addColumn>
+    </changeSet>
+
 </databaseChangeLog>

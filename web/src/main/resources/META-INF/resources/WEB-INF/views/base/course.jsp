@@ -939,14 +939,54 @@
         numCols: 5,
         fields: [
             {
-                name: "mainObjective",
+                name: "mainObjectiveIds",
                 title: "<spring:message code="course_mainObjective"/>",
+                type: "SelectItem",
+                // showHintInField: true,
+                // hint: "اهداف کلی",
+                autoFetchData: false,
+                multiple: true,
+                pickListCriteria:{
+                    _constructor: "AdvancedCriteria",
+                    operator: "and",
+                    criteria: [
+                        {fieldName: "courseMainObjectiveId", operator: "isNull"},
+                        // {operator:"or", criteria:[
+                                {fieldName: "courseId", operator: "isNull"},
+                                // {fieldName: "courseId", operator: "equals", value: }
+                            // ]}
+                        ]
+                },
+                pickListWidth: 250,
+                showTitle: false,
+                optionDataSource: RestDataSource_Skill_JspCourse,
+                displayField: "titleFa",
+                valueField: "id",
+                filterFields: ["titleFa", "code"],
+                textMatchStyle: "substring",
+                textAlign: "center",
+                pickListFields: [
+                    {name: "titleFa"},
+                    {name: "code"}
+                ],
+                // click: function (form, item) {
+                //     if (form.getValue("instituteId")) {
+                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + form.getValue("instituteId") + "/training-places";
+                //         item.fetchData();
+                //     } else {
+                //         RestDataSource_TrainingPlace_JspClass.fetchDataURL = instituteUrl + "0/training-places";
+                //         item.fetchData();
+                //         isc.MyOkDialog.create({
+                //             message: "ابتدا برگزار کننده را انتخاب کنید",
+                //         });
+                //     }
+                // },
                 colSpan: 2,
-                rowSpan: 2,
-                readonly: true,
-                type: "TextAreaItem",
-                width: "*",
-                height: "*",
+                // rowSpan: 2,
+                // readonly: true,
+                // type: "TextAreaItem",
+                // width: "*",
+                // height: "*",
                 // length: "*",
                 required: true,
                 endRow: false
@@ -2772,4 +2812,3 @@
         }
         //}
     }
-

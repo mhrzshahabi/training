@@ -128,7 +128,7 @@ public class TclassService implements ITclassService {
                 .ifPresent(classStudents ->
                         classStudents.forEach(cs ->
                                 {
-                                    if (cs.getPresenceTypeId() != 104)
+                                    if (!cs.getPresenceType().getCode().equals("kh"))
                                         studentInfoSet.add(modelMapper.map(cs, ClassStudentDTO.AttendanceInfo.class));
                                 }
                         ));
