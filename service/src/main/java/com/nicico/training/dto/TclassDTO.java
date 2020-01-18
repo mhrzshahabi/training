@@ -109,6 +109,15 @@ public class TclassDTO {
 
     // ------------------------------
 
+         @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassScore")
+    public static class ScoreInfo {
+       private String scoringMethod;
+       private String acceptancelimit;
+    }
+
     @Getter
     @Setter
     @Accessors(chain = true)

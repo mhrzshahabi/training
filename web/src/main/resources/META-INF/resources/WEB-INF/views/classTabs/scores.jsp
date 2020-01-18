@@ -19,7 +19,13 @@ var flag2=0
            // {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
             {name: "scoresState",title: "<spring:message code="pass.mode"/>",filterOperator: "iContains"},
             {name: "failureReason",title: "<spring:message code="faild.reason"/>",filterOperator: "iContains"},
-            {name: "score",title: "<spring:message code="score"/>",filterOperator: "iContains"}
+            {name: "score",title: "<spring:message code="score"/>",filterOperator: "iContains"},
+            {name: "tclass.scoringMethod",  valueMap: {
+                    "1": "ارزشی",
+                    "2": "نمره از صد",
+                    "3": "نمره از بیست",
+                    "4": "بدون نمره",
+                },title: "روش نمره دهی",filterOperator: "iContains"}
             ],
 
     });
@@ -68,6 +74,7 @@ var flag2=0
            // {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {name: "student.personnelNo", title: "<spring:message code="personnel.no"/>", filterOperator: "iContains", autoFitWidth: true},
            // {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+            {name: "tclass.scoringMethod",title: "روش نمره دهی",filterOperator: "iContains"},
 
             {
                 name: "scoresState",
