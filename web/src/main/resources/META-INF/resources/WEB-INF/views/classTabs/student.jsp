@@ -24,6 +24,11 @@
                     removeStudent_student();
                 }
             },
+            {
+                title: "<spring:message code="evaluation"/>", icon: "<spring:url value="remove.png"/>", click: function () {
+                    evaluationStudent_student();
+                }
+            },
         ]
     });
 
@@ -39,6 +44,12 @@
             isc.ToolStripButtonRemove.create({
                 click: function () {
                     removeStudent_student();
+                }
+            }),
+            isc.ToolStripButtonRemove.create({
+                title: "<spring:message code="evaluation"/>",
+                click: function () {
+                    evaluationStudent_student();
                 }
             }),
             isc.LayoutSpacer.create({width: "*"}),
@@ -741,5 +752,95 @@
             }, 3000);
         }
     }
+    
+    
+    
+    
+    function  evaluationStudent_student() {
 
-    // </script>
+        var studentId = StudentsLG_student.getSelectedRecord().id;
+        var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+        if (studentId == null || studentId == undefined || classId == null || classId == undefined ) {
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='global.grid.record.not.selected'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        }
+        else {
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "checkEvaluationStudentInClass/" + studentId + "/" + classId, "GET",
+            null, "callback: student_evaluation_class_findOne_result(rpcResponse)"));
+        }
+    }
+
+    function student_evaluation_class_findOne_result(resp) {
+        if (resp == null || resp == undefined || resp.data == "") {
+            duplicateCodePerReg = true;
+            var ERROR = isc.Dialog.create({
+                message: ("<spring:message code='msg.operation.error'/>"),
+                icon: "[SKIN]stop.png",
+                title: "<spring:message code='message'/>"
+            });
+            setTimeout(function () {
+                ERROR.close();
+            }, 3000);
+        } else {
+
+            var studentId = StudentsLG_student.getSelectedRecord().id;
+            var classId = ListGrid_Class_JspClass.getSelectedRecord().id;
+            switch (resp) {
+                case "1": {
+                    evaluationViewloader.setViewURL(tclassStudentUrl +"loadPageReaction/"+ studentId + "/" + classId);
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.reaction"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+                case "2": {
+                    evaluationViewloader.setViewURL(tclassStudentUrl +"loadPageLearning/"+ studentId + "/" + classId);
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.learning"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+                case "3": {
+                    evaluationViewloader.setViewURL(tclassStudentUrl +"loadPageBehavioral/"+ studentId + "/" + classId);
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.behavioral"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+                case "4": {
+                    evaluationViewloader.setViewURL(tclassStudentUrl +"loadPageResults/"+ studentId + "/" + classId);
+                    evaluationWindowViewloader.setTitle("<spring:message code="evaluation.results"/>");
+                    evaluationWindowViewloader.show();
+                    break;
+                }
+            }
+        }
+    }
+
+    var evaluationViewloader = isc.ViewLoader.create({
+        width: "100%",
+        height: "100%",
+        autoDraw: false,
+        viewURL: "",
+        loadingMessage: " "
+    });
+
+    var  evaluationWindowViewloader  = isc.Window.create({
+        width: 800,
+        height: 500,
+        autoSize:false,
+        autoCenter: true,
+        isModal: true,
+        showModalMask: true,
+        align: "center",
+        autoDraw: false,
+        dismissOnEscape: true,
+        items: [
+            evaluationViewloader
+        ]
+    });
+
+    //
