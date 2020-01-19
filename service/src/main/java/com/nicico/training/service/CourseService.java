@@ -30,6 +30,7 @@ public class CourseService implements ICourseService {
     private final EducationLevelDAO educationLevelDAO;
     private final TeacherDAO teacherDAO;
     private final SkillDAO skillDAO;
+    private final SkillService skillService;
     private final CourseDAO courseDAO;
     private final CompetenceDAOOld competenceDAO;
     private final EnumsConverter.ETechnicalTypeConverter eTechnicalTypeConverter = new EnumsConverter.ETechnicalTypeConverter();
@@ -201,7 +202,13 @@ public class CourseService implements ICourseService {
 //            String s1 = Joiner.on(',').join(equalCourseListId);
 //            course.setPreCourse(s);
 //            course.setEqualCourse(s1);
-            Course course1 = courseDAO.saveAndFlush(course);
+            Course course1 = courseDAO.save(course);
+            Set<Skill> setSkill = new HashSet<>(skillDAO.findAllById(request.getMainObjectiveIds()));
+            for (Skill skill : setSkill) {
+                skill.setCourseId(course1.getId());
+                skill.setCourseMainObjectiveId(course1.getId());
+                skillDAO.saveAndFlush(skill);
+            }
             return modelMapper.map(course1, CourseDTO.Info.class);
         } else
             return null;
@@ -227,7 +234,35 @@ public class CourseService implements ICourseService {
         course.setETheoType(eTheoTypeConverter.convertToEntityAttribute(request.getETheoTypeId()));
         course.setERunType(eRunTypeConverter.convertToEntityAttribute(request.getERunTypeId()));
         course.setELevelType(eLevelTypeConverter.convertToEntityAttribute(request.getELevelTypeId()));
-        return modelMapper.map(courseDAO.saveAndFlush(course), CourseDTO.Info.class);
+//        Set<Skill> courseSkillSet = course.getSkillSet();
+//        courseSkillSet.addAll(setSkill);
+//        course.setSkillSet(courseSkillSet);
+        Course save = courseDAO.save(course);
+        Set<Skill> savedSkills = save.getSkillMainObjectiveSet();
+        Set<Skill> savingSkill = new HashSet<>(skillService.getAllByIds(request.getMainObjectiveIds()));
+        if(!savedSkills.equals(savingSkill)) {
+            if(savingSkill.containsAll(savedSkills)){
+                for (Skill skill : savingSkill) {
+                    skill.setCourseMainObjectiveId(save.getId());
+                    skill.setCourseId(save.getId());
+                    skillDAO.saveAndFlush(skill);
+                }
+            }
+            else {
+                for (Skill savedSkill : savedSkills) {
+                    savedSkill.setCourseMainObjectiveId(null);
+                    skillDAO.saveAndFlush(savedSkill);
+                }
+                for (Skill skill : savingSkill) {
+                    skill.setCourseMainObjectiveId(save.getId());
+                    skill.setCourseId(save.getId());
+                    skillDAO.saveAndFlush(skill);
+                }
+            }
+
+        }
+
+        return modelMapper.map(save, CourseDTO.Info.class);
     }
 
     @Transactional

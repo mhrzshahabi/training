@@ -76,7 +76,6 @@
     }
     // ---------------------------------------- Create - contextMenu ---------------------------------------->>
 
-
     // <<-------------------------------------- Create - RestDataSource & ListGrid ----------------------------
     {
 
@@ -219,8 +218,10 @@
                 {name: "hasWarning", title: " ", width: 40, type: "image", imageURLPrefix: "", imageURLSuffix: ".gif"}
 
             ],
-            selectionUpdated:function () {
+            selectionUpdated: function () {
                 loadSelectedTab_data(Detail_Tab_Evaluation.getSelectedTab());
+
+                set_Evaluation_Tabset_status();
             }
             // ,
             // doubleClick: function () {
@@ -299,32 +300,32 @@
                     filterOperator: "iContains"
                 },
                 {
-                    name: "student.ccpAssistant",
-                    title: "<spring:message code="reward.cost.center.assistant"/>",
+                    name: "evaluationStatusReaction",
+                    title: "وضعیت ارزیابی واکنشی",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "student.ccpAffairs",
-                    title: "<spring:message code="reward.cost.center.affairs"/>",
+                    name: "evaluationStatusLearning",
+                    title: "وضعیت ارزیابی یادگیری",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "student.ccpSection",
-                    title: "<spring:message code="reward.cost.center.section"/>",
+                    name: "evaluationStatusBehavior",
+                    title: "وضعیت ارزیابی رفتاری",
                     filterOperator: "iContains"
                 },
                 {
-                    name: "student.ccpUnit",
-                    title: "<spring:message code="reward.cost.center.unit"/>",
+                    name: "evaluationStatusResults",
+                    title: "وضعیت ارزیابی نتایج",
                     filterOperator: "iContains"
-                },
+                }
             ]
-            ,
-            fetchDataURL: tclassStudentUrl + "/students-iscList/"
         });
 
 
         var ListGrid_evaluation_student = isc.TrLG.create({
+            width: "100%",
+            height: "100%",
             dataSource: RestDataSource_evaluation_student,
             selectionType: "single",
             fields: [
@@ -335,10 +336,10 @@
                 {name: "student.personnelNo2"},
                 {name: "student.postTitle"},
                 {name: "student.ccpArea"},
-                {name: "student.ccpAssistant"},
-                {name: "student.ccpAffairs"},
-                {name: "student.ccpSection"},
-                {name: "student.ccpUnit"}
+                {name: "evaluationStatusReaction"},
+                {name: "evaluationStatusLearning", hidden: true},
+                {name: "evaluationStatusBehavior", hidden: true},
+                {name: "evaluationStatusResults", hidden: true}
             ]
             //,
             // gridComponents: [StudentTS_student, "filterEditor", "header", "body"]
@@ -358,11 +359,9 @@
     }
     // ---------------------------------------- Create - RestDataSource & ListGrid -------------------------->>
 
-
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
-// icon: "[SKIN]/actions/refresh.png",
             title: "<spring:message code="refresh"/>",
             click: function () {
                 ListGrid_evaluation_class.invalidateCache();
@@ -385,9 +384,32 @@
 
             ]
         });
+
+        //*****evaluation toolStrip*****
+        var ToolStripButton_FormIssuance = isc.ToolStripButton.create({
+            title: "صدور فرم",
+            click: function () {
+                alert("صدور فرم");
+            }
+        });
+
+        var ToolStripButton_FormIssuanceForAll = isc.ToolStripButton.create({
+            title: "صدور فرم برای همه",
+            click: function () {
+                alert("صدور فرم برای همه");
+            }
+        });
+
+        var ToolStrip_evaluation = isc.ToolStrip.create({
+            width: "100%",
+            membersMargin: 5,
+            members: [
+                ToolStripButton_FormIssuance,
+                ToolStripButton_FormIssuanceForAll
+            ]
+        });
     }
     // ---------------------------------------- Create - ToolStripButton ------------------------------------>>
-
 
     // <<-------------------------------------- Create - DynamicForm & Window ---------------------------------
     {
@@ -452,38 +474,65 @@
     // ---------------------------------------- Create - DynamicForm $ Window ------------------------------->>
 
     // <<-------------------------------------- Create - TabSet & Tab -----------------------------------------
-    var Detail_Tab_Evaluation = isc.TabSet.create({
-        ID: "tabSetEvaluation",
-        tabBarPosition: "top",
-        tabs: [
-            {
-                id: "TabPane_Reaction",
-                title: "واکنش",
-                pane: ListGrid_evaluation_student
-            },
-            {
-                id: "TabPane_Learning",
-                title: "یادگیری"
-            },
-            {
-                id: "TabPane_Behavior",
-                title: "رفتار"
-            },
-            {
-                id: "TabPane_Results",
-                title: "نتایج"
-            }
-        ],
-        tabSelected: function (tabNum, tabPane, ID, tab, name) {
-            if (isc.Page.isLoaded())
-                loadSelectedTab_data(tab);
-        }
+    {
+        //*****evaluation HLayout & VLayout*****
+        var HLayout_Actions_evaluation = isc.HLayout.create({
+            width: "100%",
+            height: "1%",
+            members: [ToolStrip_evaluation]
+        });
 
-    });
+        var Hlayout_Grid_evaluation = isc.HLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [ListGrid_evaluation_student]
+        });
+
+        var VLayout_Body_evaluation = isc.VLayout.create({
+            width: "100%",
+            height: "100%",
+            members: [HLayout_Actions_evaluation, Hlayout_Grid_evaluation]
+        });
+
+        var Detail_Tab_Evaluation = isc.TabSet.create({
+            ID: "tabSetEvaluation",
+            tabBarPosition: "top",
+            enabled: false,
+            tabs: [
+                {
+                    id: "TabPane_Reaction",
+                    title: "واکنش",
+                    pane: VLayout_Body_evaluation
+                }
+                ,
+                {
+                    id: "TabPane_Learning",
+                    title: "یادگیری",
+                    pane: VLayout_Body_evaluation
+                },
+                {
+                    id: "TabPane_Behavior",
+                    title: "رفتار",
+                    pane: VLayout_Body_evaluation
+                },
+                {
+                    id: "TabPane_Results",
+                    title: "نتایج",
+                    pane: VLayout_Body_evaluation
+                }
+            ],
+            tabSelected: function (tabNum, tabPane, ID, tab, name) {
+                if (isc.Page.isLoaded())
+                    loadSelectedTab_data(tab);
+            }
+
+        });
+    }
     // ---------------------------------------- Create - TabSet & Tab --------------------------------------->>
 
     // <<-------------------------------------- Create - HLayout & VLayout ------------------------------------
     {
+        //*****class HLayout & VLayout*****
         var HLayout_Actions_operational = isc.HLayout.create({
             width: "100%",
             height: "1%",
@@ -510,20 +559,22 @@
             height: "100%",
             members: [HLayout_Actions_operational, Hlayout_Grid_operational, Hlayout_Tab_Evaluation]
         });
+
+
     }
     // ---------------------------------------- Create - HLayout & VLayout ---------------------------------->>
 
 
     // <<----------------------------------------------- Functions --------------------------------------------
     {
-//*****open insert window*****
+        //*****open insert window*****
         function create_OperationalUnit() {
             evaluation_method = "POST";
             DynamicForm_OperationalUnit.clearValues();
             Window_OperationalUnit.show();
         }
 
-//*****insert function*****
+        //*****insert function*****
         function save_OperationalUnit() {
 
             if (!DynamicForm_OperationalUnit.validate())
@@ -535,7 +586,7 @@
             isc.RPCManager.sendRequest(TrDSRequest(operationalUnitSaveUrl, evaluation_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
         }
 
-//*****open update window*****
+        //*****open update window*****
         function show_OperationalUnitEditForm() {
 
             let record = ListGrid_evaluation_class.getSelectedRecord();
@@ -559,7 +610,7 @@
             }
         }
 
-//*****update function*****
+        //*****update function*****
         function edit_OperationalUnit() {
             let operationalUnitData = DynamicForm_OperationalUnit.getValues();
             let operationalUnitEditUrl = operationalUnitUrl;
@@ -570,7 +621,7 @@
             isc.RPCManager.sendRequest(TrDSRequest(operationalUnitEditUrl, evaluation_method, JSON.stringify(operationalUnitData), show_OperationalUnitActionResult));
         }
 
-//*****delete function*****
+        //*****delete function*****
         function remove_OperationalUnit() {
             var record = ListGrid_evaluation_class.getSelectedRecord();
             if (record == null || record.id == null) {
@@ -598,7 +649,7 @@
 
         }
 
-//*****show action result function*****
+        //*****show action result function*****
         var MyOkDialog_Operational;
 
         function show_OperationalUnitActionResult(resp) {
@@ -633,14 +684,14 @@
             }
         }
 
-//*****close dialog*****
+        //*****close dialog*****
         function close_MyOkDialog_Operational() {
             setTimeout(function () {
                 MyOkDialog_Operational.close();
             }, 3000);
         }
 
-//*****print*****
+        //*****print*****
         function print_OperationalUnitListGrid(type) {
             var advancedCriteria_unit = ListGrid_evaluation_class.getCriteria();
             var criteriaForm_course = isc.DynamicForm.create({
@@ -659,43 +710,100 @@
             criteriaForm_course.show();
             criteriaForm_course.submitForm();
         }
-    }
 
-    //*****Load student for tabs*****
-    function loadSelectedTab_data(tab) {
-       let classRecord = ListGrid_evaluation_class.getSelectedRecord();
+        //*****Load student for tabs*****
+        function loadSelectedTab_data(tab) {
+            let classRecord = ListGrid_evaluation_class.getSelectedRecord();
 
+            if (!(classRecord === undefined || classRecord === null)) {
 
-        if (!(classRecord == undefined || classRecord == null)) {
+                Detail_Tab_Evaluation.enable();
 
-            switch (tab.id) {
-                case "TabPane_Reaction": {
-                    RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
-                    ListGrid_evaluation_student.invalidateCache();
-                    ListGrid_evaluation_student.fetchData();
-                    break;
+                switch (tab.id) {
+                    case "TabPane_Reaction": {
+                        ListGrid_evaluation_student.hideField("evaluationStatusLearning");
+                        ListGrid_evaluation_student.hideField("evaluationStatusBehavior");
+                        ListGrid_evaluation_student.hideField("evaluationStatusResults");
+                        ListGrid_evaluation_student.showField("evaluationStatusReaction");
+
+                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_evaluation_student.invalidateCache();
+                        ListGrid_evaluation_student.fetchData();
+                        break;
+                    }
+                    case "TabPane_Learning": {
+                        ListGrid_evaluation_student.hideField("evaluationStatusReaction");
+                        ListGrid_evaluation_student.hideField("evaluationStatusBehavior");
+                        ListGrid_evaluation_student.hideField("evaluationStatusResults");
+                        ListGrid_evaluation_student.showField("evaluationStatusLearning");
+
+                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_evaluation_student.invalidateCache();
+                        ListGrid_evaluation_student.fetchData();
+                        break;
+                    }
+                    case "TabPane_Behavior": {
+                        ListGrid_evaluation_student.hideField("evaluationStatusReaction");
+                        ListGrid_evaluation_student.hideField("evaluationStatusLearning");
+                        ListGrid_evaluation_student.hideField("evaluationStatusResults");
+                        ListGrid_evaluation_student.showField("evaluationStatusBehavior");
+
+                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_evaluation_student.invalidateCache();
+                        ListGrid_evaluation_student.fetchData();
+                        break;
+                    }
+                    case "TabPane_Results": {
+                        ListGrid_evaluation_student.hideField("evaluationStatusReaction");
+                        ListGrid_evaluation_student.hideField("evaluationStatusLearning");
+                        ListGrid_evaluation_student.hideField("evaluationStatusBehavior");
+                        ListGrid_evaluation_student.showField("evaluationStatusResults");
+
+                        RestDataSource_evaluation_student.fetchDataURL = tclassStudentUrl + "/students-iscList/" + classRecord.id;
+                        ListGrid_evaluation_student.invalidateCache();
+                        ListGrid_evaluation_student.fetchData();
+                        break;
+                    }
                 }
-                case "TabPane_Learning": {
 
-                    break;
-                }
-                case "TabPane_Behavior": {
+            } else {
+                Detail_Tab_Evaluation.disable();
+            }
+        }
 
-                    break;
-                }
-                case "TabPane_Results": {
+        //*****set tabset status*****
+        function set_Evaluation_Tabset_status() {
 
-                    break;
-                }
+            let classRecord = ListGrid_evaluation_class.getSelectedRecord();
+            let evaluationType = classRecord.course.evaluation;
+
+            if (evaluationType === "1") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.disableTab(1);
+                Detail_Tab_Evaluation.disableTab(2);
+                Detail_Tab_Evaluation.disableTab(3);
+            } else if (evaluationType === "2") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.enableTab(1);
+                Detail_Tab_Evaluation.disableTab(2);
+                Detail_Tab_Evaluation.disableTab(3);
+            } else if (evaluationType === "3") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.enableTab(1);
+                Detail_Tab_Evaluation.enableTab(2);
+                Detail_Tab_Evaluation.disableTab(3);
+            } else if (evaluationType === "4") {
+                Detail_Tab_Evaluation.enableTab(0);
+                Detail_Tab_Evaluation.enableTab(1);
+                Detail_Tab_Evaluation.enableTab(2);
+                Detail_Tab_Evaluation.enableTab(3);
             }
 
+            VLayout_Body_evaluation.enable();
+
         }
+
     }
-
-
-
-
-
     // ------------------------------------------------- Functions ------------------------------------------>>
 
 

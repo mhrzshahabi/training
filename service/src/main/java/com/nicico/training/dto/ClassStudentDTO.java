@@ -33,6 +33,7 @@ public class ClassStudentDTO implements Serializable {
     @ApiModelProperty(required = true)
     private Long tclassId;
 
+
     @Getter
     @Setter
     @Accessors(chain = true)
@@ -42,6 +43,10 @@ public class ClassStudentDTO implements Serializable {
         private StudentDTO.ClassStudentInfo student;
         private String applicantCompanyName;
         private Long presenceTypeId;
+        private Integer evaluationStatusReaction;
+        private Integer evaluationStatusLearning;
+        private Integer evaluationStatusBehavior;
+        private Integer evaluationStatusResults;
     }
 
     @Getter

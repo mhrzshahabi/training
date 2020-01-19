@@ -73,18 +73,18 @@ public class Course extends Auditable {
     @Column(name = "subcategory_id")
     private Long subCategoryId;
 
-    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "course")
     private Set<Skill> skillSet;
 
-    @OneToMany(mappedBy = "courseMainObjective", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "courseMainObjective")
     private Set<Skill> skillMainObjectiveSet;
 
-    @Transient
-    public List<Long> getMainObjectiveIds() {
-        List<Long> ids = new ArrayList<>();
-        skillMainObjectiveSet.forEach(c -> ids.add(c.getId()));
-        return ids;
-    }
+//    @Transient
+//    public List<Long> getMainObjectiveIds() {
+//        List<Long> ids = new ArrayList<>();
+//        skillMainObjectiveSet.forEach(c -> ids.add(c.getId()));
+//        return ids;
+//    }
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY)
     private Set<Tclass> tclassSet;

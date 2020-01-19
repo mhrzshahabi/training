@@ -35,14 +35,15 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "objectId", hidden: true},
+            {name: "objectType", title: "<spring:message code="type"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "competenceId", hidden: true},
             {name: "competence.title", title: "<spring:message code="competence"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "skillId", hidden: true},
-            {name: "skill.title", title: "<spring:message code="skill"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "skill.titleFa", title: "<spring:message code="skill"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "needsAssessmentDomainId", hidden: true},
             {name: "needsAssessmentDomain.title", title: "<spring:message code="domain"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
             {name: "needsAssessmentPriorityId", hidden: true},
-            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
+            {name: "needsAssessmentPriority.title", title: "<spring:message code="priority"/>", required: true, filterOperator: "iContains"},
         ],
         fetchDataURL: needsAssessmentUrl + "/iscList",
     });
@@ -50,8 +51,8 @@
     NeedsAssessmentLG_needsAssessment = isc.TrLG.create({
         ID: "NeedsAssessmentLG_needsAssessment",
         dataSource: NeedsAssessmentDS_needsAssessment,
-        // autoFetchData: true,
-        fields: [{name: "competence.title"}, {name: "skill.title"}, {name: "needsAssessmentDomain.title"}, {name: "needsAssessmentPriority.title"},],
+        autoFetchData: true,
+        fields: [{name: "objectType"}, {name: "competence.title"}, {name: "skill.titleFa"}, {name: "needsAssessmentDomain.title"}, {name: "needsAssessmentPriority.title"},],
         gridComponents: [
             NeedsAssessmentTS_needsAssessment, "filterEditor", "header", "body"
         ],
@@ -80,8 +81,8 @@
         fetchDataURL: skillUrl + "/spec-list"
     });
 
-    NeedsAssessmentDomainDS_competence = isc.TrDS.create({
-        ID: "NeedsAssessmentDomainDS_competence",
+    NeedsAssessmentDomainDS_needsAssessment = isc.TrDS.create({
+        ID: "NeedsAssessmentDomainDS_needsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
@@ -89,13 +90,48 @@
         fetchDataURL: parameterValueUrl + "/iscList/101",
     });
 
-    NeedsAssessmentPriorityDS_competence = isc.TrDS.create({
-        ID: "NeedsAssessmentPriorityDS_competence",
+    NeedsAssessmentPriorityDS_needsAssessment = isc.TrDS.create({
+        ID: "NeedsAssessmentPriorityDS_needsAssessment",
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", required: true, filterOperator: "iContains", autoFitWidth: true},
         ],
         fetchDataURL: parameterValueUrl + "/iscList/102",
+    });
+
+    JobDS_needsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: jobUrl + "/iscList"
+    });
+
+    JobGroupDS_needsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "titleFa", title: "<spring:message code="title"/>", filterOperator: "iContains"},
+        ],
+        fetchDataURL: jobGroupUrl + "spec-list"
+    });
+
+    PostDS_needsAssessment = isc.TrDS.create({
+        fields: [
+            {name: "id", primaryKey: true, hidden: true},
+            {name: "code", title: "<spring:message code="post.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "titleFa", title: "<spring:message code="post.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "job.titleFa", title: "<spring:message code="job.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "postGrade.titleFa", title: "<spring:message code="post.grade.title"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "area", title: "<spring:message code="area"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "assistance", title: "<spring:message code="assistance"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "affairs", title: "<spring:message code="affairs"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "section", title: "<spring:message code="section"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "unit", title: "<spring:message code="unit"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterCode", title: "<spring:message code="reward.cost.center.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {name: "costCenterTitleFa", title: "<spring:message code="reward.cost.center.title"/>", filterOperator: "iContains", autoFitWidth: true},
+        ],
+        fetchDataURL: postUrl + "/iscList"
     });
 
     // ------------------------------------------- DynamicForm & Window -------------------------------------------
@@ -104,25 +140,40 @@
         fields: [
             {name: "id", hidden: true},
             {
-                name: "object",
+                name: "objectType",
                 title: "<spring:message code='type'/>",
                 required: true,
                 valueMap: {
-                    job: "<spring:message code="job"/>",
-                    jobGroup: "<spring:message code="job.group"/>",
-                    post: "<spring:message code="post"/>",
-                    postGroup: "<spring:message code="post.group"/>",
-                    postGrade: "<spring:message code="post.grade"/>",
-                    postGradeGroup: "<spring:message code="post.grade.group"/>"
+                    Job: "<spring:message code="job"/>",
+                    JobGroup: "<spring:message code="job.group"/>",
+                    Post: "<spring:message code="post"/>",
+                    PostGroup: "<spring:message code="post.group"/>",
+                    PostGrade: "<spring:message code="post.grade"/>",
+                    PostGradeGroup: "<spring:message code="post.grade.group"/>"
                 },
                 changed: function (form, item, value) {
-
+                    form.getItem("objectId").clearValue();
+                    switch (value) {
+                        case 'Job':
+                            form.getItem("objectId").optionDataSource = JobDS_needsAssessment;
+                            break;
+                        case 'JobGroup':
+                            form.getItem("objectId").optionDataSource = JobGroupDS_needsAssessment;
+                            break;
+                        case 'Post':
+                            form.getItem("objectId").optionDataSource = PostDS_needsAssessment;
+                            break;
+                    }
+                    form.getItem("objectId").valueField = "id";
+                    form.getItem("objectId").displayField = "titleFa";
                 }
             },
             {
                 name: "objectId",
                 title: "",
                 required: true,
+                editorType: "SelectItem",
+                pickListFields: [{name: "titleFa"},]
             },
             {
                 name: "competenceId",
@@ -144,7 +195,7 @@
                 name: "needsAssessmentDomainId",
                 title: "<spring:message code='domain'/>",
                 required: true,
-                optionDataSource: NeedsAssessmentDomainDS_competence,
+                optionDataSource: NeedsAssessmentDomainDS_needsAssessment,
                 valueField: "id", displayField: "title",
                 pickListFields: [{name: "title"},],
             },
@@ -152,7 +203,7 @@
                 name: "needsAssessmentPriorityId",
                 title: "<spring:message code='priority'/>",
                 required: true,
-                optionDataSource: NeedsAssessmentPriorityDS_competence,
+                optionDataSource: NeedsAssessmentPriorityDS_needsAssessment,
                 valueField: "id", displayField: "title",
                 pickListFields: [{name: "title"},],
             },
