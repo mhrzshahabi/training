@@ -317,5 +317,10 @@
             <column name="evaluation_status_results" type="number(10, 0)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="heydaripoor (generated)" id="1579428636919-219">
+        <addColumn tableName="tbl_class_student">
+            <column name="c_valence" type="varchar2(255 CHAR)"/>
+        </addColumn>
+    </changeSet>
 
 </databaseChangeLog>

@@ -1181,7 +1181,7 @@
                         form.getItem("acceptancelimit").show();
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(true);
-                        form.getItem("acceptancelimit").setValue("")
+                        form.getItem("acceptancelimit").setValue("بدون نمره")
                         form.getItem("acceptancelimit_a").hide();
                         form.getItem("acceptancelimit_a").setRequired(false);
                    }
