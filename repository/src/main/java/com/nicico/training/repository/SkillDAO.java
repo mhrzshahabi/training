@@ -20,5 +20,7 @@ public interface SkillDAO extends JpaRepository<Skill, Long>, JpaSpecificationEx
 
     List<Skill> findByCourseIsNull();
 
+    List<Skill> findByCourseIdIsNullAndCourseMainObjectiveIdIsNull();
 
+    List<Skill> findByCourseMainObjectiveId(Long id);
 }
