@@ -28,21 +28,24 @@ public class NeedsAssessment extends Auditable {
     @SequenceGenerator(name = "seq_needs_assessment_id", sequenceName = "seq_needs_assessment_id", allocationSize = 1)
     private Long id;
 
-    @Any(metaColumn = @Column(name = "c_object_type"))
+    @Any(metaColumn = @Column(name = "c_object_type", nullable = false), fetch = FetchType.EAGER)
     @AnyMetaDef(idType = "long", metaType = "string",
             metaValues = {
-                    @MetaValue(targetEntity = Job.class, value = "Job"),
-                    @MetaValue(targetEntity = JobGroup.class, value = "JobGroup"),
-                    @MetaValue(targetEntity = Post.class, value = "Post"),
-                    @MetaValue(targetEntity = PostGroup.class, value = "PostGroup"),
-                    @MetaValue(targetEntity = PostGrade.class, value = "PostGrade"),
-                    @MetaValue(targetEntity = PostGradeGroup.class, value = "PostGradeGroup"),
+                    @MetaValue(value = "Job", targetEntity = Job.class),
+                    @MetaValue(value = "JobGroup", targetEntity = JobGroup.class),
+                    @MetaValue(value = "Post", targetEntity = Post.class),
+                    @MetaValue(value = "PostGroup", targetEntity = PostGroup.class),
+                    @MetaValue(value = "PostGrade", targetEntity = PostGrade.class),
+                    @MetaValue(value = "PostGradeGroup", targetEntity = PostGradeGroup.class),
             })
     @JoinColumn(name = "f_object", nullable = false, insertable = false, updatable = false)
     private Object object;
 
     @Column(name = "f_object")
     private Long objectId;
+
+    @Column(name = "c_object_type")
+    private String objectType;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_competence", nullable = false, insertable = false, updatable = false)

@@ -156,6 +156,7 @@
         height: "100%",
         dataSource: RestDataSource_Teacher_JspTeacher,
         contextMenu: Menu_ListGrid_Teacher_JspTeacher,
+        cellHeight:43,
         filterOperator: "iContains",
         rowDoubleClick: function () {
             ListGrid_teacher_edit();
@@ -847,7 +848,7 @@
 
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
-
+        TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
         TabSet_Bottom_JspTeacher.enable();
         refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), null);
@@ -882,7 +883,7 @@
 
         TabSet_Bottom_JspTeacher.selectTab(0);
         clearTabs();
-        TabSet_Bottom_JspTeacher.disable();
+        TabSet_Bottom_JspTeacher.hide();
     }
 
     function ListGrid_teacher_remove() {
@@ -907,7 +908,7 @@
 
     function addAttach(personalId) {
         var formData1 = new FormData();
-        var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
+        var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
         if (file !== undefined) {
@@ -922,7 +923,7 @@
 
     function showTempAttach() {
         var formData1 = new FormData();
-        var fileBrowserId = document.getElementById(window.attachPic.uploadItem.getElement().id);
+        var fileBrowserId = document.getElementById('file-upload');
         var file = fileBrowserId.files[0];
         formData1.append("file", file);
         if (file.size > 1024000) {

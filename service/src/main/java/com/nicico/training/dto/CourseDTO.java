@@ -114,6 +114,7 @@ public class CourseDTO implements Serializable {
         private Long id;
         private String code;
         private String titleFa;
+        private String evaluation;
 
     }
 
