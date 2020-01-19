@@ -30,6 +30,10 @@ public class ClassStudent extends Auditable {
     @Column(name = "score")
     private Float score;
 
+    @Column(name="c_valence")
+    private String valence;
+
+
     @Column(name = "applicant_company_name", nullable = false)
     private String applicantCompanyName;
 

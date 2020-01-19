@@ -11,9 +11,7 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
-import com.nicico.training.model.PersonalInfo;
-import com.nicico.training.model.Teacher;
-import com.nicico.training.model.TeacherCertification;
+import com.nicico.training.model.*;
 import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -25,14 +23,16 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.activation.MimetypesFileTypeMap;
 import javax.imageio.ImageIO;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.util.*;
 
@@ -57,6 +57,7 @@ public class TeacherRestController {
     private final ITeacherCertificationService teacherCertificationService;
     private final IPublicationService publicationService;
     private final IForeignLangKnowledgeService foreignLangService;
+    private final IPersonalInfoService personalInfoService;
 
     // ------------------------------
 
@@ -272,20 +273,6 @@ public class TeacherRestController {
     @Loggable
     @PostMapping(value = {"/printWithDetail/{id}"})
     public void printWithDetail(HttpServletResponse response,@PathVariable String id) throws Exception {
-//        final SearchDTO.CriteriaRq criteriaRq = new SearchDTO.CriteriaRq();
-//        final SearchDTO.CriteriaRq criteriaRq1 = new SearchDTO.CriteriaRq();
-//        criteriaRq1.setFieldName("id");
-//        criteriaRq1.setOperator(EOperator.equals);
-//        criteriaRq1.setValue(id);
-//        List<SearchDTO.CriteriaRq> criteriaRqList = new ArrayList<>();
-//        criteriaRqList.add(criteriaRq1);
-//        criteriaRq.setOperator(EOperator.and);
-//        criteriaRq.setCriteria(criteriaRqList);
-//        final SearchDTO.SearchRq searchRq;
-//        searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-//        final SearchDTO.SearchRs<TeacherDTO.Info> searchRs = teacherService.search(searchRq);
-
-
         final SearchDTO.SearchRq searchRq_academicBk = new SearchDTO.SearchRq();
         final SearchDTO.SearchRs<AcademicBKDTO.Info> searchRs_academicBk = academicBKService.search(searchRq_academicBk, Long.valueOf(id));
 
@@ -309,12 +296,19 @@ public class TeacherRestController {
         params.put("todayDate", DateUtil.todayDate());
 
         Long Id = Long.valueOf(id);
-        final Teacher teacher = teacherService.getTeacher(Id);
+        final TeacherDTO.Info teacherDTO = teacherService.get(Id);
+        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
+        final PersonalInfoDTO.Info personalInfoDTO = personalInfoService.get(teacher.getPersonalityId());
         final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
         final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        String fileName = personUploadDir + "/" + personalInfo.getPhoto();
-        File file = new File(fileName);
-        params.put("personalImg",  ImageIO.read(file));
+        if(personalInfo.getPhoto() != null) {
+            String fileName = personUploadDir + "/" + personalInfo.getPhoto();
+            File file = new File(fileName);
+            params.put("personalImg", ImageIO.read(file));
+        }
+        if(personalInfo.getPhoto() == null) {
+            params.put("personalImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/personal_photo.png")));
+        }
 
         params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
         params.put("personalNum",teacher.getPersonnelCode());
@@ -325,10 +319,27 @@ public class TeacherRestController {
         params.put("birthLocation", personalInfo.getBirthLocation());
         params.put("gender", personalInfo.getGender().getTitleFa());
         params.put("military", personalInfo.getMilitary().getTitleFa());
-        params.put("address", "");
-        params.put("connectionInfo", "");
-        params.put("categories", "");
-        params.put("otherActivity", "");
+        params.put("otherActivity", teacher.getOtherActivities());
+
+        String address = null;
+        params.put("address", address);
+
+        String connection = null;
+        params.put("connectionInfo", connection);
+
+        String categories = null;
+        List<Category> categoryList = teacher.getCategories();
+        List<SubCategory> subCategoryList = teacher.getSubCategories();
+        for (Category category : categoryList) {
+            categories += category.getTitleFa() + " ";
+            for (SubCategory subCategory : subCategoryList) {
+                CategoryDTO.Info categoryDTO = subCategoryService.getCategory(subCategory.getId());
+                if(categoryDTO.getId() == category.getId()) {
+                    categories += subCategory.getTitleFa() + " ";
+                }
+            }
+        }
+        params.put("categories", categories);
 
         String data = "{" +
                 "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
@@ -458,7 +469,6 @@ public class TeacherRestController {
 
         return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
-
 
 
 }

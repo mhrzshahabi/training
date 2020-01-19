@@ -75,6 +75,7 @@
     const questionnaireQuestionUrl = rootUrl + "/questionnaireQuestion";
     const tclassStudentUrl = rootUrl + "/class-student";
     const needsAssessmentUrl = rootUrl + "/needsAssessment";
+    const workGroupUrl = rootUrl + "/work-group";
 
 
     // -------------------------------------------  Filters  -----------------------------------------------
@@ -666,6 +667,12 @@
                     click: function () {
                         createTab(this.title, "<spring:url value="web/oauth/groups/show-form"/>");
                     }
+                },
+                {
+                    title: "گروه کاری",
+                    click: function () {
+                        createTab(this.title, "<spring:url value="/web/work-group"/>");
+                    },
                 },
                 {isSeparator: true},
                 {

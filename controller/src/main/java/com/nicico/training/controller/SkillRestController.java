@@ -17,6 +17,7 @@ import com.nicico.training.dto.NeedAssessmentDTO;
 import com.nicico.training.dto.SkillDTO;
 import com.nicico.training.dto.SkillGroupDTO;
 import com.nicico.training.iservice.ISkillService;
+import com.nicico.training.service.SkillService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.JRException;
@@ -46,7 +47,7 @@ import java.util.Map;
 public class SkillRestController {
 
     private final ReportUtil reportUtil;
-    private final ISkillService skillService;
+    private final SkillService skillService;
     private final ObjectMapper objectMapper;
 
     // ------------------------------
@@ -59,11 +60,12 @@ public class SkillRestController {
     }
 
     @Loggable
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/main-objective/{mainObjectiveId}")
 //    @PreAuthorize("hasAuthority('r_skill')")
-    public ResponseEntity<List<SkillDTO.Info>> list() {
-        return new ResponseEntity<>(skillService.list(), HttpStatus.OK);
+    public ResponseEntity<List<SkillDTO.Info>> list(@PathVariable Long mainObjectiveId) {
+        return new ResponseEntity<>(skillService.listMainObjective(mainObjectiveId), HttpStatus.OK);
     }
+
 
     @Loggable
     @PostMapping
@@ -146,8 +148,8 @@ public class SkillRestController {
     @Loggable
     @GetMapping(value = "/spec-list")
 //    @PreAuthorize("hasAuthority('r_skill')")
-    public ResponseEntity<SkillDTO.SkillSpecRs> list(@RequestParam("_startRow") Integer startRow,
-                                                     @RequestParam("_endRow") Integer endRow,
+    public ResponseEntity<SkillDTO.SkillSpecRs> list(@RequestParam(value = "_startRow", defaultValue = "0") Integer startRow,
+                                                     @RequestParam(value = "_endRow", defaultValue = "50") Integer endRow,
                                                      @RequestParam(value = "_constructor", required = false) String constructor,
                                                      @RequestParam(value = "operator", required = false) String operator,
                                                      @RequestParam(value = "criteria", required = false) String criteria,

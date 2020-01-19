@@ -23,18 +23,23 @@ public class NeedsAssessmentDTO implements Serializable {
     @NotNull
     @ApiModelProperty(required = true)
     private Long objectId;
+
     @NotNull
     @ApiModelProperty(required = true)
-    private Object object;
+    private String objectType;
+
     @NotNull
     @ApiModelProperty(required = true)
     private Long competenceId;
+
     @NotNull
     @ApiModelProperty(required = true)
     private Long skillId;
+
     @NotNull
     @ApiModelProperty(required = true)
     private Long needsAssessmentDomainId;
+
     @NotNull
     @ApiModelProperty(required = true)
     private Long needsAssessmentPriorityId;
@@ -46,6 +51,7 @@ public class NeedsAssessmentDTO implements Serializable {
     public static class Info extends NeedsAssessmentDTO {
         private Long id;
         private Integer version;
+//        private Object object;
         private CompetenceDTO.Info competence;
         private SkillDTO.Info skill;
         private ParameterValueDTO.MinInfo needsAssessmentDomain;
