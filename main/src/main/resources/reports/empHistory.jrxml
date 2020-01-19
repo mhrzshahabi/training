@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="empHistory" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9741f162-3673-4b95-96e8-99d52c33ad8a">
+	<subDataset name="empHistory" uuid="5af251a2-fdea-4b17-a515-3a9f76a0c411">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="companyName" class="java.lang.String"/>
+		<field name="jobTitle" class="java.lang.String"/>
+		<field name="startDate" class="java.lang.String"/>
+		<field name="endDate" class="java.lang.String"/>
+		<field name="NAME" class="java.lang.String">
+			<fieldDescription><![CDATA[name]]></fieldDescription>
+		</field>
+		<field name="LOCATION" class="java.lang.String">
+			<fieldDescription><![CDATA[location]]></fieldDescription>
+		</field>
+		<field name="DEPTCODE" class="java.lang.String">
+			<fieldDescription><![CDATA[deptCode]]></fieldDescription>
+		</field>
+	</subDataset>
+	<queryString>
+		<![CDATA[]]>
+	</queryString>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch"/>
+	</columnHeader>
+	<detail>
+		<band height="405" splitType="Stretch">
+			<componentElement>
+				<reportElement key="" positionType="Float" x="0" y="120" width="529" height="60" backcolor="#FFFFFF" uuid="c5e6d7f9-2af7-4f29-88bd-101abc5a7f73">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd" whenNoDataType="Blank">
+					<datasetRun subDataset="empHistory" uuid="ba4a6d09-1bb5-450d-b301-c542311021fd"/>
+					<jr:columnGroup width="80" uuid="85cb8157-566e-4bcf-8c0a-9ef2c1eb917e">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="30" uuid="ccdcaa4e-8ac8-4cc1-93af-c8c2a81f4d6a"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[از تاریخ/تا تاریخ]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="80" uuid="282c427d-12d0-4a54-a531-eb1acca0549f">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="80" uuid="8d5b29d9-8f1e-4eea-9aa2-8fe75bacbdea">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="30" uuid="a61beddd-d31f-45ba-8755-b1f8b1549d21"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[مدت همکاری]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="80" uuid="171ca38a-542e-4c8e-8743-666c6c1f78d7">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="d62127ad-7243-42bc-a7ec-7a3876313fc7"/>
+									<textElement>
+										<font fontName="B Nazanin"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{endDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="80" uuid="468ea3df-06be-4b56-9a04-8dbc89da493c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement x="0" y="0" width="80" height="30" uuid="660b6ddc-533b-48c3-b13f-cb18fd6590e6"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ماهیت فعالیت]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="80" uuid="59f809c5-21cd-4756-82f8-e9d4410d2600">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="c383fdd5-6574-4fc9-b4bf-cc4604803ff2"/>
+									<textElement>
+										<font fontName="B Nazanin"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{startDate}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="80" uuid="7e9baea7-44ff-48ee-b67a-c105712752e3">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="80" height="30" uuid="580c1104-51af-405d-a09d-680ed4582261"/>
+								<box>
+									<topPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<leftPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<bottomPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+									<rightPen lineWidth="0.0" lineStyle="Solid" lineColor="#000000"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[عنوان شغل/پست سازمانی
+]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="80" uuid="806252b0-0f10-4f51-85d2-d618e3ed5e5b">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="bf302efa-e23f-4540-9c4b-3fcf7b7d2aef"/>
+									<textElement>
+										<font fontName="B Nazanin"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:columnGroup width="140" uuid="2bd28d21-1f67-4740-83b4-fd8cacc6280a">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Columns [1]"/>
+						<jr:columnHeader height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" x="0" y="0" width="140" height="30" uuid="c7b3aac7-d1b7-42c9-88de-d43f01334c73"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[نام سازمان]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:column width="140" uuid="ead57759-fd9b-48af-a5dd-40cc8ac2a256">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:detailCell style="Table_TD" height="30">
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textField>
+									<reportElement x="0" y="0" width="140" height="30" uuid="d8b2f240-90bf-45a1-ae34-bd7f97fac563"/>
+									<textElement>
+										<font fontName="B Nazanin"/>
+									</textElement>
+									<textFieldExpression><![CDATA[$F{jobTitle}]]></textFieldExpression>
+								</textField>
+							</jr:detailCell>
+						</jr:column>
+					</jr:columnGroup>
+					<jr:column width="69" uuid="950b66dc-b6cf-43ab-ab9e-c2eef4e1120c">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<staticText>
+								<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="69" height="30" uuid="a121f3aa-66f2-4a0d-8d2c-ed27043217fe"/>
+								<box>
+									<pen lineWidth="0.5"/>
+								</box>
+								<textElement textAlignment="Center" verticalAlignment="Middle">
+									<font fontName="Shabnam-FD" size="8" isBold="true"/>
+								</textElement>
+								<text><![CDATA[ردیف]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<box>
+								<pen lineWidth="0.5"/>
+							</box>
+							<textField>
+								<reportElement x="0" y="0" width="69" height="30" uuid="45e5a50b-62b1-4f7a-a9d0-6b7bc1349177"/>
+								<textElement textAlignment="Center">
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>

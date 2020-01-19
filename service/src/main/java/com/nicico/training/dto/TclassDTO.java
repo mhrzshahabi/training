@@ -63,6 +63,8 @@ public class TclassDTO {
     private List<Long> trainingPlaceIds;
     private String workflowEndingStatus;
     private Integer workflowEndingStatusCode;
+    private String scoringMethod;
+    private String acceptancelimit;
 
 
     @Getter
@@ -98,14 +100,26 @@ public class TclassDTO {
                 return " ";
         }
 
-
         private Set<ClassStudentDTO.ClassStudentCountId> classStudents;
+
         public Integer getStudentCount() {
-            return classStudents.size();
+            if (classStudents != null)
+                return classStudents.size();
+            else
+                return 0;
         }
     }
 
     // ------------------------------
+
+         @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("TclassScore")
+    public static class ScoreInfo {
+       private String scoringMethod;
+       private String acceptancelimit;
+    }
 
     @Getter
     @Setter
@@ -149,7 +163,7 @@ public class TclassDTO {
         private SpecRs response;
     }
 
-    // ---------------
+    // ------------------------------
 
     @Getter
     @Setter
@@ -162,4 +176,7 @@ public class TclassDTO {
         private Integer endRow;
         private Integer totalRows;
     }
+
+    // ------------------------------
+
 }

@@ -2,7 +2,7 @@
 <!-- Created with Jaspersoft Studio version 6.6.0.final using JasperReports Library version 6.6.0  -->
 <jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="accountFlowOpration" pageWidth="595" pageHeight="842" whenNoDataType="AllSectionsNoDetail" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" whenResourceMissingType="Error" uuid="ffcbd92f-fc76-47aa-a6f6-8e829b3782a2">
 	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="One Empty Record"/>
-	<style name="Table_TH" mode="Opaque" backcolor="#F0F8FF">
+	<style name="Table_TH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -11,7 +11,7 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<style name="Table_CH" mode="Opaque" backcolor="#BFE1FF">
+	<style name="Table_CH" mode="Opaque" backcolor="#FFFFFF">
 		<box>
 			<pen lineWidth="0.5" lineColor="#000000"/>
 			<topPen lineWidth="0.5" lineColor="#000000"/>
@@ -29,7 +29,14 @@
 			<rightPen lineWidth="0.5" lineColor="#000000"/>
 		</box>
 	</style>
-	<subDataset name="content" uuid="da7e6fac-4bf7-4f4e-8d72-e83be9c32594">
+	<subDataset name="academicBK" uuid="da7e6fac-4bf7-4f4e-8d72-e83be9c32594">
+		<field name="educationLevel.titleFa" class="java.lang.String"/>
+		<field name="educationMajor.titleFa" class="java.lang.String"/>
+		<field name="educationOrientation.titleFa" class="java.lang.String"/>
+		<field name="collageName" class="java.lang.String"/>
+		<field name="persianDate" class="java.lang.String"/>
+		<field name="duration" class="java.lang.String"/>
+		<field name="academicGrade" class="java.lang.String"/>
 		<field name="NAME" class="java.lang.String">
 			<fieldDescription><![CDATA[name]]></fieldDescription>
 		</field>
@@ -39,18 +46,67 @@
 		<field name="DEPTCODE" class="java.lang.String">
 			<fieldDescription><![CDATA[deptCode]]></fieldDescription>
 		</field>
-		<field name="ABK.educationLevel.titleFa" class="java.lang.String"/>
-		<field name="educationMajor.titleFa" class="java.lang.String"/>
-		<field name="educationOrientation.titleFa" class="java.lang.String"/>
-		<field name="collageName" class="java.lang.String"/>
-		<field name="date" class="java.lang.String"/>
-		<field name="duration" class="java.lang.String"/>
-		<field name="academicGrade" class="java.lang.String"/>
 	</subDataset>
-	<subDataset name="Dataset1" uuid="b58cdb61-2234-4cb4-bcf9-114b75485e35">
+	<subDataset name="empHistory" uuid="b58cdb61-2234-4cb4-bcf9-114b75485e35">
 		<queryString>
 			<![CDATA[]]>
 		</queryString>
+		<field name="companyName" class="java.lang.String"/>
+		<field name="jobTitle" class="java.lang.String"/>
+		<field name="persianStartDate" class="java.lang.String"/>
+		<field name="persianEndDate" class="java.lang.String"/>
+		<field name="NAME" class="java.lang.String">
+			<fieldDescription><![CDATA[name]]></fieldDescription>
+		</field>
+		<field name="LOCATION" class="java.lang.String">
+			<fieldDescription><![CDATA[location]]></fieldDescription>
+		</field>
+		<field name="DEPTCODE" class="java.lang.String">
+			<fieldDescription><![CDATA[deptCode]]></fieldDescription>
+		</field>
+	</subDataset>
+	<subDataset name="teachingHistory" uuid="def47cfa-175b-445f-8abc-eecb43d8e771">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="courseTitle" class="java.lang.String"/>
+		<field name="educationLevel.titleFa" class="java.lang.String"/>
+		<field name="duration" class="java.lang.Integer"/>
+		<field name="startDate" class="java.lang.Long"/>
+		<field name="endDate" class="java.lang.Long"/>
+		<field name="companyName" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="teacherCertification" uuid="885c1c90-56e7-4273-822d-470cbfd5c9d3">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="courseTitle" class="java.lang.String"/>
+		<field name="companyName" class="java.lang.String"/>
+		<field name="companyLocation" class="java.lang.String"/>
+		<field name="duration" class="java.lang.String"/>
+		<field name="startDate" class="java.lang.String"/>
+		<field name="endDate" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="publication" uuid="4fbaf764-f578-45e6-a777-215d2c8f0406">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="subjectTitle" class="java.lang.String"/>
+		<field name="publicationSubjectType.titleFa" class="java.lang.String"/>
+		<field name="publicationLocation" class="java.lang.String"/>
+		<field name="publicationDate" class="java.lang.String"/>
+		<field name="publisher" class="java.lang.String"/>
+	</subDataset>
+	<subDataset name="languages" uuid="2ff6516b-69b9-46c7-b597-c8e3a4c854cd">
+		<queryString>
+			<![CDATA[]]>
+		</queryString>
+		<field name="langName" class="java.lang.String"/>
+		<field name="langLevel.titleFa" class="java.lang.String"/>
+		<field name="instituteName" class="java.lang.String"/>
+		<field name="duration" class="java.lang.String"/>
+		<field name="startDate" class="java.lang.String"/>
+		<field name="endDate" class="java.lang.String"/>
 	</subDataset>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
 	<parameter name="todayDate" class="java.lang.String"/>
@@ -66,10 +122,11 @@
 	<parameter name="military" class="java.lang.String"/>
 	<parameter name="address" class="java.lang.String"/>
 	<parameter name="connectionInfo" class="java.lang.String"/>
-	<queryString>
+	<parameter name="categories" class="java.lang.String"/>
+	<parameter name="otherActivity" class="java.lang.String"/>
+	<queryString language="JSON">
 		<![CDATA[]]>
 	</queryString>
-	<field name="Field_1" class="java.lang.String"/>
 	<title>
 		<band height="96">
 			<staticText>
@@ -113,9 +170,9 @@
 		</band>
 	</title>
 	<detail>
-		<band height="463">
+		<band height="632">
 			<image hAlign="Center" vAlign="Middle">
-				<reportElement x="0" y="10" width="100" height="77" uuid="f31387e8-057b-46cf-aa90-ae4d0db701af"/>
+				<reportElement x="0" y="10" width="140" height="106" uuid="f31387e8-057b-46cf-aa90-ae4d0db701af"/>
 				<imageExpression><![CDATA[$P{personalImg}]]></imageExpression>
 			</image>
 			<staticText>
@@ -175,28 +232,28 @@
 				<text><![CDATA[تاریخ تولد:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="338" y="106" width="40" height="11" uuid="b2235443-c327-4ac8-9f98-39ca8a263a11"/>
+				<reportElement x="513" y="103" width="40" height="11" uuid="b2235443-c327-4ac8-9f98-39ca8a263a11"/>
 				<textElement textAlignment="Right">
 					<font fontName="B Nazanin"/>
 				</textElement>
 				<text><![CDATA[محل تولد:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="520" y="128" width="32" height="10" uuid="9aaaeb43-4e68-4f7d-82c8-b6f3f43faf6d"/>
+				<reportElement x="348" y="105" width="32" height="10" uuid="9aaaeb43-4e68-4f7d-82c8-b6f3f43faf6d"/>
 				<textElement textAlignment="Right">
 					<font fontName="B Nazanin"/>
 				</textElement>
 				<text><![CDATA[جنسیت:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="488" y="103" width="66" height="15" uuid="82fe16f8-827f-4a6a-af9e-360046a07d68"/>
+				<reportElement x="486" y="122" width="66" height="15" uuid="82fe16f8-827f-4a6a-af9e-360046a07d68"/>
 				<textElement textAlignment="Right">
 					<font fontName="B Nazanin"/>
 				</textElement>
 				<text><![CDATA[وضعیت نظام وظیفه:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement x="337" y="146" width="215" height="10" uuid="3a2f37a6-4e6f-4c9d-ba1d-c6e105337da9"/>
+				<reportElement x="337" y="145" width="215" height="10" uuid="3a2f37a6-4e6f-4c9d-ba1d-c6e105337da9"/>
 				<textElement textAlignment="Right">
 					<font fontName="B Nazanin"/>
 				</textElement>
@@ -216,85 +273,85 @@
 				</textElement>
 				<text><![CDATA[خواهشمند است مدارك مربوط به اطلاعات كليه بندهاي ذيل به پرسشنامه ضميمه گردد.]]></text>
 			</staticText>
-			<textField>
-				<reportElement x="389" y="38" width="90" height="14" uuid="2c65d877-aeed-4a17-9509-290db21d8342"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="436" y="38" width="50" height="12" uuid="2c65d877-aeed-4a17-9509-290db21d8342"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{name}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="180" y="34" width="90" height="18" uuid="e99e6ffb-ac0f-409f-bf42-b4e1ca8e9f49"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="189" y="36" width="90" height="16" uuid="e99e6ffb-ac0f-409f-bf42-b4e1ca8e9f49"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{personalNum}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="389" y="59" width="100" height="18" uuid="3ebcbd3a-eaf9-4ae2-b996-f1af0a993b82"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="397" y="63" width="100" height="10" uuid="3ebcbd3a-eaf9-4ae2-b996-f1af0a993b82"/>
 				<textElement textAlignment="Right">
 					<font fontName="B Nazanin"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{certificateNum}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="260" y="57" width="84" height="15" uuid="01989fad-d738-4f54-8d02-c8f61d581d9c"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="265" y="57" width="84" height="15" uuid="01989fad-d738-4f54-8d02-c8f61d581d9c"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{nationalCode}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="410" y="79" width="100" height="16" uuid="f1e86cfb-0f8d-4c99-b93b-df64fc57e650"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="489" y="81" width="24" height="12" uuid="f1e86cfb-0f8d-4c99-b93b-df64fc57e650"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{certificateLocation}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="260" y="80" width="70" height="18" uuid="8844f403-924f-4b61-b214-eb3f0160436f"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="271" y="80" width="70" height="12" uuid="8844f403-924f-4b61-b214-eb3f0160436f"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{birthDate}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="424" y="103" width="56" height="14" uuid="d2c5e160-c04f-4ffb-a659-aea19e828178"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="452" y="123" width="32" height="14" uuid="d2c5e160-c04f-4ffb-a659-aea19e828178"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{military}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="255" y="101" width="79" height="19" uuid="64824d1d-f020-4142-b3eb-da01049a4aaa"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="490" y="101" width="21" height="13" uuid="64824d1d-f020-4142-b3eb-da01049a4aaa"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{birthLocation}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="456" y="125" width="60" height="21" uuid="6d1dd204-4e84-4e99-a753-5dcbb309ac58"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="286" y="104" width="60" height="12" uuid="6d1dd204-4e84-4e99-a753-5dcbb309ac58"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{gender}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="260" y="144" width="72" height="15" uuid="93b5e9d6-ec42-4618-b461-674a8b565914"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="262" y="144" width="72" height="15" uuid="93b5e9d6-ec42-4618-b461-674a8b565914"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{address}]]></textFieldExpression>
 			</textField>
-			<textField>
-				<reportElement x="320" y="164" width="100" height="22" uuid="a7b5e384-b0c8-480a-b692-386e74417710"/>
+			<textField isBlankWhenNull="true">
+				<reportElement x="329" y="164" width="100" height="10" uuid="a7b5e384-b0c8-480a-b692-386e74417710"/>
 				<textElement textAlignment="Right">
-					<font fontName="B Nazanin"/>
+					<font fontName="B Nazanin" isBold="false"/>
 				</textElement>
 				<textFieldExpression><![CDATA[$P{connectionInfo}]]></textFieldExpression>
 			</textField>
 			<componentElement>
-				<reportElement key="" style="Table_CH" positionType="FixRelativeToBottom" x="23" y="240" width="530" height="60" backcolor="#FFFFFF" uuid="28b54562-9072-4b4a-a979-b57643a35059">
+				<reportElement key="" positionType="Float" x="23" y="240" width="530" height="60" backcolor="#FFFFFF" uuid="28b54562-9072-4b4a-a979-b57643a35059">
 					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
 					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
 					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
@@ -302,12 +359,12 @@
 					<property name="net.sf.jasperreports.export.headertoolbar.table.name" value=""/>
 				</reportElement>
 				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
-					<datasetRun subDataset="content" uuid="2d71765f-fc14-4a56-941a-07d99690f9e0">
-						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("content")]]></dataSourceExpression>
+					<datasetRun subDataset="academicBK" uuid="0b9b5268-021d-4723-80cc-d184a768841e">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("academicBK")]]></dataSourceExpression>
 					</datasetRun>
 					<jr:column width="50" uuid="0e4e2817-0f03-4eb7-bf62-1084a19f467b">
 						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<jr:columnHeader height="30" rowSpan="1">
 							<staticText>
 								<reportElement stretchType="RelativeToTallestObject" mode="Opaque" x="0" y="0" width="50" height="30" uuid="925a4a28-23cd-4aef-8b5f-ab724b99a497"/>
 								<box>
@@ -319,9 +376,9 @@
 								<text><![CDATA[معدل مدرک]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
-							<textField isBlankWhenNull="true">
-								<reportElement x="0" y="0" width="50" height="30" uuid="fe7bcf93-746b-49fb-b2f2-923f748b080c"/>
+						<jr:detailCell height="30">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="30" uuid="ca2d874b-157a-443a-8e03-dbf520a67e11"/>
 								<textElement>
 									<font fontName="B Nazanin"/>
 								</textElement>
@@ -347,17 +404,17 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="821f7740-c151-4103-b504-6171b621cc27">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
-							<jr:detailCell style="Table_TD" height="30">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column1"/>
+							<jr:detailCell height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="4a420d9e-5785-4240-8013-c0a7ddeae009"/>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="571f311d-3dbb-4121-889b-782d9df36eaf"/>
 									<textElement>
 										<font fontName="B Nazanin"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{duration}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{collageName}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -380,17 +437,17 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="16da0b82-5957-46c6-8213-c6a82fdf55f8">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
-							<jr:detailCell style="Table_TD" height="30">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column2"/>
+							<jr:detailCell height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="6edd6841-3295-4390-835c-6c322431ee0d"/>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="76ad5dae-006f-4cfb-a1ca-aadb88e3a14a"/>
 									<textElement>
 										<font fontName="B Nazanin"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{date}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{persianDate}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -416,13 +473,13 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="12cd49cc-dd2c-47fb-9f94-3fb547805c9b">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
-							<jr:detailCell style="Table_TD" height="30">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column3"/>
+							<jr:detailCell height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="4694d0df-edf9-4da8-8840-8e843e35a386"/>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="a38ecbea-7b5c-4923-8fb0-91106ea7cb35"/>
 									<textElement>
 										<font fontName="B Nazanin"/>
 									</textElement>
@@ -452,17 +509,17 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="f9b8d949-3965-4c8d-ba67-51b7a8222421">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
-							<jr:detailCell style="Table_TD" height="30">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column4"/>
+							<jr:detailCell height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="ee457d26-0aa7-409d-8839-f8a5fee8903a"/>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="c97941ba-f569-44b5-adf3-a0b40de17097"/>
 									<textElement>
 										<font fontName="B Nazanin"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{educationMajor.titleFa} + " " + $F{educationOrientation.titleFa} ]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{educationMajor.titleFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
@@ -485,24 +542,24 @@
 							</staticText>
 						</jr:columnHeader>
 						<jr:column width="80" uuid="5bec92af-bbdd-4125-b433-f58e9b7ad001">
-							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
-							<jr:detailCell style="Table_TD" height="30">
+							<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column5"/>
+							<jr:detailCell height="30">
 								<box>
 									<pen lineWidth="0.5"/>
 								</box>
-								<textField isBlankWhenNull="true">
-									<reportElement x="0" y="0" width="80" height="30" uuid="f931c174-79a6-4fbe-a9de-838f5a2be03f"/>
+								<textField>
+									<reportElement x="0" y="0" width="80" height="30" uuid="ce4dc2bf-26bc-45bf-998c-1406efa52032"/>
 									<textElement>
 										<font fontName="B Nazanin"/>
 									</textElement>
-									<textFieldExpression><![CDATA[$F{ABK.educationLevel.titleFa}]]></textFieldExpression>
+									<textFieldExpression><![CDATA[$F{educationLevel.titleFa}]]></textFieldExpression>
 								</textField>
 							</jr:detailCell>
 						</jr:column>
 					</jr:columnGroup>
 					<jr:column width="80" uuid="db615f69-bc3a-4d0c-af12-1c31f279ea6a">
-						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column7"/>
-						<jr:columnHeader style="Table_CH" height="30" rowSpan="1">
+						<property name="com.jaspersoft.studio.components.table.model.column.name" value="Column6"/>
+						<jr:columnHeader height="30" rowSpan="1">
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
@@ -517,18 +574,113 @@
 								<text><![CDATA[ردیف]]></text>
 							</staticText>
 						</jr:columnHeader>
-						<jr:detailCell style="Table_TD" height="30">
+						<jr:detailCell height="30">
 							<box>
 								<pen lineWidth="0.5"/>
 							</box>
+							<textField>
+								<reportElement x="0" y="0" width="80" height="30" uuid="88853fc3-abf0-47a8-9800-0151d5c106ca"/>
+								<textElement textAlignment="Center">
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$V{REPORT_COUNT}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+				</jr:table>
+			</componentElement>
+			<staticText>
+				<reportElement positionType="Float" x="281" y="310" width="275" height="19" uuid="579fde8d-7854-40de-b620-f86ffd253571"/>
+				<textElement textAlignment="Right" verticalAlignment="Middle">
+					<font fontName="B Nazanin" size="11" isBold="true"/>
+				</textElement>
+				<text><![CDATA[3) سوابق خدمتی (از ابتدای خدمت)]]></text>
+			</staticText>
+			<componentElement>
+				<reportElement x="322" y="372" width="200" height="57" uuid="74b34040-d43c-4970-80b5-4888142c2089">
+					<property name="com.jaspersoft.studio.layout" value="com.jaspersoft.studio.editor.layout.VerticalRowLayout"/>
+					<property name="com.jaspersoft.studio.table.style.table_header" value="Table_TH"/>
+					<property name="com.jaspersoft.studio.table.style.column_header" value="Table_CH"/>
+					<property name="com.jaspersoft.studio.table.style.detail" value="Table_TD"/>
+				</reportElement>
+				<jr:table xmlns:jr="http://jasperreports.sourceforge.net/jasperreports/components" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports/components http://jasperreports.sourceforge.net/xsd/components.xsd">
+					<datasetRun subDataset="empHistory" uuid="9f094c54-73be-408e-84c7-60fa5500df61">
+						<dataSourceExpression><![CDATA[((net.sf.jasperreports.engine.data.JsonDataSource)$P{REPORT_DATA_SOURCE}).subDataSource("empHistory")]]></dataSourceExpression>
+					</datasetRun>
+					<jr:column width="50" uuid="5264193e-0b25-460d-b1f1-7c4b95008bdf">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="dbd1fd1a-0eea-434d-b2a3-813305b95431"/>
+								<text><![CDATA[companyName]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="30" uuid="1121138f-8b97-4d8c-bbb9-dba9d8d51b3a"/>
+								<textElement>
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{companyName}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="50" uuid="392c09e9-2ba3-4355-b43f-d5c6f1c9a967">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="4d9298e1-6827-4fef-83a6-d8444ba83e6b"/>
+								<text><![CDATA[jobTitle]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="30" uuid="549dd8ee-a365-4c03-8dfb-1c5fd5eec6f7"/>
+								<textElement>
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{jobTitle}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="50" uuid="2c700035-239e-4f59-90ea-cfe3355dec5c">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="ba371f15-b6b6-48a7-8577-408711f67aab"/>
+								<text><![CDATA[persianStartDate]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="30" uuid="62878469-7e55-4114-abe8-e9ac6ebd0ea9"/>
+								<textElement>
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{persianStartDate}]]></textFieldExpression>
+							</textField>
+						</jr:detailCell>
+					</jr:column>
+					<jr:column width="50" uuid="c0b43a28-1264-4e78-8d70-6ade0600e6e6">
+						<jr:columnHeader style="Table_CH" height="30">
+							<staticText>
+								<reportElement x="0" y="0" width="50" height="30" uuid="aa9095ff-2088-49d3-a468-c9cdc7b5985c"/>
+								<text><![CDATA[persianEndDate]]></text>
+							</staticText>
+						</jr:columnHeader>
+						<jr:detailCell style="Table_TD" height="30">
+							<textField>
+								<reportElement x="0" y="0" width="50" height="30" uuid="c40bcbd2-e962-41e1-b595-842144196383"/>
+								<textElement>
+									<font fontName="B Nazanin"/>
+								</textElement>
+								<textFieldExpression><![CDATA[$F{persianEndDate}]]></textFieldExpression>
+							</textField>
 						</jr:detailCell>
 					</jr:column>
 				</jr:table>
 			</componentElement>
 		</band>
-		<band height="313">
+		<band height="255">
 			<staticText>
-				<reportElement positionType="Float" x="170" y="70" width="385" height="19" uuid="ee285a24-4ed9-4909-931a-045e2bcecfa6"/>
+				<reportElement positionType="Float" x="169" y="141" width="385" height="19" uuid="ee285a24-4ed9-4909-931a-045e2bcecfa6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
@@ -536,23 +688,39 @@
 				<text><![CDATA[5) دوره هاي آموزشي گذرانده شده توسط جنابعالي در ساير مؤسسات (مرتبط با موضوع تدريس)]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="100" y="110" width="456" height="20" uuid="3f8eb64f-ebec-44d2-ad56-135cfe048175"/>
+				<reportElement positionType="Float" x="364" y="19" width="186" height="19" uuid="8e8c2373-e816-4fb1-b11a-98f1642f8130"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[6) شرح تأليفات/ تحقيقات و برنامه هاي پژوهشي با ذكر نوع كار (كتاب، ترجمه كتاب، مقاله معتبر، جزوه يا پروژه تحقيقاتي)]]></text>
+				<text><![CDATA[4) سوابق تدريس (برحسب اهميت و طول مدت)]]></text>
 			</staticText>
+		</band>
+		<band height="313">
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="195" y="283" width="100" height="16" uuid="99930ffe-b727-4ab9-b54c-05bd14b6ccf3"/>
+				<textElement>
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{otherActivity}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="432" y="150" width="125" height="19" uuid="ed9ab8f1-9193-46d8-bc0c-abeb83804946"/>
+				<reportElement positionType="Float" x="304" y="280" width="255" height="19" uuid="2c0b01b2-4090-4971-b74a-ca87cb3cb4cf"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[7) آشنايي با زبانهاي خارجي]]></text>
+				<text><![CDATA[9) ساير فعاليتها، زمينه هاي تجربي و مهارت هاي خود را شرح دهيد. ]]></text>
 			</staticText>
+			<textField isBlankWhenNull="true">
+				<reportElement positionType="Float" x="349" y="249" width="82" height="19" uuid="9192fffd-9dc0-4306-b173-26cc6a5152ea"/>
+				<textElement>
+					<font fontName="B Nazanin"/>
+				</textElement>
+				<textFieldExpression><![CDATA[$P{categories}]]></textFieldExpression>
+			</textField>
 			<staticText>
-				<reportElement positionType="Float" x="404" y="200" width="146" height="19" uuid="7b3a8725-910e-4ba1-82ea-f229d59d79f9"/>
+				<reportElement positionType="Float" x="434" y="249" width="125" height="19" uuid="14357c6d-b3ff-49bf-ae3d-fd9f40b08198"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
@@ -560,45 +728,44 @@
 				<text><![CDATA[8) زمينه هاي تدريس/ همكاري:]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="294" y="250" width="255" height="19" uuid="90294a1b-7d78-48c0-ad73-c000c71478e8"/>
+				<reportElement positionType="Float" x="434" y="135" width="125" height="19" uuid="750cad87-ee70-4867-820e-4623370255a9"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[9) ساير فعاليتها، زمينه هاي تجربي و مهارت هاي خود را شرح دهيد. ]]></text>
+				<text><![CDATA[7) آشنايي با زبانهاي خارجي]]></text>
 			</staticText>
 			<staticText>
-				<reportElement positionType="Float" x="369" y="40" width="186" height="19" uuid="770a27c4-80d1-403a-82c3-1c1d3ecbe3fd"/>
+				<reportElement positionType="Float" x="105" y="22" width="456" height="20" uuid="0372ac3b-8884-4942-974e-1586bc0bd4a6"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="11" isBold="true"/>
 					<paragraph lineSpacing="Fixed"/>
 				</textElement>
-				<text><![CDATA[4) سوابق تدريس (برحسب اهميت و طول مدت)]]></text>
-			</staticText>
-			<staticText>
-				<reportElement positionType="Float" x="398" y="11" width="146" height="19" uuid="155dfc38-960b-4525-a962-93b3641634a6"/>
-				<textElement textAlignment="Right" verticalAlignment="Middle">
-					<font fontName="B Nazanin" size="11" isBold="true"/>
-					<paragraph lineSpacing="Fixed"/>
-				</textElement>
-				<text><![CDATA[3) سوابق خدمتي (از ابتداي خدمت)	]]></text>
+				<text><![CDATA[6) شرح تأليفات/ تحقيقات و برنامه هاي پژوهشي با ذكر نوع كار (كتاب، ترجمه كتاب، مقاله معتبر، جزوه يا پروژه تحقيقاتي)]]></text>
 			</staticText>
 		</band>
 	</detail>
 	<pageFooter>
-		<band height="65">
+		<band height="40">
 			<textField>
-				<reportElement x="16" y="20" width="100" height="30" uuid="f54c4590-c5b3-4f69-a0b5-2b972d70169c"/>
+				<reportElement x="179" y="11" width="100" height="20" uuid="f54c4590-c5b3-4f69-a0b5-2b972d70169c"/>
+				<textElement textAlignment="Right"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
 			<textField evaluationTime="Report">
-				<reportElement x="160" y="20" width="100" height="30" uuid="3ac1ae1a-69f1-44a4-88e7-ab3cb23880f5"/>
+				<reportElement x="293" y="11" width="100" height="20" uuid="3ac1ae1a-69f1-44a4-88e7-ab3cb23880f5"/>
+				<textElement textAlignment="Left"/>
 				<textFieldExpression><![CDATA[$V{PAGE_NUMBER}]]></textFieldExpression>
 			</textField>
+			<staticText>
+				<reportElement x="279" y="11" width="14" height="20" uuid="17edac5f-5285-4ce0-8c9c-85a65aacfe68"/>
+				<textElement textAlignment="Center"/>
+				<text><![CDATA[ /]]></text>
+			</staticText>
 		</band>
 	</pageFooter>
 	<summary>
-		<band height="75">
+		<band height="42">
 			<staticText>
 				<reportElement positionType="Float" x="230" y="0" width="56" height="30" uuid="137c6bee-1a42-4f76-855b-16238e7adfed"/>
 				<textElement textAlignment="Right" verticalAlignment="Middle">
