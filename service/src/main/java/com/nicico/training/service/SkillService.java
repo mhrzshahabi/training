@@ -19,10 +19,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
+import java.util.*;
 
 @Service
 @RequiredArgsConstructor
@@ -414,6 +411,8 @@ public class SkillService implements ISkillService {
         final Optional<Skill> optionalSkill = skillDAO.findById(skillId);
         final Skill skill = optionalSkill.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.SkillNotFound));
         skill.setCourseId(null);
+        if(Objects.equals(skill.getCourseMainObjectiveId(), courseId))
+            skill.setCourseMainObjectiveId(null);
         skillDAO.save(skill);
     }
 
@@ -452,5 +451,17 @@ public class SkillService implements ISkillService {
         for (Course course : gAllById) {
             skill.setCourse(course);
         }
+    }
+
+    @Transactional(readOnly = true)
+    @Override
+    public List<Skill> getAllByIds(List<Long> ids) {
+        List<Skill> skills = skillDAO.findAllById(ids);
+        return skills;
+    }
+
+    public List<SkillDTO.Info> listMainObjective(Long mainObjectiveId) {
+        return modelMapper.map(skillDAO.findByCourseMainObjectiveId(mainObjectiveId), new TypeToken<List<SkillDTO.Info>>() {
+        }.getType());
     }
 }
