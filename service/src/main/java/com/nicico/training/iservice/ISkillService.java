@@ -8,6 +8,7 @@ com.nicico.training.iservice
 
 import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.training.dto.*;
+import com.nicico.training.model.Skill;
 import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -81,4 +82,7 @@ public interface ISkillService {
     void addCourse(Long courseId, Long skillId);
 
     void addCourses(List<Long> ids, Long skillId);
+
+    @Transactional(readOnly = true)
+    List<Skill> getAllByIds(List<Long> ids);
 }
