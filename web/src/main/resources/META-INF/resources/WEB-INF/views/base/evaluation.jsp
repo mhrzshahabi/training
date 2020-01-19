@@ -373,8 +373,23 @@
                         "1": "صادر شده",
                         "2": "تکمیل شده"
                     },
-                    hidden: true}
-            ]
+                    hidden: true
+                }
+            ],
+            getCellCSSText: function (record, rowNum, colNum) {
+                if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 1)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && record.evaluationStatusLearning === 1)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && record.evaluationStatusBehavior === 1)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && record.evaluationStatusResults === 1))
+                    return "background-color : #d8e4bc";
+
+                if ((!ListGrid_evaluation_student.getFieldByName("evaluationStatusReaction").hidden && record.evaluationStatusReaction === 2)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusLearning").hidden && record.evaluationStatusLearning === 2)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusBehavior").hidden && record.evaluationStatusBehavior === 2)
+                    || (!ListGrid_evaluation_student.getFieldByName("evaluationStatusResults").hidden && record.evaluationStatusResults === 2))
+                    return "background-color : #b7dee8";
+
+            }
             //,
             // gridComponents: [StudentTS_student, "filterEditor", "header", "body"]
             <%--,--%>
@@ -395,6 +410,7 @@
 
     // <<-------------------------------------- Create - ToolStripButton --------------------------------------
     {
+        //*****class toolStrip*****
         var ToolStripButton_Refresh = isc.ToolStripButtonRefresh.create({
             title: "<spring:message code="refresh"/>",
             click: function () {
@@ -434,12 +450,27 @@
             }
         });
 
+        var ToolStripButton_RefreshIssuance = isc.ToolStripButtonRefresh.create({
+            title: "<spring:message code="refresh"/>",
+            click: function () {
+               ListGrid_evaluation_student.invalidateCache();
+            }
+        })
+
         var ToolStrip_evaluation = isc.ToolStrip.create({
             width: "100%",
             membersMargin: 5,
             members: [
                 ToolStripButton_FormIssuance,
-                ToolStripButton_FormIssuanceForAll
+                ToolStripButton_FormIssuanceForAll,
+                isc.ToolStrip.create({
+                    width: "100%",
+                    align: "left",
+                    border: '0px',
+                    members: [
+                        ToolStripButton_RefreshIssuance
+                    ]
+                })
             ]
         });
     }
@@ -732,6 +763,25 @@
 
             if (selectedStudent !== null && selectedStudent !== undefined) {
 
+                //*****print*****
+                var advancedCriteria_unit = ListGrid_evaluation_student.getCriteria();
+                var criteriaForm_operational = isc.DynamicForm.create({
+                    method: "POST",
+                    action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
+                    target: "_Blank",
+                    canSubmit: true,
+                    fields:
+                        [
+                            {name: "CriteriaStr", type: "hidden"},
+                            {name: "myToken", type: "hidden"}
+                        ]
+                });
+                criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
+                criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
+                criteriaForm_operational.show();
+                criteriaForm_operational.submitForm();
+
+                //*****set evaluation status*****
                 let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
 
                 let evaluationData = {};
@@ -811,7 +861,6 @@
                 let gridState = "[{id:" + selectedStudent.id + "}]";
 
                 ListGrid_evaluation_student.invalidateCache();
-                ListGrid_evaluation_student.fetchData();
 
                 MyOkDialog_Session = isc.MyOkDialog.create({
                     message: "<spring:message code="global.form.request.successful"/>"
