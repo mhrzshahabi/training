@@ -54,21 +54,21 @@
                     title: "<spring:message code="print.pdf"/>",
                     icon: "<spring:url value="pdf.png"/>",
                     click: function () {
-                        print_OperationalUnitListGrid("pdf");
+                        print_Student_FormIssuance("pdf");
                     }
                 },
                 {
                     title: "<spring:message code="print.excel"/>",
                     icon: "<spring:url value="excel.png"/>",
                     click: function () {
-                        print_OperationalUnitListGrid("excel");
+                        print_Student_FormIssuance("excel");
                     }
                 },
                 {
                     title: "<spring:message code="print.html"/>",
                     icon: "<spring:url value="html.png"/>",
                     click: function () {
-                        print_OperationalUnitListGrid("html");
+                        print_Student_FormIssuance("html");
                     }
                 }
             ]
@@ -389,7 +389,7 @@
         var ToolStripButton_FormIssuance = isc.ToolStripButton.create({
             title: "صدور فرم",
             click: function () {
-                alert("صدور فرم");
+                print_Student_FormIssuance("pdf");
             }
         });
 
@@ -691,24 +691,106 @@
             }, 3000);
         }
 
-        //*****print*****
-        function print_OperationalUnitListGrid(type) {
-            var advancedCriteria_unit = ListGrid_evaluation_class.getCriteria();
-            var criteriaForm_course = isc.DynamicForm.create({
-                method: "POST",
-                action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
-                target: "_Blank",
-                canSubmit: true,
-                fields:
-                    [
-                        {name: "CriteriaStr", type: "hidden"},
-                        {name: "myToken", type: "hidden"}
-                    ]
-            });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
-            criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-            criteriaForm_course.show();
-            criteriaForm_course.submitForm();
+        //*****print student form issuance*****
+        function print_Student_FormIssuance(type) {
+
+            let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
+
+            if (selectedStudent !== null && selectedStudent !== undefined) {
+
+                let selectedTab = Detail_Tab_Evaluation.getSelectedTab();
+
+                let evaluationData = {};
+
+                switch (selectedTab.id) {
+                    case "TabPane_Reaction": {
+
+                         evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": 1,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
+
+                        break;
+                    }
+                    case "TabPane_Learning": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": 1,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
+
+                        break;
+                    }
+                    case "TabPane_Behavior": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": 1,
+                            "results": selectedStudent.evaluationStatusResults || 0
+                        };
+
+                        break;
+                    }
+                    case "TabPane_Results": {
+
+                        evaluationData = {
+                            "idClassStudent": selectedStudent.id,
+                            "reaction": selectedStudent.evaluationStatusReaction || 0,
+                            "learning": selectedStudent.evaluationStatusLearning || 0,
+                            "behavior": selectedStudent.evaluationStatusBehavior || 0,
+                            "results": 1
+                        };
+
+                        break;
+                    }
+                }
+
+                isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/setStudentFormIssuance/", "PUT", JSON.stringify(evaluationData), show_EvaluationActionResult));
+
+            } else {
+                isc.Dialog.create({
+                    message: "<spring:message code="msg.no.records.selected"/>",
+                    icon: "[SKIN]ask.png",
+                    title: "<spring:message code="global.message"/>",
+                    buttons: [isc.IButtonSave.create({title: "<spring:message code="ok"/>"})],
+                    buttonClick: function (button, index) {
+                        this.close();
+                    }
+                });
+            }
+        }
+
+        function show_EvaluationActionResult(resp) {
+            var respCode = resp.httpResponseCode;
+            if (respCode === 200 || respCode === 201) {
+
+                let selectedStudent = ListGrid_evaluation_student.getSelectedRecord();
+                let gridState = "[{id:" + selectedStudent.id + "}]";
+
+                ListGrid_evaluation_student.invalidateCache();
+                ListGrid_evaluation_student.fetchData();
+
+                MyOkDialog_Session = isc.MyOkDialog.create({
+                    message: "<spring:message code="global.form.request.successful"/>"
+                });
+
+                setTimeout(function () {
+
+                    ListGrid_evaluation_student.setSelectedState(gridState);
+
+                    ListGrid_evaluation_student.scrollToRow(ListGrid_evaluation_student.getRecordIndex(ListGrid_evaluation_student.getSelectedRecord()), 0);
+
+                }, 600);
+
+            }
         }
 
         //*****Load student for tabs*****
@@ -807,4 +889,4 @@
     // ------------------------------------------------- Functions ------------------------------------------>>
 
 
-    //</script>
+    //
