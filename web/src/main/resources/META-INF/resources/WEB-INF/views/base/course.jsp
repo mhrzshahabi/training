@@ -702,6 +702,7 @@
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد"},
+                            {name: "courseMainObjectiveId", type:"boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
@@ -986,7 +987,7 @@
                 width:15,
                 height:15,
                 icon: "[SKIN]/actions/add.png",
-                prompt: "Edit selected record",
+                prompt: "<spring:message code='add'/>",
                 click: function () {
                     var advancedCriteriaJspCourse1 = {};
                     if(course_method == "POST") {
@@ -1025,7 +1026,7 @@
                 width:15,
                 height:15,
                 icon: "[SKIN]/FileBrowser/refresh.png",
-                prompt: "Remove selected record",
+                prompt: "<spring:message code='refresh'/>",
                 click: "mainObjectiveGrid_Refresh()"
             }),
             // isc.LayoutSpacer.create({ width:"*" }),
@@ -2467,7 +2468,7 @@
             ListGrid_Goal.setData([]);
             ListGrid_Syllabus_Goal.setData([]);
         }, 500)
-        mainObjectiveGrid_Refresh();
+        mainObjectiveGrid_Refresh(1);
 
 // DynamicForm_course.getFields().get(5).prompt = "لطفا مدت دوره را به صورت یک عدد وارد کنید";
 
@@ -2631,23 +2632,25 @@
         }
     };
 
-    function mainObjectiveGrid_Refresh() {
+    function mainObjectiveGrid_Refresh(x=0) {
         mainObjectiveList.length = 0;
         mainObjectiveGrid.invalidateCache();
-        isc.RPCManager.sendRequest({
-            actionURL: skillUrl + "/main-objective/" + ListGrid_Course.getSelectedRecord().id,
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                    mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
+        if(x==0) {
+            isc.RPCManager.sendRequest({
+                actionURL: skillUrl + "/main-objective/" + ListGrid_Course.getSelectedRecord().id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                        mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     {
         <%--function openTabGoal() {--%>
