@@ -336,10 +336,44 @@
                 {name: "student.personnelNo2"},
                 {name: "student.postTitle"},
                 {name: "student.ccpArea"},
-                {name: "evaluationStatusReaction"},
-                {name: "evaluationStatusLearning", hidden: true},
-                {name: "evaluationStatusBehavior", hidden: true},
-                {name: "evaluationStatusResults", hidden: true}
+                {
+                    name: "evaluationStatusReaction",
+                    valueMap: {
+                        undefined: "صادر نشده",
+                        "0": "صادر نشده",
+                        "1": "صادر شده",
+                        "2": "تکمیل شده"
+                    }
+                },
+                {
+                    name: "evaluationStatusLearning",
+                    valueMap: {
+                        undefined: "صادر نشده",
+                        "0": "صادر نشده",
+                        "1": "صادر شده",
+                        "2": "تکمیل شده"
+                    },
+                    hidden: true
+                },
+                {
+                    name: "evaluationStatusBehavior",
+                    valueMap: {
+                        undefined: "صادر نشده",
+                        "0": "صادر نشده",
+                        "1": "صادر شده",
+                        "2": "تکمیل شده"
+                    },
+                    hidden: true
+                },
+                {
+                    name: "evaluationStatusResults",
+                    valueMap: {
+                        undefined: "صادر نشده",
+                        "0": "صادر نشده",
+                        "1": "صادر شده",
+                        "2": "تکمیل شده"
+                    },
+                    hidden: true}
             ]
             //,
             // gridComponents: [StudentTS_student, "filterEditor", "header", "body"]
@@ -705,7 +739,7 @@
                 switch (selectedTab.id) {
                     case "TabPane_Reaction": {
 
-                         evaluationData = {
+                        evaluationData = {
                             "idClassStudent": selectedStudent.id,
                             "reaction": 1,
                             "learning": selectedStudent.evaluationStatusLearning || 0,
@@ -768,6 +802,7 @@
             }
         }
 
+        //*****callback for print student form issuance*****
         function show_EvaluationActionResult(resp) {
             var respCode = resp.httpResponseCode;
             if (respCode === 200 || respCode === 201) {
@@ -789,7 +824,6 @@
                     ListGrid_evaluation_student.scrollToRow(ListGrid_evaluation_student.getRecordIndex(ListGrid_evaluation_student.getSelectedRecord()), 0);
 
                 }, 600);
-
             }
         }
 
