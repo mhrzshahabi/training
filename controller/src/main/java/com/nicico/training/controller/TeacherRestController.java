@@ -356,6 +356,50 @@ public class TeacherRestController {
         reportUtil.export("/reports/TeacherWithDetail.jasper", params, jsonDataSource, response);
     }
 
+    @Loggable
+    @PostMapping(value = {"/printEvaluation/{id}/{catId}/{subCatId}"})
+    public void printEvaluation(HttpServletResponse response,@PathVariable String id, @PathVariable String catId, @PathVariable String subCatId) throws Exception {
+        final Map<String, Object> params = new HashMap<>();
+
+        Long Id = Long.valueOf(id);
+        final TeacherDTO.Info teacherDTO = teacherService.get(Id);
+        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
+        final PersonalInfoDTO.Info personalInfoDTO = personalInfoService.get(teacher.getPersonalityId());
+        final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
+        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
+
+        params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
+        params.put("personalNum",teacher.getPersonnelCode());
+        String address = null;
+        params.put("address", address);
+        String phone = null;
+        params.put("phone", phone);
+        String categoryName = null;
+        String subCategoryName = null;
+        if(!catId.equalsIgnoreCase("undefined")) {
+            CategoryDTO.Info category = categoryService.get(Long.valueOf(catId));
+            categoryName = category.getTitleFa();
+        }
+        if(!subCatId.equalsIgnoreCase("undefined")) {
+            SubCategoryDTO.Info subCategory = subCategoryService.get(Long.valueOf(subCatId));
+            subCategoryName = subCategory.getTitleFa();
+        }
+        params.put("categories", categoryName + " " + subCategoryName);
+
+        String totalGrade = null;
+        params.put("totalGrade", totalGrade);
+        String status = null;
+        params.put("status", status);
+
+        String data = "{" + "\"content\": " + null + "}";
+
+        JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));
+
+        params.put(ConstantVARs.REPORT_TYPE, "PDF");
+        reportUtil.export("/reports/TeacherEvaluation.jasper", params, jsonDataSource, response);
+    }
+
+
     private SearchDTO.SearchRq setSearchCriteria(@RequestParam(value = "_startRow", required = false) Integer startRow,
                                                  @RequestParam(value = "_endRow", required = false) Integer endRow,
                                                  @RequestParam(value = "_constructor", required = false) String constructor,
