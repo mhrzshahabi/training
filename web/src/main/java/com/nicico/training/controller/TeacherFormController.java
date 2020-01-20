@@ -13,6 +13,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.nio.file.Path;
 
 @RequiredArgsConstructor
 @Controller
@@ -134,6 +135,26 @@ public class TeacherFormController {
 
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
         return restTemplate.exchange(restApiUrl + "/api/teacher/printWithDetail/" + id, HttpMethod.POST, entity, byte[].class);
+    }
+
+    @PostMapping("/printEvaluation/{id}/{catId}/{subCatId}")
+    public ResponseEntity<?> printEvaluation(final HttpServletRequest request, @PathVariable String id, @PathVariable String catId, @PathVariable String subCatId) {
+        String token = request.getParameter("token");
+
+        final RestTemplate restTemplate = new RestTemplate();
+        restTemplate.getMessageConverters().add(new ByteArrayHttpMessageConverter());
+
+        final HttpHeaders headers = new HttpHeaders();
+        headers.add("Authorization", "Bearer " + token);
+
+        headers.setContentType(MediaType.APPLICATION_FORM_URLENCODED);
+
+        MultiValueMap<String, String> map = new LinkedMultiValueMap<>();
+
+        HttpEntity<MultiValueMap<String, String>> entity = new HttpEntity<>(map, headers);
+
+        String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
+        return restTemplate.exchange(restApiUrl + "/api/teacher/printEvaluation/" + id + "/" + catId + "/" + subCatId, HttpMethod.POST, entity, byte[].class);
     }
 
 
