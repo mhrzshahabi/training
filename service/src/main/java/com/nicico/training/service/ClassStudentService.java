@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Service
@@ -116,4 +117,9 @@ public class ClassStudentService implements IClassStudentService {
         return criteriaRq;
     }
 
+    @Transactional
+    @Override
+    public int setStudentFormIssuance(Map<String, Integer> formIssuance) {
+        return classStudentDAO.setStudentFormIssuance(Long.parseLong(formIssuance.get("idClassStudent").toString()), formIssuance.get("reaction"), formIssuance.get("learning"), formIssuance.get("behavior"), formIssuance.get("results"));
+    }
 }

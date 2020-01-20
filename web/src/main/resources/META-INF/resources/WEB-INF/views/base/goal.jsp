@@ -279,7 +279,7 @@
                                             this.close();
                                         } else {
                                             this.close();
-                                            DynamicForm_course_MainTab.getItem("theoryDuration").setValue(sumSyllabus);
+                                            vm_JspCourse.getItem("theoryDuration").setValue(sumSyllabus);
                                             courseSaveBtn.click();
                                             // setTimeout(function () {
                                             //     courseSaveBtn.click();

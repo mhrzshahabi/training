@@ -59,7 +59,7 @@ public class SkillDTO {
         private SkillLevelDTO.SkillLevelInfoTuple skillLevel;
         private CategoryDTO.CategoryInfoTuple category;
         private SubCategoryDTO.SubCategoryInfoTuple subCategory;
-
+        private Long courseMainObjectiveId;
         private Date createdDate;
         private String createdBy;
         private Date lastModifiedDate;
@@ -86,7 +86,6 @@ public class SkillDTO {
     @Accessors(chain = true)
     @ApiModel("SkillUpdateRq")
     public static class Update extends SkillDTO {
-
         Set<Long> courseIds;
         Set<Long> skillGroupIds;
 

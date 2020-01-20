@@ -555,4 +555,10 @@
     <changeSet author="jafari-h (generated)" id="1579330041869-220">
         <addForeignKeyConstraint baseColumnNames="f_main_objective_course" baseTableName="tbl_skill" constraintName="FKmmmp7sq6jwawr4aa3i1qajbm8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_course" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-226">
+        <addForeignKeyConstraint baseColumnNames="WorkGroup_id" baseTableName="WorkGroup_userIds" constraintName="FKeh7gjo1y82455xq6m679x7vq5" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_work_group" validate="true"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-227">
+        <addForeignKeyConstraint baseColumnNames="f_work_group" baseTableName="tbl_permission" constraintName="FKgf0y1hfuicw9d33m3m358wt1r" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_work_group" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

@@ -133,4 +133,9 @@ public class MainFormController {
         return "needsAssessment/needsAssessment";
     }
 
+    @RequestMapping("/work-group")
+    public String showWorkGroupForm() {
+        return "security/workGroup";
+    }
+
 }

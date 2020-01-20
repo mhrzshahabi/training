@@ -6859,7 +6859,7 @@ some LG header-titles to be vertically offset from other headers */
 .specialColOver,
 .recordSummaryCellOver,
 .recordSummaryCellOverDark {
-  background-color: #ffd7a7;
+  background-color: #ffd7a7 !important;
   color: #153560;
 }
 
@@ -6869,7 +6869,7 @@ some LG header-titles to be vertically offset from other headers */
 
 .tallCellOver,
 .tallCellOverDark {
-  background-color: #ffd7a7;
+  background-color: #ffd7a7 !important;
   color: #153560;
 }
 
@@ -6880,13 +6880,13 @@ some LG header-titles to be vertically offset from other headers */
 .specialColSelected,
 .recordSummaryCellSelected,
 .recordSummaryCellSelectedDark {
-  background: #929292;
+  background: #929292 !important;
   color: white;
 }
 
 .tallCellSelected,
 .tallCellSelectedDark {
-  background: #929292;
+  background: #929292 !important;
   color: white;
 }
 
@@ -6897,13 +6897,13 @@ some LG header-titles to be vertically offset from other headers */
 .specialColSelectedOver,
 .recordSummaryCellSelectedOver,
 .recordSummaryCellSelectedOverDark {
-  background-color: #929292;
+  background-color: #929292 !important;
   color: white;
 }
 
 .tallCellSelectedOver,
 .tallCellSelectedOverDark {
-  background-color: #929292;
+  background-color: #929292 !important;
   color: white;
 }
 
@@ -6962,7 +6962,7 @@ some LG header-titles to be vertically offset from other headers */
 .tallCellAltSelectedDark,
 .tallCellAltSelectedOver,
 .tallCellAltSelectedOverDark {
-  background-color: #929292;
+  background-color: #929292 !important;
   color: #153560;
   border-top: none;
   border-bottom: none;
@@ -7033,7 +7033,7 @@ some LG header-titles to be vertically offset from other headers */
 
 .cellOverAltCol,
 .cellOverDarkAltCol {
-  background-color: #ffd7a7;
+  background-color: #ffd7a7 !important;
   color: #153560;
 }
 
@@ -7045,7 +7045,7 @@ some LG header-titles to be vertically offset from other headers */
 .cellPendingSelectedDarkAltCol,
 .cellPendingSelectedOverAltCol,
 .cellPendingSelectedOverDarkAltCol {
-  background: #929292;
+  background: #929292 !important;
   color: white;
 }
 
@@ -7053,7 +7053,7 @@ some LG header-titles to be vertically offset from other headers */
 .cellSelectedOverDarkAltCol,
 .cellPendingSelectedOverAltCol,
 .cellPendingSelectedOverDarkAltCol {
-  background: #929292;
+  background: #929292 !important;
 }
 
 /* ListGrid rollOverCanvas outer glow */

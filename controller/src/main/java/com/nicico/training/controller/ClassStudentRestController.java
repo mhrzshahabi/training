@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 @Slf4j
 @RestController
@@ -104,5 +105,18 @@ public class ClassStudentRestController {
             return new ResponseEntity<>(
                     new TrainingException(TrainingException.ErrorType.NotDeletable).getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
+    }
+
+//    @Loggable
+//    @PutMapping(value = "/setStudentFormIssuance/{idClassStudent}/{reaction}")
+//    public Integer setStudentFormIssuance(@PathVariable Long idClassStudent, @PathVariable Integer reaction) {
+//        return classStudentService.setStudentFormIssuance(idClassStudent, reaction);
+//    }
+
+
+    @Loggable
+    @PutMapping(value = "/setStudentFormIssuance")
+    public Integer setStudentFormIssuance(@RequestBody Map<String, Integer> formIssuance) {
+        return classStudentService.setStudentFormIssuance(formIssuance);
     }
 }
