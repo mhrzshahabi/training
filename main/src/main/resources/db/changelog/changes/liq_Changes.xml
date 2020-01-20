@@ -322,5 +322,64 @@
             <column name="c_valence" type="varchar2(255 CHAR)"/>
         </addColumn>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-221">
+        <createTable tableName="WorkGroup_userIds">
+            <column name="WorkGroup_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="userIds" type="NUMBER(19, 0)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-222">
+        <createTable tableName="tbl_permission">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_permissionPK"/>
+            </column>
+            <column name="c_created_by" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="d_created_date" type="TIMESTAMP">
+                <constraints nullable="false"/>
+            </column>
+            <column name="e_deleted" type="NUMBER(10, 0)"/>
+            <column name="e_enabled" type="NUMBER(10, 0)"/>
+            <column name="c_last_modified_by" type="VARCHAR2(255 CHAR)"/>
+            <column name="d_last_modified_date" type="TIMESTAMP"/>
+            <column name="n_version" type="NUMBER(10, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_attribute_name" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_attribute_type" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_entity_name" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="c_values" type="VARCHAR2(255 CHAR)"/>
+            <column name="f_work_group" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579438870666-223">
+        <createTable tableName="tbl_work_group">
+            <column name="id" type="NUMBER(19, 0)">
+                <constraints primaryKey="true" primaryKeyName="tbl_work_groupPK"/>
+            </column>
+            <column name="c_description" type="VARCHAR2(255 CHAR)"/>
+            <column name="c_title" type="VARCHAR2(255 CHAR)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579498024615-224">
+        <createTable tableName="Permission_attributeValues">
+            <column name="Permission_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attributeValues" type="VARCHAR2(1000 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579496640075-279">
+        <dropColumn columnName="C_VALUES" tableName="TBL_PERMISSION"/>
+    </changeSet>
 
 </databaseChangeLog>

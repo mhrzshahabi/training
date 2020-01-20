@@ -702,6 +702,7 @@
                         fields: [
                             {name: "titleFa", title: "عنوان"},
                             {name: "code", title: "کد"},
+                            {name: "courseMainObjectiveId", type:"boolean", title: "هدف کلی", canFilter: false}
                         ],
                         recordDrop: function (dropRecords, targetRecord, index, sourceWidget) {
                             if (ListGrid_AllSkill_JspCourse.getSelectedRecord() == null) {
@@ -986,7 +987,7 @@
                 width:15,
                 height:15,
                 icon: "[SKIN]/actions/add.png",
-                prompt: "Edit selected record",
+                prompt: "<spring:message code='add'/>",
                 click: function () {
                     var advancedCriteriaJspCourse1 = {};
                     if(course_method == "POST") {
@@ -1025,7 +1026,7 @@
                 width:15,
                 height:15,
                 icon: "[SKIN]/FileBrowser/refresh.png",
-                prompt: "Remove selected record",
+                prompt: "<spring:message code='refresh'/>",
                 click: "mainObjectiveGrid_Refresh()"
             }),
             // isc.LayoutSpacer.create({ width:"*" }),
@@ -1041,6 +1042,7 @@
         colWidths: ["10%", "20%", "9%", "10%", "10%"],
         titleAlign: "left",
         validateOnExit: true,
+        wrapItemTitles: false,
         showInlineErrors: true,
         numCols: 5,
         fields: [
@@ -1076,42 +1078,6 @@
                 height: "*",
                 endRow: false,
                 selectionType : "none",
-            },
-            {
-                name: "code",
-                title: "کد دوره:",
-                type: "staticText",
-                align: "center",
-                startRow: false,
-                colSpan: 1,
-                // height: "30",
-            },
-            {
-                name: "theoryDuration",
-                colSpan: 1,
-                endRow: true,
-                title: "<spring:message code="course_theoryDuration"/>",
-                prompt: "لطفا مدت دوره را به صورت یک عدد حداکثر 3 رقمی وارد کنید",
-                // height: "30",
-                required: true,
-                mask: "###",
-                useMask: true,
-                // titleOrientation: "top",
-                textAlign: "center",
-                keyPressFilter: "[0-9.]",
-                requiredMessage: "لطفا مدت دوره را به صورت یک عدد با حداکثر سه رقم وارد کنید",
-                validators: [{
-                    type: "integerRange", min: 0, max: 999,
-                    errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
-                }],
-                // width: "100",
-                change: function (form, item, value, oldValue) {
-                    if ((value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) && (course_method == "PUT")) {
-                        item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
-                    } else {
-                        item.clearErrors();
-                    }
-                }
             },
             {
                 name: "needText",
@@ -1357,16 +1323,45 @@
     var DynamicForm_course_GroupTab = isc.DynamicForm.create({
         colWidths: ["6%", "11%", "6%", "11%"],
         numCols: 4,
+        titleAlign: "left",
         validateOnExit: true,
-// cellBorder:1,
-// titleAlign:"right",
-
-// isGroup:true,
-        // groupTitle:"اطلاعات پایه",
-        // groupLabelBackgroundColor:"lightGray",
-        // groupBorderCSS:"1px solid Gray",
-        // border:"1px solid blue",
         fields: [
+            {
+                name: "code",
+                title: "کد دوره:",
+                type: "staticText",
+                align: "center",
+                // startRow: false,
+                colSpan: 1,
+                // height: "30",
+            },
+            {
+                name: "theoryDuration",
+                colSpan: 1,
+                // endRow: true,
+                title: "<spring:message code="course_theoryDuration"/>",
+                prompt: "لطفا مدت دوره را به صورت یک عدد حداکثر 3 رقمی وارد کنید",
+                // height: "30",
+                required: true,
+                mask: "###",
+                useMask: true,
+                // titleOrientation: "top",
+                textAlign: "center",
+                keyPressFilter: "[0-9.]",
+                requiredMessage: "لطفا مدت دوره را به صورت یک عدد با حداکثر سه رقم وارد کنید",
+                validators: [{
+                    type: "integerRange", min: 0, max: 999,
+                    errorMessage: "حداکثر یک عدد سه رقمی وارد کنید",
+                }],
+                // width: "100",
+                change: function (form, item, value, oldValue) {
+                    if ((value != ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration) && (course_method == "PUT")) {
+                        item.setErrors("جمع مدت زمان اجرای سرفصل ها برابر با: " + ListGrid_CourseSyllabus.getGridSummaryData().get(0).practicalDuration + " است.");
+                    } else {
+                        item.clearErrors();
+                    }
+                }
+            },
             {
                 name: "category.id",
                 colSpan: 1,
@@ -1390,7 +1385,7 @@
                     DynamicForm_course_GroupTab.getItem("subCategory.id").setValue([]);
                     RestDataSourceSubCategory.fetchDataURL = categoryUrl + value + "/sub-categories";
                     DynamicForm_course_GroupTab.getItem("subCategory.id").fetchData();
-                    DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
+                    DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     // console.log(item.getSelectedRecord().code)
                 },
                 click: function (form, item) {
@@ -1414,7 +1409,7 @@
                 filterFields: ["titleFa"],
                 sortField: ["id"],
                 changed: function (form, item, value) {
-                    DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
+                    DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 }
             },
             {
@@ -1433,7 +1428,7 @@
                 // height: "30",
                 width: "*",
                 changed: function (form, item, value) {
-                    DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
+                    DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     switch (value) {
                         case 1:
                             runV = "C";
@@ -1473,7 +1468,7 @@
                 // titleOrientation: "top",
                 generateExactMatchCriteria: true,
                 changed: function (form, item, value) {
-                    DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
+                    DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                     switch (value) {
                         case 1:
                             eLevelTypeV = "1";
@@ -1503,19 +1498,7 @@
                 width: "*",
                 // titleOrientation: "top",
                 changed: function (form, item, value) {
-                    DynamicForm_course_MainTab.getItem("code").setValue(courseCode());
-                    switch (value) {
-                        case 1:
-                            etheoTypeV = "T";
-                            break;
-                        case 2:
-                            etheoTypeV = "P";
-                            break;
-                        case 3:
-                            etheoTypeV = "M";
-                            break;
-                    }
-
+                    DynamicForm_course_GroupTab.getItem("code").setValue(courseCode());
                 },
 
             },
@@ -1536,28 +1519,16 @@
                 // height: "30",
                 changed: function (form, item, value) {
                     ChangeEtechnicalType = true;
-                    switch (value) {
-                        case 1:
-                            eLevelTypeV = "1";
-                            break;
-                        case 2:
-                            eLevelTypeV = "2";
-                            break;
-                        case 3:
-                            eLevelTypeV = "3";
-                            break;
-                    }
-
                 },
             },
             {
                 name: "description",
                 type: "TextAreaItem",
-                colSpan: 4,
+                colSpan: 3,
                 rowSpan: 4,
                 height: "*",
                 title: "توضیحات",
-                width: "*",
+                width: "100%",
                 length: 5000,
             }
         ],
@@ -2336,6 +2307,10 @@
             // formPreCourse.reset();
             // ListGrid_Course_refresh();
             this.close();
+        },
+        close: function () {
+            Window_AddMainObjective.close();
+            this.Super("close",arguments);
         }
     });
 
@@ -2484,7 +2459,7 @@
         // DynamicForm_course.getItem("epSection").disable();
         // DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
-      //  DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
+        //  DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
         setTimeout(function () {
             // ToolStrip_Actions_Goal.disable();
             // ToolStrip_Actions_Syllabus.disable();
@@ -2493,7 +2468,7 @@
             ListGrid_Goal.setData([]);
             ListGrid_Syllabus_Goal.setData([]);
         }, 500)
-
+        mainObjectiveGrid_Refresh(1);
 
 // DynamicForm_course.getFields().get(5).prompt = "لطفا مدت دوره را به صورت یک عدد وارد کنید";
 
@@ -2657,23 +2632,25 @@
         }
     };
 
-    function mainObjectiveGrid_Refresh() {
+    function mainObjectiveGrid_Refresh(x=0) {
         mainObjectiveList.length = 0;
         mainObjectiveGrid.invalidateCache();
-        isc.RPCManager.sendRequest({
-            actionURL: skillUrl + "/main-objective/" + ListGrid_Course.getSelectedRecord().id,
-            httpMethod: "GET",
-            httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
-            useSimpleHttp: true,
-            contentType: "application/json; charset=utf-8",
-            showPrompt: false,
-            serverOutputAsString: false,
-            callback: function (resp) {
-                for (var i = 0; i < JSON.parse(resp.data).length; i++) {
-                    mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
+        if(x==0) {
+            isc.RPCManager.sendRequest({
+                actionURL: skillUrl + "/main-objective/" + ListGrid_Course.getSelectedRecord().id,
+                httpMethod: "GET",
+                httpHeaders: {"Authorization": "Bearer <%= accessToken %>"},
+                useSimpleHttp: true,
+                contentType: "application/json; charset=utf-8",
+                showPrompt: false,
+                serverOutputAsString: false,
+                callback: function (resp) {
+                    for (var i = 0; i < JSON.parse(resp.data).length; i++) {
+                        mainObjectiveDS.addData(JSON.parse(resp.data)[i]);
+                    }
                 }
-            }
-        });
+            });
+        }
     }
     {
         <%--function openTabGoal() {--%>
@@ -2804,7 +2781,6 @@
                 buttonClick: function (button, index) {
                     this.close();
                     if (index === 0) {
-
                         var varParams = [{
                             "processKey": "courseWorkflow",
                             "cId": sRecord.id,
