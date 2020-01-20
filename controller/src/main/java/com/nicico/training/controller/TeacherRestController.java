@@ -12,6 +12,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.*;
 import com.nicico.training.model.*;
+import com.nicico.training.model.enums.EGender;
 import com.nicico.training.repository.PersonalInfoDAO;
 import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
@@ -297,45 +298,89 @@ public class TeacherRestController {
 
         Long Id = Long.valueOf(id);
         final TeacherDTO.Info teacherDTO = teacherService.get(Id);
-        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
-        final PersonalInfoDTO.Info personalInfoDTO = personalInfoService.get(teacher.getPersonalityId());
-        final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
-        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
-        if(personalInfo.getPhoto() != null) {
-            String fileName = personUploadDir + "/" + personalInfo.getPhoto();
+        final Teacher teacher = modelMapper.map(teacherDTO, Teacher.class);
+
+        if(teacherDTO.getPersonality().getPhoto() != null) {
+            String fileName = personUploadDir + "/" + teacherDTO.getPersonality().getPhoto();
             File file = new File(fileName);
             params.put("personalImg", ImageIO.read(file));
         }
-        if(personalInfo.getPhoto() == null) {
+        if(teacherDTO.getPersonality().getPhoto() == null) {
             params.put("personalImg", ImageIO.read(getClass().getResourceAsStream("/reports/reportFiles/personal_photo.png")));
         }
-
-        params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
-        params.put("personalNum",teacher.getPersonnelCode());
-        params.put("certificateNum", personalInfo.getBirthCertificate());
-        params.put("nationalCode", personalInfo.getNationalCode());
-        params.put("certificateLocation", personalInfo.getBirthCertificateLocation());
-        params.put("birthDate", personalInfo.getBirthDate());
-        params.put("birthLocation", personalInfo.getBirthLocation());
-        params.put("gender", personalInfo.getGender().getTitleFa());
-        params.put("military", personalInfo.getMilitary().getTitleFa());
-        params.put("otherActivity", teacher.getOtherActivities());
-
+        params.put("name",teacherDTO.getPersonality().getFirstNameFa() + " " + teacherDTO.getPersonality().getLastNameFa());
+        params.put("personalNum",teacherDTO.getPersonnelCode());
+        params.put("certificateNum", teacherDTO.getPersonality().getBirthCertificate());
+        params.put("nationalCode", teacherDTO.getPersonality().getNationalCode());
+        params.put("certificateLocation", teacherDTO.getPersonality().getBirthCertificateLocation());
+        params.put("birthDate", teacherDTO.getPersonality().getBirthDate());
+        params.put("birthLocation", teacherDTO.getPersonality().getBirthLocation());
+        Integer genderId = teacherDTO.getPersonality().getGenderId();
+        String gender = null;
+        if(genderId == 1)
+            gender = "مرد";
+        if(genderId == 2)
+            gender = "زن";
+        params.put("gender", gender);
+        Integer militaryId = teacherDTO.getPersonality().getMilitaryId();
+        String military = null;
+        if(militaryId == 1)
+            military = "گذرانده";
+        if(militaryId == 2)
+            military = "معاف";
+        if(militaryId == 3)
+            military = "مشمول";
+        if(genderId == 2)
+            military = null;
+        params.put("military", military);
+        params.put("otherActivity", teacherDTO.getOtherActivities());
         String address = null;
-        params.put("address", address);
-
         String connection = null;
+        if(teacherDTO.getPersonality().getContactInfo() != null) {
+            //connection
+            if (teacherDTO.getPersonality().getContactInfo().getMobile() != null)
+                connection += "تلفن: " +teacherDTO.getPersonality().getContactInfo().getMobile()+ ", ";
+            else if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone() != null)
+                    connection += "تلفن: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone()+ ", ";
+            if (teacherDTO.getPersonality().getContactInfo().getEmail() != null)
+                connection += "پست الکترونیکی: " +teacherDTO.getPersonality().getContactInfo().getEmail()+ ", ";
+            if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax() != null)
+                    connection += "فاکس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax()+ ", ";
+            //address
+            if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+            }
+            else if(teacherDTO.getPersonality().getContactInfo().getWorkAddress() != null) {
+                if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState() != null)
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity() != null)
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() != null)
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() != null)
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() + ", ";
+            }
+        }
+        params.put("address", address);
         params.put("connectionInfo", connection);
-
         String categories = null;
         List<Category> categoryList = teacher.getCategories();
         List<SubCategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
-            categories += category.getTitleFa() + " ";
+            categories += category.getTitleFa() + ", ";
             for (SubCategory subCategory : subCategoryList) {
                 CategoryDTO.Info categoryDTO = subCategoryService.getCategory(subCategory.getId());
                 if(categoryDTO.getId() == category.getId()) {
-                    categories += subCategory.getTitleFa() + " ";
+                    categories += subCategory.getTitleFa() + ", ";
                 }
             }
         }
@@ -363,17 +408,17 @@ public class TeacherRestController {
 
         Long Id = Long.valueOf(id);
         final TeacherDTO.Info teacherDTO = teacherService.get(Id);
-        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
-        final PersonalInfoDTO.Info personalInfoDTO = personalInfoService.get(teacher.getPersonalityId());
-        final Optional<PersonalInfo> cById = personalInfoDAO.findById(teacher.getPersonalityId());
-        final PersonalInfo personalInfo = cById.orElseThrow(() -> new TrainingException(TrainingException.ErrorType.NotFound));
 
-        params.put("name",personalInfo.getFirstNameFa() + " " + personalInfo.getLastNameFa());
-        params.put("personalNum",teacher.getPersonnelCode());
+        String name = null;
+        String personalNum = null;
+        String categories = null;
         String address = null;
-        params.put("address", address);
         String phone = null;
-        params.put("phone", phone);
+        String totalGrade = null;
+        String status = null;
+
+        name = teacherDTO.getPersonality().getFirstNameFa() + " " + teacherDTO.getPersonality().getLastNameFa();
+        personalNum = teacherDTO.getPersonnelCode();
         String categoryName = null;
         String subCategoryName = null;
         if(!catId.equalsIgnoreCase("undefined")) {
@@ -384,11 +429,33 @@ public class TeacherRestController {
             SubCategoryDTO.Info subCategory = subCategoryService.get(Long.valueOf(subCatId));
             subCategoryName = subCategory.getTitleFa();
         }
-        params.put("categories", categoryName + " " + subCategoryName);
+        categories = categoryName + " " + subCategoryName;
+        if(teacherDTO.getPersonality().getContactInfo() != null) {
+            //phone
+            if (teacherDTO.getPersonality().getContactInfo().getMobile() != null)
+                phone = teacherDTO.getPersonality().getContactInfo().getMobile();
+            else if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone() != null)
+                    phone = teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone();
+           //address
+            if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+            }
+        }
 
-        String totalGrade = null;
+        params.put("name",name);
+        params.put("personalNum",personalNum);
+        params.put("address", address);
+        params.put("phone", phone);
+        params.put("categories",categories);
         params.put("totalGrade", totalGrade);
-        String status = null;
         params.put("status", status);
 
         String data = "{" + "\"content\": " + null + "}";
@@ -397,6 +464,42 @@ public class TeacherRestController {
 
         params.put(ConstantVARs.REPORT_TYPE, "PDF");
         reportUtil.export("/reports/TeacherEvaluation.jasper", params, jsonDataSource, response);
+    }
+
+    @Loggable
+    @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
+    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
+        Long evaluationGrade = null;
+        Long CatId = null;
+        Long SubCatId = null;
+        Category category_selected = null;
+        SubCategory subCategory_selected = null;
+        if(!catId.equalsIgnoreCase("undefined")) {
+            CatId = Long.parseLong(catId);
+            category_selected = modelMapper.map(categoryService.get(CatId),Category.class);
+        }
+        if(!subCatId.equalsIgnoreCase("undefined")) {
+            SubCatId = Long.parseLong(subCatId);
+            subCategory_selected = modelMapper.map(categoryService.get(SubCatId),SubCategory.class);
+        }
+        TeacherDTO.Info teacherDTO = teacherService.get(id);
+        Teacher teacher = modelMapper.map(teacherDTO,Teacher.class);
+        // table 2
+        String teacherMajor = teacher.getPersonality().getEducationMajor().getTitleFa();
+        String teacherEducation = teacher.getPersonality().getEducationOrientation().getTitleFa();
+        //table 1,
+        if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دیپلم"))
+            System.out.println();
+        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق دیپلم"))
+            System.out.println();
+        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("لیسانس"))
+            System.out.println();
+        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("فوق لیسانس"))
+            System.out.println();
+        else if(teacher.getPersonality().getEducationLevel().getTitleFa().equalsIgnoreCase("دکتری"))
+            System.out.println();
+
+        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
     }
 
 
@@ -498,21 +601,5 @@ public class TeacherRestController {
     public void changeBlackListStatus(@PathVariable Boolean inBlackList, @PathVariable Long id) {
         teacherService.changeBlackListStatus(inBlackList,id);
     }
-
-    @Loggable
-    @GetMapping(value = "/evaluateTeacher/{id}/{catId}/{subCatId}")
-//    @PreAuthorize("hasAuthority('r_teacher')")
-    public ResponseEntity<Long> evaluateTeacher(@PathVariable Long id,@PathVariable String catId,@PathVariable String subCatId) throws IOException {
-        Long evaluationGrade = null;
-        Long CatId = null;
-        Long SubCatId = null;
-        CatId = Long.parseLong(catId);
-        if(!subCatId.equalsIgnoreCase("undefined"))
-            SubCatId = Long.parseLong(subCatId);
-        TeacherDTO.Info teacherDTO = teacherService.get(id);
-
-        return new ResponseEntity<>(evaluationGrade,HttpStatus.OK);
-    }
-
 
 }
