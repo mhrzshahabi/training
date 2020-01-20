@@ -18,6 +18,8 @@
     ];
     var FormDataList_Permission;
     var Wait_Permission;
+    var methodWorkGroup;
+    var saveActionUrlWorkGroup;
     var temp;
 
     //--------------------------------------------------------------------------------------------------------------------//
@@ -48,251 +50,146 @@
         fetchDataURL: workGroupUrl + "/iscList"
     });
 
-    // isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/form-data", "POST", JSON.stringify(entityList_Permission), setFormData));
-
     //--------------------------------------------------------------------------------------------------------------------//
     /*Permissions*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    // TabSet_Permission = isc.TabSet.create({
-    //     tabBarPosition: "right",
-    //     tabBarThickness: 100,
-    //     titleEditorTopOffset: 2,
-    //     tabSelected: function () {
-    //         DynamicForm_Permission = (TabSet_Permission.getSelectedTab().pane);
-    //     }
-    // });
-    //
-    // IButton_Save_Permission = isc.TrSaveBtn.create({
-    //     top: 260,
-    //     click: function () {
-    //         if (!DynamicForm_Permission.valuesHaveChanged() || !DynamicForm_Permission.validate())
-    //             return;
-    //         DynamicForm_WorkGroup_edit();
-    //     }
-    // });
-    //
-    // HLayout_SaveOrExit_Permission = isc.TrHLayoutButtons.create({
-    //     layoutMargin: 5,
-    //     showEdges: false,
-    //     edgeImage: "",
-    //     padding: 10,
-    //     members: [IButton_Save_Permission]
-    // });
-    //
-    // ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
-    //     click: function () {
-    //         DynamicForm_WorkGroup_refresh();
-    //     }
-    // });
-    //
-    // ToolStrip_Actions_Permission = isc.ToolStrip.create({
-    //     width: "100%",
-    //     align: "left",
-    //     border: '0px',
-    //     members: [
-    //         ToolStripButton_Refresh_Permission
-    //     ]
-    // });
-    //
-    // VLayout_Permission = isc.TrVLayout.create({
-    //     members: [ToolStrip_Actions_Permission, TabSet_Permission, HLayout_SaveOrExit_Permission]
-    // });
-    //
-    // Windows_Permissions_Permission = isc.Window.create({
-    //     placement: "fillScreen",
-    //     title: "دسترسی ها",
-    //     canDragReposition: true,
-    //     align: "center",
-    //     autoDraw: false,
-    //     border: "1px solid gray",
-    //     minWidth: 1024,
-    //     items: [VLayout_Permission]
-    // });
+    TabSet_Permission = isc.TabSet.create({
+        tabBarPosition: "right",
+        tabBarThickness: 100,
+        titleEditorTopOffset: 2,
+        tabSelected: function () {
+            DynamicForm_Permission = (TabSet_Permission.getSelectedTab().pane);
+        }
+    });
+
+    IButton_Save_Permission = isc.TrSaveBtn.create({
+        top: 260,
+        click: function () {
+            if (!DynamicForm_Permission.valuesHaveChanged() || !DynamicForm_Permission.validate())
+                return;
+            DynamicForm_WorkGroup_edit();
+        }
+    });
+
+    HLayout_SaveOrExit_Permission = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        members: [IButton_Save_Permission]
+    });
+
+    ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
+        click: function () {
+            DynamicForm_WorkGroup_refresh();
+        }
+    });
+
+    ToolStrip_Actions_Permission = isc.ToolStrip.create({
+        width: "100%",
+        align: "left",
+        border: '0px',
+        members: [
+            ToolStripButton_Refresh_Permission
+        ]
+    });
+
+    VLayout_Permission = isc.TrVLayout.create({
+        members: [ToolStrip_Actions_Permission, TabSet_Permission, HLayout_SaveOrExit_Permission]
+    });
+
+    Windows_Permissions_Permission = isc.Window.create({
+        placement: "fillScreen",
+        title: "دسترسی ها",
+        canDragReposition: true,
+        align: "center",
+        autoDraw: false,
+        border: "1px solid gray",
+        minWidth: 1024,
+        items: [VLayout_Permission]
+    });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*WorkGroup DF*/
     //--------------------------------------------------------------------------------------------------------------------//
 
-    <%--DynamicForm_JspWorkGroup = isc.DynamicForm.create({--%>
-    <%--    width: "100%",--%>
-    <%--    height: "100%",--%>
-    <%--    titleAlign: "left",--%>
-    <%--    fields: [--%>
-    <%--        {name: "id", hidden: true},--%>
-    <%--        {--%>
-    <%--            name: "companyName",--%>
-    <%--            title: "<spring:message code='company.name'/>",--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "jobTitle",--%>
-    <%--            title: "<spring:message code='job.title'/>",--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "categories",--%>
-    <%--            title: "<spring:message code='category'/>",--%>
-    <%--            type: "selectItem",--%>
-    <%--            textAlign: "center",--%>
-    <%--            optionDataSource: RestDataSource_Category_JspWorkGroup,--%>
-    <%--            valueField: "id",--%>
-    <%--            displayField: "titleFa",--%>
-    <%--            filterFields: ["titleFa"],--%>
-    <%--            multiple: true,--%>
-    <%--            filterLocally: true,--%>
-    <%--            pickListProperties: {--%>
-    <%--                showFilterEditor: true,--%>
-    <%--                filterOperator: "iContains",--%>
-    <%--            },--%>
-    <%--            changed: function () {--%>
-    <%--                isCategoriesChanged = true;--%>
-    <%--                let subCategoryField = DynamicForm_JspWorkGroup.getField("subCategories");--%>
-    <%--                if (this.getSelectedRecords() == null) {--%>
-    <%--                    subCategoryField.clearValue();--%>
-    <%--                    subCategoryField.disable();--%>
-    <%--                    return;--%>
-    <%--                }--%>
-    <%--                subCategoryField.enable();--%>
-    <%--                if (subCategoryField.getValue() === undefined)--%>
-    <%--                    return;--%>
-    <%--                let subCategories = subCategoryField.getSelectedRecords();--%>
-    <%--                let categoryIds = this.getValue();--%>
-    <%--                let SubCats = [];--%>
-    <%--                for (let i = 0; i < subCategories.length; i++) {--%>
-    <%--                    if (categoryIds.contains(subCategories[i].categoryId))--%>
-    <%--                        SubCats.add(subCategories[i].id);--%>
-    <%--                }--%>
-    <%--                subCategoryField.setValue(SubCats);--%>
-    <%--                subCategoryField.focus(this.form, subCategoryField);--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "subCategories",--%>
-    <%--            title: "<spring:message code='subcategory'/>",--%>
-    <%--            type: "selectItem",--%>
-    <%--            textAlign: "center",--%>
-    <%--            autoFetchData: false,--%>
-    <%--            disabled: true,--%>
-    <%--            optionDataSource: RestDataSource_SubCategory_JspWorkGroup,--%>
-    <%--            valueField: "id",--%>
-    <%--            displayField: "titleFa",--%>
-    <%--            filterFields: ["titleFa"],--%>
-    <%--            multiple: true,--%>
-    <%--            filterLocally: true,--%>
-    <%--            pickListProperties: {--%>
-    <%--                showFilterEditor: true,--%>
-    <%--                filterOperator: "iContains",--%>
-    <%--            },--%>
-    <%--            focus: function () {--%>
-    <%--                if (isCategoriesChanged) {--%>
-    <%--                    isCategoriesChanged = false;--%>
-    <%--                    let ids = DynamicForm_JspWorkGroup.getField("categories").getValue();--%>
-    <%--                    if (ids === []) {--%>
-    <%--                        RestDataSource_SubCategory_JspWorkGroup.implicitCriteria = null;--%>
-    <%--                    } else {--%>
-    <%--                        RestDataSource_SubCategory_JspWorkGroup.implicitCriteria = {--%>
-    <%--                            _constructor: "AdvancedCriteria",--%>
-    <%--                            operator: "and",--%>
-    <%--                            criteria: [{fieldName: "categoryId", operator: "inSet", value: ids}]--%>
-    <%--                        };--%>
-    <%--                    }--%>
-    <%--                    this.fetchData();--%>
-    <%--                }--%>
-    <%--            }--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "persianStartDate",--%>
-    <%--            ID: "employmentHistories_startDate_JspWorkGroup",--%>
-    <%--            title: "<spring:message code='start.date'/>",--%>
-    <%--            hint: todayDate,--%>
-    <%--            keyPressFilter: "[0-9/]",--%>
-    <%--            showHintInField: true,--%>
-    <%--            icons: [{--%>
-    <%--                src: "<spring:url value="calendar.png"/>",--%>
-    <%--                click: function () {--%>
-    <%--                    closeCalendarWindow();--%>
-    <%--                    displayDatePicker('employmentHistories_startDate_JspWorkGroup', this, 'ymd', '/');--%>
-    <%--                }--%>
-    <%--            }],--%>
-    <%--            validators: [{--%>
-    <%--                type: "custom",--%>
-    <%--                errorMessage: "<spring:message code='msg.correct.date'/>",--%>
-    <%--                condition: function (item, validator, value) {--%>
-    <%--                    if (value === undefined)--%>
-    <%--                        return DynamicForm_JspWorkGroup.getValue("persianEndDate") === undefined;--%>
-    <%--                    return checkBirthDate(value);--%>
-    <%--                }--%>
-    <%--            }]--%>
-    <%--        },--%>
-    <%--        {--%>
-    <%--            name: "persianEndDate",--%>
-    <%--            ID: "employmentHistories_endDate_JspWorkGroup",--%>
-    <%--            title: "<spring:message code='end.date'/>",--%>
-    <%--            hint: todayDate,--%>
-    <%--            keyPressFilter: "[0-9/]",--%>
-    <%--            showHintInField: true,--%>
-    <%--            icons: [{--%>
-    <%--                src: "<spring:url value="calendar.png"/>",--%>
-    <%--                click: function () {--%>
-    <%--                    closeCalendarWindow();--%>
-    <%--                    displayDatePicker('employmentHistories_endDate_JspWorkGroup', this, 'ymd', '/');--%>
-    <%--                }--%>
-    <%--            }],--%>
-    <%--            validators: [{--%>
-    <%--                type: "custom",--%>
-    <%--                errorMessage: "<spring:message code='msg.correct.date'/>",--%>
-    <%--                condition: function (item, validator, value) {--%>
-    <%--                    if (value === undefined)--%>
-    <%--                        return DynamicForm_JspWorkGroup.getValue("persianStartDate") === undefined;--%>
-    <%--                    if (!checkDate(value))--%>
-    <%--                        return false;--%>
-    <%--                    if (DynamicForm_JspWorkGroup.hasFieldErrors("persianStartDate"))--%>
-    <%--                        return true;--%>
-    <%--                    let persianStartDate = JalaliDate.jalaliToGregori(DynamicForm_JspWorkGroup.getValue("persianStartDate"));--%>
-    <%--                    let persianEndDate = JalaliDate.jalaliToGregori(DynamicForm_JspWorkGroup.getValue("persianEndDate"));--%>
-    <%--                    return Date.compareDates(persianStartDate, persianEndDate) === 1;--%>
-    <%--                }--%>
-    <%--            }]--%>
-    <%--        }--%>
-    <%--    ]--%>
-    <%--});--%>
+    DynamicForm_JspWorkGroup = isc.DynamicForm.create({
+        width: "100%",
+        height: "100%",
+        titleAlign: "left",
+        fields: [
+            {name: "id", hidden: true},
+            {
+                name: "title",
+                title: "<spring:message code="title"/>"
+            },
+            {
+                name: "description",
+                title: "<spring:message code="description"/>"
+            },
+            {
+                name: "userIds",
+                type: "selectItem",
+                title: "<spring:message code="users"/>",
+                optionDataSource: UserDS_JspWorkGroup,
+                valueField: "id",
+                displayField: "lastName",
+                filterField: "lastName",
+                filterOnKeypress: true,
+                multiple: true,
+                filterLocally: false,
+                pickListProperties: {
+                    showFilterEditor: true
+                },
+                pickListFields: [
+                    {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
+                    {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
+                ]
+            }
+        ]
+    });
 
-    <%--IButton_Save_JspWorkGroup = isc.TrSaveBtn.create({--%>
-    <%--    top: 260,--%>
-    <%--    click: function () {--%>
-    <%--        if (!DynamicForm_JspWorkGroup.valuesHaveChanged() || !DynamicForm_JspWorkGroup.validate())--%>
-    <%--            return;--%>
-    <%--        waitEmploymentHistory = createDialog("wait");--%>
-    <%--        isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,--%>
-    <%--            methodEmploymentHistory,--%>
-    <%--            JSON.stringify(DynamicForm_JspWorkGroup.getValues()),--%>
-    <%--            "callback: EmploymentHistory_save_result(rpcResponse)"));--%>
-    <%--    }--%>
-    <%--});--%>
+    IButton_Save_JspWorkGroup = isc.TrSaveBtn.create({
+        top: 260,
+        click: function () {
+            if (!DynamicForm_JspWorkGroup.valuesHaveChanged() || !DynamicForm_JspWorkGroup.validate())
+                return;
+            waitEmploymentHistory = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
+                methodEmploymentHistory,
+                JSON.stringify(DynamicForm_JspWorkGroup.getValues()),
+                "callback: EmploymentHistory_save_result(rpcResponse)"));
+        }
+    });
 
-    <%--IButton_Cancel_JspWorkGroup = isc.TrCancelBtn.create({--%>
-    <%--    click: function () {--%>
-    <%--        DynamicForm_JspWorkGroup.clearValues();--%>
-    <%--        Window_JspWorkGroup.close();--%>
-    <%--    }--%>
-    <%--});--%>
+    IButton_Cancel_JspWorkGroup = isc.TrCancelBtn.create({
+        click: function () {
+            DynamicForm_JspWorkGroup.clearValues();
+            Window_JspWorkGroup.close();
+        }
+    });
 
-    <%--HLayout_SaveOrExit_JspWorkGroup = isc.TrHLayoutButtons.create({--%>
-    <%--    layoutMargin: 5,--%>
-    <%--    showEdges: false,--%>
-    <%--    edgeImage: "",--%>
-    <%--    padding: 10,--%>
-    <%--    members: [IButton_Save_JspWorkGroup, IButton_Cancel_JspWorkGroup]--%>
-    <%--});--%>
+    HLayout_SaveOrExit_JspWorkGroup = isc.TrHLayoutButtons.create({
+        layoutMargin: 5,
+        showEdges: false,
+        edgeImage: "",
+        padding: 10,
+        members: [IButton_Save_JspWorkGroup, IButton_Cancel_JspWorkGroup]
+    });
 
-    <%--Window_JspWorkGroup = isc.Window.create({--%>
-    <%--    width: "500",--%>
-    <%--    align: "center",--%>
-    <%--    border: "1px solid gray",--%>
-    <%--    title: "<spring:message code='employmentHistory'/>",--%>
-    <%--    items: [isc.TrVLayout.create({--%>
-    <%--        members: [DynamicForm_JspWorkGroup, HLayout_SaveOrExit_JspWorkGroup]--%>
-    <%--    })]--%>
-    <%--});--%>
+    Window_JspWorkGroup = isc.Window.create({
+        width: "550",
+        minWidth: "550",
+        align: "center",
+        border: "1px solid gray",
+        title: "گروه کاری",
+        items: [isc.TrVLayout.create({
+            members: [DynamicForm_JspWorkGroup, HLayout_SaveOrExit_JspWorkGroup]
+        })]
+    });
 
     //--------------------------------------------------------------------------------------------------------------------//
     /*WorkGroup Grid*/
@@ -368,7 +265,7 @@
             }
         ],
         rowDoubleClick: function () {
-            // ListGrid_WorkGroup_Edit();
+            ListGrid_WorkGroup_Edit();
         },
         filterEditorSubmit: function () {
             ListGrid_JspWorkGroup.invalidateCache();
@@ -377,23 +274,23 @@
 
     ToolStripButton_Refresh_JspWorkGroup = isc.ToolStripButtonRefresh.create({
         click: function () {
-            // ListGrid_WorkGroup_refresh();
+            ListGrid_WorkGroup_refresh();
         }
     });
 
     ToolStripButton_Edit_JspWorkGroup = isc.ToolStripButtonEdit.create({
         click: function () {
-            // ListGrid_WorkGroup_Edit();
+            ListGrid_WorkGroup_Edit();
         }
     });
     ToolStripButton_Add_JspWorkGroup = isc.ToolStripButtonAdd.create({
         click: function () {
-            // ListGrid_WorkGroup_Add();
+            ListGrid_WorkGroup_Add();
         }
     });
     ToolStripButton_Remove_JspWorkGroup = isc.ToolStripButtonRemove.create({
         click: function () {
-            // ListGrid_WorkGroup_Remove();
+            ListGrid_WorkGroup_Remove();
         }
     });
 
@@ -426,6 +323,13 @@
     //--------------------------------------------------------------------------------------------------------------------//
     //*functions*/
     //--------------------------------------------------------------------------------------------------------------------//
+
+    function ListGrid_WorkGroup_Add() {
+        methodWorkGroup = "POST";
+        saveActionUrlWorkGroup = workGroupUrl;
+        DynamicForm_JspWorkGroup.clearValues();
+        Window_JspWorkGroup.show();
+    }
 
     function DynamicForm_WorkGroup_refresh() {
         for (var i = TabSet_Permission.tabs.length - 1; i > -1; i--) {
@@ -563,5 +467,7 @@
                 "<spring:message code="message"/>");
         }
     }
+
+    isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/form-data", "POST", JSON.stringify(entityList_Permission), setFormData));
 
     //</script>
