@@ -32,6 +32,8 @@ public class Permission extends Auditable {
     private String attributeType;
 
     @ElementCollection
+    @JoinTable(name = "tbl_permission_attribute_values",
+            joinColumns = {@JoinColumn(name = "f_permission", referencedColumnName = "id")})
     private List<String> attributeValues;
 
     @ManyToOne(fetch = FetchType.LAZY)
