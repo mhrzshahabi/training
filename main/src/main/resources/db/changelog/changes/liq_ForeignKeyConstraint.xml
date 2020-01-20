@@ -561,4 +561,7 @@
     <changeSet author="poursalehi_mos (generated)" id="1579438870666-227">
         <addForeignKeyConstraint baseColumnNames="f_work_group" baseTableName="tbl_permission" constraintName="FKgf0y1hfuicw9d33m3m358wt1r" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_work_group" validate="true"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579498024615-227">
+        <addForeignKeyConstraint baseColumnNames="Permission_id" baseTableName="Permission_attributeValues" constraintName="FKp3xpq14b3wvmgyinklplfyq9w" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="tbl_permission" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

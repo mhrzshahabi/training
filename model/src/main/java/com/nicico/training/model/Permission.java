@@ -4,6 +4,7 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Setter
@@ -30,8 +31,8 @@ public class Permission extends Auditable {
     @Column(name = "c_attribute_type")
     private String attributeType;
 
-    @Column(name = "c_values")
-    private String values;
+    @ElementCollection
+    private List<String> attributeValues;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "f_work_group", nullable = false, insertable = false, updatable = false)

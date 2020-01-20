@@ -370,5 +370,16 @@
             </column>
         </createTable>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579498024615-224">
+        <createTable tableName="Permission_attributeValues">
+            <column name="Permission_id" type="NUMBER(19, 0)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="attributeValues" type="VARCHAR2(1000 CHAR)"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579496640075-279">
+        <dropColumn columnName="C_VALUES" tableName="TBL_PERMISSION"/>
+    </changeSet>
 
 </databaseChangeLog>
