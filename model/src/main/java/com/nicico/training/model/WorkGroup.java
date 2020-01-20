@@ -15,7 +15,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_work_group")
-public class WorkGroup {
+public class WorkGroup extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "work_group_seq")
@@ -33,5 +33,7 @@ public class WorkGroup {
     private Set<Permission> permissions;
 
     @ElementCollection
-    private List<Long> userIds;
+    @JoinTable(name = "tbl_work_group_user_ids",
+            joinColumns = {@JoinColumn(name = "f_work_group", referencedColumnName = "id")})
+    private Set<Long> userIds;
 }

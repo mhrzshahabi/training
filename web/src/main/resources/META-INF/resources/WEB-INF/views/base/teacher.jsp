@@ -149,6 +149,19 @@
                     }
                     trPrintWithCriteria("<spring:url value="/teacher/printWithDetail/"/>" + record.id, null);
                 }
+            },
+            {
+                title: "<spring:message code='teacher.evaluation'/>",
+                click: function () {
+                    var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+                    if (record == null || record.id == null) {
+                        createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+                        return;
+                    }
+                    DynamicForm_Evaluation_JspTeacher.clearValues();
+                    DynamicForm_Evaluation_JspTeacher.setValue("teacherCode", record.teacherCode),
+                        Window_Evaluation_JspTeacher.show();
+                }
             }
         ]
     });
@@ -442,6 +455,13 @@
         title: "<spring:message code='print.eval.form'/>",
         width: 130,
         click: function () {
+            DynamicForm_Evaluation_JspTeacher.validate();
+            if (DynamicForm_Evaluation_JspTeacher.hasErrors())
+                return;
+            var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            var catId = DynamicForm_Evaluation_JspTeacher.getValue("category");
+            var subCatId = DynamicForm_Evaluation_JspTeacher.getValue("subCategory");
+            trPrintWithCriteria("<spring:url value="/teacher/printEvaluation/"/>" + record.id + "/" + catId + "/" + subCatId, null);
         }
     });
 
@@ -652,7 +672,7 @@
         }
     });
 
-    var ToolStripButton_Print_InfoForm_JspTeacher = isc.ToolStripButton.create({
+    var ToolStripButton_Print_InfoForm_JspTeacher = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print.teacher.detail'/>",
         click: function () {
             var record = ListGrid_Teacher_JspTeacher.getSelectedRecord();
@@ -664,7 +684,7 @@
         }
     });
 
-    var ToolStripButton_Print_Empty_InfoForm_JspTeacher = isc.ToolStripButton.create({
+    var ToolStripButton_Print_Empty_InfoForm_JspTeacher = isc.ToolStripButtonPrint.create({
         title: "<spring:message code='print.teacher.empty.form'/>",
         click: function () {
             window.open("pdf/teacher-info.pdf");
@@ -679,9 +699,9 @@
             ToolStripButton_Edit_JspTeacher,
             ToolStripButton_Remove_JspTeacher,
             ToolStripButton_Print_JspTeacher,
-            ToolStripButton_Evaluation_JspTeacher,
             ToolStripButton_Print_InfoForm_JspTeacher,
             ToolStripButton_Print_Empty_InfoForm_JspTeacher,
+            ToolStripButton_Evaluation_JspTeacher,
             isc.ToolStrip.create({
                 width: "100%",
                 align: "left",

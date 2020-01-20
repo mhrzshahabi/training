@@ -1,46 +1,60 @@
 package com.nicico.training.dto;
 
-import lombok.AllArgsConstructor;
+import com.nicico.training.model.Permission;
+import io.swagger.annotations.ApiModel;
+import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.experimental.Accessors;
 
+import javax.validation.constraints.NotNull;
+import java.io.Serializable;
 import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @Accessors(chain = true)
 public class WorkGroupDTO {
 
+    private String title;
+    private String description;
+    private Set<Long> userIds;
+
+
     @Getter
     @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ColumnData {
-        String filedName;
-        String columnName;
-        String description;
-        //        Class fieldType;
-        List values;
+    @Accessors(chain = true)
+    @ApiModel("WorkGroup - Info")
+    public static class Info extends WorkGroupDTO {
+        private Long id;
+//        private Set<PermissionDTO.ColumnData> permissions;
+        private Integer version;
     }
 
     @Getter
     @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PermissionFormData {
-        String entityName;
-        List<ColumnData> columnDataList;
+    @Accessors(chain = true)
+    @ApiModel("WorkGroup - Create")
+    public static class Create extends WorkGroupDTO {
     }
 
     @Getter
     @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PermissionUpdate {
-        String entityName;
-        String columnName;
-        List values;
+    @Accessors(chain = true)
+    @ApiModel("WorkGroup - Update")
+    public static class Update extends WorkGroupDTO {
+        private Integer version;
     }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("WorkGroup - Delete")
+    public static class Delete implements Serializable {
+        @NotNull
+        @ApiModelProperty(required = true)
+        List<Long> ids;
+    }
+
 }
