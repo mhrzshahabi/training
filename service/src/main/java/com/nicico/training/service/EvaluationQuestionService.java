@@ -26,7 +26,7 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
     @Transactional
     public EvaluationQuestionDTO.Info create(EvaluationQuestionDTO.Create rq, List<Long> indexIds) {
         final EvaluationQuestion entity = modelMapper.map(rq, EvaluationQuestion.class);
-        entity.setEvaluationIndices(setIndices(indexIds));
+        entity.setEvaluationIndices(getIndices(indexIds));
         return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
     }
 
@@ -35,11 +35,11 @@ public class EvaluationQuestionService extends BaseService<EvaluationQuestion, L
         final EvaluationQuestion currentEntity = get(id);
         modelMapper.map(currentEntity, entity);
         modelMapper.map(rq, entity);
-        entity.setEvaluationIndices(setIndices(indexIds));
+        entity.setEvaluationIndices(getIndices(indexIds));
         return modelMapper.map(dao.save(entity), EvaluationQuestionDTO.Info.class);
     }
 
-    private List<EvaluationIndex> setIndices(List<Long> indexIds) {
+    private List<EvaluationIndex> getIndices(List<Long> indexIds) {
         if (indexIds == null || indexIds.size() == 0)
             return null;
         return evaluationIndexService.getListByIds(indexIds);
