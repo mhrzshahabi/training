@@ -23,7 +23,7 @@
     <SCRIPT SRC=isomorphic/system/modules/ISC_Analytics.js></SCRIPT>
     <SCRIPT SRC=isomorphic/system/modules/ISC_FileLoader.js></SCRIPT>
     <SCRIPT SRC=isomorphic/skins/Nicico/load_skin.js></SCRIPT>
-    <SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
+    //<SCRIPT SRC=isomorphic/locales/frameworkMessages_fa.properties></SCRIPT>
 
     <!-- ---------------------------------------- Not Ok - Start ---------------------------------------- -->
     <link rel="stylesheet" href='<spring:url value="/css/commonStyle.css"/>'/>
@@ -88,8 +88,8 @@
     // -------------------------------------------  Isomorphic Configs & Components   -----------------------------------------------
     isc.setAutoDraw(false);
     isc.RPCManager.allowCrossDomainCalls = true;
-    isc.FileLoader.loadLocale("fa");
-    isc.FileLoader.cacheLocale("fa");
+    // isc.FileLoader.loadLocale("fa");
+    // isc.FileLoader.cacheLocale("fa");
     isc.TextItem.addProperties({height: 27, length: 255, width: "*"});
     isc.SelectItem.addProperties({
         height: 27, width: "*", addUnknownValues: false, wrapHintText: false, canSelectText: true, cachePickListResults: false, pickListProperties: {
@@ -805,7 +805,14 @@
             trainingTabSet.addTab({
                 title: title,
                 ID: title,
-                pane: isc.ViewLoader.create({viewURL: url, handleError(rpcRequest, rpcResponse) {createDialog("info", "<spring:message code="msg.error.connecting.to.server"/>")}}),
+                pane: isc.ViewLoader.create({
+                    viewURL: url, handleError(rpcRequest, rpcResponse) {
+                        console.log('******************************************* Add Tab Error *******************************************');
+                        console.log(rpcResponse);
+                        console.log('*****************************************************************************************************');
+                        createDialog("info", "خطا در ایجاد تب")
+                    }
+                }),
                 canClose: true,
             });
             createTab(title, url);
