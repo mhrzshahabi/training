@@ -1,5 +1,6 @@
 package com.nicico.training.dto;
 
+import io.swagger.annotations.ApiModel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -16,18 +17,24 @@ public class PermissionDTO {
     private String entityName;
     private String attributeName;
     private String attributeType;
-    private Long workGroupId;
 
     @Getter
     @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class ColumnData {
-        String filedName;
-        String columnName;
-        String description;
-        //        Class fieldType;
-        List values;
+    @Accessors(chain = true)
+    @ApiModel("Permission - Info")
+    public static class Info extends PermissionDTO {
+        private Long id;
+        private Long workGroupId;
+        private List attributeValues;
+        private Integer version;
+    }
+
+    @Getter
+    @Setter
+    @Accessors(chain = true)
+    @ApiModel("Permission - CreateOrUpdate")
+    public static class CreateOrUpdate extends PermissionDTO {
+        private List attributeValues;
     }
 
     @Getter
@@ -36,17 +43,7 @@ public class PermissionDTO {
     @NoArgsConstructor
     public static class PermissionFormData {
         String entityName;
-        List<ColumnData> columnDataList;
-    }
-
-    @Getter
-    @Setter
-    @AllArgsConstructor
-    @NoArgsConstructor
-    public static class PermissionUpdate {
-        String entityName;
-        String columnName;
-        List values;
+        List<Info> columnDataList;
     }
 
 }

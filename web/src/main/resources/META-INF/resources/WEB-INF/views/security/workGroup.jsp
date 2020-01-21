@@ -8,6 +8,7 @@
     const userId = '<%= SecurityUtil.getUserId()%>';
     var DynamicForm_Permission;
     var entityList_Permission = [
+        // "com.nicico.training.model.Post",
         "com.nicico.training.model.Job",
         "com.nicico.training.model.PostGrade",
         "com.nicico.training.model.Skill",
@@ -16,8 +17,9 @@
         "com.nicico.training.model.PostGradeGroup",
         "com.nicico.training.model.SkillGroup"
     ];
-    var FormDataList_Permission;
-    var Wait_Permission;
+    var isFormDataListArrived = false;
+    var formDataList_Permission;
+    var wait_Permission;
     var methodWorkGroup;
     var saveActionUrlWorkGroup;
     var temp;
@@ -29,10 +31,30 @@
     UserDS_JspWorkGroup = isc.TrDS.create({
         fields: [
             {name: "id", primaryKey: true, hidden: true},
-            {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "firstName",
+                title: "<spring:message code="firstName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "lastName",
+                title: "<spring:message code="lastName"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "username",
+                title: "<spring:message code="username"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
+            {
+                name: "nationalCode",
+                title: "<spring:message code="national.code"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "version", hidden: true}
         ],
         fetchDataURL: oauthUserUrl + "/spec-list"
@@ -42,9 +64,14 @@
         fields: [
             {name: "id", primaryKey: true, hidden: true},
             {name: "title", title: "<spring:message code="title"/>", filterOperator: "iContains", autoFitWidth: true},
-            {name: "description", title: "<spring:message code="description"/>", filterOperator: "iContains", autoFitWidth: true},
+            {
+                name: "description",
+                title: "<spring:message code="description"/>",
+                filterOperator: "iContains",
+                autoFitWidth: true
+            },
             {name: "userIds", title: "<spring:message code="users"/>", filterOperator: "inSet"},
-            <%--{name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true},--%>
+            {name: "permissions"},
             {name: "version", hidden: true}
         ],
         fetchDataURL: workGroupUrl + "/iscList"
@@ -66,8 +93,8 @@
     IButton_Save_Permission = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            if (!DynamicForm_Permission.valuesHaveChanged() || !DynamicForm_Permission.validate())
-                return;
+            // if (!DynamicForm_Permission.valuesHaveChanged() || !DynamicForm_Permission.validate())
+            //     return;
             DynamicForm_WorkGroup_edit();
         }
     });
@@ -143,10 +170,25 @@
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
                     {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains"},
-                    {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
+                    {
+                        name: "username",
+                        title: "<spring:message code="username"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
                 ]
             }
         ]
@@ -157,11 +199,11 @@
         click: function () {
             if (!DynamicForm_JspWorkGroup.valuesHaveChanged() || !DynamicForm_JspWorkGroup.validate())
                 return;
-            waitEmploymentHistory = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlEmploymentHistory,
-                methodEmploymentHistory,
+            wait_Permission = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(saveActionUrlWorkGroup,
+                methodWorkGroup,
                 JSON.stringify(DynamicForm_JspWorkGroup.getValues()),
-                "callback: EmploymentHistory_save_result(rpcResponse)"));
+                WorkGroup_save_result));
         }
     });
 
@@ -198,7 +240,7 @@
     Menu_JspWorkGroup = isc.Menu.create({
         data: [{
             title: "<spring:message code='refresh'/>", click: function () {
-                ListGrid_WorkGroup_refresh();
+                refreshLG(ListGrid_JspWorkGroup);
             }
         }, {
             title: "<spring:message code='create'/>", click: function () {
@@ -211,6 +253,10 @@
         }, {
             title: "<spring:message code='remove'/>", click: function () {
                 ListGrid_WorkGroup_Remove();
+            }
+        }, {
+            title: "دسترسی", click: function () {
+                Add_Permission_To_WorkGroup_Jsp();
             }
         }
         ]
@@ -257,10 +303,30 @@
                     showFilterEditor: true
                 },
                 pickListFields: [
-                    {name: "firstName", title: "<spring:message code="firstName"/>", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "lastName", title: "<spring:message code="lastName"/>", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "username", title: "<spring:message code="username"/>", filterOperator: "iContains", autoFitWidth: true},
-                    {name: "nationalCode", title: "<spring:message code="national.code"/>", filterOperator: "iContains", autoFitWidth: true}
+                    {
+                        name: "firstName",
+                        title: "<spring:message code="firstName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "lastName",
+                        title: "<spring:message code="lastName"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "username",
+                        title: "<spring:message code="username"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    },
+                    {
+                        name: "nationalCode",
+                        title: "<spring:message code="national.code"/>",
+                        filterOperator: "iContains",
+                        autoFitWidth: true
+                    }
                 ]
             }
         ],
@@ -274,7 +340,7 @@
 
     ToolStripButton_Refresh_JspWorkGroup = isc.ToolStripButtonRefresh.create({
         click: function () {
-            ListGrid_WorkGroup_refresh();
+            refreshLG(ListGrid_JspWorkGroup);
         }
     });
 
@@ -293,6 +359,12 @@
             ListGrid_WorkGroup_Remove();
         }
     });
+    ToolStripButton_Add_Permission_To_WorkGroup_Jsp = isc.ToolStripButton.create({
+        title: "دسترسی",
+        click: function () {
+            Add_Permission_To_WorkGroup_Jsp();
+        }
+    });
 
     ToolStrip_Actions_JspWorkGroup = isc.ToolStrip.create({
         width: "100%",
@@ -302,6 +374,7 @@
                 ToolStripButton_Add_JspWorkGroup,
                 ToolStripButton_Edit_JspWorkGroup,
                 ToolStripButton_Remove_JspWorkGroup,
+                ToolStripButton_Add_Permission_To_WorkGroup_Jsp,
                 isc.ToolStrip.create({
                     width: "100%",
                     align: "left",
@@ -331,7 +404,114 @@
         Window_JspWorkGroup.show();
     }
 
+    function ListGrid_WorkGroup_Edit() {
+        var record = ListGrid_JspWorkGroup.getSelectedRecord();
+        if (record == null || record.id == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            methodWorkGroup = "PUT";
+            saveActionUrlWorkGroup = workGroupUrl + "/" + record.id;
+            DynamicForm_JspWorkGroup.clearValues();
+            DynamicForm_JspWorkGroup.editRecord(record);
+            Window_JspWorkGroup.show();
+        }
+    }
+
+    function WorkGroup_save_result(resp) {
+        wait_Permission.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            refreshLG(ListGrid_JspWorkGroup);
+            Window_JspWorkGroup.close();
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            if (resp.httpResponseCode === 406 && resp.httpResponseText === "DuplicateRecord") {
+                createDialog("info", "<spring:message code="msg.record.duplicate"/>",
+                    "<spring:message code="message"/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>",
+                    "<spring:message code="message"/>");
+            }
+        }
+    }
+
+    function ListGrid_WorkGroup_Remove() {
+        let recordIds = ListGrid_JspWorkGroup.getSelectedRecords().map(r => r.id);
+        if (recordIds == null || recordIds.length === 0) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+        } else {
+            let Dialog_Delete = createDialog("ask", "<spring:message code='msg.record.remove.ask'/>",
+                "<spring:message code='verify.delete'/>");
+            Dialog_Delete.addProperties({
+                buttonClick: function (button, index) {
+                    this.close();
+                    if (index === 0) {
+                        wait_Permission = createDialog("wait");
+                        isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/" + recordIds,
+                            "DELETE",
+                            null,
+                            WorkGroup_remove_result));
+                    }
+                }
+            });
+        }
+    }
+
+    function WorkGroup_remove_result(resp) {
+        wait_Permission.close();
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            refreshLG(ListGrid_JspWorkGroup);
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+                "<spring:message code="msg.command.done"/>");
+            setTimeout(function () {
+                OK.close();
+            }, 3000);
+        } else {
+            let respText = resp.httpResponseText;
+            if (resp.httpResponseCode === 406 && respText === "NotDeletable") {
+                createDialog("info", "<spring:message code='msg.record.cannot.deleted'/>");
+            } else {
+                createDialog("info", "<spring:message code="msg.operation.error"/>");
+            }
+        }
+    }
+
+    function Add_Permission_To_WorkGroup_Jsp() {
+        let record = ListGrid_JspWorkGroup.getSelectedRecord();
+        if (record == null) {
+            createDialog("info", "<spring:message code='msg.no.records.selected'/>");
+            return;
+        }
+        if (wait_Permission != null)
+            wait_Permission.close();
+        if (isFormDataListArrived === false) {
+            wait_Permission = createDialog("wait");
+            setTimeout(function () {
+                Add_Permission_To_WorkGroup_Jsp()
+            }, 2000);
+            return;
+        }
+        Windows_Permissions_Permission.show();
+        TabSet_Permission.tabs.forEach(tab => tab.pane.clearValues());
+        record.permissions.forEach(Windows_Permissions_Set_Values);
+    }
+
+    //--------------------------------------------------------------------------------------------------------------------//
+    //*functions*/
+    //--------------------------------------------------------------------------------------------------------------------//
+
+    function Windows_Permissions_Set_Values(permission) {
+        temp = permission;
+        let DF = TabSet_Permission.getTab(permission.entityName).pane;
+        DF.setValue(permission.entityName + "_" + permission.attributeName + "_" + permission.attributeType + "_Permission",
+            permission.attributeValues);
+    }
+
     function DynamicForm_WorkGroup_refresh() {
+        // TabSet_Permission.tabs.forEach(TabSet_Permission.removeTab)
         for (var i = TabSet_Permission.tabs.length - 1; i > -1; i--) {
             TabSet_Permission.removeTab(i);
         }
@@ -340,8 +520,9 @@
 
     function setFormData(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            FormDataList_Permission = (JSON.parse(resp.data));
-            FormDataList_Permission.forEach(addTab);
+            isFormDataListArrived = true;
+            formDataList_Permission = (JSON.parse(resp.data));
+            formDataList_Permission.forEach(addTab);
         } else {
 
         }
@@ -351,8 +532,10 @@
     function addTab(item) {
         var newTab = {
             title: item.entityName.split('.').last(),
+            name: item.entityName,
             <%--title: "<spring:message code=code/>","code":item.entityName.split('.').last(),--%>
-            pane: newDynamicForm(item)};
+            pane: newDynamicForm(item)
+        };
         TabSet_Permission.addTab(newTab);
     }
 
@@ -369,95 +552,56 @@
             margin: 20,
             numCols: 8
         });
-        for (var i = 0; i < item.columnDataList.length; i++) {
-            // if (item.parameterValueList[i].value === "false")
-            //     item.parameterValueList[i].value = false;
-            // if (i > 0 && item.parameterValueList[i].type !== item.parameterValueList[i - 1].type)
-            //     DF.addField({type: "RowSpacerItem"});
+        for (let i = 0; i < item.columnDataList.length; i++) {
             DF.addField({
-                ID: item.entityName + "_" + item.columnDataList[i].filedName + "_Permission",
-                name: item.entityName + "_" + item.columnDataList[i].filedName + "_Permission",
-                title: item.columnDataList[i].filedName,
-                // value: item.columnDataList[i].values,
-                valueMap: item.columnDataList[i].values,
+                ID: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
+                name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
+                title: item.columnDataList[i].attributeName,
+                valueMap: item.columnDataList[i].attributeValues,
                 type: "selectItem",
                 textAlign: "center",
                 multiple: true,
                 colSpan: 8
-                // prompt: item.parameterValueList[i].description,
-                // required: true,
-                // keyPressFilter: setKeyPressFilter(item.parameterValueList[i].type),
-                // colSpan: setColSpan(item.parameterValueList[i].type),
-                // titleOrientation: "top"
             })
         }
         return DF;
     }
 
-    <%--function setKeyPressFilter(type) {--%>
-    <%--    switch (type) {--%>
-    <%--        case "text":--%>
-    <%--        case "TextItem":--%>
-    <%--            return "[\u0600-\u06FF\uFB8A\u067E\u0686\u06AF\u200C\u200F ]";--%>
-    <%--        case "IntegerItem":--%>
-    <%--        case "integer":--%>
-    <%--            return "[0-9]";--%>
-    <%--        // case "float":--%>
-    <%--        // case "FloatItem":--%>
-    <%--        // case "DoubleItem":--%>
-    <%--        //     return "/^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/";--%>
-    <%--        case "boolean":--%>
-    <%--        case "BooleanItem":--%>
-    <%--            return null;--%>
-    <%--        default:--%>
-    <%--            return null;--%>
-    <%--    }--%>
-    <%--}--%>
-
-    <%--function setColSpan(type) {--%>
-    <%--    switch (type) {--%>
-    <%--        case "text":--%>
-    <%--        case "textArea":--%>
-    <%--        case "TextItem":--%>
-    <%--            return 4;--%>
-    <%--        case "IntegerItem":--%>
-    <%--        case "integer":--%>
-    <%--            return 2;--%>
-    <%--        case "float":--%>
-    <%--        case "FloatItem":--%>
-    <%--        case "DoubleItem":--%>
-    <%--            return 2;--%>
-    <%--        case "boolean":--%>
-    <%--        case "BooleanItem":--%>
-    <%--            return 1;--%>
-    <%--        default:--%>
-    <%--            return 1;--%>
-    <%--    }--%>
-    <%--}--%>
-
     function DynamicForm_WorkGroup_edit() {
-        var fields = DynamicForm_Permission.getAllFields();
-        var toUpdate = [];
-        for (var i = 0; i < fields.length; i++) {
-            if (fields[i].getValue() == null)
-                continue;
-            toUpdate.add({
-                "entityName": ((fields[i].getID()).split('_'))[0],
-                "columnName": ((fields[i].getID()).split('_'))[1],
-                "values": fields[i].getValue()
-            });
+        let toUpdate = [];
+        let record = ListGrid_JspWorkGroup.getSelectedRecord();
+        for (let j = 0; j < TabSet_Permission.tabs.length; j++) {
+            let fields = TabSet_Permission.tabs[j].pane.getAllFields();
+            for (let i = 0; i < fields.length; i++) {
+
+                if (
+                    fields[i].getValue() != null ||
+                    (record.permissions.filter(
+                        p => p.entityName === ((fields[i].getID()).split('_'))[0] &&
+                            p.attributeName === ((fields[i].getID()).split('_'))[1])).length > 0
+                ) {
+                    toUpdate.add({
+                        "entityName": ((fields[i].getID()).split('_'))[0],
+                        "attributeName": ((fields[i].getID()).split('_'))[1],
+                        "attributeValues": fields[i].getValue(),
+                        "attributeType": ((fields[i].getID()).split('_'))[2]
+                    });
+                }
+            }
         }
         if (toUpdate.length > 0) {
-            Wait_Permission = createDialog("wait");
-            isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/edit-permission-list",
+            wait_Permission = createDialog("wait");
+            isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/edit-permission-list/" + record.id,
                 "PUT", JSON.stringify(toUpdate), Edit_Result_Permission));
         }
     }
 
     function Edit_Result_Permission(resp) {
-        Wait_Permission.close();
+        wait_Permission.close();
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
-            var OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
+            refreshLG(ListGrid_JspWorkGroup);
+            Windows_Permissions_Permission.close();
+            let OK = createDialog("info", "<spring:message code="msg.operation.successful"/>",
                 "<spring:message code="msg.command.done"/>");
             setTimeout(function () {
                 OK.close();

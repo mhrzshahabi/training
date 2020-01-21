@@ -71,4 +71,10 @@
     <changeSet author="ghazanfari_f (generated)" id="1579090320851-213">
         <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_PARAMETERC_TITLE_COL" tableName="tbl_parameter"/>
     </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579591108637-229">
+        <addUniqueConstraint columnNames="c_title" constraintName="UC_TBL_WORK_GROUPC_TITLE_COL" tableName="tbl_work_group"/>
+    </changeSet>
+    <changeSet author="poursalehi_mos (generated)" id="1579591108637-230">
+        <addUniqueConstraint columnNames="c_entity_name, c_attribute_name, f_work_group" constraintName="UK4j8yaq7g75egwp5yf760qn3ss" tableName="tbl_permission"/>
+    </changeSet>
 </databaseChangeLog>
