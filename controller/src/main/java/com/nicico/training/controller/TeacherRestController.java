@@ -354,35 +354,35 @@ public class TeacherRestController {
         if(teacherDTO.getPersonality().getContactInfo() != null) {
             //connection
             if (teacherDTO.getPersonality().getContactInfo().getMobile() != null)
-                connection += "تلفن: " +teacherDTO.getPersonality().getContactInfo().getMobile()+ ", ";
+                connection += "تلفن: " +teacherDTO.getPersonality().getContactInfo().getMobile()+ " ";
             else if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone() != null)
-                    connection += "تلفن: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone()+ ", ";
+                    connection += "تلفن: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPhone()+ " ";
             if (teacherDTO.getPersonality().getContactInfo().getEmail() != null)
-                connection += "پست الکترونیکی: " +teacherDTO.getPersonality().getContactInfo().getEmail()+ ", ";
+                connection += "پست الکترونیکی: " +teacherDTO.getPersonality().getContactInfo().getEmail()+ " ";
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null)
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax() != null)
-                    connection += "فاکس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax()+ ", ";
+                    connection += "فاکس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getFax()+ " ";
             //address
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + " ";
             }
             else if(teacherDTO.getPersonality().getContactInfo().getWorkAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getWorkAddress().getRestAddr() + " ";
             }
         }
         params.put("address", address);
@@ -391,11 +391,11 @@ public class TeacherRestController {
         List<Category> categoryList = teacher.getCategories();
         List<SubCategory> subCategoryList = teacher.getSubCategories();
         for (Category category : categoryList) {
-            categories += category.getTitleFa() + ", ";
+            categories += category.getTitleFa() + " ";
             for (SubCategory subCategory : subCategoryList) {
                 CategoryDTO.Info categoryDTO = subCategoryService.getCategory(subCategory.getId());
                 if(categoryDTO.getId() == category.getId()) {
-                    categories += subCategory.getTitleFa() + ", ";
+                    categories += subCategory.getTitleFa() + " ";
                 }
             }
         }
@@ -478,13 +478,13 @@ public class TeacherRestController {
            //address
             if(teacherDTO.getPersonality().getContactInfo().getHomeAddress() != null) {
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState() != null)
-                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + ", ";
+                    address +=  "استان: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getState().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity() != null)
-                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + ", ";
+                    address += "شهر: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getCity().getName() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() != null)
-                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + ", ";
+                    address +=  "کد پستی: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getPostalCode() + " ";
                 if(teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() != null)
-                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + ", ";
+                    address += "ادامه ی آدرس: " + teacherDTO.getPersonality().getContactInfo().getHomeAddress().getRestAddr() + " ";
             }
         }
 
