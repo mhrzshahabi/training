@@ -63,8 +63,7 @@ public abstract class BaseService<E, ID extends Serializable, INFO, CREATE, UPDA
     @Override
     @Transactional(readOnly = true)
     public List<INFO> list() {
-        return modelMapper.map(dao.findAll(), new TypeToken<List<INFO>>() {
-        }.getType());
+        return mapEntityToInfo(dao.findAll());
     }
 
     @Override
