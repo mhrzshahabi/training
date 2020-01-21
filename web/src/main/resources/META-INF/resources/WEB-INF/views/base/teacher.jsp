@@ -568,6 +568,7 @@
                 defaultValue: null,
                 displayField: "titleFa",
                 valueField: "id",
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspTeacher,
                 autoFetchData: false,
                 addUnknownValues: false,
