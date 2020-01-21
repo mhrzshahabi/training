@@ -12,9 +12,26 @@
 	<parameter name="categories" class="java.lang.String"/>
 	<parameter name="address" class="java.lang.String"/>
 	<parameter name="phone" class="java.lang.String"/>
-	<parameter name="totalGrade" class="java.lang.String"/>
+	<parameter name="totalGrade" class="java.lang.Double"/>
 	<parameter name="status" class="java.lang.String"/>
 	<parameter name="logo_nicico" class="java.lang.Object"/>
+	<parameter name="table1Grade" class="java.lang.Double"/>
+	<parameter name="table2Grade" class="java.lang.Double"/>
+	<parameter name="table3Grade" class="java.lang.Double"/>
+	<parameter name="table4Grade" class="java.lang.Double"/>
+	<parameter name="table3Book" class="java.lang.Double"/>
+	<parameter name="table3Project" class="java.lang.Double"/>
+	<parameter name="table3Article" class="java.lang.Double"/>
+	<parameter name="table3Translation" class="java.lang.Double"/>
+	<parameter name="table3Note" class="java.lang.Double"/>
+	<parameter name="tbl1License" class="java.lang.Double"/>
+	<parameter name="tbl1Work" class="java.lang.Double"/>
+	<parameter name="tbl1ReTraining" class="java.lang.Double"/>
+	<parameter name="tbl1UnReTraining" class="java.lang.Double"/>
+	<parameter name="tbl1Courses" class="java.lang.Double"/>
+	<parameter name="tbl1Years" class="java.lang.Double"/>
+	<parameter name="tbl1ReTrH" class="java.lang.Double"/>
+	<parameter name="tbl1UReTrH" class="java.lang.Double"/>
 	<queryString>
 		<![CDATA[]]>
 	</queryString>
@@ -338,7 +355,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1License}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="334" y="250" width="50" height="50" uuid="b5e9eb37-e0cc-40fb-b34e-09fd03759a92"/>
@@ -452,7 +469,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1Work}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="334" y="300" width="50" height="50" uuid="f9642bdc-19cc-483e-80f3-b40ac9edda84"/>
@@ -494,7 +511,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1UnReTraining}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="334" y="350" width="50" height="50" uuid="7d4e65fb-4531-4c8a-89d9-ea8cc8a76fdc"/>
@@ -536,7 +553,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1ReTraining}]]></textFieldExpression>
 			</textField>
 			<staticText>
 				<reportElement x="334" y="400" width="50" height="50" uuid="85b3d3b9-6bef-45d6-8886-9624f35196a1"/>
@@ -578,7 +595,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1Courses}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="383" y="450" width="69" height="21" uuid="9d6f8526-f80c-45a1-9d72-2151367082b7"/>
@@ -637,28 +654,28 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1Years}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="349" y="450" width="34" height="21" uuid="ca5d51eb-8264-42ef-9842-31afed4c0df8"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1ReTrH}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="219" y="450" width="40" height="21" uuid="00a9946f-e1f5-43b4-be5c-cef5d07a5da1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1UReTrH}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="45" y="450" width="90" height="21" uuid="d8a92f9c-dacd-4056-ab73-d7a747cdee42"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table1Grade}]]></textFieldExpression>
 			</textField>
 		</band>
 		<band height="647">
@@ -898,7 +915,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table2Grade}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="455" y="250" width="85" height="30" uuid="b2a97bf4-711f-4090-8bb0-23890ad46f6a"/>
@@ -1063,42 +1080,42 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Note}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="45" y="340" width="70" height="30" uuid="ddf412af-589f-44ea-89e9-77250ee7268b"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Grade}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="115" y="310" width="85" height="30" uuid="055e5302-ad45-4d3c-abc5-3fe53771f8c6"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Translation}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="200" y="310" width="85" height="30" uuid="ee5c440c-f41d-444a-a095-4b6d07c62ccd"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Article}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="285" y="310" width="85" height="30" uuid="f983eec8-473b-4826-97c8-ce2f7a4378f4"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Project}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="370" y="310" width="85" height="30" uuid="68e92a7c-4953-4d97-bdde-6dd24546acd3"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table3Book}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="405" y="420" width="135" height="30" uuid="8775f237-222d-4846-a4f8-b276bb974227"/>
@@ -1198,7 +1215,7 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin"/>
 				</textElement>
-				<textFieldExpression><![CDATA["Text Field"]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{table4Grade}]]></textFieldExpression>
 			</textField>
 			<rectangle>
 				<reportElement x="445" y="560" width="95" height="30" uuid="c918d291-b28c-4dec-94d2-d170f8a3b7aa"/>

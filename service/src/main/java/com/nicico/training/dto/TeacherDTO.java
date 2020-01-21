@@ -1,6 +1,8 @@
 package com.nicico.training.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.nicico.training.model.TeacherCertification;
+import com.nicico.training.model.TeachingHistory;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Getter;
@@ -42,6 +44,8 @@ public class TeacherDTO {
         private Set<EmploymentHistoryDTO.Info> employmentHistories;
         private Set<AcademicBKDTO.Info> academicBKs;
         private Set<ForeignLangKnowledgeDTO.Info> foreignLangKnowledges;
+        private Set<TeachingHistoryDTO.Info> teachingHistories;
+        private Set<TeacherCertificationDTO.Info> teacherCertifications;
         private Set<PublicationDTO.Info> publications;
         private Integer version;
     }
