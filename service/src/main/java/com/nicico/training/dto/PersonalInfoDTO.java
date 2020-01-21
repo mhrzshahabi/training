@@ -39,6 +39,7 @@ public class PersonalInfoDTO {
     private String nationality;
     private String description;
     private String attachPhoto;
+    private String photo;
     private String jobTitle;
     private String jobLocation;
     private Integer militaryId;

@@ -5,6 +5,7 @@ import com.nicico.training.dto.ClassStudentDTO;
 import com.nicico.training.model.ClassStudent;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IClassStudentService {
 
@@ -19,5 +20,7 @@ public interface IClassStudentService {
     void delete(Long id);
 
     void delete(ClassStudentDTO.Delete request);
+
+    int setStudentFormIssuance(Map<String, Integer> formIssuance);
 
 }

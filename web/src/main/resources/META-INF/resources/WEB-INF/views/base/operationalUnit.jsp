@@ -410,7 +410,7 @@
         //*****print*****
         function print_OperationalUnitListGrid(type) {
             var advancedCriteria_unit = ListGrid_operational.getCriteria();
-            var criteriaForm_course = isc.DynamicForm.create({
+            var criteriaForm_operational = isc.DynamicForm.create({
                 method: "POST",
                 action: "<spring:url value="/operational-unit/printWithCriteria/"/>" + type,
                 target: "_Blank",
@@ -421,10 +421,10 @@
                         {name: "myToken", type: "hidden"}
                     ]
             });
-            criteriaForm_course.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
-            criteriaForm_course.setValue("myToken", "<%=accessToken%>");
-            criteriaForm_course.show();
-            criteriaForm_course.submitForm();
+            criteriaForm_operational.setValue("CriteriaStr", JSON.stringify(advancedCriteria_unit));
+            criteriaForm_operational.setValue("myToken", "<%=accessToken%>");
+            criteriaForm_operational.show();
+            criteriaForm_operational.submitForm();
         }
     }
     // ------------------------------------------------- Functions ------------------------------------------>>
