@@ -306,6 +306,8 @@ public class TeacherRestController {
         final SearchDTO.SearchRs<ForeignLangKnowledgeDTO.Info> searchRs_foreingLang = foreignLangService.search(searchRq_foreingLang, Long.valueOf(id));
 
 
+
+
         final Map<String, Object> params = new HashMap<>();
         params.put("todayDate", DateUtil.todayDate());
 
@@ -399,11 +401,34 @@ public class TeacherRestController {
         }
         params.put("categories", categories);
 
+        List<TeacherCertificationDTO.Info> teacherRelatedCertificate = new ArrayList<>();
+        List<TeacherCertificationDTO.Info> teacherAllCertificate = searchRs_teacherCertification.getList();
+        for (TeacherCertificationDTO.Info info : teacherAllCertificate) {
+            boolean category_related = false;
+            boolean subCategory_related = false;
+            List<CategoryDTO.CategoryInfoTuple> certificationCategories = info.getCategories();
+            List<SubCategoryDTO.SubCategoryInfoTuple> certificationSubCategories = info.getSubCategories();
+            for (Category teacher_category : categoryList) {
+                for(CategoryDTO.CategoryInfoTuple certificate_category : certificationCategories){
+                    if(teacher_category.getId() == certificate_category.getId())
+                        category_related = true;
+                }
+            }
+            for (SubCategory teacher_sub_category : subCategoryList) {
+                for(SubCategoryDTO.SubCategoryInfoTuple certificate_sub_category : certificationSubCategories){
+                    if(teacher_sub_category.getId() == certificate_sub_category.getId())
+                        subCategory_related = true;
+                }
+            }
+            if(category_related && subCategory_related)
+                teacherRelatedCertificate.add(info);
+        }
+
         String data = "{" +
                 "\"academicBK\": " + objectMapper.writeValueAsString(searchRs_academicBk.getList()) + "," +
                 "\"empHistory\": " + objectMapper.writeValueAsString(searchRs_employmentHistory.getList()) + "," +
                 "\"teachingHistory\": " + objectMapper.writeValueAsString(searchRs_teachingHistory.getList()) + "," +
-                "\"teacherCertification\": " + objectMapper.writeValueAsString(searchRs_teacherCertification.getList()) + "," +
+                "\"teacherCertification\": " + objectMapper.writeValueAsString(teacherRelatedCertificate) + "," +
                 "\"publication\": " + objectMapper.writeValueAsString(searchRs_publication.getList()) + "," +
                 "\"languages\": " + objectMapper.writeValueAsString(searchRs_foreingLang.getList())  +
                  "}";
@@ -621,6 +646,10 @@ public class TeacherRestController {
             table_1_related_training = 1000;
         table_1_related_training /= 100;
         table_1_unRelated_training /= 100;
+        if(table_1_related_training < 0.1)
+            table_1_related_training = 0;
+        if(table_1_unRelated_training < 0.1)
+            table_1_unRelated_training = 0;
         table_1_unRelated_training = ((teacher_educationLevel-1)*0.1 + 0.4)*table_1_unRelated_training;
         table_1_related_training = ((teacher_educationLevel-1)*0.5 + 2)*table_1_related_training;
         //table 1 - row 5
@@ -648,6 +677,8 @@ public class TeacherRestController {
         if(table_1_courses > 1000)
             table_1_courses = 1000;
         table_1_courses  /= 100;
+        if(table_1_courses < 0.1)
+            table_1_courses = 0;
         if(teacher_educationLevel != 1)
             table_1_courses = ((teacher_educationLevel-1)*0.1 + 1.2)*table_1_courses;
         //table 1 - total
@@ -745,21 +776,26 @@ public class TeacherRestController {
         }
         //total grade
         evaluationGrade = table_1_grade+table_2_grade+table_3_grade+table_4_grade;
-        if(teacher_educationLevel == 1)
-            if(evaluationGrade >= 25)
+        if(teacher_educationLevel == 1) {
+            if (evaluationGrade >= 25)
                 pass = true;
-        else if(teacher_educationLevel == 2)
-            if(evaluationGrade >= 40)
-              pass = true;
-        else if(teacher_educationLevel == 3)
-            if(evaluationGrade >= 55)
-               pass = true;
-        else if(teacher_educationLevel == 4)
-            if(evaluationGrade >= 60)
-              pass = true;
-        else if(teacher_educationLevel == 5)
-            if(evaluationGrade >= 75)
-               pass = true;
+        }
+        else if(teacher_educationLevel == 2) {
+            if (evaluationGrade >= 40)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 3) {
+            if (evaluationGrade >= 55)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 4) {
+            if (evaluationGrade >= 60)
+                pass = true;
+        }
+        else if(teacher_educationLevel == 5) {
+            if (evaluationGrade >= 75)
+                pass = true;
+        }
 
         if(pass)
             pass_status = "قبول";

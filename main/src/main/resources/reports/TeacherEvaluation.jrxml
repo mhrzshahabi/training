@@ -661,14 +661,14 @@
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{tbl1ReTrH}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1UReTrH}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="219" y="450" width="40" height="21" uuid="00a9946f-e1f5-43b4-be5c-cef5d07a5da1"/>
 				<textElement textAlignment="Center" verticalAlignment="Middle">
 					<font fontName="B Nazanin" size="10"/>
 				</textElement>
-				<textFieldExpression><![CDATA[$P{tbl1UReTrH}]]></textFieldExpression>
+				<textFieldExpression><![CDATA[$P{tbl1ReTrH}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="true">
 				<reportElement x="45" y="450" width="90" height="21" uuid="d8a92f9c-dacd-4056-ab73-d7a747cdee42"/>
