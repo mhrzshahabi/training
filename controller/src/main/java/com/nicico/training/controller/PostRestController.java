@@ -48,7 +48,9 @@ public class PostRestController {
 
     @GetMapping(value = "/iscList")
     public ResponseEntity<ISC<PostDTO.Info>> list(HttpServletRequest iscRq) throws IOException {
-        Integer startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
+        int startRow = 0;
+        if (iscRq.getParameter("_startRow") != null)
+            startRow = Integer.parseInt(iscRq.getParameter("_startRow"));
         SearchDTO.SearchRq searchRq = ISC.convertToSearchRq(iscRq);
         SearchDTO.SearchRs<PostDTO.Info> searchRs = postService.search(searchRq);
         return new ResponseEntity<>(ISC.convertToIscRs(searchRs, startRow), HttpStatus.OK);

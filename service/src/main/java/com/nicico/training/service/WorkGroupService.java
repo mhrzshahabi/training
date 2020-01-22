@@ -195,6 +195,8 @@ public class WorkGroupService {
         SearchDTO.CriteriaRq criteriaRq1 = makeNewCriteria(null, null, EOperator.and, new ArrayList<>());
         criteriaRq1.getCriteria().add(criteriaRq);
         criteriaRq1.getCriteria().add(rq);
+        criteriaRq1.setStart(criteriaRq.getStart());
+        criteriaRq1.setEnd(criteriaRq.getEnd());
         return criteriaRq1;
     }
 
