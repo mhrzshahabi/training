@@ -44,8 +44,7 @@ public class PostService implements IPostService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostDTO.Info> search(SearchDTO.SearchRq request) {
-        Long userId = SecurityUtil.getUserId();
-        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Post.class,userId));
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), Post.class, SecurityUtil.getUserId()));
         return SearchUtil.search(postDAO, request, post -> modelMapper.map(post, PostDTO.Info.class));
     }
 }

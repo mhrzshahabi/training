@@ -2,6 +2,7 @@ package com.nicico.training.service;
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
@@ -31,6 +32,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final ModelMapper modelMapper;
     private final PostGradeDAO postGradeDAO;
+    private final WorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -95,6 +97,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostGradeGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), PostGradeGroup.class, SecurityUtil.getUserId()));
         return SearchUtil.search(postGradeGroupDAO, request, postGradeGroup -> modelMapper.map(postGradeGroup, PostGradeGroupDTO.Info.class));
     }
 

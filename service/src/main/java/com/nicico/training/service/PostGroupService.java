@@ -7,6 +7,7 @@ com.nicico.training.service
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
@@ -34,6 +35,7 @@ public class PostGroupService implements IPostGroupService {
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
     private final CompetenceDAOOld competenceDAO;
+    private final WorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -122,6 +124,7 @@ public class PostGroupService implements IPostGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<PostGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), PostGroup.class, SecurityUtil.getUserId()));
         return SearchUtil.search(postGroupDAO, request, postGroup -> modelMapper.map(postGroup, PostGroupDTO.Info.class));
     }
 
