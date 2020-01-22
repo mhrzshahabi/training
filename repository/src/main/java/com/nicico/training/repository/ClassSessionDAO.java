@@ -27,5 +27,4 @@ public interface ClassSessionDAO extends JpaRepository<ClassSession, Long>, JpaS
 
     boolean existsByClassIdAndSessionDateAndSessionStartHourAndSessionEndHourAndIdNot(Long classId, String sessionDate, String sessionStartHour, String sessionEndHour, Long id);
 
-
 }

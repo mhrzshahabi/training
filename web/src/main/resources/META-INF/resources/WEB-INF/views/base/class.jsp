@@ -767,6 +767,7 @@
                     if (value == "1") {
                       form.getItem("acceptancelimit").validators = [{}];
                         form.getItem("acceptancelimit").hide();
+                         form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").enable();
                         form.getItem("acceptancelimit_a").setRequired(true);
@@ -783,6 +784,7 @@
                         form.getItem("acceptancelimit").enable();
                         form.getItem("acceptancelimit").setRequired(true);
                         form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                      form.getItem("acceptancelimit").setDisabled(false);
                     }
@@ -797,16 +799,18 @@
                      form.getItem("acceptancelimit").enable();
                      form.getItem("acceptancelimit").setRequired(true);
                      form.getItem("acceptancelimit_a").hide();
+                     form.getItem("acceptancelimit_a").setValue();
                      form.getItem("acceptancelimit_a").setRequired(false);
                      form.getItem("acceptancelimit").setDisabled(false);
 
                     }
                     else if(value =="4") {
                         form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(true);
-                        form.getItem("acceptancelimit").setValue("بدون نمره")
                         form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                     }
                 },
@@ -1749,7 +1753,6 @@
                     }
                 }
             });
-
         }
     }
 

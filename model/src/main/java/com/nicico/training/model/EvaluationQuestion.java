@@ -24,14 +24,14 @@ public class EvaluationQuestion extends Auditable {
     @Column(name = "c_question", nullable = false)
     private String question;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "f_domain_id", nullable = false, insertable = false, updatable = false)
     private ParameterValue domain;
 
     @Column(name = "f_domain_id")
     private Long domainId;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "tbl_evaluation_question_evaluation_index",
             joinColumns = {@JoinColumn(name = "f_evaluation_question", referencedColumnName = "id")},
             inverseJoinColumns = {@JoinColumn(name = "f_evaluation_index", referencedColumnName = "id")})

@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-//
-// <script>
+
+//<script>
     // 1->قبول با نمره
 
     var Row_Numbers = null
@@ -10,15 +10,12 @@
     var value_failurereason = null
     var score_value = null //بر اساس روش نمره دهی که از 100 یا 20 باشد مقدار 100 یا 20 داخل این متغیر قرار می گیرد
     var classRecord_acceptancelimit = null
-    var scoresState_value =null
-   var failureReason_value =null
+    var scoresState_value = null
+    var failureReason_value = null
     var map = {"1": "ارزشی", "2": "نمره از صد", "3": "نمره از بیست", "4": "بدون نمره"}
     var myMap = new Map(Object.entries(map));
-
     var map1 = {"1001": "ضعیف", "1002": "متوسط", "1003": "خوب", "1004": "خیلی خوب"}
     var myMap1 = new Map(Object.entries(map1));
-
-
     RestDataSource_ClassStudent = isc.TrDS.create({
         fields: [
             {name: "id", hidden: true},
@@ -40,14 +37,15 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            // {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+// {name: "companyName", title: "<spring:message
+        code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            // {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+// {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
             {name: "scoresState", title: "<spring:message code="pass.mode"/>", filterOperator: "iContains"},
             {name: "failureReason", title: "<spring:message code="faild.reason"/>", filterOperator: "iContains"},
             {name: "score", title: "<spring:message code="score"/>", filterOperator: "iContains"},
@@ -120,14 +118,15 @@
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            // {name: "companyName", title: "<spring:message code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
+// {name: "companyName", title: "<spring:message
+        code="company.name"/>", filterOperator: "iContains", autoFitWidth: true},
             {
                 name: "student.personnelNo",
                 title: "<spring:message code="personnel.no"/>",
                 filterOperator: "iContains",
                 autoFitWidth: true
             },
-            // {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
+// {name: "personnelNo2", title: "<spring:message code="personnel.no.6.digits"/>", filterOperator: "iContains"},
 
 
             {
@@ -138,9 +137,9 @@
                 editorType: "SelectItem",
                 valueMap: ["قبول با نمره", "قبول بدون نمره", "مردود"],
                 changed: function (form, item, value) {
-                  scoresState_value =value
+                    scoresState_value = value
                     if (value === "مردود") {
-                     this.grid.startEditing(this.rowNum, this.colNum + 1)
+                        this.grid.startEditing(this.rowNum, this.colNum + 1)
                     } else if (value === "قبول با نمره") {
                         this.grid.startEditing(this.rowNum, this.colNum + 2)
                     }
@@ -160,8 +159,8 @@
                         this.grid.endEditing();
                         ListGrid_Class_Student.refreshFields();
                     } else {
-                       failureReason_value = value
-                      this.grid.startEditing(this.rowNum, this.colNum + 1)
+                        failureReason_value = value
+                        this.grid.startEditing(this.rowNum, this.colNum + 1)
 
                     }
 
@@ -174,7 +173,8 @@
                 title: "<spring:message code="score"/>",
                 filterOperator: "iContains",
                 canEdit: true,
-                //shouldSaveValue: false,
+                validateOnChange: false,
+                editEvent: "click",
                 change: function (form, item, value) {
 
                     if (ListGrid_Class_JspClass.getSelectedRecord().scoringMethod == "2") {
@@ -192,72 +192,62 @@
 
                 },
 
-
                 editorExit: function (editCompletionEvent, record, newValue, rowNum, colNum, grid) {
 
+                    if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null)) {
 
-                    if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null))
-                        {
-
-                        }
-
-                      else if((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue == null))
-                    {
-                       createDialog("info", "لطفا نمره را وارد کنید", "<spring:message code="message"/>")
-                       return false;
+                    } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue == null)) {
+                        createDialog("info", "لطفا نمره را وارد کنید", "<spring:message code="message"/>")
+                        return false;
                     }
 
+                    if (newValue != null) {
+                        if (validators_score(newValue)) {
 
+                            if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value) {
 
-                    if (parseFloat(newValue) >= classRecord_acceptancelimit && parseFloat(newValue) <= score_value)  {
+                                ListGrid_Cell_score_Update(record, newValue, 1);
+                                ListGrid_Class_Student.refreshFields();
+                            } else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord.acceptancelimit)) {
 
-                         ListGrid_Cell_score_Update(record, newValue,1);
-                         ListGrid_Class_Student.refreshFields();
-                    }
+                                if (record.scoresState == "مردود" && (record.failureReason == "عدم کسب حد نصاب نمره" || record.failureReason == "غیبت بیش از حد مجاز") && failureReason_value == null) {
+                                    ListGrid_Cell_score_Update(record, newValue, 0);
+                                    ListGrid_Class_Student.refreshFields();
+                                } else if (scoresState_value == "مردود" && failureReason_value != null) {
+                                    ListGrid_Cell_score_Update(record, newValue, 3);
+                                    ListGrid_Class_Student.refreshFields();
+                                } else if (failureReason_value != null && record.scoresState == "مردود") {
+                                    ListGrid_Cell_score_Update(record, newValue, 4);
+                                } else {
 
-                    else if ((parseFloat(newValue) >= 0 && parseFloat(newValue) < classRecord.acceptancelimit))
-                    {
+                                    createDialog("info", "لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید", "<spring:message code="message"/>")
+                                    ListGrid_Cell_score_Update(record, null, 2);
+                                    ListGrid_Class_Student.refreshFields();
+                                }
 
-                        if (record.scoresState == "مردود" && (record.failureReason == "عدم کسب حد نصاب نمره" || record.failureReason == "غیبت بیش از حد مجاز") && failureReason_value == null)
-                        {
-                            ListGrid_Cell_score_Update(record, newValue,0);
+                            } else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
+
+                            } else if (newValue === null && record.scoresState === undefined || record.scoresState == null || record.scoresState === "undefined" && record.failureReason === null) {
+
+                                ListGrid_Class_Student.invalidateCache();
+                                ListGrid_Class_Student.refreshFields();
+                            }
                             ListGrid_Class_Student.refreshFields();
+
+                        } else {
+                            createDialog("info", "لطفا نمره راصحیح وارد کنید", "<spring:message code="message"/>")
+                            return false;
                         }
 
-                        else if(scoresState_value =="مردود" && failureReason_value !=null)
-                        {
-                          ListGrid_Cell_score_Update(record, newValue,3);
-                          ListGrid_Class_Student.refreshFields();
-                        }
-                        else if (failureReason_value !=null && record.scoresState == "مردود" )
-                        {
-                               ListGrid_Cell_score_Update(record, newValue,4);
-                        }
-                        else
-                        {
-
-                                 createDialog("info", "لطفا وضعیت قبولی را مردود و همچنین دلیل مردودی راانتخاب کنید", "<spring:message code="message"/>")
-                                 ListGrid_Cell_score_Update(record, null,2);
-                                 ListGrid_Class_Student.refreshFields();
-                        }
 
                     }
-                     else if ((record.scoresState == "مردود" || record.scoresState == "قبول با نمره") && (newValue !== null || newValue != null) && (editCompletionEvent == "enter" || editCompletionEvent == "click_outside")) {
-                        // ListGrid_Class_Student.refreshFields();
-                    }
+                    else {
+                               ListGrid_Class_Student.invalidateCache();
+                               ListGrid_Class_Student.refreshFields();
+                        }
+                },// end editor Exit
 
-                     if (newValue === null && record.scoresState === undefined || record.scoresState == null || record.scoresState === "undefined" && record.failureReason === null) {
 
-                        ListGrid_Class_Student.invalidateCache();
-                        ListGrid_Class_Student.refreshFields();
-                    }
-                ListGrid_Class_Student.refreshFields();
-                },
-                <%--validators: {--%>
-                <%--    type: "regexp",--%>
-                <%--    errorMessage: "<spring:message code="msg.validate.score"/>",--%>
-                <%--    expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/--%>
-                <%--}--%>
             },
             {
                 name: "valence",
@@ -280,24 +270,23 @@
             var record = this.getRecord(rowNum);
             var fieldName = this.getFieldName(colNum);
 
-             if (fieldName === "failureReason")
-             {
-              //  return !(scoresState_value == null)
-              //   return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
-             }
-
-            if (fieldName === "score")
-            {
-                if(failureReason_value != null && record.scoresState=="مردود")
-                {return true}
-                 return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
+            if (fieldName === "failureReason") {
+// return !(scoresState_value == null)
+// return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
             }
 
+            if (fieldName === "score") {
+                if (failureReason_value != null && record.scoresState == "مردود") {
+                    return true
+                }
+                return !(record.scoresState === "مردود" && record.failureReason === "غیبت در جلسه امتحان")
+            }
 
+            if (fieldName === "student.firstName" || fieldName === "student.lastName" || fieldName === "student.nationalCode" || fieldName === "student.personnelNo") {
+                return false
+            }
             return true;
         }
-
-
     });
 
 
@@ -306,48 +295,39 @@
         members: [ListGrid_Class_Student]
     })
 
-
     function ListGrid_Cell_scoresState_Update(record, newValue) {
         record.scoresState = newValue
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_scoresState_Update(rpcResponse)"));
     }
 
     function ListGrid_Cell_failurereason_Update(record, newValue) {
-
         record.failureReason = newValue
-        record.scoresState= "مردود"
-        record.score=null
-        scoresState_value =null
-        failureReason_value =null
+        record.scoresState = "مردود"
+        record.score = null
+        scoresState_value = null
+        failureReason_value = null
         isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_failurereason_Update(rpcResponse)"));
         ListGrid_Class_Student.refreshFields();
     }
 
-    function ListGrid_Cell_score_Update(record, newValue,a) {
+    function ListGrid_Cell_score_Update(record, newValue, a) {
         record.score = newValue
-       if(a == 1)
-       {
-       record.scoresState="قبول با نمره"
-       record.failureReason =null
-       }
-      else if (a == 2)
-       {
-        record.scoresState=null
-        record.failureReason =null}
-
-       else if (a == 3)
-        {
-         record.scoresState ="مردود"
-         record.failureReason=failureReason_value
-         record.score=newValue
+        if (a == 1) {
+            record.scoresState = "قبول با نمره"
+            record.failureReason = null
+        } else if (a == 2) {
+            record.scoresState = null
+            record.failureReason = null
+        } else if (a == 3) {
+            record.scoresState = "مردود"
+            record.failureReason = failureReason_value
+            record.score = newValue
+        } else if (a == 4) {
+            record.failureReason = failureReason_value
         }
-        else if(a == 4)
-       {
-         record.failureReason=failureReason_value
-       }
-         scoresState_value=null
-         failureReason_value=null
-        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record),"callback: Edit_Cell_score_Update(rpcResponse)"));
+        scoresState_value = null
+        failureReason_value = null
+        isc.RPCManager.sendRequest(TrDSRequest(tclassStudentUrl + "/" + record.id, "PUT", JSON.stringify(record), "callback: Edit_Cell_score_Update(rpcResponse)"));
         ListGrid_Class_Student.refreshFields();
     }
 
@@ -359,30 +339,54 @@
 
     function Edit_Cell_failurereason_Update(resp) {
 
-             if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
-          {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-               ListGrid_Class_Student.refreshFields();
-          }
+            ListGrid_Class_Student.refreshFields();
+        }
 
     };
 
     function Edit_Cell_score_Update(resp) {
 
-         if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201)
-          {
+        if (resp.httpResponseCode == 200 || resp.httpResponseCode == 201) {
 
-               ListGrid_Class_Student.refreshFields();
-          }
+            ListGrid_Class_Student.refreshFields();
+        }
     };
+
+    function validators_score(value) {
+
+         if(score_value ==20)
+             {
+                 if (value.match(/^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/))
+                       {
+                            return true
+                       }
+                          else
+                       {
+                           return false
+                       }
+             }
+             else if (score_value == 100)
+                {
+                 if (value.match(/^(100|[1-9]?\d)$/))
+                       {
+                            return true
+                       }
+                          else
+                       {
+                           return false
+                       }
+
+                }
+    }
 
     function loadPage_Scores() {
         classRecord = ListGrid_Class_JspClass.getSelectedRecord();
         classRecord_acceptancelimit = parseFloat(classRecord.acceptancelimit)
-
         if (!(classRecord == undefined || classRecord == null)) {
             RestDataSource_ClassStudent.fetchDataURL = tclassStudentUrl + "/scores-iscList/" + classRecord.id
-            //===========================================
+//===========================================
             if (classRecord.scoringMethod == "1") {
                 ListGrid_Class_Student.showField('valence')
                 ListGrid_Class_Student.hideField('score')
@@ -391,20 +395,13 @@
                 score_value = 20;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
-                //  ListGrid_Class_Student.showField('score').validators= {type: "regexp",errorMessage: "<spring:message code="msg.validate.score"/>",expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/}
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
-
             } else if (classRecord.scoringMethod == "2") {
                 score_value = 100;
                 ListGrid_Class_Student.hideField('valence')
                 ListGrid_Class_Student.showField('score')
-                //  ListGrid_Class_Student.showField('score').validators=[{type: "integerRange", min: 0, max: 100,errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",}
-                //  ,{type : "required", errorMessage:"نمره را وارد کنید",
-                //              }]
-                ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
-
+               ListGrid_Class_Student.getField("scoresState").valueMap = ["قبول با نمره", "مردود"]
             }
-            //=================================================
+//=================================================
             ListGrid_Class_Student.invalidateCache()
             ListGrid_Class_Student.fetchData()
         } else {

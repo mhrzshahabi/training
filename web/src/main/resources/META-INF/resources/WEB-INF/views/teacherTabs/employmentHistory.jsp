@@ -64,6 +64,7 @@
                 displayField: "titleFa",
                 filterFields: ["titleFa"],
                 multiple: true,
+                required: true,
                 filterLocally: true,
                 pickListProperties: {
                     showFilterEditor: true,
@@ -98,6 +99,7 @@
                 textAlign: "center",
                 autoFetchData: false,
                 disabled: true,
+                required: true,
                 optionDataSource: RestDataSource_SubCategory_JspEmploymentHistory,
                 valueField: "id",
                 displayField: "titleFa",
@@ -185,6 +187,7 @@
     IButton_Save_JspEmploymentHistory = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
+            DynamicForm_JspEmploymentHistory.validate();
             if (!DynamicForm_JspEmploymentHistory.valuesHaveChanged() || !DynamicForm_JspEmploymentHistory.validate())
                 return;
             waitEmploymentHistory = createDialog("wait");

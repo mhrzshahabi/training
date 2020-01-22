@@ -13,7 +13,8 @@ import java.util.List;
 @Accessors(chain = true)
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
-@Table(name = "tbl_permission")
+@Table(name = "tbl_permission",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"c_entity_name", "c_attribute_name", "f_work_group"})})
 public class Permission extends Auditable {
 
     @Id
@@ -42,8 +43,6 @@ public class Permission extends Auditable {
 
     @Column(name = "f_work_group", nullable = false)
     private Long workGroupId;
-
-
 
 
 }
