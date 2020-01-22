@@ -9,11 +9,9 @@ import com.nicico.copper.core.util.report.ReportUtil;
 import com.nicico.training.dto.*;
 import com.nicico.training.iservice.ITclassService;
 import com.nicico.training.model.EvaluationQuestion;
+import com.nicico.training.model.Goal;
 import com.nicico.training.model.QuestionnaireQuestion;
-import com.nicico.training.service.EvaluationService;
-import com.nicico.training.service.OperationalUnitService;
-import com.nicico.training.service.QuestionnaireQuestionService;
-import com.nicico.training.service.TclassService;
+import com.nicico.training.service.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jasperreports.engine.data.JsonDataSource;
@@ -37,6 +35,7 @@ public class EvaluationRestController {
     private final ReportUtil reportUtil;
     private final DateUtil dateUtil;
     private final ModelMapper modelMapper;
+    private final CourseService courseService;
 
 
     private final TclassService tclassService;
@@ -45,35 +44,38 @@ public class EvaluationRestController {
     //*********************************
 
     @Loggable
-    @PostMapping(value = {"/printWithCriteria/{type}/{classId}"})
-    public void printWithCriteria(HttpServletResponse response,
-                                  @PathVariable String type,
-                                  @RequestParam(value = "CriteriaStr") String criteriaStr, @PathVariable Long classId) throws Exception {
-
-//        final SearchDTO.SearchRq searchRq_employmentHistory = new SearchDTO.SearchRq();
-//        final SearchDTO.SearchRs<EmploymentHistoryDTO.Info> searchRs_employmentHistory = employmentHistoryService.search(searchRq_employmentHistory, Long.valueOf(id));
-
-//        final SearchDTO.SearchRq searchRq_Tclass = new SearchDTO.SearchRq();
-//        final SearchDTO.SearchRs<TclassDTO.Info> searchRs_Tclass = iTclassService.searchById(searchRq_Tclass, classId);
+    @PostMapping(value = {"/{type}/{classId}"})
+    public void printWithCriteria(HttpServletResponse response, @PathVariable String type, @PathVariable Long classId) throws Exception {
 
         List<QuestionnaireQuestion> teacherQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(53L);
+        teacherQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
 
         List<QuestionnaireQuestion> equipmentQuestionnaireQuestion = questionnaireQuestionService.getEvaluationQuestion(54L);
+        equipmentQuestionnaireQuestion.sort(Comparator.comparing(QuestionnaireQuestion::getOrder));
 
-        List<EvaluationQuestionDTO.Info> teacherEvaluationQuestion = new ArrayList<>();
+        CourseDTO.CourseGoals courseGoals = courseService.getCourseGoals(1L);
+
+        List<EvaluationQuestionDTO.Info> evaluationQuestion = new ArrayList<>();
         for (QuestionnaireQuestion questionnaireQuestion : teacherQuestionnaireQuestion) {
-            teacherEvaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+            evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
         }
 
-        List<EvaluationQuestionDTO.Info> equipmentEvaluationQuestion = new ArrayList<>();
         for (QuestionnaireQuestion questionnaireQuestion : equipmentQuestionnaireQuestion) {
-            equipmentEvaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
+            evaluationQuestion.add(modelMapper.map(questionnaireQuestion.getEvaluationQuestion(), EvaluationQuestionDTO.Info.class));
         }
 
+        List<GoalDTO.Info> goals = new ArrayList<>();
+        for (Goal goal : courseGoals.getGoalSet()) {
+            goals.add(modelMapper.map(goal, GoalDTO.Info.class));
 
-//        List<QuestionnaireQuestionDTO.Info> qqq = modelMapper.map(teacherQuestionnaireQuestion, new TypeToken<List<QuestionnaireQuestionDTO.Info>>() {
-//        }.getType());
+            EvaluationQuestionDTO.Info evaluationQuestionDTO = new EvaluationQuestionDTO.Info();
+            evaluationQuestionDTO.setQuestion(goal.getTitleFa());
 
+            ParameterValueDTO.Info domain = new ParameterValueDTO.Info();
+            domain.setTitle("اهداف");
+            evaluationQuestionDTO.setDomain(domain);
+            evaluationQuestion.add(evaluationQuestionDTO);
+        }
 
         TclassDTO.Info classInfo = tclassService.get(classId);
 
@@ -85,25 +87,8 @@ public class EvaluationRestController {
         params.put("startDate", classInfo.getStartDate());
         params.put("endDate", classInfo.getEndDate());
 
-        final SearchDTO.CriteriaRq criteriaRq;
-        final SearchDTO.SearchRq searchRq;
-        if (criteriaStr.equalsIgnoreCase("{}")) {
-            searchRq = new SearchDTO.SearchRq();
-        } else {
-            criteriaRq = objectMapper.readValue(criteriaStr, SearchDTO.CriteriaRq.class);
-            searchRq = new SearchDTO.SearchRq().setCriteria(criteriaRq);
-        }
-
-        //final SearchDTO.SearchRs<OperationalUnitDTO.Info> searchRs = evaluationService.search(searchRq);
-        final SearchDTO.SearchRs<OperationalUnitDTO.Info> searchRs = operationalUnitService.search(searchRq);
-
-
-//        String data = "{" + "\"content\": " + objectMapper.writeValueAsString(searchRs.getList()) + "}";
-
-
         String data = "{" + "\"dsStudent\": " + objectMapper.writeValueAsString(classInfo.getClassStudents()) + "," +
-                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(teacherEvaluationQuestion) + "," +
-                "\"dsEquipmentQuestion\": " + objectMapper.writeValueAsString(equipmentEvaluationQuestion) + "}";
+                "\"dsTeacherQuestion\": " + objectMapper.writeValueAsString(evaluationQuestion) + "}";
 
 
         JsonDataSource jsonDataSource = new JsonDataSource(new ByteArrayInputStream(data.getBytes(Charset.forName("UTF-8"))));

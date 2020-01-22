@@ -45,7 +45,7 @@ public class EvaluationFormController {
         String restApiUrl = request.getRequestURL().toString().replace(request.getServletPath(), "");
 
         if (type.equals("pdf"))
-            return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
+            return restTemplate.exchange(restApiUrl + "/api/evaluation/PDF/" + classId, HttpMethod.POST, entity, byte[].class);
         else if (type.equals("excel"))
             return restTemplate.exchange(restApiUrl + "/api/evaluation/printWithCriteria/EXCEL", HttpMethod.POST, entity, byte[].class);
         else if (type.equals("html"))
