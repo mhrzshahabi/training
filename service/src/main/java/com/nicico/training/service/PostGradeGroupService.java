@@ -7,6 +7,7 @@ import com.nicico.training.TrainingException;
 import com.nicico.training.dto.PostGradeDTO;
 import com.nicico.training.dto.PostGradeGroupDTO;
 import com.nicico.training.iservice.IPostGradeGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.PostGrade;
 import com.nicico.training.model.PostGradeGroup;
 import com.nicico.training.repository.PostGradeDAO;
@@ -32,7 +33,7 @@ public class PostGradeGroupService implements IPostGradeGroupService {
     private final PostGradeGroupDAO postGradeGroupDAO;
     private final ModelMapper modelMapper;
     private final PostGradeDAO postGradeDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override

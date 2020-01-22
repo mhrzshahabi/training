@@ -13,6 +13,7 @@ import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
 import com.nicico.training.iservice.IJobGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
 import com.nicico.training.repository.CompetenceDAOOld;
@@ -35,7 +36,7 @@ public class JobGroupService implements IJobGroupService {
     private final JobGroupDAO jobGroupDAO;
     private final JobDAO jobDAO;
     private final CompetenceDAOOld competenceDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override

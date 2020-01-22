@@ -13,6 +13,7 @@ import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.dto.PostGroupDTO;
 import com.nicico.training.iservice.IPostGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.model.PostGroup;
 import com.nicico.training.repository.CompetenceDAOOld;
@@ -35,7 +36,7 @@ public class PostGroupService implements IPostGroupService {
     private final PostGroupDAO postGroupDAO;
     private final PostDAO postDAO;
     private final CompetenceDAOOld competenceDAO;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override

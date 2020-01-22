@@ -8,6 +8,7 @@ import com.nicico.copper.common.dto.search.SearchDTO;
 import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.dto.PostDTO;
 import com.nicico.training.iservice.IPostService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Post;
 import com.nicico.training.repository.PostDAO;
 import lombok.RequiredArgsConstructor;
@@ -26,7 +27,7 @@ public class PostService implements IPostService {
 
     private final PostDAO postDAO;
     private final ModelMapper modelMapper;
-    private final WorkGroupService workGroupService;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
