@@ -6,5 +6,5 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface WorkGroupDAO extends JpaRepository<WorkGroup,Long>, JpaSpecificationExecutor<WorkGroup> {
+public interface WorkGroupDAO extends JpaRepository<WorkGroup, Long>, JpaSpecificationExecutor<WorkGroup> {
 }
