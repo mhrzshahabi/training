@@ -100,7 +100,7 @@ public class TclassDTO {
                 return " ";
         }
 
-        private Set<ClassStudentDTO.ClassStudentCountId> classStudents;
+        private Set<ClassStudentDTO.AttendanceInfo> classStudents;
 
         public Integer getStudentCount() {
             if (classStudents != null)
@@ -112,13 +112,13 @@ public class TclassDTO {
 
     // ------------------------------
 
-         @Getter
+    @Getter
     @Setter
     @Accessors(chain = true)
     @ApiModel("TclassScore")
     public static class ScoreInfo {
-       private String scoringMethod;
-       private String acceptancelimit;
+        private String scoringMethod;
+        private String acceptancelimit;
     }
 
     @Getter

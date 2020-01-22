@@ -144,7 +144,7 @@
     });
 
     isc.defineClass("LgLabel", Label);
-    isc.LgLabel.addProperties({height: "30", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
+    isc.LgLabel.addProperties({height: "27", align: "center", showEdges: true, edgeOffset: 5, edgeSize: 2});
 
     isc.defineClass("TrLG", ListGrid);
     isc.TrLG.addProperties({
@@ -156,6 +156,7 @@
         showRowNumbers: true,
         canAutoFitFields: false,
         filterOnKeypress: false,
+        leaveScrollbarGap: false,
         rowNumberFieldProperties: {
             headerTitle: "<spring:message code="row.number"/>",
             width: 50,
@@ -676,7 +677,7 @@
                     }
                 },
                 {
-                    title: "گروه کاری",
+                    title: "<spring:message code="workGroup"/>",
                     click: function () {
                         createTab(this.title, "<spring:url value="/web/work-group"/>");
                     },
@@ -760,7 +761,10 @@
     trainingTabSet = isc.TabSet.create({
         minWidth: 1024,
         tabs: [],
-        tabBarControls: [closeAllButton]
+        tabBarControls: [closeAllButton],
+        tabSelected: function (tabNum, tabPane, ID, tab, name) {
+            tabPane.redraw();
+        }
     });
 
     // -------------------------------------------  Page UI -----------------------------------------------

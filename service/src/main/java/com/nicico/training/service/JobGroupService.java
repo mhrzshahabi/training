@@ -7,11 +7,13 @@ com.nicico.training.service
 
 import com.nicico.copper.common.domain.criteria.SearchUtil;
 import com.nicico.copper.common.dto.search.SearchDTO;
+import com.nicico.copper.core.SecurityUtil;
 import com.nicico.training.TrainingException;
 import com.nicico.training.dto.CompetenceDTOOld;
 import com.nicico.training.dto.JobDTO;
 import com.nicico.training.dto.JobGroupDTO;
 import com.nicico.training.iservice.IJobGroupService;
+import com.nicico.training.iservice.IWorkGroupService;
 import com.nicico.training.model.Job;
 import com.nicico.training.model.JobGroup;
 import com.nicico.training.repository.CompetenceDAOOld;
@@ -34,6 +36,7 @@ public class JobGroupService implements IJobGroupService {
     private final JobGroupDAO jobGroupDAO;
     private final JobDAO jobDAO;
     private final CompetenceDAOOld competenceDAO;
+    private final IWorkGroupService workGroupService;
 
     @Transactional(readOnly = true)
     @Override
@@ -128,6 +131,7 @@ public class JobGroupService implements IJobGroupService {
     @Transactional(readOnly = true)
     @Override
     public SearchDTO.SearchRs<JobGroupDTO.Info> search(SearchDTO.SearchRq request) {
+        request.setCriteria(workGroupService.applyPermissions(request.getCriteria(), JobGroup.class,SecurityUtil.getUserId()));
         return SearchUtil.search(jobGroupDAO, request, jobGroup -> modelMapper.map(jobGroup, JobGroupDTO.Info.class));
     }
 

@@ -180,7 +180,7 @@
             ListGrid_teacher_edit();
         },
         selectionUpdated: function () {
-            refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
+            refreshSelectedTab_teacher(null);
         },
         fields: [
             {name: "id", title: "id", canEdit: false, hidden: true},
@@ -302,14 +302,14 @@
         top: 260,
         title: "<spring:message code="save.and.close"/>",
         click: function () {
-            Teacher_Save_Button_Click_JspTeacher(false);
+            Teacher_Save_Close_Button_Click_JspTeacher();
         }
     });
 
     IButton_Teacher_Save_JspTeacher = isc.IButtonSave.create({
         top: 260,
         click: function () {
-            Teacher_Save_Button_Click_JspTeacher(true);
+            Teacher_Save_Button_Click_JspTeacher();
         }
     });
 
@@ -319,6 +319,9 @@
         click: function () {
             ListGrid_teacher_refresh();
             showAttachViewLoader.hide();
+            setTimeout(function () {
+                ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+            }, 3000);
             Window_Teacher_JspTeacher.close();
         }
     });
@@ -414,7 +417,7 @@
         ],
         tabSelected: function (tabNum, tabPane, ID, tab) {
             if (isc.Page.isLoaded())
-                refreshSelectedTab_teacher(tab);
+                refreshSelectedTab_teacher(null);
         }
     });
 
@@ -733,12 +736,38 @@
 
     //-------------------------------------------------Functions------------------------------------------------
     function ListGrid_teacher_refresh() {
-        refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
+        refreshSelectedTab_teacher(null);
         ListGrid_Teacher_JspTeacher.invalidateCache();
         ListGrid_Teacher_JspTeacher.filterByEditor();
     }
 
-    function Teacher_Save_Button_Click_JspTeacher(isSaveButton) {
+    function Teacher_Save_Button_Click_JspTeacher() {
+        if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
+            return;
+        }
+        vm.validate();
+        if (vm.hasErrors()) {
+            return;
+        }
+        var nCode = DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").getValue();
+        DynamicForm_BasicInfo_JspTeacher.getField("teacherCode").setValue(nCode);
+        var data = vm.getValues();
+        var teacherSaveUrl = teacherUrl;
+
+        if (teacherMethod.localeCompare("PUT") === 0) {
+            var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
+            teacherSaveUrl += teacherRecord.id;
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                "callback: teacher_save_edit_result(rpcResponse)"));
+        }
+
+        if (teacherMethod.localeCompare("POST") === 0)
+            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                "callback: teacher_save_add_result(rpcResponse)"));
+
+    }
+
+    function Teacher_Save_Close_Button_Click_JspTeacher() {
         if (nationalCodeCheck === false || cellPhoneCheck === false || mailCheck === false || persianDateCheck === false) {
             return;
         }
@@ -755,17 +784,10 @@
             var teacherRecord = ListGrid_Teacher_JspTeacher.getSelectedRecord();
             teacherSaveUrl += teacherRecord.id;
         }
+        isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
+                "callback: teacher_saveClose_result(rpcResponse)"));
 
-        if (teacherMethod.localeCompare("POST") === 0 && isSaveButton)
-            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
-                "callback: teacher_save_action_result(rpcResponse)"));
-        else
-            isc.RPCManager.sendRequest(TrDSRequest(teacherSaveUrl, teacherMethod, JSON.stringify(data),
-                "callback: teacher_action_result(rpcResponse)"));
-
-        if (!isSaveButton) {
             Window_Teacher_JspTeacher.close();
-        }
     }
 
     function ListGrid_teacher_edit() {
@@ -897,8 +919,7 @@
         Window_Teacher_JspTeacher.bringToFront();
         TabSet_Bottom_JspTeacher.show();
         TabSet_Bottom_JspTeacher.selectTab(0);
-        TabSet_Bottom_JspTeacher.enable();
-        refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), null);
+        refreshSelectedTab_teacher(null);
     }
 
     function ListGrid_teacher_add() {
@@ -925,12 +946,10 @@
         DynamicForm_BasicInfo_JspTeacher.getField("personality.nationalCode").disabled = false;
         DynamicForm_BasicInfo_JspTeacher.getField("personnelStatus").disabled = false;
         DynamicForm_BasicInfo_JspTeacher.getField("personnelCode").disabled = true;
+        TabSet_Bottom_JspTeacher.hide();
         Window_Teacher_JspTeacher.show();
         Window_Teacher_JspTeacher.bringToFront();
-
-        TabSet_Bottom_JspTeacher.selectTab(0);
         clearTabs();
-        TabSet_Bottom_JspTeacher.hide();
     }
 
     function ListGrid_teacher_remove() {
@@ -1004,7 +1023,7 @@
             setTimeout(function () {
                 OK.close();
             }, 3000);
-            refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab());
+            refreshSelectedTab_teacher(null);
         } else if (resp.data === false) {
             createDialog("info", "<spring:message code='msg.teacher.remove.error'/>");
         } else {
@@ -1012,7 +1031,30 @@
         }
     }
 
-    function teacher_save_action_result(resp) {
+    function teacher_saveClose_result(resp){
+        if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
+            if (resp.data === "") {
+                createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
+            } else {
+                responseID = JSON.parse(resp.data).id;
+                gridState = "[{id:" + responseID + "}]";
+                var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
+                    "<spring:message code="msg.command.done"/>");
+                ListGrid_teacher_refresh();
+                setTimeout(function () {
+                    OK.close();
+                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
+                }, 3000);
+                addAttach(JSON.parse(resp.data).personality.id);
+                showAttachViewLoader.hide();
+            }
+        }
+        else {
+            createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
+        }
+    }
+
+    function teacher_save_add_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
@@ -1022,26 +1064,20 @@
                 gridState = "[{id:" + responseID + "}]";
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
-                setTimeout(function () {
-                    OK.close();
-                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                }, 1000);
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
-                setTimeout(function () {
-                    ListGrid_Teacher_JspTeacher.invalidateCache();
-                    ListGrid_Teacher_JspTeacher.fetchData();
-                }, 300);
-                refreshSelectedTab_teacher(TabSet_Bottom_JspTeacher.getSelectedTab(), responseID);
-                TabSet_Bottom_JspTeacher.enable();
+                // TabSet_Bottom_JspTeacher.enable();
+                // TabSet_Bottom_JspTeacher.show();
+                // TabSet_Bottom_JspTeacher.selectTab(0);
+                // refreshSelectedTab_teacher(responseID);
                 teacherMethod = "PUT";
             }
         } else {
-            createDialog("info", "<spring:message code='error'/>");
+            createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
         }
     }
 
-    function teacher_action_result(resp) {
+    function teacher_save_edit_result(resp) {
         if (resp.httpResponseCode === 200 || resp.httpResponseCode === 201) {
             if (resp.data === "") {
                 createDialog("info", "<spring:message code='msg.national.code.duplicate'/>");
@@ -1050,17 +1086,10 @@
                 gridState = "[{id:" + responseID + "}]";
                 var OK = createDialog("info", "<spring:message code='msg.operation.successful'/>",
                     "<spring:message code="msg.command.done"/>");
-                setTimeout(function () {
-                    ListGrid_Teacher_JspTeacher.invalidateCache();
-                    ListGrid_Teacher_JspTeacher.fetchData();
-                    ListGrid_Teacher_JspTeacher.setSelectedState(gridState);
-                    OK.close();
-                }, 1000);
                 addAttach(JSON.parse(resp.data).personality.id);
                 showAttach(JSON.parse(resp.data).personality.id);
                 showAttachViewLoader.hide();
             }
-        } else {
         }
     }
 
@@ -1281,7 +1310,7 @@
         }
     }
 
-    function refreshSelectedTab_teacher(tab, id) {
+    function refreshSelectedTab_teacher(id) {
         var teacherId = (id !== null) ? id : ListGrid_Teacher_JspTeacher.getSelectedRecord().id;
         if (!(teacherId === undefined || teacherId === null)) {
             if (typeof loadPage_attachment !== "undefined")
@@ -1305,8 +1334,6 @@
 
             if (typeof loadPage_Publication !== "undefined")
                 loadPage_Publication(teacherId);
-
-
             if (typeof loadPage_AcademicBK !== "undefined")
                 loadPage_AcademicBK(teacherId);
 
