@@ -1222,7 +1222,7 @@
                     if (value == "1") {
                         form.getItem("acceptancelimit").validators=[{}];
                         form.getItem("acceptancelimit").hide();
-                      //  form.getItem("acceptancelimit").setRequired(false);
+                        form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit_a").show();
                         form.getItem("acceptancelimit_a").enable();
                         form.getItem("acceptancelimit_a").setRequired(true);
@@ -1232,15 +1232,15 @@
                     else if(value =="2")
                     {
                         form.getItem("acceptancelimit").show();
+
                         form.getItem("acceptancelimit").enable();
                         form.getItem("acceptancelimit").setRequired(true);
                         DynamicForm_course_MainTab.getItem("acceptancelimit").validators=[{
                         type: "integerRange", min: 0, max: 100,
                         errorMessage: "لطفا یک عدد بین 0 تا 100 وارد کنید",
-
                         },{type : "required"}]
-
                         form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue();
                         form.getItem("acceptancelimit_a").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(false);
 
@@ -1252,21 +1252,22 @@
                                 errorMessage: "<spring:message code="msg.validate.score"/>",
                                 expression: /^((([0-9]|1[0-9])([.][0-9][0-9]?)?)[20]?)$/,
                             },{type : "required"}];
-                     form.getItem("acceptancelimit").show();
-                //   form.getItem("acceptancelimit").enable();
-                     form.getItem("acceptancelimit").setRequired(true);
-                     form.getItem("acceptancelimit_a").hide();
-                     form.getItem("acceptancelimit_a").setRequired(false);
-                      form.getItem("acceptancelimit").setDisabled(false);
+                         form.getItem("acceptancelimit").show();
+                         form.getItem("acceptancelimit").setRequired(true);
+                         form.getItem("acceptancelimit_a").hide();
+                         form.getItem("acceptancelimit_a").setValue();
+                         form.getItem("acceptancelimit_a").setRequired(false);
+                         form.getItem("acceptancelimit").setDisabled(false);
 
                     }
 
                     else if(value =="4") {
                         form.getItem("acceptancelimit").show();
+                        form.getItem("acceptancelimit").setValue();
                         form.getItem("acceptancelimit").setRequired(false);
                         form.getItem("acceptancelimit").setDisabled(true);
-                        form.getItem("acceptancelimit").setValue("بدون نمره")
                         form.getItem("acceptancelimit_a").hide();
+                        form.getItem("acceptancelimit_a").setValue()
                         form.getItem("acceptancelimit_a").setRequired(false);
                    }
                 },
@@ -2498,7 +2499,7 @@
         // DynamicForm_course.getItem("epSection").disable();
         // DynamicForm_course.getItem("theoryDuration").clearErrors();
         Window_course.show();
-        ListSkillBtnMainObjective.setDisabled(true);
+        // ListSkillBtnMainObjective.setDisabled(true);
         //  DynamicForm_course_MainTab.getItem("scoringMethod").change(DynamicForm_course_MainTab, DynamicForm_course_MainTab.getItem("scoringMethod"), "3");
         setTimeout(function () {
             // ToolStrip_Actions_Goal.disable();
@@ -2650,7 +2651,7 @@
             Window_course.setTitle("<spring:message code="edit"/>" + " " + "<spring:message code="course"/>");
             lblCourse.getField("domainCourse").setValue("");
             Window_course.show();
-            ListSkillBtnMainObjective.setDisabled(false);
+            // ListSkillBtnMainObjective.setDisabled(false);
             if(sRecord.scoringMethod === "1")
             {
                 DynamicForm_course_MainTab.getItem("acceptancelimit_a").setValue(sRecord.acceptancelimit)

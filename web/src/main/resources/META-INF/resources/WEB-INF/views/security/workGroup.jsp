@@ -1,11 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 <%@ taglib uri="http://www.springframework.org/tags" prefix="spring" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ page import="com.nicico.copper.core.SecurityUtil" %>
 
 // <script>
 
-    const userId = '<%= SecurityUtil.getUserId()%>';
     var DynamicForm_Permission;
     var entityList_Permission = [
         // "com.nicico.training.model.Post",
@@ -109,7 +107,7 @@
 
     ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
         click: function () {
-            DynamicForm_WorkGroup_refresh();
+            DynamicForm_Permissions_refresh();
         }
     });
 
@@ -504,18 +502,25 @@
     //--------------------------------------------------------------------------------------------------------------------//
 
     function Windows_Permissions_Set_Values(permission) {
-        temp = permission;
-        let DF = TabSet_Permission.getTab(permission.entityName).pane;
-        DF.setValue(permission.entityName + "_" + permission.attributeName + "_" + permission.attributeType + "_Permission",
-            permission.attributeValues);
+        if (TabSet_Permission.getTab(permission.entityName) != null) {
+            let DF = TabSet_Permission.getTab(permission.entityName).pane;
+            DF.setValue(permission.entityName + "_" + permission.attributeName + "_" + permission.attributeType + "_Permission",
+                permission.attributeValues);
+        }
     }
 
-    function DynamicForm_WorkGroup_refresh() {
-        // TabSet_Permission.tabs.forEach(TabSet_Permission.removeTab)
+    function DynamicForm_Permissions_refresh() {
         for (var i = TabSet_Permission.tabs.length - 1; i > -1; i--) {
             TabSet_Permission.removeTab(i);
         }
-        isc.RPCManager.sendRequest(TrDSRequest(parameterUrl + "/config-list", "GET", null, setConfigTypes));
+        let selectedStudent = ListGrid_JspWorkGroup.getSelectedRecord();
+        let gridState = "[{id:" + selectedStudent.id + "}]";
+        isFormDataListArrived = false;
+        isc.RPCManager.sendRequest(TrDSRequest(workGroupUrl + "/form-data", "POST", JSON.stringify(entityList_Permission), setFormData));
+        refreshLG(ListGrid_JspWorkGroup, setTimeout(function () {
+            ListGrid_JspWorkGroup.setSelectedState(gridState);
+            Add_Permission_To_WorkGroup_Jsp();
+        }, 600));
     }
 
     function setFormData(resp) {
@@ -531,10 +536,9 @@
 
     function addTab(item) {
         var newTab = {
-            title: item.entityName.split('.').last(),
             name: item.entityName,
-            <%--title: "<spring:message code=code/>","code":item.entityName.split('.').last(),--%>
-            pane: newDynamicForm(item)
+            pane: newDynamicForm(item),
+            title: setTitle(item.entityName)
         };
         TabSet_Permission.addTab(newTab);
     }
@@ -556,7 +560,7 @@
             DF.addField({
                 ID: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
                 name: item.entityName + "_" + item.columnDataList[i].attributeName + "_" + item.columnDataList[i].attributeType + "_Permission",
-                title: item.columnDataList[i].attributeName,
+                title: setTitle(item.columnDataList[i].attributeName),
                 valueMap: item.columnDataList[i].attributeValues,
                 type: "selectItem",
                 textAlign: "center",
@@ -609,6 +613,51 @@
         } else {
             createDialog("info", "<spring:message code="msg.operation.error"/>",
                 "<spring:message code="message"/>");
+        }
+    }
+
+    function setTitle(name) {
+        switch (name) {
+            case "com.nicico.training.model.Job":
+                return "<spring:message code="job"/>";
+            case "com.nicico.training.model.Post":
+                return "<spring:message code="post"/>";
+            case "com.nicico.training.model.PostGrade":
+                return "<spring:message code="post.grade"/>";
+            case "com.nicico.training.model.Skill":
+                return "<spring:message code="skill"/>";
+            case "com.nicico.training.model.PostGroup":
+                return "<spring:message code="post.group"/>";
+            case "com.nicico.training.model.JobGroup":
+                return "<spring:message code="job.group"/>";
+            case "com.nicico.training.model.PostGradeGroup":
+                return "<spring:message code="post.grade.group"/>";
+            case "com.nicico.training.model.SkillGroup":
+                return "<spring:message code="skill.group"/>";
+            case "code":
+                return "<spring:message code="code"/>";
+            case "titleFa":
+                return "<spring:message code="title"/>";
+            case "titleEn":
+                return "<spring:message code="title.en"/>";
+            case "description":
+                return "<spring:message code="description"/>";
+            case "area":
+                return "<spring:message code="area"/>";
+            case "assistance":
+                return "<spring:message code="assistance"/>";
+            case "affairs":
+                return "<spring:message code="affairs"/>";
+            case "section":
+                return "<spring:message code="section"/>";
+            case "unit":
+                return "<spring:message code="unit"/>";
+            case "costCenterCode":
+                return "<spring:message code="cost.center.code"/>";
+            case "costCenterTitleFa":
+                return "<spring:message code="cost.center.title"/>";
+            default:
+                return name.split('.').last();
         }
     }
 
