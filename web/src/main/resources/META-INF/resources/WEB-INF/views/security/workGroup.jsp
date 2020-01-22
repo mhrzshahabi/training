@@ -6,7 +6,7 @@
 
     var DynamicForm_Permission;
     var entityList_Permission = [
-        // "com.nicico.training.model.Post",
+        "com.nicico.training.model.Post",
         "com.nicico.training.model.Job",
         "com.nicico.training.model.PostGrade",
         "com.nicico.training.model.Skill",
@@ -91,9 +91,13 @@
     IButton_Save_Permission = isc.TrSaveBtn.create({
         top: 260,
         click: function () {
-            // if (!DynamicForm_Permission.valuesHaveChanged() || !DynamicForm_Permission.validate())
-            //     return;
             DynamicForm_WorkGroup_edit();
+        }
+    });
+
+    IButton_Cancel_Permission = isc.TrCancelBtn.create({
+        click: function () {
+            Windows_Permissions_Permission.close();
         }
     });
 
@@ -102,7 +106,7 @@
         showEdges: false,
         edgeImage: "",
         padding: 10,
-        members: [IButton_Save_Permission]
+        members: [IButton_Save_Permission,IButton_Cancel_Permission]
     });
 
     ToolStripButton_Refresh_Permission = isc.ToolStripButtonRefresh.create({
@@ -126,7 +130,7 @@
 
     Windows_Permissions_Permission = isc.Window.create({
         placement: "fillScreen",
-        title: "دسترسی ها",
+        title: "<spring:message code="permissions"/>",
         canDragReposition: true,
         align: "center",
         autoDraw: false,
@@ -225,7 +229,7 @@
         minWidth: "550",
         align: "center",
         border: "1px solid gray",
-        title: "گروه کاری",
+        title: "<spring:message code="workGroup"/>",
         items: [isc.TrVLayout.create({
             members: [DynamicForm_JspWorkGroup, HLayout_SaveOrExit_JspWorkGroup]
         })]
@@ -253,7 +257,7 @@
                 ListGrid_WorkGroup_Remove();
             }
         }, {
-            title: "دسترسی", click: function () {
+            title: "<spring:message code="permissions"/>", click: function () {
                 Add_Permission_To_WorkGroup_Jsp();
             }
         }
@@ -358,7 +362,7 @@
         }
     });
     ToolStripButton_Add_Permission_To_WorkGroup_Jsp = isc.ToolStripButton.create({
-        title: "دسترسی",
+        title: "<spring:message code='permissions'/>",
         click: function () {
             Add_Permission_To_WorkGroup_Jsp();
         }
@@ -532,7 +536,6 @@
 
         }
     }
-
 
     function addTab(item) {
         var newTab = {
