@@ -4,7 +4,6 @@ import lombok.*;
 import lombok.experimental.Accessors;
 
 import javax.persistence.*;
-import java.util.List;
 import java.util.Set;
 
 @Getter
@@ -15,7 +14,7 @@ import java.util.Set;
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 @Entity
 @Table(name = "tbl_work_group")
-public class WorkGroup {
+public class WorkGroup extends Auditable {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "work_group_seq")
@@ -23,7 +22,7 @@ public class WorkGroup {
     @Column(name = "id", precision = 10)
     private Long id;
 
-    @Column(name = "c_title", nullable = false)
+    @Column(name = "c_title", nullable = false, unique = true)
     private String title;
 
     @Column(name = "c_description")
@@ -33,5 +32,7 @@ public class WorkGroup {
     private Set<Permission> permissions;
 
     @ElementCollection
-    private List<Long> userIds;
+    @JoinTable(name = "tbl_work_group_user_ids",
+            joinColumns = {@JoinColumn(name = "f_work_group", referencedColumnName = "id")})
+    private Set<Long> userIds;
 }

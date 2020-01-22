@@ -262,4 +262,13 @@ public class CourseDTO implements Serializable {
         private ETechnicalType eTechnicalType;
         private List<GoalDTO.Syllabuses> goalSet;
     }
+
+    @Getter
+    @Setter
+    @ApiModel("CourseInfoTupleLite")
+    public static class CourseInfoTupleLite {
+        private Long id;
+        private String code;
+        private String titleFa;
+    }
 }

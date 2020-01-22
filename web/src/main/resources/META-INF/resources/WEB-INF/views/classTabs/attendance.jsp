@@ -128,7 +128,6 @@
                 ListGrid_JspAttachment.getField("description").title = "شماره نامه";
                 this.Super("show",arguments);
                 DynamicForm_JspAttachments.getItem("description").title = "شماره نامه:";
-
             }
     });
     var DynamicForm_Attendance = isc.DynamicForm.create({

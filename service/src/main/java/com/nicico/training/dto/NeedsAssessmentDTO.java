@@ -51,7 +51,6 @@ public class NeedsAssessmentDTO implements Serializable {
     public static class Info extends NeedsAssessmentDTO {
         private Long id;
         private Integer version;
-//        private Object object;
         private CompetenceDTO.Info competence;
         private SkillDTO.Info skill;
         private ParameterValueDTO.MinInfo needsAssessmentDomain;
